@@ -1314,8 +1314,14 @@ def download_certificate(
     pdf.set_font("Helvetica", "I", 12)
     pdf.cell(0, 10, "Verified and issued by Online Internship Portal", ln=True, align="C")
 
-    output = io.BytesIO()
-    pdf.output(output)
+    # FPDF.output with dest='S' returns the PDF as a string; convert to bytes
+    pdf_data_str = pdf.output(dest='S')
+    try:
+        pdf_bytes = pdf_data_str.encode('latin-1')
+    except Exception:
+        pdf_bytes = pdf_data_str.encode('utf-8', errors='ignore')
+
+    output = io.BytesIO(pdf_bytes)
     output.seek(0)
 
     filename = f"certificate_{cert.certificate_id}.pdf"
