@@ -781,7 +781,7 @@ export default function InternDashboard() {
                   <div id="certificate-print-area" style={{ display: "none" }}>
                     <div className="certificate-preview-box">
                       <div className="cert-title">CERTIFICATE OF COMPLETION</div>
-                      <div className="cert-subtitle">PROEDUVATE ANTIGRAVITY SOLUTIONS</div>
+                      <div className="cert-subtitle">PROEDUVATE ONLINE INTERNSHIP PORTAL</div>
                       <div style={{ color: "#64748b", fontSize: "14px" }}>This is to certify that</div>
                       <div className="cert-name">{certData.intern_name}</div>
                       <div style={{ color: "#64748b", fontSize: "14px" }}>has successfully completed the 30-day intensive program on</div>
@@ -821,7 +821,7 @@ export default function InternDashboard() {
   return (
     <div className="container">
       <div className="sidebar">
-        <h2>Antigravity <span>Portal</span></h2>
+        <h2>Online Internship <span>Portal</span></h2>
 
         <ul>
           <li className={active === "Dashboard" ? "active" : ""} onClick={() => setActive("Dashboard")}>

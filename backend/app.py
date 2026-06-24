@@ -1,13 +1,21 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
 import os
+import io
 import json
 import re
+import subprocess
+import sys
+import tempfile
+import uuid
+from typing import Dict, Any
+from fpdf import FPDF
 
 import models, database, schemas
 
@@ -34,6 +42,9 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 SECRET_KEY = "SUPER_SECRET_COMPLEX_KEY_HERE"  # Keep this secure in production envs
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 240
+
+# In-memory WebRTC signaling room state for mentor/intern meeting negotiations.
+SIGNALING_ROOMS: Dict[str, Any] = {}
 
 # OAuth2 Scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -484,6 +495,186 @@ def run_ai_evaluation(code: str, task: models.Task) -> dict:
     }
 
 
+def execute_code_submission(code: str, task: models.Task) -> dict:
+    if not code or len(code.strip()) < 5:
+        return {
+            "syntax_valid": False,
+            "runtime_score": 0,
+            "test_cases_passed": 0,
+            "total_test_cases": 0,
+            "runtime_feedback": "Submission was empty or too brief for execution.",
+            "test_case_results": [],
+            "stdout": None,
+            "stderr": None,
+            "successful": False
+        }
+
+    syntax_valid = True
+    syntax_error = None
+    try:
+        compile(code, "<user_code>", "exec")
+    except SyntaxError as exc:
+        syntax_valid = False
+        syntax_error = f"Syntax Error: {exc.msg} on line {exc.lineno}"
+
+    temp_file = None
+    test_case_results = []
+    passed = 0
+    total = 0
+    stdout_capture = ""
+    stderr_capture = ""
+    runtime_ok = True
+
+    if task.test_cases:
+        try:
+            test_cases = json.loads(task.test_cases)
+        except Exception:
+            test_cases = []
+    else:
+        test_cases = []
+
+    if not syntax_valid:
+        return {
+            "syntax_valid": False,
+            "runtime_score": 0,
+            "test_cases_passed": 0,
+            "total_test_cases": len(test_cases),
+            "runtime_feedback": syntax_error,
+            "test_case_results": [],
+            "stdout": None,
+            "stderr": None,
+            "successful": False
+        }
+
+    wrapper_code = f"{code}\n"
+    try:
+        temp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8")
+        temp_file.write(wrapper_code)
+        temp_file.flush()
+        temp_file.close()
+
+        if not test_cases:
+            test_cases = [{"input": "", "expected": ""}]
+
+        for idx, tc in enumerate(test_cases):
+            total += 1
+            tc_input = tc.get("input", "")
+            expected = str(tc.get("expected", "")).strip()
+            try:
+                proc = subprocess.run(
+                    [sys.executable, "-I", temp_file.name],
+                    input=str(tc_input),
+                    capture_output=True,
+                    text=True,
+                    timeout=6,
+                    env={
+                        "PYTHONIOENCODING": "utf-8",
+                        "PYTHONUNBUFFERED": "1",
+                        "PATH": os.environ.get("PATH", "")
+                    }
+                )
+                stdout_capture = proc.stdout.strip()
+                stderr_capture = proc.stderr.strip()
+                success = False
+                if expected == "":
+                    success = proc.returncode == 0
+                else:
+                    success = stdout_capture.strip() == expected
+
+                if success:
+                    passed += 1
+
+                test_case_results.append({
+                    "case_number": idx + 1,
+                    "input": tc_input,
+                    "expected": expected,
+                    "stdout": stdout_capture,
+                    "stderr": stderr_capture,
+                    "passed": success,
+                    "return_code": proc.returncode
+                })
+            except subprocess.TimeoutExpired:
+                runtime_ok = False
+                test_case_results.append({
+                    "case_number": idx + 1,
+                    "input": tc_input,
+                    "expected": expected,
+                    "stdout": "",
+                    "stderr": "TimeoutExpired: Process exceeded time limit.",
+                    "passed": False,
+                    "return_code": None
+                })
+            except Exception as runtime_exc:
+                runtime_ok = False
+                test_case_results.append({
+                    "case_number": idx + 1,
+                    "input": tc_input,
+                    "expected": expected,
+                    "stdout": "",
+                    "stderr": str(runtime_exc),
+                    "passed": False,
+                    "return_code": None
+                })
+    finally:
+        if temp_file and os.path.exists(temp_file.name):
+            try:
+                os.remove(temp_file.name)
+            except Exception:
+                pass
+
+    pass_ratio = passed / max(1, total)
+    runtime_score = int(pass_ratio * 70) + (20 if runtime_ok else 0) + (10 if len(code) > 120 else 0)
+    runtime_score = min(runtime_score, 100)
+
+    runtime_feedback = (
+        "Code executed successfully across test cases." if passed == total and runtime_ok
+        else "Code execution completed with issues. Review stderr and failing test cases."
+    )
+
+    return {
+        "syntax_valid": True,
+        "runtime_score": runtime_score,
+        "test_cases_passed": passed,
+        "total_test_cases": total,
+        "runtime_feedback": runtime_feedback,
+        "test_case_results": test_case_results,
+        "stdout": stdout_capture,
+        "stderr": stderr_capture,
+        "successful": passed == total and runtime_ok
+    }
+
+
+@app.post("/code/execute", response_model=schemas.CodeExecutionResponse)
+def execute_code(
+    data: schemas.CodeExecutionRequest,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(status_code=403, detail="Only interns can execute code submissions")
+
+    task = db.query(models.Task).filter(models.Task.id == data.task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if task.domain_id != current_user.domain_id:
+        raise HTTPException(status_code=403, detail="Task does not belong to your assigned domain")
+
+    result = execute_code_submission(data.code_submission, task)
+    return {
+        "task_id": data.task_id,
+        "syntax_valid": result["syntax_valid"],
+        "runtime_score": result["runtime_score"],
+        "test_cases_passed": result["test_cases_passed"],
+        "total_test_cases": result["total_test_cases"],
+        "runtime_feedback": result["runtime_feedback"],
+        "test_case_results": result["test_case_results"],
+        "stdout": result["stdout"],
+        "stderr": result["stderr"],
+        "successful": result["successful"]
+    }
+
+
 # ==========================================
 #           SUBMISSION MANAGEMENT
 # ==========================================
@@ -545,17 +736,25 @@ def create_submission(
         except Exception:
             mcq_score = 0
             
-    # Trigger AI Evaluator for code submission
+    # Trigger AI Evaluator and secure runtime execution for code submission
     ai_eval_result = {"score": 0, "feedback": None}
+    runtime_result = None
     if data.code_submission:
         ai_eval_result = run_ai_evaluation(data.code_submission, task)
-        
+        runtime_result = execute_code_submission(data.code_submission, task)
+        combined_score = min(100, int((ai_eval_result["score"] * 0.6) + (runtime_result["runtime_score"] * 0.4)))
+    else:
+        combined_score = 0
+
     if existing:
         existing.code_submission = data.code_submission
         existing.mcq_answers = data.mcq_answers
         existing.mcq_score = mcq_score
-        existing.ai_score = ai_eval_result["score"]
-        existing.ai_feedback = ai_eval_result["feedback"]
+        existing.ai_score = combined_score
+        existing.ai_feedback = json.dumps({
+            "ai_analysis": ai_eval_result,
+            "runtime_evaluation": runtime_result
+        }) if runtime_result else ai_eval_result["feedback"]
         existing.status = "submitted"
         existing.submitted_at = datetime.utcnow()
         existing.attendance_marked = True
@@ -569,13 +768,16 @@ def create_submission(
             code_submission=data.code_submission,
             mcq_answers=data.mcq_answers,
             mcq_score=mcq_score,
-            ai_score=ai_eval_result["score"],
-            ai_feedback=ai_eval_result["feedback"],
+            ai_score=combined_score,
+            ai_feedback=json.dumps({
+                "ai_analysis": ai_eval_result,
+                "runtime_evaluation": runtime_result
+            }) if runtime_result else ai_eval_result["feedback"],
             attendance_marked=True
         )
         db.add(new_sub)
         sub = new_sub
-        
+    
     db.commit()
     db.refresh(sub)
     
@@ -601,12 +803,23 @@ def create_submission(
     db.add(current_user)
     db.commit()
     
-    return {
-        "message": "Submission recorded", 
-        "mcq_score": mcq_score, 
-        "ai_score": ai_eval_result["score"],
-        "ai_feedback": ai_eval_result["feedback"]
+    response = {
+        "message": "Submission recorded",
+        "mcq_score": mcq_score,
+        "ai_score": combined_score,
+        "ai_feedback": json.dumps({
+            "ai_analysis": ai_eval_result,
+            "runtime_evaluation": runtime_result
+        }) if runtime_result else ai_eval_result["feedback"]
     }
+    if runtime_result:
+        response.update({
+            "runtime_score": runtime_result["runtime_score"],
+            "runtime_feedback": runtime_result["runtime_feedback"],
+            "test_cases_passed": runtime_result["test_cases_passed"],
+            "total_test_cases": runtime_result["total_test_cases"]
+        })
+    return response
 
 
 @app.get("/submissions")
@@ -770,6 +983,92 @@ def get_meetings(
         query = query.filter(models.Meeting.mentor_id == current_user.id)
         
     return query.all()
+
+
+@app.websocket("/ws/signaling/{room_code}")
+async def signaling_websocket(
+    room_code: str,
+    websocket: WebSocket
+):
+    await websocket.accept()
+    room = SIGNALING_ROOMS.setdefault(room_code, {"participants": {}, "breakouts": {}})
+    participant_id = None
+
+    async def broadcast(message: dict, exclude_id: int = None):
+        for pid, conn in list(room["participants"].items()):
+            if pid == exclude_id:
+                continue
+            try:
+                await conn.send_json(message)
+            except Exception:
+                pass
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+            action = data.get("action")
+            if action == "join":
+                participant_id = data.get("user_id")
+                if participant_id is None:
+                    await websocket.close(code=1008)
+                    return
+                room["participants"][participant_id] = websocket
+                await broadcast({
+                    "action": "participant_joined",
+                    "user_id": participant_id,
+                    "role": data.get("role")
+                }, exclude_id=participant_id)
+                await websocket.send_json({"action": "joined", "room_code": room_code})
+            elif action in ["offer", "answer", "ice_candidate"]:
+                target_id = data.get("target_id")
+                if target_id and target_id in room["participants"]:
+                    await room["participants"][target_id].send_json(data)
+            elif action == "breakout_create":
+                breakout_id = data.get("breakout_id") or str(uuid.uuid4())
+                room["breakouts"][breakout_id] = {"members": [participant_id]} if participant_id else {"members": []}
+                await broadcast({"action": "breakout_created", "breakout_id": breakout_id})
+            elif action == "breakout_join":
+                breakout_id = data.get("breakout_id")
+                if breakout_id in room["breakouts"] and participant_id is not None:
+                    members = room["breakouts"][breakout_id].get("members", [])
+                    if participant_id not in members:
+                        members.append(participant_id)
+                    room["breakouts"][breakout_id]["members"] = members
+                    await broadcast({"action": "breakout_joined", "breakout_id": breakout_id, "user_id": participant_id})
+            elif action == "breakout_leave":
+                breakout_id = data.get("breakout_id")
+                if breakout_id in room["breakouts"] and participant_id is not None:
+                    members = room["breakouts"][breakout_id].get("members", [])
+                    if participant_id in members:
+                        members.remove(participant_id)
+                    room["breakouts"][breakout_id]["members"] = members
+                    await broadcast({"action": "breakout_left", "breakout_id": breakout_id, "user_id": participant_id})
+            elif action == "leave":
+                if participant_id in room["participants"]:
+                    room["participants"].pop(participant_id, None)
+                await websocket.close()
+                return
+            else:
+                await broadcast(data, exclude_id=participant_id)
+    except WebSocketDisconnect:
+        if participant_id and participant_id in room["participants"]:
+            room["participants"].pop(participant_id, None)
+            await broadcast({"action": "participant_left", "user_id": participant_id})
+
+
+@app.get("/meetings/{room_code}/breakouts")
+def get_meeting_breakouts(
+    room_code: str,
+    current_user: models.User = Depends(get_current_user)
+):
+    room = SIGNALING_ROOMS.get(room_code)
+    if not room:
+        raise HTTPException(status_code=404, detail="Meeting room not found or no signaling session yet")
+    return {
+        "room_code": room_code,
+        "participants": list(room["participants"].keys()),
+        "breakouts": room["breakouts"]
+    }
 
 
 @app.post("/meetings/{room_code}/close")
@@ -982,16 +1281,76 @@ def download_certificate(
     mentor = db.query(models.User).filter(models.User.id == current_user.mentor_id).first()
     domain = db.query(models.Domain).filter(models.Domain.id == current_user.domain_id).first()
     
+    domain_name = domain.name if domain else "Tech domain"
+    verification_url = f"http://127.0.0.1:8000/certificate/verify/{cert.certificate_id}"
+    pdf = FPDF(orientation="L", unit="mm", format="A4")
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.set_font("Helvetica", "B", 28)
+    pdf.cell(0, 20, "Certificate of Completion", ln=True, align="C")
+    pdf.ln(10)
+
+    pdf.set_font("Helvetica", "", 16)
+    pdf.cell(0, 10, "This certificate is proudly presented to", ln=True, align="C")
+    pdf.ln(8)
+
+    pdf.set_font("Helvetica", "B", 24)
+    pdf.cell(0, 12, current_user.name, ln=True, align="C")
+    pdf.ln(5)
+
+    pdf.set_font("Helvetica", "", 16)
+    pdf.multi_cell(0, 10, f"For successfully completing the internship program in {domain_name} with a final score of {cert.final_score}% and a grade of {cert.grade}.", align="C")
+    pdf.ln(5)
+
+    pdf.set_font("Helvetica", "", 14)
+    pdf.cell(0, 10, f"Intern ID: {current_user.intern_id}", ln=True, align="C")
+    pdf.cell(0, 10, f"College: {current_user.college}", ln=True, align="C")
+    pdf.cell(0, 10, f"Mentor: {mentor.name if mentor else 'Lead Mentor'}", ln=True, align="C")
+    pdf.cell(0, 10, f"Certificate ID: {cert.certificate_id}", ln=True, align="C")
+    pdf.cell(0, 10, f"Verification: {verification_url}", ln=True, align="C")
+    pdf.ln(10)
+
+    pdf.set_font("Helvetica", "I", 12)
+    pdf.cell(0, 10, "Verified and issued by Online Internship Portal", ln=True, align="C")
+
+    output = io.BytesIO()
+    pdf.output(output)
+    output.seek(0)
+
+    filename = f"certificate_{cert.certificate_id}.pdf"
+    headers = {
+        "Content-Disposition": f"attachment; filename={filename}"
+    }
+    return StreamingResponse(output, media_type="application/pdf", headers=headers)
+
+
+@app.get("/certificate/verify/{certificate_id}")
+def verify_certificate(
+    certificate_id: str,
+    db: Session = Depends(database.get_db)
+):
+    cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == certificate_id).first()
+    if not cert:
+        raise HTTPException(status_code=404, detail="Certificate not found")
+
+    intern = db.query(models.User).filter(models.User.id == cert.intern_id).first()
+    if not intern:
+        raise HTTPException(status_code=404, detail="Intern not found for certificate")
+
+    domain = db.query(models.Domain).filter(models.Domain.id == intern.domain_id).first()
+    mentor = db.query(models.User).filter(models.User.id == intern.mentor_id).first()
+
     return {
         "certificate_id": cert.certificate_id,
-        "intern_name": current_user.name,
-        "intern_id": current_user.intern_id,
-        "college": current_user.college,
-        "domain_name": domain.name if domain else "Tech domain",
-        "final_grade": cert.grade,
-        "final_score": cert.final_score,
+        "intern_name": intern.name,
+        "intern_id": intern.intern_id,
+        "college": intern.college,
+        "domain": domain.name if domain else "Tech domain",
         "mentor_name": mentor.name if mentor else "Lead Mentor",
-        "generated_at": cert.generated_at.strftime("%Y-%m-%d")
+        "grade": cert.grade,
+        "final_score": cert.final_score,
+        "issued_at": cert.generated_at.strftime("%Y-%m-%d")
     }
 
 

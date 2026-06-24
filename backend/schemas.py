@@ -142,6 +142,25 @@ class SubmissionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class CodeExecutionRequest(BaseModel):
+    task_id: int
+    code_submission: str
+
+class CodeExecutionResponse(BaseModel):
+    task_id: int
+    syntax_valid: bool
+    runtime_score: int
+    test_cases_passed: int
+    total_test_cases: int
+    runtime_feedback: str
+    test_case_results: List[dict]
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+    successful: bool
+
+    class Config:
+        from_attributes = True
+
 # ==========================================
 #          MESSAGE SCHEMAS
 # ==========================================

@@ -538,7 +538,7 @@ export default function AdminDashboard() {
   return (
     <div className="container">
       <div className="sidebar">
-        <h2>Antigravity <span>Portal</span></h2>
+        <h2>Online Internship <span>Portal</span></h2>
 
         <ul>
           <li className={active === "Dashboard" ? "active" : ""} onClick={() => setActive("Dashboard")}>

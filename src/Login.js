@@ -64,7 +64,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 className="title">Antigravity Portal 🚀</h2>
+        <h2 className="title">Online Internship Portal</h2>
         <p className="subtitle">AI Internship Learning & Evaluation</p>
 
         {errorMsg && <div className="error-banner">{errorMsg}</div>}
