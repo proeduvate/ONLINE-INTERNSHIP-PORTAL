@@ -125,6 +125,28 @@ class Message(Base):
     sent_at = Column(DateTime, default=datetime.utcnow)
 
 
+class AttendanceLog(Base):
+    __tablename__ = "attendance_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    log_date = Column(DateTime, default=datetime.utcnow)
+    status = Column(String(20), default="present")
+    note = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Announcement(Base):
+    __tablename__ = "announcements"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    content = Column(Text, nullable=False)
+    target_role = Column(String(20), nullable=True, default="all")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class Meeting(Base):
     __tablename__ = "meetings"
     

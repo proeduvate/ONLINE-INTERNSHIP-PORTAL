@@ -14,7 +14,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 from fpdf import FPDF
 
 import models, database, schemas
@@ -404,6 +404,61 @@ def get_intern_tasks_with_unlock_status(
 # ==========================================
 #           AI CODE EVALUATOR HEURISTICS
 # ==========================================
+
+
+def calculate_final_score_and_grade(mcq_score: int, ai_score: int, mentor_score: int) -> dict:
+    final_score = mcq_score + ai_score + mentor_score
+    if final_score >= 240:
+        grade = "A"
+    elif final_score >= 180:
+        grade = "B"
+    elif final_score >= 120:
+        grade = "C"
+    else:
+        grade = "D"
+    return {"final_score": final_score, "grade": grade}
+
+
+def build_portfolio_payload(user: models.User, db: Session) -> dict:
+    submissions = db.query(models.Submission).filter(models.Submission.intern_id == user.id).all()
+    completed_tasks = []
+    total_score = 0
+    for sub in submissions:
+        task = db.query(models.Task).filter(models.Task.id == sub.task_id).first()
+        completed_tasks.append({
+            "task_id": sub.task_id,
+            "day": task.day_number if task else None,
+            "title": task.title if task else "Unknown",
+            "status": sub.status,
+            "mcq_score": sub.mcq_score,
+            "ai_score": sub.ai_score,
+            "mentor_score": sub.mentor_score,
+        })
+        total_score += sub.mcq_score + sub.ai_score + sub.mentor_score
+
+    mentor = db.query(models.User).filter(models.User.id == user.mentor_id).first() if user.mentor_id else None
+    domain = db.query(models.Domain).filter(models.Domain.id == user.domain_id).first() if user.domain_id else None
+    grade_summary = calculate_final_score_and_grade(0, 0, 0)
+    if submissions:
+        mcq_total = sum(s.mcq_score for s in submissions)
+        ai_total = sum(s.ai_score for s in submissions)
+        mentor_total = sum(s.mentor_score for s in submissions)
+        grade_summary = calculate_final_score_and_grade(mcq_total, ai_total, mentor_total)
+
+    return {
+        "user_id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "college": user.college,
+        "domain": domain.name if domain else None,
+        "mentor": mentor.name if mentor else None,
+        "progress_pct": user.progress_pct,
+        "attendance_pct": user.attendance_pct,
+        "total_score": grade_summary["final_score"],
+        "grade": grade_summary["grade"],
+        "submissions": completed_tasks,
+    }
+
 
 def run_ai_evaluation(code: str, task: models.Task) -> dict:
     if not code or len(code.strip()) < 5:
@@ -799,6 +854,14 @@ def create_submission(
         models.Submission.attendance_marked == True
     ).count()
     current_user.attendance_pct = min(100, max(60, int((submitted_days / max(1, user_subs)) * 100)))
+
+    attendance_log = db.query(models.AttendanceLog).filter(
+        models.AttendanceLog.intern_id == current_user.id,
+        models.AttendanceLog.log_date >= datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0),
+        models.AttendanceLog.log_date < datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
+    ).first()
+    if not attendance_log:
+        db.add(models.AttendanceLog(intern_id=current_user.id, status="present", note="Submitted daily task"))
     
     db.add(current_user)
     db.commit()
@@ -880,6 +943,41 @@ def evaluate_submission(
 # ==========================================
 #           COMMUNICATION / CHAT
 # ==========================================
+
+@app.post("/announcements", response_model=schemas.AnnouncementResponse)
+def create_announcement(
+    data: schemas.AnnouncementCreate,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(status_code=403, detail="Only admins and mentors can create announcements")
+
+    announcement = models.Announcement(
+        sender_id=current_user.id,
+        title=data.title,
+        content=data.content,
+        target_role=data.target_role or "all"
+    )
+    db.add(announcement)
+    db.commit()
+    db.refresh(announcement)
+    return announcement
+
+
+@app.get("/announcements", response_model=List[schemas.AnnouncementResponse])
+def get_announcements(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    query = db.query(models.Announcement)
+    if current_user.role == models.UserRole.INTERN:
+        query = query.filter(models.Announcement.target_role.in_(["all", "intern"]))
+    elif current_user.role == models.UserRole.MENTOR:
+        query = query.filter(models.Announcement.target_role.in_(["all", "mentor"]))
+    announcements = query.order_by(models.Announcement.created_at.desc()).all()
+    return announcements
+
 
 @app.post("/messages", response_model=schemas.MessageResponse)
 def send_message(
@@ -1098,6 +1196,29 @@ def close_meeting(
 #           ANALYTICS & PROGRESS TRACKING
 # ==========================================
 
+@app.get("/analytics/final-grade")
+def get_final_grade(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(status_code=403, detail="Intern role required")
+
+    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
+    mcq_total = sum(s.mcq_score for s in submissions)
+    ai_total = sum(s.ai_score for s in submissions)
+    mentor_total = sum(s.mentor_score for s in submissions)
+    result = calculate_final_score_and_grade(mcq_total, ai_total, mentor_total)
+    return {
+        "user_id": current_user.id,
+        "final_score": result["final_score"],
+        "grade": result["grade"],
+        "mcq_score": mcq_total,
+        "ai_score": ai_total,
+        "mentor_score": mentor_total,
+    }
+
+
 @app.get("/analytics/dashboard")
 def get_dashboard_analytics(
     db: Session = Depends(database.get_db),
@@ -1204,6 +1325,40 @@ def get_dashboard_analytics(
             "pending_tasks": pending_days,
             "weak_areas": weak_areas[:3]
         }
+
+
+# ==========================================
+#           ATTENDANCE & PORTFOLIO
+# ==========================================
+
+@app.get("/attendance", response_model=List[schemas.AttendanceLogResponse])
+def get_attendance_logs(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(status_code=403, detail="Intern role required")
+
+    logs = db.query(models.AttendanceLog).filter(models.AttendanceLog.intern_id == current_user.id).order_by(models.AttendanceLog.log_date.desc()).all()
+    return logs
+
+
+@app.get("/portfolio", response_model=schemas.PortfolioResponse)
+def get_portfolio(
+    user_id: Optional[int] = None,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if user_id is None:
+        target_user = current_user
+    else:
+        if current_user.role == models.UserRole.INTERN and current_user.id != user_id:
+            raise HTTPException(status_code=403, detail="You can only view your own portfolio")
+        target_user = db.query(models.User).filter(models.User.id == user_id).first()
+        if not target_user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+    return build_portfolio_payload(target_user, db)
 
 
 # ==========================================

@@ -215,6 +215,52 @@ class CertificateResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+class AttendanceLogResponse(BaseModel):
+    id: int
+    intern_id: int
+    log_date: datetime
+    status: str
+    note: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class AnnouncementCreate(BaseModel):
+    title: str
+    content: str
+    target_role: Optional[str] = "all"
+
+
+class AnnouncementResponse(BaseModel):
+    id: int
+    sender_id: int
+    title: str
+    content: str
+    target_role: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PortfolioResponse(BaseModel):
+    user_id: int
+    name: str
+    email: str
+    college: Optional[str] = None
+    domain: Optional[str] = None
+    mentor: Optional[str] = None
+    progress_pct: int
+    attendance_pct: int
+    total_score: int
+    grade: str
+    submissions: List[dict]
+
+    class Config:
+        from_attributes = True
+
 # ==========================================
 #          INTERNSHIP / APPLICATION SCHEMAS
 # ==========================================
