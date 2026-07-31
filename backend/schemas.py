@@ -54,6 +54,8 @@ class UserResponse(BaseModel):
     end_date: Optional[datetime] = None
     attendance_pct: int
     progress_pct: int
+    learning_streak: int = 0
+    last_task_completion_date: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -239,6 +241,28 @@ class AnnouncementResponse(BaseModel):
     title: str
     content: str
     target_role: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# ==========================================
+#          NOTIFICATION SCHEMAS
+# ==========================================
+
+class NotificationCreate(BaseModel):
+    user_id: int
+    title: str
+    message: str
+    type: str
+
+class NotificationResponse(BaseModel):
+    id: int
+    user_id: int
+    title: str
+    message: str
+    type: str
+    is_read: bool
     created_at: datetime
 
     class Config:

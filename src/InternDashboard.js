@@ -37,6 +37,10 @@ export default function InternDashboard() {
   // Certificate state
   const [certData, setCertData] = useState(null);
 
+  // Notification state
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const internName = localStorage.getItem("name") || "Intern";
@@ -125,6 +129,20 @@ export default function InternDashboard() {
     }
   }, [token]);
 
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [token]);
+
   useEffect(() => {
     // Auth Validation
     if (!token || localStorage.getItem("role") !== "intern") {
@@ -136,9 +154,10 @@ export default function InternDashboard() {
     fetchTasks();
     fetchMeetings();
     fetchCertificate();
-  }, [token, active, navigate, fetchAnalytics, fetchTasks, fetchMeetings, fetchCertificate]);
+    fetchNotifications();
+  }, [token, active, navigate, fetchAnalytics, fetchTasks, fetchMeetings, fetchCertificate, fetchNotifications]);
 
-  // Periodic polling for chat and meetings
+  // Periodic polling for chat and meetings and notifications
   useEffect(() => {
     if (active === "Mentor") {
       fetchMessages();
@@ -179,6 +198,30 @@ export default function InternDashboard() {
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
+  };
+
+  const markNotifAsRead = async (id) => {
+    try {
+      await fetch(`${API_BASE}/notifications/${id}/read`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchNotifications();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const markAllNotifAsRead = async () => {
+    try {
+      await fetch(`${API_BASE}/notifications/read-all`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchNotifications();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleSelectTask = (t) => {
@@ -318,13 +361,6 @@ export default function InternDashboard() {
         return (
           <>
             <div className="grid">
-              <div className="metric-card">
-                <div className="metric-title">Course Progress</div>
-                <div className="metric-value">{analytics?.progress_pct || 0}%</div>
-                <div className="progress-bar-container">
-                  <div className="progress-bar-fill" style={{ width: `${analytics?.progress_pct || 0}%` }}></div>
-                </div>
-              </div>
               <div className="metric-card" style={{ borderColor: "rgba(16, 185, 129, 0.4)" }}>
                 <div className="metric-title" style={{ color: "var(--color-success)" }}>Work Attendance</div>
                 <div className="metric-value">{analytics?.attendance_pct || 0}%</div>
@@ -862,12 +898,60 @@ export default function InternDashboard() {
             <h2>Internship Workspace</h2>
             <p style={{fontSize: "13px", color:"var(--text-muted)"}}>Access daily curriculum tasks, submit code, and verify AI feedback reports</p>
           </div>
-          <div className="user-badge">
-            <div style={{ textAlign: "right" }}>
-              <div>{internName}</div>
-              <div style={{ fontSize: "10px", color: "var(--primary)", fontWeight: "bold", textTransform: "uppercase" }}>React Developer</div>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            {/* Notification Bell */}
+            <div style={{ position: "relative" }}>
+              <button 
+                onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+                style={{ background: "transparent", border: "none", color: "white", cursor: "pointer", position: "relative" }}
+              >
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {notifications.filter(n => !n.is_read).length > 0 && (
+                  <span className="notif-badge">{notifications.filter(n => !n.is_read).length}</span>
+                )}
+              </button>
+
+              {showNotifDropdown && (
+                <div className="notif-dropdown">
+                  <div className="notif-header">
+                    <h4>Notifications</h4>
+                    <button className="notif-mark-read" onClick={markAllNotifAsRead}>Mark all as read</button>
+                  </div>
+                  <div className="notif-list">
+                    {notifications.length === 0 ? (
+                      <p style={{ padding: "16px", textAlign: "center", color: "var(--text-muted)", fontSize: "13px" }}>No notifications</p>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className={`notif-item ${!n.is_read ? 'unread' : ''}`} onClick={() => markNotifAsRead(n.id)}>
+                          <div className={`notif-icon notif-${n.type}`}>
+                            {n.type === 'motivation' && '🎉'}
+                            {n.type === 'daily_reminder' && '⏰'}
+                            {n.type === 'system' && '⚠️'}
+                            {!['motivation', 'daily_reminder', 'system'].includes(n.type) && '🔔'}
+                          </div>
+                          <div>
+                            <div className="notif-title">{n.title}</div>
+                            <div className="notif-msg">{n.message}</div>
+                            <div className="notif-time">{new Date(n.created_at).toLocaleString()}</div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-            <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=80&q=80" alt="avatar" />
+
+            <div className="user-badge">
+              <div style={{ textAlign: "right" }}>
+                <div>{internName}</div>
+                <div style={{ fontSize: "10px", color: "var(--primary)", fontWeight: "bold", textTransform: "uppercase" }}>React Developer</div>
+              </div>
+              <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=80&q=80" alt="avatar" />
+            </div>
           </div>
         </div>
 

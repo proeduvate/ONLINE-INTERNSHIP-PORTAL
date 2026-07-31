@@ -16,6 +16,9 @@ import tempfile
 import uuid
 from typing import Dict, Any, Optional, List
 from fpdf import FPDF
+import random
+from apscheduler.schedulers.background import BackgroundScheduler
+import pytz
 
 import models, database, schemas
 
@@ -863,7 +866,58 @@ def create_submission(
     if not attendance_log:
         db.add(models.AttendanceLog(intern_id=current_user.id, status="present", note="Submitted daily task"))
     
+    # Streak tracking logic
+    now_dt = datetime.utcnow()
+    last_comp = current_user.last_task_completion_date
+    if last_comp:
+        # Check if difference is around 1 day (between 12 and 48 hours to be safe for "consecutive")
+        diff_hours = (now_dt - last_comp).total_seconds() / 3600
+        if diff_hours < 48 and now_dt.date() > last_comp.date():
+            current_user.learning_streak += 1
+        elif now_dt.date() > last_comp.date():
+             # missed a day
+            current_user.learning_streak = 1
+    else:
+        current_user.learning_streak = 1
+        
+    current_user.last_task_completion_date = now_dt
+    
     db.add(current_user)
+    db.commit()
+
+    # Cancel any pending reminders for today
+    today = datetime.utcnow().date()
+    db.query(models.Notification).filter(
+        models.Notification.user_id == current_user.id,
+        models.Notification.is_read == False,
+        models.Notification.type == "daily_reminder"
+    ).update({"is_read": True})
+    
+    # Send a motivation notification
+    motivations = [
+        "🎉 Excellent work! You have successfully completed today's task. Keep up the great progress!",
+        "🚀 Great job! You're one step closer to completing your internship successfully.",
+        "🌟 Amazing consistency! Completing tasks daily will improve your skills and increase your final score.",
+        "💪 Fantastic! Today's attendance has been marked as Present. Keep your learning streak alive!",
+        "🏆 You're doing great! Small daily efforts lead to big achievements."
+    ]
+    streak_messages = {
+        7: "🔥 Amazing! You have maintained a 7-day learning streak. Keep it going!",
+        15: "🏅 Congratulations! You've completed tasks for 15 consecutive days. Consistency is your strength!"
+    }
+    
+    if current_user.learning_streak in streak_messages:
+        motivational_message = streak_messages[current_user.learning_streak]
+    else:
+        motivational_message = random.choice(motivations)
+        
+    motivation_notification = models.Notification(
+        user_id=current_user.id,
+        title="Task Completed",
+        message=motivational_message,
+        type="motivation"
+    )
+    db.add(motivation_notification)
     db.commit()
     
     response = {
@@ -1483,7 +1537,139 @@ def download_certificate(
     headers = {
         "Content-Disposition": f"attachment; filename={filename}"
     }
-    return StreamingResponse(output, media_type="application/pdf", headers=headers)
+    html_content = ""
+    return StreamingResponse(io.BytesIO(html_content.encode("utf-8")), media_type="text/html")
+
+
+# ==========================================
+#           NOTIFICATION SYSTEM
+# ==========================================
+
+@app.get("/notifications", response_model=List[schemas.NotificationResponse])
+def get_notifications(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    notifications = db.query(models.Notification).filter(
+        models.Notification.user_id == current_user.id
+    ).order_by(models.Notification.created_at.desc()).all()
+    return notifications
+
+
+@app.put("/notifications/{notification_id}/read")
+def mark_notification_read(
+    notification_id: int,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    notif = db.query(models.Notification).filter(
+        models.Notification.id == notification_id,
+        models.Notification.user_id == current_user.id
+    ).first()
+    if not notif:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    notif.is_read = True
+    db.commit()
+    return {"message": "Marked as read"}
+
+
+@app.put("/notifications/read-all")
+def mark_all_notifications_read(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    db.query(models.Notification).filter(
+        models.Notification.user_id == current_user.id,
+        models.Notification.is_read == False
+    ).update({"is_read": True})
+    db.commit()
+    return {"message": "All marked as read"}
+
+
+# ==========================================
+#           SCHEDULED JOBS
+# ==========================================
+
+def send_daily_reminders(time_of_day: str):
+    db = database.SessionLocal()
+    try:
+        interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+        for intern in interns:
+            # Check if intern completed today's task
+            now = datetime.utcnow()
+            completed_today = db.query(models.Submission).filter(
+                models.Submission.intern_id == intern.id,
+                models.Submission.attendance_marked == True,
+                models.Submission.submitted_at >= now.replace(hour=0, minute=0, second=0, microsecond=0)
+            ).first()
+
+            if not completed_today:
+                if time_of_day == "morning":
+                    title = "Morning Reminder"
+                    message = "📚 Good Morning! It's time to begin your internship tasks today. Complete your lesson, MCQ, and coding assignment to maintain your learning streak."
+                elif time_of_day == "afternoon":
+                    title = "Afternoon Reminder"
+                    message = "⏰ Reminder! You haven't completed today's internship tasks yet. Finish your activities before the deadline to avoid being marked absent."
+                elif time_of_day == "evening":
+                    title = "Final Reminder"
+                    message = "⚠️ Final Reminder! Today is almost over. Complete your lesson, MCQ, and coding assignment before the deadline. Otherwise, today's attendance will be marked as Absent."
+                else:
+                    continue
+
+                reminder = models.Notification(
+                    user_id=intern.id,
+                    title=title,
+                    message=message,
+                    type="daily_reminder"
+                )
+                db.add(reminder)
+        db.commit()
+    except Exception as e:
+        print(f"Error sending {time_of_day} reminders: {e}")
+    finally:
+        db.close()
+
+
+def process_end_of_day_deadline():
+    db = database.SessionLocal()
+    try:
+        interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+        now = datetime.utcnow()
+        for intern in interns:
+            completed_today = db.query(models.Submission).filter(
+                models.Submission.intern_id == intern.id,
+                models.Submission.attendance_marked == True,
+                models.Submission.submitted_at >= now.replace(hour=0, minute=0, second=0, microsecond=0)
+            ).first()
+
+            if not completed_today:
+                intern.learning_streak = 0
+                db.add(models.AttendanceLog(intern_id=intern.id, status="absent", note="Failed to submit daily task before deadline"))
+                
+                reminder = models.Notification(
+                    user_id=intern.id,
+                    title="Deadline Missed",
+                    message="Today's deadline has passed. Your attendance has been marked as Absent and your learning streak was reset.",
+                    type="system"
+                )
+                db.add(reminder)
+        db.commit()
+    except Exception as e:
+        print(f"Error processing end of day deadline: {e}")
+    finally:
+        db.close()
+
+
+@app.on_event("startup")
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    # UTC times mapped from IST: 9 AM IST = 3:30 AM UTC, 2 PM IST = 8:30 AM UTC, 7 PM IST = 1:30 PM UTC
+    scheduler.add_job(send_daily_reminders, 'cron', hour=3, minute=30, args=["morning"])
+    scheduler.add_job(send_daily_reminders, 'cron', hour=8, minute=30, args=["afternoon"])
+    scheduler.add_job(send_daily_reminders, 'cron', hour=13, minute=30, args=["evening"])
+    # 11:59 PM IST = 6:29 PM UTC
+    scheduler.add_job(process_end_of_day_deadline, 'cron', hour=18, minute=29)
+    scheduler.start()
 
 
 @app.get("/certificate/verify/{certificate_id}")

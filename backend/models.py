@@ -37,6 +37,8 @@ class User(Base):
     end_date = Column(DateTime, nullable=True)
     attendance_pct = Column(Integer, default=0)
     progress_pct = Column(Integer, default=0)
+    learning_streak = Column(Integer, default=0)
+    last_task_completion_date = Column(DateTime, nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant")
@@ -145,6 +147,21 @@ class Announcement(Base):
     content = Column(Text, nullable=False)
     target_role = Column(String(20), nullable=True, default="all")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    message = Column(Text, nullable=False)
+    type = Column(String(50), nullable=False) # e.g. "daily_reminder", "motivation", "attendance", "system"
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", backref="notifications")
 
 
 class Meeting(Base):
