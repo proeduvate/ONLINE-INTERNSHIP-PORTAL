@@ -26,8 +26,14 @@ try:
         pass
     print("Database: Connected to PostgreSQL successfully.")
 except Exception as e:
-    print(f"Database: PostgreSQL connection failed ({e}).")
-    raise
+    print(f"Database: PostgreSQL connection failed ({e}). Falling back to SQLite.")
+    sqlite_db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "internship_portal.db")
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{sqlite_db_path}"
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+    print(f"Database: Initialized SQLite at {sqlite_db_path}")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

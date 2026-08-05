@@ -35,9 +35,6 @@ export default function InternDashboard() {
   // Whiteboard drawing state
   const [whiteboardText, setWhiteboardText] = useState("");
 
-  // Certificate state
-  const [certData, setCertData] = useState(null);
-
   // Notification state
   const [notifications, setNotifications] = useState([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);

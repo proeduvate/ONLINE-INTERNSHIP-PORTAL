@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { API_BASE } from "./api";
@@ -10,6 +10,21 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || !role) return;
+
+    if (role === "admin") {
+      navigate("/admin");
+    } else if (role === "mentor") {
+      navigate("/mentor");
+    } else if (role === "intern") {
+      navigate("/intern");
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
