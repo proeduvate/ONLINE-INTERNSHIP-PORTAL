@@ -218,6 +218,19 @@ class CertificateResponse(BaseModel):
         from_attributes = True
 
 
+class CertificateInfoResponse(BaseModel):
+    generated: bool
+    certificate_id: Optional[str] = None
+    intern_name: Optional[str] = None
+    domain_name: Optional[str] = None
+    mentor_name: Optional[str] = None
+    final_grade: Optional[str] = None
+    generated_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
 class AttendanceLogResponse(BaseModel):
     id: int
     intern_id: int

@@ -1,5 +1,8 @@
 from sqlalchemy.orm import Session
-import database, models, app
+try:
+    import database, models, app
+except ImportError:
+    from . import database, models, app
 import json
 from datetime import datetime, timedelta
 

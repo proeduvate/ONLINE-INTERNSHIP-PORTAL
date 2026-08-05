@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
-
-const API_BASE = "http://127.0.0.1:8000";
+import { API_BASE } from "./api";
 
 export default function InternDashboard() {
   const [active, setActive] = useState("Dashboard");
   const [analytics, setAnalytics] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [mentorId, setMentorId] = useState(null);
+  const [certData, setCertData] = useState(null);
   
   // MCQ state
   const [mcqAnswers, setMcqAnswers] = useState({});
@@ -44,7 +45,6 @@ export default function InternDashboard() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const internName = localStorage.getItem("name") || "Intern";
-  const mentorId = 2; // Default mentor ID from seeder
 
   // Video streams ref for mock/real webcam
   const localVideoRef = useRef(null);
@@ -58,6 +58,7 @@ export default function InternDashboard() {
       if (res.ok) {
         const data = await res.json();
         setAnalytics(data);
+        setMentorId(data?.mentor_id || null);
       }
     } catch (e) {
       console.error(e);
@@ -102,6 +103,7 @@ export default function InternDashboard() {
   }, [token]);
 
   const fetchMessages = useCallback(async () => {
+    if (!mentorId) return;
     try {
       const res = await fetch(`${API_BASE}/messages?contact_id=${mentorId}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -117,15 +119,18 @@ export default function InternDashboard() {
 
   const fetchCertificate = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/certificate/download`, {
+      const res = await fetch(`${API_BASE}/certificate/info`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
-        setCertData(data);
+        setCertData(data.generated ? data : null);
+      } else {
+        setCertData(null);
       }
     } catch (e) {
       console.log("Certificate not generated yet.");
+      setCertData(null);
     }
   }, [token]);
 
@@ -164,7 +169,7 @@ export default function InternDashboard() {
       const interval = setInterval(fetchMessages, 3000);
       return () => clearInterval(interval);
     }
-  }, [active, fetchMessages]);
+  }, [active, mentorId, fetchMessages]);
 
   // Handle webcam stream when meeting is joined
   useEffect(() => {
@@ -291,6 +296,10 @@ export default function InternDashboard() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatText.trim()) return;
+    if (!mentorId) {
+      alert("No mentor assigned yet.");
+      return;
+    }
 
     try {
       const res = await fetch(`${API_BASE}/messages`, {

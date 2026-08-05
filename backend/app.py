@@ -10,17 +10,63 @@ import os
 import io
 import json
 import re
+import ast
 import subprocess
 import sys
 import tempfile
 import uuid
 from typing import Dict, Any, Optional, List
+import difflib
 from fpdf import FPDF
 import random
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
-import models, database, schemas
+try:
+    import models, database, schemas
+except ImportError:
+    from . import models, database, schemas
+
+# Optional sandbox runner using Docker; falls back to local subprocess if unavailable
+try:
+    from sandbox_runner import run_submission as sandbox_run_submission
+except Exception:
+    try:
+        from .sandbox_runner import run_submission as sandbox_run_submission
+    except Exception:
+        sandbox_run_submission = None
+
+
+def _infer_function_spec(code: str, task: models.Task) -> tuple[Optional[str], int]:
+    """Infer the primary function name and its positional argument count."""
+    try:
+        tree = ast.parse(code)
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef):
+                return node.name, len(node.args.args)
+    except Exception:
+        pass
+
+    for source in (task.coding_prompt, task.coding_solution):
+        if source:
+            match = re.search(r"def\s+(\w+)\s*\(([^)]*)\)", source)
+            if match:
+                func_name = match.group(1)
+                arg_count = 0 if not match.group(2).strip() else len([p for p in match.group(2).split(",") if p.strip()])
+                return func_name, arg_count
+
+    return None, 0
+
+
+def _parse_test_input(raw_input: str):
+    if raw_input is None:
+        return None
+    if not isinstance(raw_input, str):
+        return raw_input
+    try:
+        return ast.literal_eval(raw_input)
+    except Exception:
+        return raw_input
 
 # Initialize FastAPI application
 app = FastAPI(
@@ -478,72 +524,97 @@ def run_ai_evaluation(code: str, task: models.Task) -> dict:
                 "suggestions": ["Please input a complete coding block and try again."]
             })
         }
-        
+
     syntax_valid = True
     syntax_error_details = ""
     try:
-        # Check syntax (runs a parse compile if code is python)
         compile(code, "<string>", "exec")
     except SyntaxError as e:
         syntax_valid = False
         syntax_error_details = f"Syntax Error: {e.msg} on line {e.lineno}"
-        
-    # Analyze loops/recursion
+
+    # Basic complexity heuristic
     loops = len(re.findall(r"\b(for|while)\b", code))
     has_funcs = len(re.findall(r"\bdef\b", code)) > 0
     complexity = "O(1) constant time" if loops == 0 else ("O(N^2) quadratic time" if loops > 1 else "O(N) linear time")
-    
-    # Parse test cases
-    test_cases_passed = 0
+
+    # Evaluate test cases by executing code in the secure runner when possible
     total_test_cases = 0
+    test_cases_passed = 0
     tc_details = []
-    
+    runtime_eval = None
+
     if task.test_cases:
         try:
             test_cases = json.loads(task.test_cases)
             total_test_cases = len(test_cases)
-            if not syntax_valid:
-                for tc in test_cases:
-                    tc_details.append(f"Test case Input: {tc.get('input')} -> FAILED (Syntax Error)")
+            if syntax_valid:
+                # Use the secure executor to run actual test cases for more accurate scoring
+                try:
+                    runtime_eval = execute_code_submission(code, task)
+                    test_cases_passed = runtime_eval.get("test_cases_passed", 0)
+                    for tr in runtime_eval.get("test_case_results", []):
+                        status_str = "PASSED" if tr.get("passed") else "FAILED"
+                        tc_details.append(f"Test Case {tr.get('case_number')}: Input: {tr.get('input')} -> {status_str}")
+                except Exception as e:
+                    tc_details.append(f"Runtime evaluation failed: {str(e)}")
             else:
-                # heuristic keyword checks matching test expectations
-                keywords = [str(tc.get("expected")).lower().strip() for tc in test_cases if "expected" in tc]
-                matches = 0
-                for kw in keywords:
-                    if kw in code.lower() or any(term in code.lower() for term in ["return", "print", "len", "sum", "sort"]):
-                        matches += 1
-                test_cases_passed = min(total_test_cases, max(1, matches))
                 for idx, tc in enumerate(test_cases):
-                    status_str = "PASSED" if idx < test_cases_passed else "FAILED"
-                    tc_details.append(f"Test Case {idx+1}: Input: '{tc.get('input')}' -> {status_str}")
+                    tc_details.append(f"Test Case {idx+1}: Input: {tc.get('input')} -> FAILED (Syntax Error)")
         except Exception:
             total_test_cases = 1
-            test_cases_passed = 1
-            tc_details.append("Test Case 1: Standard Verification -> PASSED")
+            test_cases_passed = 0
+            tc_details.append("Test Case 1: Could not parse test cases")
     else:
-        total_test_cases = 1
-        test_cases_passed = 1
-        tc_details.append("Test Case 1: Execution Check -> PASSED")
-        
-    # Scores
-    base = 30 if syntax_valid else 10
-    tc_score = int((test_cases_passed / max(1, total_test_cases)) * 50)
-    qual = 20 if len(code) > 120 else 10
-    ai_score = base + tc_score + qual
-    
+        total_test_cases = 0
+        test_cases_passed = 0
+        tc_details.append("No test cases provided for this task.")
+
+    # Scoring: combine syntax, runtime test success, and code quality heuristics
+    # Additional code-quality metrics
+    loc = len(code.splitlines())
+    func_count = len(re.findall(r"\bdef\s+\w+\s*\(", code))
+    comments = len(re.findall(r"#", code))
+    docstring_present = bool(re.search(r'"""|\'\'\'', code))
+    list_comp = bool(re.search(r"\[.*for .* in .*=*.*\]", code))
+    import_count = len(re.findall(r"\bimport\b|\bfrom\b", code))
+
+    code_metrics = {
+        "lines_of_code": loc,
+        "function_count": func_count,
+        "comments": comments,
+        "docstring_present": docstring_present,
+        "list_comprehension_used": list_comp,
+        "import_count": import_count,
+        "complexity_guess": complexity
+    }
+
+    base = 20 if syntax_valid else 5
+    tc_score = int((test_cases_passed / max(1, total_test_cases)) * 60) if total_test_cases > 0 else 30
+    # Quality score derived from length, functions, comments and docstrings
+    quality_points = 0
+    quality_points += min(15, int(loc / 10))
+    quality_points += min(10, func_count * 2)
+    quality_points += 3 if docstring_present else 0
+    quality_points += 2 if list_comp else 0
+    qual = min(30, quality_points)
+    ai_score = min(100, base + tc_score + qual)
+
     feedback = {
-        "summary": "AI Evaluation Completed Successfully. Correct logic flow identified." if syntax_valid else "AI Evaluation failed. Code syntax error detected.",
+        "summary": "AI Evaluation Completed Successfully." if syntax_valid else "AI Evaluation failed. Code syntax error detected.",
         "syntax_check": "Syntax passes syntax parser." if syntax_valid else f"Failed compiler check: {syntax_error_details}",
-        "code_quality": "High" if (syntax_valid and len(code) > 180) else ("Medium" if syntax_valid else "Low"),
+        "code_quality": "High" if (syntax_valid and ai_score >= 80) else ("Medium" if syntax_valid and ai_score >= 50 else "Low"),
         "complexity": complexity,
         "test_results": tc_details,
+        "runtime_evaluation": runtime_eval,
+        "code_metrics": code_metrics,
         "suggestions": [
-            "Logic is clean. Recommended: Write unit tests to check bounds." if syntax_valid else "Fix compiler checks prior to checking business logic.",
-            "Complexity looks appropriate for this daily challenge." if syntax_valid else "Check matching delimiters (parentheses, braces).",
-            f"Big-O complexity estimated as {complexity}."
+            "Write unit tests for edge cases and handle invalid inputs.",
+            "Refactor long functions into smaller units for readability.",
+            f"Estimated complexity: {complexity}."
         ]
     }
-    
+
     return {
         "score": ai_score,
         "syntax_valid": syntax_valid,
@@ -604,13 +675,16 @@ def execute_code_submission(code: str, task: models.Task) -> dict:
             "successful": False
         }
 
-    wrapper_code = f"{code}\n"
-    try:
-        temp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8")
-        temp_file.write(wrapper_code)
-        temp_file.flush()
-        temp_file.close()
+    # If an isolated sandbox runner is available, prefer it (Docker-backed).
+    if sandbox_run_submission is not None:
+        try:
+            return sandbox_run_submission(code, test_cases, timeout=6)
+        except Exception:
+            # If sandbox runner fails for any reason, fall back to local subprocess execution below
+            pass
 
+    func_name, func_arg_count = _infer_function_spec(code, task)
+    try:
         if not test_cases:
             test_cases = [{"input": "", "expected": ""}]
 
@@ -618,10 +692,31 @@ def execute_code_submission(code: str, task: models.Task) -> dict:
             total += 1
             tc_input = tc.get("input", "")
             expected = str(tc.get("expected", "")).strip()
+            input_value = _parse_test_input(tc_input)
+
+            if func_name:
+                if isinstance(input_value, tuple):
+                    args = input_value
+                elif isinstance(input_value, list):
+                    if func_arg_count == 1 or len(input_value) != func_arg_count:
+                        args = (input_value,)
+                    else:
+                        args = tuple(input_value)
+                else:
+                    args = (input_value,)
+                invocation = f"print({func_name}({', '.join(repr(a) for a in args)}))"
+                wrapper_code = f"{code}\n{invocation}\n"
+            else:
+                wrapper_code = f"{code}\n"
+
+            temp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8")
+            temp_file.write(wrapper_code)
+            temp_file.flush()
+            temp_file.close()
+
             try:
                 proc = subprocess.run(
                     [sys.executable, "-I", temp_file.name],
-                    input=str(tc_input),
                     capture_output=True,
                     text=True,
                     timeout=6,
@@ -673,8 +768,15 @@ def execute_code_submission(code: str, task: models.Task) -> dict:
                     "passed": False,
                     "return_code": None
                 })
+            finally:
+                if temp_file and os.path.exists(temp_file.name):
+                    try:
+                        os.remove(temp_file.name)
+                    except Exception:
+                        pass
+                    temp_file = None
     finally:
-        if temp_file and os.path.exists(temp_file.name):
+        if temp_file and temp_file.name and os.path.exists(temp_file.name):
             try:
                 os.remove(temp_file.name)
             except Exception:
@@ -1121,6 +1223,44 @@ def create_meeting(
     return new_meet
 
 
+@app.get("/plagiarism/check/{submission_id}")
+def plagiarism_check(
+    submission_id: int,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    # Only mentors and admins are allowed to run plagiarism checks
+    if current_user.role not in [models.UserRole.MENTOR, models.UserRole.ADMIN]:
+        raise HTTPException(status_code=403, detail="Only mentors or admins can run plagiarism checks")
+
+    sub = db.query(models.Submission).filter(models.Submission.id == submission_id).first()
+    if not sub:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    others = db.query(models.Submission).filter(
+        models.Submission.task_id == sub.task_id,
+        models.Submission.id != submission_id,
+        models.Submission.code_submission != None
+    ).all()
+
+    comparisons = []
+    for o in others:
+        if not o.code_submission:
+            continue
+        try:
+            ratio = difflib.SequenceMatcher(None, str(sub.code_submission), str(o.code_submission)).ratio()
+        except Exception:
+            ratio = 0.0
+        comparisons.append({
+            "submission_id": o.id,
+            "intern_id": o.intern_id,
+            "similarity_pct": round(ratio * 100, 2)
+        })
+
+    comparisons = sorted(comparisons, key=lambda x: x["similarity_pct"], reverse=True)
+    return {"submission_id": submission_id, "comparisons": comparisons}
+
+
 @app.get("/meetings")
 def get_meetings(
     db: Session = Depends(database.get_db),
@@ -1370,6 +1510,7 @@ def get_dashboard_analytics(
             if task:
                 weak_areas.append(f"Day {task.day_number}: {task.title}")
                 
+        mentor = db.query(models.User).filter(models.User.id == current_user.mentor_id).first() if current_user.mentor_id else None
         return {
             "progress_pct": current_user.progress_pct,
             "attendance_pct": current_user.attendance_pct,
@@ -1377,7 +1518,9 @@ def get_dashboard_analytics(
             "average_score_pct": avg_pct,
             "completed_tasks": completed_days,
             "pending_tasks": pending_days,
-            "weak_areas": weak_areas[:3]
+            "weak_areas": weak_areas[:3],
+            "mentor_id": current_user.mentor_id,
+            "mentor_name": mentor.name if mentor else None
         }
 
 
@@ -1473,6 +1616,32 @@ def generate_certificate(
     db.refresh(new_cert)
     
     return new_cert
+
+
+@app.get("/certificate/info")
+def certificate_info(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(status_code=403, detail="Only interns can access certificate info")
+
+    cert = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).first()
+    if not cert:
+        return {"generated": False}
+
+    mentor = db.query(models.User).filter(models.User.id == current_user.mentor_id).first() if current_user.mentor_id else None
+    domain = db.query(models.Domain).filter(models.Domain.id == current_user.domain_id).first() if current_user.domain_id else None
+
+    return {
+        "generated": True,
+        "certificate_id": cert.certificate_id,
+        "intern_name": current_user.name,
+        "domain_name": domain.name if domain else "Tech domain",
+        "mentor_name": mentor.name if mentor else "Lead Mentor",
+        "final_grade": cert.grade,
+        "generated_at": cert.generated_at.strftime("%Y-%m-%d")
+    }
 
 
 @app.get("/certificate/download")

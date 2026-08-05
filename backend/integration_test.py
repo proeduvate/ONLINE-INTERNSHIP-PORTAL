@@ -4,6 +4,13 @@ import time
 import os
 from base64 import b64decode
 
+try:
+    from database import SessionLocal
+    import models
+except ImportError:
+    from .database import SessionLocal
+    from . import models
+
 BASE = "http://127.0.0.1:8000"
 
 # Helper

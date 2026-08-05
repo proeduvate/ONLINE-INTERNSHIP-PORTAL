@@ -2,7 +2,10 @@ import enum
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Enum, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from database import Base
+try:
+    from database import Base
+except ImportError:
+    from .database import Base
 
 # ==========================================
 #          USER ROLE ENUMERATION

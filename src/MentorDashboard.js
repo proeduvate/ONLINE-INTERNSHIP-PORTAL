@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
-
-const API_BASE = "http://127.0.0.1:8000";
+import { API_BASE } from "./api";
 
 export default function MentorDashboard() {
   const [active, setActive] = useState("Dashboard");
@@ -209,6 +208,29 @@ export default function MentorDashboard() {
     }
   };
 
+  const handlePlagiarismCheck = async () => {
+    if (!selectedSub) return;
+    try {
+      const res = await fetch(`${API_BASE}/plagiarism/check/${selectedSub.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (!data.comparisons || data.comparisons.length === 0) {
+          alert("No other submissions available for comparison.");
+          return;
+        }
+        const top = data.comparisons.slice(0, 5).map(c => `Submission ${c.submission_id} (Intern ${c.intern_id}): ${c.similarity_pct}%`).join('\n');
+        alert("Plagiarism check results (top matches):\n" + top);
+      } else {
+        const err = await res.json();
+        alert("Plagiarism check failed: " + (err.detail || res.status));
+      }
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
   const getAIResult = (sub) => {
     if (!sub.ai_feedback) return null;
     try {
@@ -401,6 +423,7 @@ export default function MentorDashboard() {
                   </div>
                   <div style={{ display: "flex", gap: "10px" }}>
                     <button type="submit" className="btn">Submit Review</button>
+                    <button type="button" onClick={handlePlagiarismCheck} className="btn btn-warning">Check Similarity</button>
                     <button type="button" onClick={() => setSelectedSub(null)} className="btn btn-secondary">Cancel</button>
                   </div>
                 </form>

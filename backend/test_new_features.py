@@ -1,7 +1,12 @@
 import unittest
-import app
-import models
-import database
+try:
+    import app
+    import models
+    import database
+except ImportError:
+    from . import app
+    from . import models
+    from . import database
 
 
 class FeatureLogicTests(unittest.TestCase):

@@ -4,21 +4,73 @@ import json
 import subprocess
 import time
 import os
+import sys
+import socket
 
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = None
+
+
+def _find_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
+
+
+def _wait_for_server(url, timeout=10.0):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            r = requests.get(url, timeout=1.0)
+            if r.status_code == 200:
+                return True
+        except Exception:
+            time.sleep(0.2)
+    return False
+
 
 class TestInternshipPortal(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # We start the backend server in a subprocess to run integration tests
         # We find python path
+        backend_dir = os.path.dirname(os.path.abspath(__file__))
+        venv_python = os.path.join(backend_dir, "venv", "Scripts", "python.exe")
+        python_exec = venv_python if os.path.exists(venv_python) else sys.executable
+
+        # Ensure a clean seeded DB for deterministic test runs
+        try:
+            subprocess.run([python_exec, "seed.py"], cwd=backend_dir, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except Exception:
+            # If seeding fails, continue; server may still run against existing DB
+            pass
+
+        cls.port = _find_free_port()
+        cls.base_url = f"http://127.0.0.1:{cls.port}"
+
         cls.backend_proc = subprocess.Popen(
-            ["backend\\venv\\Scripts\\python.exe", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"],
-            cwd=os.path.join(os.getcwd(), "backend"),
+            [python_exec, "-m", "uvicorn", "backend.app:app", "--host", "127.0.0.1", "--port", str(cls.port)],
+            cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        time.sleep(2.0) # wait for uvicorn to start
+
+        if not _wait_for_server(f"{cls.base_url}/"):
+            cls.backend_proc.terminate()
+            raise RuntimeError("Backend server did not start in time")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.backend_proc.terminate()
+        cls.backend_proc.wait()
+
+    def setUp(self):
+        global BASE_URL
+        BASE_URL = self.__class__.base_url
+
+    def test_01_root(self):
+        r = requests.get(f"{BASE_URL}/")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("AI Internship Portal API", r.json()["message"])
 
     @classmethod
     def tearDownClass(cls):
