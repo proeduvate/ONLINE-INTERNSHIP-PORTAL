@@ -313,3 +313,14 @@ class ApplicationCreate(BaseModel):
     internship_id: int
     user_id: int
     resume_url: Optional[str] = None
+
+class OnboardingApplicationCreate(BaseModel):
+    name: str
+    email: str
+    phone: str
+    college: str
+    department: str
+    degree: str
+    graduation_year: int
+    domain: str
+    resume_url: Optional[str] = None

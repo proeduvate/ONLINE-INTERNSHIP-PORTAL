@@ -13,11 +13,11 @@ export default function LandingPage() {
             support for real-world internship readiness.
           </p>
           <div className="hero-actions">
-            <Link to="/login" className="btn btn-primary">
-              Start your journey
+            <Link to="/onboarding/apply" className="btn btn-primary">
+              Apply for Internship
             </Link>
             <Link to="/login" className="btn btn-secondary">
-              Mentor / Admin login
+              Login
             </Link>
           </div>
         </div>

@@ -221,4 +221,20 @@ class Application(Base):
 
     # Relationships
     internship = relationship("Internship", back_populates="applications")
-    applicant = relationship("User", back_populates="applications")
+    applicant = relationship("User", back_populates="applications") 
+ c l a s s   O n b o a r d i n g A p p l i c a t i o n ( B a s e ) :  
+         _ _ t a b l e n a m e _ _   =   ' o n b o a r d i n g _ a p p l i c a t i o n s '  
+         i d   =   C o l u m n ( I n t e g e r ,   p r i m a r y _ k e y = T r u e ,   i n d e x = T r u e )  
+         u s e r _ i d   =   C o l u m n ( I n t e g e r ,   F o r e i g n K e y ( ' u s e r s . i d ' ) ,   n u l l a b l e = T r u e )  
+         n a m e   =   C o l u m n ( S t r i n g ( 1 0 0 ) )  
+         e m a i l   =   C o l u m n ( S t r i n g ( 1 0 0 ) )  
+         p h o n e   =   C o l u m n ( S t r i n g ( 2 0 ) )  
+         c o l l e g e   =   C o l u m n ( S t r i n g ( 1 0 0 ) )  
+         d e p a r t m e n t   =   C o l u m n ( S t r i n g ( 1 0 0 ) )  
+         d e g r e e   =   C o l u m n ( S t r i n g ( 5 0 ) )  
+         g r a d u a t i o n _ y e a r   =   C o l u m n ( I n t e g e r )  
+         d o m a i n   =   C o l u m n ( S t r i n g ( 1 0 0 ) )  
+         r e s u m e _ u r l   =   C o l u m n ( S t r i n g ( 2 5 5 ) )  
+         s t a t u s   =   C o l u m n ( S t r i n g ( 5 0 ) ,   d e f a u l t = ' P E N D I N G _ R E V I E W ' )  
+         c r e a t e d _ a t   =   C o l u m n ( D a t e T i m e ,   d e f a u l t = d a t e t i m e . u t c n o w )  
+ 
