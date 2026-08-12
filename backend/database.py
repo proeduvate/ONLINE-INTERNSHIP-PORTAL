@@ -3,8 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import urllib.parse
 import os
+from dotenv import load_dotenv
 
-# Prefer a standard DATABASE_URL if provided.
+load_dotenv()
+
+# Prioritize DATABASE_URL (e.g., Supabase connection string)
 SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not SQLALCHEMY_DATABASE_URL:
