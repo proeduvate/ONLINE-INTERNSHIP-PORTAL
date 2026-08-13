@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import LandingPage from "./LandingPage";
-import InternDashboard from "./InternDashboard";
-import MentorDashboard from "./MentorDashboard";
-import AdminDashboard from "./AdminDashboard";
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import InternDashboard from "./pages/InternDashboard";
+import MentorDashboard from "./pages/MentorDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import Apply from "./pages/onboarding/Apply";
 import Status from "./pages/onboarding/Status";
@@ -11,6 +11,7 @@ import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
 import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
 import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
+
 function App() {
   return (
     <BrowserRouter>

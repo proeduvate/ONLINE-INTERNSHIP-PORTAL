@@ -1,35 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --primary-color: #2563eb;
+  --secondary-color: #ffffff;
+  --background-color: #f5f7fa;
+  --card-bg: #ffffff;
+  --text-color: #1f2937;
+  --text-muted: #6b7280;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --border-color: #e5e7eb;
   
-  /* Color Palette (Deep Space Theme) */
-  --bg-main: #0b0f19;
-  --bg-sidebar: #0f1626;
-  --bg-card: rgba(20, 30, 50, 0.4);
-  --bg-card-hover: rgba(30, 45, 75, 0.55);
-  --border-glow: rgba(0, 168, 204, 0.2);
-  --border-glow-active: rgba(0, 168, 204, 0.6);
-  
-  --primary: #00adb5;
-  --primary-hover: #00878e;
-  --accent: #ff2e63;
-  --accent-hover: #e21b4d;
-  --accent-blue: #007cf0;
-  
-  --text-main: #f5f6fa;
-  --text-muted: #a0aec0;
-  
-  /* Status Colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
-  
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --glass-blur: blur(12px);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
@@ -40,29 +23,22 @@
 
 body {
   margin: 0;
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
+  background-color: var(--background-color);
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
+a {
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+a:hover {
+  text-decoration: underline;
 }
