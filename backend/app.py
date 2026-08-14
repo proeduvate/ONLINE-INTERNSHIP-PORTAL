@@ -101,6 +101,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # Automatically generate all database tables on startup
 models.Base.metadata.create_all(bind=database.engine)
 
+# Include modular routers for new features
+from routers.analytics import router as analytics_router
+from routers.tickets import router as tickets_router
+app.include_router(analytics_router)
+app.include_router(tickets_router)
+
 
 # ==========================================
 #           JWT SECURITY DEPENDENCY

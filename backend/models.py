@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Enum, Boolean
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 try:
@@ -237,3 +237,90 @@ class OnboardingApplication(Base):
     resume_url = Column(String(255))
     status = Column(String(50), default='PENDING_REVIEW')
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+#    TICKET / SUPPORT SYSTEM ENUMS
+# ==========================================
+
+class TicketCategory(str, enum.Enum):
+    TECHNICAL = "technical"
+    TASK = "task"
+    SUBMISSION = "submission"
+    ACCOUNT = "account"
+    OTHER = "other"
+
+
+class TicketPriority(str, enum.Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class TicketStatus(str, enum.Enum):
+    OPEN = "open"
+    IN_PROGRESS = "in_progress"
+    RESOLVED = "resolved"
+    CLOSED = "closed"
+
+
+# ==========================================
+#    DAILY QUESTION RESULT MODEL
+# ==========================================
+
+class DailyQuestionResult(Base):
+    __tablename__ = "daily_question_results"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    question_id = Column(Integer, nullable=False)
+    marks_obtained = Column(Integer, nullable=False, default=0)
+    max_marks = Column(Integer, nullable=False, default=10)
+    attempted_at = Column(DateTime, default=datetime.utcnow)
+    date = Column(Date, nullable=False)
+
+    # Relationship (backref adds 'daily_question_results' to User automatically)
+    intern = relationship("User", backref="daily_question_results")
+
+
+# ==========================================
+#    TICKET MODEL
+# ==========================================
+
+class Ticket(Base):
+    __tablename__ = "tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    category = Column(Enum(TicketCategory), nullable=False)
+    priority = Column(Enum(TicketPriority), default=TicketPriority.MEDIUM)
+    status = Column(Enum(TicketStatus), default=TicketStatus.OPEN)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships (backrefs add 'tickets_created' and 'tickets_assigned' to User)
+    creator = relationship("User", foreign_keys=[created_by], backref="tickets_created")
+    assignee = relationship("User", foreign_keys=[assigned_to], backref="tickets_assigned")
+    messages = relationship("TicketMessage", back_populates="ticket", order_by="TicketMessage.created_at")
+
+
+# ==========================================
+#    TICKET MESSAGE MODEL
+# ==========================================
+
+class TicketMessage(Base):
+    __tablename__ = "ticket_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    message = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    ticket = relationship("Ticket", back_populates="messages")
+    sender = relationship("User", backref="ticket_messages")
