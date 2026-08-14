@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -96,7 +96,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 240
 SIGNALING_ROOMS: Dict[str, Any] = {}
 
 # OAuth2 Scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Automatically generate all database tables on startup
 models.Base.metadata.create_all(bind=database.engine)
@@ -193,6 +193,20 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
         "name": user.name,
         "email": user.email
     }
+
+@app.post("/token")
+def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == form_data.username).first()
+    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    token_payload = {"user_id": user.id, "role": user.role.value, "exp": expire}
+    encoded_jwt = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
+    return {"access_token": encoded_jwt, "token_type": "bearer"}
 
 
 # ==========================================
