@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy } from "lucide-react";
 import "../styles/Dashboard.css";
 
 export default function AdminDashboard() {
@@ -89,6 +89,8 @@ export default function AdminDashboard() {
     { name: "Cyber Security", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
     { name: "Web Development", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
     { name: "UI UX Design", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
+    { name: "Cloud Computing", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
+    { name: "Mobile App Dev", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
   ]);
 
   const [tasks, setTasks] = useState([
@@ -142,6 +144,8 @@ export default function AdminDashboard() {
 
   // Programs sub-tab state
   const [programsSubTab, setProgramsSubTab] = useState("Domains");
+  const [selectedProgramDomain, setSelectedProgramDomain] = useState(null);
+  const [detailSubTab, setDetailSubTab] = useState("Curriculum");
   const [showDomainModal, setShowDomainModal] = useState(false);
   const [newDomain, setNewDomain] = useState({ name: "", duration: "" });
 
@@ -149,6 +153,48 @@ export default function AdminDashboard() {
   const [usersSubTab, setUsersSubTab] = useState("Interns"); // Interns, Mentors
   const [selectedBatch, setSelectedBatch] = useState("MIT");
   const [internPage, setInternPage] = useState(1);
+  const [selectedIntern, setSelectedIntern] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null);
+
+  // Tickets state
+  const [ticketsList, setTicketsList] = useState([
+    { id: "TKT-1042", user: "John Doe", role: "Intern", domain: "Artificial Intelligence", branch: "MIT", title: "Environment setup failing on local machine during Docker build.", description: "When I run docker-compose up, it fails with a port conflict error. Details in logs.", status: "Waiting on Support", date: "2 hours ago", comments: [] },
+    { id: "TKT-1045", user: "Raj Patel", role: "Intern", domain: "Data Science", branch: "Stanford", title: "Need clarification on the API structure for Week 4 assignments.", description: "The documentation for the external API endpoints seems outdated. Can someone confirm?", status: "In Progress", date: "5 hours ago", comments: [{ author: "Admin", text: "We are checking this with the curriculum team." }] },
+    { id: "TKT-0985", user: "Sarah Connor", role: "Intern", domain: "Cyber Security", branch: "Berkeley", title: "Missing lecture notes for Day 5", description: "The PDF link for Day 5 lecture is broken.", status: "Resolved", date: "1 week ago", comments: [{ author: "Admin", text: "Fixed the link. Please check again." }] }
+  ]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketReply, setTicketReply] = useState("");
+
+  const handleReplyTicket = (e) => {
+    e.preventDefault();
+    if (!ticketReply.trim()) return;
+    
+    const updatedTickets = ticketsList.map(t => {
+      if (t.id === selectedTicket.id) {
+        const updatedT = {
+          ...t,
+          comments: [...t.comments, { author: "Super Admin", text: ticketReply }]
+        };
+        setSelectedTicket(updatedT);
+        return updatedT;
+      }
+      return t;
+    });
+    setTicketsList(updatedTickets);
+    setTicketReply("");
+  };
+
+  const handleUpdateTicketStatus = (status) => {
+    const updatedTickets = ticketsList.map(t => {
+      if (t.id === selectedTicket.id) {
+        const updatedT = { ...t, status: status };
+        setSelectedTicket(updatedT);
+        return updatedT;
+      }
+      return t;
+    });
+    setTicketsList(updatedTickets);
+  };
 
   const handleLogout = () => {
     alert("Logged out successfully.");
@@ -204,7 +250,7 @@ export default function AdminDashboard() {
       title: newTask.title,
       difficulty: newTask.difficulty,
       deadline: newTask.deadline || "TBD",
-      domain: newTask.domain || "General",
+      domain: selectedProgramDomain || newTask.domain || "General",
       status: "Active"
     };
     setTasks([...tasks, created]);
@@ -402,30 +448,35 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%" }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "12px" }}>Recent Activity Feed</h3>
+              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ Active Support Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10b981", marginTop: "6px" }}></div>
-                  <div>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Intern <b>John Doe</b> scored 85% in "React To-Do App" task</p>
-                    <span style={{ fontSize: "11px", color: "#6b7280" }}>1 hour ago</span>
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
+                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
                   </div>
-                </div>
-                <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#3b82f6", marginTop: "6px" }}></div>
-                  <div>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Intern <b>Raj Patel</b> submitted code for "Predictive Neural Network"</p>
-                    <span style={{ fontSize: "11px", color: "#6b7280" }}>3 hours ago</span>
+                  
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
+                    <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
                   </div>
-                </div>
-                <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#f59e0b", marginTop: "6px" }}></div>
-                  <div>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Mentor <b>Dr. Sakthi</b> scheduled a review meeting with Interns</p>
-                    <span style={{ fontSize: "11px", color: "#6b7280" }}>4 hours ago</span>
+                  
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Unable to access GitHub repository for batch MIT-04.</p>
+                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 1 day ago</span>
                   </div>
-                </div>
                 </div>
               </div>
             </div>
@@ -448,32 +499,188 @@ export default function AdminDashboard() {
 
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {/* Sub navigation bar for Users */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
-              <div style={{ display: "flex", gap: "12px" }}>
-                {["Interns", "Mentors"].map((tab) => (
-                  <button 
-                    key={tab} 
-                    onClick={() => setUsersSubTab(tab)} 
-                    className={`btn ${usersSubTab === tab ? "btn-primary" : "btn-secondary"}`}
-                    style={{ padding: "8px 16px", borderRadius: "20px" }}
-                  >
-                    {tab}
+            {selectedIntern ? (
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
+                  <button onClick={() => setSelectedIntern(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
                   </button>
-                ))}
-              </div>
-              <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ position: "relative" }}>
-                  <Search size={16} color="#9ca3af" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
-                  <input type="text" placeholder={`Search ${usersSubTab.toLowerCase()}...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="form-control" style={{ paddingLeft: "32px", width: "220px", marginBottom: 0 }} />
+                  <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h2 style={{ margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "12px", fontSize: "22px" }}>
+                        {selectedIntern.name}
+                        <span className={`badge badge-${selectedIntern.status === "Active" ? "success" : "danger"}`} style={{ fontSize: "12px", padding: "4px 8px" }}>{selectedIntern.status}</span>
+                      </h2>
+                      <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
+                        <span>ID: {selectedIntern.id}</span>
+                        <span>•</span>
+                        <span>{selectedIntern.domain}</span>
+                        <span>•</span>
+                        <span>{selectedIntern.college}</span>
+                      </p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Assigned Mentor</p>
+                      <p style={{ margin: "4px 0 0 0", fontSize: "16px", fontWeight: 600, color: "var(--text-color)" }}>{selectedIntern.mentor}</p>
+                    </div>
+                  </div>
                 </div>
-                {usersSubTab === "Mentors" && (
-                  <button className="btn btn-primary" style={{ padding: "8px 12px" }} onClick={() => setShowMentorModal(true)}>Add Mentor</button>
-                )}
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      📈 Performance Overview
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                          <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Progress</span>
+                          <span style={{ fontWeight: 700, color: "#10b981", fontSize: "14px" }}>{selectedIntern.progress}</span>
+                        </div>
+                        <div style={{ width: "100%", height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px", overflow: "hidden" }}>
+                          <div style={{ width: selectedIntern.progress, height: "100%", backgroundColor: "#10b981" }}></div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed #cbd5e1" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Internship Duration</span>
+                        <span style={{ fontWeight: 600, color: "#64748b", fontSize: "14px" }}>Week 4 of 8</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#fff5f5", border: "1px solid #fecaca", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <h4 style={{ margin: 0, color: "#b91c1c", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      ⚠️ Active Tickets / Issues
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>2 days ago</span>
+                        </div>
+                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
+                      </div>
+                      
+                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>1 day ago</span>
+                        </div>
+                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ marginTop: "10px" }}>
+                  <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Recent Activity</h4>
+                  <div style={{ padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10b981", marginTop: "6px" }}></div>
+                      <div>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Submitted task <b>"React Core Concepts"</b></p>
+                        <span style={{ fontSize: "11px", color: "#6b7280" }}>1 day ago</span>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#3b82f6", marginTop: "6px" }}></div>
+                      <div>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Attended <b>Mid-Term Review Meeting</b> with {selectedIntern.mentor}</p>
+                        <span style={{ fontSize: "11px", color: "#6b7280" }}>3 days ago</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : selectedMentor ? (
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
+                  <button onClick={() => setSelectedMentor(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h2 style={{ margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "12px", fontSize: "22px" }}>
+                        {selectedMentor.name}
+                        <span className={`badge badge-${selectedMentor.status === "Active" ? "success" : "danger"}`} style={{ fontSize: "12px", padding: "4px 8px" }}>{selectedMentor.status}</span>
+                      </h2>
+                      <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
+                        <span>ID: {selectedMentor.id}</span>
+                        <span>•</span>
+                        <span>{selectedMentor.domain}</span>
+                        <span>•</span>
+                        <span>Mentor</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      👥 Mentorship Overview
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Assigned Interns</span>
+                        <span style={{ fontWeight: 700, color: "var(--primary-color)", fontSize: "16px" }}>12</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed #cbd5e1" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Avg Intern Progress</span>
+                        <span style={{ fontWeight: 600, color: "#10b981", fontSize: "14px" }}>78%</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#fff5f5", border: "1px solid #fecaca", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <h4 style={{ margin: 0, color: "#b91c1c", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      📅 Upcoming Meetings
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>Week 4 Review</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>Today, 2:00 PM</span>
+                        </div>
+                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Group session with all assigned interns via Zoom.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Sub navigation bar for Users */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <div style={{ display: "flex", gap: "12px" }}>
+                    {["Interns", "Mentors"].map((tab) => (
+                      <button 
+                        key={tab} 
+                        onClick={() => setUsersSubTab(tab)} 
+                        className={`btn ${usersSubTab === tab ? "btn-primary" : "btn-secondary"}`}
+                        style={{ padding: "8px 16px", borderRadius: "20px" }}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                    <div style={{ position: "relative" }}>
+                      <Search size={16} color="#9ca3af" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
+                      <input type="text" placeholder={`Search ${usersSubTab.toLowerCase()}...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="form-control" style={{ paddingLeft: "32px", width: "220px", marginBottom: 0 }} />
+                    </div>
+                    {usersSubTab === "Mentors" && (
+                      <button className="btn btn-primary" style={{ padding: "8px 12px" }} onClick={() => setShowMentorModal(true)}>Add Mentor</button>
+                    )}
+                  </div>
+                </div>
 
-            {usersSubTab === "Interns" ? (
+                {usersSubTab === "Interns" ? (
               <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 170px)", overflow: "hidden" }}>
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
@@ -536,17 +743,22 @@ export default function AdminDashboard() {
                               <th>Mentor</th>
                               <th>Progress</th>
                               <th>Status</th>
-                              <th>Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             {paginatedInterns.length === 0 ? (
                               <tr>
-                                <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>No interns found.</td>
+                                <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>No interns found.</td>
                               </tr>
                             ) : (
                               paginatedInterns.map((user) => (
-                                <tr key={user.id}>
+                                <tr 
+                                  key={user.id}
+                                  onClick={() => setSelectedIntern(user)}
+                                  style={{ cursor: "pointer", transition: "background-color 0.2s" }}
+                                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
+                                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                                >
                                   <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
                                   <td><b>{user.name}</b></td>
                                   <td>{user.domain}</td>
@@ -556,11 +768,6 @@ export default function AdminDashboard() {
                                     <span className={`badge badge-${user.status === "Active" ? "success" : "danger"}`}>
                                       {user.status}
                                     </span>
-                                  </td>
-                                  <td>
-                                    <button onClick={() => toggleUserStatus(user.id)} className={`btn ${user.status === "Active" ? "btn-secondary" : "btn-primary"}`} style={{ padding: "4px 8px", fontSize: "12px" }}>
-                                      {user.status === "Active" ? "Deactivate" : "Activate"}
-                                    </button>
                                   </td>
                                 </tr>
                               ))
@@ -613,7 +820,13 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody>
                       {mentors.map((user) => (
-                        <tr key={user.id}>
+                        <tr 
+                          key={user.id}
+                          onClick={() => setSelectedMentor(user)}
+                          style={{ cursor: "pointer", transition: "background-color 0.2s" }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                        >
                           <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
                           <td><b>{user.name}</b></td>
                           <td>{user.domain}</td>
@@ -634,7 +847,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
-
+            </>
+          )}
             {showMentorModal && (
               <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
                 <div className="card" style={{ width: "400px", margin: 0 }}>
@@ -666,127 +880,131 @@ export default function AdminDashboard() {
       case "Programs":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {/* Top Navigation Row for Programs */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
-              <div style={{ display: "flex", gap: "12px" }}>
-                {["Domains", "Curriculum", "Tasks", "Meetings"].map((tab) => (
-                  <button 
-                    key={tab} 
-                    onClick={() => setProgramsSubTab(tab)} 
-                    className={`btn ${programsSubTab === tab ? "btn-primary" : "btn-secondary"}`}
-                    style={{ padding: "8px 16px", borderRadius: "20px" }}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              {programsSubTab === "Domains" && (
-                <button className="btn btn-primary" onClick={() => setShowDomainModal(true)}>Add Domain</button>
-              )}
-            </div>
-
-            {/* Domains Content */}
-            {programsSubTab === "Domains" && (
-              <div className="card" style={{ margin: 0 }}>
-                <h3 style={{ marginBottom: "16px" }}>Active Internship Domains</h3>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+            {selectedProgramDomain === null ? (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <h3 style={{ margin: 0, fontSize: "18px" }}>Active Internship Domains</h3>
+                  <button className="btn btn-primary" onClick={() => setShowDomainModal(true)}>Add Domain</button>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginTop: "10px" }}>
                   {domainsList.map((dom, i) => (
-                    <div key={i} className="card" style={{ border: "1px solid #E5E7EB", margin: 0, padding: "16px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                      <h4 style={{ color: "#2563EB", fontWeight: "600", marginBottom: "6px", fontSize: "14px" }}>{dom.name}</h4>
-                      <p style={{ fontSize: "12px", margin: "2px 0" }}>Duration: {dom.duration}</p>
-                      <p style={{ fontSize: "12px", margin: "2px 0" }}>Interns: {dom.interns} | Mentors: {dom.mentors}</p>
-                      <span className="badge badge-success" style={{ marginTop: "8px", fontSize: "10px" }}>{dom.status}</span>
+                    <div 
+                      key={i} 
+                      className="card" 
+                      onClick={() => setSelectedProgramDomain(dom.name)}
+                      style={{ border: "1px solid #E5E7EB", margin: 0, padding: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", cursor: "pointer", transition: "transform 0.2s" }}
+                      onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
+                      onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                    >
+                      <h4 style={{ color: "#2563EB", fontWeight: "600", marginBottom: "8px", fontSize: "16px" }}>{dom.name}</h4>
+                      <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Duration: {dom.duration}</p>
+                      <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Interns: {dom.interns} | Mentors: {dom.mentors}</p>
+                      <span className="badge badge-success" style={{ marginTop: "12px", fontSize: "11px", display: "inline-block" }}>{dom.status}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Curriculum Content */}
-            {programsSubTab === "Curriculum" && (
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                <h3 style={{ margin: 0 }}>Curriculum Uplink Manager</h3>
-                <form onSubmit={handleUploadCurriculum} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
-                  <input className="form-control" type="text" placeholder="Day (e.g. Day 3)" value={newCurriculum.day} onChange={(e) => setNewCurriculum({...newCurriculum, day: e.target.value})} />
-                  <input className="form-control" type="text" placeholder="Topic Title" value={newCurriculum.topic} onChange={(e) => setNewCurriculum({...newCurriculum, topic: e.target.value})} />
-                  <input className="form-control" type="text" placeholder="Resource Links" value={newCurriculum.resources} onChange={(e) => setNewCurriculum({...newCurriculum, resources: e.target.value})} />
-                  <select className="form-control" value={newCurriculum.domain} onChange={(e) => setNewCurriculum({...newCurriculum, domain: e.target.value})}>
-                    {domainsList.map((dom, i) => (
-                      <option key={i} value={dom.name}>{dom.name}</option>
+              </>
+            ) : (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      &larr; Back
+                    </button>
+                    <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>{selectedProgramDomain} Program</h3>
+                  </div>
+                  <div style={{ display: "flex", gap: "12px" }}>
+                    {["Curriculum", "Tasks"].map((tab) => (
+                      <button 
+                        key={tab} 
+                        onClick={() => setDetailSubTab(tab)} 
+                        className={`btn ${detailSubTab === tab ? "btn-primary" : "btn-secondary"}`}
+                        style={{ padding: "8px 16px", borderRadius: "20px" }}
+                      >
+                        {tab}
+                      </button>
                     ))}
-                  </select>
-                  <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Upload Topic</button>
-                </form>
-                <div className="table-container" style={{ maxHeight: "250px", overflowY: "auto" }}>
-                  <table className="table">
-                    <thead>
-                      <tr><th>Day</th><th>Topic</th><th>Resources</th><th>Domain</th></tr>
-                    </thead>
-                    <tbody>
-                      {curriculumList.map((cur, i) => (
-                        <tr key={i}><td>{cur.day}</td><td><b>{cur.topic}</b></td><td>{cur.resources}</td><td><span className="badge badge-success">{cur.domain}</span></td></tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* Tasks Content */}
-            {programsSubTab === "Tasks" && (
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                <h3 style={{ margin: 0 }}>Task Configurations & Assignments</h3>
-                <form onSubmit={handleCreateTask} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
-                  <input className="form-control" type="text" placeholder="Task Title" value={newTask.title} onChange={(e) => setNewTask({...newTask, title: e.target.value})} />
-                  <input className="form-control" type="date" value={newTask.deadline} onChange={(e) => setNewTask({...newTask, deadline: e.target.value})} />
-                  <select className="form-control" value={newTask.difficulty} onChange={(e) => setNewTask({...newTask, difficulty: e.target.value})}>
-                    <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
-                  </select>
-                  <select className="form-control" value={newTask.domain} onChange={(e) => setNewTask({...newTask, domain: e.target.value})}>
-                    {domainsList.map((dom, i) => (
-                      <option key={i} value={dom.name}>{dom.name}</option>
-                    ))}
-                  </select>
-                  <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Create Task</button>
-                </form>
-                <div className="table-container" style={{ maxHeight: "250px", overflowY: "auto" }}>
-                  <table className="table">
-                    <thead>
-                      <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Domain</th></tr>
-                    </thead>
-                    <tbody>
-                      {tasks.map(t => (
-                        <tr key={t.id}><td style={{ color: "#6b7280" }}>{t.id}</td><td><b>{t.title}</b></td><td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td><td>{t.deadline}</td><td>{t.domain}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+                {detailSubTab === "Curriculum" && (
+                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h3 style={{ margin: 0 }}>30-Day Learning Plan</h3>
+                      <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "6px 12px" }}>Edit Mode</button>
+                    </div>
+                    
+                    <div className="table-container" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                      <table className="table">
+                        <thead>
+                          <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                          {/* Render custom user-uploaded curriculum first */}
+                          {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
+                            <tr key={`custom-${i}`}>
+                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                              <td><b>{cur.topic}</b></td>
+                              <td>{cur.resources}</td>
+                              <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                            </tr>
+                          ))}
+                          
+                          {/* Render generated 30 days mock curriculum */}
+                          {[...Array(30)].map((_, i) => {
+                            if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
+                            
+                            return (
+                            <tr key={i}>
+                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
+                              <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
+                              <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
+                              <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                            </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
-            {/* Meetings Content */}
-            {programsSubTab === "Meetings" && (
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                <h3 style={{ margin: 0 }}>Review Meetings Planner</h3>
-                <form onSubmit={handleScheduleMeeting} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
-                  <input className="form-control" type="text" placeholder="Meeting Topic" value={newMeeting.title} onChange={(e) => setNewMeeting({...newMeeting, title: e.target.value})} />
-                  <input className="form-control" type="text" placeholder="Time (e.g. 2026-08-09 2:00 PM)" value={newMeeting.time} onChange={(e) => setNewMeeting({...newMeeting, time: e.target.value})} />
-                  <input className="form-control" type="text" placeholder="Zoom Join URL" value={newMeeting.link} onChange={(e) => setNewMeeting({...newMeeting, link: e.target.value})} />
-                  <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Schedule Meeting</button>
-                </form>
-                <div className="table-container" style={{ maxHeight: "250px", overflowY: "auto" }}>
-                  <table className="table">
-                    <thead>
-                      <tr><th>ID</th><th>Topic</th><th>Scheduled Time</th><th>Mentor</th><th>Zoom Action</th></tr>
-                    </thead>
-                    <tbody>
-                      {meetings.map((meet) => (
-                        <tr key={meet.id}><td style={{ color: "#6b7280" }}>{meet.id}</td><td><b>{meet.title}</b></td><td>{meet.time}</td><td>{meet.mentor}</td><td><a href={meet.link} target="_blank" rel="noreferrer" style={{ color: "#2563eb", textDecoration: "none", fontWeight: 600 }}>Open Zoom</a></td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                {detailSubTab === "Tasks" && (
+                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h3 style={{ margin: 0 }}>Tasks for {selectedProgramDomain}</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); handleCreateTask(e); }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
+                      <input className="form-control" type="text" placeholder="Task Title" value={newTask.title} onChange={(e) => setNewTask({...newTask, title: e.target.value})} />
+                      <input className="form-control" type="date" value={newTask.deadline} onChange={(e) => setNewTask({...newTask, deadline: e.target.value})} />
+                      <select className="form-control" value={newTask.difficulty} onChange={(e) => setNewTask({...newTask, difficulty: e.target.value})}>
+                        <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
+                      </select>
+                      <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Assign Task</button>
+                    </form>
+                    
+                    <div className="table-container">
+                      <table className="table">
+                        <thead>
+                          <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                        </thead>
+                        <tbody>
+                          {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                            <tr key={t.id}>
+                              <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                              <td><b>{t.title}</b></td>
+                              <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                              <td>{t.deadline}</td>
+                            </tr>
+                          ))}
+                          {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
+                            <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Add Domain Modal */}
@@ -826,7 +1044,7 @@ export default function AdminDashboard() {
                     <th>Intern Name</th>
                     <th>Domain</th>
                     <th>Final Average Grade</th>
-                    <th>Attendance Rating</th>
+                    <th>Leaderboard Ranking</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -835,7 +1053,7 @@ export default function AdminDashboard() {
                     <td><b>Raj Patel</b></td>
                     <td>Data Science</td>
                     <td><span style={{ color: "#10b981", fontWeight: 600 }}>80%</span></td>
-                    <td>90%</td>
+                    <td><span className="badge badge-success" style={{ padding: "4px 8px", fontSize: "13px" }}>#1</span></td>
                     <td>
                       <button onClick={() => alert("Certificate generated for Raj Patel! Verification Key: CERT-DS-884")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
                         Generate & Email
@@ -846,7 +1064,7 @@ export default function AdminDashboard() {
                     <td><b>Anu Sharma</b></td>
                     <td>Cyber Security</td>
                     <td><span style={{ color: "#10b981", fontWeight: 600 }}>75%</span></td>
-                    <td>88%</td>
+                    <td><span className="badge badge-warning" style={{ padding: "4px 8px", fontSize: "13px" }}>#5</span></td>
                     <td>
                       <button onClick={() => alert("Certificate generated for Anu Sharma! Verification Key: CERT-CS-122")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
                         Generate & Email
@@ -966,6 +1184,115 @@ export default function AdminDashboard() {
           </div>
         );
 
+      case "Tickets":
+        if (selectedTicket) {
+          return (
+            <div className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
+                  <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
+                  <span className={`badge ${selectedTicket.status === 'Resolved' ? 'badge-success' : selectedTicket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'Resolved' ? '#d1fae5' : selectedTicket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'Resolved' ? '#065f46' : selectedTicket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
+                    {selectedTicket.status}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
+                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user} ({selectedTicket.role})</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.domain}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.branch}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1f2937" }}>{selectedTicket.title}</h4>
+                <div style={{ padding: "16px", backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
+                  {selectedTicket.description}
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+                  {selectedTicket.comments.length === 0 ? (
+                    <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
+                  ) : (
+                    selectedTicket.comments.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.author === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.author === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.author === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
+                  <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
+                  <button type="submit" className="btn btn-primary">Send Reply</button>
+                </form>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="card">
+            <h3>Support Tickets</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Manage issues and support requests filed by Interns and Mentors.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>User</th>
+                    <th>Issue Title</th>
+                    <th>Status</th>
+                    <th>Date Filed</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ticketsList.map((ticket) => (
+                    <tr key={ticket.id}>
+                      <td><span style={{ fontWeight: 600, color: "#1f2937" }}>{ticket.id}</span></td>
+                      <td>
+                        <div style={{ fontWeight: 500 }}>{ticket.user}</div>
+                        <div style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.role}</div>
+                      </td>
+                      <td><span style={{ color: "#4b5563" }}>{ticket.title}</span></td>
+                      <td>
+                        <span className={`badge ${ticket.status === 'Resolved' ? 'badge-success' : ticket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'Resolved' ? '#d1fae5' : ticket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'Resolved' ? '#065f46' : ticket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
+                          {ticket.status}
+                        </span>
+                      </td>
+                      <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
+                      <td>
+                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>View Details</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
@@ -976,7 +1303,8 @@ export default function AdminDashboard() {
     { id: "Onboarding", icon: <ClipboardCheck size={18} /> },
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
-    { id: "Credentials", icon: <Award size={18} /> }
+    { id: "Credentials", icon: <Award size={18} /> },
+    { id: "Tickets", icon: <LifeBuoy size={18} /> }
   ];
 
   return (
