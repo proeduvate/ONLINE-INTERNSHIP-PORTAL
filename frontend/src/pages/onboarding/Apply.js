@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { mockOnboardingService } from '../../services/mockOnboardingService';
-import './Onboarding.css'; 
+import './Onboarding.css';
 
 export default function Apply() {
     const [step, setStep] = useState(1);
@@ -90,6 +90,13 @@ export default function Apply() {
     return (
         <div className="onboarding-page-wrapper">
             <div className="onboarding-container">
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
+                    <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
+                    <div>
+                        <h2>Internship Application</h2>
+                        <p className="subtitle">Apply for our internship program</p>
+                    </div>
+                </div>
                 <div className="stepper">
                     {steps.map((label, index) => {
                         const stepNumber = index + 1;

@@ -1,8 +1,17 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css"; // Reuse general variables, buttons, card classes
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [showTrackModal, setShowTrackModal] = useState(false);
+  const [applicationId, setApplicationId] = useState("");
+
+  const handleTrackSubmit = (e) => {
+    e.preventDefault();
+    if (!applicationId) return;
+    navigate("/onboarding/status");
+  };
 
   // Technology Domains data
   const domains = [
@@ -27,8 +36,8 @@ export default function LandingPage() {
         top: 0,
         zIndex: 50
       }}>
-        <div style={{ fontWeight: 800, fontSize: "20px", color: "#2563EB", letterSpacing: "0.5px" }}>
-          AI EVALUATION PORTAL
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "55px" }} />
         </div>
         <div style={{ display: "flex", gap: "32px", fontSize: "14px", fontWeight: 500 }}>
           <a href="#features" style={{ color: "#1F2937" }}>Features</a>
@@ -36,7 +45,8 @@ export default function LandingPage() {
           <a href="#stats" style={{ color: "#1F2937" }}>Statistics</a>
           <a href="#contact" style={{ color: "#1F2937" }}>Contact</a>
         </div>
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <button style={{ background: "transparent", border: "none", color: "#4B5563", fontWeight: 600, cursor: "pointer", marginRight: "8px" }} onClick={() => setShowTrackModal(true)}>Track Application</button>
           <button className="btn btn-secondary" onClick={() => navigate("/login")}>Login</button>
           <button className="btn btn-primary" onClick={() => navigate("/onboarding/apply")}>Register</button>
         </div>
@@ -50,7 +60,7 @@ export default function LandingPage() {
         borderBottom: "1px solid #E5E7EB"
       }}>
         <h1 style={{ fontSize: "48px", fontWeight: 800, color: "#1F2937", marginBottom: "20px", lineHeight: "1.2" }}>
-          Next-Gen <span style={{ color: "#2563EB" }}>AI Internship</span> & Evaluation Platform
+          Next-Gen <span style={{ color: "#2563EB" }}>Proeduvate</span> Internship & Evaluation Platform
         </h1>
         <p style={{ fontSize: "18px", color: "#6B7280", maxWidth: "800px", margin: "0 auto 32px auto", lineHeight: "1.6" }}>
           Empower interns with automated AI code evaluations, personalized mentor guidance, curated learning paths, and robust portfolio-building tools.
@@ -181,6 +191,26 @@ export default function LandingPage() {
           <a href="#terms" style={{ color: "#6B7280" }}>Terms of Service</a>
         </div>
       </footer>
+
+      {/* Track Application Modal */}
+      {showTrackModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.6)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 2000 }}>
+          <div className="card" style={{ width: "400px", margin: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: 0 }}>Track Application Status</h3>
+              <button onClick={() => { setShowTrackModal(false); setApplicationId(""); }} style={{ background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#6b7280" }}>&times;</button>
+            </div>
+            
+            <form onSubmit={handleTrackSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Application ID</label>
+                <input className="form-control" type="text" placeholder="e.g. APP-2026-00125" value={applicationId} onChange={(e) => setApplicationId(e.target.value)} required />
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ marginTop: "8px", padding: "10px" }}>Check Status</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
