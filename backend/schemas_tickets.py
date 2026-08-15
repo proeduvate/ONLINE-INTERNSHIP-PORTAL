@@ -58,9 +58,7 @@ class TicketAssignUpdate(BaseModel):
     assigned_to: int = Field(..., description="User ID of the mentor/admin to assign")
 
 
-class TicketPriorityUpdate(BaseModel):
-    """Schema for updating a ticket's priority."""
-    priority: TicketPrioritySchema
+
 
 
 # ==========================================

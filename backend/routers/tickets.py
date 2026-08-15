@@ -150,12 +150,9 @@ def create_ticket(
             detail="Access Denied: Only interns can create support tickets"
         )
 
-    # Auto-assign to the intern's mentor if one exists
-    assigned_to = current_user.mentor_id if current_user.mentor_id else None
-
     new_ticket = models.Ticket(
         created_by=current_user.id,
-        assigned_to=assigned_to,
+        assigned_to=None,
         title=data.title,
         description=data.description,
         category=models.TicketCategory(data.category.value),
@@ -444,41 +441,4 @@ def assign_ticket(
     return _ticket_to_response(ticket)
 
 
-# ==========================================
-#    UPDATE TICKET PRIORITY
-# ==========================================
 
-@router.patch(
-    "/{ticket_id}/priority",
-    response_model=schemas_tickets.TicketResponse,
-    summary="Change ticket priority",
-    description="Update a ticket's priority level. Only mentors and admins can change priority."
-)
-def update_ticket_priority(
-    ticket_id: int,
-    data: schemas_tickets.TicketPriorityUpdate,
-    db: Session = Depends(database.get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role not in [models.UserRole.MENTOR, models.UserRole.ADMIN]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access Denied: Only mentors and admins can change ticket priority"
-        )
-
-    ticket = db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
-    if not ticket:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Ticket not found"
-        )
-
-    _check_ticket_access(ticket, current_user)
-
-    ticket.priority = models.TicketPriority(data.priority.value)
-    ticket.updated_at = datetime.utcnow()
-    db.add(ticket)
-    db.commit()
-    db.refresh(ticket)
-
-    return _ticket_to_response(ticket)

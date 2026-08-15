@@ -13,8 +13,8 @@ import datetime as dt
 class DailyQuestionResultCreate(BaseModel):
     """Schema for recording a daily question result."""
     question_id: int
-    marks_obtained: int = Field(..., ge=0, description="Marks scored by the intern")
-    max_marks: int = Field(..., ge=1, description="Maximum possible marks for this question")
+    mcq_score: float = Field(..., ge=0, le=100, description="MCQ score obtained (0-100)")
+    coding_score: float = Field(..., ge=0, le=100, description="Coding score obtained (0-100)")
     date: dt.date = Field(..., description="The date of the question (YYYY-MM-DD)")
 
 
@@ -23,8 +23,9 @@ class DailyQuestionResultResponse(BaseModel):
     id: int
     intern_id: int
     question_id: int
-    marks_obtained: int
-    max_marks: int
+    mcq_score: float
+    coding_score: float
+    final_score: float
     attempted_at: dt.datetime
     date: dt.date
 
@@ -39,17 +40,7 @@ class DailyQuestionResultResponse(BaseModel):
 class DailyMarksDataPoint(BaseModel):
     """A single data point for the daily marks line chart."""
     date: dt.date
-    marks: int
-    max_marks: int
+    mcq_score: float
+    coding_score: float
+    final_score: float
 
-
-class DailyAnalyticsSummary(BaseModel):
-    """Summary statistics for an intern's daily question performance."""
-    intern_id: int
-    total_days: int
-    total_marks: int
-    total_max_marks: int
-    average_marks: float
-    highest_daily_marks: int
-    lowest_daily_marks: int
-    data: List[DailyMarksDataPoint]

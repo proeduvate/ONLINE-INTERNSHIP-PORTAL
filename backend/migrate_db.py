@@ -11,10 +11,16 @@ def migrate():
             # Check if column exists, if not add it
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_task_completion_date TIMESTAMP;"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS learning_streak INTEGER DEFAULT 0;"))
+            
+            # Add new columns to daily_question_results
+            conn.execute(text("ALTER TABLE daily_question_results ADD COLUMN IF NOT EXISTS mcq_score FLOAT DEFAULT 0.0;"))
+            conn.execute(text("ALTER TABLE daily_question_results ADD COLUMN IF NOT EXISTS coding_score FLOAT DEFAULT 0.0;"))
+            conn.execute(text("ALTER TABLE daily_question_results ADD COLUMN IF NOT EXISTS final_score FLOAT DEFAULT 0.0;"))
+            
             conn.commit()
-            print("Successfully altered users table.")
+            print("Successfully altered tables.")
         except Exception as e:
-            print(f"Error altering users table: {e}")
+            print(f"Error altering tables: {e}")
             conn.rollback()
         
         # Create new tables if they don't exist

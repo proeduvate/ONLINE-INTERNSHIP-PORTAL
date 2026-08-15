@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 try:
@@ -277,6 +277,9 @@ class DailyQuestionResult(Base):
     question_id = Column(Integer, nullable=False)
     marks_obtained = Column(Integer, nullable=False, default=0)
     max_marks = Column(Integer, nullable=False, default=10)
+    mcq_score = Column(Float, nullable=False, default=0.0)
+    coding_score = Column(Float, nullable=False, default=0.0)
+    final_score = Column(Float, nullable=False, default=0.0)
     attempted_at = Column(DateTime, default=datetime.utcnow)
     date = Column(Date, nullable=False)
 

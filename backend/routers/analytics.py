@@ -39,89 +39,42 @@ def record_daily_question_result(
             detail="Access Denied: Only interns can record daily question results"
         )
 
-    if data.marks_obtained > data.max_marks:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="marks_obtained cannot exceed max_marks"
+    final_score = round((data.mcq_score * 0.40) + (data.coding_score * 0.60), 2)
+
+    # Check if a result already exists for this intern and date
+    existing_result = db.query(models.DailyQuestionResult).filter(
+        models.DailyQuestionResult.intern_id == current_user.id,
+        models.DailyQuestionResult.date == data.date
+    ).first()
+
+    if existing_result:
+        # Update existing record
+        existing_result.question_id = data.question_id
+        existing_result.mcq_score = data.mcq_score
+        existing_result.coding_score = data.coding_score
+        existing_result.final_score = final_score
+        existing_result.attempted_at = datetime.utcnow()
+        db.commit()
+        db.refresh(existing_result)
+        return existing_result
+    else:
+        # Create new record
+        new_result = models.DailyQuestionResult(
+            intern_id=current_user.id,
+            question_id=data.question_id,
+            mcq_score=data.mcq_score,
+            coding_score=data.coding_score,
+            final_score=final_score,
+            date=data.date,
+            attempted_at=datetime.utcnow()
         )
-
-    new_result = models.DailyQuestionResult(
-        intern_id=current_user.id,
-        question_id=data.question_id,
-        marks_obtained=data.marks_obtained,
-        max_marks=data.max_marks,
-        date=data.date,
-        attempted_at=datetime.utcnow()
-    )
-    db.add(new_result)
-    db.commit()
-    db.refresh(new_result)
-    return new_result
+        db.add(new_result)
+        db.commit()
+        db.refresh(new_result)
+        return new_result
 
 
-# ==========================================
-#    INTERN: VIEW OWN ANALYTICS
-# ==========================================
 
-@router.get(
-    "/analytics/daily-questions/me",
-    response_model=List[schemas_analytics.DailyMarksDataPoint],
-    summary="Get my daily question performance",
-    description=(
-        "Returns the intern's daily question marks aggregated by date. "
-        "If multiple questions were answered on the same day, marks are summed. "
-        "Response is suitable for rendering as a line chart (X=date, Y=marks)."
-    )
-)
-def get_my_daily_analytics(
-    db: Session = Depends(database.get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.INTERN:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access Denied: Intern role required"
-        )
-
-    results = (
-        db.query(
-            models.DailyQuestionResult.date,
-            func.sum(models.DailyQuestionResult.marks_obtained).label("marks"),
-            func.sum(models.DailyQuestionResult.max_marks).label("max_marks")
-        )
-        .filter(models.DailyQuestionResult.intern_id == current_user.id)
-        .group_by(models.DailyQuestionResult.date)
-        .order_by(models.DailyQuestionResult.date)
-        .all()
-    )
-
-    return [
-        {"date": r.date, "marks": r.marks, "max_marks": r.max_marks}
-        for r in results
-    ]
-
-
-# ==========================================
-#    INTERN: VIEW OWN SUMMARY
-# ==========================================
-
-@router.get(
-    "/analytics/daily-questions/summary/me",
-    response_model=schemas_analytics.DailyAnalyticsSummary,
-    summary="Get my daily question analytics summary",
-    description="Returns summary statistics (average, highest, lowest, total) for the intern's daily question performance."
-)
-def get_my_daily_summary(
-    db: Session = Depends(database.get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.INTERN:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access Denied: Intern role required"
-        )
-
-    return _build_daily_summary(db, current_user.id)
 
 
 # ==========================================
@@ -172,67 +125,21 @@ def get_intern_daily_analytics(
     results = (
         db.query(
             models.DailyQuestionResult.date,
-            func.sum(models.DailyQuestionResult.marks_obtained).label("marks"),
-            func.sum(models.DailyQuestionResult.max_marks).label("max_marks")
+            models.DailyQuestionResult.mcq_score,
+            models.DailyQuestionResult.coding_score,
+            models.DailyQuestionResult.final_score
         )
         .filter(models.DailyQuestionResult.intern_id == intern_id)
-        .group_by(models.DailyQuestionResult.date)
         .order_by(models.DailyQuestionResult.date)
         .all()
     )
 
     return [
-        {"date": r.date, "marks": r.marks, "max_marks": r.max_marks}
-        for r in results
-    ]
-
-
-# ==========================================
-#    HELPER FUNCTION
-# ==========================================
-
-def _build_daily_summary(db: Session, intern_id: int) -> dict:
-    """Build a summary of daily question analytics for an intern."""
-    results = (
-        db.query(
-            models.DailyQuestionResult.date,
-            func.sum(models.DailyQuestionResult.marks_obtained).label("marks"),
-            func.sum(models.DailyQuestionResult.max_marks).label("max_marks")
-        )
-        .filter(models.DailyQuestionResult.intern_id == intern_id)
-        .group_by(models.DailyQuestionResult.date)
-        .order_by(models.DailyQuestionResult.date)
-        .all()
-    )
-
-    data_points = [
-        {"date": r.date, "marks": r.marks, "max_marks": r.max_marks}
-        for r in results
-    ]
-
-    if not data_points:
-        return {
-            "intern_id": intern_id,
-            "total_days": 0,
-            "total_marks": 0,
-            "total_max_marks": 0,
-            "average_marks": 0.0,
-            "highest_daily_marks": 0,
-            "lowest_daily_marks": 0,
-            "data": []
+        {
+            "date": r.date, 
+            "mcq_score": r.mcq_score, 
+            "coding_score": r.coding_score, 
+            "final_score": r.final_score
         }
-
-    marks_list = [dp["marks"] for dp in data_points]
-    total_marks = sum(marks_list)
-    total_max = sum(dp["max_marks"] for dp in data_points)
-
-    return {
-        "intern_id": intern_id,
-        "total_days": len(data_points),
-        "total_marks": total_marks,
-        "total_max_marks": total_max,
-        "average_marks": round(total_marks / len(data_points), 2),
-        "highest_daily_marks": max(marks_list),
-        "lowest_daily_marks": min(marks_list),
-        "data": data_points
-    }
+        for r in results
+    ]
