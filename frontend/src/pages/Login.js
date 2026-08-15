@@ -48,7 +48,6 @@ export default function Login() {
     if (user && user.email === email && user.password === password) {
       localStorage.setItem("token", "dummy-token-123");
       localStorage.setItem("role", role);
-      alert(`Login Successful as ${role.toUpperCase()}!`);
       navigate(`/${role}`);
     } else {
       setErrorMessage("Invalid credentials for the selected role.");
@@ -58,8 +57,13 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 className="title">Internship Portal</h2>
-        <p className="subtitle">Welcome back! Please login</p>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
+          <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
+          <div>
+            <h2 className="title">Internship Portal</h2>
+            <p className="subtitle">Welcome back! Please login</p>
+          </div>
+        </div>
 
         {errorMessage && (
           <div style={{
