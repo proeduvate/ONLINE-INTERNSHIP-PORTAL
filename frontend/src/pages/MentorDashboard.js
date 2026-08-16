@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import "../styles/Dashboard.css";
 
@@ -6,10 +7,14 @@ export default function MentorDashboard() {
 
   // State Mock Data
   const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details" },
+    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Batch A" },
+    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Batch A" },
+    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "Batch A" },
+    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Batch B" },
+    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "Batch B" },
   ]);
+
+  const [selectedBatch, setSelectedBatch] = useState("Batch A");
 
   const [submissions, setSubmissions] = useState([
     { id: 1, intern: "John Doe", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
@@ -27,7 +32,7 @@ export default function MentorDashboard() {
   ]);
 
   const [currentMessage, setCurrentMessage] = useState("");
-  const [selectedInternForChat, setSelectedInternForChat] = useState("John Doe");
+  const [selectedInternForChat, setSelectedInternForChat] = useState(null);
 
   // Weekly review state inputs
   const [weeklyIntern, setWeeklyIntern] = useState("John Doe");
@@ -36,7 +41,7 @@ export default function MentorDashboard() {
   const [weeklyNotes, setWeeklyNotes] = useState("");
 
   const handleLogout = () => {
-    alert("Logged out successfully.");
+    console.log("Logged out successfully.");
     window.location.href = "/login";
   };
 
@@ -53,18 +58,18 @@ export default function MentorDashboard() {
         ? { ...sub, status: action === "Approve" ? "Approved" : "Rejected", score: score, mentorFeedback: feedback } 
         : sub
     ));
-    alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
+    console.log(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
   const handleCreateMeeting = (title, time) => {
-    if (!title || !time) return alert("Fill in title & time!");
+    if (!title || !time) return console.log("Fill in title & time!");
     setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    console.log("Meeting created!");
   };
 
   const handleWeeklySubmit = (e) => {
     e.preventDefault();
-    alert(`Weekly Review Logged for ${weeklyIntern}!\nStrengths: ${weeklyStrengths}\nWeaknesses: ${weeklyWeaknesses}`);
+    console.log(`Weekly Review Logged for ${weeklyIntern}!\nStrengths: ${weeklyStrengths}\nWeaknesses: ${weeklyWeaknesses}`);
     setWeeklyStrengths("");
     setWeeklyWeaknesses("");
     setWeeklyNotes("");
@@ -75,16 +80,7 @@ export default function MentorDashboard() {
       case "Overview":
         return (
           <>
-            {/* Top Row: Mentor Profile Card */}
-            <div className="card" style={{ display: "flex", gap: "20px", alignItems: "center", padding: "16px 24px" }}>
-              <div style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "#10B981", color: "#FFFFFF", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "20px", fontWeight: "bold" }}>
-                M
-              </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: "16px" }}>Dr. Sakthi</h4>
-                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)" }}>Senior AI & Web Systems Mentor | <b>Active</b></p>
-              </div>
-            </div>
+
 
             <div className="grid">
               <div className="stat-card">
@@ -109,13 +105,54 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div className="card">
-              <h3>Cohort Performance Analytics</h3>
-              <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb" }}>
-                <p style={{ fontSize: "13px" }}><b>Submission rate:</b> 96% | <b>Average Attendance:</b> 91%</p>
-                <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                  <span className="badge badge-success">Top Domain: Artificial Intelligence</span>
-                  <span className="badge badge-warning">Needs work: Async CSS styling</span>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+              <div className="card" style={{ marginBottom: 0 }}>
+                <h3>Cohort Performance Analytics</h3>
+                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb" }}>
+                  <p style={{ fontSize: "13px", margin: "0 0 12px 0" }}><b>Submission rate:</b> 96% | <b>Average Attendance:</b> 91%</p>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <span className="badge badge-success">Top Domain: Artificial Intelligence</span>
+                    <span className="badge badge-warning">Needs work: Async CSS styling</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card" style={{ marginBottom: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <h3 style={{ margin: 0 }}>Batch Leaderboard</h3>
+                  <select 
+                    value={selectedBatch} 
+                    onChange={(e) => setSelectedBatch(e.target.value)} 
+                    style={{ padding: "4px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid #e5e7eb", outline: "none", backgroundColor: "#f9fafb" }}
+                  >
+                    <option value="Batch A">Batch A</option>
+                    <option value="Batch B">Batch B</option>
+                  </select>
+                </div>
+                <div className="table-container" style={{ margin: 0 }}>
+                  <table className="table" style={{ margin: 0, fontSize: "13px" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "8px 12px" }}>Rank</th>
+                        <th style={{ padding: "8px 12px" }}>Intern Name</th>
+                        <th style={{ padding: "8px 12px", textAlign: "right" }}>Avg Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...assignedInterns]
+                        .filter(intern => intern.batch === selectedBatch)
+                        .sort((a, b) => parseInt(b.score) - parseInt(a.score))
+                        .map((intern, index) => (
+                        <tr key={intern.id}>
+                          <td style={{ padding: "8px 12px" }}>
+                            {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`}
+                          </td>
+                          <td style={{ padding: "8px 12px", fontWeight: 600 }}>{intern.name}</td>
+                          <td style={{ padding: "8px 12px", textAlign: "right" }}><span className="badge badge-primary">{intern.score}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -132,7 +169,7 @@ export default function MentorDashboard() {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>ID</th><th>Name</th><th>Progress</th><th>Attendance</th><th>Avg Score</th><th>Weak Areas</th><th>Actions</th>
+                      <th>ID</th><th>Name</th><th>Progress</th><th>Avg Score</th><th>Weak Areas</th><th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -141,7 +178,6 @@ export default function MentorDashboard() {
                         <td>{i.id}</td>
                         <td><b>{i.name}</b></td>
                         <td>{i.progress}</td>
-                        <td>{i.attendance}</td>
                         <td><b>{i.score}</b></td>
                         <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{i.weakAreas}</td>
                         <td>
@@ -175,7 +211,7 @@ export default function MentorDashboard() {
                         <td><b>{m.title}</b></td>
                         <td>{m.time}</td>
                         <td><span className="badge badge-success">{m.status}</span></td>
-                        <td><button onClick={() => alert("Joining mock Zoom room...")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join Room</button></td>
+                        <td><button onClick={() => console.log("Joining mock Zoom room...")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join Room</button></td>
                       </tr>
                     ))}
                   </tbody>
@@ -183,54 +219,6 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            {/* Row 3: Restricted Chat Messages */}
-            <div className="card">
-              <h3>Direct Messages (Restricted: Mentor ↔ Assigned Intern Only)</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: "20px", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", minHeight: "300px" }}>
-                <div style={{ background: "#f9fafb", borderRight: "1px solid #E5E7EB", padding: "12px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: "700", color: "#6B7280" }}>Select Cohort Member</span>
-                  <ul style={{ listStyle: "none", padding: 0, marginTop: "10px" }}>
-                    {assignedInterns.map(i => (
-                      <li 
-                        key={i.id}
-                        onClick={() => setSelectedInternForChat(i.name)}
-                        style={{
-                          padding: "8px",
-                          cursor: "pointer",
-                          borderRadius: "4px",
-                          backgroundColor: selectedInternForChat === i.name ? "#2563EB" : "transparent",
-                          color: selectedInternForChat === i.name ? "#FFFFFF" : "#1F2937",
-                          fontSize: "13px",
-                          marginBottom: "4px",
-                          fontWeight: "500"
-                        }}
-                      >
-                        {i.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "300px" }}>
-                  <div style={{ padding: "10px", borderBottom: "1px solid #E5E7EB", fontWeight: "700", fontSize: "14px" }}>
-                    Chatting with {selectedInternForChat}
-                  </div>
-                  <div style={{ padding: "12px", overflowY: "auto", flexGrow: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {chatMessages.map((msg, i) => (
-                      <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%" }}>
-                        <span style={{ fontSize: "9px", color: "#6B7280" }}>{msg.sender} • {msg.time}</span>
-                        <div style={{ background: msg.sender === "You" ? "#2563EB" : "#F3F4F6", color: msg.sender === "You" ? "#FFFFFF" : "#1F2937", padding: "6px 10px", borderRadius: "8px", fontSize: "13px" }}>
-                          {msg.text}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <form onSubmit={handleSendChatMessage} style={{ display: "flex", borderTop: "1px solid #E5E7EB" }}>
-                    <input type="text" placeholder="Type message..." className="form-control" value={currentMessage} onChange={(e) => setCurrentMessage(e.target.value)} style={{ border: "none", borderRadius: 0 }} />
-                    <button type="submit" className="btn btn-primary" style={{ borderRadius: 0 }}>Send</button>
-                  </form>
-                </div>
-              </div>
-            </div>
           </div>
         );
 
@@ -239,7 +227,6 @@ export default function MentorDashboard() {
           <div>
             {/* Row 1: Submissions review & grading */}
             <div className="card">
-              <h3>Submission Evaluations</h3>
               {submissions.filter(s => s.status === "Pending").length === 0 ? (
                 <p><b>🎉 All submissions have been evaluated!</b></p>
               ) : (
@@ -247,41 +234,62 @@ export default function MentorDashboard() {
                   let tempScore = "";
                   let tempFeedback = "";
                   return (
-                    <div key={sub.id} className="card" style={{ border: "1px solid #E5E7EB", background: "#f9fafb", marginBottom: "16px" }}>
-                      <h4><b>Intern:</b> {sub.intern} | <b>Task:</b> {sub.task}</h4>
-                      <pre style={{ background: "#FFFFFF", padding: "10px", border: "1px solid #E5E7EB", borderRadius: "4px", fontSize: "12px", fontFamily: "monospace", margin: "10px 0" }}>{sub.code}</pre>
-                      
-                      <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "#1E3A8A", marginBottom: "12px" }}>
-                        <b>🤖 AI Score: {sub.aiScore}</b> - {sub.aiFeedback}
-                      </div>
+                    <div key={sub.id} className="card" style={{ border: "1px solid #E5E7EB", background: "#ffffff", marginBottom: "16px", padding: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                        {/* Left Side: Intern Details & AI Analysis */}
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                            <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
+                              {sub.intern.split(" ")[0][0]}{sub.intern.split(" ")[1] ? sub.intern.split(" ")[1][0] : ""}
+                            </div>
+                            <div>
+                              <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>{sub.intern}</h4>
+                              <div style={{ fontSize: "13px", color: "#6b7280" }}>Task: <span style={{ fontWeight: 600, color: "#374151" }}>{sub.task}</span></div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "12px", borderRadius: "8px", fontSize: "12px", color: "#1E3A8A" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "4px", fontSize: "13px" }}>
+                              <span>🤖</span> AI Evaluation: {sub.aiScore}
+                            </div>
+                            <div style={{ lineHeight: "1.5" }}>{sub.aiFeedback}</div>
+                          </div>
+                        </div>
 
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px", marginBottom: "12px" }}>
-                        <input className="form-control" placeholder="Score (e.g. 85%)" onChange={(e) => { tempScore = e.target.value; }} />
-                        <input className="form-control" placeholder="Feedback remarks..." onChange={(e) => { tempFeedback = e.target.value; }} />
-                      </div>
+                        {/* Right Side: GitHub, Inputs & Actions */}
+                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                          <div style={{ alignSelf: "flex-end" }}>
+                            <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "8px 16px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                              <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
+                                <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                              </svg>
+                              View on GitHub
+                            </a>
+                          </div>
 
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button onClick={() => handleReviewSubmission(sub.id, "Approve", tempScore || "80%", tempFeedback || "Approved")} className="btn btn-primary">Approve</button>
-                        <button onClick={() => handleReviewSubmission(sub.id, "Reject", "0%", tempFeedback || "Needs rework")} className="btn btn-danger">Reject</button>
+                          <div style={{ marginTop: "16px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", marginBottom: "12px" }}>
+                              <div>
+                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Final Score</label>
+                                <input className="form-control" placeholder="e.g. 85%" onChange={(e) => { tempScore = e.target.value; }} style={{ margin: 0 }} />
+                              </div>
+                              <div>
+                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Mentor Feedback</label>
+                                <input className="form-control" placeholder="Constructive remarks..." onChange={(e) => { tempFeedback = e.target.value; }} style={{ margin: 0 }} />
+                              </div>
+                            </div>
+
+                            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                              <button onClick={() => handleReviewSubmission(sub.id, "Reject", "0%", tempFeedback || "Needs rework")} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "8px 24px" }}>Reject</button>
+                              <button onClick={() => handleReviewSubmission(sub.id, "Approve", tempScore || "80%", tempFeedback || "Approved")} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "8px 24px" }}>Approve</button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
                 })
               )}
-            </div>
-
-            {/* Row 2: Weekly standing reviews */}
-            <div className="card">
-              <h3>Weekly Review Logging</h3>
-              <form onSubmit={handleWeeklySubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-                <select className="form-control" value={weeklyIntern} onChange={(e) => setWeeklyIntern(e.target.value)}>
-                  {assignedInterns.map(i => <option key={i.id} value={i.name}>{i.name}</option>)}
-                </select>
-                <input className="form-control" placeholder="Strengths..." value={weeklyStrengths} onChange={(e) => setWeeklyStrengths(e.target.value)} />
-                <input className="form-control" placeholder="Weaknesses..." value={weeklyWeaknesses} onChange={(e) => setWeeklyWeaknesses(e.target.value)} />
-                <textarea className="form-control" placeholder="Standup notes..." value={weeklyNotes} onChange={(e) => setWeeklyNotes(e.target.value)} style={{ gridColumn: "span 3" }} />
-                <button type="submit" className="btn btn-primary" style={{ gridColumn: "span 3" }}>Log Weekly Standup</button>
-              </form>
             </div>
           </div>
         );
@@ -329,6 +337,69 @@ export default function MentorDashboard() {
 
         {renderContent()}
       </div>
+
+      {/* Floating Side Chat Popup */}
+      {selectedInternForChat && (
+        <div style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          width: "320px",
+          height: "450px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 9999,
+          border: "1px solid #e2e8f0",
+          overflow: "hidden"
+        }}>
+          {/* Chat Header */}
+          <div style={{ padding: "12px 16px", backgroundColor: "#1e293b", color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
+              Chat with {selectedInternForChat}
+            </div>
+            <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>✖</button>
+          </div>
+
+          {/* Chat Messages */}
+          <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc" }}>
+            {chatMessages.map((msg, i) => (
+              <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
+                <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
+                  {msg.sender === "You" ? "" : `${msg.sender} • `}{msg.time}
+                </span>
+                <div style={{ 
+                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 
+                  color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                  padding: "8px 12px", 
+                  borderRadius: msg.sender === "You" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
+                  border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none",
+                  fontSize: "13px",
+                  lineHeight: "1.4"
+                }}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Chat Input */}
+          <form onSubmit={handleSendChatMessage} style={{ display: "flex", padding: "12px", borderTop: "1px solid #e2e8f0", backgroundColor: "#ffffff" }}>
+            <input 
+              type="text" 
+              placeholder="Type your message..." 
+              value={currentMessage} 
+              onChange={(e) => setCurrentMessage(e.target.value)} 
+              style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: "20px", padding: "8px 16px", fontSize: "13px", outline: "none", backgroundColor: "#f8fafc" }} 
+            />
+            <button type="submit" style={{ background: "none", border: "none", color: "#3b82f6", fontWeight: "600", cursor: "pointer", marginLeft: "12px" }}>Send</button>
+          </form>
+        </div>
+      )}
+
     </div>
   );
 }

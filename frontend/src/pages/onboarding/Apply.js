@@ -37,7 +37,7 @@ export default function Apply() {
         if (validateStep()) {
             setStep(prev => prev + 1);
         } else {
-            alert("Please fill in all required fields before proceeding.");
+            console.log("Please fill in all required fields before proceeding.");
         }
     };
     
@@ -90,12 +90,21 @@ export default function Apply() {
     return (
         <div className="onboarding-page-wrapper">
             <div className="onboarding-container">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-                    <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
-                    <div>
-                        <h2>Internship Application</h2>
-                        <p className="subtitle">Apply for our internship program</p>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
+                        <div>
+                            <h2 style={{ margin: 0 }}>Internship Application</h2>
+                            <p className="subtitle" style={{ margin: "4px 0 0 0" }}>Apply for our internship program</p>
+                        </div>
                     </div>
+                    <button 
+                        className="btn btn-secondary" 
+                        onClick={() => window.location.href = '/onboarding/status'}
+                        style={{ fontSize: "13px", padding: "8px 16px" }}
+                    >
+                        Track Application
+                    </button>
                 </div>
                 <div className="stepper">
                     {steps.map((label, index) => {

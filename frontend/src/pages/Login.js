@@ -140,7 +140,7 @@ export default function Login() {
             <button 
               type="button"
               onClick={() => {
-                alert("Password reset instructions have been simulated & sent to your email!");
+                console.log("Password reset instructions have been simulated & sent to your email!");
               }}
               style={{ color: "#2563EB", fontWeight: "600", border: "none", background: "none", cursor: "pointer", padding: 0, fontSize: "13px" }}
             >

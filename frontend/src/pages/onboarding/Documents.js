@@ -63,8 +63,8 @@ export default function Documents() {
                             <h4 style={{ color: 'var(--success-color)', marginBottom: '8px' }}>✓ Offer Letter</h4>
                             <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Generated on: 15/08/2026</p>
                             <div className="flex gap-4" style={{ marginTop: '16px' }}>
-                                <button type="button" className="btn btn-primary" onClick={() => alert("Viewing Offer Letter (Mock)")}>View</button>
-                                <button type="button" className="btn btn-secondary" onClick={() => alert("Downloading Offer Letter (Mock)")}>Download</button>
+                                <button type="button" className="btn btn-primary" onClick={() => console.log("Viewing Offer Letter (Mock)")}>View</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => console.log("Downloading Offer Letter (Mock)")}>Download</button>
                             </div>
                         </div>
 
@@ -72,8 +72,8 @@ export default function Documents() {
                             <h4 style={{ color: 'var(--success-color)', marginBottom: '8px' }}>✓ Terms & Conditions</h4>
                             <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Generated on: 15/08/2026</p>
                             <div className="flex gap-4" style={{ marginTop: '16px' }}>
-                                <button type="button" className="btn btn-primary" onClick={() => alert("Viewing T&C (Mock)")}>View</button>
-                                <button type="button" className="btn btn-secondary" onClick={() => alert("Downloading T&C (Mock)")}>Download</button>
+                                <button type="button" className="btn btn-primary" onClick={() => console.log("Viewing T&C (Mock)")}>View</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => console.log("Downloading T&C (Mock)")}>Download</button>
                             </div>
                         </div>
                         
