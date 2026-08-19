@@ -17,6 +17,18 @@ def migrate():
             conn.execute(text("ALTER TABLE daily_question_results ADD COLUMN IF NOT EXISTS coding_score FLOAT DEFAULT 0.0;"))
             conn.execute(text("ALTER TABLE daily_question_results ADD COLUMN IF NOT EXISTS final_score FLOAT DEFAULT 0.0;"))
             
+            try:
+                # Add winner_count if it doesn't exist
+                conn.execute(text("ALTER TABLE bonus_airdrops ADD COLUMN IF NOT EXISTS winner_count INTEGER DEFAULT 1;"))
+            except Exception as e:
+                print(f"Error adding winner_count column: {e}")
+                
+            try:
+                # Fallback to rename just in case
+                conn.execute(text("ALTER TABLE bonus_airdrops RENAME COLUMN winner_percentage TO winner_count;"))
+            except Exception as e:
+                pass
+
             conn.commit()
             print("Successfully altered tables.")
         except Exception as e:

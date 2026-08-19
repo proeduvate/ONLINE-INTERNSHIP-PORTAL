@@ -21,6 +21,16 @@ class UserRole(str, enum.Enum):
 #          SQLALCHEMY DATABASE MODELS
 # ==========================================
 
+class Batch(Base):
+    __tablename__ = "batches"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    users = relationship("User", back_populates="batch")
+
+
 class User(Base):
     __tablename__ = "users"
     
@@ -42,10 +52,12 @@ class User(Base):
     progress_pct = Column(Integer, default=0)
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime, nullable=True)
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant")
     domain = relationship("Domain", back_populates="users")
+    batch = relationship("Batch", back_populates="users")
     
     # Self-referencing relationship for Mentor -> Interns
     interns = relationship("User", backref="mentor", remote_side=[id])
@@ -243,23 +255,9 @@ class OnboardingApplication(Base):
 #    TICKET / SUPPORT SYSTEM ENUMS
 # ==========================================
 
-class TicketCategory(str, enum.Enum):
-    TECHNICAL = "technical"
-    TASK = "task"
-    SUBMISSION = "submission"
-    ACCOUNT = "account"
-    OTHER = "other"
-
-
-class TicketPriority(str, enum.Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    URGENT = "urgent"
-
-
 class TicketStatus(str, enum.Enum):
     OPEN = "open"
+    ASSIGNED = "assigned"
     IN_PROGRESS = "in_progress"
     RESOLVED = "resolved"
     CLOSED = "closed"
@@ -299,15 +297,24 @@ class Ticket(Base):
     assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
-    category = Column(Enum(TicketCategory), nullable=False)
-    priority = Column(Enum(TicketPriority), default=TicketPriority.MEDIUM)
+    domain = Column(String(100), nullable=False)
     status = Column(Enum(TicketStatus), default=TicketStatus.OPEN)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    resolved_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    resolved_at = Column(DateTime, nullable=True)
+    resolution = Column(Text, nullable=True)
+
+    closed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    closed_at = Column(DateTime, nullable=True)
+    closure_reason = Column(Text, nullable=True)
+
     # Relationships (backrefs add 'tickets_created' and 'tickets_assigned' to User)
     creator = relationship("User", foreign_keys=[created_by], backref="tickets_created")
     assignee = relationship("User", foreign_keys=[assigned_to], backref="tickets_assigned")
+    resolver = relationship("User", foreign_keys=[resolved_by], backref="tickets_resolved")
+    closer = relationship("User", foreign_keys=[closed_by], backref="tickets_closed")
     messages = relationship("TicketMessage", back_populates="ticket", order_by="TicketMessage.created_at")
 
 
@@ -327,3 +334,97 @@ class TicketMessage(Base):
     # Relationships
     ticket = relationship("Ticket", back_populates="messages")
     sender = relationship("User", backref="ticket_messages")
+
+# ==========================================
+#    TICKET HISTORY MODEL
+# ==========================================
+
+class TicketHistory(Base):
+    __tablename__ = "ticket_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    actor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    action = Column(String(100), nullable=False)
+    old_status = Column(Enum(TicketStatus), nullable=True)
+    new_status = Column(Enum(TicketStatus), nullable=True)
+    metadata_json = Column(Text, nullable=True) # JSON string
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    ticket = relationship("Ticket", backref="history")
+    actor = relationship("User", backref="ticket_actions")
+
+    @property
+    def parsed_metadata(self):
+        if not self.metadata_json:
+            return None
+        import json
+        try:
+            return json.loads(self.metadata_json)
+        except:
+            return {}
+
+
+# ==========================================
+#    AIRDROP / BONUS SYSTEM MODELS
+# ==========================================
+
+class BonusAirdrop(Base):
+    __tablename__ = "bonus_airdrops"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(Text, nullable=False)
+    correct_answer = Column(Text, nullable=False)
+    domain = Column(String(100), nullable=False)
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=False)
+    time_limit = Column(Integer, nullable=False) # in seconds
+    bonus_points = Column(Integer, nullable=False)
+    winner_count = Column(Integer, nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=True)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(50), default="PUBLISHED") # PUBLISHED, FINALIZED
+    finalized_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class AirdropAttempt(Base):
+    __tablename__ = "airdrop_attempts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    started_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+    is_correct = Column(Boolean, nullable=True)
+    status = Column(String(50), default="started") # started, submitted, disqualified
+
+
+class AirdropResult(Base):
+    __tablename__ = "airdrop_results"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    rank = Column(Integer, nullable=True)
+    completion_time = Column(Integer, nullable=True) # in seconds
+    bonus_points = Column(Integer, default=0)
+    is_winner = Column(Boolean, default=False)
+
+
+# ==========================================
+#    POINT TRANSACTION MODEL
+# ==========================================
+
+class PointTransaction(Base):
+    __tablename__ = "point_transactions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    points = Column(Integer, nullable=False)
+    source_type = Column(String(50), nullable=False) # e.g. "BONUS_AIRDROP"
+    source_id = Column(Integer, nullable=True) # e.g. airdrop_id
+    reason = Column(String(255), nullable=True)
+    awarded_by = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

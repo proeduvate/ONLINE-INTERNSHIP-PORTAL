@@ -101,11 +101,25 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Automatically generate all database tables on startup
 models.Base.metadata.create_all(bind=database.engine)
 
+# Auto-seed the database if it is empty (e.g., when falling back to SQLite due to network issues)
+db = database.SessionLocal()
+try:
+    if not db.query(models.User).first():
+        print("Database is empty! Auto-seeding to ensure seamless network fallback...")
+        import seed
+        seed.seed()
+finally:
+    db.close()
+
 # Include modular routers for new features
 from routers.analytics import router as analytics_router
 from routers.tickets import router as tickets_router
+from routers.airdrops import router as airdrops_router
+from routers.leaderboard import router as leaderboard_router
 app.include_router(analytics_router)
 app.include_router(tickets_router)
+app.include_router(airdrops_router)
+app.include_router(leaderboard_router)
 
 
 # ==========================================
