@@ -7,17 +7,14 @@ import json
 from datetime import datetime, timedelta
 
 def seed():
-    # Drop all and recreate to ensure schema alignment (essential when DB columns change)
-    print("Recreating database schema...")
-    models.Base.metadata.drop_all(bind=database.engine)
-    models.Base.metadata.create_all(bind=database.engine)
+    print("Seeding database...")
     
     db = next(database.get_db())
     print("Seeding database...")
     
     # Create Domains
-    dom_react = models.Domain(name="React Frontend Development", description="Learn components, state, context, and React Router.")
-    dom_fastapi = models.Domain(name="FastAPI Backend Development", description="Build asynchronous RESTful APIs, schemas, and database connectivity.")
+    dom_react = models.Domain(name="Frontend", description="Learn components, state, context, and React Router.")
+    dom_fastapi = models.Domain(name="Backend", description="Build asynchronous RESTful APIs, schemas, and database connectivity.")
     db.add(dom_react)
     db.add(dom_fastapi)
     db.commit()

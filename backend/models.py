@@ -428,3 +428,24 @@ class PointTransaction(Base):
     awarded_by = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+
+# ==========================================
+#    DOMAIN FACTS MODEL
+# ==========================================
+
+class DomainFact(Base):
+    __tablename__ = "domain_facts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain = Column(String(100), nullable=False, index=True)
+    fact = Column(Text, nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class InternFactHistory(Base):
+    __tablename__ = "intern_fact_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    fact_id = Column(Integer, ForeignKey("domain_facts.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

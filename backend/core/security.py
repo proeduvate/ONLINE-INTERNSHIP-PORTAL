@@ -9,8 +9,13 @@ from typing import Dict, Optional
 # Setup secure password hashing configuration
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # JWT security configurations
-SECRET_KEY = "SUPER_SECRET_COMPLEX_KEY_HERE"  # Keep this secure in production envs
+SECRET_KEY = os.environ.get("SECRET_KEY", "SUPER_SECRET_COMPLEX_KEY_HERE_THAT_IS_LONGER_THAN_32_BYTES")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 240
 

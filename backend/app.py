@@ -84,13 +84,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Setup secure password hashing configuration
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
-
-# JWT security configurations
-SECRET_KEY = "SUPER_SECRET_COMPLEX_KEY_HERE"  # Keep this secure in production envs
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 240
+from core.security import pwd_context, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 # In-memory WebRTC signaling room state for mentor/intern meeting negotiations.
 SIGNALING_ROOMS: Dict[str, Any] = {}
@@ -103,23 +97,29 @@ models.Base.metadata.create_all(bind=database.engine)
 
 # Auto-seed the database if it is empty (e.g., when falling back to SQLite due to network issues)
 db = database.SessionLocal()
+needs_seed = False
 try:
     if not db.query(models.User).first():
-        print("Database is empty! Auto-seeding to ensure seamless network fallback...")
-        import seed
-        seed.seed()
+        needs_seed = True
 finally:
     db.close()
+
+if needs_seed:
+    print("Database is empty! Auto-seeding to ensure seamless network fallback...")
+    import seed
+    seed.seed()
 
 # Include modular routers for new features
 from routers.analytics import router as analytics_router
 from routers.tickets import router as tickets_router
 from routers.airdrops import router as airdrops_router
 from routers.leaderboard import router as leaderboard_router
+from routers.facts import router as facts_router
 app.include_router(analytics_router)
 app.include_router(tickets_router)
 app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
+app.include_router(facts_router)
 
 
 # ==========================================
