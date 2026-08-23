@@ -7,6 +7,7 @@ class DomainFactResponse(BaseModel):
     domain: str
     fact: str
     seen: bool = False
+    completed: bool = False
 
     class Config:
         from_attributes = True

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy } from "lucide-react";
+import { API_BASE } from "../api";
 import "../styles/Dashboard.css";
 
 export default function AdminDashboard() {
@@ -322,6 +323,58 @@ export default function AdminDashboard() {
     alert("New Domain Added Successfully!");
     setNewDomain({ name: "", duration: "" });
     setShowDomainModal(false);
+  };
+
+  const [repoRequests, setRepoRequests] = useState([]);
+  useEffect(() => {
+    if (activeTab === "Repo Requests") {
+      const fetchReqs = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await fetch(`${API_BASE}/repository-requests`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setRepoRequests(data);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      fetchReqs();
+    }
+  }, [activeTab]);
+
+  const handleAssignRepo = async (reqId) => {
+    const repoIdInput = document.getElementById(`repo-id-${reqId}`);
+    const repoUrlInput = document.getElementById(`repo-url-${reqId}`);
+    
+    if (!repoIdInput || !repoUrlInput) return;
+    
+    const repoId = repoIdInput.value;
+    const repoUrl = repoUrlInput.value;
+    
+    if (!repoId || !repoUrl) {
+      alert("Please provide both Repository ID and URL.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${API_BASE}/repository-requests/${reqId}/assign`, {
+        method: "PUT",
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ repository_id: repoId, repository_url: repoUrl })
+      });
+      alert("Repository assigned successfully!");
+      setRepoRequests(repoRequests.map(r => r.id === reqId ? { ...r, request_status: "assigned", repository_id: repoId, repository_url: repoUrl } : r));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -1293,6 +1346,52 @@ export default function AdminDashboard() {
           </div>
         );
 
+      case "Repo Requests":
+        return (
+          <div className="card">
+            <h3>Pending Repository Requests</h3>
+            {repoRequests.length === 0 ? (
+              <p>No repository requests found.</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {repoRequests.map((req) => {
+                  let tempId = req.repository_id || "";
+                  let tempUrl = req.repository_url || "";
+                  return (
+                    <div key={req.id} style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "8px", backgroundColor: "#f8fafc" }}>
+                      <p style={{ margin: "0 0 8px 0" }}><b>Intern ID:</b> {req.intern_id} | <b>Domain:</b> {req.domain}</p>
+                      <p style={{ margin: "0 0 12px 0" }}><b>Status:</b> <span style={{ color: req.request_status === "assigned" ? "#10b981" : "#d97706" }}>{req.request_status}</span></p>
+                      
+                      <div style={{ display: "flex", gap: "12px", alignItems: "flex-end" }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Repository ID</label>
+                          <input id={`repo-id-${req.id}`} className="form-control" defaultValue={tempId} placeholder="e.g. repo-1234" />
+                        </div>
+                        <div style={{ flex: 2 }}>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Repository URL</label>
+                          <input id={`repo-url-${req.id}`} className="form-control" defaultValue={tempUrl} placeholder="https://github.com/org/repo" />
+                        </div>
+                        <button 
+                          className="btn btn-primary" 
+                          style={{ height: "42px", padding: "0 16px", minWidth: "110px" }}
+                          onClick={() => handleAssignRepo(req.id)}
+                        >
+                          {req.request_status === "assigned" ? "Update Repo" : "Assign Repo"}
+                        </button>
+                      </div>
+                      {req.request_status === "assigned" && (
+                        <div style={{ marginTop: "12px" }}>
+                          <p style={{ margin: 0, fontSize: "14px" }}><b>Current URL:</b> <a href={req.repository_url} target="_blank" rel="noreferrer">{req.repository_url}</a></p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return null;
     }
@@ -1304,7 +1403,8 @@ export default function AdminDashboard() {
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
     { id: "Credentials", icon: <Award size={18} /> },
-    { id: "Tickets", icon: <LifeBuoy size={18} /> }
+    { id: "Tickets", icon: <LifeBuoy size={18} /> },
+    { id: "Repo Requests", icon: <ClipboardCheck size={18} /> }
   ];
 
   return (

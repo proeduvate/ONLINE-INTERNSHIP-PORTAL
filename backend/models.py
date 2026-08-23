@@ -100,6 +100,15 @@ class Task(Base):
     test_cases = Column(Text, nullable=True) # JSON String representing inputs and expected outputs
     deadline_days = Column(Integer, default=1) # deadline in days from start date or unlock
     
+    # New Fields
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
+    difficulty = Column(String(50), default="medium")
+    task_type = Column(String(50), default="coding")
+    instructions = Column(Text, nullable=True)
+    expected_outcome = Column(Text, nullable=True)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    is_active = Column(Boolean, default=True)
+    
     # Relationships
     domain = relationship("Domain", back_populates="tasks")
     submissions = relationship("Submission", back_populates="task")
@@ -112,6 +121,7 @@ class Submission(Base):
     intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
     status = Column(String(50), default="submitted") # "not_started", "in_progress", "submitted", "approved"
+    started_at = Column(DateTime, nullable=True)
     
     code_submission = Column(Text, nullable=True)
     mcq_answers = Column(Text, nullable=True) # JSON String of user answers
@@ -448,4 +458,37 @@ class InternFactHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     fact_id = Column(Integer, ForeignKey("domain_facts.id"), nullable=False)
+    fact_text = Column(Text, nullable=True) # Denormalized fact text for easy viewing
     created_at = Column(DateTime, default=datetime.utcnow)
+
+# ==========================================
+#    GITHUB REPOSITORY WORKFLOW MODEL
+# ==========================================
+
+class GitHubRepositoryRequest(Base):
+    __tablename__ = "github_repository_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    domain = Column(String(100), nullable=False)
+    request_status = Column(String(50), default="requested") # requested, assigned
+    requested_at = Column(DateTime, default=datetime.utcnow)
+    assigned_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    assigned_at = Column(DateTime, nullable=True)
+    repository_id = Column(String(100), nullable=True)
+    repository_url = Column(String(255), nullable=True)
+
+    # Relationships
+    intern = relationship("User", foreign_keys=[intern_id])
+    task = relationship("Task", foreign_keys=[task_id])
+    assigner = relationship("User", foreign_keys=[assigned_by])
+
+    @property
+    def intern_name(self):
+        return self.intern.name if self.intern else f"User {self.intern_id}"
+
+    @property
+    def task_title(self):
+        return self.task.title if self.task else f"Task {self.task_id}"
+

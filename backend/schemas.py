@@ -94,6 +94,12 @@ class TaskCreate(BaseModel):
     coding_solution: Optional[str] = None
     test_cases: Optional[str] = None      # JSON string
     deadline_days: Optional[int] = 1
+    batch_id: Optional[int] = None
+    difficulty: Optional[str] = "medium"
+    task_type: Optional[str] = "coding"
+    instructions: Optional[str] = None
+    expected_outcome: Optional[str] = None
+    is_active: Optional[bool] = True
 
 class TaskResponse(BaseModel):
     id: int
@@ -109,6 +115,13 @@ class TaskResponse(BaseModel):
     coding_prompt: Optional[str] = None
     test_cases: Optional[str] = None
     deadline_days: int
+    batch_id: Optional[int] = None
+    difficulty: str
+    task_type: str
+    instructions: Optional[str] = None
+    expected_outcome: Optional[str] = None
+    created_by: Optional[int] = None
+    is_active: bool
 
     class Config:
         from_attributes = True
@@ -139,6 +152,7 @@ class SubmissionResponse(BaseModel):
     mentor_score: int
     mentor_feedback: Optional[str] = None
     submitted_at: datetime
+    started_at: Optional[datetime] = None
     attendance_marked: bool
 
     class Config:
@@ -324,3 +338,32 @@ class OnboardingApplicationCreate(BaseModel):
     graduation_year: int
     domain: str
     resume_url: Optional[str] = None
+
+# ==========================================
+#      GITHUB REPOSITORY WORKFLOW SCHEMAS
+# ==========================================
+
+class RepositoryRequestCreate(BaseModel):
+    task_id: int
+    domain: Optional[str] = None
+
+class RepositoryRequestAssign(BaseModel):
+    repository_id: str
+    repository_url: str
+
+class RepositoryRequestResponse(BaseModel):
+    id: int
+    intern_id: int
+    task_id: int
+    intern_name: Optional[str] = None
+    task_title: Optional[str] = None
+    domain: str
+    request_status: str
+    requested_at: datetime
+    assigned_by: Optional[int] = None
+    assigned_at: Optional[datetime] = None
+    repository_id: Optional[str] = None
+    repository_url: Optional[str] = None
+
+    class Config:
+        from_attributes = True

@@ -36,6 +36,7 @@ def get_domain_facts(
         models.DomainFact.is_active == True
     )
 
+    # We no longer limit to one fact per day, so we removed the daily check.
     seen_fact_ids = [
         h.fact_id for h in db.query(models.InternFactHistory)
         .filter(models.InternFactHistory.intern_id == current_user.id)
@@ -50,11 +51,23 @@ def get_domain_facts(
             completed=True
         )
 
+    # Sort to ensure deterministic order
+    unseen_facts = sorted(unseen_facts, key=lambda f: f.id)
+
     import random
-    selected_fact = random.choice(unseen_facts)
+    # Use a deterministic seed based on user ID and the count of seen facts.
+    # This ensures that concurrent requests (like React Strict Mode double-fetches)
+    # pick the exact same fact, but a new fact is picked on subsequent refreshes!
+    seed_val = f"{current_user.id}_{len(seen_fact_ids)}"
+    rng = random.Random(seed_val)
+    selected_fact = rng.choice(unseen_facts)
 
     # Record history
-    history = models.InternFactHistory(intern_id=current_user.id, fact_id=selected_fact.id)
+    history = models.InternFactHistory(
+        intern_id=current_user.id, 
+        fact_id=selected_fact.id,
+        fact_text=selected_fact.fact
+    )
     db.add(history)
     db.commit()
 
@@ -62,5 +75,6 @@ def get_domain_facts(
         id=selected_fact.id,
         domain=selected_fact.domain,
         fact=selected_fact.fact,
-        seen=False
+        seen=False,
+        completed=False
     )

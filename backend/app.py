@@ -115,11 +115,13 @@ from routers.tickets import router as tickets_router
 from routers.airdrops import router as airdrops_router
 from routers.leaderboard import router as leaderboard_router
 from routers.facts import router as facts_router
+from routers.repositories import router as repositories_router
 app.include_router(analytics_router)
 app.include_router(tickets_router)
 app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
+app.include_router(repositories_router)
 
 
 # ==========================================
@@ -391,7 +393,14 @@ def create_task(
         coding_prompt=data.coding_prompt,
         coding_solution=data.coding_solution,
         test_cases=data.test_cases,
-        deadline_days=data.deadline_days or 1
+        deadline_days=data.deadline_days or 1,
+        batch_id=data.batch_id,
+        difficulty=data.difficulty,
+        task_type=data.task_type,
+        instructions=data.instructions,
+        expected_outcome=data.expected_outcome,
+        is_active=data.is_active,
+        created_by=current_user.id
     )
     db.add(new_task)
     db.commit()
@@ -474,7 +483,8 @@ def get_intern_tasks_with_unlock_status(
             "mcq_score": sub.mcq_score if sub else 0,
             "ai_feedback": sub.ai_feedback if sub else None,
             "mentor_feedback": sub.mentor_feedback if sub else None,
-            "submitted_at": sub.submitted_at if sub else None
+            "submitted_at": sub.submitted_at if sub else None,
+            "started_at": sub.started_at if sub else None
         })
         
         # Next task unlock status depends on whether this task was submitted/approved
@@ -483,6 +493,60 @@ def get_intern_tasks_with_unlock_status(
             
     return results
 
+
+@app.post("/tasks/{task_id}/start")
+def start_task(
+    task_id: int,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(status_code=403, detail="Only interns can start tasks")
+    
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+        
+    if task.domain_id != current_user.domain_id:
+        raise HTTPException(status_code=403, detail="Task does not belong to your domain")
+        
+    if task.day_number > 1:
+        previous_task = db.query(models.Task).filter(
+            models.Task.domain_id == task.domain_id,
+            models.Task.day_number == task.day_number - 1
+        ).first()
+        prev_sub = None
+        if previous_task:
+            prev_sub = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == previous_task.id
+            ).first()
+            
+        if not prev_sub or prev_sub.status not in ["submitted", "approved"]:
+            raise HTTPException(status_code=403, detail="Previous task not completed")
+            
+    existing = db.query(models.Submission).filter(
+        models.Submission.intern_id == current_user.id,
+        models.Submission.task_id == task_id
+    ).first()
+    
+    if existing:
+        if existing.status == "not_started":
+            existing.status = "in_progress"
+            existing.started_at = datetime.utcnow()
+            db.commit()
+        return {"message": "Task already started", "status": existing.status}
+        
+    new_sub = models.Submission(
+        intern_id=current_user.id,
+        task_id=task_id,
+        status="in_progress",
+        started_at=datetime.utcnow()
+    )
+    db.add(new_sub)
+    db.commit()
+    
+    return {"message": "Task started successfully", "status": "in_progress"}
 
 # ==========================================
 #           AI CODE EVALUATOR HEURISTICS

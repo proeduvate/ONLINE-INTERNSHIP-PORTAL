@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../api";
 import "../styles/login.css";
 
 export default function Login() {
@@ -19,7 +20,7 @@ export default function Login() {
     intern: { email: "intern@gmail.com", password: "intern123" },
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -43,14 +44,32 @@ export default function Login() {
       return;
     }
 
-    const user = users[role];
+    try {
+      const response = await fetch(`${API_BASE}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (user && user.email === email && user.password === password) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", role);
-      navigate(`/${role}`);
-    } else {
-      setErrorMessage("Invalid credentials for the selected role.");
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("role", data.role);
+        
+        // Ensure they logged in with the role they selected (optional but good practice)
+        if (data.role !== role) {
+          setErrorMessage(`You are registered as a ${data.role}, not ${role}.`);
+          return;
+        }
+
+        navigate(`/${data.role}`);
+      } else {
+        const errData = await response.json();
+        setErrorMessage(errData.detail || "Invalid credentials for the selected role.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrorMessage("Failed to connect to the server.");
     }
   };
 
