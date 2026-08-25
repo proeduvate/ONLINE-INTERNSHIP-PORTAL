@@ -12,8 +12,13 @@ export default function Apply() {
         department: '',
         degree: '',
         currentYear: '',
+        semester: '',
+        currentCgpa: '',
+        arrearCount: '',
         domain: '',
         duration: '',
+        githubId: '',
+        linkedin: '',
         resume: null
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,11 +29,11 @@ export default function Apply() {
         if (step === 1) {
             if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) return false;
         } else if (step === 2) {
-            if (!formData.college.trim() || !formData.department.trim() || !formData.currentYear) return false;
+            if (!formData.college.trim() || !formData.department.trim() || !formData.currentYear || !formData.semester || !formData.currentCgpa.trim() || !formData.arrearCount.trim()) return false;
         } else if (step === 3) {
             if (!formData.domain) return false;
         } else if (step === 4) {
-            if (!formData.resume) return false;
+            if (!formData.resume || !formData.githubId.trim()) return false;
         }
         return true;
     };
@@ -45,7 +50,13 @@ export default function Apply() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => {
+            const newData = { ...prev, [name]: value };
+            if (name === 'currentYear') {
+                newData.semester = '';
+            }
+            return newData;
+        });
     };
 
     const handleFileChange = (e) => {
@@ -155,15 +166,57 @@ export default function Apply() {
                                 <label>Department *</label>
                                 <input required className="form-control" name="department" value={formData.department} onChange={handleChange} placeholder="e.g. Computer Science" />
                             </div>
-                            <div className="form-group">
-                                <label>Current Year *</label>
-                                <select required className="form-control" name="currentYear" value={formData.currentYear} onChange={handleChange}>
-                                    <option value="">Select Year</option>
-                                    <option value="1">1st Year</option>
-                                    <option value="2">2nd Year</option>
-                                    <option value="3">3rd Year</option>
-                                    <option value="4">4th Year</option>
-                                </select>
+                            <div className="form-group" style={{ display: 'flex', gap: '15px' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label>Current Year *</label>
+                                    <select required className="form-control" name="currentYear" value={formData.currentYear} onChange={handleChange}>
+                                        <option value="">Select Year</option>
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                    </select>
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label>Semester *</label>
+                                    <select required className="form-control" name="semester" value={formData.semester} onChange={handleChange} disabled={!formData.currentYear}>
+                                        <option value="">Select Semester</option>
+                                        {formData.currentYear === '1' && (
+                                            <>
+                                                <option value="1">1st Semester</option>
+                                                <option value="2">2nd Semester</option>
+                                            </>
+                                        )}
+                                        {formData.currentYear === '2' && (
+                                            <>
+                                                <option value="3">3rd Semester</option>
+                                                <option value="4">4th Semester</option>
+                                            </>
+                                        )}
+                                        {formData.currentYear === '3' && (
+                                            <>
+                                                <option value="5">5th Semester</option>
+                                                <option value="6">6th Semester</option>
+                                            </>
+                                        )}
+                                        {formData.currentYear === '4' && (
+                                            <>
+                                                <option value="7">7th Semester</option>
+                                                <option value="8">8th Semester</option>
+                                            </>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-group" style={{ display: 'flex', gap: '15px' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label>Current CGPA *</label>
+                                    <input required className="form-control" name="currentCgpa" value={formData.currentCgpa} onChange={handleChange} placeholder="e.g. 8.5" type="number" step="0.01" min="0" max="10" />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label>Arrear Count *</label>
+                                    <input required className="form-control" name="arrearCount" value={formData.arrearCount} onChange={handleChange} placeholder="0 if none" type="number" min="0" />
+                                </div>
                             </div>
                             <div className="flex justify-between" style={{ marginTop: '30px' }}>
                                 <button type="button" className="btn btn-secondary" onClick={handleBack}>&larr; Back</button>
@@ -193,7 +246,16 @@ export default function Apply() {
 
                     {step === 4 && (
                         <div className="form-step">
-                            <h3>Resume Upload</h3>
+                            <h3>Links & Resume</h3>
+                            <div className="form-group">
+                                <label>GitHub ID *</label>
+                                <input required className="form-control" name="githubId" value={formData.githubId} onChange={handleChange} placeholder="e.g. username" />
+                            </div>
+                            <div className="form-group">
+                                <label>LinkedIn Profile (Optional)</label>
+                                <input className="form-control" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/username" />
+                            </div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: 'var(--text-color)' }}>Resume Upload *</label>
                             <div className="upload-box" onClick={() => document.getElementById('resumeUpload').click()}>
                                 <p style={{ fontWeight: 600, color: 'var(--text-color)' }}>Click or Drag & Drop your file here</p>
                                 <input id="resumeUpload" type="file" required onChange={handleFileChange} accept=".pdf,.doc,.docx" style={{ display: 'none' }} />
@@ -221,8 +283,17 @@ export default function Apply() {
                             <div className="review-section">
                                 <h4>Academic Information</h4>
                                 <p>{formData.college}</p>
-                                <p>Year: {formData.currentYear}</p>
+                                <p>Year: {formData.currentYear}, Semester: {formData.semester}</p>
+                                <p>CGPA: {formData.currentCgpa}, Arrears: {formData.arrearCount}</p>
                                 <button type="button" onClick={() => setStep(2)} className="edit-link">Edit</button>
+                            </div>
+                            
+                            <div className="review-section">
+                                <h4>Links & Resume</h4>
+                                <p>GitHub: {formData.githubId}</p>
+                                {formData.linkedin && <p>LinkedIn: {formData.linkedin}</p>}
+                                <p>Resume: {formData.resume ? formData.resume.name : 'None'}</p>
+                                <button type="button" onClick={() => setStep(4)} className="edit-link">Edit</button>
                             </div>
 
                             <label className="confirm-checkbox">

@@ -557,21 +557,24 @@ export default function AdminDashboard() {
                     </h4>
                     
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>2 days ago</span>
+                      {ticketsList.filter(t => t.status !== "Resolved").slice(0, 2).map(ticket => (
+                        <div 
+                          key={ticket.id}
+                          onClick={() => {
+                            setActiveTab("tickets");
+                            setSelectedTicket(ticket);
+                          }}
+                          style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                          onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                            <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{ticket.id}</span>
+                            <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.date}</span>
+                          </div>
+                          <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
                         </div>
-                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
-                      </div>
-                      
-                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>1 day ago</span>
-                        </div>
-                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -974,14 +977,7 @@ export default function AdminDashboard() {
                 {detailSubTab === "Tasks" && (
                   <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
                     <h3 style={{ margin: 0 }}>Tasks for {selectedProgramDomain}</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); handleCreateTask(e); }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
-                      <input className="form-control" type="text" placeholder="Task Title" value={newTask.title} onChange={(e) => setNewTask({...newTask, title: e.target.value})} />
-                      <input className="form-control" type="date" value={newTask.deadline} onChange={(e) => setNewTask({...newTask, deadline: e.target.value})} />
-                      <select className="form-control" value={newTask.difficulty} onChange={(e) => setNewTask({...newTask, difficulty: e.target.value})}>
-                        <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
-                      </select>
-                      <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Assign Task</button>
-                    </form>
+
                     
                     <div className="table-container">
                       <table className="table">
@@ -1126,10 +1122,8 @@ export default function AdminDashboard() {
                         )}
                         {onboardingSubTab === "Interview" && (
                           <div style={{ display: "flex", gap: "8px" }}>
-                            <button onClick={() => { setActiveDocument({ type: 'Interview', candidate: c }); setViewedDocs({...viewedDocs, [`${c.id}-interview`]: true }); }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>View Results</button>
-                            {viewedDocs[`${c.id}-interview`] && (
-                              <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>Pass & Request Payment</button>
-                            )}
+                            <button onClick={() => setOnboardingCandidates(onboardingCandidates.filter(cand => cand.id !== c.id))} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#dc2626", borderColor: "#fecaca" }}>Decline</button>
+                            <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve</button>
                           </div>
                         )}
                         {onboardingSubTab === "Payment" && (

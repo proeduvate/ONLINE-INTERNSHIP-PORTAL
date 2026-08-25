@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import "../styles/Dashboard.css";
 
 export default function MentorDashboard() {
@@ -39,6 +40,26 @@ export default function MentorDashboard() {
   const [weeklyStrengths, setWeeklyStrengths] = useState("");
   const [weeklyWeaknesses, setWeeklyWeaknesses] = useState("");
   const [weeklyNotes, setWeeklyNotes] = useState("");
+
+  const [mentorDomain] = useState("Artificial Intelligence");
+  const [curriculumList] = useState([
+    { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Artificial Intelligence" },
+    { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Artificial Intelligence" },
+  ]);
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Build a Simple Neural Network", difficulty: "Hard", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Active" },
+    { id: 2, title: "Implement K-Means Clustering", difficulty: "Medium", deadline: "2026-08-15", domain: "Artificial Intelligence", status: "Active" },
+  ]);
+  const [editingTask, setEditingTask] = useState(null);
+  const [detailSubTab, setDetailSubTab] = useState("Curriculum");
+
+  // Chart Data
+  const backlogData = [
+    { name: 'Week 1', Submitted: 40, Evaluated: 38 },
+    { name: 'Week 2', Submitted: 45, Evaluated: 40 },
+    { name: 'Week 3', Submitted: 50, Evaluated: 30 },
+    { name: 'Week 4', Submitted: 60, Evaluated: 25 },
+  ];
 
   const handleLogout = () => {
     console.log("Logged out successfully.");
@@ -105,21 +126,75 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "24px" }}>
+              <div className="card" style={{ margin: 0, paddingBottom: 0 }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
+                    <Tooltip 
+                      cursor={{fill: '#f3f4f6'}}
+                      contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                      wrapperStyle={{ zIndex: 1000 }}
+                    />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                    <Bar dataKey="Submitted" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Evaluated" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ At-Risk Interns</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Low progress (50%) and struggles with React Hooks.</p>
+                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
+                  </div>
+                  
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Missing assignments and attendance dropping.</p>
+                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
               <div className="card" style={{ marginBottom: 0 }}>
-                <h3>Cohort Performance Analytics</h3>
-                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb" }}>
-                  <p style={{ fontSize: "13px", margin: "0 0 12px 0" }}><b>Submission rate:</b> 96% | <b>Average Attendance:</b> 91%</p>
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <span className="badge badge-success">Top Domain: Artificial Intelligence</span>
-                    <span className="badge badge-warning">Needs work: Async CSS styling</span>
+                <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
+                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>React Code Review</h4>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Today, 2:00 PM - 3:00 PM</span>
+                    </div>
+                    <span className="badge badge-warning" style={{ fontSize: "10px" }}>Meeting</span>
+                  </div>
+                  <div style={{ borderTop: "1px solid #e5e7eb" }}></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>Final Project Submissions</h4>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Tomorrow, 11:59 PM</span>
+                    </div>
+                    <span className="badge badge-danger" style={{ fontSize: "10px" }}>Deadline</span>
                   </div>
                 </div>
               </div>
 
               <div className="card" style={{ marginBottom: 0 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <h3 style={{ margin: 0 }}>Batch Leaderboard</h3>
+                  <h3 style={{ margin: 0, fontSize: "16px" }}>Batch Leaderboard</h3>
                   <select 
                     value={selectedBatch} 
                     onChange={(e) => setSelectedBatch(e.target.value)} 
@@ -294,6 +369,106 @@ export default function MentorDashboard() {
           </div>
         );
 
+      case "Programs":
+        return (
+          <div className="card">
+            <h3 style={{ margin: "0 0 20px 0" }}>Program Details - {mentorDomain}</h3>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              <button 
+                className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => setDetailSubTab("Curriculum")}
+              >Curriculum</button>
+              <button 
+                className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => setDetailSubTab("Tasks")}
+              >Tasks</button>
+            </div>
+
+            {detailSubTab === "Curriculum" && (
+              <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                <table className="table">
+                  <thead>
+                    <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {curriculumList.map((cur, i) => (
+                      <tr key={`custom-${i}`}>
+                        <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                        <td><b>{cur.topic}</b></td>
+                        <td>{cur.resources}</td>
+                        <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                      </tr>
+                    ))}
+                    {[...Array(30 - curriculumList.length)].map((_, i) => (
+                      <tr key={i}>
+                        <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1 + curriculumList.length}</td>
+                        <td><b>{i + curriculumList.length === 14 ? "Mid-term Assessment" : `Advanced Concepts Part ${i}`}</b></td>
+                        <td>Reading Materials, Lab Exercise</td>
+                        <td><span className="badge badge-secondary" style={{ fontSize: "10px" }}>Upcoming</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {detailSubTab === "Tasks" && (
+              <div>
+                {editingTask ? (
+                  <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                    <h4>Edit Task TSK-{editingTask.id}</h4>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      setTasks(tasks.map(t => t.id === editingTask.id ? editingTask : t));
+                      setEditingTask(null);
+                    }} style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "400px" }}>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Task Title</label>
+                        <input className="form-control" type="text" value={editingTask.title} onChange={(e) => setEditingTask({...editingTask, title: e.target.value})} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline</label>
+                        <input className="form-control" type="date" value={editingTask.deadline} onChange={(e) => setEditingTask({...editingTask, deadline: e.target.value})} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Difficulty</label>
+                        <select className="form-control" value={editingTask.difficulty} onChange={(e) => setEditingTask({...editingTask, difficulty: e.target.value})}>
+                          <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
+                        </select>
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => setEditingTask(null)}>Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="table-container">
+                    <table className="table">
+                      <thead>
+                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Actions</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                            <td>
+                              <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setEditingTask(t)}>Edit</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return null;
     }
@@ -309,7 +484,8 @@ export default function MentorDashboard() {
             {[
               "Overview",
               "Cohort",
-              "Evaluations"
+              "Evaluations",
+              "Programs"
             ].map((tab) => (
               <li
                 key={tab}

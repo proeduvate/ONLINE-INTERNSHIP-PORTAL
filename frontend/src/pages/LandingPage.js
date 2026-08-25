@@ -4,7 +4,6 @@ import "../styles/Dashboard.css";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,10 +19,6 @@ export default function LandingPage() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!role) {
-      setErrorMessage("Please select a user role.");
-      return;
-    }
     if (!email) {
       setErrorMessage("Please enter your email address.");
       return;
@@ -39,14 +34,20 @@ export default function LandingPage() {
       return;
     }
 
-    const user = users[role];
+    let foundRole = null;
+    for (const [key, u] of Object.entries(users)) {
+      if (u.email === email && u.password === password) {
+        foundRole = key;
+        break;
+      }
+    }
 
-    if (user && user.email === email && user.password === password) {
+    if (foundRole) {
       localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", role);
-      navigate(`/${role}`);
+      localStorage.setItem("role", foundRole);
+      navigate(`/${foundRole}`);
     } else {
-      setErrorMessage("Invalid credentials for the selected role.");
+      setErrorMessage("Invalid email or password.");
     }
   };
 
@@ -116,19 +117,7 @@ export default function LandingPage() {
               </div>
             )}
 
-            <div>
-              <label style={{ display: "block", fontSize: "14px", fontWeight: 500, color: "#374151", marginBottom: "8px" }}>Select Role</label>
-              <select 
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                style={{ width: "100%", padding: "12px 16px", borderRadius: "8px", border: "1px solid #d1d5db", outline: "none", fontSize: "15px", boxSizing: "border-box", backgroundColor: "#fff" }}
-              >
-                <option value="" disabled>Select your role</option>
-                <option value="admin">Admin</option>
-                <option value="mentor">Mentor</option>
-                <option value="intern">Intern</option>
-              </select>
-            </div>
+
 
             <div>
               <label style={{ display: "block", fontSize: "14px", fontWeight: 500, color: "#374151", marginBottom: "8px" }}>Email address</label>

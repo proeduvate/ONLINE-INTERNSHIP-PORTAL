@@ -27,6 +27,32 @@ export default function InternDashboard() {
   const [codingDone, setCodingDone] = useState(false);
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+
+  const ticketsData = [
+    {
+      id: "TKT-1042",
+      title: "Environment setup failing on local machine during Docker build",
+      date: "2 days ago",
+      status: "In Progress",
+      statusBg: "#fef3c7",
+      statusColor: "#92400e",
+      tagBg: "#fee2e2",
+      tagColor: "#991b1b",
+      adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
+    },
+    {
+      id: "TKT-0985",
+      title: "Missing lecture notes for Day 5",
+      date: "1 week ago",
+      status: "Resolved",
+      statusBg: "#d1fae5",
+      statusColor: "#065f46",
+      tagBg: "#f3f4f6",
+      tagColor: "#4b5563",
+      adminReply: "The notes have been uploaded to the portal. Please refresh the page."
+    }
+  ];
 
   const [mcqStarted, setMcqStarted] = useState(false);
   const [mcqSubmitted, setMcqSubmitted] = useState(false);
@@ -346,7 +372,7 @@ export default function InternDashboard() {
                       {mcqDone ? (
                         <span style={{ color: "#10b981", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
                       ) : (
-                        <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(false); setMcqSubmitted(false); setAnswers({}); setTimer(180); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
+                        <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
                       )}
                     </div>
                     <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid #e5e7eb", background: codingDone ? "#ecfdf5" : "#fff" }}>
@@ -386,16 +412,11 @@ export default function InternDashboard() {
                 <div className="card">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
-                    {!(mcqStarted && !mcqSubmitted) && (
+                    {mcqSubmitted && (
                       <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                     )}
                   </div>
-                  {!mcqStarted && !mcqSubmitted ? (
-                    <div>
-                      <p>A quick timed test containing 10 key React questions to verify your day's learning.</p>
-                      <button className="btn btn-primary" style={{ marginTop: "10px" }} onClick={() => { setMcqStarted(true); setTimer(180); setCurrentQuestionIndex(0); }}>Start MCQ Test</button>
-                    </div>
-                  ) : mcqStarted && !mcqSubmitted ? (
+                  {!mcqSubmitted ? (
                     <div>
                       {/* Top Bar: Timer and Submit */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px", marginBottom: "16px" }}>
@@ -416,10 +437,10 @@ export default function InternDashboard() {
                                 aspectRatio: "1/1",
                                 padding: 0,
                                 borderRadius: "6px",
-                                border: currentQuestionIndex === idx ? "2px solid #3b82f6" : "1px solid #e5e7eb",
-                                backgroundColor: currentQuestionIndex === idx ? "#eff6ff" : (answers[q.id] ? "#10b981" : "#fff"),
-                                color: currentQuestionIndex === idx ? "#1d4ed8" : (answers[q.id] ? "#fff" : "#4b5563"),
-                                fontWeight: currentQuestionIndex === idx ? 700 : 500,
+                                  border: currentQuestionIndex === idx ? "2px solid #3b82f6" : (answers[q.id] ? "1px solid #10b981" : "1px solid #e5e7eb"),
+                                  backgroundColor: answers[q.id] ? "#10b981" : (currentQuestionIndex === idx ? "#eff6ff" : "#fff"),
+                                  color: answers[q.id] ? "#fff" : (currentQuestionIndex === idx ? "#1d4ed8" : "#4b5563"),
+                                  fontWeight: currentQuestionIndex === idx ? 700 : 500,
                                 cursor: "pointer",
                                 display: "flex",
                                 justifyContent: "center",
@@ -586,8 +607,13 @@ export default function InternDashboard() {
               </div>
             </div>
 
-            {/* Row 3: Support & Ticketing */}
-            <div className="card" style={{ marginTop: "16px", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+          </div>
+        );
+
+      case "Tickets":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <div className="card" style={{ backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                 <div>
                   <h3 style={{ margin: 0, color: "#b91c1c", fontSize: "16px" }}>Support & Ticketing</h3>
@@ -599,30 +625,36 @@ export default function InternDashboard() {
               <div style={{ marginTop: "16px", borderTop: "1px solid #fca5a5", paddingTop: "16px" }}>
                 <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#991b1b" }}>Your Filed Tickets</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <span style={{ fontSize: "11px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>TKT-1042</span>
-                      <span style={{ fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build</span>
+                  {ticketsData.map(ticket => (
+                    <div 
+                      key={ticket.id}
+                      onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
+                      style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: selectedTicket?.id === ticket.id ? "2px solid #ef4444" : "1px solid #e5e7eb", display: "flex", flexDirection: "column", cursor: "pointer" }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <span style={{ fontSize: "11px", color: ticket.tagColor, fontWeight: 700, backgroundColor: ticket.tagBg, padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "13px", color: "#1f2937", fontWeight: 500, textDecoration: ticket.status === "Resolved" ? "line-through" : "none" }}>{ticket.title}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>Filed: {ticket.date}</span>
+                          <span className="badge" style={{ backgroundColor: ticket.statusBg, color: ticket.statusColor }}>{ticket.status}</span>
+                        </div>
+                      </div>
+                      
+                      {selectedTicket?.id === ticket.id && (
+                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #f3f4f6" }}>
+                          <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "#475569", textTransform: "uppercase" }}>Admin Reply</h5>
+                          <div style={{ backgroundColor: "#f8fafc", padding: "12px", borderRadius: "6px", borderLeft: "3px solid #3b82f6" }}>
+                            <p style={{ margin: 0, fontSize: "13px", color: "#334155", lineHeight: "1.5" }}>{ticket.adminReply}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Filed: 2 days ago</span>
-                      <span className="badge badge-warning" style={{ backgroundColor: "#fef3c7", color: "#92400e" }}>In Progress</span>
-                    </div>
-                  </div>
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #e5e7eb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <span style={{ fontSize: "11px", color: "#4b5563", fontWeight: 700, backgroundColor: "#f3f4f6", padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>TKT-0985</span>
-                      <span style={{ fontSize: "13px", color: "#4b5563", fontWeight: 500, textDecoration: "line-through" }}>Missing lecture notes for Day 5</span>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <span style={{ fontSize: "11px", color: "#9ca3af" }}>Filed: 1 week ago</span>
-                      <span className="badge badge-success" style={{ backgroundColor: "#d1fae5", color: "#065f46" }}>Resolved</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-
           </div>
         );
 
@@ -700,6 +732,7 @@ export default function InternDashboard() {
             {[
               "Overview",
               "Learning",
+              "Tickets",
               "Chat with Mentor"
             ].map((tab) => (
               <li
