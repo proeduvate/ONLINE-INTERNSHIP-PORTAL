@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 
 export default function Login() {
-  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,10 +22,6 @@ export default function Login() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!role) {
-      setErrorMessage("Please select a user role.");
-      return;
-    }
     if (!email) {
       setErrorMessage("Please enter your email address.");
       return;
@@ -43,14 +38,20 @@ export default function Login() {
       return;
     }
 
-    const user = users[role];
+    let foundRole = null;
+    for (const [key, u] of Object.entries(users)) {
+      if (u.email === email && u.password === password) {
+        foundRole = key;
+        break;
+      }
+    }
 
-    if (user && user.email === email && user.password === password) {
+    if (foundRole) {
       localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", role);
-      navigate(`/${role}`);
+      localStorage.setItem("role", foundRole);
+      navigate(`/${foundRole}`);
     } else {
-      setErrorMessage("Invalid credentials for the selected role.");
+      setErrorMessage("Invalid email or password.");
     }
   };
 
@@ -81,16 +82,7 @@ export default function Login() {
         )}
 
         <form onSubmit={handleLogin}>
-          <select 
-            className="input"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="">Select Role</option>
-            <option value="admin">Admin</option>
-            <option value="mentor">Mentor</option>
-            <option value="intern">Intern</option>
-          </select>
+
 
           <input 
             type="email"
