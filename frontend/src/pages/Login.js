@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 import "../styles/login.css";
 
 export default function Login() {
@@ -9,17 +10,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -36,22 +31,41 @@ export default function Login() {
       return;
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    const user = users[role];
+    setLoading(true);
 
-    if (user && user.email === email && user.password === password) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", role);
-      alert(`Login Successful as ${role.toUpperCase()}!`);
-      navigate(`/${role}`);
-    } else {
-      setErrorMessage("Invalid credentials for the selected role.");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      const userRole = data.user?.user_metadata?.role || role;
+      const accessToken = data.session?.access_token;
+
+      if (!accessToken) {
+        throw new Error("No session token returned from Supabase.");
+      }
+
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("role", userRole);
+
+      alert(`Login Successful as ${userRole.toUpperCase()}!`);
+      navigate(`/${userRole}`);
+    } catch (error) {
+      const message = error?.message || "Invalid Supabase credentials for the selected role.";
+      setErrorMessage(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,17 +158,10 @@ export default function Login() {
             </button>
           </div>
 
-          <button type="submit" className="login-btn">
-            Login
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
-        <div className="demo-credentials">
-          <p><b>Demo Credentials:</b></p>
-          <p>Admin: <code>admin@gmail.com</code> / <code>admin123</code></p>
-          <p>Mentor: <code>mentor@gmail.com</code> / <code>mentor123</code></p>
-          <p>Intern: <code>intern@gmail.com</code> / <code>intern123</code></p>
-        </div>
       </div>
     </div>
   );
