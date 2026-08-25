@@ -1,27 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 import "../styles/login.css";
 
 export default function Login() {
+  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
+    if (!role) {
+      setErrorMessage("Please select a user role.");
+      return;
+    }
     if (!email) {
       setErrorMessage("Please enter your email address.");
       return;
@@ -31,40 +31,49 @@ export default function Login() {
       return;
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
-      }
-    }
+    setLoading(true);
 
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      const userRole = data.user?.user_metadata?.role || role;
+      const accessToken = data.session?.access_token;
+
+      if (!accessToken) {
+        throw new Error("No session token returned from Supabase.");
+      }
+
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("role", userRole);
+
+      alert(`Login Successful as ${userRole.toUpperCase()}!`);
+      navigate(`/${userRole}`);
+    } catch (error) {
+      const message = error?.message || "Invalid Supabase credentials for the selected role.";
+      setErrorMessage(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-          <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
-          <div>
-            <h2 className="title">Internship Portal</h2>
-            <p className="subtitle">Welcome back! Please login</p>
-          </div>
-        </div>
+        <h2 className="title">Internship Portal</h2>
+        <p className="subtitle">Welcome back! Please login</p>
 
         {errorMessage && (
           <div style={{
@@ -82,7 +91,16 @@ export default function Login() {
         )}
 
         <form onSubmit={handleLogin}>
-
+          <select 
+            className="input"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="">Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="mentor">Mentor</option>
+            <option value="intern">Intern</option>
+          </select>
 
           <input 
             type="email"
@@ -140,17 +158,10 @@ export default function Login() {
             </button>
           </div>
 
-          <button type="submit" className="login-btn">
-            Login
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
-        <div className="demo-credentials">
-          <p><b>Demo Credentials:</b></p>
-          <p>Admin: <code>admin@gmail.com</code> / <code>admin123</code></p>
-          <p>Mentor: <code>mentor@gmail.com</code> / <code>mentor123</code></p>
-          <p>Intern: <code>intern@gmail.com</code> / <code>intern123</code></p>
-        </div>
       </div>
     </div>
   );
