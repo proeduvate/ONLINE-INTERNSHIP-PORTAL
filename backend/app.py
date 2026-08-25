@@ -21,6 +21,7 @@ from fpdf import FPDF
 import random
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
+import requests
 
 try:
     import models, database, schemas
@@ -87,16 +88,42 @@ app.add_middleware(
 # Setup secure password hashing configuration
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+# Supabase Auth configuration
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
+
 # JWT security configurations
-SECRET_KEY = "SUPER_SECRET_COMPLEX_KEY_HERE"  # Keep this secure in production envs
+SECRET_KEY = os.getenv("SECRET_KEY", "SUPER_SECRET_COMPLEX_KEY_HERE")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 240
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "240"))
 
 # In-memory WebRTC signaling room state for mentor/intern meeting negotiations.
 SIGNALING_ROOMS: Dict[str, Any] = {}
 
 # OAuth2 Scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+
+def _supabase_auth_headers(extra_headers: Optional[Dict[str, str]] = None) -> Dict[str, str]:
+    headers = {
+        "apikey": SUPABASE_ANON_KEY or "",
+        "Content-Type": "application/json",
+    }
+    if extra_headers:
+        headers.update(extra_headers)
+    return headers
+
+
+def _supabase_error_message(response: requests.Response) -> str:
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = {}
+
+    if isinstance(payload, dict):
+        return payload.get("error_description") or payload.get("msg") or payload.get("error") or response.text
+    return response.text
 
 # Automatically generate all database tables on startup
 models.Base.metadata.create_all(bind=database.engine)
@@ -112,15 +139,23 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    if not SUPABASE_URL or not SUPABASE_JWT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Supabase auth is not configured on the backend. Set SUPABASE_URL and SUPABASE_JWT_SECRET.",
+        )
+
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("user_id")
-        if user_id is None:
-            raise credentials_exception
+        payload = jwt.decode(token, SUPABASE_JWT_SECRET, algorithms=["HS256"], options={"verify_aud": False})
     except jwt.PyJWTError:
         raise credentials_exception
-        
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+
+    email = payload.get("email")
+    if not email:
+        raise credentials_exception
+
+    user = db.query(models.User).filter(models.User.email == email).first()
     if user is None:
         raise credentials_exception
     return user
@@ -138,15 +173,34 @@ def root():
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.get_db)):
+    if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Supabase auth is not configured on the backend. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
+        )
+
     existing_user = db.query(models.User).filter(models.User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email is already registered"
         )
-    
+
+    response = requests.post(
+        f"{SUPABASE_URL.rstrip('/')}/auth/v1/signup",
+        headers=_supabase_auth_headers({"Authorization": f"Bearer {SUPABASE_ANON_KEY}"}),
+        json={"email": user_data.email, "password": user_data.password, "email_confirm": True},
+        timeout=20,
+    )
+
+    if response.status_code >= 400:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=_supabase_error_message(response),
+        )
+
     hashed_password = pwd_context.hash(user_data.password)
-    
+
     new_user = models.User(
         name=user_data.name,
         email=user_data.email,
@@ -156,36 +210,57 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
     return {"message": "User registered successfully", "user_id": new_user.id}
 
 
 @app.post("/login")
 def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(database.get_db)):
+    if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Supabase auth is not configured on the backend. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
+        )
+
+    response = requests.post(
+        f"{SUPABASE_URL.rstrip('/')}/auth/v1/token?grant_type=password",
+        headers=_supabase_auth_headers({"Authorization": f"Bearer {SUPABASE_ANON_KEY}"}),
+        json={"email": user_credentials.email, "password": user_credentials.password},
+        timeout=20,
+    )
+
+    if response.status_code >= 400:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=_supabase_error_message(response) or "Invalid Credentials",
+        )
+
+    payload = response.json()
+    access_token = payload.get("access_token")
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid Credentials",
+        )
+
     user = db.query(models.User).filter(models.User.email == user_credentials.email).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="Invalid Credentials"
+    if user is None:
+        user = models.User(
+            name=payload.get("user", {}).get("user_metadata", {}).get("name") or user_credentials.email.split("@", 1)[0],
+            email=user_credentials.email,
+            hashed_password=pwd_context.hash(user_credentials.password),
+            role=models.UserRole.INTERN,
         )
-    
-    if not pwd_context.verify(user_credentials.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="Invalid Credentials"
-        )
-    
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token_payload = {"user_id": user.id, "role": user.role.value, "exp": expire}
-    encoded_jwt = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
-    
-    # Return user details too for client routing ease
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
     return {
-        "access_token": encoded_jwt, 
+        "access_token": access_token,
         "token_type": "bearer",
         "role": user.role.value,
         "name": user.name,
-        "email": user.email
+        "email": user.email,
     }
 
 

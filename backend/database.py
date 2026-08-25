@@ -1,46 +1,43 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import urllib.parse
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-load_dotenv()
+# 1. Locate the .env file explicitly in the backend directory
+env_path = Path(__file__).resolve().parent / ".env"
 
-# Prioritize DATABASE_URL (e.g., Supabase connection string)
-SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
+# 2. Force load the .env file (override=True ensures cached/system env vars are replaced)
+load_dotenv(dotenv_path=env_path, override=True)
 
-if not SQLALCHEMY_DATABASE_URL:
-    DB_USER = os.environ.get("POSTGRES_USER", "postgres")
-    DB_PASS = os.environ.get("POSTGRES_PASSWORD", "postgres")
-    DB_HOST = os.environ.get("POSTGRES_HOST", "127.0.0.1")
-    DB_PORT = os.environ.get("POSTGRES_PORT", "5432")
-    DB_NAME = os.environ.get("POSTGRES_DB", "internship_portal")
+# 3. Fetch the DATABASE_URL environment variable
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-    # URL encode the password to safely escape the '@' and '#' symbols
-    ENCODED_PASS = urllib.parse.quote_plus(DB_PASS)
-    SQLALCHEMY_DATABASE_URL = (
-        f"postgresql+psycopg2://{DB_USER}:{ENCODED_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# Debug output to verify what string Python is reading upon startup
+print("\n" + "=" * 50)
+print("DEBUG: LOADED DATABASE_URL ->", DATABASE_URL)
+print("=" * 50 + "\n")
+
+# Guard statement to prevent running with unconfigured placeholder URLs
+if not DATABASE_URL or "YOUR_PROJECT_REF" in DATABASE_URL or "YOUR_ACTUAL_PASSWORD" in DATABASE_URL:
+    raise ValueError(
+        "CRITICAL ERROR: DATABASE_URL is missing or contains placeholder values. "
+        "Please check your backend/.env file and ensure your actual Supabase password/URL are saved."
     )
 
-try:
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
-    with engine.connect() as conn:
-        pass
-    print("Database: Connected to PostgreSQL successfully.")
-except Exception as e:
-    print(f"Database: PostgreSQL connection failed ({e}). Falling back to SQLite.")
-    sqlite_db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "internship_portal.db")
-    SQLALCHEMY_DATABASE_URL = f"sqlite:///{sqlite_db_path}"
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False}
-    )
-    print(f"Database: Initialized SQLite at {sqlite_db_path}")
+# 4. Initialize the SQLAlchemy engine
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,  # Automatically check and restore dropped connections
+)
 
+# 5. Create SessionLocal class for database queries
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# 6. Create Base class for SQLAlchemy ORM models
 Base = declarative_base()
 
+# 7. Dependency generator to manage database sessions in FastAPI routes
 def get_db():
     db = SessionLocal()
     try:

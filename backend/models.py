@@ -27,7 +27,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column("full_name", String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=True)
+    # Link to Supabase auth user id (uuid)
+    supabase_id = Column(String(100), nullable=True, unique=True)
     role = Column(Enum(UserRole), default=UserRole.INTERN)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -222,18 +224,3 @@ class Application(Base):
     # Relationships
     internship = relationship("Internship", back_populates="applications")
     applicant = relationship("User", back_populates="applications")
-class OnboardingApplication(Base):
-    __tablename__ = 'onboarding_applications'
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
-    name = Column(String(100))
-    email = Column(String(100))
-    phone = Column(String(20))
-    college = Column(String(100))
-    department = Column(String(100))
-    degree = Column(String(50))
-    graduation_year = Column(Integer)
-    domain = Column(String(100))
-    resume_url = Column(String(255))
-    status = Column(String(50), default='PENDING_REVIEW')
-    created_at = Column(DateTime, default=datetime.utcnow)

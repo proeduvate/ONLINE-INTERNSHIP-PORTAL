@@ -23,6 +23,7 @@ export default function Status() {
     }, []);
 
     // Developer utility for testing
+    // eslint-disable-next-line no-unused-vars
     const handleDevChange = async (e) => {
         mockOnboardingService.__devSetStatus(e.target.value);
         await fetchStatus();
