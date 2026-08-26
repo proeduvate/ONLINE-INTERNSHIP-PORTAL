@@ -6,6 +6,7 @@ import "../styles/Dashboard.css";
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // State Mock Data
   // State Mock Data
@@ -1304,10 +1305,11 @@ export default function AdminDashboard() {
   return (
     <div className="container">
       {/* Sidebar Navigation */}
-      <div className="sidebar">
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
+            {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
           </div>
           <ul>
             {navItems.map((item) => (
@@ -1315,22 +1317,26 @@ export default function AdminDashboard() {
                 key={item.id}
                 className={activeTab === item.id ? "active" : ""}
                 onClick={() => setActiveTab(item.id)}
+                title={!isSidebarOpen ? item.id : ""}
               >
-                {item.icon}
-                {item.id}
+                <span>{item.icon}</span>
+                {isSidebarOpen && <span className="sidebar-text" style={{ marginLeft: "12px" }}>{item.id}</span>}
               </li>
             ))}
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          Logout
+          {isSidebarOpen ? "Logout" : "🚪"}
         </button>
       </div>
 
       {/* Main Content Area */}
       <div className="main">
         <div className="header" style={{ flexShrink: 0 }}>
-          <h2 style={{ margin: 0 }}>{activeTab}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+            <h2 style={{ margin: 0 }}>{activeTab}</h2>
+          </div>
           
           {/* Top right profile & actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>

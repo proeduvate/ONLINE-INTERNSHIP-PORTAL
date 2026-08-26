@@ -11,6 +11,7 @@ import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
 import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
 import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
+import InternDetails from "./pages/InternDetails";
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
           element={
             <ProtectedRoute roles={["mentor"]}>
               <MentorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mentor/intern/:id"
+          element={
+            <ProtectedRoute roles={["mentor"]}>
+              <InternDetails />
             </ProtectedRoute>
           }
         />

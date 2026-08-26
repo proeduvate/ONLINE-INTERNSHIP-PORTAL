@@ -19,6 +19,14 @@
   justify-content: space-between;
   z-index: 100;
   box-shadow: 2px 0 10px rgb(0 0 0 / 0.02);
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
 }
 
 .sidebar h2 {
@@ -86,7 +94,7 @@
 /* Main Content Area */
 .main {
   padding: 24px 40px;
-  width: calc(100% - 260px);
+  flex: 1;
   height: 100vh;
   display: flex;
   flex-direction: column;

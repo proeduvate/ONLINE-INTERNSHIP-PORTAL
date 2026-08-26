@@ -3,6 +3,7 @@ import "../styles/Dashboard.css";
 
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Mock State
   const progress = 40; // 12 of 30 days
@@ -206,39 +207,73 @@ export default function InternDashboard() {
             
             <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", marginTop: "24px" }}>
               {/* Daily Task / Analytics (Left) */}
-              <div className="card" style={{ margin: 0, padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+              <div className="card" style={{ margin: 0, padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", backgroundColor: "#ffffff", border: "none", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)" }}>
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", backgroundColor: "#3b82f6", color: "#fff", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      📚
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "12px", backgroundColor: "#eff6ff", color: "#3b82f6", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "20px" }}>
+                        🎯
+                      </div>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#0f172a" }}>Today's Objective</h3>
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day 12: React Framework Basics</span>
+                      </div>
                     </div>
-                    <h3 style={{ margin: 0, fontSize: "16px" }}>Today's Objective</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#fef2f2", padding: "6px 12px", borderRadius: "20px" }}>
+                      <span style={{ fontSize: "14px" }}>⏳</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "#ef4444" }}>45 mins left</span>
+                    </div>
                   </div>
                   
-                  <div style={{ marginBottom: "16px" }}>
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Current Module</span>
-                    <h4 style={{ margin: "4px 0 8px 0", fontSize: "15px", color: "#0f172a" }}>Day 12: React Framework Basics</h4>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#475569" }}>You have 1 pending assessment for today's module. Complete it to unlock the next day.</p>
+                  <div style={{ marginBottom: "24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "8px", fontWeight: 600 }}>
+                      <span style={{ color: "#475569" }}>Module Progress</span>
+                      <span style={{ color: "#3b82f6" }}>65%</span>
+                    </div>
+                    <div style={{ width: "100%", backgroundColor: "#e2e8f0", borderRadius: "8px", height: "8px", overflow: "hidden" }}>
+                      <div style={{ width: "65%", backgroundColor: "#3b82f6", height: "100%", borderRadius: "8px" }}></div>
+                    </div>
                   </div>
 
-                  <div style={{ padding: "12px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <span style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming Meeting</span>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+                  <div style={{ marginBottom: "24px" }}>
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "12px" }}>Key Topics</span>
+                    <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#334155", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>✓</div>
+                        Component Composition
+                      </li>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#334155", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#f3f4f6", color: "#9ca3af", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>▶</div>
+                        JSX Syntax & Rules
+                      </li>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#94a3b8", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#f8fafc", color: "#cbd5e1", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>🔒</div>
+                        Render Paths
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                      <span style={{ fontSize: "14px" }}>📅</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming Meeting</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
-                        <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#0f172a" }}>React Hook Refactoring Standup</h4>
-                        <span style={{ fontSize: "12px", color: "#64748b" }}>Host: Dr. Sakthi • Today, 3:00 PM</span>
+                        <h4 style={{ margin: "0 0 4px 0", fontSize: "15px", fontWeight: 600, color: "#0f172a" }}>React Hook Refactoring</h4>
+                        <span style={{ fontSize: "13px", color: "#475569" }}>Dr. Sakthi • 3:00 PM</span>
                       </div>
-                      <button className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#3b82f6", border: "none" }} onClick={() => alert("Joining mock Zoom room...")}>Join</button>
+                      <button className="btn btn-primary" style={{ padding: "8px 16px", fontSize: "13px", fontWeight: 600, backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px" }} onClick={() => alert("Joining mock Zoom room...")}>Join</button>
                     </div>
                   </div>
                 </div>
 
                 <button 
                   className="btn btn-primary" 
-                  style={{ width: "100%", marginTop: "20px", padding: "12px", fontSize: "14px", fontWeight: 600 }}
+                  style={{ width: "100%", marginTop: "24px", padding: "14px", fontSize: "15px", fontWeight: 600, borderRadius: "10px", backgroundColor: "#3b82f6", border: "none" }}
                   onClick={() => setActiveTab("Learning")}
                 >
-                  Go to Learning Task
+                  Resume Learning
                 </button>
               </div>
 
@@ -296,55 +331,6 @@ export default function InternDashboard() {
       case "Learning":
         const currentCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[curriculumData.length - 1];
         
-        if (showTicketForm) {
-          return (
-            <div className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
-                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Learning</button>
-              </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
-                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" />
-                </div>
-                
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
-                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..."></textarea>
-                </div>
-                
-                <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c" }} onClick={() => {
-                    alert("Ticket submitted successfully! Admin will review it shortly.");
-                    setShowTicketForm(false);
-                  }}>Submit Ticket</button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
         if (isDayLockedUntilMidnight) {
           return (
             <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
@@ -611,6 +597,55 @@ export default function InternDashboard() {
         );
 
       case "Tickets":
+        if (showTicketForm) {
+          return (
+            <div className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
+                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Tickets</button>
+              </div>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
+                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" />
+                </div>
+                
+                <div>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
+                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..."></textarea>
+                </div>
+                
+                <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c" }} onClick={() => {
+                    alert("Ticket submitted successfully! Admin will review it shortly.");
+                    setShowTicketForm(false);
+                  }}>Submit Ticket</button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             <div className="card" style={{ backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
@@ -723,37 +758,43 @@ export default function InternDashboard() {
   return (
     <div className="container">
       {/* Sidebar Navigation */}
-      <div className="sidebar">
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
+            {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
           </div>
           <ul>
             {[
-              "Overview",
-              "Learning",
-              "Tickets",
-              "Chat with Mentor"
+              { id: "Overview", icon: "📊" },
+              { id: "Learning", icon: "📚" },
+              { id: "Tickets", icon: "🎫" },
+              { id: "Chat with Mentor", icon: "💬" }
             ].map((tab) => (
               <li
-                key={tab}
-                className={activeTab === tab ? "active" : ""}
-                onClick={() => setActiveTab(tab)}
+                key={tab.id}
+                className={activeTab === tab.id ? "active" : ""}
+                onClick={() => setActiveTab(tab.id)}
+                title={!isSidebarOpen ? tab.id : ""}
               >
-                {tab}
+                <span>{tab.icon}</span>
+                {isSidebarOpen && <span className="sidebar-text">{tab.id}</span>}
               </li>
             ))}
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          Logout
+          {isSidebarOpen ? "Logout" : "🚪"}
         </button>
       </div>
 
       {/* Main Content Area */}
       <div className="main">
         <div className="header">
-          <h2>{activeTab}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+            <h2>{activeTab}</h2>
+          </div>
           <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
             Role: <b>Intern</b>
           </span>

@@ -145,12 +145,6 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="demo-credentials">
-          <p><b>Demo Credentials:</b></p>
-          <p>Admin: <code>admin@gmail.com</code> / <code>admin123</code></p>
-          <p>Mentor: <code>mentor@gmail.com</code> / <code>mentor123</code></p>
-          <p>Intern: <code>intern@gmail.com</code> / <code>intern123</code></p>
-        </div>
       </div>
     </div>
   );

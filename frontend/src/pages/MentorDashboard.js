@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import "../styles/Dashboard.css";
 
 export default function MentorDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // State Mock Data
   const [assignedInterns] = useState([
@@ -250,7 +253,7 @@ export default function MentorDashboard() {
                     {assignedInterns.map(i => (
                       <tr key={i.id}>
                         <td>{i.id}</td>
-                        <td><b>{i.name}</b></td>
+                        <td onClick={() => navigate(`/mentor/intern/${i.id}`)} style={{ cursor: "pointer", color: "#3b82f6", textDecoration: "underline" }}><b>{i.name}</b></td>
                         <td>{i.progress}</td>
                         <td><b>{i.score}</b></td>
                         <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{i.weakAreas}</td>
@@ -476,35 +479,43 @@ export default function MentorDashboard() {
   return (
     <div className="container">
       {/* Sidebar Navigation */}
-      <div className="sidebar">
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
         <div>
-          <h2>Mentor Panel</h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
+            {isSidebarOpen && <h2>Mentor Panel</h2>}
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
+          </div>
           <ul>
             {[
-              "Overview",
-              "Cohort",
-              "Evaluations",
-              "Programs"
+              { id: "Overview", icon: "📊" },
+              { id: "Cohort", icon: "👥" },
+              { id: "Evaluations", icon: "📝" },
+              { id: "Programs", icon: "📅" }
             ].map((tab) => (
               <li
-                key={tab}
-                className={activeTab === tab ? "active" : ""}
-                onClick={() => setActiveTab(tab)}
+                key={tab.id}
+                className={activeTab === tab.id ? "active" : ""}
+                onClick={() => setActiveTab(tab.id)}
+                title={!isSidebarOpen ? tab.id : ""}
               >
-                {tab}
+                <span>{tab.icon}</span>
+                {isSidebarOpen && <span className="sidebar-text">{tab.id}</span>}
               </li>
             ))}
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          Logout
+          {isSidebarOpen ? "Logout" : "🚪"}
         </button>
       </div>
 
       {/* Main Content Area */}
       <div className="main">
         <div className="header">
-          <h2>{activeTab}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+            <h2>{activeTab}</h2>
+          </div>
           <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
             Role: <b>Mentor</b>
           </span>
