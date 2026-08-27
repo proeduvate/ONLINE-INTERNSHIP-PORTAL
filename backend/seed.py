@@ -4,12 +4,34 @@ try:
 except ImportError:
     from . import database, models, app
 import json
+import os
 from datetime import datetime, timedelta
 
+def register_supabase_user(email, password):
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+    if SUPABASE_URL and SUPABASE_ANON_KEY:
+        import requests
+        print(f"Registering {email} in Supabase...")
+        res = requests.post(
+            f"{SUPABASE_URL.rstrip('/')}/auth/v1/signup",
+            headers={"apikey": SUPABASE_ANON_KEY, "Authorization": f"Bearer {SUPABASE_ANON_KEY}", "Content-Type": "application/json"},
+            json={"email": email, "password": password, "email_confirm": True},
+        )
+        if res.status_code >= 400:
+            print(f"Supabase registration error for {email}: {res.text}")
+
 def seed():
-    # Drop all and recreate to ensure schema alignment (essential when DB columns change)
+    # Drop all and recreate to ensure schema alignment
     print("Recreating database schema...")
-    models.Base.metadata.drop_all(bind=database.engine)
+    
+    # Drop tables with CASCADE
+    with database.engine.connect() as conn:
+        from sqlalchemy import text
+        conn.execute(text("DROP SCHEMA public CASCADE;"))
+        conn.execute(text("CREATE SCHEMA public;"))
+        conn.commit()
+
     models.Base.metadata.create_all(bind=database.engine)
     
     db = next(database.get_db())
@@ -25,9 +47,10 @@ def seed():
     db.refresh(dom_fastapi)
     
     # Create Admin
+    register_supabase_user("admin1@gmail.com", "admin123")
     admin = models.User(
         name="System Admin",
-        email="admin@gmail.com",
+        email="admin1@gmail.com",
         hashed_password=app.pwd_context.hash("admin123"),
         role=models.UserRole.ADMIN,
         attendance_pct=100
@@ -35,9 +58,10 @@ def seed():
     db.add(admin)
     
     # Create Mentor
+    register_supabase_user("mentor1@gmail.com", "mentor123")
     mentor = models.User(
         name="Sarah Connor (Senior Lead)",
-        email="mentor@gmail.com",
+        email="mentor1@gmail.com",
         hashed_password=app.pwd_context.hash("mentor123"),
         role=models.UserRole.MENTOR,
         attendance_pct=100
@@ -47,9 +71,10 @@ def seed():
     db.refresh(mentor)
     
     # Create Intern
+    register_supabase_user("intern1@gmail.com", "intern123")
     intern = models.User(
         name="John Doe",
-        email="intern@gmail.com",
+        email="intern1@gmail.com",
         hashed_password=app.pwd_context.hash("intern123"),
         role=models.UserRole.INTERN,
         intern_id="INT-2026-0101",

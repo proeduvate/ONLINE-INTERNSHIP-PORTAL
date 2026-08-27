@@ -23,7 +23,7 @@ def get(url, headers=None):
 print('Integration test starting...')
 
 # 1) Login admin
-r = post('/login', data={'email':'admin@gmail.com','password':'admin123'})
+r = post('/login', data={'email':'admin1@gmail.com','password':'admin123'})
 if r.status_code != 200:
     print('Admin login failed', r.status_code, r.text)
     raise SystemExit(1)
@@ -32,7 +32,7 @@ admin_headers = {'Authorization': f'Bearer {admin_token}'}
 print('Admin logged in')
 
 # 2) Login intern
-r2 = post('/login', data={'email':'intern@gmail.com','password':'intern123'})
+r2 = post('/login', data={'email':'intern1@gmail.com','password':'intern123'})
 if r2.status_code != 200:
     print('Intern login failed', r2.status_code, r2.text)
     raise SystemExit(1)
@@ -62,7 +62,7 @@ from database import SessionLocal
 import models
 
 db = SessionLocal()
-user = db.query(models.User).filter(models.User.email == 'intern@gmail.com').first()
+user = db.query(models.User).filter(models.User.email == 'intern1@gmail.com').first()
 if not user:
     print('Could not find intern in DB')
 else:

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -27,6 +27,8 @@ try:
     import models, database, schemas
 except ImportError:
     from . import models, database, schemas
+
+from services.n8n_service import trigger_n8n_webhook
 
 # Optional sandbox runner using Docker; falls back to local subprocess if unavailable
 try:
@@ -172,7 +174,7 @@ def root():
 # ==========================================
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
-def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.get_db)):
+def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
     if not SUPABASE_URL or not SUPABASE_ANON_KEY:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -210,6 +212,12 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
+    payload = {
+        "event": "ACCOUNT_CREATED",
+        "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email}
+    }
+    background_tasks.add_task(trigger_n8n_webhook, "ACCOUNT_CREATED", payload)
 
     return {"message": "User registered successfully", "user_id": new_user.id}
 
@@ -271,6 +279,7 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
 @app.post("/admin/onboard", status_code=status.HTTP_201_CREATED)
 def onboard_user(
     data: schemas.UserOnboard, 
+    background_tasks: BackgroundTasks,
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -315,6 +324,20 @@ def onboard_user(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    
+    payload = {
+        "event": "ACCOUNT_CREATED",
+        "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email}
+    }
+    background_tasks.add_task(trigger_n8n_webhook, "ACCOUNT_CREATED", payload)
+    
+    if data.mentor_id:
+        mentor_payload = {
+            "event": "MENTOR_ASSIGNED",
+            "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email},
+            "mentor": {"id": data.mentor_id}
+        }
+        background_tasks.add_task(trigger_n8n_webhook, "MENTOR_ASSIGNED", mentor_payload)
     
     return {"message": "User onboarded successfully", "user_id": new_user.id, "intern_id": intern_id}
 

@@ -31,6 +31,7 @@ class User(Base):
     # Link to Supabase auth user id (uuid)
     supabase_id = Column(String(100), nullable=True, unique=True)
     role = Column(Enum(UserRole), default=UserRole.INTERN)
+    onboarding_status = Column(String(50), default="PENDING_REVIEW") # for onboarding flow
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Intern specific profile fields
