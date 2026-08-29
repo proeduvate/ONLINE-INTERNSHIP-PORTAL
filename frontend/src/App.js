@@ -12,6 +12,7 @@ import Documents from "./pages/onboarding/Documents";
 import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
 import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
 import InternDetails from "./pages/InternDetails";
+import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 
 function App() {
   return (
@@ -36,6 +37,14 @@ function App() {
           element={
             <ProtectedRoute roles={["mentor"]}>
               <MentorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mentor/breakout-rooms"
+          element={
+            <ProtectedRoute roles={["mentor"]}>
+              <BreakoutRoomsApp />
             </ProtectedRoute>
           }
         />
@@ -76,4 +85,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;

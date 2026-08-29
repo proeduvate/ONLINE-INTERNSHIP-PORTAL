@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import "../styles/Dashboard.css";
+import BreakoutRoomsApp from "./breakout-rooms/BreakoutRoomsApp";
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -471,6 +472,9 @@ export default function MentorDashboard() {
           </div>
         );
 
+      case "Breakout Rooms":
+        return <BreakoutRoomsApp />;
+        
       default:
         return null;
     }
@@ -490,7 +494,8 @@ export default function MentorDashboard() {
               { id: "Overview", icon: "📊" },
               { id: "Cohort", icon: "👥" },
               { id: "Evaluations", icon: "📝" },
-              { id: "Programs", icon: "📅" }
+              { id: "Programs", icon: "📅" },
+              { id: "Breakout Rooms", icon: "💬" }
             ].map((tab) => (
               <li
                 key={tab.id}
@@ -510,16 +515,26 @@ export default function MentorDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <div className="main">
-        <div className="header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
-            <h2>{activeTab}</h2>
+      <div className="main" style={activeTab === "Breakout Rooms" ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
+        {activeTab !== "Breakout Rooms" ? (
+          <div className="header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+              <h2>{activeTab}</h2>
+            </div>
+            <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
+              Role: <b>Mentor</b>
+            </span>
           </div>
-          <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
-            Role: <b>Mentor</b>
-          </span>
-        </div>
+        ) : (
+          !isSidebarOpen && (
+            <button 
+              onClick={() => setIsSidebarOpen(true)} 
+              style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2000, background: '#ffffff', border: '1px solid #e3e5e8', borderRadius: '4px', cursor: 'pointer', fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+              ☰
+            </button>
+          )
+        )}
 
         {renderContent()}
       </div>

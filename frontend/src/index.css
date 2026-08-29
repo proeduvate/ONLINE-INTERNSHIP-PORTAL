@@ -44,3 +44,87 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+:root {
+  --bg-light: #f8fafc;
+  --bg-gray-light: #f3f4f6;
+  --bg-gray-lighter: #f1f5f9;
+  --bg-blue-light: #eff6ff;
+  --bg-red-light: #fef2f2;
+  --bg-yellow-light: #fef3c7;
+  --bg-green-light: #dcfce7;
+  --bg-emerald-light: #ecfdf5;
+  --bg-emerald-lighter: #d1fae5;
+  --bg-red-lighter: #fee2e2;
+  --bg-red-lightest: #fecaca;
+  
+  --text-dark: #0f172a;
+  --text-darker: #1e293b;
+  --text-gray-dark: #1f2937;
+  --text-slate-dark: #334155;
+  --text-gray: #4b5563;
+  --text-slate: #64748b;
+  --text-gray-muted: #6b7280;
+  --text-slate-light: #94a3b8;
+  --text-gray-light: #9ca3af;
+  --text-slate-lighter: #cbd5e1;
+  --text-red-light: #fca5a5;
+  
+  --border-gray: #e5e7eb;
+  --border-gray-dark: #d1d5db;
+  --border-blue-light: #bfdbfe;
+  
+  --primary-dark: #2563eb;
+  --primary-darker: #1d4ed8;
+  --primary-darkest: #1e3a8a;
+  
+  --success-dark: #16a34a;
+  --success-darker: #065f46;
+  
+  --danger-dark: #dc2626;
+  --danger-darker: #b91c1c;
+  --danger-darkest: #991b1b;
+  --danger-black: #7f1d1d;
+  
+  --warning-darker: #92400e;
+}
+
+
+[data-theme="obsidian"] {
+  --primary-color: #eab308;
+  --secondary-color: #171717;
+  --background-color: #0a0a0a;
+  --card-bg: #171717;
+  --text-color: #fafafa;
+  --text-muted: #a3a3a3;
+  --border-color: #262626;
+
+  --bg-light: #171717;
+  --bg-gray-light: #262626;
+  --bg-gray-lighter: #404040;
+  --bg-blue-light: #262626;
+  --bg-red-light: #3f1515;
+  --bg-yellow-light: #422006;
+  --bg-green-light: #052e16;
+  --bg-emerald-light: #052e16;
+  --bg-emerald-lighter: #064e3b;
+  --bg-red-lighter: #450a0a;
+  --bg-red-lightest: #7f1d1d;
+  
+  --text-dark: #fafafa;
+  --text-darker: #f5f5f5;
+  --text-gray-dark: #e5e5e5;
+  --text-slate-dark: #d4d4d4;
+  --text-gray: #d4d4d4;
+  --text-slate: #a3a3a3;
+  --text-gray-muted: #737373;
+  --text-slate-light: #525252;
+  --text-gray-light: #737373;
+  --text-slate-lighter: #404040;
+  --text-red-light: #ef4444;
+  
+  --border-gray: #404040;
+  --border-gray-dark: #525252;
+  --border-blue-light: #422006;
+}
+

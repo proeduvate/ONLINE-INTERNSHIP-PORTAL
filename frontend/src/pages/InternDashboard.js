@@ -4,6 +4,11 @@ import "../styles/Dashboard.css";
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   // Mock State
   const progress = 40; // 12 of 30 days
@@ -36,10 +41,10 @@ export default function InternDashboard() {
       title: "Environment setup failing on local machine during Docker build",
       date: "2 days ago",
       status: "In Progress",
-      statusBg: "#fef3c7",
-      statusColor: "#92400e",
-      tagBg: "#fee2e2",
-      tagColor: "#991b1b",
+      statusBg: "var(--bg-yellow-light)",
+      statusColor: "var(--warning-darker)",
+      tagBg: "var(--bg-red-lighter)",
+      tagColor: "var(--danger-darkest)",
       adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
     },
     {
@@ -47,10 +52,10 @@ export default function InternDashboard() {
       title: "Missing lecture notes for Day 5",
       date: "1 week ago",
       status: "Resolved",
-      statusBg: "#d1fae5",
-      statusColor: "#065f46",
-      tagBg: "#f3f4f6",
-      tagColor: "#4b5563",
+      statusBg: "var(--bg-emerald-lighter)",
+      statusColor: "var(--success-darker)",
+      tagBg: "var(--bg-gray-light)",
+      tagColor: "var(--text-gray)",
       adminReply: "The notes have been uploaded to the portal. Please refresh the page."
     }
   ];
@@ -207,70 +212,70 @@ export default function InternDashboard() {
             
             <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", marginTop: "24px" }}>
               {/* Daily Task / Analytics (Left) */}
-              <div className="card" style={{ margin: 0, padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", backgroundColor: "#ffffff", border: "none", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)" }}>
+              <div className="card" style={{ margin: 0, padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", backgroundColor: "var(--card-bg)", border: "none", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)" }}>
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "12px", backgroundColor: "#eff6ff", color: "#3b82f6", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "20px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "12px", backgroundColor: "var(--bg-blue-light)", color: "var(--primary-color)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "20px" }}>
                         🎯
                       </div>
                       <div>
-                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#0f172a" }}>Today's Objective</h3>
-                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day 12: React Framework Basics</span>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "var(--text-dark)" }}>Today's Objective</h3>
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day 12: React Framework Basics</span>
                       </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#fef2f2", padding: "6px 12px", borderRadius: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-red-light)", padding: "6px 12px", borderRadius: "20px" }}>
                       <span style={{ fontSize: "14px" }}>⏳</span>
-                      <span style={{ fontSize: "12px", fontWeight: 700, color: "#ef4444" }}>45 mins left</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--danger-color)" }}>45 mins left</span>
                     </div>
                   </div>
                   
                   <div style={{ marginBottom: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "8px", fontWeight: 600 }}>
-                      <span style={{ color: "#475569" }}>Module Progress</span>
-                      <span style={{ color: "#3b82f6" }}>65%</span>
+                      <span style={{ color: "var(--text-muted)" }}>Module Progress</span>
+                      <span style={{ color: "var(--primary-color)" }}>65%</span>
                     </div>
-                    <div style={{ width: "100%", backgroundColor: "#e2e8f0", borderRadius: "8px", height: "8px", overflow: "hidden" }}>
-                      <div style={{ width: "65%", backgroundColor: "#3b82f6", height: "100%", borderRadius: "8px" }}></div>
+                    <div style={{ width: "100%", backgroundColor: "var(--border-color)", borderRadius: "8px", height: "8px", overflow: "hidden" }}>
+                      <div style={{ width: "65%", backgroundColor: "var(--primary-color)", height: "100%", borderRadius: "8px" }}></div>
                     </div>
                   </div>
 
                   <div style={{ marginBottom: "24px" }}>
-                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "12px" }}>Key Topics</span>
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-slate-light)", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "12px" }}>Key Topics</span>
                     <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
-                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#334155", fontWeight: 500 }}>
-                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>✓</div>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "var(--bg-green-light)", color: "var(--success-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>✓</div>
                         Component Composition
                       </li>
-                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#334155", fontWeight: 500 }}>
-                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#f3f4f6", color: "#9ca3af", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>▶</div>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "var(--bg-gray-light)", color: "var(--text-gray-light)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>▶</div>
                         JSX Syntax & Rules
                       </li>
-                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#94a3b8", fontWeight: 500 }}>
-                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "#f8fafc", color: "#cbd5e1", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>🔒</div>
+                      <li style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "var(--text-slate-light)", fontWeight: 500 }}>
+                        <div style={{ width: "24px", height: "24px", borderRadius: "6px", backgroundColor: "var(--bg-light)", color: "var(--text-slate-lighter)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px" }}>🔒</div>
                         Render Paths
                       </li>
                     </ul>
                   </div>
 
-                  <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                  <div style={{ padding: "16px", backgroundColor: "var(--bg-light)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                       <span style={{ fontSize: "14px" }}>📅</span>
-                      <span style={{ fontSize: "12px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming Meeting</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming Meeting</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
-                        <h4 style={{ margin: "0 0 4px 0", fontSize: "15px", fontWeight: 600, color: "#0f172a" }}>React Hook Refactoring</h4>
-                        <span style={{ fontSize: "13px", color: "#475569" }}>Dr. Sakthi • 3:00 PM</span>
+                        <h4 style={{ margin: "0 0 4px 0", fontSize: "15px", fontWeight: 600, color: "var(--text-dark)" }}>React Hook Refactoring</h4>
+                        <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>Dr. Sakthi • 3:00 PM</span>
                       </div>
-                      <button className="btn btn-primary" style={{ padding: "8px 16px", fontSize: "13px", fontWeight: 600, backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px" }} onClick={() => alert("Joining mock Zoom room...")}>Join</button>
+                      <button className="btn btn-primary" style={{ padding: "8px 16px", fontSize: "13px", fontWeight: 600, backgroundColor: "var(--text-dark)", color: "var(--card-bg)", border: "none", borderRadius: "8px" }} onClick={() => alert("Joining mock Zoom room...")}>Join</button>
                     </div>
                   </div>
                 </div>
 
                 <button 
                   className="btn btn-primary" 
-                  style={{ width: "100%", marginTop: "24px", padding: "14px", fontSize: "15px", fontWeight: 600, borderRadius: "10px", backgroundColor: "#3b82f6", border: "none" }}
+                  style={{ width: "100%", marginTop: "24px", padding: "14px", fontSize: "15px", fontWeight: 600, borderRadius: "10px", backgroundColor: "var(--primary-color)", border: "none" }}
                   onClick={() => setActiveTab("Learning")}
                 >
                   Resume Learning
@@ -284,7 +289,7 @@ export default function InternDashboard() {
                     <h3 style={{ margin: 0, fontSize: "18px" }}>Leaderboard - Top Competing Interns</h3>
                     <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "4px 0 0 0" }}>Compete with your peers based on your overall evaluation progress and daily assessment points.</p>
                   </div>
-                  <div style={{ backgroundColor: "#eff6ff", padding: "8px 16px", borderRadius: "20px", color: "#1d4ed8", fontWeight: 600, fontSize: "14px", whiteSpace: "nowrap" }}>
+                  <div style={{ backgroundColor: "var(--bg-blue-light)", padding: "8px 16px", borderRadius: "20px", color: "var(--primary-darker)", fontWeight: 600, fontSize: "14px", whiteSpace: "nowrap" }}>
                     Your Rank: #3
                   </div>
                 </div>
@@ -307,16 +312,16 @@ export default function InternDashboard() {
                         { rank: 4, name: "Alice Smith", domain: "Data Science", points: 790, badge: "Member" },
                         { rank: 5, name: "Bob Jones", domain: "Web Development", points: 720, badge: "Member" },
                       ].map((intern) => (
-                        <tr key={intern.rank} style={intern.isCurrent ? { backgroundColor: "#eff6ff", fontWeight: "bold" } : {}}>
+                        <tr key={intern.rank} style={intern.isCurrent ? { backgroundColor: "var(--bg-blue-light)", fontWeight: "bold" } : {}}>
                           <td>{intern.rank}</td>
                           <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ width: "28px", height: "28px", borderRadius: "50%", backgroundColor: intern.isCurrent ? "#3b82f6" : "#e5e7eb", color: intern.isCurrent ? "#fff" : "#6b7280", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px", fontWeight: "bold" }}>
+                            <div style={{ width: "28px", height: "28px", borderRadius: "50%", backgroundColor: intern.isCurrent ? "var(--primary-color)" : "var(--border-gray)", color: intern.isCurrent ? "var(--card-bg)" : "var(--text-gray-muted)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px", fontWeight: "bold" }}>
                               {intern.name.split(" ")[0][0]}{intern.name.split(" ")[1] ? intern.name.split(" ")[1][0] : ""}
                             </div>
                             {intern.name}
                           </td>
                           <td><span className="badge badge-success">{intern.domain}</span></td>
-                          <td style={{ color: "#2563eb", fontWeight: 600 }}>{intern.points} pts</td>
+                          <td style={{ color: "var(--primary-dark)", fontWeight: 600 }}>{intern.points} pts</td>
                           <td>{intern.badge}</td>
                         </tr>
                       ))}
@@ -336,7 +341,7 @@ export default function InternDashboard() {
             <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
               <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🔒</p>
               <h3>Day {currentDay} is Locked</h3>
-              <p style={{ color: "#6b7280", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
+              <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
               <button className="btn btn-secondary" onClick={() => setIsDayLockedUntilMidnight(false)}>Bypass / Unlock Now (Demo Mode)</button>
             </div>
           );
@@ -352,31 +357,31 @@ export default function InternDashboard() {
                     <button className="btn btn-secondary" onClick={() => setShowAssessment(false)} style={{ padding: "6px 12px", fontSize: "12px" }}>Back to Learning</button>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid #e5e7eb", background: mcqDone ? "#ecfdf5" : "#fff" }}>
+                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid var(--border-gray)", background: mcqDone ? "var(--bg-emerald-light)" : "var(--card-bg)" }}>
                       <h4>Part A: MCQ Assessment</h4>
-                      <p style={{ color: "#6b7280", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
+                      <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
                       {mcqDone ? (
-                        <span style={{ color: "#10b981", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
+                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
                       ) : (
                         <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
                       )}
                     </div>
-                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid #e5e7eb", background: codingDone ? "#ecfdf5" : "#fff" }}>
+                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid var(--border-gray)", background: codingDone ? "var(--bg-emerald-light)" : "var(--card-bg)" }}>
                       <h4>Part B: Coding Assessment</h4>
-                      <p style={{ color: "#6b7280", fontSize: "13px" }}>Write and execute code in our compiler.</p>
+                      <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Write and execute code in our compiler.</p>
                       {codingDone ? (
-                        <span style={{ color: "#10b981", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
+                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
                       ) : (
                         <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ width: "100%", marginTop: "12px" }}>Start Coding</button>
                       )}
                     </div>
                   </div>
 
-                  <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <h4 style={{ margin: "0 0 12px 0", color: "#0f172a", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "var(--bg-light)", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
+                    <h4 style={{ margin: "0 0 12px 0", color: "var(--text-dark)", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                       📋 Rules and Conditions for Assessment
                     </h4>
-                    <ul style={{ margin: 0, paddingLeft: "20px", color: "#475569", fontSize: "14px", lineHeight: "1.6" }}>
+                    <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6" }}>
                       <li><b>Completion:</b> Both Part A (MCQ) and Part B (Coding) must be completed to unlock the next day's module.</li>
                       <li><b>Timing:</b> The MCQ section is strictly timed. The timer cannot be paused once started.</li>
                       <li><b>Navigation:</b> During the MCQ test, you cannot return to the selection menu without submitting your answers.</li>
@@ -387,7 +392,7 @@ export default function InternDashboard() {
 
                   {mcqDone && codingDone && (
                     <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
-                      <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "12px 32px", fontSize: "16px" }}>Complete & Unlock Next Day</button>
+                      <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "var(--success-color)", borderColor: "var(--success-color)", padding: "12px 32px", fontSize: "16px" }}>Complete & Unlock Next Day</button>
                     </div>
                   )}
                 </div>
@@ -405,16 +410,16 @@ export default function InternDashboard() {
                   {!mcqSubmitted ? (
                     <div>
                       {/* Top Bar: Timer and Submit */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-gray)", paddingBottom: "12px", marginBottom: "16px" }}>
                         <div style={{ color: "var(--danger-color)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                           ⏱️ Timer: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
                         </div>
-                        <button className="btn btn-primary" onClick={handleMcqSubmit} style={{ padding: "8px 16px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Submit Test</button>
+                        <button className="btn btn-primary" onClick={handleMcqSubmit} style={{ padding: "8px 16px", backgroundColor: "var(--success-color)", borderColor: "var(--success-color)" }}>Submit Test</button>
                       </div>
 
                       <div style={{ display: "flex", gap: "24px" }}>
                         {/* Left Sidebar: Question Numbers Grid */}
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid #e5e7eb", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid var(--border-gray)", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
                           {mcqQuestionsList.map((q, idx) => (
                             <button 
                               key={q.id}
@@ -423,9 +428,9 @@ export default function InternDashboard() {
                                 aspectRatio: "1/1",
                                 padding: 0,
                                 borderRadius: "6px",
-                                  border: currentQuestionIndex === idx ? "2px solid #3b82f6" : (answers[q.id] ? "1px solid #10b981" : "1px solid #e5e7eb"),
-                                  backgroundColor: answers[q.id] ? "#10b981" : (currentQuestionIndex === idx ? "#eff6ff" : "#fff"),
-                                  color: answers[q.id] ? "#fff" : (currentQuestionIndex === idx ? "#1d4ed8" : "#4b5563"),
+                                  border: currentQuestionIndex === idx ? "2px solid var(--primary-color)" : (answers[q.id] ? "1px solid var(--success-color)" : "1px solid var(--border-gray)"),
+                                  backgroundColor: answers[q.id] ? "var(--success-color)" : (currentQuestionIndex === idx ? "var(--bg-blue-light)" : "var(--card-bg)"),
+                                  color: answers[q.id] ? "var(--card-bg)" : (currentQuestionIndex === idx ? "var(--primary-darker)" : "var(--text-gray)"),
                                   fontWeight: currentQuestionIndex === idx ? 700 : 500,
                                 cursor: "pointer",
                                 display: "flex",
@@ -441,7 +446,7 @@ export default function InternDashboard() {
 
                         {/* Right Content: Current Question */}
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "#1e293b", lineHeight: "1.5" }}>
+                          <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
                             <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
                           </h4>
                           
@@ -451,7 +456,7 @@ export default function InternDashboard() {
                                 key={opt.val}
                                 className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
                                 onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#3b82f6" : "#fff", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#fff" : "#333", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid #d1d5db" }}
+                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
                               >
                                 {opt.label}
                               </button>
@@ -459,7 +464,7 @@ export default function InternDashboard() {
                           </div>
 
                           {/* Navigation Buttons */}
-                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid #e5e7eb", paddingTop: "16px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>
                             <button 
                               className="btn btn-secondary" 
                               disabled={currentQuestionIndex === 0} 
@@ -525,8 +530,8 @@ export default function InternDashboard() {
                       ) : (
                         <div>
                           <div style={{ display: "flex", gap: "20px", alignItems: "center", marginBottom: "16px" }}>
-                            <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "6px solid #2563EB", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-                              <span style={{ fontSize: "20px", fontWeight: "800", color: "#2563EB" }}>{evalResult.score}%</span>
+                            <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "6px solid var(--primary-dark)", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                              <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary-dark)" }}>{evalResult.score}%</span>
                               <span style={{ fontSize: "8px", color: "var(--text-muted)" }}>Grade</span>
                             </div>
                             <p style={{ fontSize: "13px" }}>Code complies with structural specifications. Recommended adjustments logged below.</p>
@@ -539,7 +544,7 @@ export default function InternDashboard() {
                               <span>Code Quality: <b>{evalResult.quality}%</b></span>
                             </div>
                           </div>
-                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "#1E3A8A", marginTop: "16px" }}>
+                          <div style={{ background: "var(--bg-blue-light)", border: "1px solid var(--border-blue-light)", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "var(--primary-darkest)", marginTop: "16px" }}>
                             <b>AI Suggestions:</b> {evalResult.suggestions}
                           </div>
                           <button className="btn btn-primary" onClick={() => setAssessmentView("selection")} style={{ marginTop: "16px" }}>Continue</button>
@@ -559,14 +564,14 @@ export default function InternDashboard() {
             <div className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "24px" }}>
               <div style={{ flex: 1 }}>
                 <h3 style={{ margin: 0 }}>Day {currentCurriculum.day}: {currentCurriculum.topic}</h3>
-                <p style={{ fontSize: "14px", color: "#6b7280", marginTop: "6px", marginBottom: "16px" }}>{currentCurriculum.desc}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#f3f4f6", padding: "10px 16px", borderRadius: "8px", width: "fit-content" }}>
+                <p style={{ fontSize: "14px", color: "var(--text-gray-muted)", marginTop: "6px", marginBottom: "16px" }}>{currentCurriculum.desc}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "var(--bg-gray-light)", padding: "10px 16px", borderRadius: "8px", width: "fit-content" }}>
                   <span style={{ fontSize: "13px", color: "#374151" }}>📄 {currentCurriculum.notes}</span>
-                  <button onClick={() => alert(`Downloading ${currentCurriculum.notes}`)} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: "600", cursor: "pointer", fontSize: "13px", padding: 0, textDecoration: "underline" }}>Download PDF Notes</button>
+                  <button onClick={() => alert(`Downloading ${currentCurriculum.notes}`)} style={{ background: "none", border: "none", color: "var(--primary-dark)", fontWeight: "600", cursor: "pointer", fontSize: "13px", padding: 0, textDecoration: "underline" }}>Download PDF Notes</button>
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", borderLeft: "1px solid #e5e7eb", paddingLeft: "24px", minWidth: "180px" }}>
-                <span style={{ fontSize: "11px", color: "#9ca3af", fontWeight: "600", letterSpacing: "0.5px" }}>DAY ASSESSMENT</span>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", borderLeft: "1px solid var(--border-gray)", paddingLeft: "24px", minWidth: "180px" }}>
+                <span style={{ fontSize: "11px", color: "var(--text-gray-light)", fontWeight: "600", letterSpacing: "0.5px" }}>DAY ASSESSMENT</span>
                 <button className="btn btn-primary" onClick={() => setShowAssessment(true)} style={{ padding: "10px 20px", fontSize: "13px", width: "100%" }}>Start Test</button>
               </div>
             </div>
@@ -601,26 +606,26 @@ export default function InternDashboard() {
           return (
             <div className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
+                <h3 style={{ margin: 0, color: "var(--danger-darker)", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
                 <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Tickets</button>
               </div>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid var(--border-gray)" }}>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
+                    <label style={{ fontSize: "12px", color: "var(--text-gray-muted)", fontWeight: 600 }}>User Name</label>
                     <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
                   </div>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
+                    <label style={{ fontSize: "12px", color: "var(--text-gray-muted)", fontWeight: 600 }}>Mentor Name</label>
                     <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
                   </div>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                    <label style={{ fontSize: "12px", color: "var(--text-gray-muted)", fontWeight: 600 }}>Domain</label>
                     <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
                   </div>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                    <label style={{ fontSize: "12px", color: "var(--text-gray-muted)", fontWeight: 600 }}>Branch / University</label>
                     <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
                   </div>
                 </div>
@@ -636,7 +641,7 @@ export default function InternDashboard() {
                 </div>
                 
                 <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c" }} onClick={() => {
+                  <button className="btn btn-primary" style={{ backgroundColor: "var(--danger-darker)", borderColor: "var(--danger-darker)" }} onClick={() => {
                     alert("Ticket submitted successfully! Admin will review it shortly.");
                     setShowTicketForm(false);
                   }}>Submit Ticket</button>
@@ -648,40 +653,40 @@ export default function InternDashboard() {
 
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <div className="card" style={{ backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+            <div className="card" style={{ backgroundColor: "#fff5f5", borderColor: "var(--bg-red-lightest)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                 <div>
-                  <h3 style={{ margin: 0, color: "#b91c1c", fontSize: "16px" }}>Support & Ticketing</h3>
-                  <p style={{ margin: "4px 0 0 0", fontSize: "13px", color: "#7f1d1d" }}>Facing issues with the portal, curriculum, or mentors? File a detailed ticket.</p>
+                  <h3 style={{ margin: 0, color: "var(--danger-darker)", fontSize: "16px" }}>Support & Ticketing</h3>
+                  <p style={{ margin: "4px 0 0 0", fontSize: "13px", color: "var(--danger-black)" }}>Facing issues with the portal, curriculum, or mentors? File a detailed ticket.</p>
                 </div>
-                <button className="btn btn-primary" style={{ backgroundColor: "#dc2626", borderColor: "#dc2626" }} onClick={() => setShowTicketForm(true)}>File a Ticket</button>
+                <button className="btn btn-primary" style={{ backgroundColor: "var(--danger-dark)", borderColor: "var(--danger-dark)" }} onClick={() => setShowTicketForm(true)}>File a Ticket</button>
               </div>
 
-              <div style={{ marginTop: "16px", borderTop: "1px solid #fca5a5", paddingTop: "16px" }}>
-                <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#991b1b" }}>Your Filed Tickets</h4>
+              <div style={{ marginTop: "16px", borderTop: "1px solid var(--text-red-light)", paddingTop: "16px" }}>
+                <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "var(--danger-darkest)" }}>Your Filed Tickets</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {ticketsData.map(ticket => (
                     <div 
                       key={ticket.id}
                       onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
-                      style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: selectedTicket?.id === ticket.id ? "2px solid #ef4444" : "1px solid #e5e7eb", display: "flex", flexDirection: "column", cursor: "pointer" }}
+                      style={{ backgroundColor: "var(--card-bg)", padding: "12px", borderRadius: "8px", border: selectedTicket?.id === ticket.id ? "2px solid var(--danger-color)" : "1px solid var(--border-gray)", display: "flex", flexDirection: "column", cursor: "pointer" }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
                           <span style={{ fontSize: "11px", color: ticket.tagColor, fontWeight: 700, backgroundColor: ticket.tagBg, padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>{ticket.id}</span>
-                          <span style={{ fontSize: "13px", color: "#1f2937", fontWeight: 500, textDecoration: ticket.status === "Resolved" ? "line-through" : "none" }}>{ticket.title}</span>
+                          <span style={{ fontSize: "13px", color: "var(--text-gray-dark)", fontWeight: 500, textDecoration: ticket.status === "Resolved" ? "line-through" : "none" }}>{ticket.title}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>Filed: {ticket.date}</span>
+                          <span style={{ fontSize: "11px", color: "var(--text-gray-muted)" }}>Filed: {ticket.date}</span>
                           <span className="badge" style={{ backgroundColor: ticket.statusBg, color: ticket.statusColor }}>{ticket.status}</span>
                         </div>
                       </div>
                       
                       {selectedTicket?.id === ticket.id && (
-                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #f3f4f6" }}>
-                          <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "#475569", textTransform: "uppercase" }}>Admin Reply</h5>
-                          <div style={{ backgroundColor: "#f8fafc", padding: "12px", borderRadius: "6px", borderLeft: "3px solid #3b82f6" }}>
-                            <p style={{ margin: 0, fontSize: "13px", color: "#334155", lineHeight: "1.5" }}>{ticket.adminReply}</p>
+                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--bg-gray-light)" }}>
+                          <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Admin Reply</h5>
+                          <div style={{ backgroundColor: "var(--bg-light)", padding: "12px", borderRadius: "6px", borderLeft: "3px solid var(--primary-color)" }}>
+                            <p style={{ margin: 0, fontSize: "13px", color: "var(--text-slate-dark)", lineHeight: "1.5" }}>{ticket.adminReply}</p>
                           </div>
                         </div>
                       )}
@@ -695,25 +700,25 @@ export default function InternDashboard() {
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
-            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "#1e293b", color: "#ffffff" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#3b82f6", color: "#ffffff", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
                 DS
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "#ffffff", fontWeight: 600 }}>Dr. Sakthi</h3>
-                <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>Mentor • Online</p>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--card-bg)", fontWeight: 600 }}>Dr. Sakthi</h3>
+                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Mentor • Online</p>
               </div>
             </div>
 
             {/* Chat Body */}
-            <div style={{ flex: 1, backgroundColor: "#f8fafc", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
               {chatMessages.map((msg, i) => (
                 <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
                   <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "#2563eb" : "#ffffff", 
-                    color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
+                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
                     padding: "10px 14px 22px 14px", 
                     borderRadius: "12px", 
                     borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
@@ -721,10 +726,10 @@ export default function InternDashboard() {
                     fontSize: "14px", 
                     boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
                     wordBreak: "break-word",
-                    border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none"
+                    border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "#bfdbfe" : "#94a3b8", position: "absolute", bottom: "6px", right: "12px" }}>
+                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
                       {msg.time} {msg.sender === "You" && "✓✓"}
                     </span>
                   </div>
@@ -733,15 +738,15 @@ export default function InternDashboard() {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "#ffffff", margin: 0, borderTop: "1px solid #e2e8f0" }}>
+            <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--card-bg)", margin: 0, borderTop: "1px solid var(--border-color)" }}>
               <input 
                 type="text" 
                 placeholder="Type your message..." 
                 value={inputMsg} 
                 onChange={(e) => setInputMsg(e.target.value)} 
-                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid #e2e8f0", backgroundColor: "#f1f5f9", fontSize: "14px", outline: "none", color: "#1e293b" }} 
+                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
               />
-              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "#2563eb", color: "#ffffff", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#1d4ed8"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#2563eb"}>
+              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--primary-darker)"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "var(--primary-dark)"}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
@@ -792,12 +797,22 @@ export default function InternDashboard() {
       <div className="main">
         <div className="header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: "var(--text-color)" }}>☰</button>}
             <h2>{activeTab}</h2>
           </div>
-          <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
-            Role: <b>Intern</b>
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <select 
+              value={theme} 
+              onChange={(e) => setTheme(e.target.value)}
+              style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--border-color)", backgroundColor: "var(--card-bg)", color: "var(--text-color)", fontSize: "14px", fontWeight: "500", outline: "none", cursor: "pointer" }}
+            >
+              <option value="light">Light Mode</option>
+              <option value="obsidian">Dark Mode</option>
+            </select>
+            <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-gray-muted)" }}>
+              Role: <b>Intern</b>
+            </span>
+          </div>
         </div>
 
         {renderContent()}
