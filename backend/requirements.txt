@@ -37,3 +37,8 @@ fpdf==1.7.2
 websocket-client==1.6.2
 apscheduler
 pytz
+agora-token-builder
+
+AGORA_APP_ID="your_agora_app_id_here"
+AGORA_APP_CERTIFICATE="your_agora_app_certificate_here"
+
