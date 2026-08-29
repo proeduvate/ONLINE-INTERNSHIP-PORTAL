@@ -18,14 +18,16 @@ concepts = ['automation', 'scalability', 'security', 'performance', 'data manage
 facts_data = []
 for d in domains:
     facts = []
-    # Generate exactly 60 facts
-    for i in range(1, 61):
+    # Generate exactly 150 facts
+    for i in range(1, 151):
         concept = concepts[i % len(concepts)]
         template = templates[i % len(templates)]
         fact = template.format(c=concept, d=d)
+        if i > 60:
+            fact += f" (Insight #{i})"
         facts.append({'domain': d, 'fact': fact})
     facts_data.extend(facts)
 
 with open('c:/proeduvate/ONLINE-INTERNSHIP-PORTAL/backend/scripts/facts_data.json', 'w') as f:
     json.dump(facts_data, f, indent=4)
-print('Generated 720 facts')
+print(f'Generated {len(facts_data)} facts')

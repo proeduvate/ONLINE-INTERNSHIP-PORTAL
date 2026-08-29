@@ -5,7 +5,7 @@ import sys
 # Add backend directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import models
-from database import engine
+from app.db.session import engine
 
 def migrate():
     # Create new tables

@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from database import engine
+from app.db.session import engine
 from sqlalchemy.orm import Session
 import models
 

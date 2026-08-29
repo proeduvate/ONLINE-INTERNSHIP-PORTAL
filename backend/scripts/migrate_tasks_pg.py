@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import models
-from database import engine
+from app.db.session import engine
 from sqlalchemy import text
 
 def migrate_pg():

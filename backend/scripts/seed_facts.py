@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database import engine, SessionLocal
+from app.db.session import engine, SessionLocal
 from models import Base, DomainFact
 
 Base.metadata.create_all(bind=engine)

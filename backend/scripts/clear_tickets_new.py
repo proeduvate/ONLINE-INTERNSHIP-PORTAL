@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-from database import engine
+from app.db.session import engine
 from models import TicketMessage, TicketHistory, Ticket
 from sqlalchemy.orm import Session
 
