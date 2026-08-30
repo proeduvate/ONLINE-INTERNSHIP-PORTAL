@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard.css"; // Reuse general variables, buttons, card classes
+import "./Home.css"; // Responsive layout overrides
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -25,11 +26,10 @@ export default function LandingPage() {
   return (
     <div style={{ backgroundColor: "#F5F7FA", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
       {/* Navigation Bar */}
-      <nav style={{
+      <nav className="home-nav" style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "20px 80px",
         backgroundColor: "#FFFFFF",
         borderBottom: "1px solid #E5E7EB",
         position: "sticky",
@@ -39,7 +39,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "55px" }} />
         </div>
-        <div style={{ display: "flex", gap: "32px", fontSize: "14px", fontWeight: 500 }}>
+        <div className="home-nav-links" style={{ display: "flex", gap: "32px", fontSize: "14px", fontWeight: 500 }}>
           <a href="#features" style={{ color: "#1F2937" }}>Features</a>
           <a href="#domains" style={{ color: "#1F2937" }}>Domains</a>
           <a href="#stats" style={{ color: "#1F2937" }}>Statistics</a>
@@ -53,8 +53,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <header style={{
-        padding: "100px 80px",
+      <header className="home-hero" style={{
         backgroundColor: "#FFFFFF",
         textAlign: "center",
         borderBottom: "1px solid #E5E7EB"
@@ -65,7 +64,7 @@ export default function LandingPage() {
         <p style={{ fontSize: "18px", color: "#6B7280", maxWidth: "800px", margin: "0 auto 32px auto", lineHeight: "1.6" }}>
           Empower interns with automated AI code evaluations, personalized mentor guidance, curated learning paths, and robust portfolio-building tools.
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: "16px" }}>
+        <div className="home-hero-btns" style={{ display: "flex", justifyContent: "center", gap: "16px" }}>
           <button className="btn btn-primary" style={{ padding: "14px 28px", fontSize: "16px" }} onClick={() => navigate("/login")}>
             Explore Portal
           </button>
@@ -76,7 +75,7 @@ export default function LandingPage() {
       </header>
 
       {/* Platform Features */}
-      <section id="features" style={{ padding: "80px 80px", borderBottom: "1px solid #E5E7EB" }}>
+      <section id="features" className="home-section" style={{ borderBottom: "1px solid #E5E7EB" }}>
         <h2 style={{ fontSize: "32px", fontWeight: 700, color: "#1F2937", textAlign: "center", marginBottom: "48px" }}>
           Key Features
         </h2>
@@ -97,7 +96,7 @@ export default function LandingPage() {
       </section>
 
       {/* Technology Domains */}
-      <section id="domains" style={{ padding: "80px 80px", backgroundColor: "#FFFFFF", borderBottom: "1px solid #E5E7EB" }}>
+      <section id="domains" className="home-section" style={{ backgroundColor: "#FFFFFF", borderBottom: "1px solid #E5E7EB" }}>
         <h2 style={{ fontSize: "32px", fontWeight: 700, color: "#1F2937", textAlign: "center", marginBottom: "48px" }}>
           Technology Domains
         </h2>
@@ -116,29 +115,29 @@ export default function LandingPage() {
       </section>
 
       {/* Statistics */}
-      <section id="stats" style={{ padding: "80px 80px", borderBottom: "1px solid #E5E7EB" }}>
+      <section id="stats" className="home-section" style={{ borderBottom: "1px solid #E5E7EB" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "30px", textAlign: "center" }}>
           <div>
-            <h3 style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>50+</h3>
+            <h3 className="home-stat-number" style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>50+</h3>
             <p style={{ fontWeight: 600, color: "#1F2937" }}>Active Interns</p>
           </div>
           <div>
-            <h3 style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>10+</h3>
+            <h3 className="home-stat-number" style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>10+</h3>
             <p style={{ fontWeight: 600, color: "#1F2937" }}>Certified Mentors</p>
           </div>
           <div>
-            <h3 style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>1200+</h3>
+            <h3 className="home-stat-number" style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>1200+</h3>
             <p style={{ fontWeight: 600, color: "#1F2937" }}>AI Evaluations</p>
           </div>
           <div>
-            <h3 style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>98%</h3>
+            <h3 className="home-stat-number" style={{ fontSize: "40px", fontWeight: 800, color: "#2563EB", marginBottom: "8px" }}>98%</h3>
             <p style={{ fontWeight: 600, color: "#1F2937" }}>Completion Rate</p>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section style={{ padding: "80px 80px", backgroundColor: "#FFFFFF", borderBottom: "1px solid #E5E7EB" }}>
+      <section className="home-section" style={{ backgroundColor: "#FFFFFF", borderBottom: "1px solid #E5E7EB" }}>
         <h2 style={{ fontSize: "32px", fontWeight: 700, color: "#1F2937", textAlign: "center", marginBottom: "48px" }}>
           What Our Interns Say
         </h2>
@@ -161,22 +160,21 @@ export default function LandingPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" style={{ padding: "80px 80px", textAlign: "center" }}>
+      <section id="contact" className="home-section" style={{ textAlign: "center" }}>
         <h2 style={{ fontSize: "32px", fontWeight: 700, color: "#1F2937", marginBottom: "16px" }}>
           Get in Touch
         </h2>
         <p style={{ color: "#6B7280", marginBottom: "32px", maxWidth: "600px", margin: "0 auto 32px auto" }}>
           Have questions about the program? Contact our support team for registration queries and enterprise setups.
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+        <div className="home-contact-row" style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
           <p>📧 <b>support@internportal.com</b></p>
           <p>📞 <b>+1 (555) 019-2834</b></p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{
-        padding: "40px 80px",
+      <footer className="home-footer" style={{
         backgroundColor: "#FFFFFF",
         borderTop: "1px solid #E5E7EB",
         display: "flex",
@@ -186,7 +184,7 @@ export default function LandingPage() {
         color: "#6B7280"
       }}>
         <div>© 2026 AI Internship Evaluation Portal. All rights reserved.</div>
-        <div style={{ display: "flex", gap: "24px" }}>
+        <div className="home-footer-links" style={{ display: "flex", gap: "24px" }}>
           <a href="#privacy" style={{ color: "#6B7280" }}>Privacy Policy</a>
           <a href="#terms" style={{ color: "#6B7280" }}>Terms of Service</a>
         </div>
