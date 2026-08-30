@@ -9,7 +9,11 @@ export default function MentorDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting");
-  const [isMeetingActive, setIsMeetingActive] = useState(false);
+  const [isMeetingActive, setIsMeetingActive] = useState(() => {
+    return localStorage.getItem("breakout_meeting_active") === "true";
+  });
+  const [scheduleTitle, setScheduleTitle] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -206,6 +210,105 @@ export default function MentorDashboard() {
     setWeeklyNotes("");
   };
 
+  const renderLobby = () => {
+    const isAlreadyActive = localStorage.getItem("breakout_meeting_active") === "true";
+    
+    const handleStartOrJoin = () => {
+      setIsMeetingActive(true);
+      localStorage.setItem("breakout_meeting_active", "true");
+    };
+
+    const handleScheduleSubmit = (e) => {
+      e.preventDefault();
+      // Format time for presentation
+      const dateObj = new Date(scheduleTime);
+      const formattedTime = dateObj.toLocaleString("en-US", { 
+        weekday: "short", 
+        month: "short", 
+        day: "numeric", 
+        hour: "numeric", 
+        minute: "2-digit" 
+      });
+      handleCreateMeeting(scheduleTitle, formattedTime);
+      setScheduleTitle("");
+      setScheduleTime("");
+    };
+
+    return (
+      <div style={{ padding: "24px 0" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+          
+          {/* Card 1: Start/Join Meeting */}
+          <div className="card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "280px" }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                <span style={{ fontSize: "28px" }}>💬</span>
+                <h3 style={{ margin: 0 }}>Breakout Rooms Meeting</h3>
+              </div>
+              <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6", marginBottom: "20px" }}>
+                {isAlreadyActive 
+                  ? "An active breakout room session is currently running. You can join the room to manage interns, allocate breakout sessions, and review code."
+                  : "Launch an instant meeting room. Interns will be notified and can join the main lobby or specific breakout sessions."}
+              </p>
+              {isAlreadyActive && (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#ecfdf5", color: "#047857", padding: "6px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, marginBottom: "20px" }}>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10b981", display: "inline-block" }}></span>
+                  Active Meeting In Progress
+                </div>
+              )}
+            </div>
+            <button 
+              className="btn btn-primary" 
+              onClick={handleStartOrJoin}
+              style={{ width: "100%", padding: "12px", fontSize: "15px", fontWeight: "bold" }}
+            >
+              {isAlreadyActive ? "Join Active Meeting" : "Start New Meeting"}
+            </button>
+          </div>
+
+          {/* Card 2: Schedule Meeting */}
+          <div className="card" style={{ minHeight: "280px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+              <span style={{ fontSize: "28px" }}>📅</span>
+              <h3 style={{ margin: 0 }}>Schedule a Future Meeting</h3>
+            </div>
+            <form onSubmit={handleScheduleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "6px" }}>Meeting Title</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Weekly Code Sync & Reviews" 
+                  className="form-control" 
+                  value={scheduleTitle}
+                  onChange={(e) => setScheduleTitle(e.target.value)}
+                />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "6px" }}>Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  required
+                  className="form-control" 
+                  value={scheduleTime}
+                  onChange={(e) => setScheduleTime(e.target.value)}
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="btn btn-secondary" 
+                style={{ width: "100%", padding: "10px", marginTop: "8px", fontWeight: "bold" }}
+              >
+                Schedule Meeting
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "Overview":
@@ -396,7 +499,19 @@ export default function MentorDashboard() {
                         <td><b>{m.title}</b></td>
                         <td>{m.time}</td>
                         <td><span className="badge badge-success">{m.status}</span></td>
-                        <td><button onClick={() => alert("Joining mock Zoom room...")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join Room</button></td>
+                        <td>
+                          <button 
+                            onClick={() => {
+                              setIsMeetingActive(true);
+                              localStorage.setItem("breakout_meeting_active", "true");
+                              setActiveTab("Breakout Rooms");
+                            }} 
+                            className="btn btn-primary" 
+                            style={{ padding: "4px 8px", fontSize: "12px" }}
+                          >
+                            Join Room
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -808,9 +923,6 @@ export default function MentorDashboard() {
                 className={activeTab === tab.id ? "active" : ""}
                 onClick={() => {
                   setActiveTab(tab.id);
-                  if (tab.id === "Breakout Rooms") {
-                    setIsMeetingActive(true);
-                  }
                 }}
                 title={!isSidebarOpen ? tab.id : ""}
               >
@@ -826,11 +938,11 @@ export default function MentorDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <div className="main" style={activeTab === "Breakout Rooms" ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
-        {activeTab !== "Breakout Rooms" ? (
+      <div className="main" style={(activeTab === "Breakout Rooms" && isMeetingActive) ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
+        {(activeTab !== "Breakout Rooms" || !isMeetingActive) ? (
           <div className="header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>â˜°</button>}
+              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
               <h2>{activeTab}</h2>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -847,7 +959,7 @@ export default function MentorDashboard() {
             <button 
               onClick={() => setIsSidebarOpen(true)} 
               style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2000, background: '#ffffff', border: '1px solid #e3e5e8', borderRadius: '4px', cursor: 'pointer', fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-              â˜°
+              ☰
             </button>
           )
         )}
@@ -858,13 +970,14 @@ export default function MentorDashboard() {
               onRoomChange={(r) => setActiveMeetingRoom(r)} 
               onLeaveMeeting={() => {
                 setIsMeetingActive(false);
+                localStorage.setItem("breakout_meeting_active", "false");
                 setActiveTab("Overview");
               }}
             />
           </div>
         )}
 
-        {activeTab !== "Breakout Rooms" && renderContent()}
+        {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
       </div>
 
       {/* Floating Minimized Call Widget (Bottom Right) */}

@@ -17,6 +17,11 @@ export default function InternDashboard() {
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const handleJoinMeeting = () => {
+    const isMeetingRunning = localStorage.getItem("breakout_meeting_active") === "true";
+    if (!isMeetingRunning) {
+      alert("The mentor has not started this breakout meeting yet. Please try again once the meeting has commenced.");
+      return;
+    }
     setIsMeetingActive(true);
     setIsMeetingMinimized(false);
   };

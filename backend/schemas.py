@@ -32,8 +32,8 @@ class UserOnboard(BaseModel):
     college: Optional[str] = None
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
-    start_date: Optional[str] = None # format YYYY-MM-DD
-    end_date: Optional[str] = None   # format YYYY-MM-DD
+    start_date: Optional[str] = None  # format YYYY-MM-DD
+    end_date: Optional[str] = None    # format YYYY-MM-DD
 
 class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
@@ -61,7 +61,7 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          DOMAIN SCHEMAS
+#           DOMAIN SCHEMAS
 # ==========================================
 
 class DomainCreate(BaseModel):
@@ -77,7 +77,7 @@ class DomainResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          TASK SCHEMAS
+#           TASK SCHEMAS
 # ==========================================
 
 class TaskCreate(BaseModel):
@@ -89,10 +89,10 @@ class TaskCreate(BaseModel):
     document_url: Optional[str] = None
     notes: Optional[str] = None
     resources: Optional[str] = None
-    mcq_questions: Optional[str] = None  # JSON string
+    mcq_questions: Optional[str] = None   # JSON string
     coding_prompt: Optional[str] = None
     coding_solution: Optional[str] = None
-    test_cases: Optional[str] = None      # JSON string
+    test_cases: Optional[str] = None       # JSON string
     deadline_days: Optional[int] = 1
 
 class TaskResponse(BaseModel):
@@ -114,13 +114,13 @@ class TaskResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          SUBMISSION SCHEMAS
+#           SUBMISSION SCHEMAS
 # ==========================================
 
 class SubmissionCreate(BaseModel):
     task_id: int
     code_submission: Optional[str] = None
-    mcq_answers: Optional[str] = None  # JSON string representing answers
+    mcq_answers: Optional[str] = None   # JSON string representing answers
 
 class SubmissionEvaluate(BaseModel):
     mentor_score: int
@@ -164,7 +164,7 @@ class CodeExecutionResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          MESSAGE SCHEMAS
+#           MESSAGE SCHEMAS
 # ==========================================
 
 class MessageCreate(BaseModel):
@@ -184,17 +184,19 @@ class MessageResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          MEETING SCHEMAS
+#     MEETING & BREAKOUT ROOM SCHEMAS
 # ==========================================
 
-class MeetingCreate(BaseModel):
+class BreakoutRoomBase(BaseModel):
     title: str
-    room_code: str
+    max_participants: Optional[int] = 10
 
-class MeetingResponse(BaseModel):
+class BreakoutRoomCreate(BreakoutRoomBase):
+    meeting_id: int
+
+class BreakoutRoomResponse(BreakoutRoomBase):
     id: int
-    mentor_id: int
-    title: str
+    meeting_id: int
     room_code: str
     status: str
     created_at: datetime
@@ -202,8 +204,27 @@ class MeetingResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class MeetingBase(BaseModel):
+    title: str
+    scheduled_time: Optional[datetime] = None
+    duration_minutes: Optional[int] = 60
+
+class MeetingCreate(MeetingBase):
+    pass
+
+class MeetingResponse(MeetingBase):
+    id: int
+    mentor_id: int
+    room_code: str
+    status: Optional[str] = "active"
+    created_at: Optional[datetime] = None
+    breakout_rooms: List[BreakoutRoomResponse] = []
+
+    class Config:
+        from_attributes = True
+
 # ==========================================
-#          CERTIFICATE SCHEMAS
+#           CERTIFICATE SCHEMAS
 # ==========================================
 
 class CertificateResponse(BaseModel):
@@ -217,7 +238,6 @@ class CertificateResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class CertificateInfoResponse(BaseModel):
     generated: bool
     certificate_id: Optional[str] = None
@@ -230,7 +250,6 @@ class CertificateInfoResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class AttendanceLogResponse(BaseModel):
     id: int
     intern_id: int
@@ -241,12 +260,10 @@ class AttendanceLogResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class AnnouncementCreate(BaseModel):
     title: str
     content: str
     target_role: Optional[str] = "all"
-
 
 class AnnouncementResponse(BaseModel):
     id: int
@@ -260,7 +277,7 @@ class AnnouncementResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          NOTIFICATION SCHEMAS
+#        NOTIFICATION SCHEMAS
 # ==========================================
 
 class NotificationCreate(BaseModel):
@@ -281,7 +298,6 @@ class NotificationResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class PortfolioResponse(BaseModel):
     user_id: int
     name: str
@@ -299,7 +315,7 @@ class PortfolioResponse(BaseModel):
         from_attributes = True
 
 # ==========================================
-#          INTERNSHIP / APPLICATION SCHEMAS
+#     INTERNSHIP / APPLICATION SCHEMAS
 # ==========================================
 
 class InternshipCreate(BaseModel):

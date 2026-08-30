@@ -1,4 +1,4 @@
-﻿.br-app-container {
+.br-app-container {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -504,3 +504,172 @@
   border-radius: 10px;
   font-weight: bold;
 }
+
+/* =============================================
+   BREAKOUT ROOMS — RESPONSIVE BREAKPOINTS
+   ============================================= */
+
+/* --- Landscape Tablet (≤1024px) --- */
+@media (max-width: 1024px) {
+  .br-workspace-sidebar {
+    width: 200px;
+  }
+  .br-right-sidebar {
+    width: 260px;
+  }
+}
+
+/* --- Tablet / iPad Portrait (≤768px) --- */
+@media (max-width: 768px) {
+  /* App sidebar (far left icons) stays narrow */
+  .br-app-sidebar {
+    width: 56px;
+    padding: 8px 0;
+  }
+
+  .br-app-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Workspace sidebar hides on mobile; toggled via JS if needed */
+  .br-workspace-sidebar {
+    position: fixed;
+    top: 0;
+    left: 56px;
+    height: 100vh;
+    z-index: 300;
+    transform: translateX(-120%);
+    transition: transform 0.3s ease;
+    width: 240px;
+  }
+
+  .br-workspace-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Right sidebar becomes a full overlay from right */
+  .br-right-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 300;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    width: 280px;
+  }
+
+  .br-right-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Main area takes remaining width */
+  .br-main-area {
+    width: 100%;
+  }
+
+  /* Video grid stacks on tablet */
+  .br-video-grid.layout-2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .br-video-grid.layout-3,
+  .br-video-grid.layout-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+
+  .br-video-grid.layout-6 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+
+  /* Meeting controls adjust */
+  .br-meeting-controls {
+    gap: 8px;
+    padding: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .br-control-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Modal full-width */
+  .br-modal {
+    width: 90vw;
+  }
+
+  .br-modal.large {
+    width: 95vw;
+  }
+}
+
+/* --- Large Phone (≤480px) --- */
+@media (max-width: 480px) {
+  /* App sidebar stays as thin strip */
+  .br-app-sidebar {
+    width: 48px;
+  }
+
+  .br-app-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* All video layouts → single column */
+  .br-video-grid.layout-2,
+  .br-video-grid.layout-3,
+  .br-video-grid.layout-4,
+  .br-video-grid.layout-6,
+  .br-video-grid.layout-many {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .br-video-grid-container {
+    padding: 8px;
+  }
+
+  /* Controls row compresses */
+  .br-meeting-controls {
+    gap: 6px;
+    padding: 10px 8px;
+  }
+
+  .br-control-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Main header */
+  .br-main-header {
+    padding: 0 10px;
+  }
+
+  .br-header-right {
+    gap: 6px;
+  }
+
+  /* Chat input */
+  .br-chat-input-wrapper {
+    padding: 10px;
+  }
+
+  /* Modal full-screen on small phone */
+  .br-modal,
+  .br-modal.large {
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 0;
+  }
+
+  .br-modal-content {
+    max-height: 55vh;
+  }
+}
+

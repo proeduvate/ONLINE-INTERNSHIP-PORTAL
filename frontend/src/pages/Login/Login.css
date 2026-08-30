@@ -101,3 +101,58 @@
 .demo-credentials b {
   color: var(--text-color);
 }
+
+/* =============================================
+   LOGIN PAGE — RESPONSIVE LAYOUT
+   ============================================= */
+
+/* --- Tablet (≤768px) --- */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+
+  .login-card {
+    padding: 32px 28px;
+  }
+}
+
+/* --- Large Phone (≤480px) --- */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 12px;
+    padding-top: 40px;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .login-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* --- Small Phone (≤360px) --- */
+@media (max-width: 360px) {
+  .login-card {
+    padding: 20px 16px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .login-btn {
+    font-size: 14px;
+  }
+}
