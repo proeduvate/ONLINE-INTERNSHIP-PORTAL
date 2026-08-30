@@ -123,7 +123,11 @@ def approve_airdrop(
     if airdrop.status != schemas_airdrops.AirdropStatus.PENDING_APPROVAL.value:
         raise HTTPException(status_code=400, detail="Airdrop is not pending approval")
         
-    airdrop.status = schemas_airdrops.AirdropStatus.APPROVED.value
+    airdrop.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+    
+    # Check if we should auto-finalize immediately (if all interns have already completed it)
+    _check_auto_finalize(db, airdrop, datetime.utcnow())
+    
     db.commit()
     db.refresh(airdrop)
     return _build_airdrop_response(db, airdrop)
