@@ -678,81 +678,7 @@ export default function InternDashboard() {
         );
         const currentCurriculum = activeTasks.find(c => c.day_number === currentDay) || activeTasks[activeTasks.length - 1];
 
-        if (showTicketForm) {
-          return (
-            <div className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
-                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Learning</button>
-              </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
-                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" value={ticketTitle} onChange={(e) => setTicketTitle(e.target.value)} />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
-                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..." value={ticketDesc} onChange={(e) => setTicketDesc(e.target.value)}></textarea>
-                </div>
-
-                <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c", opacity: isSubmittingTicket ? 0.7 : 1 }} disabled={isSubmittingTicket} onClick={async () => {
-                    if (!ticketTitle.trim() || !ticketDesc.trim()) {
-                      alert("Please provide both a title and description.");
-                      return;
-                    }
-                    if (isSubmittingTicket) return;
-                    setIsSubmittingTicket(true);
-                    const token = localStorage.getItem("token");
-                    try {
-                      const res = await fetch(`${API_BASE}/tickets`, {
-                        method: "POST",
-                        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ title: ticketTitle, description: ticketDesc, domain: "General" })
-                      });
-                      if (res.ok) {
-                        const newTicket = await res.json();
-                        setTickets([...tickets, newTicket]);
-                        alert("Ticket submitted successfully! Admin will review it shortly.");
-                        setShowTicketForm(false);
-                        setTicketTitle("");
-                        setTicketDesc("");
-                      } else {
-                        alert("Failed to submit ticket.");
-                      }
-                    } catch (e) {
-                      console.error(e);
-                      alert("Error submitting ticket.");
-                    } finally {
-                      setIsSubmittingTicket(false);
-                    }
-                  }}>{isSubmittingTicket ? "Submitting..." : "Submit Ticket"}</button>
-                </div>
-              </div>
-            </div>
-          );
-        }
 
 
 
@@ -1044,8 +970,89 @@ export default function InternDashboard() {
               </div>
             </div>
 
-            {/* Row 3: Support & Ticketing */}
-            <div className="card" style={{ marginTop: "16px", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+
+
+          </div>
+        );
+
+      case "Support & Ticketing":
+        if (showTicketForm) {
+          return (
+            <div className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
+                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back</button>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
+                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" value={ticketTitle} onChange={(e) => setTicketTitle(e.target.value)} />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
+                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..." value={ticketDesc} onChange={(e) => setTicketDesc(e.target.value)}></textarea>
+                </div>
+
+                <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c", opacity: isSubmittingTicket ? 0.7 : 1 }} disabled={isSubmittingTicket} onClick={async () => {
+                    if (!ticketTitle.trim() || !ticketDesc.trim()) {
+                      alert("Please provide both a title and description.");
+                      return;
+                    }
+                    if (isSubmittingTicket) return;
+                    setIsSubmittingTicket(true);
+                    const token = localStorage.getItem("token");
+                    try {
+                      const res = await fetch(`${API_BASE}/tickets`, {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({ title: ticketTitle, description: ticketDesc, domain: "General" })
+                      });
+                      if (res.ok) {
+                        const newTicket = await res.json();
+                        setTickets([...tickets, newTicket]);
+                        alert("Ticket submitted successfully! Admin will review it shortly.");
+                        setShowTicketForm(false);
+                        setTicketTitle("");
+                        setTicketDesc("");
+                      } else {
+                        alert("Failed to submit ticket.");
+                      }
+                    } catch (e) {
+                      console.error(e);
+                      alert("Error submitting ticket.");
+                    } finally {
+                      setIsSubmittingTicket(false);
+                    }
+                  }}>{isSubmittingTicket ? "Submitting..." : "Submit Ticket"}</button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        return (
+            <div className="card" style={{ backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                 <div>
                   <h3 style={{ margin: 0, color: "#b91c1c", fontSize: "16px" }}>Support & Ticketing</h3>
@@ -1054,7 +1061,7 @@ export default function InternDashboard() {
                 <button className="btn btn-primary" style={{ backgroundColor: "#dc2626", borderColor: "#dc2626" }} onClick={() => setShowTicketForm(true)}>File a Ticket</button>
               </div>
 
-              <div style={{ marginTop: "16px", borderTop: "1px solid #fca5a5", paddingTop: "16px" }}>
+              <div style={{ borderTop: "1px solid #fca5a5", paddingTop: "16px" }}>
                 {!selectedTicket ? (
                   <>
                     <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#991b1b" }}>Your Filed Tickets</h4>
@@ -1124,8 +1131,6 @@ export default function InternDashboard() {
                 )}
               </div>
             </div>
-
-          </div>
         );
 
       case "Daily Scenario":
@@ -1482,6 +1487,7 @@ export default function InternDashboard() {
             {[
               "Overview",
               "Learning",
+              "Support & Ticketing",
               "Daily Scenario",
               "Chat with Mentor",
               "Bonus Airdrops"

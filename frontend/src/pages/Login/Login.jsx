@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
+import { API_BASE } from "../../services/apiClient";
 import "./Login.css";
 
 export default function Login() {
@@ -40,30 +40,32 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch(`${API_BASE}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
       });
 
-      if (error) {
-        throw error;
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("role", data.role);
+        
+        if (data.role !== role) {
+          setErrorMessage(`You are registered as a ${data.role}, not ${role}.`);
+          setLoading(false);
+          return;
+        }
+
+        alert(`Login Successful as ${data.role.toUpperCase()}!`);
+        navigate(`/${data.role}`);
+      } else {
+        const errData = await response.json();
+        setErrorMessage(errData.detail || "Invalid credentials for the selected role.");
       }
-
-      const userRole = data.user?.user_metadata?.role || role;
-      const accessToken = data.session?.access_token;
-
-      if (!accessToken) {
-        throw new Error("No session token returned from Supabase.");
-      }
-
-      localStorage.setItem("token", accessToken);
-      localStorage.setItem("role", userRole);
-
-      alert(`Login Successful as ${userRole.toUpperCase()}!`);
-      navigate(`/${userRole}`);
     } catch (error) {
-      const message = error?.message || "Invalid Supabase credentials for the selected role.";
-      setErrorMessage(message);
+      console.error("Login error:", error);
+      setErrorMessage("Failed to connect to the server.");
     } finally {
       setLoading(false);
     }

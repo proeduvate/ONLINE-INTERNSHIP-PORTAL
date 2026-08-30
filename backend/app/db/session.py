@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # 1. Locate the .env file explicitly in the backend directory
-env_path = Path(__file__).resolve().parent / ".env"
+env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 
 # 2. Force load the .env file (override=True ensures cached/system env vars are replaced)
 load_dotenv(dotenv_path=env_path, override=True)
