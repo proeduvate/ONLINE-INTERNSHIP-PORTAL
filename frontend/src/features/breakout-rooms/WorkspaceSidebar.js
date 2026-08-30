@@ -6,7 +6,8 @@ export default function WorkspaceSidebar({
   rooms, 
   activeRoom, 
   setActiveRoom, 
-  participants 
+  participants,
+  isIntern = false
 }) {
   const [isMicOn, setIsMicOn] = useState(false);
   const [isDeafened, setIsDeafened] = useState(false);
@@ -37,31 +38,37 @@ export default function WorkspaceSidebar({
           </div>
         ))}
 
-        <div className="br-section-title">BREAKOUT ROOMS</div>
-        {rooms.filter(r => r.type !== 'main').map(room => (
-          <div key={room.id}>
-            <div 
-              className={`br-room-item ${activeRoom === room.id ? 'active' : ''}`}
-              onClick={() => setActiveRoom(room.id)}
-            >
-              <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && '🔒'}
-            </div>
-            {getRoomParticipants(room.id).map(p => (
-              <div key={p.id} className="br-room-participant">
-                <div className="br-avatar-small">{p.avatar}</div>
-                {p.name}
+        {rooms.filter(r => r.type !== 'main').length > 0 && (
+          <>
+            <div className="br-section-title">BREAKOUT ROOMS</div>
+            {rooms.filter(r => r.type !== 'main').map(room => (
+              <div key={room.id}>
+                <div 
+                  className={`br-room-item ${activeRoom === room.id ? 'active' : ''}`}
+                  onClick={() => setActiveRoom(room.id)}
+                >
+                  <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && '🔒'}
+                </div>
+                {getRoomParticipants(room.id).map(p => (
+                  <div key={p.id} className="br-room-participant">
+                    <div className="br-avatar-small">{p.avatar}</div>
+                    {p.name}
+                  </div>
+                ))}
               </div>
             ))}
-          </div>
-        ))}
+          </>
+        )}
       </div>
 
       <div className="br-user-profile">
         <div className="br-user-info">
-          <div className="br-avatar-small" style={{ backgroundColor: '#5865f2' }}>An</div>
+          <div className="br-avatar-small" style={{ backgroundColor: isIntern ? '#3b82f6' : '#5865f2' }}>
+            {isIntern ? 'JD' : 'An'}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>Ananya</span>
-            <span style={{ fontSize: '11px', color: '#5c5e66' }}>Mentor</span>
+            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'John Doe (You)' : 'Ananya'}</span>
+            <span style={{ fontSize: '11px', color: '#5c5e66' }}>{isIntern ? 'Intern' : 'Mentor'}</span>
           </div>
         </div>
         <div className="br-user-controls">
@@ -77,3 +84,4 @@ export default function WorkspaceSidebar({
     </div>
   );
 }
+

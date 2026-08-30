@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Dashboard.css"; // Reuse general variables, buttons, card classes
+import "../../styles/Dashboard.css"; // Reuse general variables, buttons, card classes
 
 export default function LandingPage() {
   const navigate = useNavigate();

@@ -6,10 +6,15 @@ import MembersPanel from './MembersPanel';
 import BreakoutManagerModal from './BreakoutManagerModal';
 import { mockInterns, mockMentor, mockRooms } from './MockData';
 
-export default function BreakoutRoomsApp() {
+export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isIntern = false, onMinimize }) {
   const [rooms, setRooms] = useState(mockRooms);
-  const [interns, setInterns] = useState(mockInterns);
-  const [activeRoom, setActiveRoom] = useState('alpha');
+  // Interns always start in Main Meeting — mentor allocates them to breakout rooms
+  const [interns, setInterns] = useState(
+    isIntern
+      ? mockInterns.map(i => ({ ...i, room: 'Main Meeting' }))
+      : mockInterns
+  );
+  const [activeRoom, setActiveRoom] = useState(isIntern ? 'main' : 'alpha');
   const [rightPanelMode, setRightPanelMode] = useState('members'); // 'members', 'chat', 'closed'
   const [isManagerOpen, setIsManagerOpen] = useState(false);
 
@@ -26,18 +31,34 @@ export default function BreakoutRoomsApp() {
     p => p.room === currentRoomData.name && p.online
   );
 
-  const handleLeave = () => {
-    // Return to main meeting
-    setActiveRoom('main');
+  // Notify parent when active room changes
+  const handleSetActiveRoom = (roomId) => {
+    setActiveRoom(roomId);
+    const room = rooms.find(r => r.id === roomId);
+    if (onRoomChange && room) onRoomChange(room.name);
   };
+
+  const handleLeave = () => {
+    if (onLeaveMeeting) {
+      onLeaveMeeting();
+    } else {
+      setActiveRoom('main');
+    }
+  };
+
+  // For interns: follow the room they've been assigned to (simulate mentor moving them)
+  const internAssignedRoom = isIntern
+    ? rooms.find(r => r.name === (interns.find(i => i.name === 'Tobi')?.room || 'Main Meeting'))?.id || 'main'
+    : null;
 
   return (
     <div className="br-app-container">
       <WorkspaceSidebar 
         rooms={rooms}
         activeRoom={activeRoom}
-        setActiveRoom={setActiveRoom}
+        setActiveRoom={handleSetActiveRoom}
         participants={allParticipants}
+        isIntern={isIntern}
       />
       <MeetingArea 
         room={currentRoomData}
@@ -46,6 +67,8 @@ export default function BreakoutRoomsApp() {
         setRightPanelMode={setRightPanelMode}
         onLeave={handleLeave}
         openManager={() => setIsManagerOpen(true)}
+        isIntern={isIntern}
+        onMinimize={onMinimize}
       />
       {rightPanelMode !== 'closed' && (
         <MembersPanel 
@@ -53,6 +76,7 @@ export default function BreakoutRoomsApp() {
           onClose={() => setRightPanelMode('closed')}
           interns={interns}
           mentor={updatedMentor}
+          isIntern={isIntern}
         />
       )}
 

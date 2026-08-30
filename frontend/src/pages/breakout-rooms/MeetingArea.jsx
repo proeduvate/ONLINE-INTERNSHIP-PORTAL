@@ -10,7 +10,9 @@ export default function MeetingArea({
   rightPanelMode, 
   setRightPanelMode,
   onLeave,
-  openManager
+  openManager,
+  isIntern = false,
+  onMinimize
 }) {
   const [isMicOn, setIsMicOn] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
@@ -47,14 +49,27 @@ export default function MeetingArea({
             {room?.name} 
             <span style={{ fontSize: '10px', backgroundColor: '#da373c', color: 'white', padding: '2px 6px', borderRadius: '10px' }}>LIVE</span>
           </span>
+
+          {isIntern && room?.type !== 'main' && (
+            <span style={{ fontSize: '11px', color: '#10b981', backgroundColor: '#ecfdf5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #10b981' }}>
+              ✅ Assigned to {room?.name}
+            </span>
+          )}
         </div>
         <div className="br-header-right">
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#5c5e66' }}>
             <Users size={18} /> {participants.length}
           </div>
-          <button className="br-btn br-btn-secondary" onClick={openManager}>
-            <LayoutGrid size={18} /> Breakout Rooms
-          </button>
+          {!isIntern && (
+            <button className="br-btn br-btn-secondary" onClick={openManager}>
+              <LayoutGrid size={18} /> Breakout Rooms
+            </button>
+          )}
+          {onMinimize && (
+            <button className="br-icon-btn" onClick={onMinimize} title="Minimize">
+              <Minimize size={18} />
+            </button>
+          )}
           <button className="br-icon-btn" onClick={toggleFullscreen}>
             {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
           </button>

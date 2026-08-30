@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import Login from "./pages/Login";
-import InternDashboard from "./pages/InternDashboard";
-import MentorDashboard from "./pages/MentorDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import ProtectedRoute from "./ProtectedRoute";
+import LandingPage from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import InternDashboard from "./pages/Dashboard/InternDashboard";
+import MentorDashboard from "./pages/Dashboard/MentorDashboard";
+import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import ProtectedRoute from "./routes/PrivateRoute";
 import Apply from "./pages/onboarding/Apply";
 import Status from "./pages/onboarding/Status";
 import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
 import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
 import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
-import InternDetails from "./pages/InternDetails";
+import InternDetails from "./pages/Dashboard/InternDetails";
 import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 
 function App() {

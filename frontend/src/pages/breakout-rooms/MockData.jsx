@@ -1,4 +1,4 @@
-export const mockInterns = [
+﻿export const mockInterns = [
   { id: 1, name: 'Tobi', role: 'Intern', online: true, room: 'Team Alpha', micOn: true, camOn: false, avatar: 'T' },
   { id: 2, name: 'Rahul', role: 'Intern', online: true, room: 'Team Alpha', micOn: false, camOn: true, avatar: 'R' },
   { id: 3, name: 'Priya', role: 'Intern', online: true, room: 'Team Alpha', micOn: true, camOn: true, avatar: 'P' },

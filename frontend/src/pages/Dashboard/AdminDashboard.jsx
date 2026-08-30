@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy } from "lucide-react";
-import "../styles/Dashboard.css";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift } from "lucide-react";
+import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Bonus Airdrops State
+  const [bonusAirdrops, setBonusAirdrops] = useState([]);
+
+  useEffect(() => {
+    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
+    if (storedAirdrops) {
+      setBonusAirdrops(JSON.parse(storedAirdrops));
+    }
+  }, []);
+
+  const handleApproveAirdrop = (id) => {
+    const updatedAirdrops = bonusAirdrops.map(a => 
+      a.id === id ? { ...a, status: "APPROVED" } : a
+    );
+    setBonusAirdrops(updatedAirdrops);
+    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+  };
 
   // State Mock Data
   // State Mock Data
@@ -910,98 +928,83 @@ export default function AdminDashboard() {
                 </div>
               </>
             ) : (
-              <>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
-                      &larr; Back
-                    </button>
-                    <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>{selectedProgramDomain} Program</h3>
-                  </div>
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    {["Curriculum", "Tasks"].map((tab) => (
-                      <button 
-                        key={tab} 
-                        onClick={() => setDetailSubTab(tab)} 
-                        className={`btn ${detailSubTab === tab ? "btn-primary" : "btn-secondary"}`}
-                        style={{ padding: "8px 16px", borderRadius: "20px" }}
-                      >
-                        {tab}
-                      </button>
-                    ))}
-                  </div>
+              <div className="card">
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
+                  <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>Program Details - {selectedProgramDomain}</h3>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                  <button 
+                    className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Curriculum")}
+                  >Curriculum</button>
+                  <button 
+                    className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Tasks")}
+                  >Tasks</button>
                 </div>
 
                 {detailSubTab === "Curriculum" && (
-                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h3 style={{ margin: 0 }}>30-Day Learning Plan</h3>
-                      <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "6px 12px" }}>Edit Mode</button>
-                    </div>
-                    
-                    <div className="table-container" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                      <table className="table">
-                        <thead>
-                          <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
-                        </thead>
-                        <tbody>
-                          {/* Render custom user-uploaded curriculum first */}
-                          {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
-                            <tr key={`custom-${i}`}>
-                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
-                              <td><b>{cur.topic}</b></td>
-                              <td>{cur.resources}</td>
-                              <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
-                            </tr>
-                          ))}
+                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                    <table className="table">
+                      <thead>
+                        <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                        {/* Render custom user-uploaded curriculum first */}
+                        {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
+                          <tr key={`custom-${i}`}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                            <td><b>{cur.topic}</b></td>
+                            <td>{cur.resources}</td>
+                            <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                          </tr>
+                        ))}
+                        
+                        {/* Render generated 30 days mock curriculum */}
+                        {[...Array(30)].map((_, i) => {
+                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
                           
-                          {/* Render generated 30 days mock curriculum */}
-                          {[...Array(30)].map((_, i) => {
-                            if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
-                            
-                            return (
-                            <tr key={i}>
-                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
-                              <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
-                              <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
-                              <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
-                            </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                          return (
+                          <tr key={i}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
+                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
+                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
+                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                          </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
 
                 {detailSubTab === "Tasks" && (
-                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Tasks for {selectedProgramDomain}</h3>
-
-                    
-                    <div className="table-container">
-                      <table className="table">
-                        <thead>
-                          <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                        </thead>
-                        <tbody>
-                          {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
-                            <tr key={t.id}>
-                              <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                              <td><b>{t.title}</b></td>
-                              <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                              <td>{t.deadline}</td>
-                            </tr>
-                          ))}
-                          {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
-                            <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                  <div className="table-container">
+                    <table className="table">
+                      <thead>
+                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                          </tr>
+                        ))}
+                        {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-              </>
+              </div>
             )}
 
             {/* Add Domain Modal */}
@@ -1288,6 +1291,65 @@ export default function AdminDashboard() {
           </div>
         );
 
+      case "Bonus Airdrops":
+        return (
+          <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
+
+            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
+              <div className="table-container" style={{ margin: 0 }}>
+                <table className="table" style={{ margin: 0 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ padding: "12px 16px" }}>ID</th>
+                      <th style={{ padding: "12px 16px" }}>Question</th>
+                      <th style={{ padding: "12px 16px" }}>Points</th>
+                      <th style={{ padding: "12px 16px" }}>Status</th>
+                      <th style={{ padding: "12px 16px" }}>Time Limit</th>
+                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bonusAirdrops.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
+                      </tr>
+                    ) : (
+                      [...bonusAirdrops].reverse().map(airdrop => (
+                        <tr key={airdrop.id}>
+                          <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
+                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
+                          <td style={{ padding: "12px 16px" }}>
+                            {airdrop.status === "PENDING_APPROVAL" ? (
+                              <span className="badge badge-warning">PENDING_APPROVAL</span>
+                            ) : (
+                              <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
+                                {airdrop.status}
+                              </span>
+                            )}
+                          </td>
+                          <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
+                          <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                            {airdrop.status === "PENDING_APPROVAL" && (
+                              <button 
+                                className="btn btn-primary" 
+                                style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
+                                onClick={() => handleApproveAirdrop(airdrop.id)}
+                              >
+                                Approve
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
@@ -1299,7 +1361,8 @@ export default function AdminDashboard() {
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
     { id: "Credentials", icon: <Award size={18} /> },
-    { id: "Tickets", icon: <LifeBuoy size={18} /> }
+    { id: "Tickets", icon: <LifeBuoy size={18} /> },
+    { id: "Bonus Airdrops", icon: <Gift size={18} /> }
   ];
 
   return (

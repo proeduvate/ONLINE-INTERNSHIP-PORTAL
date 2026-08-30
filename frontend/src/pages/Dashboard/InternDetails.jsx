@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
-import "../styles/Dashboard.css";
+import "../../styles/Dashboard.css";
 
 export default function InternDetails() {
   const { id } = useParams();
