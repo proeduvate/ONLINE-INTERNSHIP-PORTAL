@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import apiClient from "../services/apiClient";
+import { adaptTaskFromApi, adaptTaskToApi } from "../utils/taskAdapters";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import "../styles/Dashboard.css";
 
@@ -26,12 +28,38 @@ export default function MentorDashboard() {
     { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
   ]);
 
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
-
+  const [chatMessages, setChatMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [userId, setUserId] = useState(null);
+  const ws = useRef(null);
+
+  useEffect(() => {
+    apiClient.get("/api/auth/me")
+      .then(res => setUserId(res.data.id))
+      .catch(err => console.error("Could not fetch user ID:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const wsUri = baseUri.replace(/^http/, 'ws') + `/ws/chat/${userId}`;
+    
+    ws.current = new WebSocket(wsUri);
+    ws.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setChatMessages(prev => [...prev, {
+        sender: "Intern", 
+        text: msg.content,
+        time: new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    };
+
+    return () => {
+      if (ws.current) ws.current.close();
+    };
+  }, [userId]);
+
+
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
 
   // Weekly review state inputs
@@ -45,11 +73,23 @@ export default function MentorDashboard() {
     { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Artificial Intelligence" },
     { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Artificial Intelligence" },
   ]);
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Build a Simple Neural Network", difficulty: "Hard", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Active" },
-    { id: 2, title: "Implement K-Means Clustering", difficulty: "Medium", deadline: "2026-08-15", domain: "Artificial Intelligence", status: "Active" },
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
+  const [tasksError, setTasksError] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+  const [showCreateTask, setShowCreateTask] = useState(false);
+  const [newTask, setNewTask] = useState({
+    domainId: 1,
+    dayNumber: 1,
+    title: "",
+    description: "",
+    notes: "",
+    resources: "",
+    deadlineDays: 1,
+    mcqs: [],
+    codingQuestion: null,
+    testCases: [],
+  });
   const [detailSubTab, setDetailSubTab] = useState("Curriculum");
 
   // Chart Data
@@ -65,10 +105,61 @@ export default function MentorDashboard() {
     window.location.href = "/login";
   };
 
+  // Fetch tasks from backend on mount
+  useEffect(() => {
+    const fetchTasks = async () => {
+      setTasksLoading(true);
+      setTasksError(null);
+      try {
+        const res = await apiClient.get("/api/tasks");
+        setTasks(res.data.map(adaptTaskFromApi));
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+        setTasksError("Failed to load tasks. Please check your connection.");
+      } finally {
+        setTasksLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  // Create a new task via POST /api/tasks
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (!newTask.title || !newTask.description) {
+      alert("Task title and description are required.");
+      return;
+    }
+    try {
+      const payload = adaptTaskToApi(newTask);
+      const res = await apiClient.post("/api/tasks", payload);
+      const created = adaptTaskFromApi(res.data);
+      setTasks((prev) => [...prev, created]);
+      setShowCreateTask(false);
+      setNewTask({
+        domainId: 1, dayNumber: 1, title: "", description: "",
+        notes: "", resources: "", deadlineDays: 1,
+        mcqs: [], codingQuestion: null, testCases: [],
+      });
+      alert("Task created successfully!");
+    } catch (err) {
+      console.error("Failed to create task:", err);
+      alert(err.response?.data?.detail || "Failed to create task.");
+    }
+  };
+
   const handleSendChatMessage = (e) => {
     e.preventDefault();
-    if (!currentMessage.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: currentMessage, time: "Just now" }]);
+    if (!currentMessage.trim() || !ws.current || ws.current.readyState !== WebSocket.OPEN) return;
+    
+    // Assume intern has ID 2 for this demo, or we can use selectedInternForChat
+    const payload = {
+      recipient_id: selectedInternForChat?.id || 2,
+      message: currentMessage
+    };
+    
+    ws.current.send(JSON.stringify(payload));
+    setChatMessages(prev => [...prev, { sender: "You", text: currentMessage, time: "Just now" }]);
     setCurrentMessage("");
   };
 
@@ -413,54 +504,172 @@ export default function MentorDashboard() {
 
             {detailSubTab === "Tasks" && (
               <div>
-                {editingTask ? (
+                {/* Loading / Error States */}
+                {tasksLoading && (
+                  <p style={{ color: "#6b7280", padding: "16px" }}>⏳ Loading tasks from server...</p>
+                )}
+                {tasksError && (
+                  <div style={{ padding: "12px", backgroundColor: "#fee2e2", color: "#b91c1c", borderRadius: "8px", marginBottom: "16px" }}>
+                    ⚠️ {tasksError}
+                  </div>
+                )}
+
+                {/* Edit form */}
+                {editingTask && !showCreateTask ? (
                   <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                    <h4>Edit Task TSK-{editingTask.id}</h4>
+                    <h4>Edit Task #{editingTask.id}</h4>
                     <form onSubmit={(e) => {
                       e.preventDefault();
                       setTasks(tasks.map(t => t.id === editingTask.id ? editingTask : t));
                       setEditingTask(null);
-                    }} style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "400px" }}>
+                    }} style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "500px" }}>
                       <div>
-                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Task Title</label>
-                        <input className="form-control" type="text" value={editingTask.title} onChange={(e) => setEditingTask({...editingTask, title: e.target.value})} />
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Task Title *</label>
+                        <input className="form-control" type="text" value={editingTask.title}
+                          onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })} />
                       </div>
                       <div>
-                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline</label>
-                        <input className="form-control" type="date" value={editingTask.deadline} onChange={(e) => setEditingTask({...editingTask, deadline: e.target.value})} />
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Description</label>
+                        <textarea className="form-control" rows="3" value={editingTask.description || ""}
+                          onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })} />
                       </div>
-                      <div>
-                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Difficulty</label>
-                        <select className="form-control" value={editingTask.difficulty} onChange={(e) => setEditingTask({...editingTask, difficulty: e.target.value})}>
-                          <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
-                        </select>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Day Number</label>
+                          <input className="form-control" type="number" min="1" value={editingTask.dayNumber || 1}
+                            onChange={(e) => setEditingTask({ ...editingTask, dayNumber: parseInt(e.target.value) })} />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline (days)</label>
+                          <input className="form-control" type="number" min="1" value={editingTask.deadlineDays || 1}
+                            onChange={(e) => setEditingTask({ ...editingTask, deadlineDays: parseInt(e.target.value) })} />
+                        </div>
                       </div>
                       <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                        <button type="submit" className="btn btn-primary">Save (Local)</button>
                         <button type="button" className="btn btn-secondary" onClick={() => setEditingTask(null)}>Cancel</button>
+                      </div>
+                      <p style={{ fontSize: "11px", color: "#9ca3af", margin: 0 }}>
+                        ℹ️ Backend PUT endpoint is not yet implemented — changes are saved locally.
+                      </p>
+                    </form>
+                  </div>
+
+                ) : showCreateTask ? (
+                  /* Create Task Form */
+                  <div className="card" style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                    <h4 style={{ margin: "0 0 16px 0", color: "#166534" }}>➕ Create New Task</h4>
+                    <form onSubmit={handleCreateTask} style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Task Title *</label>
+                        <input className="form-control" type="text" placeholder="e.g. Build a Neural Network"
+                          value={newTask.title}
+                          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Description *</label>
+                        <textarea className="form-control" rows="3" placeholder="Describe the task objective..."
+                          value={newTask.description}
+                          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} />
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Domain ID</label>
+                          <input className="form-control" type="number" min="1" value={newTask.domainId}
+                            onChange={(e) => setNewTask({ ...newTask, domainId: parseInt(e.target.value) })} />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Day Number</label>
+                          <input className="form-control" type="number" min="1" value={newTask.dayNumber}
+                            onChange={(e) => setNewTask({ ...newTask, dayNumber: parseInt(e.target.value) })} />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline (days)</label>
+                          <input className="form-control" type="number" min="1" value={newTask.deadlineDays}
+                            onChange={(e) => setNewTask({ ...newTask, deadlineDays: parseInt(e.target.value) })} />
+                        </div>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Notes / Resources (optional)</label>
+                        <input className="form-control" type="text" placeholder="PDF links, GitHub repos..."
+                          value={newTask.resources}
+                          onChange={(e) => setNewTask({ ...newTask, resources: e.target.value })} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Coding Prompt (optional)</label>
+                        <textarea className="form-control" rows="2" placeholder="e.g. Write a function that returns..."
+                          value={newTask.codingQuestion?.prompt || ""}
+                          onChange={(e) => setNewTask({ ...newTask, codingQuestion: { prompt: e.target.value } })} />
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                        <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}>
+                          Create Task
+                        </button>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowCreateTask(false)}>
+                          Cancel
+                        </button>
                       </div>
                     </form>
                   </div>
+
                 ) : (
-                  <div className="table-container">
-                    <table className="table">
-                      <thead>
-                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Actions</th></tr>
-                      </thead>
-                      <tbody>
-                        {tasks.map((t) => (
-                          <tr key={t.id}>
-                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                            <td><b>{t.title}</b></td>
-                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                            <td>{t.deadline}</td>
-                            <td>
-                              <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setEditingTask(t)}>Edit</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  /* Task List Table */
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+                      <button className="btn btn-primary" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}
+                        onClick={() => setShowCreateTask(true)}>
+                        ➕ Create New Task
+                      </button>
+                    </div>
+                    {!tasksLoading && tasks.length === 0 && !tasksError && (
+                      <p style={{ color: "#9ca3af", textAlign: "center", padding: "24px" }}>
+                        No tasks found. Create your first task above.
+                      </p>
+                    )}
+                    {tasks.length > 0 && (
+                      <div className="table-container">
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Task Title</th>
+                              <th>Day</th>
+                              <th>Deadline (days)</th>
+                              <th>MCQs</th>
+                              <th>Coding</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {tasks.map((t) => (
+                              <tr key={t.id}>
+                                <td style={{ color: "#6b7280", fontSize: "12px" }}>#{t.id}</td>
+                                <td><b>{t.title}</b></td>
+                                <td>Day {t.dayNumber}</td>
+                                <td>{t.deadlineDays}d</td>
+                                <td>
+                                  <span className={`badge ${t.mcqs?.length > 0 ? "badge-success" : "badge-secondary"}`}>
+                                    {t.mcqs?.length > 0 ? `${t.mcqs.length} Qs` : "None"}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className={`badge ${t.codingQuestion ? "badge-primary" : "badge-secondary"}`}>
+                                    {t.codingQuestion ? "Yes" : "No"}
+                                  </span>
+                                </td>
+                                <td>
+                                  <button className="btn btn-secondary"
+                                    style={{ padding: "4px 8px", fontSize: "12px" }}
+                                    onClick={() => setEditingTask(t)}>
+                                    Edit
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

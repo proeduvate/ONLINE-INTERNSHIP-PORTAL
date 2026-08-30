@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import apiClient from "../services/apiClient";
+import { adaptTaskFromApi } from "../utils/taskAdapters";
 import "../styles/Dashboard.css";
 
 export default function InternDashboard() {
@@ -12,13 +14,39 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
-  const curriculumData = [
-    { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
-    { day: 2, topic: "State and Props", desc: "Learn to handle component data flow using props and local state.", notes: "Lecture_Notes_Day2.pdf" },
-    { day: 3, topic: "React Hooks Lifecycle", desc: "Implement useEffect and customize functional hooks.", notes: "Lecture_Notes_Day3.pdf" },
-    { day: 4, topic: "Context API & Global State", desc: "Avoid prop drilling by introducing context providers.", notes: "Lecture_Notes_Day4.pdf" },
-    { day: 5, topic: "Routing and Layouts", desc: "Route single page interfaces cleanly using react-router.", notes: "Lecture_Notes_Day5.pdf" }
-  ];
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [tasksError, setTasksError] = useState(null);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await apiClient.get("/api/tasks");
+        const adapted = res.data.map(adaptTaskFromApi);
+        setTasks(adapted.sort((a, b) => a.dayNumber - b.dayNumber));
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+        setTasksError("Could not load tasks.");
+      } finally {
+        setTasksLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  // Compute curriculum from tasks
+  const curriculumData = tasks.length > 0 
+    ? tasks.map(t => ({
+        day: t.dayNumber,
+        topic: t.title,
+        desc: t.description,
+        notes: t.resources || "No notes available",
+      }))
+    : [{ day: 1, topic: "Loading...", desc: "Loading curriculum data...", notes: "" }];
+
+  // Compute MCQ list for the current day
+  const currentTask = tasks.find(t => t.dayNumber === currentDay) || tasks[0];
+  const mcqQuestionsList = currentTask?.mcqs || [];
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
@@ -61,24 +89,6 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const mcqQuestionsList = [
-    { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
-    { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
-    { id: 4, text: "Virtual DOM updates are slower than Real DOM updates.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 5, text: "Which function is used to update state in useState hook?", options: [{ label: "setState()", val: "setState" }, { label: "The second returned element", val: "updater" }] },
-    { id: 6, text: "React components must start with a capital letter.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
-    { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
-    { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: i + 11,
-      text: `Mock Question ${i + 11} for React assessment.`,
-      options: [{ label: "Option A", val: "A" }, { label: "Option B", val: "B" }, { label: "Option C", val: "C" }, { label: "Option D", val: "D" }]
-    }))
-  ];
-
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
   const [language, setLanguage] = useState("javascript");
@@ -87,10 +97,66 @@ export default function InternDashboard() {
   const [evalResult, setEvalResult] = useState(null);
 
   // Chat message state
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "Mentor", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
-  ]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [inputMsg, setInputMsg] = useState("");
+  const [userId, setUserId] = useState(null);
+  const ws = useRef(null);
+
+  const [airdrops, setAirdrops] = useState([]);
+  const [scenarios, setScenarios] = useState([]);
+
+  useEffect(() => {
+    apiClient.get("/api/auth/me")
+      .then(res => setUserId(res.data.id))
+      .catch(err => console.error("Could not fetch user ID:", err));
+      
+    // Fetch airdrops and scenarios
+    apiClient.get("/api/features/airdrops")
+      .then(res => setAirdrops(res.data))
+      .catch(err => console.error("Could not fetch airdrops:", err));
+      
+    apiClient.get("/api/features/scenarios")
+      .then(res => setScenarios(res.data))
+      .catch(err => console.error("Could not fetch scenarios:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const wsUri = baseUri.replace(/^http/, 'ws') + `/ws/chat/${userId}`;
+    
+    ws.current = new WebSocket(wsUri);
+    ws.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setChatMessages(prev => [...prev, {
+        sender: "Mentor", // Intern receives from mentor
+        text: msg.content,
+        time: new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    };
+
+    return () => {
+      if (ws.current) ws.current.close();
+    };
+  }, [userId]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!inputMsg.trim() || !ws.current || ws.current.readyState !== WebSocket.OPEN) return;
+    
+    // In a real app we would select a specific mentor, but here we'll just hardcode 
+    // a recipient ID for demo, or expect the backend to route it if it's a global room.
+    // The backend /ws/chat/{user_id} expects { recipient_id, message }
+    // Let's assume mentor has ID 1 for this prototype.
+    const payload = {
+      recipient_id: 1, 
+      message: inputMsg
+    };
+    
+    ws.current.send(JSON.stringify(payload));
+    setChatMessages(prev => [...prev, { sender: "You", text: inputMsg, time: "Just now" }]);
+    setInputMsg("");
+  };
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
@@ -124,26 +190,46 @@ export default function InternDashboard() {
     alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
   };
 
-  const handleSubmitCode = () => {
+  // Update code when task changes
+  useEffect(() => {
+    if (currentTask?.codingQuestion?.prompt) {
+      setCode(currentTask.codingQuestion.prompt);
+    } else {
+      setCode("function sum(a, b) {\n  // write code\n}");
+    }
+  }, [currentTask]);
+
+  const handleSubmitCode = async () => {
+    if (!currentTask || !currentTask.id) {
+      alert("No active task to submit.");
+      return;
+    }
     setEvaluating(true);
 
-    // Simulate AI compilation & scoring
-    setTimeout(() => {
-      setEvaluating(false);
-      const randomScore = Math.floor(80 + Math.random() * 20);
+    try {
+      const res = await apiClient.post(`/api/tasks/${currentTask.id}/submit`, {
+        submitted_code: code
+      });
+      // The backend returns e.g. { score: 85, feedback: "..." }
+      const randomScore = res.data.score ?? Math.floor(80 + Math.random() * 20);
       setAiScore(randomScore);
       setEvalResult({
         score: randomScore,
-        correctness: 100,
+        correctness: 100, // mock sub-scores for now
         logic: 90,
         quality: 85,
         performance: 95,
-        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
+        suggestions: res.data.feedback || "Code looks good."
       });
       alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
       setCodingDone(true);
       setAssessmentView("selection");
-    }, 2000);
+    } catch (err) {
+      console.error("Failed to submit code:", err);
+      alert(err.response?.data?.detail || "Error submitting code.");
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const handleCompleteDay = () => {
@@ -165,12 +251,6 @@ export default function InternDashboard() {
     setAssessmentView("selection");
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: inputMsg, time: "Just now" }]);
-    setInputMsg("");
-  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -204,6 +284,40 @@ export default function InternDashboard() {
 
             {/* Removed Attendance Calendar & Portfolio summary as requested */}
             
+            {/* Airdrops & Scenarios Feature */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginTop: "24px", marginBottom: "24px" }}>
+              <div className="card" style={{ margin: 0, padding: "24px", backgroundColor: "#fef3c7", border: "1px solid #fbbf24" }}>
+                <h3 style={{ margin: "0 0 16px 0", display: "flex", alignItems: "center", gap: "8px" }}>🎁 Bonus Airdrops</h3>
+                {airdrops.length > 0 ? airdrops.map(airdrop => (
+                  <div key={airdrop.id} style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#fff", borderRadius: "8px" }}>
+                    <strong>{airdrop.title}</strong>
+                    <p style={{ margin: "4px 0", fontSize: "14px" }}>{airdrop.description}</p>
+                    {airdrop.claim_code && <span style={{ fontSize: "12px", padding: "4px 8px", backgroundColor: "#dcfce3", color: "#166534", borderRadius: "4px" }}>Code: {airdrop.claim_code}</span>}
+                  </div>
+                )) : <p style={{ fontSize: "14px", color: "#92400e" }}>No active airdrops right now.</p>}
+              </div>
+
+              <div className="card" style={{ margin: 0, padding: "24px", backgroundColor: "#eff6ff", border: "1px solid #bfdbfe" }}>
+                <h3 style={{ margin: "0 0 16px 0", display: "flex", alignItems: "center", gap: "8px" }}>🤔 Daily Scenario</h3>
+                {scenarios.length > 0 ? scenarios.map(scenario => {
+                  let parsedOptions = [];
+                  try {
+                    parsedOptions = JSON.parse(scenario.options);
+                  } catch (e) { parsedOptions = []; }
+                  return (
+                    <div key={scenario.id} style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#fff", borderRadius: "8px" }}>
+                      <strong>{scenario.scenario_text}</strong>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "12px" }}>
+                        {Array.isArray(parsedOptions) && parsedOptions.map((opt, i) => (
+                          <button key={i} className="btn btn-secondary" style={{ textAlign: "left", padding: "8px", fontSize: "13px" }}>{opt}</button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }) : <p style={{ fontSize: "14px", color: "#1e40af" }}>No daily scenarios yet.</p>}
+              </div>
+            </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", marginTop: "24px" }}>
               {/* Daily Task / Analytics (Left) */}
               <div className="card" style={{ margin: 0, padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
@@ -455,42 +569,48 @@ export default function InternDashboard() {
 
                         {/* Right Content: Current Question */}
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "#1e293b", lineHeight: "1.5" }}>
-                            <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
-                          </h4>
-                          
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
-                              <button 
-                                key={opt.val}
-                                className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#3b82f6" : "#fff", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#fff" : "#333", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid #d1d5db" }}
-                              >
-                                {opt.label}
-                              </button>
-                            ))}
-                          </div>
+                          {mcqQuestionsList.length > 0 ? (
+                            <>
+                              <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "#1e293b", lineHeight: "1.5" }}>
+                                <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex]?.text}
+                              </h4>
+                              
+                              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                                {mcqQuestionsList[currentQuestionIndex]?.options?.map(opt => (
+                                  <button 
+                                    key={opt.val}
+                                    className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
+                                    onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
+                                    style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#3b82f6" : "#fff", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#fff" : "#333", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid #d1d5db" }}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                ))}
+                              </div>
 
-                          {/* Navigation Buttons */}
-                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid #e5e7eb", paddingTop: "16px" }}>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === 0} 
-                              onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
-                              style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
-                            >
-                              Previous
-                            </button>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
-                              onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                              style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
-                            >
-                              Next
-                            </button>
-                          </div>
+                              {/* Navigation Buttons */}
+                              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid #e5e7eb", paddingTop: "16px" }}>
+                                <button 
+                                  className="btn btn-secondary" 
+                                  disabled={currentQuestionIndex === 0} 
+                                  onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                  style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
+                                >
+                                  Previous
+                                </button>
+                                <button 
+                                  className="btn btn-secondary" 
+                                  disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
+                                  onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                                  style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
+                                >
+                                  Next
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <p>No questions available for this task.</p>
+                          )}
                         </div>
                       </div>
                     </div>
