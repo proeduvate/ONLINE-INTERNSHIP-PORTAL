@@ -594,10 +594,7 @@ export default function MentorDashboard() {
                             (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED") ? "badge-success" : 
                             "badge-secondary"
                           }`}>
-                            {airdrop.status === "PENDING_APPROVAL" ? "Pending" : 
-                             airdrop.status === "APPROVED" ? "Approved" : 
-                             airdrop.status === "PUBLISHED" ? "Published" : 
-                             "Draft"}
+                            {airdrop.status ? airdrop.status.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) : "Unknown"}
                           </span>
                         </td>
                         <td>

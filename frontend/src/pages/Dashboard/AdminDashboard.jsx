@@ -305,7 +305,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         const updated = await res.json();
         setAirdropsList(airdropsList.map(a => a.id === updated.id ? updated : a));
-        alert("Airdrop approved successfully! Now publish it.");
+        alert("Airdrop approved and published successfully!");
       } else {
         alert("Failed to approve airdrop");
       }
@@ -1556,11 +1556,11 @@ export default function AdminDashboard() {
                         </td>
                         <td><span style={{ color: "#9d174d", fontWeight: "bold" }}>{airdrop.points_distribution} pts</span></td>
                         <td>
-                          <span className={`badge ${airdrop.status === "PENDING_APPROVAL" ? "badge-warning" : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? "badge-success" : "badge-secondary")}`} style={{ backgroundColor: airdrop.status === "PENDING_APPROVAL" ? '#fef3c7' : '#d1fae5', color: airdrop.status === "PENDING_APPROVAL" ? '#92400e' : '#065f46' }}>
-                            {airdrop.status === "PENDING_APPROVAL" ? "Pending" : 
-                             airdrop.status === "APPROVED" ? "Approved" : 
-                             airdrop.status === "PUBLISHED" ? "Published" : 
-                             "Draft"}
+                          <span className={`badge ${airdrop.status === "PENDING_APPROVAL" ? "badge-warning" : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? "badge-success" : "badge-secondary")}`} style={{ 
+                            backgroundColor: airdrop.status === "PENDING_APPROVAL" ? '#fef3c7' : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? '#d1fae5' : '#f3f4f6'), 
+                            color: airdrop.status === "PENDING_APPROVAL" ? '#92400e' : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? '#065f46' : '#374151') 
+                          }}>
+                            {airdrop.status ? airdrop.status.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) : "Unknown"}
                           </span>
                         </td>
                         <td>
@@ -1584,10 +1584,10 @@ export default function AdminDashboard() {
                           {airdrop.status === "PENDING_APPROVAL" && (
                             <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981", marginRight: "8px" }} onClick={() => handleApproveAirdrop(airdrop.id)}>Approve</button>
                           )}
-                          {airdrop.status === "APPROVED" && (
-                            <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#6366f1", borderColor: "#6366f1" }} onClick={() => handlePublishAirdrop(airdrop.id)}>Publish</button>
+                          {(airdrop.status === "PUBLISHED" || airdrop.status === "FINALIZED") && (
+                            <span style={{ fontSize: "12px", color: "#10b981", fontWeight: "bold" }}>Published</span>
                           )}
-                          {(airdrop.status !== "PENDING_APPROVAL" && airdrop.status !== "APPROVED") && (
+                          {(!["PENDING_APPROVAL", "PUBLISHED", "FINALIZED"].includes(airdrop.status)) && (
                             <span style={{ fontSize: "12px", color: "#6b7280" }}>-</span>
                           )}
                         </td>
