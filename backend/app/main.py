@@ -115,12 +115,14 @@ from app.api.v1.endpoints.airdrops import router as airdrops_router
 from app.api.v1.endpoints.leaderboard import router as leaderboard_router
 from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
+from routers import meetings
 app.include_router(analytics_router)
 app.include_router(tickets_router)
 app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
+app.include_router(meetings.router)
 
 
 # ==========================================
