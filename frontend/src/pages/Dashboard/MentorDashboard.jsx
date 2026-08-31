@@ -18,51 +18,108 @@ export default function MentorDashboard() {
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
-  const [newAirdrop, setNewAirdrop] = useState({ question: "", correctAnswer: "", timeLimit: "60", winners: "3", points: ["100", "50", "25"] });
+  const defaultAirdropState = {
+    title: "",
+    taskType: "Multiple Choice",
+    question: "", // Used for Question, Pattern Series, Statement, Sentence with Blank
+    mcqOptions: { A: "", B: "", C: "", D: "" },
+    correctAnswer: "", // Used for MCQ correct option, pattern correct answer, True/False choice, Blank answer
+    matchPairs: [{ key: "", value: "" }],
+    arrangeItems: ["", ""],
+    startMode: "Fixed Start Time",
+    startDate: "",
+    startTimeHour: "12",
+    startTimeMinute: "00",
+    startTimeAmPm: "AM",
+    endDate: "",
+    endTimeHour: "12",
+    endTimeMinute: "00",
+    endTimeAmPm: "AM",
+    winners: "3",
+    points: ["100", "50", "25"],
+    timeLimit: "60"
+  };
+  const [newAirdrop, setNewAirdrop] = useState(defaultAirdropState);
 
   useEffect(() => {
-    const fetchAirdrops = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/api/features/airdrops");
-        if (response.ok) {
-          const data = await response.json();
-          setBonusAirdrops(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch airdrops:", err);
-      }
-    };
-    fetchAirdrops();
+    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
+    if (storedAirdrops) {
+      setBonusAirdrops(JSON.parse(storedAirdrops));
+    }
   }, []);
 
-  const handleCreateAirdrop = async (e) => {
+  const handleCreateAirdrop = (e) => {
     e.preventDefault();
-    if (!newAirdrop.question || !newAirdrop.correctAnswer) return alert("Please fill question and answer.");
+    if (!newAirdrop.title.trim()) return alert("Please enter an airdrop title.");
     
-    const payload = {
-        question: newAirdrop.question,
-        time_limit_seconds: parseInt(newAirdrop.timeLimit),
-        reward_points: parseInt(newAirdrop.points[0]),
-        is_active: true
+    // Validate based on taskType
+    if (newAirdrop.taskType === "Multiple Choice") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the question.");
+      if (!newAirdrop.mcqOptions.A.trim() || !newAirdrop.mcqOptions.B.trim() || !newAirdrop.mcqOptions.C.trim() || !newAirdrop.mcqOptions.D.trim()) {
+        return alert("Please fill all MCQ options A, B, C, and D.");
+      }
+      if (!newAirdrop.correctAnswer) return alert("Please select the correct option.");
+    } else if (newAirdrop.taskType === "Pattern / Sequence") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the pattern series.");
+      if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+    } else if (newAirdrop.taskType === "True / False") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the statement.");
+      if (!newAirdrop.correctAnswer) return alert("Please select the correct answer (True or False).");
+    } else if (newAirdrop.taskType === "Fill in the Blank") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the sentence with blank.");
+      if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+    } else if (newAirdrop.taskType === "Match the Following") {
+      const invalidPair = newAirdrop.matchPairs.some(p => !p.key.trim() || !p.value.trim());
+      if (invalidPair || newAirdrop.matchPairs.length === 0) {
+        return alert("Please fill all Match pairs keys and values.");
+      }
+    } else if (newAirdrop.taskType === "Arrange in Order") {
+      const invalidItem = newAirdrop.arrangeItems.some(item => !item.trim());
+      if (invalidItem || newAirdrop.arrangeItems.length < 2) {
+        return alert("Please fill all items in correct order. At least 2 items are required.");
+      }
+    }
+
+    if (!newAirdrop.startDate || !newAirdrop.endDate) {
+      return alert("Please select start and end dates.");
+    }
+
+    const newAirdropObj = {
+      id: bonusAirdrops.length > 0 ? Math.max(...bonusAirdrops.map(a => a.id)) + 1 : 1,
+      title: newAirdrop.title,
+      taskType: newAirdrop.taskType,
+      question: newAirdrop.taskType === "Match the Following"
+        ? "Match the following pairs correctly."
+        : newAirdrop.taskType === "Arrange in Order"
+        ? "Arrange the items in the correct sequence."
+        : newAirdrop.question,
+      correctAnswer: newAirdrop.taskType === "Match the Following"
+        ? JSON.stringify(newAirdrop.matchPairs)
+        : newAirdrop.taskType === "Arrange in Order"
+        ? JSON.stringify(newAirdrop.arrangeItems)
+        : newAirdrop.correctAnswer,
+      mcqOptions: newAirdrop.taskType === "Multiple Choice" ? newAirdrop.mcqOptions : null,
+      matchPairs: newAirdrop.taskType === "Match the Following" ? newAirdrop.matchPairs : null,
+      arrangeItems: newAirdrop.taskType === "Arrange in Order" ? newAirdrop.arrangeItems : null,
+      startMode: newAirdrop.startMode,
+      startDate: newAirdrop.startDate,
+      startTime: `${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`,
+      endDate: newAirdrop.endDate,
+      endTime: `${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`,
+      winners: newAirdrop.winners,
+      points: newAirdrop.points.map(p => p || "0"),
+      timeLimit: newAirdrop.timeLimit || "60",
+      status: "PENDING_APPROVAL",
+      createdAt: new Date().toISOString()
     };
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/features/airdrops", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (response.ok) {
-        const dbAirdrop = await response.json();
-        setBonusAirdrops([...bonusAirdrops, dbAirdrop]);
-        setShowAirdropModal(false);
-        setNewAirdrop({ question: "", correctAnswer: "", timeLimit: "60", winners: "3", points: ["100", "50", "25"] });
-        alert("Bonus Airdrop created!");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error creating airdrop.");
-    }
+    const updatedAirdrops = [...bonusAirdrops, newAirdropObj];
+    setBonusAirdrops(updatedAirdrops);
+    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+
+    setShowAirdropModal(false);
+    setNewAirdrop(defaultAirdropState);
+    alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
   // State Mock Data
@@ -860,51 +917,519 @@ export default function MentorDashboard() {
             </div>
 
             {showAirdropModal && (
-              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-                <div style={{ backgroundColor: "#ffffff", borderRadius: "12px", width: "500px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
-                  <h3 style={{ margin: "0 0 20px 0", fontSize: "18px" }}>Create New Bonus Airdrop</h3>
-                  <form onSubmit={handleCreateAirdrop} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Question</label>
-                      <textarea required className="form-control" rows="3" style={{ width: "100%", margin: 0 }} value={newAirdrop.question} onChange={(e) => setNewAirdrop({...newAirdrop, question: e.target.value})} />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Correct Answer</label>
-                      <textarea required className="form-control" rows="2" style={{ width: "100%", margin: 0 }} value={newAirdrop.correctAnswer} onChange={(e) => setNewAirdrop({...newAirdrop, correctAnswer: e.target.value})} />
-                    </div>
-                    <div style={{ display: "flex", gap: "16px" }}>
-                      <div style={{ flex: 1 }}>
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (s)</label>
-                        <input type="number" required className="form-control" style={{ width: "100%", margin: 0 }} value={newAirdrop.timeLimit} onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} />
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px" }}>
+                <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", width: "100%", maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+                  
+                  {/* Modal Header */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#4f46e5" }}>
+                        🏆
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Winners #</label>
-                        <select className="form-control" style={{ width: "100%", margin: 0 }} value={newAirdrop.winners} onChange={(e) => {
-                          const w = parseInt(e.target.value);
-                          setNewAirdrop({...newAirdrop, winners: e.target.value, points: Array(w).fill("")});
-                        }}>
-                          {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
-                        </select>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>Create New Bonus Airdrop</h3>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>Create a time-bound bonus challenge for interns.</p>
                       </div>
                     </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Points Distribution (per Winner)</label>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        {Array.from({ length: parseInt(newAirdrop.winners) }).map((_, i) => (
-                          <div key={i} style={{ flex: 1 }}>
-                            <label style={{ display: "block", fontSize: "11px", color: "#64748b", marginBottom: "2px" }}>Rank {i + 1}</label>
-                            <input type="number" required className="form-control" style={{ width: "100%", margin: 0, padding: "8px" }} value={newAirdrop.points[i] || ""} onChange={(e) => {
-                              const newPoints = [...newAirdrop.points];
-                              newPoints[i] = e.target.value;
-                              setNewAirdrop({...newAirdrop, points: newPoints});
-                            }} />
+                    <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>✕</button>
+                  </div>
+
+                  <form onSubmit={handleCreateAirdrop} style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
+                    {/* Modal Scrollable Body */}
+                    <div style={{ padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "24px", flex: 1 }}>
+                      
+                      {/* Title & Task Type */}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                        <div>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Title <span style={{ color: "#ef4444" }}>*</span></label>
+                          <input 
+                            type="text" 
+                            required 
+                            maxLength={100}
+                            placeholder="Enter airdrop title" 
+                            className="form-control" 
+                            style={{ width: "100%", margin: 0 }} 
+                            value={newAirdrop.title} 
+                            onChange={(e) => setNewAirdrop({...newAirdrop, title: e.target.value})} 
+                          />
+                          <div style={{ display: "flex", justifyContent: "flex-end", fontSize: "11px", color: "#94a3b8", marginTop: "4px" }}>
+                            {newAirdrop.title.length}/100
                           </div>
-                        ))}
+                        </div>
+                        <div>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Task Type <span style={{ color: "#ef4444" }}>*</span></label>
+                          <select 
+                            className="form-control" 
+                            style={{ width: "100%", margin: 0 }} 
+                            value={newAirdrop.taskType} 
+                            onChange={(e) => setNewAirdrop({
+                              ...newAirdrop, 
+                              taskType: e.target.value,
+                              correctAnswer: "",
+                              question: ""
+                            })}
+                          >
+                            <option value="Multiple Choice">Multiple Choice</option>
+                            <option value="Pattern / Sequence">Pattern / Sequence</option>
+                            <option value="True / False">True / False</option>
+                            <option value="Fill in the Blank">Fill in the Blank</option>
+                            <option value="Match the Following">Match the Following</option>
+                            <option value="Arrange in Order">Arrange in Order</option>
+                          </select>
+                        </div>
                       </div>
+
+                      {/* Task Details Section */}
+                      <div style={{ backgroundColor: "#f8fafc", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+                          <span style={{ fontSize: "16px" }}>📋</span>
+                          <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>
+                            Task Details ({
+                              newAirdrop.taskType === "Multiple Choice" ? "MCQ" :
+                              newAirdrop.taskType === "Pattern / Sequence" ? "PATTERN" :
+                              newAirdrop.taskType === "True / False" ? "TRUE FALSE" :
+                              newAirdrop.taskType === "Fill in the Blank" ? "FILL BLANK" :
+                              newAirdrop.taskType === "Match the Following" ? "MATCH" : "ARRANGE"
+                            })
+                          </h4>
+                        </div>
+
+                        {/* MCQ Specific Fields */}
+                        {newAirdrop.taskType === "Multiple Choice" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "20px" }}>
+                              <div>
+                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Question <span style={{ color: "#ef4444" }}>*</span></label>
+                                <textarea 
+                                  required 
+                                  maxLength={500}
+                                  placeholder="Enter your question here..." 
+                                  className="form-control" 
+                                  rows="6" 
+                                  style={{ width: "100%", margin: 0, resize: "none" }} 
+                                  value={newAirdrop.question} 
+                                  onChange={(e) => setNewAirdrop({...newAirdrop, question: e.target.value})} 
+                                />
+                                <div style={{ display: "flex", justifyContent: "flex-end", fontSize: "11px", color: "#94a3b8", marginTop: "4px" }}>
+                                  {newAirdrop.question.length}/500
+                                </div>
+                              </div>
+                              <div>
+                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Options <span style={{ color: "#ef4444" }}>*</span></label>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                  {["A", "B", "C", "D"].map((opt) => (
+                                    <div key={opt} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 600, color: "#64748b", backgroundColor: "#ffffff" }}>
+                                        {opt}
+                                      </div>
+                                      <input 
+                                        type="text" 
+                                        required 
+                                        placeholder={`Option ${opt}`} 
+                                        className="form-control" 
+                                        style={{ width: "100%", margin: 0, padding: "8px 12px" }}
+                                        value={newAirdrop.mcqOptions[opt]} 
+                                        onChange={(e) => {
+                                          const updatedOptions = { ...newAirdrop.mcqOptions, [opt]: e.target.value };
+                                          setNewAirdrop({...newAirdrop, mcqOptions: updatedOptions});
+                                        }}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Correct Answer <span style={{ color: "#ef4444" }}>*</span></label>
+                              <select 
+                                className="form-control" 
+                                style={{ width: "100%", margin: 0 }} 
+                                value={newAirdrop.correctAnswer} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, correctAnswer: e.target.value})}
+                              >
+                                <option value="">Select the correct option</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                              </select>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Pattern / Sequence Fields */}
+                        {newAirdrop.taskType === "Pattern / Sequence" && (
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Pattern Series <span style={{ color: "#ef4444" }}>*</span></label>
+                              <textarea 
+                                required 
+                                placeholder="e.g. 2, 4, 6, ?" 
+                                className="form-control" 
+                                rows="3" 
+                                style={{ width: "100%", margin: 0, resize: "none" }} 
+                                value={newAirdrop.question} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, question: e.target.value})} 
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Correct Answer <span style={{ color: "#ef4444" }}>*</span></label>
+                              <input 
+                                type="text" 
+                                required 
+                                placeholder="Exact string match" 
+                                className="form-control" 
+                                style={{ width: "100%", margin: 0 }} 
+                                value={newAirdrop.correctAnswer} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, correctAnswer: e.target.value})} 
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* True / False Fields */}
+                        {newAirdrop.taskType === "True / False" && (
+                          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px" }}>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Statement <span style={{ color: "#ef4444" }}>*</span></label>
+                              <textarea 
+                                required 
+                                placeholder="Enter true/false statement" 
+                                className="form-control" 
+                                rows="3" 
+                                style={{ width: "100%", margin: 0, resize: "none" }} 
+                                value={newAirdrop.question} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, question: e.target.value})} 
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Correct Answer <span style={{ color: "#ef4444" }}>*</span></label>
+                              <select 
+                                className="form-control" 
+                                style={{ width: "100%", margin: 0 }} 
+                                value={newAirdrop.correctAnswer} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, correctAnswer: e.target.value})}
+                              >
+                                <option value="">Select answer</option>
+                                <option value="True">True</option>
+                                <option value="False">False</option>
+                              </select>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Fill in the Blank Fields */}
+                        {newAirdrop.taskType === "Fill in the Blank" && (
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Sentence with Blank <span style={{ color: "#ef4444" }}>*</span></label>
+                              <textarea 
+                                required 
+                                placeholder="The quick brown ___ jumps over the lazy dog." 
+                                className="form-control" 
+                                rows="3" 
+                                style={{ width: "100%", margin: 0, resize: "none" }} 
+                                value={newAirdrop.question} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, question: e.target.value})} 
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Correct Answer <span style={{ color: "#ef4444" }}>*</span></label>
+                              <input 
+                                type="text" 
+                                required 
+                                placeholder="Exact string match" 
+                                className="form-control" 
+                                style={{ width: "100%", margin: 0 }} 
+                                value={newAirdrop.correctAnswer} 
+                                onChange={(e) => setNewAirdrop({...newAirdrop, correctAnswer: e.target.value})} 
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Match the Following Fields */}
+                        {newAirdrop.taskType === "Match the Following" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569" }}>Pairs <span style={{ color: "#ef4444" }}>*</span></label>
+                            {newAirdrop.matchPairs.map((pair, idx) => (
+                              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <input 
+                                  type="text" 
+                                  required 
+                                  placeholder={`Key ${idx + 1}`} 
+                                  className="form-control" 
+                                  style={{ flex: 1, margin: 0 }} 
+                                  value={pair.key} 
+                                  onChange={(e) => {
+                                    const updated = [...newAirdrop.matchPairs];
+                                    updated[idx].key = e.target.value;
+                                    setNewAirdrop({...newAirdrop, matchPairs: updated});
+                                  }} 
+                                />
+                                <span style={{ color: "#94a3b8", fontWeight: "bold" }}>➔</span>
+                                <input 
+                                  type="text" 
+                                  required 
+                                  placeholder={`Value ${idx + 1}`} 
+                                  className="form-control" 
+                                  style={{ flex: 1, margin: 0 }} 
+                                  value={pair.value} 
+                                  onChange={(e) => {
+                                    const updated = [...newAirdrop.matchPairs];
+                                    updated[idx].value = e.target.value;
+                                    setNewAirdrop({...newAirdrop, matchPairs: updated});
+                                  }} 
+                                />
+                                {newAirdrop.matchPairs.length > 1 && (
+                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
+                                    const updated = newAirdrop.matchPairs.filter((_, i) => i !== idx);
+                                    setNewAirdrop({...newAirdrop, matchPairs: updated});
+                                  }}>🗑️</button>
+                                )}
+                              </div>
+                            ))}
+                            <button 
+                              type="button" 
+                              style={{ display: "inline-flex", width: "fit-content", alignItems: "center", gap: "6px", backgroundColor: "#e0e7ff", color: "#4f46e5", border: "none", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", fontWeight: 600, cursor: "pointer", marginTop: "4px" }}
+                              onClick={() => {
+                                setNewAirdrop({...newAirdrop, matchPairs: [...newAirdrop.matchPairs, { key: "", value: "" }]});
+                              }}
+                            >
+                              + Add Pair
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Arrange in Order Fields */}
+                        {newAirdrop.taskType === "Arrange in Order" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569" }}>Items in Correct Order <span style={{ color: "#ef4444" }}>*</span></label>
+                            {newAirdrop.arrangeItems.map((item, idx) => (
+                              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <span style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", width: "20px" }}>{idx + 1}.</span>
+                                <input 
+                                  type="text" 
+                                  required 
+                                  placeholder={`Item ${idx + 1}`} 
+                                  className="form-control" 
+                                  style={{ flex: 1, margin: 0 }} 
+                                  value={item} 
+                                  onChange={(e) => {
+                                    const updated = [...newAirdrop.arrangeItems];
+                                    updated[idx] = e.target.value;
+                                    setNewAirdrop({...newAirdrop, arrangeItems: updated});
+                                  }} 
+                                />
+                                {newAirdrop.arrangeItems.length > 2 && (
+                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
+                                    const updated = newAirdrop.arrangeItems.filter((_, i) => i !== idx);
+                                    setNewAirdrop({...newAirdrop, arrangeItems: updated});
+                                  }}>🗑️</button>
+                                )}
+                              </div>
+                            ))}
+                            <button 
+                              type="button" 
+                              style={{ display: "inline-flex", width: "fit-content", alignItems: "center", gap: "6px", backgroundColor: "#e0e7ff", color: "#4f46e5", border: "none", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", fontWeight: 600, cursor: "pointer", marginTop: "4px" }}
+                              onClick={() => {
+                                setNewAirdrop({...newAirdrop, arrangeItems: [...newAirdrop.arrangeItems, ""]});
+                              }}
+                            >
+                              + Add Item
+                            </button>
+                          </div>
+                        )}
+
+                      </div>
+
+                      {/* Timing & Start Mode Section */}
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+                          <span style={{ fontSize: "16px" }}>🕒</span>
+                          <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Timing & Start Mode</h4>
+                        </div>
+
+                        <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                          {/* Fixed Start Time Option */}
+                          <div 
+                            style={{ 
+                              border: newAirdrop.startMode === "Fixed Start Time" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
+                              borderRadius: "10px",
+                              padding: "12px 16px",
+                              cursor: "pointer",
+                              display: "flex",
+                              gap: "12px",
+                              alignItems: "flex-start",
+                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "#ffffff",
+                              transition: "all 0.2s"
+                            }}
+                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Fixed Start Time"})}
+                          >
+                            <input 
+                              type="radio" 
+                              checked={newAirdrop.startMode === "Fixed Start Time"} 
+                              readOnly 
+                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Fixed Start Time</div>
+                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>All eligible interns start at the same time</div>
+                            </div>
+                          </div>
+
+                          {/* Flexible Start Option */}
+                          <div 
+                            style={{ 
+                              border: newAirdrop.startMode === "Flexible Start" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
+                              borderRadius: "10px",
+                              padding: "12px 16px",
+                              cursor: "pointer",
+                              display: "flex",
+                              gap: "12px",
+                              alignItems: "flex-start",
+                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "#ffffff",
+                              transition: "all 0.2s"
+                            }}
+                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
+                          >
+                            <input 
+                              type="radio" 
+                              checked={newAirdrop.startMode === "Flexible Start"} 
+                              readOnly 
+                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Flexible Start</div>
+                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>Interns can start anytime in the window</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Dates and Dropdowns */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px", marginBottom: "12px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Date <span style={{ color: "#ef4444" }}>*</span></label>
+                            <input 
+                              type="date" 
+                              required
+                              className="form-control" 
+                              style={{ width: "100%", margin: 0 }} 
+                              value={newAirdrop.startDate} 
+                              onChange={(e) => setNewAirdrop({...newAirdrop, startDate: e.target.value})} 
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Time <span style={{ color: "#ef4444" }}>*</span></label>
+                            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeHour: e.target.value})}>
+                                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
+                              </select>
+                              <span style={{ color: "#64748b" }}>:</span>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeMinute: e.target.value})}>
+                                {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeAmPm: e.target.value})}>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Date <span style={{ color: "#ef4444" }}>*</span></label>
+                            <input 
+                              type="date" 
+                              required
+                              className="form-control" 
+                              style={{ width: "100%", margin: 0 }} 
+                              value={newAirdrop.endDate} 
+                              onChange={(e) => setNewAirdrop({...newAirdrop, endDate: e.target.value})} 
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Time <span style={{ color: "#ef4444" }}>*</span></label>
+                            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeHour: e.target.value})}>
+                                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
+                              </select>
+                              <span style={{ color: "#64748b" }}>:</span>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeMinute: e.target.value})}>
+                                {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeAmPm: e.target.value})}>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Winners & Rewards Section */}
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+                          <span style={{ fontSize: "16px" }}>🎁</span>
+                          <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Winners & Rewards</h4>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Total Winners <span style={{ color: "#ef4444" }}>*</span></label>
+                            <select 
+                              className="form-control" 
+                              style={{ width: "100%", margin: 0 }} 
+                              value={newAirdrop.winners} 
+                              onChange={(e) => {
+                                const w = parseInt(e.target.value);
+                                const newPoints = Array(w).fill("");
+                                // Retain values if possible
+                                for (let i = 0; i < Math.min(w, newAirdrop.points.length); i++) {
+                                  newPoints[i] = newAirdrop.points[i];
+                                }
+                                setNewAirdrop({...newAirdrop, winners: e.target.value, points: newPoints});
+                              }}
+                            >
+                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
+                            </select>
+                            <span style={{ fontSize: "11px", color: "#64748b", display: "block", marginTop: "4px" }}>Exact number of winners to be selected</span>
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Points Per Rank <span style={{ color: "#ef4444" }}>*</span></label>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              {Array.from({ length: parseInt(newAirdrop.winners) }).map((_, i) => (
+                                <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                  <span style={{ fontSize: "12px", color: "#475569", fontWeight: 500, width: "60px" }}>Rank {i + 1}</span>
+                                  <input 
+                                    type="number" 
+                                    required 
+                                    className="form-control" 
+                                    style={{ flex: 1, margin: 0, padding: "8px 12px" }} 
+                                    value={newAirdrop.points[i] || ""} 
+                                    placeholder="Enter points"
+                                    onChange={(e) => {
+                                      const newPoints = [...newAirdrop.points];
+                                      newPoints[i] = e.target.value;
+                                      setNewAirdrop({...newAirdrop, points: newPoints});
+                                    }} 
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
-                      <button type="button" className="btn btn-secondary" onClick={() => setShowAirdropModal(false)}>Cancel</button>
-                      <button type="submit" className="btn btn-primary">Create Airdrop</button>
+
+                    {/* Modal Footer */}
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", padding: "16px 24px", borderTop: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
+                      <button type="button" className="btn btn-secondary" style={{ padding: "10px 20px" }} onClick={() => setShowAirdropModal(false)}>Cancel</button>
+                      <button type="submit" className="btn btn-primary" style={{ padding: "10px 20px" }}>Create Airdrop</button>
                     </div>
                   </form>
                 </div>

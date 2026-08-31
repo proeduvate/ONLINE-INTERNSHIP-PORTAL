@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Volume2, Mic, MicOff, Settings, Headphones } from 'lucide-react';
+import { ChevronDown, Hash, Volume2, Mic, MicOff, Settings, Headphones } from 'lucide-react';
+import { mockMentor, mockInterns } from './MockData';
 
 export default function WorkspaceSidebar({ 
   rooms, 
   activeRoom, 
   setActiveRoom, 
   participants,
-  isIntern = false,
-  isOpen,
-  onClose
+  isIntern = false
 }) {
   const [isMicOn, setIsMicOn] = useState(false);
   const [isDeafened, setIsDeafened] = useState(false);
@@ -24,11 +23,7 @@ export default function WorkspaceSidebar({
   };
 
   return (
-    <>
-      {isOpen && (
-        <div className="br-modal-overlay" style={{ zIndex: 290 }} onClick={onClose} />
-      )}
-      <div className={`br-workspace-sidebar ${isOpen ? 'open' : ''}`}>
+    <div className="br-workspace-sidebar">
       
       <div className="br-workspace-content">
         <div className="br-section-title">LIVE MEETINGS</div>
@@ -98,6 +93,5 @@ export default function WorkspaceSidebar({
         </div>
       </div>
     </div>
-    </>
   );
 }
