@@ -10,6 +10,7 @@ def build_ai_client_prompt(
         if submission.previous_feedback
         else "No previous client feedback is available."
     )
+    
 
     return f"""
 You are an AI Client for an online internship portal.

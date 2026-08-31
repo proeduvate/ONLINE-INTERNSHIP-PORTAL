@@ -19,6 +19,7 @@ def review_as_ai_client(
     prompt = build_ai_client_prompt(
         submission
     )
+    
 
     response = generate_structured_response(
         prompt=prompt,

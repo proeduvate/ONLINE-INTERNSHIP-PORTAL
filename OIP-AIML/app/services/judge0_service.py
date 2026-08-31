@@ -10,7 +10,10 @@ from app.schemas import TestCase, TestCaseResult
 logger = logging.getLogger(__name__)
 
 
-# Common Judge0 language IDs
+# ============================================================
+# JUDGE0 LANGUAGE IDs
+# ============================================================
+
 LANGUAGE_IDS = {
     "python": 71,
     "python3": 71,
@@ -42,9 +45,17 @@ LANGUAGE_IDS = {
 }
 
 
-class Judge0Error(Exception):
-    """Raised when Judge0 execution fails."""
+# ============================================================
+# CUSTOM ERROR
+# ============================================================
 
+class Judge0Error(Exception):
+    """Raised when Judge0 cannot be reached or returns an invalid response."""
+
+
+# ============================================================
+# LANGUAGE ID
+# ============================================================
 
 def get_language_id(language: str) -> int:
     normalized = language.strip().lower()
@@ -57,6 +68,10 @@ def get_language_id(language: str) -> int:
 
     return LANGUAGE_IDS[normalized]
 
+
+# ============================================================
+# EXECUTE ONE TEST CASE
+# ============================================================
 
 def execute_test_case(
     code: str,
@@ -81,6 +96,10 @@ def execute_test_case(
         "stdin": test_case.stdin,
     }
 
+    # --------------------------------------------------------
+    # Send code to Judge0
+    # --------------------------------------------------------
+
     try:
         response = requests.post(
             url,
@@ -93,49 +112,107 @@ def execute_test_case(
         result: dict[str, Any] = response.json()
 
     except requests.RequestException as error:
+
         logger.exception("Judge0 request failed")
+
         raise Judge0Error(
             f"Unable to communicate with Judge0: {error}"
         ) from error
 
-    status = result.get("status", {})
+    except ValueError as error:
+
+        logger.exception("Judge0 returned invalid JSON")
+
+        raise Judge0Error(
+            "Judge0 returned an invalid response."
+        ) from error
+
+    # --------------------------------------------------------
+    # Extract Judge0 response
+    # --------------------------------------------------------
+
+    status = result.get("status") or {}
+
     status_id = status.get("id")
+
     status_description = status.get(
         "description",
         "Unknown",
     )
 
     stdout = result.get("stdout")
+
     stderr = result.get("stderr")
+
     compile_output = result.get("compile_output")
 
-    actual_output = stdout
+    # --------------------------------------------------------
+    # Normalize outputs for comparison
+    # --------------------------------------------------------
 
-    if actual_output is not None:
-        actual_output = actual_output.rstrip()
+    actual_output = (
+        stdout.rstrip()
+        if stdout is not None
+        else None
+    )
 
-    expected_output = test_case.expected_output.rstrip()
+    expected_output = (
+        test_case.expected_output.rstrip()
+    )
+
+    # --------------------------------------------------------
+    # Determine whether test passed
+    # --------------------------------------------------------
 
     passed = (
         status_id == 3
         and actual_output == expected_output
     )
 
+    # --------------------------------------------------------
+    # Compilation error
+    # --------------------------------------------------------
+
     if compile_output:
+
         stderr = compile_output
+
+    # --------------------------------------------------------
+    # Wrong Answer
+    # --------------------------------------------------------
+
+    if status_id == 3 and not passed:
+
+        status_description = "Wrong Answer"
+
+    # --------------------------------------------------------
+    # Build result
+    # --------------------------------------------------------
 
     return TestCaseResult(
         test_case_number=0,
+
         passed=passed,
+
         status=status_description,
+
         stdout=stdout,
+
         stderr=stderr,
+
         expected_output=test_case.expected_output,
-        actual_output=stdout,
+
+        actual_output=actual_output,
+
         execution_time=result.get("time"),
+
         memory=result.get("memory"),
     )
 
+
+# ============================================================
+# EXECUTE ALL TEST CASES
+# ============================================================
 
 def execute_all_test_cases(
     code: str,
@@ -145,7 +222,10 @@ def execute_all_test_cases(
 
     results: list[TestCaseResult] = []
 
-    for index, test_case in enumerate(test_cases, start=1):
+    for index, test_case in enumerate(
+        test_cases,
+        start=1,
+    ):
 
         result = execute_test_case(
             code=code,
