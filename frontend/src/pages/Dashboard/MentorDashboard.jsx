@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock } from "lucide-react";
 import "../../styles/Dashboard.css";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 
@@ -435,7 +436,7 @@ export default function MentorDashboard() {
               </div>
 
               <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>âš ï¸ At-Risk Interns</h3>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
                   <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
@@ -508,7 +509,7 @@ export default function MentorDashboard() {
                         .map((intern, index) => (
                         <tr key={intern.id}>
                           <td style={{ padding: "8px 12px" }}>
-                            {index === 0 ? "ðŸ¥‡" : index === 1 ? "ðŸ¥ˆ" : index === 2 ? "ðŸ¥‰" : `#${index + 1}`}
+                            {index === 0 ? <Trophy size={16} color="#eab308" /> : index === 1 ? <Medal size={16} color="#9ca3af" /> : index === 2 ? <Award size={16} color="#b45309" /> : `#${index + 1}`}
                           </td>
                           <td style={{ padding: "8px 12px", fontWeight: 600 }}>{intern.name}</td>
                           <td style={{ padding: "8px 12px", textAlign: "right" }}><span className="badge badge-primary">{intern.score}</span></td>
@@ -603,7 +604,7 @@ export default function MentorDashboard() {
             {/* Row 1: Submissions review & grading */}
             <div className="card">
               {submissions.filter(s => s.status === "Pending").length === 0 ? (
-                <p><b>ðŸŽ‰ All submissions have been evaluated!</b></p>
+                <p style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}><Trophy size={18} color="#10b981" /> All submissions have been evaluated!</p>
               ) : (
                 submissions.filter(s => s.status === "Pending").map(sub => {
                   let tempScore = "";
@@ -625,7 +626,7 @@ export default function MentorDashboard() {
                           
                           <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "12px", borderRadius: "8px", fontSize: "12px", color: "#1E3A8A" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "4px", fontSize: "13px" }}>
-                              <span>ðŸ¤–</span> AI Evaluation: {sub.aiScore}
+                              <Bot size={16} /> AI Evaluation: {sub.aiScore}
                             </div>
                             <div style={{ lineHeight: "1.5" }}>{sub.aiFeedback}</div>
                           </div>
@@ -924,7 +925,7 @@ export default function MentorDashboard() {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#4f46e5" }}>
-                        🏆
+                        <Trophy size={20} />
                       </div>
                       <div>
                         <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>Create New Bonus Airdrop</h3>
@@ -982,7 +983,7 @@ export default function MentorDashboard() {
                       {/* Task Details Section */}
                       <div style={{ backgroundColor: "#f8fafc", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                          <span style={{ fontSize: "16px" }}>📋</span>
+                          <ClipboardList size={16} />
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>
                             Task Details ({
                               newAirdrop.taskType === "Multiple Choice" ? "MCQ" :
@@ -1246,7 +1247,7 @@ export default function MentorDashboard() {
                       {/* Timing & Start Mode Section */}
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                          <span style={{ fontSize: "16px" }}>🕒</span>
+                          <Clock size={16} />
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Timing & Start Mode</h4>
                         </div>
 
@@ -1372,7 +1373,7 @@ export default function MentorDashboard() {
                       {/* Winners & Rewards Section */}
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                          <span style={{ fontSize: "16px" }}>🎁</span>
+                          <Gift size={16} />
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Winners & Rewards</h4>
                         </div>
 
@@ -1450,16 +1451,16 @@ export default function MentorDashboard() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
             {isSidebarOpen && <h2>Mentor Panel</h2>}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>â˜°</button>
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Menu size={24} /></button>
           </div>
           <ul>
             {[
-              { id: "Overview", icon: "ðŸ“Š" },
-              { id: "Cohort", icon: "ðŸ‘¥" },
-              { id: "Evaluations", icon: "ðŸ“" },
-              { id: "Programs", icon: "ðŸ“…" },
-              { id: "Bonus Airdrops", icon: "ðŸŽ" },
-              { id: "Breakout Rooms", icon: "ðŸ’¬" }
+              { id: "Overview", icon: <LayoutDashboard size={20} /> },
+              { id: "Cohort", icon: <Users size={20} /> },
+              { id: "Evaluations", icon: <ClipboardCheck size={20} /> },
+              { id: "Programs", icon: <BookOpen size={20} /> },
+              { id: "Bonus Airdrops", icon: <Gift size={20} /> },
+              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> }
             ].map((tab) => (
               <li
                 key={tab.id}
@@ -1475,8 +1476,8 @@ export default function MentorDashboard() {
             ))}
           </ul>
         </div>
-        <button className="sidebar-logout" onClick={handleLogout}>
-          {isSidebarOpen ? "Logout" : "ðŸšª"}
+        <button className="sidebar-logout" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          {isSidebarOpen ? "Logout" : <LogOut size={20} />}
         </button>
       </div>
 
@@ -1544,7 +1545,7 @@ export default function MentorDashboard() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: "#2b2d31", borderBottom: "1px solid #3f4248" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#da373c", display: "inline-block" }}></span>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5" }}>LIVE â€¢ {activeMeetingRoom}</span>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5", display: 'flex', alignItems: 'center', gap: '4px' }}>LIVE <span>&bull;</span> {activeMeetingRoom}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button 
@@ -1552,7 +1553,7 @@ export default function MentorDashboard() {
                 style={{ background: "none", border: "none", color: "#b5bac1", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Maximize to full meeting screen"
               >
-                â›¶
+                <Maximize2 size={16} />
               </button>
             </div>
           </div>
@@ -1570,7 +1571,7 @@ export default function MentorDashboard() {
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: "#2b2d31", gap: "8px" }}>
             <button onClick={() => setActiveTab("Breakout Rooms")} style={{ flex: 1, backgroundColor: "#5865f2", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-              <span>Return</span> â›¶
+              <span>Return</span> <Maximize2 size={14} />
             </button>
             <button onClick={() => { setIsMeetingActive(false); setActiveTab("Overview"); }} style={{ backgroundColor: "#da373c", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
               Leave
