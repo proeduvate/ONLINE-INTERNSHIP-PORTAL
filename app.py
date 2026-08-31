@@ -571,6 +571,10 @@ def login(credentials: UserLoginSchema, db: Session = Depends(get_db)):
 def get_profile(current_user: DBUser = Depends(get_current_user)):
     return current_user
 
+@app.get("/api/auth/me", response_model=UserResponse)
+def get_me(current_user: DBUser = Depends(get_current_user)):
+    return current_user
+
 @app.post("/api/admin/onboard-intern", response_model=UserResponse)
 def onboard_intern(user_in: UserOnboard, db: Session = Depends(get_db)):
     if db.query(DBUser).filter(DBUser.email == user_in.email).first():

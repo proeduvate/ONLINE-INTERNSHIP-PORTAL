@@ -266,3 +266,18 @@ class OnboardingApplication(Base):
     resume_url = Column(String(255))
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING_REVIEW)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class BonusAirdrop(Base):
+    __tablename__ = 'bonus_airdrops'
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(String(500), nullable=False)
+    time_limit_seconds = Column(Integer, default=60)
+    reward_points = Column(Integer, default=10)
+    is_active = Column(Boolean, default=True)
+
+class DailyScenario(Base):
+    __tablename__ = 'daily_scenarios'
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    date_added = Column(DateTime(timezone=True), server_default=func.now())

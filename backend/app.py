@@ -20,7 +20,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
 # 1. Import the meetings router module
-from routers import meetings
+from routers import meetings, airdrops, onboarding
 
 try:
     import models, database, schemas
@@ -76,8 +76,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# 2. Register the meetings router
+# 2. Register routers
 app.include_router(meetings.router)
+app.include_router(airdrops.router)
+app.include_router(onboarding.router)
 
 # CORS configuration
 app.add_middleware(
@@ -206,7 +208,7 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/api/auth/login")
-def login(login_in: schemas.UserLogin, db: Session = Depends(get_db)):
+def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == login_in.email).first()
     if not user or not pwd_context.verify(login_in.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
