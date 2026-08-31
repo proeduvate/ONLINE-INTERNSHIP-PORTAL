@@ -17,6 +17,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
   const [activeRoom, setActiveRoom] = useState(isIntern ? 'main' : 'alpha');
   const [rightPanelMode, setRightPanelMode] = useState('members'); // 'members', 'chat', 'closed'
   const [isManagerOpen, setIsManagerOpen] = useState(false);
+  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
 
   // Safe fallback if activeRoom is deleted
   const currentRoomData = rooms.find(r => r.id === activeRoom) || rooms[0] || { id: 'main', name: 'Main Meeting', type: 'main' };
@@ -34,6 +35,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
   // Notify parent when active room changes
   const handleSetActiveRoom = (roomId) => {
     setActiveRoom(roomId);
+    setIsLeftPanelOpen(false); // Close mobile menu on select
     const room = rooms.find(r => r.id === roomId);
     if (onRoomChange && room) onRoomChange(room.name);
   };
@@ -46,11 +48,6 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
     }
   };
 
-  // For interns: follow the room they've been assigned to (simulate mentor moving them)
-  const internAssignedRoom = isIntern
-    ? rooms.find(r => r.name === (interns.find(i => i.name === 'Tobi')?.room || 'Main Meeting'))?.id || 'main'
-    : null;
-
   return (
     <div className="br-app-container">
       <WorkspaceSidebar 
@@ -59,6 +56,8 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         setActiveRoom={handleSetActiveRoom}
         participants={allParticipants}
         isIntern={isIntern}
+        isOpen={isLeftPanelOpen}
+        onClose={() => setIsLeftPanelOpen(false)}
       />
       <MeetingArea 
         room={currentRoomData}
@@ -69,6 +68,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         openManager={() => setIsManagerOpen(true)}
         isIntern={isIntern}
         onMinimize={onMinimize}
+        toggleLeftPanel={() => setIsLeftPanelOpen(prev => !prev)}
       />
       {rightPanelMode !== 'closed' && (
         <MembersPanel 

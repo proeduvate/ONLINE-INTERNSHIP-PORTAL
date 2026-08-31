@@ -125,7 +125,7 @@ export default function BreakoutRoomsApp({ user, meetingId = "default-meeting" }
 
       {/* Main Stream Area */}
       <div style={{ flex: 1 }}>
-        <MeetingRoom currentRoom={activeChannel} user={user} />
+        <MeetingRoom key={activeChannel} currentRoom={activeChannel} user={user} />
       </div>
     </div>
   );

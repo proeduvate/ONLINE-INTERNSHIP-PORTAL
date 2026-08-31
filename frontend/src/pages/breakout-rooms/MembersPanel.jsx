@@ -65,8 +65,10 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
   // ── Group chat panel ──
   if (mode === 'chat' && !dmTarget) {
     return (
-      <div className="br-right-sidebar">
-        <div className="br-right-header">
+      <>
+        <div className="br-modal-overlay mobile-only" style={{ zIndex: 290 }} onClick={onClose} />
+        <div className={`br-right-sidebar ${mode !== 'closed' ? 'open' : ''}`}>
+          <div className="br-right-header">
           <span># meeting-chat</span>
           <button className="br-icon-btn" onClick={onClose}><X size={18} /></button>
         </div>
@@ -101,6 +103,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -108,9 +111,11 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
   if (dmTarget) {
     const dmMessages = dmChats[dmTarget.id] || [];
     return (
-      <div className="br-right-sidebar">
-        <div className="br-right-header">
-          <button
+      <>
+        <div className="br-modal-overlay mobile-only" style={{ zIndex: 290 }} onClick={onClose} />
+        <div className={`br-right-sidebar ${mode !== 'closed' ? 'open' : ''}`}>
+          <div className="br-right-header">
+            <button
             className="br-icon-btn"
             onClick={() => setDmTarget(null)}
             title="Back to members"
@@ -167,6 +172,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -178,7 +184,9 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
   const allMembers = [mentor, ...interns];
 
   return (
-    <div className="br-right-sidebar">
+    <>
+      <div className="br-modal-overlay mobile-only" style={{ zIndex: 290 }} onClick={onClose} />
+      <div className={`br-right-sidebar ${mode !== 'closed' ? 'open' : ''}`}>
       {/* Kick confirmation overlay */}
       {kickTarget && (
         <div style={{
@@ -302,5 +310,6 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
         ))}
       </div>
     </div>
+    </>
   );
 }

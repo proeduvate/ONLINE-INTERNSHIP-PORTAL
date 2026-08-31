@@ -56,45 +56,20 @@ export default function InternDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
 
   useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    let parsed = [];
-    if (storedAirdrops) {
-      parsed = JSON.parse(storedAirdrops);
-    }
-    
-    const mockData = [
-      {
-        id: 101,
-        question: "What is the primary purpose of React's Virtual DOM?",
-        timeLimit: "60",
-        points: [20, 15, 10],
-        status: "Active"
-      },
-      {
-        id: 102,
-        question: "Explain the difference between useState and useReducer.",
-        timeLimit: "45",
-        points: [15, 10],
-        status: "Active"
-      },
-      {
-        id: 103,
-        question: "What are the core web vitals and why do they matter?",
-        timeLimit: "90",
-        points: [30, 20, 10],
-        status: "Completed"
-      },
-      {
-        id: 104,
-        question: "How does the Event Loop work in Node.js?",
-        timeLimit: "120",
-        points: [50, 25],
-        status: "Completed"
+    const fetchAirdrops = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/features/airdrops");
+        if (response.ok) {
+          const data = await response.json();
+          setBonusAirdrops(data);
+        } else {
+          console.error("Failed to fetch airdrops");
+        }
+      } catch (err) {
+        console.error("Error fetching airdrops:", err);
       }
-    ];
-    
-    // Merge real airdrops with mock data so there is always something to see
-    setBonusAirdrops([...parsed, ...mockData]);
+    };
+    fetchAirdrops();
   }, []);
 
   useEffect(() => {

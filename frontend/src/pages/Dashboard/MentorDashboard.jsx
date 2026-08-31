@@ -21,30 +21,48 @@ export default function MentorDashboard() {
   const [newAirdrop, setNewAirdrop] = useState({ question: "", correctAnswer: "", timeLimit: "60", winners: "3", points: ["100", "50", "25"] });
 
   useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    if (storedAirdrops) {
-      setBonusAirdrops(JSON.parse(storedAirdrops));
-    }
+    const fetchAirdrops = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/features/airdrops");
+        if (response.ok) {
+          const data = await response.json();
+          setBonusAirdrops(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch airdrops:", err);
+      }
+    };
+    fetchAirdrops();
   }, []);
 
-  const handleCreateAirdrop = (e) => {
+  const handleCreateAirdrop = async (e) => {
     e.preventDefault();
     if (!newAirdrop.question || !newAirdrop.correctAnswer) return alert("Please fill question and answer.");
     
-    const newAirdropObj = {
-      id: bonusAirdrops.length > 0 ? Math.max(...bonusAirdrops.map(a => a.id)) + 1 : 1,
-      ...newAirdrop,
-      status: "PENDING_APPROVAL",
-      createdAt: new Date().toISOString()
+    const payload = {
+        question: newAirdrop.question,
+        time_limit_seconds: parseInt(newAirdrop.timeLimit),
+        reward_points: parseInt(newAirdrop.points[0]),
+        is_active: true
     };
-    
-    const updatedAirdrops = [...bonusAirdrops, newAirdropObj];
-    setBonusAirdrops(updatedAirdrops);
-    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
-    
-    setShowAirdropModal(false);
-    setNewAirdrop({ question: "", correctAnswer: "", timeLimit: "60", winners: "3", points: ["100", "50", "25"] });
-    alert("Bonus Airdrop created and sent to Admin for approval!");
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/features/airdrops", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) {
+        const dbAirdrop = await response.json();
+        setBonusAirdrops([...bonusAirdrops, dbAirdrop]);
+        setShowAirdropModal(false);
+        setNewAirdrop({ question: "", correctAnswer: "", timeLimit: "60", winners: "3", points: ["100", "50", "25"] });
+        alert("Bonus Airdrop created!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating airdrop.");
+    }
   };
 
   // State Mock Data
