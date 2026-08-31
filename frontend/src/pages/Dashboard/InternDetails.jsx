@@ -466,45 +466,69 @@ CREATE TABLE submission_files (
                 </tr>
               </thead>
               <tbody>
-                {submissions.map(sub => (
-                  <tr key={sub.id}>
-                    <td style={{ padding: "14px 16px" }}>
-                      <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.date}</div>
-                      <div style={{ fontSize: "11px", color: "#9ca3af" }}>{sub.day}</div>
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.task}</div>
-                      {sub.githubUrl && (
-                        <a href={sub.githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
-                          🔗 GitHub Repo
-                        </a>
-                      )}
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <button
-                        className="file-pill file-pill-code"
-                        style={{ padding: "6px 12px", fontSize: "12px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", color: "#1d4ed8", fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
-                        onClick={() => handleOpenFileViewer(sub, 0)}
-                        title="Click to view & inspect submitted files"
-                      >
-                        <span>📁</span>
-                        <span>{sub.files.length} Files</span>
-                        <span style={{ fontSize: "10px", color: "#60a5fa" }}>▶</span>
-                      </button>
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <span style={{ fontWeight: 600, color: "#1f2937" }}>{sub.aiScore}</span>
-                    </td>
-                    <td style={{ padding: "14px 16px" }}>
-                      <span className={`badge ${sub.status === 'Approved' ? 'badge-success' : sub.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}`}>
-                        {sub.status}
-                      </span>
-                    </td>
-                    <td style={{ padding: "14px 16px", fontSize: "12px", color: "#4b5563", lineHeight: "1.4" }}>
-                      {sub.feedback}
-                    </td>
-                  </tr>
-                ))}
+                {Array.from({length: 30}, (_, i) => {
+                  const dayStr = `Day ${i + 1}`;
+                  const sub = submissions.find(s => s.day === dayStr);
+                  
+                  if (sub) {
+                    return (
+                      <tr key={sub.id}>
+                        <td style={{ padding: "14px 16px" }}>
+                          <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.date}</div>
+                          <div style={{ fontSize: "11px", color: "#9ca3af" }}>{sub.day}</div>
+                        </td>
+                        <td style={{ padding: "14px 16px" }}>
+                          <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.task}</div>
+                          {sub.githubUrl && (
+                            <a href={sub.githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
+                              🔗 GitHub Repo
+                            </a>
+                          )}
+                        </td>
+                        <td style={{ padding: "14px 16px" }}>
+                          <button
+                            className="file-pill file-pill-code"
+                            style={{ padding: "6px 12px", fontSize: "12px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", color: "#1d4ed8", fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                            onClick={() => handleOpenFileViewer(sub, 0)}
+                            title="Click to view & inspect submitted files"
+                          >
+                            <span>📁</span>
+                            <span>{sub.files.length} Files</span>
+                            <span style={{ fontSize: "10px", color: "#60a5fa" }}>▶</span>
+                          </button>
+                        </td>
+                        <td style={{ padding: "14px 16px" }}>
+                          <span style={{ fontWeight: 600, color: "#1f2937" }}>{sub.aiScore}</span>
+                        </td>
+                        <td style={{ padding: "14px 16px" }}>
+                          <span className={`badge ${sub.status === 'Approved' ? 'badge-success' : sub.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}`}>
+                            {sub.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: "14px 16px", fontSize: "12px", color: "#4b5563", lineHeight: "1.4" }}>
+                          {sub.feedback}
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return (
+                    <tr key={`empty-${dayStr}`}>
+                      <td style={{ padding: "14px 16px" }}>
+                        <div style={{ fontSize: "11px", color: "#9ca3af", fontWeight: 600 }}>{dayStr}</div>
+                      </td>
+                      <td style={{ padding: "14px 16px", color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>
+                        No Task Scheduled
+                      </td>
+                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
+                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <span className="badge badge-secondary" style={{ backgroundColor: "#f3f4f6", color: "#6b7280" }}>Not Submitted</span>
+                      </td>
+                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
