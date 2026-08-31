@@ -5,8 +5,8 @@ import asyncio
 
 # Assuming dependencies.py or database.py exports get_db
 # Adjust import path relative to backend root
-from database import get_db 
-import models, schemas
+from app.db.session import get_db 
+from app import models, schemas
 
 router = APIRouter(prefix="/meetings", tags=["meetings"])
 
