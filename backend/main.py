@@ -20,7 +20,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
 # 1. Import the meetings router module
-from routers import meetings, airdrops, onboarding
+from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users
+
 
 try:
     import models, database, schemas
@@ -77,9 +78,16 @@ app = FastAPI(
 )
 
 # 2. Register routers
-app.include_router(meetings.router)
-app.include_router(airdrops.router)
-app.include_router(onboarding.router)
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(tasks.router, prefix="/api/tasks", tags=["Tasks"])
+app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
+app.include_router(airdrops.router, prefix="/api/airdrops", tags=["Airdrops"])
+app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(onboarding.router, prefix="/api/onboarding", tags=["Onboarding"])
+# Meetings uses a custom prefix internally for WS, but we'll register the router
+app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
 
 # CORS configuration
 app.add_middleware(
