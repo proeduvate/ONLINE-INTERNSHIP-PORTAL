@@ -9,6 +9,55 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [analyticsSelectedUser, setAnalyticsSelectedUser] = useState("");
+  
+  // New Analytics States
+  const [analyticsBatch, setAnalyticsBatch] = useState("All Batches");
+  const [analyticsDomain, setAnalyticsDomain] = useState("All Domains");
+  const [analyticsBatchesList, setAnalyticsBatchesList] = useState([]);
+  const [analyticsInternsList, setAnalyticsInternsList] = useState([]);
+
+  // Fetch batches for Analytics
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        console.log("Fetching batches from:", "http://127.0.0.1:8000/batch-analytics/batches");
+        const res = await fetch("http://127.0.0.1:8000/batch-analytics/batches");
+        console.log("Batches response status:", res.status);
+        if (res.ok) {
+          const data = await res.json();
+          console.log("Batches data received:", data);
+          setAnalyticsBatchesList(data);
+        } else {
+          console.error("Failed to fetch batches. Status:", res.status);
+        }
+      } catch (e) {
+        console.error("Error fetching batches", e);
+      }
+    };
+    fetchBatches();
+  }, []);
+
+  // Fetch interns for Analytics based on filters
+  useEffect(() => {
+    const fetchFilteredInterns = async () => {
+      try {
+        let url = `http://127.0.0.1:8000/batch-analytics/interns?batch=${encodeURIComponent(analyticsBatch)}&domain=${encodeURIComponent(analyticsDomain)}`;
+        console.log("Fetching interns from:", url);
+        const res = await fetch(url);
+        console.log("Interns response status:", res.status);
+        if (res.ok) {
+          const data = await res.json();
+          console.log("Interns data received:", data);
+          setAnalyticsInternsList(data);
+        } else {
+          console.error("Failed to fetch interns. Status:", res.status);
+        }
+      } catch (e) {
+        console.error("Error fetching filtered interns", e);
+      }
+    };
+    fetchFilteredInterns();
+  }, [analyticsBatch, analyticsDomain]);
 
   // State Mock Data
   // State Mock Data
@@ -1674,26 +1723,72 @@ export default function AdminDashboard() {
               <h3 style={{ margin: 0 }}>Intern Performance Analytics</h3>
             </div>
             
-            <div style={{ marginBottom: "24px" }}>
-              <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>
-                Select Intern to View
-              </label>
-              <select 
-                className="form-control" 
-                style={{ maxWidth: "300px" }}
-                value={analyticsSelectedUser}
-                onChange={(e) => setAnalyticsSelectedUser(e.target.value)}
-              >
-                <option value="">-- Choose an Intern --</option>
-                {realInternsList.map(user => (
-                  <option key={user.id} value={user.id}>
-                    {user.name} (ID: {user.id})
-                  </option>
-                ))}
-              </select>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "24px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
+                  Filter by Batch / College
+                </label>
+                <select 
+                  className="form-control" 
+                  style={{ width: "100%", marginBottom: 0 }}
+                  value={analyticsBatch}
+                  onChange={(e) => {
+                    setAnalyticsBatch(e.target.value);
+                    setAnalyticsSelectedUser(""); // Reset intern selection when batch changes
+                  }}
+                >
+                  <option value="All Batches">All Batches</option>
+                  {analyticsBatchesList.map(b => (
+                    <option key={b.id} value={b.name}>{b.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
+                  Filter by Domain
+                </label>
+                <select 
+                  className="form-control" 
+                  style={{ width: "100%", marginBottom: 0 }}
+                  value={analyticsDomain}
+                  onChange={(e) => {
+                    setAnalyticsDomain(e.target.value);
+                    setAnalyticsSelectedUser(""); // Reset intern selection when domain changes
+                  }}
+                >
+                  <option value="All Domains">All Domains</option>
+                  {["Artificial Intelligence", "Data Science", "Cyber Security", "Web Development", "UI UX Design"].map(domain => (
+                    <option key={domain} value={domain}>{domain}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
+                  Select Intern to View
+                </label>
+                <select 
+                  className="form-control" 
+                  style={{ width: "100%", marginBottom: 0 }}
+                  value={analyticsSelectedUser}
+                  onChange={(e) => setAnalyticsSelectedUser(e.target.value)}
+                >
+                  <option value="">-- Choose an Intern --</option>
+                  {analyticsInternsList.map(user => (
+                    <option key={user.intern_id} value={user.intern_id}>
+                      {user.name} (ID: {user.intern_id})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            {analyticsSelectedUser && (
+            {!analyticsSelectedUser ? (
+              <div style={{ padding: "40px 0", textAlign: "center", color: "#9ca3af", fontSize: "14px" }}>
+                Please select an intern to view their performance analytics.
+              </div>
+            ) : (
               <AnalyticsChart internId={analyticsSelectedUser} />
             )}
           </div>

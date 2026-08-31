@@ -26,18 +26,19 @@ export default function AnalyticsChart({ internId }) {
       setError(null);
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch(`${API_BASE}/analytics/daily-questions/intern/${internId}`, {
+        const res = await fetch(`${API_BASE}/batch-analytics/performance/${internId}`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) {
           throw new Error("Failed to fetch analytics data");
         }
-        const analyticsData = await res.json();
+        const responseData = await res.json();
         
-        // Ensure data is sorted by date
-        const sortedData = analyticsData.sort((a, b) => new Date(a.date) - new Date(b.date));
+        // The new endpoint returns { intern: {...}, chart_data: [...] }
+        // Ensure data is sorted by date if applicable, or just set chart_data directly
+        const analyticsData = responseData.chart_data || [];
         
-        if (isMounted) setData(sortedData);
+        if (isMounted) setData(analyticsData);
       } catch (err) {
         if (isMounted) setError(err.message);
       } finally {
