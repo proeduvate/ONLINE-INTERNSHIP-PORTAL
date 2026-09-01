@@ -1,139 +1,104 @@
-import React, { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area, LineChart } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp } from "lucide-react";
-import AnalyticsChart from "../../components/ui/AnalyticsChart";
-import { API_BASE } from "../../services/apiClient";
-import "./Dashboard.css";
+import { useState, useEffect } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal } from "lucide-react";
+import AdminAnalytics from "./AdminAnalytics";
+import AdminAirdropDetails from "./AdminAirdropDetails";
+import AdminLeaderboard from "./AdminLeaderboard";
+import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
-  const [analyticsSelectedUser, setAnalyticsSelectedUser] = useState("");
-  
-  // New Analytics States
-  const [analyticsBatch, setAnalyticsBatch] = useState("All Batches");
-  const [analyticsDomain, setAnalyticsDomain] = useState("All Domains");
-  const [analyticsBatchesList, setAnalyticsBatchesList] = useState([]);
-  const [analyticsInternsList, setAnalyticsInternsList] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Fetch batches for Analytics
+  // Bonus Airdrops State
+  const [bonusAirdrops, setBonusAirdrops] = useState([]);
+  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
+  const [adminAirdropPage, setAdminAirdropPage] = useState(1);
+
   useEffect(() => {
-    const fetchBatches = async () => {
+    const fetchAirdrops = async () => {
       try {
-        console.log("Fetching batches from:", "http://127.0.0.1:8000/batch-analytics/batches");
-        const res = await fetch("http://127.0.0.1:8000/batch-analytics/batches");
-        console.log("Batches response status:", res.status);
-        if (res.ok) {
-          const data = await res.json();
-          console.log("Batches data received:", data);
-          setAnalyticsBatchesList(data);
-        } else {
-          console.error("Failed to fetch batches. Status:", res.status);
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8000/bonus-airdrops", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setBonusAirdrops(data);
         }
-      } catch (e) {
-        console.error("Error fetching batches", e);
+      } catch (error) {
+        console.error("Error fetching airdrops:", error);
       }
     };
-    fetchBatches();
+    fetchAirdrops();
   }, []);
 
-  // Fetch interns for Analytics based on filters
+  const handleApproveAirdrop = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/bonus-airdrops/admin/${id}/approve`, {
+        method: 'POST',
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (response.ok) {
+        setBonusAirdrops(bonusAirdrops.map(a => a.id === id ? { ...a, status: "APPROVED" } : a));
+      }
+    } catch (error) {
+      console.error("Error approving airdrop:", error);
+    }
+  };
+
+  // State Mock Data
+  const [usersList, setUsersList] = useState([]);
+  const [allUsersList, setAllUsersList] = useState([]);
+  const [batchesList, setBatchesList] = useState([]);
+
   useEffect(() => {
-    const fetchFilteredInterns = async () => {
+    const fetchUsers = async () => {
       try {
-        let url = `http://127.0.0.1:8000/batch-analytics/interns?batch=${encodeURIComponent(analyticsBatch)}&domain=${encodeURIComponent(analyticsDomain)}`;
-        console.log("Fetching interns from:", url);
-        const res = await fetch(url);
-        console.log("Interns response status:", res.status);
-        if (res.ok) {
-          const data = await res.json();
-          console.log("Interns data received:", data);
-          setAnalyticsInternsList(data);
-        } else {
-          console.error("Failed to fetch interns. Status:", res.status);
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8000/leaderboard", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // Map backend LeaderboardEntry to frontend user shape
+          const mappedUsers = data.map(item => ({
+            id: item.user_id,
+            name: item.user_name,
+            role: "Intern", 
+            college: item.batch || "Unassigned",
+            domain: item.domain || "N/A",
+            mentor: "N/A",
+            progress: Math.min(item.total_points, 100) + "%", 
+            attendance: "95%",
+            status: "Active"
+          }));
+          setUsersList(mappedUsers);
+          
+          const uniqueBatches = [...new Set(data.map(item => item.batch).filter(Boolean))];
+          setBatchesList(uniqueBatches.map(b => ({ name: b })));
         }
-      } catch (e) {
-        console.error("Error fetching filtered interns", e);
+        
+        // Also fetch all users to populate mentors list
+        const usersRes = await fetch("http://localhost:8000/users", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (usersRes.ok) {
+          const usersData = await usersRes.json();
+          console.log("Fetched usersData:", usersData);
+          setAllUsersList(usersData);
+        } else {
+          console.error("Failed to fetch users:", usersRes.status);
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
       }
     };
-    fetchFilteredInterns();
-  }, [analyticsBatch, analyticsDomain]);
 
-  // State Mock Data
-  // State Mock Data
-  const [usersList, setUsersList] = useState([
-    // Mentors
-    { id: "MNT101", name: "Dr. Sakthi", role: "Mentor", college: "-", domain: "AI/DS/Cyber", mentor: "-", progress: "-", attendance: "98%", status: "Active" },
-    { id: "MNT102", name: "Dr. Alice", role: "Mentor", college: "-", domain: "Web Development", mentor: "-", progress: "-", attendance: "95%", status: "Active" },
-    
-    // Batch MIT (12 interns)
-    { id: "INT001", name: "John Doe", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT004", name: "Emily Watson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "45%", attendance: "92%", status: "Active" },
-    { id: "INT005", name: "Michael Chang", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "88%", status: "Active" },
-    { id: "INT006", name: "Sarah Connor", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT007", name: "David Miller", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT008", name: "Jessica Taylor", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "91%", status: "Active" },
-    { id: "INT009", name: "Daniel Anderson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "30%", attendance: "85%", status: "Active" },
-    { id: "INT010", name: "Sophia Martinez", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT011", name: "James Wilson", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "87%", status: "Active" },
-    { id: "INT012", name: "Isabella Thomas", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT013", name: "Robert Jackson", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT014", name: "Mia White", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
-
-    // Batch Stanford (11 interns)
-    { id: "INT002", name: "Raj Patel", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "90%", status: "Active" },
-    { id: "INT015", name: "William Davies", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT016", name: "Olivia Johnson", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "91%", status: "Active" },
-    { id: "INT017", name: "Liam Smith", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "50%", attendance: "89%", status: "Active" },
-    { id: "INT018", name: "Emma Jones", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "97%", status: "Active" },
-    { id: "INT019", name: "Noah Brown", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "86%", status: "Active" },
-    { id: "INT020", name: "Ava Miller", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT021", name: "Lucas Garcia", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "92%", status: "Active" },
-    { id: "INT022", name: "Sophia Rodriguez", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT023", name: "Mason Martinez", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT024", name: "Charlotte Hernandez", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "80%", attendance: "96%", status: "Active" },
-
-    // Batch IIT (11 interns)
-    { id: "INT003", name: "Anu Sharma", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "88%", status: "Active" },
-    { id: "INT025", name: "Rahul Verma", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "50%", attendance: "92%", status: "Active" },
-    { id: "INT026", name: "Priya Patel", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT027", name: "Amit Singh", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "60%", attendance: "90%", status: "Active" },
-    { id: "INT028", name: "Neha Gupta", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "70%", attendance: "93%", status: "Active" },
-    { id: "INT029", name: "Vikram Reddy", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "45%", attendance: "87%", status: "Active" },
-    { id: "INT030", name: "Anjali Das", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT031", name: "Rohan Bose", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "35%", attendance: "85%", status: "Active" },
-    { id: "INT032", name: "Shreya Ghoshal", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT033", name: "Aditya Roy", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "65%", attendance: "91%", status: "Active" },
-    { id: "INT034", name: "Riya Sen", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "94%", status: "Active" },
-
-    // Batch Harvard (12 interns)
-    { id: "INT035", name: "Ethan Hunt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT036", name: "Grace Kelly", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT037", name: "Jack Reacher", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT038", name: "Julia Roberts", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "98%", status: "Active" },
-    { id: "INT039", name: "Tom Cruise", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT040", name: "Brad Pitt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT041", name: "Angelina Jolie", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT042", name: "Leonardo DiCaprio", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT043", name: "Kate Winslet", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT044", name: "Johnny Depp", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "88%", status: "Active" },
-    { id: "INT045", name: "Natalie Portman", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "97%", status: "Active" },
-    { id: "INT046", name: "Matt Damon", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "45%", attendance: "89%", status: "Active" },
-
-    // Batch Berkeley (12 interns)
-    { id: "INT047", name: "Harry Potter", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT048", name: "Hermione Granger", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "100%", attendance: "100%", status: "Active" },
-    { id: "INT049", name: "Ron Weasley", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT050", name: "Albus Dumbledore", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT051", name: "Severus Snape", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "85%", attendance: "95%", status: "Active" },
-    { id: "INT052", name: "Draco Malfoy", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT053", name: "Luna Lovegood", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "75%", attendance: "94%", status: "Active" },
-    { id: "INT054", name: "Neville Longbottom", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "89%", status: "Active" },
-    { id: "INT055", name: "Rubeus Hagrid", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "50%", attendance: "87%", status: "Active" },
-    { id: "INT056", name: "Ginny Weasley", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT057", name: "Sirius Black", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT058", name: "Remus Lupin", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "90%", status: "Active" },
-  ]);
+    fetchUsers();
+  }, []);
 
   const [domainsList, setDomainsList] = useState([
     { name: "Artificial Intelligence", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
@@ -207,206 +172,146 @@ export default function AdminDashboard() {
   const [internPage, setInternPage] = useState(1);
   const [selectedIntern, setSelectedIntern] = useState(null);
   const [selectedMentor, setSelectedMentor] = useState(null);
-  const [viewingCode, setViewingCode] = useState(null);
-  const [realSubmissions, setRealSubmissions] = useState([]);
-  
-  // Notifications state
-  const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      try {
-        const res = await fetch(`${API_BASE}/notifications`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setNotifications(data);
-        }
-      } catch (e) {
-        console.error("Error fetching notifications:", e);
-      }
-    };
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000); // 30 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  const markNotificationRead = async (id) => {
-    const token = localStorage.getItem("token");
-    try {
-      await fetch(`${API_BASE}/notifications/${id}/read`, {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const markAllNotificationsRead = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      await fetch(`${API_BASE}/notifications/read-all`, {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const unreadNotificationsCount = notifications.filter(n => !n.is_read).length;
-
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const res = await fetch("http://localhost:8000/submissions", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setRealSubmissions(data);
-        }
-      } catch (e) {}
-    };
-    if (selectedIntern) {
-      fetchSubmissions();
-    }
-  }, [selectedIntern]);
-
+  // Tickets state
   const [ticketsList, setTicketsList] = useState([]);
-  const [airdropsList, setAirdropsList] = useState([]);
-  const [realInternsList, setRealInternsList] = useState([]);
-  const [mentorsList, setMentorsList] = useState([]);
-
-  useEffect(() => {
-    const fetchAdminData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const [ticketsRes, airdropsRes, usersRes, mentorsRes] = await Promise.all([
-          fetch(`${API_BASE}/tickets`, { headers: { "Authorization": `Bearer ${token}` } }),
-          fetch(`${API_BASE}/bonus-airdrops`, { headers: { "Authorization": `Bearer ${token}` } }),
-          fetch(`${API_BASE}/users?role=intern`, { headers: { "Authorization": `Bearer ${token}` } }),
-          fetch(`${API_BASE}/users?role=mentor`, { headers: { "Authorization": `Bearer ${token}` } })
-        ]);
-        
-        if (ticketsRes.ok) {
-          const ticketsData = await ticketsRes.json();
-          setTicketsList(ticketsData);
-        }
-        if (airdropsRes.ok) {
-          const airdropsData = await airdropsRes.json();
-          setAirdropsList(airdropsData);
-        }
-        if (usersRes.ok) {
-          const usersData = await usersRes.json();
-          setRealInternsList(usersData);
-        }
-        if (mentorsRes.ok) {
-          const mentorsData = await mentorsRes.json();
-          setMentorsList(mentorsData);
-        }
-      } catch (err) {
-        console.error("Error fetching admin integration data:", err);
-      }
-    };
-    fetchAdminData();
-  }, []);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
 
-  // Leaderboard State & Effect
-  const [adminLeaderboard, setAdminLeaderboard] = useState([]);
-  const [leaderboardPeriod, setLeaderboardPeriod] = useState("all");
-
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      const token = localStorage.getItem("token");
+    const fetchTickets = async () => {
       try {
-        const res = await fetch(`${API_BASE}/leaderboard?period=${leaderboardPeriod}`, {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8000/tickets", {
           headers: { "Authorization": `Bearer ${token}` }
         });
-        if (res.ok) {
-          const data = await res.json();
-          setAdminLeaderboard(data);
+        if (response.ok) {
+          const data = await response.json();
+          const mappedTickets = data.map(t => ({
+            ...t,
+            user: t.creator_name || t.user || "Unknown",
+            role: t.role || "Intern",
+            date: t.created_at ? new Date(t.created_at).toLocaleDateString() : (t.date || ""),
+            comments: (t.messages || t.comments || []).map(m => ({
+              author: m.sender_name || m.author || "Unknown",
+              text: m.message || m.text || "",
+              date: m.created_at ? new Date(m.created_at).toLocaleDateString() : (m.date || "")
+            }))
+          }));
+          setTicketsList(mappedTickets);
         }
-      } catch (err) {
-        console.error("Error fetching leaderboard:", err);
+      } catch (error) {
+        console.error("Error fetching tickets:", error);
       }
     };
-    fetchLeaderboard();
-  }, [leaderboardPeriod]);
+    fetchTickets();
+  }, []);
 
-  const handleApproveAirdrop = async (airdropId) => {
-    const token = localStorage.getItem("token");
+  const handleReplyTicket = async (e) => {
+    e.preventDefault();
+    if (!ticketReply.trim() || !selectedTicket) return;
+    
     try {
-      const res = await fetch(`${API_BASE}/bonus-airdrops/admin/${airdropId}/approve`, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${token}` }
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ action: "message", message: ticketReply })
       });
-      if (res.ok) {
-        const updated = await res.json();
-        setAirdropsList(airdropsList.map(a => a.id === updated.id ? updated : a));
-        alert("Airdrop approved and published successfully!");
-      } else {
-        alert("Failed to approve airdrop");
+      
+      if (response.ok) {
+        const t = await response.json();
+        const updatedTicket = {
+          ...t,
+          user: t.creator_name || t.user || "Unknown",
+          role: t.role || "Intern",
+          date: t.created_at ? new Date(t.created_at).toLocaleDateString() : (t.date || ""),
+          comments: (t.messages || t.comments || []).map(m => ({
+            author: m.sender_name || m.author || "Unknown",
+            text: m.message || m.text || "",
+            date: m.created_at ? new Date(m.created_at).toLocaleDateString() : (m.date || "")
+          }))
+        };
+        setTicketsList(ticketsList.map(tkt => tkt.id === selectedTicket.id ? updatedTicket : tkt));
+        setSelectedTicket(updatedTicket);
+        setTicketReply("");
       }
-    } catch (err) {
-      console.error(err);
-      alert("Error approving airdrop");
+    } catch (error) {
+      console.error("Error replying to ticket:", error);
     }
   };
 
-  const handlePublishAirdrop = async (airdropId) => {
-    const token = localStorage.getItem("token");
+  const handleAssignTicket = async (mentorId) => {
+    if (!selectedTicket || !mentorId) return;
     try {
-      const res = await fetch(`${API_BASE}/bonus-airdrops/admin/${airdropId}/publish`, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${token}` }
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ action: "assign", assigned_to: parseInt(mentorId) })
       });
-      if (res.ok) {
-        const updated = await res.json();
-        setAirdropsList(airdropsList.map(a => a.id === updated.id ? updated : a));
-        alert("Airdrop published successfully! It is now live for interns.");
-      } else {
-        alert("Failed to publish airdrop");
+      if (response.ok) {
+        const t = await response.json();
+        const updatedTicket = {
+          ...t,
+          user: t.creator_name || t.user || "Unknown",
+          role: t.role || "Intern",
+          date: t.created_at ? new Date(t.created_at).toLocaleDateString() : (t.date || ""),
+          comments: (t.messages || t.comments || []).map(m => ({
+            author: m.sender_name || m.author || "Unknown",
+            text: m.message || m.text || "",
+            date: m.created_at ? new Date(m.created_at).toLocaleDateString() : (m.date || "")
+          }))
+        };
+        setTicketsList(ticketsList.map(tkt => tkt.id === selectedTicket.id ? updatedTicket : tkt));
+        setSelectedTicket(updatedTicket);
       }
-    } catch (err) {
-      console.error(err);
-      alert("Error publishing airdrop");
+    } catch (error) {
+      console.error("Error assigning ticket:", error);
     }
   };
 
-
-  const handleTicketAction = async (action, payload = {}) => {
-    const token = localStorage.getItem("token");
+  const handleUpdateTicketStatus = async (status) => {
+    if (!selectedTicket) return;
     try {
-      const res = await fetch(`${API_BASE}/tickets/${selectedTicket.id}`, {
-        method: "PATCH",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ action, ...payload })
+      const token = localStorage.getItem("token");
+      const bodyPayload = status === "RESOLVED" 
+        ? { action: "resolve", resolution: "Resolved by Admin" } 
+        : { action: "close", closure_reason: status === "Rejected" ? "Rejected by Admin" : "Dismissed by Admin" };
+        
+      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyPayload)
       });
-      if (res.ok) {
-        const updatedT = await res.json();
-        setSelectedTicket(updatedT);
-        setTicketsList(ticketsList.map(t => t.id === updatedT.id ? updatedT : t));
-        if (action === "resolve") alert("Ticket marked as resolved!");
-        if (action === "close") alert("Ticket fully closed!");
-        if (action === "assign") alert("Ticket assigned successfully!");
-      } else {
-        const err = await res.json();
-        alert(`Failed: ${err.detail || 'Unknown error'}`);
+      
+      if (response.ok) {
+        const t = await response.json();
+        const updatedTicket = {
+          ...t,
+          user: t.creator_name || t.user || "Unknown",
+          role: t.role || "Intern",
+          date: t.created_at ? new Date(t.created_at).toLocaleDateString() : (t.date || ""),
+          comments: (t.messages || t.comments || []).map(m => ({
+            author: m.sender_name || m.author || "Unknown",
+            text: m.message || m.text || "",
+            date: m.created_at ? new Date(m.created_at).toLocaleDateString() : (m.date || "")
+          }))
+        };
+        setTicketsList(ticketsList.map(tkt => tkt.id === selectedTicket.id ? updatedTicket : tkt));
+        setSelectedTicket(updatedTicket);
       }
-    } catch (e) {
-      console.error(e);
-      alert("Error performing action.");
+    } catch (error) {
+      console.error("Error updating ticket status:", error);
     }
   };
 
@@ -538,12 +443,18 @@ export default function AdminDashboard() {
     setShowDomainModal(false);
   };
 
-
-
   const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const renderContent = () => {
     switch (activeTab) {
+      case "Analytics":
+        return <AdminAnalytics usersList={usersList} onInternClick={(intern) => {
+          setSelectedIntern(intern);
+          setActiveTab("Users");
+          setUsersSubTab("Interns");
+        }} />;
+      case "Leaderboard":
+        return <AdminLeaderboard usersList={usersList} />;
       case "Overview":
         return (
           <>
@@ -667,19 +578,32 @@ export default function AdminDashboard() {
               <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ Active Support Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  {ticketsList.filter(t => ['open', 'assigned', 'in_progress'].includes((t.status || '').toLowerCase())).slice(0, 5).map(ticket => (
-                    <div key={ticket.id} style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer" }} onClick={() => { setActiveTab("Tickets"); setSelectedTicket(ticket); }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                        <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-{ticket.id.toString().padStart(4, '0')}</span>
-                        <span style={{ fontSize: "11px", color: "#6b7280" }}>User: <b>{ticket.creator_name || "Unknown"}</b></span>
-                      </div>
-                      <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
-                      <span style={{ fontSize: "11px", color: ticket.status.toLowerCase() === 'open' ? "#b91c1c" : "#d97706", textTransform: 'capitalize' }}>{ticket.status.replace('_', ' ')} • {new Date(ticket.created_at).toLocaleDateString()}</span>
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
                     </div>
-                  ))}
-                  {ticketsList.filter(t => ['open', 'assigned', 'in_progress'].includes((t.status || '').toLowerCase())).length === 0 && (
-                    <div style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic", padding: "12px" }}>No active support tickets.</div>
-                  )}
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
+                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
+                  </div>
+                  
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
+                    <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
+                  </div>
+                  
+                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
+                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
+                    </div>
+                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Unable to access GitHub repository for batch MIT-04.</p>
+                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 1 day ago</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -690,20 +614,10 @@ export default function AdminDashboard() {
         const interns = filteredUsers.filter(u => u.role === "Intern");
         const mentors = filteredUsers.filter(u => u.role === "Mentor");
         
-        // Group interns by college (batch)
-        const batches = {};
-        interns.forEach(intern => {
-          const batchKey = intern.college || "Unassigned Batch";
-          if (!batches[batchKey]) {
-            batches[batchKey] = [];
-          }
-          batches[batchKey].push(intern);
-        });
-
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {selectedIntern ? (
-              <div className="card" style={{ margin: 0, padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
                   <button onClick={() => setSelectedIntern(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
@@ -759,71 +673,29 @@ export default function AdminDashboard() {
                     </h4>
                     
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>2 days ago</span>
+                      {ticketsList.filter(t => t.status !== "Resolved").slice(0, 2).map(ticket => (
+                        <div 
+                          key={ticket.id}
+                          onClick={() => {
+                            setActiveTab("tickets");
+                            setSelectedTicket(ticket);
+                          }}
+                          style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                          onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                            <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{ticket.id}</span>
+                            <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.date}</span>
+                          </div>
+                          <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
                         </div>
-                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
-                      </div>
-                      
-                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>1 day ago</span>
-                        </div>
-                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
                 
-                <div style={{ marginTop: "20px" }}>
-                  <h4 style={{ margin: "0 0 12px 0", fontSize: "16px", color: "#0f172a", display: "flex", alignItems: "center", gap: "8px" }}>
-                    📁 Daily Coding Submissions
-                  </h4>
-                  <div style={{ padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {realSubmissions.length > 0 ? (
-                      realSubmissions.map((sub, index) => {
-                        const day = sub.task_id || index + 1;
-                        const filename = sub.filename || `day${day}.js`;
-                        return (
-                          <div key={sub.id || index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", border: "1px solid #e5e7eb", borderRadius: "8px", backgroundColor: "#f8fafc" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                              <span style={{ fontSize: "20px" }}>📄</span>
-                              <div>
-                                <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>{filename}</p>
-                                <span style={{ fontSize: "12px", color: "#64748b" }}>Status: <span style={{ color: "#10b981", fontWeight: 600 }}>{sub.status || "Evaluated"}</span></span>
-                              </div>
-                            </div>
-                            <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => setViewingCode({ 
-                              filename: filename, 
-                              code: sub.code_submission || "No code submitted."
-                            })}>View Code</button>
-                          </div>
-                        )
-                      })
-                    ) : (
-                      [1, 2, 3].map((day) => (
-                        <div key={day} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", border: "1px solid #e5e7eb", borderRadius: "8px", backgroundColor: "#f8fafc" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <span style={{ fontSize: "20px" }}>📄</span>
-                            <div>
-                              <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>day{day}.{day % 2 === 0 ? "py" : "js"}</p>
-                              <span style={{ fontSize: "12px", color: "#64748b" }}>Status: <span style={{ color: "#10b981", fontWeight: 600 }}>Evaluated</span></span>
-                            </div>
-                          </div>
-                          <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => setViewingCode({ 
-                            filename: `day${day}.${day % 2 === 0 ? "py" : "js"}`, 
-                            code: `// Sample submission code for Day ${day}\nfunction example() {\n  console.log("Hello, World!");\n}`
-                          })}>View Code</button>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                <div style={{ marginTop: "20px" }}>
+                <div style={{ marginTop: "10px" }}>
                   <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Recent Activity</h4>
                   <div style={{ padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "12px" }}>
                     <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
@@ -844,7 +716,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ) : selectedMentor ? (
-              <div className="card" style={{ margin: 0, padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
                   <button onClick={() => setSelectedMentor(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
@@ -933,7 +805,8 @@ export default function AdminDashboard() {
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "#f8fafc", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
-                  {["MIT", "Stanford", "IIT", "Harvard", "Berkeley"].map((batch) => {
+                  {batchesList.map((batchObj) => {
+                    const batch = batchObj.name;
                     const batchInterns = filteredUsers.filter(u => u.role === "Intern" && u.college === batch);
                     const activeCount = batchInterns.filter(i => i.status === "Active").length;
                     
@@ -1154,105 +1027,83 @@ export default function AdminDashboard() {
                 </div>
               </>
             ) : (
-              <>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
-                      &larr; Back
-                    </button>
-                    <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>{selectedProgramDomain} Program</h3>
-                  </div>
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    {["Curriculum", "Tasks"].map((tab) => (
-                      <button 
-                        key={tab} 
-                        onClick={() => setDetailSubTab(tab)} 
-                        className={`btn ${detailSubTab === tab ? "btn-primary" : "btn-secondary"}`}
-                        style={{ padding: "8px 16px", borderRadius: "20px" }}
-                      >
-                        {tab}
-                      </button>
-                    ))}
-                  </div>
+              <div className="card">
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
+                  <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>Program Details - {selectedProgramDomain}</h3>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                  <button 
+                    className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Curriculum")}
+                  >Curriculum</button>
+                  <button 
+                    className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Tasks")}
+                  >Tasks</button>
                 </div>
 
                 {detailSubTab === "Curriculum" && (
-                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h3 style={{ margin: 0 }}>30-Day Learning Plan</h3>
-                      <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "6px 12px" }}>Edit Mode</button>
-                    </div>
-                    
-                    <div className="table-container" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                      <table className="table">
-                        <thead>
-                          <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
-                        </thead>
-                        <tbody>
-                          {/* Render custom user-uploaded curriculum first */}
-                          {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
-                            <tr key={`custom-${i}`}>
-                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
-                              <td><b>{cur.topic}</b></td>
-                              <td>{cur.resources}</td>
-                              <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
-                            </tr>
-                          ))}
+                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                    <table className="table">
+                      <thead>
+                        <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                        {/* Render custom user-uploaded curriculum first */}
+                        {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
+                          <tr key={`custom-${i}`}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                            <td><b>{cur.topic}</b></td>
+                            <td>{cur.resources}</td>
+                            <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                          </tr>
+                        ))}
+                        
+                        {/* Render generated 30 days mock curriculum */}
+                        {[...Array(30)].map((_, i) => {
+                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
                           
-                          {/* Render generated 30 days mock curriculum */}
-                          {[...Array(30)].map((_, i) => {
-                            if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
-                            
-                            return (
-                            <tr key={i}>
-                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
-                              <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
-                              <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
-                              <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
-                            </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                          return (
+                          <tr key={i}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
+                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
+                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
+                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                          </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
 
                 {detailSubTab === "Tasks" && (
-                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Tasks for {selectedProgramDomain}</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); handleCreateTask(e); }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
-                      <input className="form-control" type="text" placeholder="Task Title" value={newTask.title} onChange={(e) => setNewTask({...newTask, title: e.target.value})} />
-                      <input className="form-control" type="date" value={newTask.deadline} onChange={(e) => setNewTask({...newTask, deadline: e.target.value})} />
-                      <select className="form-control" value={newTask.difficulty} onChange={(e) => setNewTask({...newTask, difficulty: e.target.value})}>
-                        <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
-                      </select>
-                      <button type="submit" className="btn btn-primary" style={{ padding: "8px" }}>Assign Task</button>
-                    </form>
-                    
-                    <div className="table-container">
-                      <table className="table">
-                        <thead>
-                          <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                        </thead>
-                        <tbody>
-                          {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
-                            <tr key={t.id}>
-                              <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                              <td><b>{t.title}</b></td>
-                              <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                              <td>{t.deadline}</td>
-                            </tr>
-                          ))}
-                          {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
-                            <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                  <div className="table-container">
+                    <table className="table">
+                      <thead>
+                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                          </tr>
+                        ))}
+                        {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-              </>
+              </div>
             )}
 
             {/* Add Domain Modal */}
@@ -1373,10 +1224,8 @@ export default function AdminDashboard() {
                         )}
                         {onboardingSubTab === "Interview" && (
                           <div style={{ display: "flex", gap: "8px" }}>
-                            <button onClick={() => { setActiveDocument({ type: 'Interview', candidate: c }); setViewedDocs({...viewedDocs, [`${c.id}-interview`]: true }); }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>View Results</button>
-                            {viewedDocs[`${c.id}-interview`] && (
-                              <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>Pass & Request Payment</button>
-                            )}
+                            <button onClick={() => setOnboardingCandidates(onboardingCandidates.filter(cand => cand.id !== c.id))} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#dc2626", borderColor: "#fecaca" }}>Decline</button>
+                            <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve</button>
                           </div>
                         )}
                         {onboardingSubTab === "Payment" && (
@@ -1440,52 +1289,43 @@ export default function AdminDashboard() {
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
                   <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
-                  <span className={`badge ${['resolved', 'closed'].includes(selectedTicket.status.toLowerCase()) ? 'badge-success' : ['in_progress', 'assigned'].includes(selectedTicket.status.toLowerCase()) ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ['resolved', 'closed'].includes(selectedTicket.status.toLowerCase()) ? '#d1fae5' : ['in_progress', 'assigned'].includes(selectedTicket.status.toLowerCase()) ? '#fef3c7' : '#fee2e2', color: ['resolved', 'closed'].includes(selectedTicket.status.toLowerCase()) ? '#065f46' : ['in_progress', 'assigned'].includes(selectedTicket.status.toLowerCase()) ? '#92400e' : '#991b1b', textTransform: 'capitalize' }}>
-                    {selectedTicket.status.replace('_', ' ')}
+                  <span className={`badge ${selectedTicket.status === 'resolved' ? 'badge-success' : selectedTicket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'resolved' ? '#d1fae5' : selectedTicket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'resolved' ? '#065f46' : selectedTicket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
+                    {selectedTicket.status === 'in_progress' ? 'Assigned' : selectedTicket.status}
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  {selectedTicket.status.toLowerCase() === 'open' && (
-                    <>
-                      <select className="form-control" style={{ width: "200px", marginBottom: 0 }} onChange={(e) => {
-                        if (e.target.value) handleTicketAction("assign", { assigned_to: parseInt(e.target.value) });
-                      }}>
-                        <option value="">Assign Mentor...</option>
-                        {mentorsList.map(m => (
-                          <option key={m.id} value={m.id}>{m.name}</option>
-                        ))}
-                      </select>
-                      <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => {
-                        const res = prompt("Enter resolution message (optional):");
-                        if (res !== null) handleTicketAction("resolve", { resolution: res });
-                      }}>Mark as Resolved</button>
-                    </>
-                  )}
-                  {selectedTicket.status.toLowerCase() === 'resolved' && (
-                    <button className="btn btn-secondary" style={{ backgroundColor: "#1f2937", color: "#fff" }} onClick={() => {
-                      const res = prompt("Enter closure reason (optional):");
-                      if (res !== null) handleTicketAction("close", { closure_reason: res });
-                    }}>Close Ticket</button>
-                  )}
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <select 
+                    className="form-control" 
+                    style={{ marginBottom: 0, padding: "6px 12px", borderRadius: "6px", width: "180px", border: "1px solid #d1d5db" }}
+                    value={selectedTicket.assigned_to || ""}
+                    onChange={(e) => handleAssignTicket(e.target.value)}
+                  >
+                    <option value="">Assign to Mentor...</option>
+                    {allUsersList.filter(u => u.role?.toLowerCase() === 'mentor').map(mentor => (
+                      <option key={mentor.id} value={mentor.id}>{mentor.name}</option>
+                    ))}
+                  </select>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("RESOLVED")}>Mark as Resolved</button>
+                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
-                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.creator_name || 'Unknown'}</div>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user} ({selectedTicket.role})</div>
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
                   <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.domain}</div>
                 </div>
                 <div>
-                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Assigned To</label>
-                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.assignee_name || 'Unassigned'}</div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.branch}</div>
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
-                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{new Date(selectedTicket.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
                 </div>
               </div>
 
@@ -1499,29 +1339,21 @@ export default function AdminDashboard() {
               <div>
                 <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
-                  {(!selectedTicket.messages || selectedTicket.messages.length === 0) ? (
+                  {selectedTicket.comments.length === 0 ? (
                     <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
                   ) : (
-                    selectedTicket.messages.map((comment, idx) => (
-                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.sender_name === "Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.sender_name === "Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.sender_name === "Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.sender_name || "User"}</div>
-                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.message}</div>
+                    selectedTicket.comments.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.author === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.author === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.author === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text}</div>
                       </div>
                     ))
                   )}
                 </div>
-                {selectedTicket.status.toLowerCase() === 'open' && (
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    if (ticketReply.trim()) {
-                      handleTicketAction("message", { message: ticketReply });
-                      setTicketReply("");
-                    }
-                  }} style={{ display: "flex", gap: "10px" }}>
-                    <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
-                    <button type="submit" className="btn btn-primary">Send Reply</button>
-                  </form>
-                )}
+                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
+                  <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
+                  <button type="submit" className="btn btn-primary">Send Reply</button>
+                </form>
               </div>
             </div>
           );
@@ -1548,16 +1380,16 @@ export default function AdminDashboard() {
                     <tr key={ticket.id}>
                       <td><span style={{ fontWeight: 600, color: "#1f2937" }}>{ticket.id}</span></td>
                       <td>
-                        <div style={{ fontWeight: 500 }}>{ticket.creator_name || 'Unknown'}</div>
-                        <div style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.domain}</div>
+                        <div style={{ fontWeight: 500 }}>{ticket.user}</div>
+                        <div style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.role}</div>
                       </td>
                       <td><span style={{ color: "#4b5563" }}>{ticket.title}</span></td>
                       <td>
-                        <span className={`badge ${ticket.status === 'RESOLVED' ? 'badge-success' : ticket.status === 'IN_PROGRESS' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'RESOLVED' ? '#d1fae5' : ticket.status === 'IN_PROGRESS' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'RESOLVED' ? '#065f46' : ticket.status === 'IN_PROGRESS' ? '#92400e' : '#991b1b' }}>
-                          {ticket.status}
+                        <span className={`badge ${ticket.status === 'resolved' ? 'badge-success' : ticket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'resolved' ? '#d1fae5' : ticket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'resolved' ? '#065f46' : ticket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
+                          {ticket.status === 'in_progress' ? 'Assigned' : ticket.status}
                         </span>
                       </td>
-                      <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{new Date(ticket.created_at).toLocaleDateString()}</span></td>
+                      <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
                       <td>
                         <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>View Details</button>
                       </td>
@@ -1570,227 +1402,160 @@ export default function AdminDashboard() {
         );
 
       case "Bonus Airdrops":
-        return (
-          <div className="card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
-              <div>
-                <h3 style={{ margin: "0 0 8px 0" }}>Bonus Airdrops</h3>
-                <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: 0 }}>Review and approve airdrops created by mentors.</p>
-              </div>
-            </div>
-            <div className="table-container">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Points</th>
-                    <th>Status</th>
-                    <th>Timing Mode</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {airdropsList.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: "center", color: "#6b7280", padding: "20px" }}>No airdrops found.</td>
-                    </tr>
-                  ) : airdropsList.map((airdrop) => (
-                    <React.Fragment key={airdrop.id}>
-                      <tr>
-                        <td><span style={{ fontWeight: 600, color: "#1f2937" }}>{airdrop.id}</span></td>
-                        <td>
-                          <div style={{ fontWeight: 500 }}>{airdrop.title || "Untitled Airdrop"}</div>
-                          <div style={{ fontSize: "12px", color: "#6b7280" }}>{airdrop.task_type}</div>
-                        </td>
-                        <td><span style={{ color: "#9d174d", fontWeight: "bold" }}>{airdrop.points_distribution} pts</span></td>
-                        <td>
-                          <span className={`badge ${airdrop.status === "PENDING_APPROVAL" ? "badge-warning" : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? "badge-success" : "badge-secondary")}`} style={{ 
-                            backgroundColor: airdrop.status === "PENDING_APPROVAL" ? '#fef3c7' : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? '#d1fae5' : '#f3f4f6'), 
-                            color: airdrop.status === "PENDING_APPROVAL" ? '#92400e' : (airdrop.status === "APPROVED" || airdrop.status === "PUBLISHED" ? '#065f46' : '#374151') 
-                          }}>
-                            {airdrop.status ? airdrop.status.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) : "Unknown"}
-                          </span>
-                        </td>
-                        <td>
-                          <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                            {airdrop.start_mode === 'fixed' 
-                              ? (
-                                <div>
-                                  <div style={{ color: "#4f46e5", fontWeight: "500" }}>Fixed Schedule</div>
-                                  <div>{airdrop.start_time ? new Date(airdrop.start_time + (airdrop.start_time.endsWith('Z') ? '' : 'Z')).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "N/A"}</div>
-                                </div>
-                              )
-                              : (
-                                <div>
-                                  <div style={{ color: "#10b981", fontWeight: "500" }}>Flexible Window</div>
-                                  <div>{airdrop.time_limit}s limit</div>
-                                </div>
-                              )}
-                          </div>
-                        </td>
-                        <td>
-                          {airdrop.status === "PENDING_APPROVAL" && (
-                            <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981", marginRight: "8px" }} onClick={() => handleApproveAirdrop(airdrop.id)}>Approve</button>
-                          )}
-                          {(airdrop.status === "PUBLISHED" || airdrop.status === "FINALIZED") && (
-                            <span style={{ fontSize: "12px", color: "#10b981", fontWeight: "bold" }}>Published</span>
-                          )}
-                          {(!["PENDING_APPROVAL", "PUBLISHED", "FINALIZED"].includes(airdrop.status)) && (
-                            <span style={{ fontSize: "12px", color: "#6b7280" }}>-</span>
-                          )}
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
+        if (selectedAirdrop) {
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
+        }
+        
+        const reversedAirdrops = [...bonusAirdrops].reverse();
+        const indexOfLastAirdrop = adminAirdropPage * 10;
+        const indexOfFirstAirdrop = indexOfLastAirdrop - 10;
+        const currentAirdrops = reversedAirdrops.slice(indexOfFirstAirdrop, indexOfLastAirdrop);
+        const totalPages = Math.ceil(reversedAirdrops.length / 10);
 
-      case "Leaderboard":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <div className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ margin: 0 }}>Global Leaderboard</h3>
-                <div style={{ display: "flex", backgroundColor: "#f3f4f6", borderRadius: "8px", padding: "4px" }}>
-                  {["weekly", "monthly", "all"].map(period => (
-                    <button
-                      key={period}
-                      onClick={() => setLeaderboardPeriod(period)}
-                      style={{
-                        padding: "6px 16px",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        backgroundColor: leaderboardPeriod === period ? "#ffffff" : "transparent",
-                        color: leaderboardPeriod === period ? "#4f46e5" : "#6b7280",
-                        boxShadow: leaderboardPeriod === period ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                        cursor: "pointer",
-                        textTransform: "capitalize",
-                        transition: "all 0.2s"
-                      }}
-                    >
-                      {period === "all" ? "All-Time" : period}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="table-container">
-                <table className="table">
+          <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
+
+            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
+              <div className="table-container" style={{ margin: 0 }}>
+                <table className="table" style={{ margin: 0 }}>
                   <thead>
                     <tr>
-                      <th>Rank</th>
-                      <th>Intern</th>
-                      <th>Batch</th>
-                      <th>Domain</th>
-                      <th>Total Points</th>
+                      <th style={{ padding: "12px 16px" }}>ID</th>
+                      <th style={{ padding: "12px 16px" }}>Question</th>
+                      <th style={{ padding: "12px 16px" }}>Points</th>
+                      <th style={{ padding: "12px 16px" }}>Status</th>
+                      <th style={{ padding: "12px 16px" }}>Mode & Time Limit</th>
+                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {adminLeaderboard.length === 0 ? (
-                      <tr><td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>No data available for this period.</td></tr>
+                    {currentAirdrops.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
+                      </tr>
                     ) : (
-                      adminLeaderboard.map((entry, idx) => (
-                        <tr key={entry.user_id}>
-                          <td>
-                            {idx === 0 ? "🥇 1st" : idx === 1 ? "🥈 2nd" : idx === 2 ? "🥉 3rd" : `#${idx + 1}`}
+                      currentAirdrops.map(airdrop => (
+                        <tr 
+                          key={airdrop.id} 
+                          onClick={() => setSelectedAirdrop(airdrop)} 
+                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                          <td style={{ padding: "12px 16px" }}>{(airdrop.title || "").length > 50 ? airdrop.title.substring(0, 50) + "..." : (airdrop.title || "N/A")}</td>
+                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{airdrop.points_distribution ? airdrop.points_distribution.split(',')[0] : 0} pts</td>
+                          <td style={{ padding: "12px 16px" }}>
+                            <span 
+                              className="badge" 
+                              style={{
+                                backgroundColor: airdrop.status === 'PUBLISHED' ? '#dcfce7' : 
+                                                 airdrop.status === 'FINALIZED' ? '#dcfce7' : 
+                                                 airdrop.status === 'PENDING_APPROVAL' ? '#fef08a' : 
+                                                 (airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? '#fee2e2' : '#f1f5f9',
+                                color: airdrop.status === 'PUBLISHED' ? '#166534' : 
+                                       airdrop.status === 'FINALIZED' ? '#166534' : 
+                                       airdrop.status === 'PENDING_APPROVAL' ? '#854d0e' : 
+                                       (airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? '#991b1b' : '#475569',
+                                padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600'
+                              }}
+                            >
+                              {(airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? 'REJECTED' : airdrop.status}
+                            </span>
                           </td>
-                          <td>
-                            <div style={{ fontWeight: 600, color: "#111827" }}>{entry.user_name}</div>
-                            <div style={{ fontSize: "12px", color: "#6b7280" }}>ID: {entry.user_id}</div>
+                          <td style={{ padding: "12px 16px", color: "#6b7280", fontSize: "13px" }}>
+                            <span style={{ fontWeight: 600, color: airdrop.start_mode === 'fixed' ? '#ef4444' : '#3b82f6' }}>{airdrop.start_mode === 'fixed' ? 'Fixed' : 'Flexible'}</span><br/>
+                            {airdrop.start_mode === 'fixed' ? (airdrop.start_time ? (() => {
+                              const t = airdrop.start_time.endsWith('Z') ? airdrop.start_time : airdrop.start_time + 'Z';
+                              const s = new Date(t);
+                              const e = new Date(s.getTime() + airdrop.time_limit * 1000);
+                              const opts = {hour: '2-digit', minute:'2-digit'};
+                              return `${s.toLocaleTimeString([], opts)} - ${e.toLocaleTimeString([], opts)}`;
+                            })() : 'N/A') : `${airdrop.time_limit}s`}
                           </td>
-                          <td><span className="badge badge-secondary">{entry.batch || "N/A"}</span></td>
-                          <td>{entry.domain || "N/A"}</td>
-                          <td><span style={{ fontWeight: "bold", color: "#10b981" }}>{entry.total_points}</span> pts</td>
+                          <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                            {airdrop.status === "PENDING_APPROVAL" ? (
+                              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    fetch(`http://localhost:8000/bonus-airdrops/admin/${airdrop.id}/approve`, {
+                                      method: 'POST',
+                                      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+                                    }).then(async (res) => {
+                                      if (res.ok) {
+                                        const updatedAirdrops = bonusAirdrops.map(a => a.id === airdrop.id ? { ...a, status: 'PUBLISHED' } : a);
+                                        setBonusAirdrops(updatedAirdrops);
+                                      } else {
+                                        alert("Failed to approve. Please try again.");
+                                      }
+                                    });
+                                  }} 
+                                  className="btn-primary" 
+                                  style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
+                                >
+                                  Approve
+                                </button>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const reason = prompt("Enter rejection reason:") || "Rejected by Admin";
+                                    fetch(`http://localhost:8000/bonus-airdrops/admin/${airdrop.id}/reject?reason=${encodeURIComponent(reason)}`, {
+                                      method: 'POST',
+                                      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+                                    }).then(() => {
+                                      const updatedAirdrops = bonusAirdrops.map(a => a.id === airdrop.id ? { ...a, status: 'DRAFT', rejection_reason: reason } : a);
+                                      setBonusAirdrops(updatedAirdrops);
+                                    });
+                                  }} 
+                                  className="btn-primary" 
+                                  style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#ef4444", borderColor: "#ef4444" }}
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedAirdrop(airdrop);
+                                }} 
+                                className="btn-secondary" 
+                                style={{ padding: "6px 12px", fontSize: "12px", color: '#4b5563', backgroundColor: '#f3f4f6', borderColor: '#e5e7eb' }}
+                              >
+                                View
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       ))
                     )}
                   </tbody>
                 </table>
               </div>
+              
+              {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px', gap: '8px', borderTop: '1px solid #f1f5f9' }}>
+                  <button 
+                    onClick={() => setAdminAirdropPage(prev => Math.max(prev - 1, 1))}
+                    disabled={adminAirdropPage === 1}
+                    style={{ padding: '6px 12px', border: '1px solid #cbd5e1', backgroundColor: adminAirdropPage === 1 ? '#f8fafc' : '#fff', color: adminAirdropPage === 1 ? '#94a3b8' : '#334155', borderRadius: '4px', cursor: adminAirdropPage === 1 ? 'not-allowed' : 'pointer' }}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ padding: '6px 12px', fontSize: '14px', color: '#475569' }}>
+                    Page {adminAirdropPage} of {totalPages}
+                  </span>
+                  <button 
+                    onClick={() => setAdminAirdropPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={adminAirdropPage === totalPages}
+                    style={{ padding: '6px 12px', border: '1px solid #cbd5e1', backgroundColor: adminAirdropPage === totalPages ? '#f8fafc' : '#fff', color: adminAirdropPage === totalPages ? '#94a3b8' : '#334155', borderRadius: '4px', cursor: adminAirdropPage === totalPages ? 'not-allowed' : 'pointer' }}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
-        );
-
-      case "Analytics":
-        return (
-          <div className="card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0 }}>Intern Performance Analytics</h3>
-            </div>
-            
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "24px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
-                  Filter by Batch / College
-                </label>
-                <select 
-                  className="form-control" 
-                  style={{ width: "100%", marginBottom: 0 }}
-                  value={analyticsBatch}
-                  onChange={(e) => {
-                    setAnalyticsBatch(e.target.value);
-                    setAnalyticsSelectedUser(""); // Reset intern selection when batch changes
-                  }}
-                >
-                  <option value="All Batches">All Batches</option>
-                  {analyticsBatchesList.map(b => (
-                    <option key={b.id} value={b.name}>{b.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
-                  Filter by Domain
-                </label>
-                <select 
-                  className="form-control" 
-                  style={{ width: "100%", marginBottom: 0 }}
-                  value={analyticsDomain}
-                  onChange={(e) => {
-                    setAnalyticsDomain(e.target.value);
-                    setAnalyticsSelectedUser(""); // Reset intern selection when domain changes
-                  }}
-                >
-                  <option value="All Domains">All Domains</option>
-                  {["Artificial Intelligence", "Data Science", "Cyber Security", "Web Development", "UI UX Design"].map(domain => (
-                    <option key={domain} value={domain}>{domain}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
-                  Select Intern to View
-                </label>
-                <select 
-                  className="form-control" 
-                  style={{ width: "100%", marginBottom: 0 }}
-                  value={analyticsSelectedUser}
-                  onChange={(e) => setAnalyticsSelectedUser(e.target.value)}
-                >
-                  <option value="">-- Choose an Intern --</option>
-                  {analyticsInternsList.map(user => (
-                    <option key={user.intern_id} value={user.intern_id}>
-                      {user.name} (ID: {user.intern_id})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {!analyticsSelectedUser ? (
-              <div style={{ padding: "40px 0", textAlign: "center", color: "#9ca3af", fontSize: "14px" }}>
-                Please select an intern to view their performance analytics.
-              </div>
-            ) : (
-              <AnalyticsChart internId={analyticsSelectedUser} />
-            )}
           </div>
         );
 
@@ -1801,81 +1566,60 @@ export default function AdminDashboard() {
 
   const navItems = [
     { id: "Overview", icon: <LayoutDashboard size={18} /> },
+    { id: "Analytics", icon: <TrendingUp size={18} /> },
     { id: "Onboarding", icon: <ClipboardCheck size={18} /> },
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
     { id: "Credentials", icon: <Award size={18} /> },
     { id: "Tickets", icon: <LifeBuoy size={18} /> },
     { id: "Bonus Airdrops", icon: <Gift size={18} /> },
-    { id: "Leaderboard", icon: <Award size={18} /> },
-    { id: "Analytics", icon: <TrendingUp size={18} /> }
+    { id: "Leaderboard", icon: <Medal size={18} /> }
   ];
 
   return (
     <div className="container">
       {/* Sidebar Navigation */}
-      <div className="sidebar">
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
+            {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
           </div>
           <ul>
             {navItems.map((item) => (
               <li
                 key={item.id}
                 className={activeTab === item.id ? "active" : ""}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  if (item.id === "Bonus Airdrops") setSelectedAirdrop(null);
+                }}
+                title={!isSidebarOpen ? item.id : ""}
               >
-                {item.icon}
-                {item.id}
+                <span>{item.icon}</span>
+                {isSidebarOpen && <span className="sidebar-text" style={{ marginLeft: "12px" }}>{item.id}</span>}
               </li>
             ))}
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          Logout
+          {isSidebarOpen ? "Logout" : "🚪"}
         </button>
       </div>
 
       {/* Main Content Area */}
       <div className="main">
         <div className="header" style={{ flexShrink: 0 }}>
-          <h2 style={{ margin: 0 }}>{activeTab}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+            <h2 style={{ margin: 0 }}>{activeTab}</h2>
+          </div>
           
           {/* Top right profile & actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setShowNotifications(!showNotifications)}>
+            <div style={{ position: 'relative', cursor: 'pointer' }}>
               <Bell size={20} color="#6B7280" />
-              {unreadNotificationsCount > 0 && (
-                <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '14px', height: '14px', backgroundColor: '#ef4444', borderRadius: '50%', color: 'white', fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                  {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
-                </div>
-              )}
-              {showNotifications && (
-                <div style={{ position: 'absolute', top: '30px', right: '-10px', width: '320px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', border: '1px solid #e5e7eb', zIndex: 50, maxHeight: '400px', overflowY: 'auto' }}>
-                  <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1 }}>
-                    <span style={{ fontWeight: 600, fontSize: '14px', color: '#1f2937' }}>Notifications</span>
-                    {unreadNotificationsCount > 0 && (
-                      <button style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '12px', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); markAllNotificationsRead(); }}>Mark all read</button>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    {notifications.length === 0 ? (
-                      <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280', fontSize: '13px' }}>No notifications</div>
-                    ) : (
-                      notifications.map(notif => (
-                        <div key={notif.id} onClick={(e) => { e.stopPropagation(); if (!notif.is_read) markNotificationRead(notif.id); }} style={{ padding: '12px 16px', borderBottom: '1px solid #f3f4f6', backgroundColor: notif.is_read ? 'white' : '#eff6ff', cursor: 'pointer', transition: 'background-color 0.2s' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                            <span style={{ fontSize: '13px', fontWeight: notif.is_read ? 500 : 600, color: '#111827' }}>{notif.title}</span>
-                            <span style={{ fontSize: '11px', color: '#9ca3af' }}>{new Date(notif.created_at).toLocaleDateString()}</span>
-                          </div>
-                          <div style={{ fontSize: '12px', color: '#4b5563', whiteSpace: 'pre-wrap', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{notif.message}</div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
+              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
             </div>
             <div style={{ height: '32px', width: '1px', backgroundColor: '#e5e7eb' }}></div>
             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
@@ -1894,28 +1638,6 @@ export default function AdminDashboard() {
           {renderContent()}
         </div>
       </div>
-
-      {/* Code Viewer Modal */}
-      {viewingCode && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <div className="card" style={{ width: "600px", maxWidth: "90vw", maxHeight: "80vh", display: "flex", flexDirection: "column", padding: 0 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", borderBottom: "1px solid #e2e8f0" }}>
-              <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>📄</span> {viewingCode.filename}
-              </h3>
-              <button onClick={() => setViewingCode(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>Close</button>
-            </div>
-            <div style={{ padding: "24px", overflowY: "auto", flex: 1 }}>
-              <pre style={{ backgroundColor: "#1e293b", color: "#f8fafc", padding: "16px", borderRadius: "8px", overflowX: "auto", margin: 0, fontSize: "13px", fontFamily: "monospace" }}>
-                {viewingCode.code}
-              </pre>
-            </div>
-          </div>
-        </div>
-      )}
-
-
-
     </div>
   );
-}// Trigger recompile
+}

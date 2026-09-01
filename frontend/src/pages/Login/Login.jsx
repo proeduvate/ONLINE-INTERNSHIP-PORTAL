@@ -1,27 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE } from "../../services/apiClient";
 import "./Login.css";
 
 export default function Login() {
-  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Dummy Users
+  const users = {
+    admin: { email: "admin@gmail.com", password: "admin123" },
+    mentor: { email: "mentor@gmail.com", password: "mentor123" },
+    intern: { email: "intern@gmail.com", password: "intern123" },
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!role) {
-      setErrorMessage("Please select a user role.");
-      return;
-    }
     if (!email) {
       setErrorMessage("Please enter your email address.");
       return;
@@ -31,16 +31,15 @@ export default function Login() {
       return;
     }
 
+    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    setLoading(true);
-
     try {
-      const response = await fetch(`${API_BASE}/login`, {
+      const response = await fetch("http://localhost:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -50,24 +49,15 @@ export default function Login() {
         const data = await response.json();
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("role", data.role);
-        
-        if (data.role !== role) {
-          setErrorMessage(`You are registered as a ${data.role}, not ${role}.`);
-          setLoading(false);
-          return;
-        }
-
-        alert(`Login Successful as ${data.role.toUpperCase()}!`);
+        localStorage.setItem("user_id", data.user_id);
         navigate(`/${data.role}`);
       } else {
-        const errData = await response.json();
-        setErrorMessage(errData.detail || "Invalid credentials for the selected role.");
+        const errorData = await response.json();
+        setErrorMessage(errorData.detail || "Invalid email or password.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("Failed to connect to the server.");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setErrorMessage("Server error. Please try again later.");
+      console.error(err);
     }
   };
 
@@ -98,16 +88,7 @@ export default function Login() {
         )}
 
         <form onSubmit={handleLogin}>
-          <select 
-            className="input"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="">Select Role</option>
-            <option value="admin">Admin</option>
-            <option value="mentor">Mentor</option>
-            <option value="intern">Intern</option>
-          </select>
+
 
           <input 
             type="email"
@@ -165,10 +146,11 @@ export default function Login() {
             </button>
           </div>
 
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          <button type="submit" className="login-btn">
+            Login
           </button>
         </form>
+
       </div>
     </div>
   );

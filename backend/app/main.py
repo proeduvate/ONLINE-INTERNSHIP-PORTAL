@@ -115,7 +115,6 @@ from app.api.v1.endpoints.airdrops import router as airdrops_router
 from app.api.v1.endpoints.leaderboard import router as leaderboard_router
 from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
-from app.api.v1.endpoints.batch_analytics import router as batch_analytics_router
 from routers import meetings
 
 # Initialize analytics DB
@@ -129,7 +128,6 @@ app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
-app.include_router(batch_analytics_router)
 app.include_router(meetings.router)
 
 

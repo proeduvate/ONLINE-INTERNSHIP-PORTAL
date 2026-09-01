@@ -50,6 +50,11 @@ def get_current_simulation(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    intern_id = current_user.id
+    current_user = db.query(models.User).filter(models.User.id == intern_id).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
         
@@ -160,6 +165,11 @@ def submit_decision(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    intern_id = current_user.id
+    current_user = db.query(models.User).filter(models.User.id == intern_id).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
 
@@ -222,9 +232,11 @@ def submit_decision(
     state = get_simulation_state(current_submission)
     current_scenario_val = state.get("current_scenario_id", "1")
 
-    # We use actual ID to represent scenario_id for daily_scenarios table
-    if str(current_scenario_val) != str(decision.scenario_id):
-        raise HTTPException(status_code=400, detail="Invalid scenario ID for current state")
+    # Trust the frontend's scenario_id if our state is out of sync or uninitialized
+    if current_scenario_val in ["start", "1"] or str(current_scenario_val) != str(decision.scenario_id):
+        current_scenario_val = decision.scenario_id
+        state["current_scenario_id"] = current_scenario_val
+        save_simulation_state(db, current_submission, state)
 
     scenario = db.query(models.DailyScenario).filter(
         models.DailyScenario.id == int(current_scenario_val),

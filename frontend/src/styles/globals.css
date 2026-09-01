@@ -1,38 +1,146 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #ffffff;
+  --background-color: #f8fafc;
+  --card-bg: #ffffff;
+  --text-color: #0f172a;
+  --text-muted: #475569;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --border-color: #e2e8f0;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.App-link {
-  color: #61dafb;
+a {
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a:hover {
+  text-decoration: underline;
 }
+
+:root {
+  --bg-light: #f8fafc;
+  --bg-gray-light: #f3f4f6;
+  --bg-gray-lighter: #f1f5f9;
+  --bg-blue-light: #eff6ff;
+  --bg-red-light: #fef2f2;
+  --bg-yellow-light: #fef3c7;
+  --bg-green-light: #dcfce7;
+  --bg-emerald-light: #ecfdf5;
+  --bg-emerald-lighter: #d1fae5;
+  --bg-red-lighter: #fee2e2;
+  --bg-red-lightest: #fecaca;
+  
+  --text-dark: #0f172a;
+  --text-darker: #1e293b;
+  --text-gray-dark: #1f2937;
+  --text-slate-dark: #334155;
+  --text-gray: #4b5563;
+  --text-slate: #64748b;
+  --text-gray-muted: #6b7280;
+  --text-slate-light: #94a3b8;
+  --text-gray-light: #9ca3af;
+  --text-slate-lighter: #cbd5e1;
+  --text-red-light: #fca5a5;
+  
+  --border-gray: #e5e7eb;
+  --border-gray-dark: #d1d5db;
+  --border-blue-light: #bfdbfe;
+  
+  --primary-dark: #2563eb;
+  --primary-darker: #1d4ed8;
+  --primary-darkest: #1e3a8a;
+  
+  --success-dark: #16a34a;
+  --success-darker: #065f46;
+  
+  --danger-dark: #dc2626;
+  --danger-darker: #b91c1c;
+  --danger-darkest: #991b1b;
+  --danger-black: #7f1d1d;
+  
+  --warning-darker: #92400e;
+}
+
+
+[data-theme="dark"] {
+  /* New Custom Dark Theme Palette */
+  --color-primary: #1D4ED8;
+  --color-accent: #F59E0B;
+  --bg-page: #020617;
+  --bg-surface: #0B1220;
+  --border-color: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --button-primary-bg: #1D4ED8;
+  --button-primary-text: #FFFFFF;
+  --button-secondary-bg: #1E293B;
+  --button-secondary-text: #E2E8F0;
+
+  --gradient-linear: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 50%, #F59E0B 100%);
+  --gradient-radial: radial-gradient(circle at center, #F59E0B 0%, #3B82F6 50%, #1D4ED8 100%);
+
+  /* Legacy variables mapped to new palette to prevent breaking existing components */
+  --primary-color: var(--color-primary);
+  --secondary-color: var(--bg-surface);
+  --background-color: var(--bg-page);
+  --card-bg: var(--bg-surface);
+  --text-color: var(--text-primary);
+  --text-muted: var(--text-secondary);
+
+  --bg-light: #0B1220;
+  --bg-gray-light: #0B1220;
+  --bg-gray-lighter: #020617;
+  --bg-blue-light: #0B1220;
+  --bg-red-light: #3f1515;
+  --bg-yellow-light: #422006;
+  --bg-green-light: #052e16;
+  --bg-emerald-light: #052e16;
+  --bg-emerald-lighter: #064e3b;
+  --bg-red-lighter: #450a0a;
+  --bg-red-lightest: #7f1d1d;
+  
+  --text-dark: var(--text-primary);
+  --text-darker: var(--text-primary);
+  --text-gray-dark: var(--text-primary);
+  --text-slate-dark: var(--text-secondary);
+  --text-gray: var(--text-secondary);
+  --text-slate: var(--text-secondary);
+  --text-gray-muted: var(--text-secondary);
+  --text-slate-light: var(--text-secondary);
+  --text-gray-light: var(--text-secondary);
+  --text-slate-lighter: var(--text-secondary);
+  --text-red-light: #ef4444;
+  
+  --border-gray: var(--border-color);
+  --border-gray-dark: var(--border-color);
+  --border-blue-light: #422006;
+}
+
