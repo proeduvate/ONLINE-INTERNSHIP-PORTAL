@@ -2,10 +2,7 @@ import enum
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
-try:
-    from app.db.session import Base
-except ImportError:
-    from .database import Base
+from app.db.session import Base
 
 # ==========================================
 #          USER ROLE ENUMERATION
@@ -397,7 +394,7 @@ class BonusAirdrop(Base):
     start_mode = Column(String(50), nullable=False, default="fixed") # fixed, flexible
     time_limit = Column(Integer, nullable=False) # in seconds
     start_time = Column(DateTime, nullable=True) # Optional for flexible, mandatory for fixed
-    
+    end_time = Column(DateTime, nullable=True) # End of the fixed window    
     # Rewards and Winners
     points_distribution = Column(String(200), nullable=False)
     winner_count = Column(Integer, nullable=False)

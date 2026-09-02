@@ -204,19 +204,29 @@ export default function InternDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mock State
-  const progress = 40; // 12 of 30 days
-  const [aiScore, setAiScore] = useState(88);
-  const attendancePercent = 90;
-
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
-  
   const [curriculumData, setCurriculumData] = useState([]);
+
+  // Mock State (AI and Attendance)
+  const completedDaysCount = curriculumData.filter(t => t.status === "completed").length;
+  const missedDaysCount = curriculumData.filter(t => t.day < currentDay && t.status !== "completed").length;
+  const daysPresent = completedDaysCount + 1; // count current active day as present
+  const totalAttendanceDays = daysPresent + missedDaysCount;
+  const progress = curriculumData.length > 0 ? Math.round((completedDaysCount / curriculumData.length) * 100) : 0;
+  
+  const attendancePercent = totalAttendanceDays > 0 ? Math.round((daysPresent / totalAttendanceDays) * 100) : 100;
+
+  const [aiScore, setAiScore] = useState(0);
+
   const [tasksLoading, setTasksLoading] = useState(true);
 
   const getCurrentDayData = () => {
     return curriculumData.find(d => d.day === currentDay) || curriculumData[0] || { topic: "Loading...", desc: "Loading...", notes: "Loading..." };
+  };
+
+  const getNextDayData = () => {
+    return curriculumData.find(d => d.day === currentDay + 1) || { topic: "Course Completion" };
   };
 
   const fetchTasks = async () => {
@@ -253,8 +263,27 @@ export default function InternDashboard() {
     }
   };
 
+  const fetchAnalytics = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8000/analytics/daily-questions/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const totalScore = data.reduce((sum, r) => sum + r.final_score, 0);
+          setAiScore(Math.round(totalScore / data.length));
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch analytics", e);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
+    fetchAnalytics();
   }, []);
 
   // MCQ and Assessment Workflow State
@@ -468,18 +497,18 @@ export default function InternDashboard() {
             <div className="grid">
               <div className="stat-card">
                 <span className="stat-title">Current Milestone</span>
-                <span className="stat-value">Day 12</span>
-                <span className="stat-desc">React Framework Basics</span>
+                <span className="stat-value">Day {currentDay}</span>
+                <span className="stat-desc">{getCurrentDayData().topic}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Course Progress</span>
                 <span className="stat-value">{progress}%</span>
-                <span className="stat-desc">12 of 30 days completed</span>
+                <span className="stat-desc">{completedDaysCount} of {curriculumData.length || 30} days completed</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Attendance Rate</span>
                 <span className="stat-value">{attendancePercent}%</span>
-                <span className="stat-desc">12 Days Present / 1 Day Absent</span>
+                <span className="stat-desc">{daysPresent} Days Present / {missedDaysCount} Days Absent</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">AI Evaluation Average</span>
@@ -564,7 +593,11 @@ export default function InternDashboard() {
 
                 {/* Daily Scenario Activity Calendar */}
                 <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <DailyScenarioCalendar onStartScenario={(day) => setActiveTab("Daily Scenario")} />
+                  <DailyScenarioCalendar 
+                    onStartScenario={(day) => setActiveTab("Daily Scenario")} 
+                    curriculumData={curriculumData}
+                    currentDay={currentDay}
+                  />
                 </div>
               </div>
 
@@ -579,7 +612,7 @@ export default function InternDashboard() {
                       </div>
                       <div>
                         <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "var(--text-dark)" }}>Today's Objective</h3>
-                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day 12: React Framework</span>
+                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {currentDay}: {getCurrentDayData().topic}</span>
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "4px", backgroundColor: "var(--bg-red-light)", padding: "4px 8px", borderRadius: "12px" }}>
@@ -590,23 +623,23 @@ export default function InternDashboard() {
                   
                   <div style={{ marginBottom: "16px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", marginBottom: "6px", fontWeight: 600 }}>
-                      <span style={{ color: "var(--text-muted)" }}>Module Progress</span>
-                      <span style={{ color: "var(--primary-color)" }}>65%</span>
+                      <span style={{ color: "var(--text-muted)" }}>Course Progress</span>
+                      <span style={{ color: "var(--primary-color)" }}>{progress}%</span>
                     </div>
                     <div style={{ width: "100%", backgroundColor: "var(--border-color)", borderRadius: "6px", height: "6px", overflow: "hidden" }}>
-                      <div style={{ width: "65%", backgroundColor: "var(--primary-color)", height: "100%", borderRadius: "6px" }}></div>
+                      <div style={{ width: `${progress}%`, backgroundColor: "var(--primary-color)", height: "100%", borderRadius: "6px", transition: "width 0.3s ease" }}></div>
                     </div>
                   </div>
 
                   <div style={{ marginBottom: "16px" }}>
                     <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "8px" }}>
                       <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
-                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-green-light)", color: "var(--success-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px" }}>✓</div>
-                        Component Composition
+                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-green-light)", color: "var(--success-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", flexShrink: 0 }}>✓</div>
+                        {getCurrentDayData().topic}
                       </li>
                       <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
-                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-gray-light)", color: "var(--text-gray-light)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px" }}>▶</div>
-                        JSX Syntax & Rules
+                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-gray-light)", color: "var(--text-gray-light)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", flexShrink: 0 }}>▶</div>
+                        {getCurrentDayData().desc}
                       </li>
                     </ul>
                   </div>
@@ -617,7 +650,7 @@ export default function InternDashboard() {
                         <span style={{ fontSize: "12px" }}>📅</span>
                         <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming</span>
                       </div>
-                      <h4 style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--text-dark)" }}>React Hook Refactor</h4>
+                      <h4 style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--text-dark)" }}>{getNextDayData().topic}</h4>
                     </div>
                     <button className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "11px", fontWeight: 600, backgroundColor: "var(--text-dark)", color: "var(--card-bg)", border: "none", borderRadius: "6px" }} onClick={handleJoinMeeting}>Join</button>
                   </div>
@@ -1167,6 +1200,14 @@ export default function InternDashboard() {
                           canParticipate = false;
                           upcomingTime = new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         }
+                        if (drop.end_time) {
+                          const e = drop.end_time.endsWith('Z') ? drop.end_time : drop.end_time + 'Z';
+                          const endTime = new Date(e).getTime();
+                          if (Date.now() > endTime) {
+                            canParticipate = false;
+                            upcomingTime = "Ended";
+                          }
+                        }
                       }
                       
                       return (
@@ -1208,7 +1249,7 @@ export default function InternDashboard() {
                               boxShadow: canParticipate ? "0 2px 4px rgba(236, 72, 153, 0.2)" : "none"
                             }}
                           >
-                            {!canParticipate ? `Starts at ${upcomingTime}` : "Participate"}
+                            {!canParticipate ? (upcomingTime === "Ended" ? "Ended" : `Starts at ${upcomingTime}`) : "Participate"}
                           </button>
                         </div>
                       </div>

@@ -188,6 +188,7 @@ export default function MentorDashboard() {
       const backendStartMode = newAirdrop.startMode === "Fixed Start Time" ? "fixed" : "flexible";
 
       let startTimeISO = null;
+      let endTimeISO = null;
       let calculatedTimeLimit = parseInt(newAirdrop.timeLimit) || 60;
 
       if (backendStartMode === "fixed" && newAirdrop.startDate && newAirdrop.endDate) {
@@ -203,11 +204,7 @@ export default function MentorDashboard() {
         if (newAirdrop.endTimeAmPm === "PM" && endHour < 12) endHour += 12;
         if (newAirdrop.endTimeAmPm === "AM" && endHour === 12) endHour = 0;
         const endObj = new Date(`${newAirdrop.endDate}T${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}:00`);
-
-        const diffSeconds = Math.floor((endObj.getTime() - startObj.getTime()) / 1000);
-        if (diffSeconds > 0) {
-          calculatedTimeLimit = diffSeconds;
-        }
+        endTimeISO = endObj.toISOString();
       }
 
       const pointsDist = (newAirdrop.points || []).filter(p => p).join(",");
@@ -220,6 +217,7 @@ export default function MentorDashboard() {
         start_mode: backendStartMode,
         time_limit: calculatedTimeLimit,
         start_time: startTimeISO,
+        end_time: endTimeISO,
         points_distribution: pointsDist || "100",
         winner_count: parseInt(newAirdrop.winners) || 3
       };
@@ -1543,20 +1541,18 @@ export default function MentorDashboard() {
                           </div>
                         </div>
 
-                        {newAirdrop.startMode === "Flexible Start" && (
-                          <div style={{ marginBottom: "16px" }}>
-                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (in seconds) <span style={{ color: "#ef4444" }}>*</span></label>
-                            <input 
-                              type="number" 
-                              required 
-                              className="form-control" 
-                              style={{ width: "100%", margin: 0 }} 
-                              value={newAirdrop.timeLimit || ""} 
-                              onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} 
-                              placeholder="e.g. 300 for 5 minutes"
-                            />
-                          </div>
-                        )}
+                        <div style={{ marginBottom: "16px" }}>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (in seconds) <span style={{ color: "#ef4444" }}>*</span></label>
+                          <input 
+                            type="number" 
+                            required 
+                            className="form-control" 
+                            style={{ width: "100%", margin: 0 }} 
+                            value={newAirdrop.timeLimit || ""} 
+                            onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} 
+                            placeholder="e.g. 60 for 1 minute"
+                          />
+                        </div>
 
                         {newAirdrop.startMode === "Fixed Start Time" && (
                           <>

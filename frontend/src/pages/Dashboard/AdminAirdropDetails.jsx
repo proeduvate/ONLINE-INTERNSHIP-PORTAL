@@ -64,13 +64,8 @@ export default function AdminAirdropDetails({ airdrop, onBack, role = 'admin' })
             <Calendar size={14} /> End Schedule
           </div>
           <div style={{ color: '#374151', fontSize: '14px' }}>
-            {airdrop.start_mode === 'fixed' && airdrop.start_time
-              ? (() => {
-                  const t = airdrop.start_time.endsWith('Z') ? airdrop.start_time : airdrop.start_time + 'Z';
-                  const s = new Date(t);
-                  const e = new Date(s.getTime() + airdrop.time_limit * 1000);
-                  return e.toLocaleString();
-                })()
+            {airdrop.start_mode === 'fixed' && airdrop.end_time
+              ? new Date(airdrop.end_time.endsWith('Z') ? airdrop.end_time : airdrop.end_time + 'Z').toLocaleString()
               : (airdrop.finalized_at ? new Date(airdrop.finalized_at.endsWith('Z') ? airdrop.finalized_at : airdrop.finalized_at + 'Z').toLocaleString() : (airdrop.status === 'FINALIZED' ? 'Ended' : 'TBD'))}
           </div>
         </div>

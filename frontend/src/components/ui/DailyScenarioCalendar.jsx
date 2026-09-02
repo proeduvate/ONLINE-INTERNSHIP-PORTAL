@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import '../../styles/Dashboard.css';
 import { scenarioData } from './DailyScenario';
 
-const DailyScenarioCalendar = ({ onStartScenario }) => {
+const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDay = 1 }) => {
   const [selectedDay, setSelectedDay] = useState(null);
 
-  // Mock data for 30 days
-  const currentDay = 5;
-  const attendedDays = [1, 4, 6, 8, 9];
-  const missedDays = [2, 7, 10];
+  const attendedDaysCount = curriculumData.filter(t => t.status === 'completed').length;
+  const missedDaysCount = curriculumData.filter(t => t.day < currentDay && t.status !== 'completed').length;
 
   const getDayStatus = (day) => {
     if (day === currentDay) return 'current';
-    if (attendedDays.includes(day)) return 'completed';
-    if (missedDays.includes(day)) return 'missed';
-    if (day < currentDay) return 'missed'; // assuming past days not attended are missed
+    const task = curriculumData.find(t => t.day === day);
+    if (task) {
+      if (task.status === 'completed') return 'completed';
+      if (day < currentDay) return 'missed';
+      return 'upcoming';
+    }
+    if (day < currentDay) return 'missed'; 
     return 'upcoming';
   };
 
@@ -25,8 +27,8 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
       <div className="calendar-header">
         <h3>Daily Scenario Activity</h3>
         <div className="calendar-stats">
-          <span className="stat-badge completed">{attendedDays.length} Completed</span>
-          <span className="stat-badge missed">{missedDays.length} Missed</span>
+          <span className="stat-badge completed">{attendedDaysCount} Completed</span>
+          <span className="stat-badge missed">{missedDaysCount} Missed</span>
           <span className="stat-badge current">Day {currentDay}</span>
         </div>
       </div>
@@ -55,11 +57,12 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
           <h4>Day {selectedDay} Details</h4>
           {(() => {
              const scenario = scenarioData.find(s => s.day === selectedDay);
-             if (scenario) {
+             const task = curriculumData.find(t => t.day === selectedDay);
+             if (scenario || task) {
                 return (
                   <>
-                    <p className="scenario-title">{scenario.title}</p>
-                    <p className="scenario-situation">{scenario.situation.substring(0, 100)}...</p>
+                    <p className="scenario-title">{task ? task.topic : scenario.title}</p>
+                    <p className="scenario-situation">{task ? task.desc : scenario.situation.substring(0, 100) + '...'}</p>
                     <button className="btn btn-primary" onClick={() => onStartScenario(selectedDay)}>
                       {getDayStatus(selectedDay) === 'current' ? 'Start Scenario' : 'Review Scenario'}
                     </button>

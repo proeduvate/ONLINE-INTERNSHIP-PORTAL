@@ -143,3 +143,46 @@ def get_intern_daily_analytics(
         }
         for r in results
     ]
+
+# ==========================================
+#    INTERN: VIEW OWN ANALYTICS
+# ==========================================
+
+@router.get(
+    "/analytics/daily-questions/me",
+    response_model=List[schemas_analytics.DailyMarksDataPoint],
+    summary="Get my daily question performance",
+    description="Interns can view their own daily question marks."
+)
+def get_my_daily_analytics(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access Denied: Only interns can view their own analytics"
+        )
+
+    results = (
+        db.query(
+            models.DailyQuestionResult.date,
+            models.DailyQuestionResult.mcq_score,
+            models.DailyQuestionResult.coding_score,
+            models.DailyQuestionResult.final_score
+        )
+        .filter(models.DailyQuestionResult.intern_id == current_user.id)
+        .order_by(models.DailyQuestionResult.date)
+        .all()
+    )
+
+    return [
+        {
+            "date": r.date, 
+            "mcq_score": r.mcq_score, 
+            "coding_score": r.coding_score, 
+            "final_score": r.final_score
+        }
+        for r in results
+    ]
+
