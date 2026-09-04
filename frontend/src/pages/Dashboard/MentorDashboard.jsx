@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock } from "lucide-react";
@@ -272,10 +273,22 @@ export default function MentorDashboard() {
     alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      const response = await api.post('/api/meetings', {
+        title: title,
+        room_code: "meeting-" + Date.now(), // Generate a unique room code
+        status: "scheduled",
+        scheduled_time: time
+      });
+      // Optionally refresh mentor's local meetings array
+      setMeetings([...meetings, { id: response.data.id || meetings.length + 1, title, time, status: "Scheduled", room_code: response.data.room_code }]);
+      alert("Meeting created and saved to database!");
+    } catch (err) {
+      console.error("Failed to create meeting:", err);
+      alert("Error saving meeting to database.");
+    }
   };
 
   const handleWeeklySubmit = (e) => {

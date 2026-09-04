@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
@@ -10,18 +11,32 @@ export default function InternDashboard() {
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
 
+  
   // Live Meeting State
+  const [meetings, setMeetings] = useState([]);
+  
+  useEffect(() => {
+    const fetchUpcomingMeetings = async () => {
+      try {
+        const response = await api.get('/api/meetings');
+        setMeetings(response.data);
+      } catch (error) {
+        console.error("Failed to fetch meetings:", error);
+      }
+    };
+    fetchUpcomingMeetings();
+    // Optional refresh interval
+    const interval = setInterval(fetchUpcomingMeetings, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [isMeetingActive, setIsMeetingActive] = useState(false);
   const [isMeetingMinimized, setIsMeetingMinimized] = useState(false);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting"); // force recompile
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const handleJoinMeeting = () => {
-    const isMeetingRunning = localStorage.getItem("breakout_meeting_active") === "true";
-    if (!isMeetingRunning) {
-      alert("The mentor has not started this breakout meeting yet. Please try again once the meeting has commenced.");
-      return;
-    }
+    
     setIsMeetingActive(true);
     setIsMeetingMinimized(false);
   };
@@ -765,17 +780,30 @@ export default function InternDashboard() {
               <div className="table-container">
                 <table className="table">
                   <thead>
-                    <tr><th>Host</th><th>Topic</th><th>Time</th><th>Action</th></tr>
+                    <tr>
+                      <th>Topic</th>
+                      <th>Scheduled Time</th>
+                      <th>Action</th>
+                    </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td><b>Dr. Sakthi</b></td>
-                      <td>React Hook Refactoring Standup</td>
-                      <td>Today, 3:00 PM</td>
-                      <td>
-                        <button onClick={handleJoinMeeting} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join zoom</button>
-                      </td>
-                    </tr>
+                    {meetings.length > 0 ? meetings.map((meeting) => (
+                      <tr key={meeting.id}>
+                        <td>{meeting.title}</td>
+                        <td>{new Date().toLocaleDateString()} (Active)</td>
+                        <td>
+                          <button onClick={() => {
+                            setActiveMeetingRoom(meeting.room_code);
+                            setIsMeetingActive(true);
+                            setIsMeetingMinimized(false);
+                          }} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join</button>
+                        </td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan="3" style={{textAlign: 'center'}}>No upcoming meetings</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1468,4 +1496,4 @@ export default function InternDashboard() {
       )}
     </div>
   );
-}
+}
