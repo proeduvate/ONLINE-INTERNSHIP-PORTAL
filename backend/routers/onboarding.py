@@ -64,6 +64,19 @@ def get_application_status(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Application not found")
     return {"status": user.onboarding_status}
 
+@router.get("/status/{application_id}")
+def get_application_status_by_id(application_id: str, db: Session = Depends(get_db)):
+    try:
+        user_id = int(application_id.split("-")[1])
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid application ID")
+        
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Application not found")
+        
+    return {"status": user.onboarding_status}
+
 @router.post("/{application_id}/interview")
 def interview_decision(application_id: str, decision: dict, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     # Extract user ID from application_id (e.g. APP-0001)
