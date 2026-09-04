@@ -4,6 +4,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarC
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock } from "lucide-react";
 import "../../styles/Dashboard.css";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+import AdminLeaderboard from "./AdminLeaderboard";
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -135,13 +136,19 @@ export default function MentorDashboard() {
   const [selectedBatch, setSelectedBatch] = useState("Batch A");
 
   const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" }
+    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
   ]);
+  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
   const [meetings, setMeetings] = useState([
     { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
+    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
+    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
+    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
   ]);
 
   const [chatMessages, setChatMessages] = useState([
@@ -463,61 +470,38 @@ export default function MentorDashboard() {
               <div className="card" style={{ marginBottom: 0 }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
                 <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>React Code Review</h4>
-                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Today, 2:00 PM - 3:00 PM</span>
+                  {meetings.length > 0 ? meetings.map((m, index) => (
+                    <div key={m.id || index} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>{m.title}</h4>
+                          <span style={{ fontSize: "12px", color: "#6b7280" }}>{m.time}</span>
+                        </div>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                          <span className={m.status === 'Scheduled' ? "badge badge-success" : "badge badge-warning"} style={{ fontSize: "10px" }}>{m.status === 'Upcoming' ? 'Meeting' : m.status}</span>
+                          <button 
+                            onClick={() => {
+                              setIsMeetingActive(true);
+                              localStorage.setItem("breakout_meeting_active", "true");
+                              setActiveTab("Breakout Rooms");
+                            }}
+                            className="btn btn-primary"
+                            style={{ padding: "4px 8px", fontSize: "11px", borderRadius: "4px" }}
+                          >
+                            Join
+                          </button>
+                        </div>
+                      </div>
+                      {index < meetings.length - 1 && <div style={{ borderTop: "1px solid #e5e7eb" }}></div>}
                     </div>
-                    <span className="badge badge-warning" style={{ fontSize: "10px" }}>Meeting</span>
-                  </div>
-                  <div style={{ borderTop: "1px solid #e5e7eb" }}></div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>Final Project Submissions</h4>
-                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Tomorrow, 11:59 PM</span>
-                    </div>
-                    <span className="badge badge-danger" style={{ fontSize: "10px" }}>Deadline</span>
-                  </div>
+                  )) : (
+                    <div style={{ fontSize: "13px", color: "#6b7280", textAlign: "center", padding: "10px" }}>No upcoming meetings</div>
+                  )}
                 </div>
               </div>
 
-              <div className="card" style={{ marginBottom: 0 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <h3 style={{ margin: 0, fontSize: "16px" }}>Batch Leaderboard</h3>
-                  <select 
-                    value={selectedBatch} 
-                    onChange={(e) => setSelectedBatch(e.target.value)} 
-                    style={{ padding: "4px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid #e5e7eb", outline: "none", backgroundColor: "#f9fafb" }}
-                  >
-                    <option value="Batch A">Batch A</option>
-                    <option value="Batch B">Batch B</option>
-                  </select>
-                </div>
-                <div className="table-container" style={{ margin: 0 }}>
-                  <table className="table" style={{ margin: 0, fontSize: "13px" }}>
-                    <thead>
-                      <tr>
-                        <th style={{ padding: "8px 12px" }}>Rank</th>
-                        <th style={{ padding: "8px 12px" }}>Intern Name</th>
-                        <th style={{ padding: "8px 12px", textAlign: "right" }}>Avg Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[...assignedInterns]
-                        .filter(intern => intern.batch === selectedBatch)
-                        .sort((a, b) => parseInt(b.score) - parseInt(a.score))
-                        .map((intern, index) => (
-                        <tr key={intern.id}>
-                          <td style={{ padding: "8px 12px" }}>
-                            {index === 0 ? <Trophy size={16} color="#eab308" /> : index === 1 ? <Medal size={16} color="#9ca3af" /> : index === 2 ? <Award size={16} color="#b45309" /> : `#${index + 1}`}
-                          </td>
-                          <td style={{ padding: "8px 12px", fontWeight: 600 }}>{intern.name}</td>
-                          <td style={{ padding: "8px 12px", textAlign: "right" }}><span className="badge badge-primary">{intern.score}</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              <div style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%" }}>
+                <AdminLeaderboard usersList={assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
               </div>
             </div>
           </>
@@ -603,70 +587,99 @@ export default function MentorDashboard() {
           <div>
             {/* Row 1: Submissions review & grading */}
             <div className="card">
+              <h3 style={{ marginBottom: "16px" }}>Submissions Review</h3>
               {submissions.filter(s => s.status === "Pending").length === 0 ? (
                 <p style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}><Trophy size={18} color="#10b981" /> All submissions have been evaluated!</p>
               ) : (
-                submissions.filter(s => s.status === "Pending").map(sub => {
-                  let tempScore = "";
-                  let tempFeedback = "";
-                  return (
-                    <div key={sub.id} className="card" style={{ border: "1px solid #E5E7EB", background: "#ffffff", marginBottom: "16px", padding: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                        {/* Left Side: Intern Details & AI Analysis */}
-                        <div>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                            <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
-                              {sub.intern.split(" ")[0][0]}{sub.intern.split(" ")[1] ? sub.intern.split(" ")[1][0] : ""}
-                            </div>
-                            <div>
-                              <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>{sub.intern}</h4>
-                              <div style={{ fontSize: "13px", color: "#6b7280" }}>Task: <span style={{ fontWeight: 600, color: "#374151" }}>{sub.task}</span></div>
-                            </div>
-                          </div>
-                          
-                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "12px", borderRadius: "8px", fontSize: "12px", color: "#1E3A8A" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "4px", fontSize: "13px" }}>
-                              <Bot size={16} /> AI Evaluation: {sub.aiScore}
-                            </div>
-                            <div style={{ lineHeight: "1.5" }}>{sub.aiFeedback}</div>
-                          </div>
-                        </div>
-
-                        {/* Right Side: GitHub, Inputs & Actions */}
-                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                          <div style={{ alignSelf: "flex-end" }}>
-                            <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "8px 16px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "600", transition: "opacity 0.2s" }}>
-                              <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
-                                <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                              </svg>
-                              View on GitHub
-                            </a>
-                          </div>
-
-                          <div style={{ marginTop: "16px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", marginBottom: "12px" }}>
-                              <div>
-                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Final Score</label>
-                                <input className="form-control" placeholder="e.g. 85%" onChange={(e) => { tempScore = e.target.value; }} style={{ margin: 0 }} />
-                              </div>
-                              <div>
-                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Mentor Feedback</label>
-                                <input className="form-control" placeholder="Constructive remarks..." onChange={(e) => { tempFeedback = e.target.value; }} style={{ margin: 0 }} />
-                              </div>
-                            </div>
-
-                            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-                              <button onClick={() => handleReviewSubmission(sub.id, "Reject", "0%", tempFeedback || "Needs rework")} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "8px 24px" }}>Reject</button>
-                              <button onClick={() => handleReviewSubmission(sub.id, "Approve", tempScore || "80%", tempFeedback || "Approved")} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "8px 24px" }}>Approve</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
+                <div className="table-container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Intern</th>
+                        <th>Task</th>
+                        <th>Domain</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {submissions.filter(s => s.status === "Pending").map(sub => (
+                        <tr key={sub.id}>
+                          <td style={{ fontWeight: 600 }}>{sub.intern}</td>
+                          <td>{sub.task}</td>
+                          <td>{sub.domain}</td>
+                          <td><span className="badge badge-warning">{sub.status}</span></td>
+                          <td>
+                            <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px" }} onClick={() => setSelectedEvaluation(sub)}>Review</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
+
+            {selectedEvaluation && (
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+                <div style={{ backgroundColor: "#fff", width: "700px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", maxHeight: "90vh", overflowY: "auto" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Evaluation Details</h2>
+                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>✕</button>
+                  </div>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Intern:</span> {selectedEvaluation.intern}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Domain:</span> {selectedEvaluation.domain}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Curriculum:</span> {selectedEvaluation.curriculum}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Task:</span> {selectedEvaluation.task}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>MCQ Results:</span> {selectedEvaluation.mcqResults}</div>
+                  </div>
+
+                  <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "16px", borderRadius: "8px", color: "#1E3A8A", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "8px", fontSize: "14px" }}>
+                      <Bot size={18} /> AI Evaluation: {selectedEvaluation.aiScore}
+                    </div>
+                    <div style={{ lineHeight: "1.5", fontSize: "13px" }}>{selectedEvaluation.aiFeedback}</div>
+                  </div>
+
+                  <div style={{ marginBottom: "24px", display: "flex", justifyContent: "flex-end" }}>
+                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                      <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
+                        <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                      </svg>
+                      View on GitHub
+                    </a>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "20px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Final Score</label>
+                      <input id="modalTempScore" className="form-control" placeholder="e.g. 85%" style={{ margin: 0 }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Mentor Feedback</label>
+                      <input id="modalTempFeedback" className="form-control" placeholder="Constructive remarks..." style={{ margin: 0 }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
+                    <button onClick={() => {
+                      const score = document.getElementById("modalTempScore").value;
+                      const feedback = document.getElementById("modalTempFeedback").value;
+                      handleReviewSubmission(selectedEvaluation.id, "Reject", score || "0%", feedback || "Needs rework");
+                      setSelectedEvaluation(null);
+                    }} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "10px 24px", fontWeight: 600 }}>Reject</button>
+                    <button onClick={() => {
+                      const score = document.getElementById("modalTempScore").value;
+                      const feedback = document.getElementById("modalTempFeedback").value;
+                      handleReviewSubmission(selectedEvaluation.id, "Approve", score || "80%", feedback || "Approved");
+                      setSelectedEvaluation(null);
+                    }} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "10px 24px", fontWeight: 600 }}>Approve</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 

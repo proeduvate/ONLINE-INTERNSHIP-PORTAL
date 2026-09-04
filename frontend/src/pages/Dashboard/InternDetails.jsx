@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { LayoutDashboard, FileText, ArrowLeft, LogOut } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import "../../styles/Dashboard.css";
 
@@ -7,6 +8,7 @@ export default function InternDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState("Overview");
 
   // File preview modal states
   const [activeSubmission, setActiveSubmission] = useState(null);
@@ -346,30 +348,10 @@ CREATE TABLE submission_files (
 
   return (
     <div className="container">
-      {/* Sidebar Navigation */}
-      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
-            {isSidebarOpen && <h2>Mentor Panel</h2>}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
-          </div>
-          <ul>
-            <li onClick={() => navigate("/mentor")} title={!isSidebarOpen ? "Back" : ""}>
-              <span>⬅️</span>
-              {isSidebarOpen && <span className="sidebar-text" style={{ marginLeft: "12px" }}>Back to Dashboard</span>}
-            </li>
-          </ul>
-        </div>
-        <button className="sidebar-logout" onClick={() => navigate("/login")}>
-          {isSidebarOpen ? "Logout" : "🚪"}
-        </button>
-      </div>
-
       {/* Main Content Area */}
-      <div className="main" style={{ overflowY: "auto" }}>
-        <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="main" style={{ overflowY: "auto", width: "100%", paddingLeft: "32px", paddingRight: "32px" }}>
+        <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "20px", borderBottom: "1px solid #e2e8f0", marginBottom: "24px" }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
             <div>
               <h2 style={{ margin: 0 }}>Intern Details: {intern.name}</h2>
               <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
@@ -377,70 +359,220 @@ CREATE TABLE submission_files (
               </span>
             </div>
           </div>
-          <button className="btn btn-secondary" onClick={() => navigate("/mentor")}>Back</button>
-        </div>
-
-        <div className="grid">
-          <div className="stat-card">
-            <span className="stat-title">Overall Progress</span>
-            <span className="stat-value">{intern.progress}%</span>
-            <div style={{ width: '100%', backgroundColor: '#e5e7eb', height: '8px', borderRadius: '4px', marginTop: '8px' }}>
-              <div style={{ width: `${intern.progress}%`, backgroundColor: '#3b82f6', height: '100%', borderRadius: '4px' }}></div>
+          
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <div style={{ display: "flex", background: "#f1f5f9", padding: "4px", borderRadius: "8px" }}>
+              <button
+                onClick={() => setActiveTab("Overview")}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: activeTab === "Overview" ? "#fff" : "transparent",
+                  boxShadow: activeTab === "Overview" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                  color: activeTab === "Overview" ? "#3b82f6" : "#64748b",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                <LayoutDashboard size={16} /> Overview
+              </button>
+              <button
+                onClick={() => setActiveTab("Task Submissions")}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: activeTab === "Task Submissions" ? "#fff" : "transparent",
+                  boxShadow: activeTab === "Task Submissions" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                  color: activeTab === "Task Submissions" ? "#3b82f6" : "#64748b",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                <FileText size={16} /> Task Submissions
+              </button>
             </div>
-          </div>
-          <div className="stat-card">
-            <span className="stat-title">Average Score</span>
-            <span className="stat-value">{intern.score}%</span>
-            <span className="stat-desc">Top 10% in {intern.batch}</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-title">Attendance</span>
-            <span className="stat-value">{intern.attendance}%</span>
-            <span className="stat-desc">Consistent</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-title">Domain</span>
-            <span className="stat-value" style={{ fontSize: "20px", marginTop: "10px" }}>{intern.domain}</span>
+            
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => navigate("/mentor")}
+              style={{ display: "flex", alignItems: "center", gap: "6px", padding: "8px 16px" }}
+            >
+              <ArrowLeft size={16} /> Back
+            </button>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginTop: "24px" }}>
-          <div className="card" style={{ margin: 0 }}>
-            <h3>Performance Trend</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={performanceData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="week" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        {activeTab === "Overview" && (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: "20px", alignItems: "start" }}>
+              {/* Left Column: Stats & Profile */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    Intern Profile <span className="badge badge-success" style={{ fontSize: "12px" }}>Active</span>
+                  </h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "14px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "#64748b" }}>Domain</span>
+                      <span style={{ fontWeight: 600, color: "#1e293b" }}>{intern.domain}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "#64748b" }}>Batch</span>
+                      <span style={{ fontWeight: 600, color: "#1e293b" }}>{intern.batch}</span>
+                    </div>
+                  </div>
+                </div>
 
-          <div className="card" style={{ margin: 0, backgroundColor: "#f8fafc" }}>
-            <h3>Strengths & Weaknesses</h3>
-            <div style={{ marginBottom: "16px" }}>
-              <h4 style={{ color: "#10b981", margin: "0 0 8px 0" }}>👍 Strengths</h4>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {intern.strengths.split(", ").map((s, i) => (
-                  <span key={i} className="badge badge-success">{s}</span>
-                ))}
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Core Metrics</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
+                        <span style={{ color: "#475569" }}>Overall Progress</span>
+                        <span style={{ fontWeight: 700, color: "#3b82f6" }}>{intern.progress}%</span>
+                      </div>
+                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.progress}%`, backgroundColor: "#3b82f6", height: "100%", borderRadius: "4px" }}></div></div>
+                    </div>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
+                        <span style={{ color: "#475569" }}>Average Score</span>
+                        <span style={{ fontWeight: 700, color: "#10b981" }}>{intern.score}%</span>
+                      </div>
+                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.score}%`, backgroundColor: "#10b981", height: "100%", borderRadius: "4px" }}></div></div>
+                    </div>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
+                        <span style={{ color: "#475569" }}>Attendance</span>
+                        <span style={{ fontWeight: 700, color: "#f59e0b" }}>{intern.attendance}%</span>
+                      </div>
+                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.attendance}%`, backgroundColor: "#f59e0b", height: "100%", borderRadius: "4px" }}></div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b" }}>Strengths & Weaknesses</h3>
+                  <div style={{ marginBottom: "16px" }}>
+                    <h4 style={{ color: "#10b981", margin: "0 0 8px 0", fontSize: "14px" }}>👍 Strengths</h4>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {intern.strengths.split(", ").map((s, i) => <span key={i} className="badge badge-success" style={{ fontSize: "12px", padding: "4px 8px" }}>{s}</span>)}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 style={{ color: "#ef4444", margin: "0 0 8px 0", fontSize: "14px" }}>⚠️ Areas for Improvement</h4>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {intern.weakAreas.split(", ").map((w, i) => <span key={i} className="badge badge-danger" style={{ backgroundColor: "#fee2e2", color: "#991b1b", fontSize: "12px", padding: "4px 8px" }}>{w}</span>)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle Column: Chart & Activity */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Performance Trend</h3>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <LineChart data={performanceData} margin={{ top: 5, right: 10, bottom: -5, left: -25 }}>
+                      <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={4} dot={{ r: 5, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }} />
+                      <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
+                      <XAxis dataKey="week" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: "14px" }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Recent Activity</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", gap: "16px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#3b82f6", zIndex: 1 }}></div>
+                        <div style={{ width: "2px", height: "100%", backgroundColor: "#e2e8f0", marginTop: "4px" }}></div>
+                      </div>
+                      <div style={{ paddingBottom: "16px" }}>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Submitted <b>React To-Do App</b> for review.</p>
+                        <span style={{ fontSize: "13px", color: "#64748b" }}>Today, 10:30 AM</span>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "16px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#10b981", zIndex: 1 }}></div>
+                        <div style={{ width: "2px", height: "100%", backgroundColor: "#e2e8f0", marginTop: "4px" }}></div>
+                      </div>
+                      <div style={{ paddingBottom: "16px" }}>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Attended <b>Daily Standup</b> meeting.</p>
+                        <span style={{ fontSize: "13px", color: "#64748b" }}>Yesterday, 04:15 PM</span>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "16px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#8b5cf6", zIndex: 1 }}></div>
+                      </div>
+                      <div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Completed <b>React Hooks Module</b>.</p>
+                        <span style={{ fontSize: "13px", color: "#64748b" }}>Aug 25, 11:00 AM</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Actions & Goals */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div className="card" style={{ margin: 0, padding: "20px", backgroundColor: "#fffbeb", border: "1px solid #fef3c7" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#b45309" }}>Mentor Action Items</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px", border: "1px solid #fde68a" }}>
+                      <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", color: "#92400e" }}>Review React To-Do App</h4>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: "13px", color: "#ef4444", fontWeight: 600 }}>Overdue by 1 day</span>
+                        <button className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "13px" }} onClick={() => setActiveTab("Task Submissions")}>Review</button>
+                      </div>
+                    </div>
+                    <div style={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px", border: "1px solid #fde68a" }}>
+                      <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", color: "#92400e" }}>Schedule 1-on-1</h4>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: "13px", color: "#b45309" }}>Discuss progress</span>
+                        <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", backgroundColor: "#fff", border: "1px solid #cbd5e1" }}>Schedule</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card" style={{ margin: 0, padding: "20px" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b" }}>Current Goals</h3>
+                  <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px", color: "#475569", display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <li>Improve state management understanding and use of context.</li>
+                    <li>Contribute to the team's main repository via PRs.</li>
+                    <li>Participate more actively in breakout sessions.</li>
+                  </ul>
+                </div>
+
+                <div className="card" style={{ margin: 0, padding: "20px", backgroundColor: "#f0fdf4", border: "1px solid #dcfce3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                  <h3 style={{ fontSize: "16px", margin: "0 0 12px 0", color: "#166534" }}>Peer Review Score</h3>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                    <span style={{ fontSize: "36px", fontWeight: 700, color: "#15803d" }}>4.8</span>
+                    <span style={{ fontSize: "16px", color: "#166534" }}>/ 5.0</span>
+                  </div>
+                  <p style={{ margin: "8px 0 0 0", fontSize: "13px", color: "#166534" }}>Based on 3 recent peer evaluations</p>
+                </div>
               </div>
             </div>
-            <div>
-              <h4 style={{ color: "#ef4444", margin: "0 0 8px 0" }}>⚠️ Areas for Improvement</h4>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {intern.weakAreas.split(", ").map((w, i) => (
-                  <span key={i} className="badge badge-danger" style={{ backgroundColor: "#fee2e2", color: "#991b1b" }}>{w}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
 
         {/* Task Submissions Card */}
-        <div className="card" style={{ marginTop: "24px" }}>
+        {activeTab === "Task Submissions" && (
+          <div className="card" style={{ marginTop: "24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
             <div>
               <h3 style={{ margin: 0 }}>Task Submissions</h3>
@@ -449,7 +581,7 @@ CREATE TABLE submission_files (
               </p>
             </div>
             <span style={{ fontSize: "13px", fontWeight: 600, color: "#3b82f6", background: "#eff6ff", padding: "6px 12px", borderRadius: "20px" }}>
-              Total Submissions: {submissions.length}
+              Total Submissions: 24
             </span>
           </div>
 
@@ -468,64 +600,54 @@ CREATE TABLE submission_files (
               <tbody>
                 {Array.from({length: 30}, (_, i) => {
                   const dayStr = `Day ${i + 1}`;
-                  const sub = submissions.find(s => s.day === dayStr);
+                  // Simulate 24 submitted tasks
+                  const isSubmitted = i < 24;
                   
-                  if (sub) {
-                    return (
-                      <tr key={sub.id}>
-                        <td style={{ padding: "14px 16px" }}>
-                          <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.date}</div>
-                          <div style={{ fontSize: "11px", color: "#9ca3af" }}>{sub.day}</div>
-                        </td>
-                        <td style={{ padding: "14px 16px" }}>
-                          <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.task}</div>
-                          {sub.githubUrl && (
-                            <a href={sub.githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
-                              🔗 GitHub Repo
-                            </a>
-                          )}
-                        </td>
-                        <td style={{ padding: "14px 16px" }}>
-                          <button
-                            className="file-pill file-pill-code"
-                            style={{ padding: "6px 12px", fontSize: "12px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", color: "#1d4ed8", fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
-                            onClick={() => handleOpenFileViewer(sub, 0)}
-                            title="Click to view & inspect submitted files"
-                          >
-                            <span>📁</span>
-                            <span>{sub.files.length} Files</span>
-                            <span style={{ fontSize: "10px", color: "#60a5fa" }}>▶</span>
-                          </button>
-                        </td>
-                        <td style={{ padding: "14px 16px" }}>
-                          <span style={{ fontWeight: 600, color: "#1f2937" }}>{sub.aiScore}</span>
-                        </td>
-                        <td style={{ padding: "14px 16px" }}>
-                          <span className={`badge ${sub.status === 'Approved' ? 'badge-success' : sub.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}`}>
-                            {sub.status}
-                          </span>
-                        </td>
-                        <td style={{ padding: "14px 16px", fontSize: "12px", color: "#4b5563", lineHeight: "1.4" }}>
-                          {sub.feedback}
-                        </td>
-                      </tr>
-                    );
-                  }
+                  const dateStr = `2026-08-${String(i + 1).padStart(2, '0')}`;
+                  const taskName = isSubmitted ? `Daily Task ${i + 1}` : "No Task Scheduled";
+                  const score = isSubmitted ? `${80 + (i % 15)}%` : "-";
+                  const status = isSubmitted ? "Approved" : "Not Submitted";
+                  const feedback = isSubmitted ? "Good implementation. Minor UI issues." : "-";
+                  const githubUrl = isSubmitted ? `https://github.com/johndoe/task-${i+1}` : null;
 
                   return (
-                    <tr key={`empty-${dayStr}`}>
+                    <tr key={dayStr}>
                       <td style={{ padding: "14px 16px" }}>
-                        <div style={{ fontSize: "11px", color: "#9ca3af", fontWeight: 600 }}>{dayStr}</div>
+                        <div style={{ fontWeight: 600, color: "#1f2937" }}>{isSubmitted ? dateStr : "-"}</div>
+                        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{dayStr}</div>
                       </td>
-                      <td style={{ padding: "14px 16px", color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>
-                        No Task Scheduled
-                      </td>
-                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
-                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
                       <td style={{ padding: "14px 16px" }}>
-                        <span className="badge badge-secondary" style={{ backgroundColor: "#f3f4f6", color: "#6b7280" }}>Not Submitted</span>
+                        <div style={{ fontWeight: 600, color: isSubmitted ? "#1f2937" : "#9ca3af", fontStyle: isSubmitted ? "normal" : "italic" }}>{taskName}</div>
+                        {isSubmitted && githubUrl && (
+                          <a href={githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
+                            🔗 GitHub Repo
+                          </a>
+                        )}
                       </td>
-                      <td style={{ padding: "14px 16px", color: "#d1d5db" }}>-</td>
+                      <td style={{ padding: "14px 16px" }}>
+                         {isSubmitted ? (
+                           <div style={{ display: "flex", gap: "8px" }}>
+                             <span className="file-pill" style={{ padding: "6px 12px", fontSize: "12px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", color: "#475569", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                               📄 MCQ_{dayStr.replace(" ", "")}.pdf
+                             </span>
+                           </div>
+                         ) : (
+                           <span style={{ color: "#d1d5db" }}>-</span>
+                         )}
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <span style={{ fontWeight: 600, color: isSubmitted ? "#1f2937" : "#d1d5db" }}>{score}</span>
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        {isSubmitted ? (
+                           <span className={`badge badge-success`}>{status}</span>
+                        ) : (
+                           <span className="badge badge-secondary" style={{ backgroundColor: "#f3f4f6", color: "#6b7280" }}>{status}</span>
+                        )}
+                      </td>
+                      <td style={{ padding: "14px 16px", fontSize: "12px", color: isSubmitted ? "#4b5563" : "#d1d5db", lineHeight: "1.4" }}>
+                        {feedback}
+                      </td>
                     </tr>
                   );
                 })}
@@ -533,6 +655,7 @@ CREATE TABLE submission_files (
             </table>
           </div>
         </div>
+        )}
       </div>
 
       {/* Submitted Files Interactive Viewer Modal */}

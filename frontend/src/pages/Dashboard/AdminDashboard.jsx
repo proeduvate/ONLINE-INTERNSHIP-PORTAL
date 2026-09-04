@@ -10,6 +10,13 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const mockNotifications = [
+    { id: 1, text: "New intern registered", time: "5 mins ago" },
+    { id: 2, text: "New support ticket created", time: "1 hour ago" },
+    { id: 3, text: "Weekly performance report is ready", time: "2 hours ago" }
+  ];
 
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -422,57 +429,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="card" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%" }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>Top Performers</span>
-                  <Award size={18} color="#f59e0b" />
-                </h3>
-                <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", paddingBottom: "16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", padding: "12px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#dbeafe", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "12px", marginRight: "12px" }}>HP</div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: 0, fontSize: "13px", color: "#0f172a", fontWeight: 600 }}>Harry Potter</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#64748b" }}>Artificial Intelligence</p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#10b981" }}>98%</div>
-                      <div style={{ fontSize: "10px", color: "#64748b" }}>Score</div>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", padding: "12px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "12px", marginRight: "12px" }}>HG</div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: 0, fontSize: "13px", color: "#0f172a", fontWeight: 600 }}>Hermione Granger</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#64748b" }}>Data Science</p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#10b981" }}>96%</div>
-                      <div style={{ fontSize: "10px", color: "#64748b" }}>Score</div>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", padding: "12px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#fee2e2", color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "12px", marginRight: "12px" }}>DM</div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: 0, fontSize: "13px", color: "#0f172a", fontWeight: 600 }}>David Miller</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#64748b" }}>Web Development</p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#10b981" }}>92%</div>
-                      <div style={{ fontSize: "10px", color: "#64748b" }}>Score</div>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", padding: "12px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#f3e8ff", color: "#9333ea", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "12px", marginRight: "12px" }}>SC</div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: 0, fontSize: "13px", color: "#0f172a", fontWeight: 600 }}>Sarah Connor</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#64748b" }}>Cyber Security</p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#10b981" }}>89%</div>
-                      <div style={{ fontSize: "10px", color: "#64748b" }}>Score</div>
-                    </div>
-                  </div>
-                </div>
+              <div style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%" }}>
+                <AdminLeaderboard usersList={usersList} isOverview={true} />
               </div>
 
               <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
@@ -1429,8 +1387,40 @@ export default function AdminDashboard() {
           {/* Top right profile & actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <div style={{ position: 'relative', cursor: 'pointer' }}>
-              <Bell size={20} color="#6B7280" />
-              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+              <div onClick={() => setShowNotifications(!showNotifications)}>
+                <Bell size={20} color="#6B7280" />
+                <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+              </div>
+              
+              {showNotifications && (
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  right: 0, 
+                  marginTop: '12px', 
+                  width: '300px', 
+                  backgroundColor: '#fff', 
+                  borderRadius: '8px', 
+                  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)', 
+                  border: '1px solid #e5e7eb',
+                  zIndex: 50 
+                }}>
+                  <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb', fontWeight: 600, color: '#111827' }}>
+                    Notifications
+                  </div>
+                  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    {mockNotifications.map(notif => (
+                      <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid #f3f4f6', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <div style={{ fontSize: '14px', color: '#374151', marginBottom: '4px' }}>{notif.text}</div>
+                        <div style={{ fontSize: '12px', color: '#9ca3af' }}>{notif.time}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ padding: '12px 16px', textAlign: 'center', color: '#2563eb', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderTop: '1px solid #e5e7eb' }}>
+                    View all notifications
+                  </div>
+                </div>
+              )}
             </div>
             <div style={{ height: '32px', width: '1px', backgroundColor: '#e5e7eb' }}></div>
             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>

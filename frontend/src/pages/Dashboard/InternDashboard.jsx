@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
@@ -9,6 +10,13 @@ export default function InternDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const mockNotifications = [
+    { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
+    { id: 2, text: "Mentor replied to your ticket", time: "5 hours ago" },
+    { id: 3, text: "New bonus airdrop available", time: "1 day ago" }
+  ];
 
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
@@ -234,12 +242,7 @@ export default function InternDashboard() {
     { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
     { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
     { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: i + 11,
-      text: `Mock Question ${i + 11} for React assessment.`,
-      options: [{ label: "Option A", val: "A" }, { label: "Option B", val: "B" }, { label: "Option C", val: "C" }, { label: "Option D", val: "D" }]
-    }))
+    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] }
   ];
 
   // Coding task state
@@ -1073,16 +1076,18 @@ export default function InternDashboard() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
             {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}>
+              <Menu size={24} />
+            </button>
           </div>
           <ul>
             {[
-              { id: "Overview", icon: "📊" },
-              { id: "Learning", icon: "📚" },
-              { id: "Daily Scenario", icon: "🧩" },
-              { id: "Tickets", icon: "🎫" },
-              { id: "Chat with Mentor", icon: "💬" },
-              { id: "Bonus Airdrops", icon: "🎁" }
+              { id: "Overview", icon: <LayoutDashboard size={20} /> },
+              { id: "Learning", icon: <BookOpen size={20} /> },
+              { id: "Daily Scenario", icon: <Activity size={20} /> },
+              { id: "Tickets", icon: <Ticket size={20} /> },
+              { id: "Chat with Mentor", icon: <MessageSquare size={20} /> },
+              { id: "Bonus Airdrops", icon: <Gift size={20} /> }
             ].map((tab) => (
               <li
                 key={tab.id}
@@ -1096,8 +1101,9 @@ export default function InternDashboard() {
             ))}
           </ul>
         </div>
-        <button className="sidebar-logout" onClick={handleLogout}>
-          {isSidebarOpen ? "Logout" : "🚪"}
+        <button className="sidebar-logout" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: isSidebarOpen ? 'flex-start' : 'center' }}>
+          <LogOut size={20} />
+          {isSidebarOpen && "Logout"}
         </button>
       </div>
 
@@ -1109,6 +1115,42 @@ export default function InternDashboard() {
             <h2>{isMeetingActive && !isMeetingMinimized ? "Live Meeting Room" : activeTab}</h2>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ position: 'relative', cursor: 'pointer' }}>
+              <div onClick={() => setShowNotifications(!showNotifications)}>
+                <Bell size={20} color="var(--text-gray)" />
+                <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+              </div>
+              
+              {showNotifications && (
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  right: 0, 
+                  marginTop: '12px', 
+                  width: '300px', 
+                  backgroundColor: 'var(--card-bg)', 
+                  borderRadius: '8px', 
+                  boxShadow: 'var(--shadow-md)', 
+                  border: '1px solid var(--border-color)',
+                  zIndex: 50 
+                }}>
+                  <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', fontWeight: 600, color: 'var(--text-dark)' }}>
+                    Notifications
+                  </div>
+                  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    {mockNotifications.map(notif => (
+                      <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', cursor: 'pointer', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <div style={{ fontSize: '14px', color: 'var(--text-color)', marginBottom: '4px' }}>{notif.text}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{notif.time}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ padding: '12px 16px', textAlign: 'center', color: 'var(--primary-color)', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderTop: '1px solid var(--border-color)' }}>
+                    View all notifications
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Domain Insight Toggle Button */}
             <button

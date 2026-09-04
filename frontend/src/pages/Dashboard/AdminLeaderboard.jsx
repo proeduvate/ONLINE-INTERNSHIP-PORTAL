@@ -1,20 +1,30 @@
 import React, { useState, useMemo } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
 
-export default function AdminLeaderboard({ usersList }) {
+export default function AdminLeaderboard({ usersList, isOverview = false }) {
   const [timeFilter, setTimeFilter] = useState('All-Time');
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [batchFilter, setBatchFilter] = useState('All Batches');
   const [currentPage, setCurrentPage] = useState(1);
 
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [timeFilter, categoryFilter]);
+  }, [timeFilter, batchFilter]);
 
   const interns = usersList.filter(user => user.role === 'Intern');
 
+  const batches = useMemo(() => {
+    const uniqueBatches = new Set(interns.map(i => i.college).filter(Boolean));
+    return ['All Batches', ...Array.from(uniqueBatches)];
+  }, [interns]);
+
   // Generate mock leaderboard data
   const leaderboardData = useMemo(() => {
-    let data = interns.map(intern => {
+    let filteredInterns = interns;
+    if (batchFilter !== 'All Batches') {
+      filteredInterns = filteredInterns.filter(i => i.college === batchFilter);
+    }
+
+    let data = filteredInterns.map(intern => {
       // Generate some dummy points based on ID
       let seed = 0;
       for (let i = 0; i < intern.id.length; i++) {
@@ -26,10 +36,6 @@ export default function AdminLeaderboard({ usersList }) {
       // Adjust based on time
       if (timeFilter === 'Weekly') basePoints = Math.floor(basePoints / 4);
       if (timeFilter === 'Monthly') basePoints = Math.floor(basePoints / 2);
-      
-      // Adjust based on category to make it look realistic
-      if (categoryFilter === 'Airdrops') basePoints = Math.floor(basePoints * 0.3);
-      if (categoryFilter === 'Daily Scenario') basePoints = Math.floor(basePoints * 0.7);
       
       return {
         ...intern,
@@ -45,9 +51,9 @@ export default function AdminLeaderboard({ usersList }) {
       ...item,
       rank: index + 1
     }));
-  }, [interns, timeFilter, categoryFilter]);
+  }, [interns, timeFilter, batchFilter]);
 
-  const itemsPerPage = 15;
+  const itemsPerPage = isOverview ? 5 : 15;
   const totalPages = Math.ceil(leaderboardData.length / itemsPerPage);
   const paginatedData = leaderboardData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -59,33 +65,34 @@ export default function AdminLeaderboard({ usersList }) {
   };
 
   return (
-    <div style={{ padding: '0px 20px 20px 20px', height: 'calc(100vh - 80px)', boxSizing: 'border-box' }}>
-      <div style={{ backgroundColor: '#fff', borderRadius: '8px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style={isOverview ? { height: '100%', boxSizing: 'border-box' } : { padding: '0px 20px 20px 20px', height: 'calc(100vh - 80px)', boxSizing: 'border-box' }}>
+      <div style={isOverview ? { display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' } : { backgroundColor: '#fff', borderRadius: '8px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', height: '100%' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px', flexShrink: 0 }}>
           <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1f2937', margin: 0 }}>Global Leaderboard</h3>
           
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              value={batchFilter}
+              onChange={(e) => setBatchFilter(e.target.value)}
               style={{
                 padding: '6px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                border: '1px solid #e5e7eb',
                 fontSize: '14px',
+                fontWeight: '500',
                 color: '#374151',
-                outline: 'none',
-                backgroundColor: '#fff'
+                backgroundColor: '#fff',
+                cursor: 'pointer',
+                outline: 'none'
               }}
             >
-              <option value="All">All Categories</option>
-              <option value="Airdrops">Airdrops</option>
-              <option value="Daily Scenario">Daily Scenario</option>
+              {batches.map(b => (
+                <option key={b} value={b}>{b}</option>
+              ))}
             </select>
-
             <div style={{ display: 'flex', backgroundColor: '#f3f4f6', borderRadius: '8px', padding: '4px' }}>
-              {['Weekly', 'Monthly', 'All-Time'].map(filter => (
+              {['Weekly', 'All-Time'].map(filter => (
                 <button
                   key={filter}
                   onClick={() => setTimeFilter(filter)}

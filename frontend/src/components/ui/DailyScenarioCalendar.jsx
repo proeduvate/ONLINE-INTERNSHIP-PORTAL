@@ -5,16 +5,15 @@ import { scenarioData } from './DailyScenario';
 const DailyScenarioCalendar = ({ onStartScenario }) => {
   const [selectedDay, setSelectedDay] = useState(null);
 
-  // Mock data for 30 days
+  // Explicit mock data to keep the scenario fixed and consistent
   const currentDay = 5;
   const attendedDays = [1, 4, 6, 8, 9];
-  const missedDays = [2, 7, 10];
+  const missedDays = [2, 3, 7, 10]; // Day 3 added explicitly
 
   const getDayStatus = (day) => {
     if (day === currentDay) return 'current';
     if (attendedDays.includes(day)) return 'completed';
     if (missedDays.includes(day)) return 'missed';
-    if (day < currentDay) return 'missed'; // assuming past days not attended are missed
     return 'upcoming';
   };
 
