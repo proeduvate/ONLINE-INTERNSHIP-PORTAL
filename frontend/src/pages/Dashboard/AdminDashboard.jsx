@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal } from "lucide-react";
+import AdminAnalytics from "./AdminAnalytics";
+import AdminAirdropDetails from "./AdminAirdropDetails";
+import AdminLeaderboard from "./AdminLeaderboard";
 import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
@@ -10,6 +13,7 @@ export default function AdminDashboard() {
 
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
+  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
 
   useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
@@ -347,6 +351,10 @@ export default function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "Analytics":
+        return <AdminAnalytics usersList={usersList} />;
+      case "Leaderboard":
+        return <AdminLeaderboard usersList={usersList} />;
       case "Overview":
         return (
           <>
@@ -1292,6 +1300,9 @@ export default function AdminDashboard() {
         );
 
       case "Bonus Airdrops":
+        if (selectedAirdrop) {
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
+        }
         return (
           <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
 
@@ -1315,7 +1326,13 @@ export default function AdminDashboard() {
                       </tr>
                     ) : (
                       [...bonusAirdrops].reverse().map(airdrop => (
-                        <tr key={airdrop.id}>
+                        <tr 
+                          key={airdrop.id} 
+                          onClick={() => setSelectedAirdrop(airdrop)} 
+                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
                           <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
                           <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
@@ -1334,7 +1351,10 @@ export default function AdminDashboard() {
                               <button 
                                 className="btn btn-primary" 
                                 style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
-                                onClick={() => handleApproveAirdrop(airdrop.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleApproveAirdrop(airdrop.id);
+                                }}
                               >
                                 Approve
                               </button>
@@ -1357,12 +1377,14 @@ export default function AdminDashboard() {
 
   const navItems = [
     { id: "Overview", icon: <LayoutDashboard size={18} /> },
+    { id: "Analytics", icon: <TrendingUp size={18} /> },
     { id: "Onboarding", icon: <ClipboardCheck size={18} /> },
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
     { id: "Credentials", icon: <Award size={18} /> },
     { id: "Tickets", icon: <LifeBuoy size={18} /> },
-    { id: "Bonus Airdrops", icon: <Gift size={18} /> }
+    { id: "Bonus Airdrops", icon: <Gift size={18} /> },
+    { id: "Leaderboard", icon: <Medal size={18} /> }
   ];
 
   return (
@@ -1379,7 +1401,10 @@ export default function AdminDashboard() {
               <li
                 key={item.id}
                 className={activeTab === item.id ? "active" : ""}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  if (item.id === "Bonus Airdrops") setSelectedAirdrop(null);
+                }}
                 title={!isSidebarOpen ? item.id : ""}
               >
                 <span>{item.icon}</span>
