@@ -18,7 +18,8 @@ def get_domain_facts(
     """
     Get an unseen fact for the current intern's domain.
     """
-    if current_user.role != models.UserRole.INTERN:
+    print(f"DEBUG /facts: current_user.email={current_user.email}, role={current_user.role}, type={type(current_user.role)}")
+    if current_user.role != models.UserRole.INTERN and getattr(current_user.role, "value", current_user.role) != "intern":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only interns can view domain facts."

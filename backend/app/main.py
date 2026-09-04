@@ -105,8 +105,11 @@ finally:
 
 if needs_seed:
     print("Database is empty! Auto-seeding to ensure seamless network fallback...")
-    import seed
-    seed.seed()
+    try:
+        from scripts.utils import seed
+        seed.seed()
+    except Exception as e:
+        print("Failed to auto-seed:", e)
 
 # Include modular routers for new features
 from app.api.v1.endpoints.analytics import router as analytics_router
@@ -440,7 +443,8 @@ def get_intern_tasks_with_unlock_status(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    if current_user.role != models.UserRole.INTERN:
+    print(f"DEBUG /tasks/intern: current_user.email={current_user.email}, role={current_user.role}, type={type(current_user.role)}")
+    if current_user.role != models.UserRole.INTERN and getattr(current_user.role, "value", current_user.role) != "intern":
         raise HTTPException(status_code=403, detail="Intern role required")
         
     if current_user.domain_id is None:

@@ -39,7 +39,7 @@ def record_daily_question_result(
             detail="Access Denied: Only interns can record daily question results"
         )
 
-    final_score = round((data.mcq_score * 0.40) + (data.coding_score * 0.60), 2)
+    final_score = data.mcq_score + data.coding_score
 
     # Check if a result already exists for this intern and date
     existing_result = db.query(models.DailyQuestionResult).filter(
@@ -47,17 +47,22 @@ def record_daily_question_result(
         models.DailyQuestionResult.date == data.date
     ).first()
 
+    points_to_award = 0
     if existing_result:
+        # Calculate how many NEW points they earned
+        diff = final_score - existing_result.final_score
+        if diff > 0:
+            points_to_award = int(diff)
+            
         # Update existing record
         existing_result.question_id = data.question_id
         existing_result.mcq_score = data.mcq_score
         existing_result.coding_score = data.coding_score
         existing_result.final_score = final_score
         existing_result.attempted_at = datetime.utcnow()
-        db.commit()
-        db.refresh(existing_result)
-        return existing_result
+        result_obj = existing_result
     else:
+        points_to_award = int(final_score)
         # Create new record
         new_result = models.DailyQuestionResult(
             intern_id=current_user.id,
@@ -69,9 +74,23 @@ def record_daily_question_result(
             attempted_at=datetime.utcnow()
         )
         db.add(new_result)
+        result_obj = new_result
+
+    db.commit()
+    db.refresh(result_obj)
+
+    if points_to_award > 0:
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=points_to_award,
+            source_type="DAILY_ASSESSMENT",
+            source_id=result_obj.id,
+            reason=f"Daily Assessment Points for {data.date}"
+        )
+        db.add(pt)
         db.commit()
-        db.refresh(new_result)
-        return new_result
+
+    return result_obj
 
 
 

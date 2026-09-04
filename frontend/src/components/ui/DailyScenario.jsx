@@ -395,7 +395,7 @@ export const scenarioData = [
   })
 ];
 
-export default function DailyScenario({ onBackToDashboard, internId = 1 }) {
+export default function DailyScenario({ onBackToDashboard, onComplete, internId = 1 }) {
   // State for user progress and selected day
   const [selectedDay, setSelectedDay] = useState(1);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
@@ -495,6 +495,7 @@ export default function DailyScenario({ onBackToDashboard, internId = 1 }) {
           explanation: result.consequence + (result.feedback ? "\n\n" + result.feedback : ""),
           nextScenarioId: result.next_scenario
         });
+        if (onComplete) onComplete();
       } else {
         alert("Error submitting decision");
       }
@@ -551,14 +552,6 @@ export default function DailyScenario({ onBackToDashboard, internId = 1 }) {
             <span style={{ fontFamily: "monospace", fontSize: "16px", fontWeight: 800, color: "var(--primary-dark)" }}>{getTimeUntilMidnight()}</span>
           </div>
 
-          <div>
-            <button
-              onClick={() => setIsDemoBypass(true)}
-              style={{ padding: "12px 24px", backgroundColor: "#5b5bd6", color: "#ffffff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "14px", cursor: "pointer", boxShadow: "0 4px 10px rgba(91, 91, 214, 0.25)" }}
-            >
-              Preview Day {selectedDay} Scenario (Demo Mode) →
-            </button>
-          </div>
         </div>
       ) : (
         /* Unlocked Day Main Card matching attached images 2 & 3 */
@@ -749,23 +742,6 @@ export default function DailyScenario({ onBackToDashboard, internId = 1 }) {
                     Return to Dashboard
                   </button>
 
-                  {selectedDay < 30 && (
-                    <button
-                      onClick={() => handleSelectDay(selectedDay + 1)}
-                      style={{
-                        padding: "12px 24px",
-                        borderRadius: "8px",
-                        backgroundColor: "#ffffff",
-                        color: "#4f46e5",
-                        border: "1px solid #6366f1",
-                        fontSize: "14px",
-                        fontWeight: 700,
-                        cursor: "pointer"
-                      }}
-                    >
-                      Next Day Scenario →
-                    </button>
-                  )}
                 </div>
               </div>
             </div>

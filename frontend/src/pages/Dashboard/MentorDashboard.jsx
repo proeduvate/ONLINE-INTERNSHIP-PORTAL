@@ -1485,7 +1485,7 @@ export default function MentorDashboard() {
                         </div>
 
                         <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "16px" }}>
                           {/* Fixed Start Time Option */}
                           <div 
                             style={{ 
@@ -1510,33 +1510,6 @@ export default function MentorDashboard() {
                             <div>
                               <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Fixed Start Time</div>
                               <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>All eligible interns start at the same time</div>
-                            </div>
-                          </div>
-
-                          {/* Flexible Start Option */}
-                          <div 
-                            style={{ 
-                              border: newAirdrop.startMode === "Flexible Start" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                              borderRadius: "10px",
-                              padding: "12px 16px",
-                              cursor: "pointer",
-                              display: "flex",
-                              gap: "12px",
-                              alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "#ffffff",
-                              transition: "all 0.2s"
-                            }}
-                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
-                          >
-                            <input 
-                              type="radio" 
-                              checked={newAirdrop.startMode === "Flexible Start"} 
-                              readOnly 
-                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Flexible Start</div>
-                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>Interns can start anytime in the window</div>
                             </div>
                           </div>
                         </div>

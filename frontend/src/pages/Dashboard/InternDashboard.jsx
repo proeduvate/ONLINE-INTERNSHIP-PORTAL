@@ -251,9 +251,10 @@ export default function InternDashboard() {
           setCurriculumData(mappedTasks);
           // Auto-set current day based on progress (first non-completed task)
           const activeTask = mappedTasks.find(t => t.status !== "completed") || mappedTasks[mappedTasks.length - 1];
-          if (activeTask) {
-            setCurrentDay(activeTask.day);
-          }
+          // For demo purposes, we lock it to Day 1 initially
+          // if (activeTask) {
+          //   setCurrentDay(activeTask.day);
+          // }
         }
       }
     } catch (e) {
@@ -291,6 +292,7 @@ export default function InternDashboard() {
   const [assessmentView, setAssessmentView] = useState("selection"); // selection, mcq, coding
   const [mcqDone, setMcqDone] = useState(false);
   const [codingDone, setCodingDone] = useState(false);
+  const [scenarioDone, setScenarioDone] = useState(false);
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -386,12 +388,7 @@ export default function InternDashboard() {
     { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
     { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
     { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: i + 11,
-      text: `Mock Question ${i + 11} for React assessment.`,
-      options: [{ label: "Option A", val: "A" }, { label: "Option B", val: "B" }, { label: "Option C", val: "C" }, { label: "Option D", val: "D" }]
-    }))
+    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] }
   ];
 
   // Coding task state
@@ -409,10 +406,10 @@ export default function InternDashboard() {
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
-    const score = Object.keys(answers).length * 50; // simple score
+    const score = Object.keys(answers).length; // 1 point per answer
     setMcqGrade(score);
     setMcqDone(true);
-    alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
+    alert(`MCQ Test submitted! Score: ${score}/10. Part A completed.`);
     setAssessmentView("selection");
   };
 
@@ -445,7 +442,7 @@ export default function InternDashboard() {
     // Simulate AI compilation & scoring
     setTimeout(() => {
       setEvaluating(false);
-      const randomScore = Math.floor(80 + Math.random() * 20);
+      const randomScore = Math.floor(6 + Math.random() * 5); // Score out of 10
       setAiScore(randomScore);
       setEvalResult({
         score: randomScore,
@@ -455,13 +452,28 @@ export default function InternDashboard() {
         performance: 95,
         suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
       });
-      alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
+      alert(`Coding assessment submitted! Score: ${randomScore}/10. Part B completed.`);
       setCodingDone(true);
       setAssessmentView("selection");
     }, 2000);
   };
 
-  const handleCompleteDay = () => {
+  const handleCompleteDay = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const mcq_score = mcqGrade || 0;
+      const coding_score = aiScore || 0;
+      const date = new Date().toISOString().split('T')[0];
+
+      await fetch("http://localhost:8000/analytics/daily-questions/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({ question_id: currentDay, mcq_score, coding_score, date })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+
     alert(`Day ${currentDay} complete! Day ${currentDay + 1} will unlock at 12:00 AM.`);
     setIsDayLockedUntilMidnight(true);
     if (currentDay < curriculumData.length) {
@@ -470,6 +482,7 @@ export default function InternDashboard() {
     // Reset test states
     setMcqDone(false);
     setCodingDone(false);
+    setScenarioDone(false);
     setMcqStarted(false);
     setMcqSubmitted(false);
     setAnswers({});
@@ -707,7 +720,6 @@ export default function InternDashboard() {
               <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🔒</p>
               <h3>Day {currentDay} is Locked</h3>
               <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
-              <button className="btn btn-secondary" onClick={() => setIsDayLockedUntilMidnight(false)}>Bypass / Unlock Now (Demo Mode)</button>
             </div>
           );
         }
@@ -747,7 +759,8 @@ export default function InternDashboard() {
                       📋 Rules and Conditions for Assessment
                     </h4>
                     <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6" }}>
-                      <li><b>Completion:</b> Both Part A (MCQ) and Part B (Coding) must be completed to unlock the next day's module.</li>
+                      <li><b>Completion:</b> Part A (MCQ), Part B (Coding), AND the <b>Daily Scenario</b> must be completed to unlock the next day's module.</li>
+                      <li><b>Daily Scenario Status:</b> {scenarioDone ? <span style={{ color: "var(--success-color)", fontWeight: "bold" }}>✓ Completed</span> : <span style={{ color: "var(--danger-color)", fontWeight: "bold" }}>❌ Pending (Complete in Overview tab)</span>}</li>
                       <li><b>Timing:</b> The MCQ section is strictly timed. The timer cannot be paused once started.</li>
                       <li><b>Navigation:</b> During the MCQ test, you cannot return to the selection menu without submitting your answers.</li>
                       <li><b>Integrity:</b> Do not refresh the page during an active assessment, as this may result in automatic submission.</li>
@@ -755,7 +768,7 @@ export default function InternDashboard() {
                     </ul>
                   </div>
 
-                  {mcqDone && codingDone && (
+                  {mcqDone && codingDone && scenarioDone && (
                     <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
                       <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "var(--success-color)", borderColor: "var(--success-color)", padding: "12px 32px", fontSize: "16px" }}>Complete & Unlock Next Day</button>
                     </div>
@@ -1139,7 +1152,7 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} internId={localStorage.getItem("user_id") || 1} />;
+        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} onComplete={() => setScenarioDone(true)} internId={localStorage.getItem("user_id") || 1} />;
 
       case "Bonus Airdrops":
         const activeDrops = bonusAirdrops.filter(a => {
