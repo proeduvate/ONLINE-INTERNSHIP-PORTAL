@@ -65,7 +65,7 @@ export default function MeetingArea({
 
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const backendHost = API_BASE.replace(/^https?:\/\//, '');
-    const clientId = user?.id || Math.random().toString(36).substring(7);
+    const clientId = `${user?.id || 'user'}_${Math.random().toString(36).substring(2, 9)}`;
     
     wsRef.current = new WebSocket(`${wsProtocol}//${backendHost}/api/meetings/ws/${room.id}/${clientId}`);
     
@@ -116,18 +116,30 @@ export default function MeetingArea({
     };
   }, [room?.id]);
 
-  const createPeerConnection = (peerId) => {
+      const createPeerConnection = (peerId) => {
     const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => pc.addTrack(track, localStreamRef.current));
     }
     pc.onicecandidate = (event) => {
-      if (event.candidate) sendWsMessage({ type: 'webrtc', candidate: event.candidate });
+      if (event.candidate) sendWsMessage({ type: 'webrtc', target: peerId, candidate: event.candidate });
     };
     pc.ontrack = (event) => setPeerStreams(prev => ({ ...prev, [peerId]: event.streams[0] }));
+    
+    // Automatically send offer when negotiation is needed
+    pc.onnegotiationneeded = async () => {
+      try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        sendWsMessage({ type: 'webrtc', target: peerId, sdp: pc.localDescription });
+      } catch (err) {
+        console.error("Negotiation error:", err);
+      }
+    };
+    
     peerConnectionsRef.current[peerId] = pc;
     return pc;
-  };
+  };;
 
   const handleWebRTCSignal = async (peerId, signal) => {
     let pc = peerConnectionsRef.current[peerId];

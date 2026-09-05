@@ -1,10 +1,86 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../../api/axios";
+import { Award, Clock, Download } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 
+
+
+export function InternCertificateCard({ user }) {
+  const [cert, setCert] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Fetch if they already requested it
+    api.get("/api/certificates/me").then(res => {
+      setCert(res.data);
+    }).catch(err => {
+      // 404 means no certificate requested yet
+    });
+  }, []);
+
+  const handleRequestCertificate = async () => {
+    try {
+      setLoading(true);
+      const res = await api.post("/api/certificates/request", {
+        duration: "3 Months", 
+        achievement: "Top 10% Performer",
+        grade: "A",
+        final_score: 95
+      });
+      setCert(res.data);
+      alert("Certificate requested successfully! Awaiting Admin approval.");
+    } catch (err) {
+      alert(err.response?.data?.detail || "Failed to request certificate.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="card" style={{ marginTop: "24px", borderColor: cert?.status === "APPROVED" ? "#10b981" : "#e2e8f0" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+        <Award size={20} color={cert?.status === "APPROVED" ? "#10b981" : "#6366f1"} />
+        <h3 style={{ margin: 0 }}>Internship Certificate</h3>
+      </div>
+      
+      {cert ? (
+        <div>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "16px" }}>
+            Status: <strong style={{ color: cert.status === "APPROVED" ? "#10b981" : "#f59e0b" }}>{cert.status}</strong>
+          </p>
+          {cert.status === "APPROVED" && cert.pdf_path && (
+            <a href={`http://127.0.0.1:8000${cert.pdf_path}`} target="_blank" rel="noopener noreferrer">
+              <button className="btn btn-primary" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Download size={16} /> Download PDF
+              </button>
+            </a>
+          )}
+          {cert.status === "PENDING_ADMIN_APPROVAL" && (
+            <button className="btn btn-primary" disabled style={{ opacity: 0.7 }}>
+              Awaiting Approval...
+            </button>
+          )}
+        </div>
+      ) : (
+        <div>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "16px" }}>
+            You have completed all program requirements. You can now request your official certificate of completion.
+          </p>
+          <button 
+            onClick={handleRequestCertificate} 
+            disabled={loading}
+            className="btn btn-primary"
+          >
+            {loading ? "Requesting..." : "Request Certificate"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -182,10 +258,33 @@ export default function InternDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mock State
-  const progress = 40; // 12 of 30 days
-  const [aiScore, setAiScore] = useState(88);
-  const attendancePercent = 90;
+  // Dynamic Stats State
+  const [progress, setProgress] = useState(0);
+  const [aiScore, setAiScore] = useState(0);
+  const [attendancePercent, setAttendancePercent] = useState(0);
+  const [daysCompleted, setDaysCompleted] = useState(0);
+  const [totalDays, setTotalDays] = useState(30);
+  const [daysPresent, setDaysPresent] = useState(0);
+  const [daysAbsent, setDaysAbsent] = useState(0);
+  
+  useEffect(() => {
+    api.get("/api/intern/stats")
+      .then(res => {
+        if (!res.data.error) {
+          setProgress(res.data.progressPercent);
+          setAiScore(res.data.aiScore);
+          setAttendancePercent(res.data.attendancePercent);
+          setDaysCompleted(res.data.daysCompleted);
+          setTotalDays(res.data.totalDays);
+          setDaysPresent(res.data.daysPresent);
+          setDaysAbsent(res.data.daysAbsent);
+          if (res.data.currentDay > 1) {
+             setCurrentDay(res.data.currentDay);
+          }
+        }
+      })
+      .catch(err => console.error("Could not fetch intern stats:", err));
+  }, []);
 
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
@@ -265,10 +364,84 @@ export default function InternDashboard() {
   const [evalResult, setEvalResult] = useState(null);
 
   // Chat message state
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "Mentor", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
-  ]);
+  
+  
+
+  
+  // Global chat history from localstorage
+  const getInitialChat = () => {
+    const saved = localStorage.getItem("global_chat_history");
+    if (saved) return JSON.parse(saved);
+    return [
+      { sender: "Mentor", recipientId: "INT001", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
+    ];
+  };
+
+  const [chatMessages, setChatMessages] = useState(getInitialChat());
+
+  // Listen for cross-tab updates
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "global_chat_history" && e.newValue) {
+        setChatMessages(JSON.parse(e.newValue));
+      }
+      if (e.key === "app_bonus_airdrops" && e.newValue) {
+        const mockData = [
+          { id: 101, title: "React Context API Quick Fire", question: "In one sentence, explain when to use Context API vs Redux?", points: 50, timeLimit: 60, status: "Completed" }
+        ];
+        setBonusAirdrops([...JSON.parse(e.newValue), ...mockData]);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const [inputMsg, setInputMsg] = useState("");
+
+  const [userId, setUserId] = useState(null);
+  const ws = useRef(null);
+
+  useEffect(() => {
+    api.get("/api/auth/me")
+      .then(res => setUserId(res.data.id))
+      .catch(err => console.error("Could not fetch user ID:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const wsUri = baseUri.replace(/^http/, 'ws') + `/ws/chat/${userId}`;
+    
+    ws.current = new WebSocket(wsUri);
+    ws.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setChatMessages(prev => [...prev, {
+        sender: "Mentor", 
+        text: msg.content,
+        time: new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    };
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
+  }, [userId]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!inputMsg.trim()) return;
+
+    
+    const newMsg = { sender: "Intern", internId: "INT001", text: inputMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const updatedMessages = [...chatMessages, newMsg];
+    setChatMessages(updatedMessages);
+    localStorage.setItem("global_chat_history", JSON.stringify(updatedMessages));
+
+    setInputMsg("");
+  };
+
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
@@ -343,12 +516,7 @@ export default function InternDashboard() {
     setAssessmentView("selection");
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: inputMsg, time: "Just now" }]);
-    setInputMsg("");
-  };
+
 
   const renderContent = () => {
     switch (activeTab) {
@@ -360,18 +528,18 @@ export default function InternDashboard() {
             <div className="grid">
               <div className="stat-card">
                 <span className="stat-title">Current Milestone</span>
-                <span className="stat-value">Day 12</span>
+                <span className="stat-value">Day {currentDay}</span>
                 <span className="stat-desc">React Framework Basics</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Course Progress</span>
                 <span className="stat-value">{progress}%</span>
-                <span className="stat-desc">12 of 30 days completed</span>
+                <span className="stat-desc">{daysCompleted} of {totalDays} days completed</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Attendance Rate</span>
                 <span className="stat-value">{attendancePercent}%</span>
-                <span className="stat-desc">12 Days Present / 1 Day Absent</span>
+                <span className="stat-desc">{daysPresent} Days Present / {daysAbsent} Day{daysAbsent !== 1 ? "s" : ""} Absent</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">AI Evaluation Average</span>
@@ -379,6 +547,8 @@ export default function InternDashboard() {
                 <span className="stat-desc">Last updated 1 hour ago</span>
               </div>
             </div>
+              <InternCertificateCard />
+
 
             {/* Removed Attendance Calendar & Portfolio summary as requested */}
             
@@ -925,23 +1095,23 @@ export default function InternDashboard() {
 
             {/* Chat Body */}
             <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
-              {chatMessages.map((msg, i) => (
-                <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
+              {chatMessages.filter(m => m.internId === "INT001" || m.recipientId === "INT001").map((msg, i) => (
+                <div key={i} style={{ alignSelf: msg.sender === "Intern" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
                   <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
-                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
+                    backgroundColor: msg.sender === "Intern" ? "var(--primary-dark)" : "var(--card-bg)", 
+                    color: msg.sender === "Intern" ? "var(--card-bg)" : "var(--text-darker)", 
                     padding: "10px 14px 22px 14px", 
                     borderRadius: "12px", 
-                    borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
-                    borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
+                    borderBottomRightRadius: msg.sender === "Intern" ? "0" : "12px",
+                    borderBottomLeftRadius: msg.sender !== "Intern" ? "0" : "12px",
                     fontSize: "14px", 
                     boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
                     wordBreak: "break-word",
-                    border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
+                    border: msg.sender !== "Intern" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
-                      {msg.time} {msg.sender === "You" && "✓✓"}
+                    <span style={{ fontSize: "10px", color: msg.sender === "Intern" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
+                      {msg.time} {msg.sender === "Intern" && "✓✓"}
                     </span>
                   </div>
                 </div>

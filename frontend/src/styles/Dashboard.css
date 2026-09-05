@@ -1,8 +1,8 @@
 /* Layout Container */
 .container {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  
   background-color: var(--background-color, #f3f4f6);
 }
 
@@ -12,7 +12,9 @@
   background-color: var(--secondary-color, #ffffff);
   border-right: 1px solid var(--border-color, #e2e8f0);
   padding: 24px;
-  position: relative;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -95,16 +97,16 @@
 .main {
   padding: 24px 40px;
   flex: 1;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  
   background-color: var(--background-color, #f3f4f6);
 }
 
 .main-content-scroll {
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
   padding-bottom: 0px;
   display: flex;
   flex-direction: column;
@@ -117,11 +119,11 @@
   }
   .main {
     height: auto;
-    min-height: 100vh;
-    overflow-y: auto;
+    min-min-height: 100vh;
+    
   }
   .main-content-scroll {
-    overflow-y: auto;
+    overflow: visible;
     flex: 1;
   }
 }
@@ -1151,4 +1153,4 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
+

@@ -459,6 +459,127 @@ export default function MentorDashboard() {
           </div>
         );
 
+      case "Chat with Interns":
+        return (
+          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "row", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+            {/* Left Pane - Intern List */}
+            <div style={{ width: "300px", borderRight: "1px solid var(--border-color)", backgroundColor: "var(--card-bg)", display: "flex", flexDirection: "column" }}>
+              <div style={{ padding: "16px", borderBottom: "1px solid var(--border-color)", backgroundColor: "var(--bg-light)" }}>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-darker)" }}>Assigned Interns</h3>
+              </div>
+              <div style={{ flex: 1, overflowY: "auto" }}>
+                {assignedInterns.map(intern => (
+                  <div 
+                    key={intern.id} 
+                    onClick={() => setSelectedInternForChat(intern)}
+                    style={{ 
+                      padding: "16px", 
+                      borderBottom: "1px solid var(--border-color)", 
+                      cursor: "pointer", 
+                      backgroundColor: selectedInternForChat?.id === intern.id ? "var(--bg-blue-light)" : "transparent",
+                      transition: "background 0.2s"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-light)", color: "var(--primary-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold" }}>
+                        {intern.name.split(" ").map(n => n[0]).join("")}
+                      </div>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)" }}>{intern.name}</h4>
+                        <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)" }}>{intern.batch}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Pane - Chat Window */}
+            {selectedInternForChat ? (
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "var(--bg-light)" }}>
+                <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
+                    {selectedInternForChat.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "16px", color: "var(--card-bg)", fontWeight: 600 }}>{selectedInternForChat.name}</h3>
+                    <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Intern ? Online</p>
+                  </div>
+                </div>
+
+                <div style={{ flex: 1, padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {chatMessages.filter(m => m.internId === selectedInternForChat.id || m.recipientId === selectedInternForChat.id).length === 0 ? (
+                    <div style={{ margin: "auto", color: "var(--text-muted)", fontSize: "14px", textAlign: "center" }}>
+                      <p>No messages yet.</p>
+                      <p>Start the conversation with {selectedInternForChat.name}.</p>
+                    </div>
+                  ) : (
+                    chatMessages
+                      .filter(m => m.internId === selectedInternForChat.id || m.recipientId === selectedInternForChat.id)
+                      .map((msg, i) => (
+                      <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
+                        <div style={{ 
+                          backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
+                          color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
+                          padding: "10px 14px 22px 14px", 
+                          borderRadius: "12px", 
+                          borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
+                          borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
+                          fontSize: "14px", 
+                          boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
+                          wordBreak: "break-word",
+                          border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
+                        }}>
+                          {msg.text}
+                          <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
+                            {msg.time} {msg.sender === "You" && "??"}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!currentMessage.trim()) return;
+                  
+                  const newMsg = {
+                    sender: "You",
+                    text: currentMessage,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    recipientId: selectedInternForChat.id
+                  };
+                  
+                  setChatMessages(prev => [...prev, newMsg]);
+                  
+                  // In a real app we would send this over websocket:
+                  // ws.current.send(JSON.stringify({ recipient_id: selectedInternForChat.id, message: currentMessage }));
+                  
+                  setCurrentMessage("");
+                }} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--card-bg)", margin: 0, borderTop: "1px solid var(--border-color)" }}>
+                  <input 
+                    type="text" 
+                    placeholder="Type your message..." 
+                    value={currentMessage} 
+                    onChange={(e) => setCurrentMessage(e.target.value)} 
+                    style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
+                  />
+                  <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "var(--bg-light)", color: "var(--text-muted)" }}>
+                Select an intern to start chatting
+              </div>
+            )}
+          </div>
+        );
+
       case "Programs":
         return (
           <div className="card">
@@ -689,12 +810,7 @@ export default function MentorDashboard() {
         <div>
           <h2>Mentor Panel</h2>
           <ul>
-            {[
-              "Overview",
-              "Cohort",
-              "Evaluations",
-              "Programs"
-            ].map((tab) => (
+            {["Overview", "Cohort", "Evaluations", "Programs", "Chat with Interns"].map((tab) => (
               <li
                 key={tab}
                 className={activeTab === tab ? "active" : ""}

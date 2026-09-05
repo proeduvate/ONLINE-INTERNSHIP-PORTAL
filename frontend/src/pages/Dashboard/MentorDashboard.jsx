@@ -1,10 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef } from 'react';
+import apiClient from '../../services/apiClient';
+import { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, MessageSquare, Bot, Maximize2, ClipboardList, Clock, Check, X } from 'lucide-react';
 import "../../styles/Dashboard.css";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+
+
+export function AdminCertificateApprovals() {
+  const [pendingCerts, setPendingCerts] = useState([]);
+
+  useEffect(() => {
+    fetchPending();
+  }, []);
+
+  const fetchPending = async () => {
+    try {
+      const res = await api.get("/api/certificates/pending");
+      setPendingCerts(res.data);
+    } catch (err) {
+      console.error("Failed to load pending certificates", err);
+    }
+  };
+
+  const handleAction = async (certId, action) => {
+    try {
+      await api.post(`/api/certificates/${certId}/${action}`);
+      alert(`Certificate ${action}d successfully!`);
+      fetchPending();
+    } catch (err) {
+      alert(`Failed to ${action} certificate.`);
+    }
+  };
+
+  return (
+    <div className="card" style={{ marginTop: "24px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+        <Award size={20} color="#F59E0B" />
+        <h3 style={{ margin: 0 }}>Pending Certificate Approvals</h3>
+      </div>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Intern Name</th>
+              <th>Domain</th>
+              <th>Achievement</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pendingCerts.length === 0 ? (
+              <tr><td colSpan="4" style={{ textAlign: "center", padding: "16px" }}>No pending requests</td></tr>
+            ) : (
+              pendingCerts.map((cert) => (
+                <tr key={cert.id}>
+                  <td>{cert.intern_name}</td>
+                  <td>{cert.domain}</td>
+                  <td><span className="badge" style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}>{cert.achievement || "N/A"}</span></td>
+                  <td style={{ display: "flex", gap: "8px" }}>
+                    <button 
+                      onClick={() => handleAction(cert.certificate_id, 'approve')} 
+                      className="btn btn-primary" 
+                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px" }}
+                    >
+                      <Check size={14} /> Approve & Mail
+                    </button>
+                    <button 
+                      onClick={() => handleAction(cert.certificate_id, 'reject')} 
+                      className="btn btn-secondary" 
+                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px", backgroundColor: "#FEE2E2", color: "#DC2626", borderColor: "#FEE2E2" }}
+                    >
+                      <X size={14} /> Reject
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -145,10 +225,30 @@ export default function MentorDashboard() {
     { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
   ]);
 
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
+  
+  // Global chat history from localstorage
+  const getInitialChat = () => {
+    const saved = localStorage.getItem("global_chat_history");
+    if (saved) return JSON.parse(saved);
+    return [
+      { sender: "John Doe", internId: "INT001", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
+      { sender: "Mentor", recipientId: "INT001", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
+    ];
+  };
+
+  const [chatMessages, setChatMessages] = useState(getInitialChat());
+
+  // Listen for cross-tab updates
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "global_chat_history" && e.newValue) {
+        setChatMessages(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
@@ -260,7 +360,7 @@ export default function MentorDashboard() {
   const handleSendChatMessage = (e) => {
     e.preventDefault();
     if (!currentMessage.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: currentMessage, time: "Just now" }]);
+    setChatMessages([...chatMessages, { sender: "Mentor", text: currentMessage, time: "Just now" }]);
     setCurrentMessage("");
   };
 
@@ -533,7 +633,8 @@ export default function MentorDashboard() {
                 </div>
               </div>
             </div>
-          </>
+            <AdminCertificateApprovals />
+            </>
         );
 
       case "Cohort":
@@ -559,7 +660,7 @@ export default function MentorDashboard() {
                         <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{i.weakAreas}</td>
                         <td>
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button onClick={() => setSelectedInternForChat(i.name)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
+                            <button onClick={() => setSelectedInternForChat(i)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
                               Chat
                             </button>
                             <button onClick={() => handleCreateMeeting(`${i.name} - Code Review`, "Tomorrow, 2:00 PM")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>
@@ -1473,7 +1574,8 @@ export default function MentorDashboard() {
               { id: "Evaluations", icon: <ClipboardCheck size={20} /> },
               { id: "Programs", icon: <BookOpen size={20} /> },
               { id: "Bonus Airdrops", icon: <Gift size={20} /> },
-              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> }
+              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> },
+                { id: "Chat with Interns", icon: <MessageSquare size={20} /> }
             ].map((tab) => (
               <li
                 key={tab.id}
@@ -1594,7 +1696,7 @@ export default function MentorDashboard() {
       )}
 
       {/* Floating Side Chat Popup */}
-      {selectedInternForChat && (
+      {selectedInternForChat && activeTab !== "Chat with Interns" && (
         <div style={{
           position: "fixed",
           bottom: "24px",
@@ -1614,7 +1716,7 @@ export default function MentorDashboard() {
           <div style={{ padding: "12px 16px", backgroundColor: "#1e293b", color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
-              Chat with {selectedInternForChat}
+              Chat with {typeof selectedInternForChat === 'string' ? selectedInternForChat : selectedInternForChat?.name}
             </div>
             <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>âœ–</button>
           </div>
@@ -1622,16 +1724,16 @@ export default function MentorDashboard() {
           {/* Chat Messages */}
           <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc" }}>
             {chatMessages.map((msg, i) => (
-              <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
-                <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
-                  {msg.sender === "You" ? "" : `${msg.sender} â€¢ `}{msg.time}
+              <div key={i} style={{ alignSelf: msg.sender === "Mentor" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
+                <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "Mentor" ? "right" : "left" }}>
+                  {msg.sender === "Mentor" ? "" : `${msg.sender} â€¢ `}{msg.time}
                 </span>
                 <div style={{ 
-                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 
-                  color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                  backgroundColor: msg.sender === "Mentor" ? "#3b82f6" : "#ffffff", 
+                  color: msg.sender === "Mentor" ? "#ffffff" : "#1e293b", 
                   padding: "8px 12px", 
-                  borderRadius: msg.sender === "You" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
-                  border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none",
+                  borderRadius: msg.sender === "Mentor" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
+                  border: msg.sender !== "Mentor" ? "1px solid #e2e8f0" : "none",
                   fontSize: "13px",
                   lineHeight: "1.4"
                 }}>

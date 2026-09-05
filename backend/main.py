@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
@@ -20,7 +21,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
 # 1. Import the meetings router module
-from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users
+from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates
 
 
 try:
@@ -88,6 +89,7 @@ app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"]
 app.include_router(onboarding.router, prefix="/api/onboarding", tags=["Onboarding"])
 # Meetings uses a custom prefix internally for WS, but we'll register the router
 app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
+app.include_router(certificates.router)
 
 # CORS configuration
 app.add_middleware(
@@ -97,6 +99,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # --- Security & Auth Configuration ---
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
@@ -133,7 +136,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
+        user_id = payload.get("sub") or payload.get("user_id")
         if user_id is None:
             raise credentials_exception
     except jwt.PyJWTError:
@@ -427,3 +430,42 @@ def health_check():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+@app.get("/api/intern/stats")
+def get_intern_stats(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.role.value != "intern":
+        return {"error": "Not an intern"}
+    
+    total_days = 30
+    submissions_count = db.query(models.Submission).filter(
+        models.Submission.intern_id == current_user.id
+    ).count()
+    progress_percent = int((submissions_count / total_days) * 100) if total_days > 0 else 0
+    
+    attendance_records = db.query(models.AttendanceLog).filter(
+        models.AttendanceLog.intern_id == current_user.id
+    ).all()
+    
+    days_present = sum(1 for a in attendance_records if a.status == "present")
+    days_absent = sum(1 for a in attendance_records if a.status == "absent")
+    total_attendance = days_present + days_absent
+    attendance_percent = int((days_present / total_attendance) * 100) if total_attendance > 0 else 0
+    
+    from sqlalchemy.sql import func
+    avg_ai_score = db.query(func.avg(models.Submission.ai_score)).filter(
+        models.Submission.intern_id == current_user.id,
+        models.Submission.ai_score > 0
+    ).scalar()
+    
+    ai_score = int(avg_ai_score) if avg_ai_score else 0
+    
+    return {
+        "currentDay": submissions_count + 1,
+        "progressPercent": progress_percent,
+        "daysCompleted": submissions_count,
+        "totalDays": total_days,
+        "attendancePercent": attendance_percent,
+        "daysPresent": days_present,
+        "daysAbsent": days_absent,
+        "aiScore": ai_score
+    }

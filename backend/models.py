@@ -210,10 +210,17 @@ class Certificate(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     intern_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    intern_name = Column(String(150), nullable=False)
     certificate_id = Column(String(100), nullable=False, unique=True)
-    grade = Column(String(5), nullable=False) # e.g. "A+", "A", "B", "C"
-    final_score = Column(Integer, nullable=False)
-    generated_at = Column(DateTime(timezone=True), server_default=func.now())
+    domain = Column(String(100), nullable=False)
+    duration = Column(String(50), nullable=False)
+    achievement = Column(String(100), nullable=True)
+    status = Column(String(50), default="PENDING_ADMIN_APPROVAL")
+    grade = Column(String(5), nullable=True)
+    final_score = Column(Integer, nullable=True)
+    pdf_path = Column(String(255), nullable=True)
+    issued_date = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
     intern = relationship("User", back_populates="certificates")

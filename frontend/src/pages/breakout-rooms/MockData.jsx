@@ -10,7 +10,7 @@
   { id: 9, name: 'David', role: 'Intern', online: false, room: 'Main Meeting', micOn: false, camOn: false, avatar: 'D' },
 ];
 
-export const mockMentor = { id: 10, name: 'Ananya', role: 'Mentor', online: true, room: 'Mentor Room', micOn: false, camOn: true, avatar: 'An' };
+export const mockMentor = { id: 10, name: 'Ananya', role: 'Mentor', online: true, room: 'Main Meeting', micOn: false, camOn: true, avatar: 'An' };
 
 export const mockRooms = [
   { id: 'main', name: 'Main Meeting', type: 'main' },

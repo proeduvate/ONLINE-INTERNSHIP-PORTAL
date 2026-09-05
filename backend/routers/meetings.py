@@ -75,6 +75,15 @@ def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), author
     db.refresh(db_meeting)
     return db_meeting
 
+
+@router.get("/verify-intern/{intern_id}")
+def verify_intern(intern_id: int, db: Session = Depends(get_db)):
+    # Verify if intern exists and is an intern
+    user = db.query(models.User).filter(models.User.id == intern_id, models.User.role == "intern").first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Intern not found or invalid role")
+    return {"status": "success", "intern_id": user.id, "name": user.name}
+
 @router.get("/", response_model=List[MeetingResponse])
 def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None)):
 
