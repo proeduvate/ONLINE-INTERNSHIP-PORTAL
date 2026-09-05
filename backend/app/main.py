@@ -21,6 +21,8 @@ from fpdf import FPDF
 import random
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
+import requests
+import base64
 
 try:
     from app import models, schemas
@@ -274,6 +276,7 @@ def onboard_user(
         email=data.email,
         hashed_password=hashed_password,
         role=models.UserRole(data.role.value),
+        github_repo_url=data.github_repo_url,
         college=data.college,
         domain_id=data.domain_id,
         mentor_id=data.mentor_id,
@@ -477,6 +480,8 @@ def get_intern_tasks_with_unlock_status(
         
         if sub:
             status_val = sub.status
+            if status_val in ["submitted", "approved"]:
+                status_val = "completed"
             # calculate combined scores
             score_val = (sub.mcq_score or 0) + (sub.ai_score or 0) + (sub.mentor_score or 0)
             ai_score_val = sub.ai_score or 0
@@ -1048,6 +1053,53 @@ def create_submission(
             print(f"Error saving submission file: {e}")
             raise HTTPException(status_code=500, detail="Unable to save your submission. Please try again.")
 
+        github_file_url = None
+        if current_user.github_repo_url:
+            github_repo_url = current_user.github_repo_url
+            if github_repo_url.endswith("/"):
+                github_repo_url = github_repo_url[:-1]
+            
+            # Extract owner and repo from url (e.g. https://github.com/owner/repo)
+            match = re.search(r"github\.com/([^/]+)/([^/]+)", github_repo_url)
+            if match:
+                owner, repo = match.groups()
+                repo = repo.replace(".git", "")
+                
+                # We can construct the hypothetical redirect URL even if we don't have a token to push
+                github_file_url = f"https://github.com/{owner}/{repo}/blob/main/{file_name}"
+
+                github_token = os.environ.get("GITHUB_API_TOKEN")
+                if github_token:
+                    try:
+                        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_name}"
+                        headers = {
+                            "Authorization": f"token {github_token}",
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+                        
+                        # Check if file already exists
+                        get_resp = requests.get(api_url, headers=headers)
+                        sha = None
+                        if get_resp.status_code == 200:
+                            sha = get_resp.json().get("sha")
+
+                        # Commit the new code
+                        message = f"Submission for task day {task.day_number}"
+                        content_encoded = base64.b64encode(data.code_submission.encode("utf-8")).decode("utf-8")
+                        payload = {
+                            "message": message,
+                            "content": content_encoded,
+                            "branch": "main"
+                        }
+                        if sha:
+                            payload["sha"] = sha
+                            
+                        put_resp = requests.put(api_url, headers=headers, json=payload)
+                        if put_resp.status_code in [200, 201]:
+                            github_file_url = put_resp.json().get("content", {}).get("html_url", github_file_url)
+                    except Exception as e:
+                        print(f"Failed to push to GitHub: {e}")
+
     # Trigger AI Evaluator and secure runtime execution for code submission
     ai_eval_result = {"score": 0, "feedback": None}
     runtime_result = None
@@ -1059,14 +1111,20 @@ def create_submission(
         combined_score = 0
 
     if existing:
-        existing.code_submission = data.code_submission
-        existing.mcq_answers = data.mcq_answers
-        existing.mcq_score = mcq_score
-        existing.ai_score = combined_score
-        existing.ai_feedback = json.dumps({
-            "ai_analysis": ai_eval_result,
-            "runtime_evaluation": runtime_result
-        }) if runtime_result else ai_eval_result["feedback"]
+        if data.code_submission is not None:
+            existing.code_submission = data.code_submission
+        if data.mcq_answers is not None:
+            existing.mcq_answers = data.mcq_answers
+            existing.mcq_score = mcq_score
+            
+        # recalculate combined score only if new code was submitted
+        if data.code_submission is not None:
+            existing.ai_score = combined_score
+            existing.ai_feedback = json.dumps({
+                "ai_analysis": ai_eval_result,
+                "runtime_evaluation": runtime_result
+            }) if runtime_result else ai_eval_result["feedback"]
+            
         existing.status = "submitted"
         existing.filename = file_name
         existing.submitted_at = datetime.utcnow()
@@ -1139,6 +1197,55 @@ def create_submission(
     current_user.last_task_completion_date = now_dt
     
     db.add(current_user)
+    
+    # Update DailyQuestionResult for analytics overview
+    today_date = datetime.utcnow().date().isoformat()
+    existing_result = db.query(models.DailyQuestionResult).filter(
+        models.DailyQuestionResult.intern_id == current_user.id,
+        models.DailyQuestionResult.date == today_date
+    ).first()
+
+    final_score = mcq_score + combined_score
+    if existing_result:
+        existing_result.question_id = task.id
+        existing_result.mcq_score = mcq_score
+        existing_result.coding_score = combined_score
+        existing_result.final_score = final_score
+        existing_result.attempted_at = datetime.utcnow()
+    else:
+        new_result = models.DailyQuestionResult(
+            intern_id=current_user.id,
+            question_id=task.id,
+            mcq_score=mcq_score,
+            coding_score=combined_score,
+            final_score=final_score,
+            date=today_date,
+            attempted_at=datetime.utcnow()
+        )
+        db.add(new_result)
+    
+    # Award points
+    if final_score > 0 and not existing:
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=int(final_score),
+            source_type="DAILY_ASSESSMENT",
+            source_id=sub.id,
+            reason=f"Daily Assessment Points for Day {task.day_number}"
+        )
+        db.add(pt)
+    elif existing and final_score > (existing.mcq_score + existing.ai_score):
+        # Calculate new points
+        diff = final_score - (existing.mcq_score + existing.ai_score)
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=int(diff),
+            source_type="DAILY_ASSESSMENT",
+            source_id=sub.id,
+            reason=f"Updated Daily Assessment Points for Day {task.day_number}"
+        )
+        db.add(pt)
+        
     db.commit()
 
     # Cancel any pending reminders for today
@@ -1185,6 +1292,9 @@ def create_submission(
             "runtime_evaluation": runtime_result
         }) if runtime_result else ai_eval_result["feedback"]
     }
+    if data.code_submission and 'github_file_url' in locals() and github_file_url:
+        response["github_file_url"] = github_file_url
+
     if runtime_result:
         response.update({
             "runtime_score": runtime_result["runtime_score"],

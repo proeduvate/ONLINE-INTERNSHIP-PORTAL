@@ -18,6 +18,7 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+    github_repo_url: Optional[str] = None
     role: UserRole = UserRole.INTERN
 
 class UserLoginSchema(BaseModel):
@@ -29,6 +30,7 @@ class UserOnboard(BaseModel):
     email: EmailStr
     password: str
     role: UserRole
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
@@ -47,6 +49,7 @@ class UserResponse(BaseModel):
     role: UserRole
     created_at: datetime
     intern_id: Optional[str] = None
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
@@ -341,6 +344,7 @@ class OnboardingApplicationCreate(BaseModel):
     graduation_year: int
     domain: str
     resume_url: Optional[str] = None
+    github_repo_url: Optional[str] = None
 
 
 # ==========================================

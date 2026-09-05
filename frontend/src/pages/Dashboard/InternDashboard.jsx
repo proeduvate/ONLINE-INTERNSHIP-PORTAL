@@ -62,21 +62,22 @@ export default function InternDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
   const [leaderboardData, setLeaderboardData] = useState([]);
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/leaderboard", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setLeaderboardData(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch leaderboard", err);
+  const fetchLeaderboard = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8000/leaderboard", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLeaderboardData(data);
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch leaderboard", err);
+    }
+  };
+
+  useEffect(() => {
     fetchLeaderboard();
   }, []);
 
@@ -378,18 +379,21 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const mcqQuestionsList = [
-    { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
-    { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
-    { id: 4, text: "Virtual DOM updates are slower than Real DOM updates.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 5, text: "Which function is used to update state in useState hook?", options: [{ label: "setState()", val: "setState" }, { label: "The second returned element", val: "updater" }] },
-    { id: 6, text: "React components must start with a capital letter.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
-    { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
-    { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] }
-  ];
+  const currentCurriculum = getCurrentDayData();
+  
+  let mcqQuestionsList = [];
+  try {
+    const rawQuestions = currentCurriculum.mcq_questions ? JSON.parse(currentCurriculum.mcq_questions) : [];
+    if (Array.isArray(rawQuestions)) {
+      mcqQuestionsList = rawQuestions.map(q => ({
+        id: q.id,
+        text: q.question,
+        options: q.options.map(opt => ({ label: opt, val: opt }))
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to parse MCQ questions", e);
+  }
 
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
@@ -406,10 +410,8 @@ export default function InternDashboard() {
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
-    const score = Object.keys(answers).length; // 1 point per answer
-    setMcqGrade(score);
     setMcqDone(true);
-    alert(`MCQ Test submitted! Score: ${score}/10. Part A completed.`);
+    alert(`MCQ Test submitted! Your score will be evaluated by the backend upon final submission. Part A completed.`);
     setAssessmentView("selection");
   };
 
@@ -461,15 +463,25 @@ export default function InternDashboard() {
   const handleCompleteDay = async () => {
     try {
       const token = localStorage.getItem("token");
-      const mcq_score = mcqGrade || 0;
-      const coding_score = aiScore || 0;
-      const date = new Date().toISOString().split('T')[0];
+      const currentTask = getCurrentDayData();
+      
+      const payload = {
+        task_id: currentTask.id,
+        code_submission: code,
+        language: language,
+        mcq_answers: JSON.stringify(answers)
+      };
 
-      await fetch("http://localhost:8000/analytics/daily-questions/results", {
+      const res = await fetch("http://localhost:8000/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ question_id: currentDay, mcq_score, coding_score, date })
+        body: JSON.stringify(payload)
       });
+      
+      if (res.ok) {
+        const data = await res.json();
+        // Option to do something with data.mcq_score and data.ai_score
+      }
     } catch (e) {
       console.error(e);
     }
@@ -491,6 +503,11 @@ export default function InternDashboard() {
     setEvalResult(null);
     setShowAssessment(false);
     setAssessmentView("selection");
+    
+    // Refresh tasks, analytics, and leaderboard to show updated status and points
+    fetchTasks();
+    fetchLeaderboard();
+    fetchAnalytics();
   };
 
   const handleSendMessage = (e) => {
@@ -824,22 +841,30 @@ export default function InternDashboard() {
 
                         {/* Right Content: Current Question */}
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
-                            <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
-                          </h4>
-                          
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
-                              <button 
-                                key={opt.val}
-                                className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
-                              >
-                                {opt.label}
-                              </button>
-                            ))}
-                          </div>
+                          {mcqQuestionsList.length > 0 ? (
+                            <>
+                              <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
+                                <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
+                              </h4>
+                              
+                              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                                {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
+                                  <button 
+                                    key={opt.val}
+                                    className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
+                                    onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
+                                    style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </>
+                          ) : (
+                            <div style={{ textAlign: "center", padding: "40px" }}>
+                              <p>No questions available for this day.</p>
+                            </div>
+                          )}
 
                           {/* Navigation Buttons */}
                           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>

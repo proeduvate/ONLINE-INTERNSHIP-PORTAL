@@ -40,6 +40,7 @@ class User(Base):
 
     # Intern specific profile fields
     intern_id = Column(String(50), nullable=True)
+    github_repo_url = Column(String(255), nullable=True)
     college = Column(String(100), nullable=True)
     domain_id = Column(Integer, ForeignKey("domains.id"), nullable=True)
     mentor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
@@ -254,6 +255,7 @@ class OnboardingApplication(Base):
     graduation_year = Column(Integer)
     domain = Column(String(100))
     resume_url = Column(String(255))
+    github_repo_url = Column(String(255), nullable=True)
     status = Column(String(50), default='PENDING_REVIEW')
     created_at = Column(DateTime, default=datetime.utcnow)
 
