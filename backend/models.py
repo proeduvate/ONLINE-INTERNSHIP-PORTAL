@@ -36,6 +36,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column("full_name", String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
+    phone = Column(String(20), nullable=True)
     hashed_password = Column(String(255), nullable=True)
     # Link to Supabase auth user id (uuid)
     supabase_id = Column(String(100), nullable=True, unique=True)
@@ -54,6 +55,7 @@ class User(Base):
     progress_pct = Column(Integer, default=0)
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime(timezone=True), nullable=True)
+    resume_url = Column(String(255), nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
@@ -252,6 +254,7 @@ class Application(Base):
     internship = relationship("Internship", back_populates="applications")
     applicant = relationship("User", back_populates="applications")
 
+
 class OnboardingApplication(Base):
     __tablename__ = 'onboarding_applications'
 
@@ -268,3 +271,18 @@ class OnboardingApplication(Base):
     resume_url = Column(String(255))
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING_REVIEW)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class BonusAirdrop(Base):
+    __tablename__ = 'bonus_airdrops'
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(String(500), nullable=False)
+    time_limit_seconds = Column(Integer, default=60)
+    reward_points = Column(Integer, default=10)
+    is_active = Column(Boolean, default=True)
+
+class DailyScenario(Base):
+    __tablename__ = 'daily_scenarios'
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    date_added = Column(DateTime(timezone=True), server_default=func.now())

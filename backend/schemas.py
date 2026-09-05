@@ -340,3 +340,90 @@ class OnboardingApplicationCreate(BaseModel):
     graduation_year: int
     domain: str
     resume_url: Optional[str] = None
+
+# ==========================================
+#     BONUS AIRDROP & DAILY SCENARIOS
+# ==========================================
+
+class BonusAirdropCreate(BaseModel):
+    title: str
+    description: str
+    claim_code: Optional[str] = None
+    is_active: Optional[bool] = True
+
+class BonusAirdropResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    claim_code: Optional[str] = None
+    is_active: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class DailyScenarioCreate(BaseModel):
+    scenario_text: str
+    options: str # JSON array
+    correct_option: str
+
+class DailyScenarioResponse(BaseModel):
+    id: int
+    scenario_text: str
+    options: str # JSON array
+    correct_option: str
+    date_added: datetime
+
+    class Config:
+        from_attributes = True
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
+
+class BonusAirdropBase(BaseModel):
+    question: str
+    time_limit_seconds: int = 60
+    reward_points: int = 10
+    is_active: bool = True
+
+class BonusAirdropCreate(BonusAirdropBase):
+    pass
+
+class BonusAirdropResponse(BonusAirdropBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+class DailyScenarioBase(BaseModel):
+    title: str
+    description: str
+
+class DailyScenarioCreate(DailyScenarioBase):
+    pass
+
+class DailyScenarioResponse(DailyScenarioBase):
+    id: int
+    date_added: datetime
+    class Config:
+        from_attributes = True
+
+# ==========================================
+#     ONBOARDING WORKFLOW SCHEMAS
+# ==========================================
+
+class MentorAssignRequest(BaseModel):
+    mentor_id: int
+
+class PaymentVerifyRequest(BaseModel):
+    verified: bool
+    notes: Optional[str] = None
+
+class AccountActivationRequest(BaseModel):
+    token: str
+    password: str
+
+class DocumentGenerationRequest(BaseModel):
+    # Additional context for document generation if needed
+    date: Optional[str] = None
+
+

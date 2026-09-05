@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mockOnboardingService, ONBOARDING_STATUSES } from '../../services/mockOnboardingService';
+import api from '../../api/axios';
 import './Onboarding.css';
 
 // Centralized configuration for the Google form
@@ -11,10 +11,17 @@ export default function Payment() {
 
     useEffect(() => {
         const fetchStatus = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('appId');
+            if (!appId) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
-                const result = await mockOnboardingService.getApplicationStatus();
-                setStatusData(result);
+                const response = await api.get(`/api/v1/onboarding/status/${appId}`);
+                setStatusData({ status: response.data.status, applicationId: appId });
             } catch (error) {
                 console.error("Error fetching status", error);
             } finally {
@@ -25,13 +32,9 @@ export default function Payment() {
     }, []);
 
     const handlePaymentSubmit = async () => {
-        // Dev mock utility to transition state
-        mockOnboardingService.__devSetStatus(ONBOARDING_STATUSES.PAYMENT_SUBMITTED);
         // Open the google form in a new tab
         window.open(PAYMENT_FORM_URL, '_blank');
-        // Refresh local status
-        const result = await mockOnboardingService.getApplicationStatus();
-        setStatusData(result);
+        alert("After you submit the form, please allow some time for the administration team to verify your payment. Refresh this page later to see the updated status.");
     };
 
     if (loading) {
@@ -54,14 +57,18 @@ export default function Payment() {
         );
     }
 
-    const { status } = statusData;
+    const { status, applicationId } = statusData;
+    const isPending = status === "PAYMENT_REQUIRED" || status === "ELIGIBLE_FOR_PAYMENT";
+    const isSubmitted = status === "PAYMENT_SUBMITTED";
+    const isVerified = status === "PAYMENT_VERIFIED" || status === "MENTOR_ASSIGNED" || status === "ONBOARDING_COMPLETED";
+    const isRejected = status === "PAYMENT_REJECTED";
 
     return (
         <div className="onboarding-page-wrapper">
             <div className="onboarding-container">
-                <h2>Payment Details</h2>
+                <h2>Payment Details ({applicationId})</h2>
 
-                {status === ONBOARDING_STATUSES.PAYMENT_PENDING || status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT ? (
+                {isPending ? (
                     <div className="status-box">
                         <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Payment Required</h3>
                         <p><strong>Internship:</strong> Full Stack Development</p>
@@ -72,21 +79,21 @@ export default function Payment() {
                         
                         <button className="btn btn-primary" style={{ marginTop: '20px' }} onClick={handlePaymentSubmit}>Submit Payment Details ↗</button>
                     </div>
-                ) : status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED ? (
+                ) : isSubmitted ? (
                     <div className="status-box">
                         <h3 style={{ color: 'var(--primary-color)', marginBottom: '16px' }}>Payment Submitted ✓</h3>
                         <p>Your payment details have been submitted.</p>
                         <p style={{ color: 'var(--text-muted)' }}>The administration team is currently verifying your payment.</p>
                         <button className="btn btn-secondary" style={{ marginTop: '20px' }} onClick={() => window.location.href='/onboarding/status'}>Back to Status</button>
                     </div>
-                ) : status === ONBOARDING_STATUSES.PAYMENT_VERIFIED ? (
+                ) : isVerified ? (
                     <div className="status-box">
                         <h3 style={{ color: 'var(--success-color)', marginBottom: '16px' }}>Payment Verified ✓</h3>
                         <p>Your payment has been successfully verified.</p>
                         <p style={{ color: 'var(--text-muted)' }}>Next: Mentor Assignment</p>
                         <button className="btn btn-secondary" style={{ marginTop: '20px' }} onClick={() => window.location.href='/onboarding/status'}>Back to Status</button>
                     </div>
-                ) : status === ONBOARDING_STATUSES.PAYMENT_REJECTED ? (
+                ) : isRejected ? (
                     <div className="status-box">
                         <h3 style={{ color: 'var(--danger-color)', marginBottom: '16px' }}>Payment Verification Failed</h3>
                         <p style={{ color: 'var(--text-muted)' }}>Please contact the administration team for further clarification.</p>

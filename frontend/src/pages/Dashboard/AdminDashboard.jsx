@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
@@ -157,11 +158,20 @@ export default function AdminDashboard() {
   
   // Onboarding state
   const [onboardingSubTab, setOnboardingSubTab] = useState("Resume");
-  const [onboardingCandidates, setOnboardingCandidates] = useState([
-    { id: "C001", name: "Alice Smith", domain: "Data Science", stage: "Resume", resumeLink: "#" },
-    { id: "C002", name: "Bob Jones", domain: "Web Development", stage: "Interview", resumeLink: "#" },
-    { id: "C003", name: "Charlie Brown", domain: "Cyber Security", stage: "Payment", resumeLink: "#" }
-  ]);
+  const [onboardingCandidates, setOnboardingCandidates] = useState([]);
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+        const response = await axios.get(`${baseUrl}/api/v1/onboarding/applications`);
+        setOnboardingCandidates(response.data);
+      } catch (err) {
+        console.error("Error fetching onboarding applications:", err);
+      }
+    };
+    fetchApplications();
+  }, []);
   const [viewedDocs, setViewedDocs] = useState({});
   const [activeDocument, setActiveDocument] = useState(null);
 

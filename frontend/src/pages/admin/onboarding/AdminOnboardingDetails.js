@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { mockOnboardingService, ONBOARDING_STATUSES } from '../../../services/mockOnboardingService';
+import axios from 'axios';
+import { ONBOARDING_STATUSES } from '../../../services/mockOnboardingService'; // Keep for enum
 import '../../onboarding/Onboarding.css';
 
 export default function AdminOnboardingDetails() {
@@ -12,8 +13,8 @@ export default function AdminOnboardingDetails() {
         const fetchApp = async () => {
             setLoading(true);
             try {
-                const data = await mockOnboardingService.adminGetApplication(id);
-                setApp(data);
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
+                setApp(response.data);
             } catch (error) {
                 console.error("Error fetching", error);
             } finally {
@@ -24,9 +25,13 @@ export default function AdminOnboardingDetails() {
     }, [id]);
 
     const handleAction = async (newStatus) => {
-        await mockOnboardingService.adminUpdateStatus(id, newStatus);
-        const data = await mockOnboardingService.adminGetApplication(id);
-        setApp(data);
+        try {
+            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}/status`, { status: newStatus });
+            const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
+            setApp(response.data);
+        } catch (error) {
+            console.error("Error updating status", error);
+        }
     };
 
     if (loading) {
@@ -77,7 +82,11 @@ export default function AdminOnboardingDetails() {
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-color)' }}>Domain:</strong> {app.domain}</p>
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
                             <strong style={{ color: 'var(--text-color)' }}>Resume:</strong> 
-                            <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '12px', marginLeft: '8px' }}>View Resume</button>
+                            {app.resume && app.resume !== "#" ? (
+                                <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '12px', marginLeft: '8px' }} onClick={() => window.open(app.resume, "_blank")}>View Resume</button>
+                            ) : (
+                                <span style={{ marginLeft: '8px', color: 'var(--text-muted)' }}>Not Provided</span>
+                            )}
                         </p>
                     </div>
                 </div>

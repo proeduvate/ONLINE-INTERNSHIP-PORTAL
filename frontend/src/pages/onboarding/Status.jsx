@@ -71,6 +71,22 @@ export default function Status() {
             <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: "bold", color: "#28a745" }}>
               {statusResult.replace(/_/g, ' ')}
             </p>
+            <div style={{ marginTop: "1.5rem", display: "flex", gap: "10px", justifyContent: "center" }}>
+              <button 
+                type="button"
+                onClick={() => window.location.href=`/onboarding/payment?appId=${appId}`}
+                style={{ padding: "0.5rem 1rem", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", backgroundColor: "#f8f9fa" }}
+              >
+                Payment Details
+              </button>
+              <button 
+                type="button"
+                onClick={() => window.location.href=`/onboarding/documents?appId=${appId}`}
+                style={{ padding: "0.5rem 1rem", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", backgroundColor: "#f8f9fa" }}
+              >
+                My Documents
+              </button>
+            </div>
           </div>
         )}
       </div>

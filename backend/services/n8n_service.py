@@ -6,25 +6,10 @@ from typing import Dict, Any
 logger = logging.getLogger(__name__)
 
 # Webhook path mapping
+# Most onboarding workflows have been migrated to backend logic.
+# Keeping PAYMENT_SUBMITTED for inbound workflow acknowledgement if needed by n8n.
 WEBHOOK_MAPPING = {
-    "APPLICATION_SUBMITTED": "/webhook/onboarding/application-received",
-    "INTERVIEW_REQUIRED": "/webhook/onboarding/interview-required",
-    "INTERVIEW_NOT_REQUIRED": "/webhook/onboarding/interview-not-required",
-    "INTERVIEW_SCHEDULED": "/webhook/onboarding/interview-scheduled",
-    "INTERVIEW_PASSED": "/webhook/onboarding/interview-passed",
-    "INTERVIEW_FAILED": "/webhook/onboarding/interview-failed",
-    "PAYMENT_REQUIRED": "/webhook/onboarding/payment-required",
     "PAYMENT_SUBMITTED": "/webhook/onboarding/payment-submitted",
-    "PAYMENT_VERIFIED": "/webhook/onboarding/payment-verified",
-    "PAYMENT_REJECTED": "/webhook/onboarding/payment-rejected",
-    "MENTOR_ASSIGNED": "/webhook/onboarding/mentor-assigned",
-    "DOCUMENT_GENERATION_REQUIRED": "/webhook/onboarding/documents-required",
-    "DOCUMENTS_READY": "/webhook/onboarding/documents-ready",
-    "DOCUMENTS_SENT": "/webhook/onboarding/documents-sent",
-    "ACCOUNT_CREATION_REQUIRED": "/webhook/onboarding/account-creation-required",
-    "ACCOUNT_CREATED": "/webhook/onboarding/account-created",
-    "ACCOUNT_ACTIVATED": "/webhook/onboarding/account-activated",
-    "ONBOARDING_COMPLETED": "/webhook/onboarding/completed",
 }
 
 async def trigger_n8n_webhook(event_name: str, payload: Dict[str, Any]):

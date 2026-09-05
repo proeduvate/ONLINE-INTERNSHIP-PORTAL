@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mockOnboardingService, ONBOARDING_STATUSES } from '../../services/mockOnboardingService';
+import api from '../../api/axios';
 import './Onboarding.css';
 
 export default function Documents() {
@@ -8,10 +8,17 @@ export default function Documents() {
 
     useEffect(() => {
         const fetchStatus = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('appId');
+            if (!appId) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
-                const result = await mockOnboardingService.getApplicationStatus();
-                setStatusData(result);
+                const response = await api.get(`/api/v1/onboarding/status/${appId}`);
+                setStatusData({ status: response.data.status, applicationId: appId });
             } catch (error) {
                 console.error("Error fetching status", error);
             } finally {
@@ -43,11 +50,11 @@ export default function Documents() {
 
     const { status, applicationId } = statusData;
     const documentsReady = [
-        ONBOARDING_STATUSES.DOCUMENTS_GENERATED, 
-        ONBOARDING_STATUSES.DOCUMENTS_SENT, 
-        ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING,
-        ONBOARDING_STATUSES.ACCOUNT_CREATED,
-        ONBOARDING_STATUSES.ONBOARDING_COMPLETED
+        "DOCUMENTS_GENERATED", 
+        "DOCUMENTS_SENT", 
+        "ACCOUNT_CREATION_PENDING",
+        "ACCOUNT_CREATED",
+        "ONBOARDING_COMPLETED"
     ].includes(status);
 
     return (
