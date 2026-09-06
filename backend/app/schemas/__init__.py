@@ -226,6 +226,10 @@ class MeetingResponse(BaseModel):
 #          CERTIFICATE SCHEMAS
 # ==========================================
 
+class CertificateRequest(BaseModel):
+    duration: Optional[str] = "4 Weeks"
+    achievement: Optional[str] = "Completion of Internship"
+
 class CertificateResponse(BaseModel):
     id: int
     intern_id: int
@@ -364,6 +368,8 @@ class SimulationScenarioResponse(BaseModel):
     situation: str
     question: str
     choices: List[SimulationChoice]
+    unlocked: bool = True
+    next_unlock_time: Optional[str] = None
 
 class SimulationDecision(BaseModel):
     scenario_id: str

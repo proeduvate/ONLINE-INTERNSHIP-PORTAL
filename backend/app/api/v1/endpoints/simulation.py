@@ -140,6 +140,37 @@ def get_current_simulation(
     if not scenario:
         raise HTTPException(status_code=404, detail="No simulation scenario found for this step")
 
+    # Determine unlock status based on midnight time after previous day completion
+    unlocked = True
+    next_unlock_time_str = None
+
+    if current_task.day_number > 1:
+        prev_task = db.query(models.Task).filter(
+            models.Task.domain_id == current_user.domain_id,
+            models.Task.task_type == "simulation",
+            models.Task.day_number == current_task.day_number - 1
+        ).first()
+        if prev_task:
+            prev_sub = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == prev_task.id
+            ).first()
+            if prev_sub:
+                prev_state = get_simulation_state(prev_sub)
+                if prev_state.get("day_completed", False):
+                    comp_at_str = prev_state.get("completed_at")
+                    try:
+                        comp_dt = datetime.fromisoformat(comp_at_str) if comp_at_str else (prev_sub.updated_at or datetime.now())
+                    except Exception:
+                        comp_dt = prev_sub.updated_at or datetime.now()
+                    
+                    from datetime import timedelta
+                    next_midnight = (comp_dt + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+                    now_dt = datetime.now()
+                    if now_dt < next_midnight:
+                        unlocked = False
+                        next_unlock_time_str = next_midnight.isoformat()
+
     choices = [
         {"id": "A", "text": scenario.choice_a_text},
         {"id": "B", "text": scenario.choice_b_text}
@@ -155,7 +186,9 @@ def get_current_simulation(
         "total_scenarios": 1,
         "situation": scenario.scenario_text,
         "question": scenario.question_text or "What is your decision?",
-        "choices": choices
+        "choices": choices,
+        "unlocked": unlocked,
+        "next_unlock_time": next_unlock_time_str
     }
 
 
@@ -194,8 +227,31 @@ def submit_decision(
             current_submission = sub
             break
 
-    if not current_task:
-        raise HTTPException(status_code=400, detail="No active simulation found")
+    if current_task is None:
+        raise HTTPException(status_code=404, detail="No active simulation task found")
+
+    # Prevent submission if the day is currently locked
+    if current_task.day_number > 1:
+        prev_task = db.query(models.Task).filter(
+            models.Task.domain_id == current_user.domain_id,
+            models.Task.task_type == "simulation",
+            models.Task.day_number == current_task.day_number - 1
+        ).first()
+        if prev_task:
+            prev_sub = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == prev_task.id
+            ).first()
+            if prev_sub:
+                prev_state = get_simulation_state(prev_sub)
+                if prev_state.get("day_completed", False):
+                    completed_at_str = prev_state.get("completed_at")
+                    if completed_at_str:
+                        from datetime import datetime, timedelta
+                        completed_at = datetime.fromisoformat(completed_at_str)
+                        next_midnight = datetime(completed_at.year, completed_at.month, completed_at.day) + timedelta(days=1)
+                        if datetime.now() < next_midnight:
+                            raise HTTPException(status_code=403, detail="Current day is locked until midnight")
 
     if not current_submission:
         # Create a new submission record
@@ -267,6 +323,7 @@ def submit_decision(
     # Determine next scenario
     day_completed = True # 1 scenario per day
     state["day_completed"] = True
+    state["completed_at"] = datetime.now().isoformat()
     
     if next_scenario_id:
         state["current_scenario_id"] = str(next_scenario_id)

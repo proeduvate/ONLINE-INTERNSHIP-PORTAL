@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Mock 30-Day Real-World Workplace Simulation Data
 export const scenarioData = [
@@ -404,6 +404,7 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
   const [currentScenarioData, setCurrentScenarioData] = useState(null);
   const [decisionResult, setDecisionResult] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchSimulation = async () => {
     setLoading(true);
@@ -441,20 +442,33 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
     return () => clearInterval(timer);
   }, []);
 
-  // Compute unlock status based on day or 12 AM midnight schedule
-  // Day 1 is always unlocked. Next day unlocks only at 12:00 AM midnight unless Demo mode is clicked.
+  // Compute unlock status based on backend data or demo bypass
   const isDayUnlocked = (day) => {
     if (isDemoBypass) return true;
     if (day === 1) return true;
-    return false; // Locked until 12:00 AM midnight
+    if (currentScenarioData && currentScenarioData.day === day) {
+      return currentScenarioData.unlocked !== false;
+    }
+    return false;
   };
 
-  // Helper to format countdown until 12:00 AM Midnight
+  // Helper to format countdown until unlock (12:00 AM Midnight)
   const getTimeUntilMidnight = () => {
-    const now = new Date();
-    const midnight = new Date(now);
-    midnight.setHours(24, 0, 0, 0); // Next 12:00 AM
-    const diff = midnight - now;
+    const now = nowTime;
+    let target = null;
+    if (currentScenarioData && currentScenarioData.next_unlock_time) {
+      target = new Date(currentScenarioData.next_unlock_time);
+    } else {
+      target = new Date(now);
+      target.setHours(24, 0, 0, 0); // Next 12:00 AM
+    }
+    
+    const diff = target - now;
+    if (diff <= 0) {
+      // Time ended up! Trigger automatic refetch to unlock content
+      fetchSimulation();
+      return "00h 00m 00s";
+    }
 
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -467,11 +481,16 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
   const isCompleted = !!decisionResult;
   const chosenOption = decisionResult;
 
+  const feedbackRef = useRef(null);
+
   const handleSubmitDecision = async () => {
     if (!selectedOptionId) {
       alert("Please select an option before submitting your decision.");
       return;
     }
+    
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     
     try {
       const token = localStorage.getItem("token");
@@ -488,19 +507,41 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
       });
       if (res.ok) {
         const result = await res.json();
+        const fType = (result.feedback_type || "").toLowerCase();
+        const isSuccess = fType === "success" || fType === "correct";
+        const isWarning = fType === "warning" || fType === "neutral" || fType === "suboptimal";
+        const isDanger = fType === "danger" || fType === "wrong" || fType === "error" || fType === "incorrect" || (!isSuccess && !isWarning);
+
         setDecisionResult({
-          isCorrect: result.feedback_type === "success",
-          feedbackType: result.feedback_type,
-          feedbackTitle: result.feedback_type === "success" ? "✓ EXCELLENT DECISION" : "⚡ SUBOPTIMAL APPROACH",
+          isCorrect: isSuccess,
+          isWarning: isWarning,
+          isDanger: isDanger,
+          feedbackType: fType,
+          feedbackTitle: isSuccess
+            ? "✓ EXCELLENT DECISION"
+            : isWarning
+            ? "⚡ SUBOPTIMAL APPROACH"
+            : "❌ INCORRECT DECISION",
           explanation: result.consequence + (result.feedback ? "\n\n" + result.feedback : ""),
           nextScenarioId: result.next_scenario
         });
         if (onComplete) onComplete();
+
+        // Smooth scroll to decision feedback
+        setTimeout(() => {
+          if (feedbackRef.current) {
+            feedbackRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          }
+        }, 120);
       } else {
         alert("Error submitting decision");
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -638,31 +679,31 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
                 })}
               </div>
 
-              {/* Submit Button - Styled like Image 2 */}
               <button
                 onClick={handleSubmitDecision}
+                disabled={isSubmitting}
                 style={{
                   width: "100%",
                   padding: "14px 24px",
                   borderRadius: "10px",
-                  backgroundColor: "#5b5bd6",
+                  backgroundColor: isSubmitting ? "#8e8ec4" : "#5b5bd6",
                   color: "#ffffff",
                   fontSize: "15px",
                   fontWeight: 700,
                   border: "none",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 12px rgba(91, 91, 214, 0.25)",
+                  cursor: isSubmitting ? "not-allowed" : "pointer",
+                  boxShadow: isSubmitting ? "none" : "0 4px 12px rgba(91, 91, 214, 0.25)",
                   transition: "background-color 0.2s ease"
                 }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#4c4cb8")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#5b5bd6")}
+                onMouseOver={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = "#4c4cb8"; }}
+                onMouseOut={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = "#5b5bd6"; }}
               >
-                Submit Decision
+                {isSubmitting ? "Submitting..." : "Submit Decision"}
               </button>
             </div>
           ) : (
-            /* IF COMPLETED: Feedback view styled matching Image 3 */
-            <div>
+            /* IF COMPLETED: Feedback view styled with Green / Orange / Red color coding */
+            <div ref={feedbackRef}>
               {/* Decision Feedback Header */}
               <div style={{ marginBottom: "24px", marginTop: "12px" }}>
                 <h3
@@ -670,7 +711,11 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
                     margin: 0,
                     fontSize: "18px",
                     fontWeight: 800,
-                    color: chosenOption?.isCorrect ? "#16a34a" : chosenOption?.feedbackType === "warning" ? "#d97706" : "#dc2626",
+                    color: chosenOption?.isCorrect
+                      ? "#16a34a"
+                      : chosenOption?.isWarning
+                      ? "#ea580c"
+                      : "#dc2626",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px"
@@ -680,11 +725,19 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
                 </h3>
               </div>
 
-              {/* WHAT HAPPENED & WHY Box - Styled matching Image 3 */}
+              {/* WHAT HAPPENED & WHY Box */}
               <div
                 style={{
-                  backgroundColor: chosenOption?.isCorrect ? "var(--bg-green-light)" : "var(--bg-red-light)",
-                  border: chosenOption?.isCorrect ? "1px solid var(--border-color)" : "1px solid var(--border-color)",
+                  backgroundColor: chosenOption?.isCorrect
+                    ? "#f0fdf4"
+                    : chosenOption?.isWarning
+                    ? "#fff7ed"
+                    : "#fef2f2",
+                  border: chosenOption?.isCorrect
+                    ? "1px solid #bbf7d0"
+                    : chosenOption?.isWarning
+                    ? "1px solid #fed7aa"
+                    : "1px solid #fecaca",
                   borderRadius: "12px",
                   padding: "24px",
                   marginBottom: "28px"
@@ -695,14 +748,30 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
                     margin: "0 0 12px 0",
                     fontSize: "13px",
                     fontWeight: 800,
-                    color: chosenOption?.isCorrect ? "var(--success-dark)" : "var(--danger-color)",
+                    color: chosenOption?.isCorrect
+                      ? "#15803d"
+                      : chosenOption?.isWarning
+                      ? "#c2410c"
+                      : "#b91c1c",
                     textTransform: "uppercase",
                     letterSpacing: "1px"
                   }}
                 >
                   WHAT HAPPENED & WHY
                 </h4>
-                <div style={{ whiteSpace: "pre-line", fontSize: "14px", color: chosenOption?.isCorrect ? "var(--success-dark)" : "var(--danger-color)", lineHeight: "1.7", fontWeight: 500 }}>
+                <div
+                  style={{
+                    whiteSpace: "pre-line",
+                    fontSize: "14px",
+                    color: chosenOption?.isCorrect
+                      ? "#15803d"
+                      : chosenOption?.isWarning
+                      ? "#c2410c"
+                      : "#b91c1c",
+                    lineHeight: "1.7",
+                    fontWeight: 500
+                  }}
+                >
                   {chosenOption?.explanation}
                 </div>
               </div>

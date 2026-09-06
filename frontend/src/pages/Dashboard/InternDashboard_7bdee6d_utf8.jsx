@@ -1,6 +1,6 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Star, Download } from "lucide-react";
+﻿import { useState, useEffect, useRef } from "react";
+import api from "../../api/axios";
+import { Award, Clock, Download } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
@@ -9,11 +9,11 @@ import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 
 
 export function InternCertificateCard({ user }) {
-  const [cert, setCert] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-  const api = require('../../api/axios').default || require('../../api/axios');
+  const [cert, setCert] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Fetch if they already requested it
     api.get("/api/certificates/me").then(res => {
       setCert(res.data);
     }).catch(err => {
@@ -30,7 +30,7 @@ export function InternCertificateCard({ user }) {
         grade: "A",
         final_score: 95
       });
-      setCert(res.data.certificate);
+      setCert(res.data);
       alert("Certificate requested successfully! Awaiting Admin approval.");
     } catch (err) {
       alert(err.response?.data?.detail || "Failed to request certificate.");
@@ -39,86 +39,80 @@ export function InternCertificateCard({ user }) {
     }
   };
 
-  const handleDownload = async () => {
-    if (!cert || cert.status !== "APPROVED") return;
-    try {
-      const response = await api.get(`/api/certificates/${cert.certificate_id}/download`, {
-        responseType: 'blob'
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${cert.certificate_id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch(err) {
-      alert("Failed to download certificate.");
-    }
-  };
-
   return (
-    <div className="card" style={{ marginTop: "24px", background: "linear-gradient(to right, #4f46e5, #6366f1)", color: "white" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <h3 style={{ margin: 0 }}>Internship Certificate</h3>
-          {!cert ? (
-            <p style={{ margin: "8px 0 0 0", opacity: 0.9, fontSize: "14px" }}>
-              You have completed all program requirements. You can now request your official certificate of completion.
-            </p>
-          ) : (
-            <p style={{ margin: "8px 0 0 0", opacity: 0.9, fontSize: "14px" }}>
-              Status: <strong>{cert.status}</strong>
-            </p>
-          )}
-        </div>
-        <div>
-          {!cert ? (
-            <button 
-              className="btn" 
-              onClick={handleRequestCertificate} 
-              disabled={loading}
-              style={{ backgroundColor: "white", color: "#4f46e5", fontWeight: "bold" }}
-            >
-              {loading ? "Requesting..." : "Request Certificate"}
-            </button>
-          ) : cert.status === "APPROVED" ? (
-            <button 
-              className="btn" 
-              onClick={handleDownload}
-              style={{ backgroundColor: "white", color: "#4f46e5", fontWeight: "bold", display: "flex", gap: "8px", alignItems: "center" }}
-            >
-              <Download size={16} /> Download PDF
-            </button>
-          ) : (
-            <button className="btn" disabled style={{ backgroundColor: "rgba(255,255,255,0.3)", color: "white" }}>
-              Awaiting Approval
-            </button>
-          )}
-        </div>
+    <div className="card" style={{ marginTop: "24px", borderColor: cert?.status === "APPROVED" ? "#10b981" : "#e2e8f0" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+        <Award size={20} color={cert?.status === "APPROVED" ? "#10b981" : "#6366f1"} />
+        <h3 style={{ margin: 0 }}>Internship Certificate</h3>
       </div>
+      
+      {cert ? (
+        <div>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "16px" }}>
+            Status: <strong style={{ color: cert.status === "APPROVED" ? "#10b981" : "#f59e0b" }}>{cert.status}</strong>
+          </p>
+          {cert.status === "APPROVED" && cert.pdf_path && (
+            <a href={`http://127.0.0.1:8000${cert.pdf_path}`} target="_blank" rel="noopener noreferrer">
+              <button className="btn btn-primary" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Download size={16} /> Download PDF
+              </button>
+            </a>
+          )}
+          {cert.status === "PENDING_ADMIN_APPROVAL" && (
+            <button className="btn btn-primary" disabled style={{ opacity: 0.7 }}>
+              Awaiting Approval...
+            </button>
+          )}
+        </div>
+      ) : (
+        <div>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "16px" }}>
+            You have completed all program requirements. You can now request your official certificate of completion.
+          </p>
+          <button 
+            onClick={handleRequestCertificate} 
+            disabled={loading}
+            className="btn btn-primary"
+          >
+            {loading ? "Requesting..." : "Request Certificate"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
 
+  
   // Live Meeting State
+  const [meetings, setMeetings] = useState([]);
+  
+  useEffect(() => {
+    const fetchUpcomingMeetings = async () => {
+      try {
+        const response = await api.get('/api/meetings');
+        setMeetings(response.data);
+      } catch (error) {
+        console.error("Failed to fetch meetings:", error);
+      }
+    };
+    fetchUpcomingMeetings();
+    // Optional refresh interval
+    const interval = setInterval(fetchUpcomingMeetings, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [isMeetingActive, setIsMeetingActive] = useState(false);
   const [isMeetingMinimized, setIsMeetingMinimized] = useState(false);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting"); // force recompile
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const handleJoinMeeting = () => {
-    const isMeetingRunning = localStorage.getItem("breakout_meeting_active") === "true";
-    if (!isMeetingRunning) {
-      alert("The mentor has not started this breakout meeting yet. Please try again once the meeting has commenced.");
-      return;
-    }
+    
     setIsMeetingActive(true);
     setIsMeetingMinimized(false);
   };
@@ -142,12 +136,7 @@ export default function InternDashboard() {
 
   // Daily Domain Insight State & Rotation Logic
   const [showDomainInsightModal, setShowDomainInsightModal] = useState(false);
-  const [currentInsight, setCurrentInsight] = useState({
-    title: "Daily Domain Insight",
-    text: "Loading insights...",
-    domain: "SYSTEM",
-    icon: <Star size={16} />
-  });
+  const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
 
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -156,43 +145,47 @@ export default function InternDashboard() {
   const [airdropAnswer, setAirdropAnswer] = useState("");
   const [airdropTimeLeft, setAirdropTimeLeft] = useState(0);
   const [airdropTab, setAirdropTab] = useState("Active");
-  const [leaderboardData, setLeaderboardData] = useState([]);
 
-  const fetchLeaderboard = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/leaderboard", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setLeaderboardData(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch leaderboard", err);
+  useEffect(() => {
+    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
+    let parsed = [];
+    if (storedAirdrops) {
+      parsed = JSON.parse(storedAirdrops);
     }
-  };
-
-  useEffect(() => {
-    fetchLeaderboard();
-  }, []);
-
-  useEffect(() => {
-    const fetchAirdrops = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:8000/bonus-airdrops`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setBonusAirdrops(data);
-        }
-      } catch (error) {
-        console.error("Error fetching airdrops:", error);
+    
+    const mockData = [
+      {
+        id: 101,
+        question: "What is the primary purpose of React's Virtual DOM?",
+        timeLimit: "60",
+        points: [20, 15, 10],
+        status: "Active"
+      },
+      {
+        id: 102,
+        question: "Explain the difference between useState and useReducer.",
+        timeLimit: "45",
+        points: [15, 10],
+        status: "Active"
+      },
+      {
+        id: 103,
+        question: "What are the core web vitals and why do they matter?",
+        timeLimit: "90",
+        points: [30, 20, 10],
+        status: "Completed"
+      },
+      {
+        id: 104,
+        question: "How does the Event Loop work in Node.js?",
+        timeLimit: "120",
+        points: [50, 25],
+        status: "Completed"
       }
-    };
-    fetchAirdrops();
+    ];
+    
+    // Merge real airdrops with mock data so there is always something to see
+    setBonusAirdrops([...parsed, ...mockData]);
   }, []);
 
   useEffect(() => {
@@ -207,83 +200,42 @@ export default function InternDashboard() {
     return () => clearInterval(timer);
   }, [showAirdropModal, airdropTimeLeft]);
 
-  const handleStartAirdrop = async (airdrop) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8000/bonus-airdrops/${airdrop.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ action: "start" })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.detail || "Failed to start airdrop");
-        return;
-      }
-      setActiveAirdrop(airdrop);
-      setAirdropTimeLeft(parseInt(airdrop.time_limit || airdrop.timeLimit));
-      setShowAirdropModal(true);
-      setAirdropAnswer("");
-    } catch (e) {
-      console.error(e);
-      alert("An error occurred while starting the airdrop.");
-    }
+  const handleStartAirdrop = (airdrop) => {
+    setActiveAirdrop(airdrop);
+    setAirdropTimeLeft(parseInt(airdrop.timeLimit));
+    setShowAirdropModal(true);
+    setAirdropAnswer("");
   };
 
-  const handleSubmitAirdrop = async () => {
+  const handleSubmitAirdrop = () => {
     if (activeAirdrop) {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:8000/bonus-airdrops/${activeAirdrop.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-          body: JSON.stringify({ action: "submit", answer: airdropAnswer })
-        });
-        if (!res.ok) {
-          const err = await res.json();
-          alert(err.detail || "Failed to submit airdrop");
-        } else {
-          if (airdropTimeLeft > 0) {
-            alert("Bonus Airdrop submitted successfully!");
-          } else {
-            alert("Time is up! Your answer was automatically submitted.");
-          }
-        }
-        const refreshRes = await fetch(`http://localhost:8000/bonus-airdrops`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (refreshRes.ok) {
-          const data = await refreshRes.json();
-          setBonusAirdrops(data);
-        }
-      } catch (e) {
-        console.error(e);
-        alert("An error occurred while submitting.");
+      const updatedAirdrops = bonusAirdrops.map(a => 
+        a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
+      );
+      setBonusAirdrops(updatedAirdrops);
+      localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+      if (airdropTimeLeft > 0) {
+        alert("Bonus Airdrop submitted successfully!");
+      } else {
+        alert("Time is up! Your answer was automatically submitted.");
       }
     }
     setShowAirdropModal(false);
     setActiveAirdrop(null);
   };
 
-  async function fetchDomainInsight() {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/facts", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setCurrentInsight({
-          title: "Daily Domain Insight",
-          text: data.completed ? data.message : data.fact,
-          domain: data.domain || "SYSTEM",
-          icon: <Star size={16} />
-        });
-      }
-    } catch (e) {
-      console.error("Failed to fetch domain fact:", e);
-    }
-  };
+  const domainInsights = [
+    "A key principle of Frontend involves understanding performance.",
+    "React's Virtual DOM minimizes direct DOM manipulations to improve application rendering speed.",
+    "Debouncing and throttling are essential techniques for optimizing event-heavy operations like scrolling or typing.",
+    "State immutability in React ensures predictable data flow and enables effective re-rendering optimizations.",
+    "Core Web Vitals measure key user experience metrics: LCP (Largest Contentful Paint), FID, and CLS.",
+    "Code splitting with React.lazy and Suspense helps load components on-demand, reducing initial bundle size.",
+    "Accessibility (a11y) standards ensure web interfaces are usable by everyone, including assistive technologies.",
+    "Browser caching and Service Workers enable Progressive Web Apps (PWAs) to load quickly and offline.",
+    "Semantic HTML improves SEO, readability, and screen reader navigation by providing structural meaning.",
+    "CSS Grid and Flexbox combined provide modern responsive layout capabilities without heavy framework dependencies."
+  ];
 
   useEffect(() => {
     // 1. Auto-show modal once per day upon login / first visit
@@ -294,180 +246,90 @@ export default function InternDashboard() {
       localStorage.setItem("daily_domain_insight_last_date", todayStr);
     }
 
-    // 2. Fetch new fact every 10 seconds
-    fetchDomainInsight();
-    const interval = setInterval(fetchDomainInsight, 10000);
+    // 2. Rotate/Update insight fact index every 10 minutes (based on 10-min time block)
+    const updateInsightIndex = () => {
+      const tenMinBlock = Math.floor(Date.now() / (10 * 60 * 1000));
+      setCurrentInsightIndex(tenMinBlock % domainInsights.length);
+    };
+
+    updateInsightIndex();
+    const interval = setInterval(updateInsightIndex, 10000); // Check timestamp index every 10 seconds
 
     return () => clearInterval(interval);
   }, []);
 
+  // Dynamic Stats State
+  const [progress, setProgress] = useState(0);
+  const [aiScore, setAiScore] = useState(0);
+  const [attendancePercent, setAttendancePercent] = useState(0);
+  const [daysCompleted, setDaysCompleted] = useState(0);
+  const [totalDays, setTotalDays] = useState(30);
+  const [daysPresent, setDaysPresent] = useState(0);
+  const [daysAbsent, setDaysAbsent] = useState(0);
+  
+  useEffect(() => {
+    api.get("/api/intern/stats")
+      .then(res => {
+        if (!res.data.error) {
+          setProgress(res.data.progressPercent);
+          setAiScore(res.data.aiScore);
+          setAttendancePercent(res.data.attendancePercent);
+          setDaysCompleted(res.data.daysCompleted);
+          setTotalDays(res.data.totalDays);
+          setDaysPresent(res.data.daysPresent);
+          setDaysAbsent(res.data.daysAbsent);
+          if (res.data.currentDay > 1) {
+             setCurrentDay(res.data.currentDay);
+          }
+        }
+      })
+      .catch(err => console.error("Could not fetch intern stats:", err));
+  }, []);
+
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
-  const [curriculumData, setCurriculumData] = useState([]);
-
-  // Mock State (AI and Attendance)
-  const completedDaysCount = curriculumData.filter(t => t.status === "completed").length;
-  const missedDaysCount = curriculumData.filter(t => t.day < currentDay && t.status !== "completed").length;
-  const daysPresent = completedDaysCount + 1; // count current active day as present
-  const totalAttendanceDays = daysPresent + missedDaysCount;
-  const progress = curriculumData.length > 0 ? Math.round((completedDaysCount / curriculumData.length) * 100) : 0;
   
-  const attendancePercent = totalAttendanceDays > 0 ? Math.round((daysPresent / totalAttendanceDays) * 100) : 100;
-
-  const [aiScore, setAiScore] = useState(0);
-
-  const [tasksLoading, setTasksLoading] = useState(true);
-
-  const getCurrentDayData = () => {
-    return curriculumData.find(d => d.day === currentDay) || curriculumData[0] || { topic: "Loading...", desc: "Loading...", notes: "Loading..." };
-  };
-
-  const getNextDayData = () => {
-    return curriculumData.find(d => d.day === currentDay + 1) || { topic: "Course Completion" };
-  };
-
-  const fetchTasks = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/tasks/intern", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data)) {
-          const mappedTasks = data.map(t => ({
-            id: t.id,
-            day: t.day_number,
-            topic: t.title,
-            desc: t.description || `Learning materials for Day ${t.day_number}`,
-            notes: `Lecture_Notes_Day${t.day_number}.pdf`,
-            status: t.status === "submitted" || t.status === "approved" ? "completed" : t.status, // "locked", "in_progress", "completed", "pending"
-            coding_prompt: t.coding_prompt,
-            mcq_questions: t.mcq_questions,
-            task_type: t.task_type
-          }));
-          setCurriculumData(mappedTasks);
-          // Auto-set current day based on progress (first non-completed task)
-          const activeTask = mappedTasks.find(t => t.status !== "completed") || mappedTasks[mappedTasks.length - 1];
-          // For demo purposes, we lock it to Day 1 initially
-          // if (activeTask) {
-          //   setCurrentDay(activeTask.day);
-          // }
-        }
-      }
-    } catch (e) {
-      console.error("Failed to fetch tasks", e);
-    } finally {
-      setTasksLoading(false);
-    }
-  };
-
-  const fetchAnalytics = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/analytics/daily-questions/me", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.length > 0) {
-          const totalScore = data.reduce((sum, r) => sum + r.final_score, 0);
-          setAiScore(Math.round(totalScore / data.length));
-        }
-      }
-    } catch (e) {
-      console.error("Failed to fetch analytics", e);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-    fetchAnalytics();
-  }, []);
+  const curriculumData = [
+    { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
+    { day: 2, topic: "State and Props", desc: "Learn to handle component data flow using props and local state.", notes: "Lecture_Notes_Day2.pdf" },
+    { day: 3, topic: "React Hooks Lifecycle", desc: "Implement useEffect and customize functional hooks.", notes: "Lecture_Notes_Day3.pdf" },
+    { day: 4, topic: "Context API & Global State", desc: "Avoid prop drilling by introducing context providers.", notes: "Lecture_Notes_Day4.pdf" },
+    { day: 5, topic: "Routing and Layouts", desc: "Route single page interfaces cleanly using react-router.", notes: "Lecture_Notes_Day5.pdf" }
+  ];
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
   const [assessmentView, setAssessmentView] = useState("selection"); // selection, mcq, coding
   const [mcqDone, setMcqDone] = useState(false);
   const [codingDone, setCodingDone] = useState(false);
-  const [scenarioDone, setScenarioDone] = useState(false);
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [ticketsData, setTicketsData] = useState([]);
-  const [ticketReply, setTicketReply] = useState("");
-  const [newTicketForm, setNewTicketForm] = useState({ title: "", description: "" });
 
-  const fetchTickets = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/tickets", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setTicketsData(data);
-      }
-    } catch (e) {
-      console.error(e);
+  const ticketsData = [
+    {
+      id: "TKT-1042",
+      title: "Environment setup failing on local machine during Docker build",
+      date: "2 days ago",
+      status: "In Progress",
+      statusBg: "var(--bg-yellow-light)",
+      statusColor: "var(--warning-darker)",
+      tagBg: "var(--bg-red-lighter)",
+      tagColor: "var(--danger-darkest)",
+      adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
+    },
+    {
+      id: "TKT-0985",
+      title: "Missing lecture notes for Day 5",
+      date: "1 week ago",
+      status: "Resolved",
+      statusBg: "var(--bg-emerald-lighter)",
+      statusColor: "var(--success-darker)",
+      tagBg: "var(--bg-gray-light)",
+      tagColor: "var(--text-gray)",
+      adminReply: "The notes have been uploaded to the portal. Please refresh the page."
     }
-  };
-
-  useEffect(() => {
-    fetchTickets();
-  }, []);
-
-  const handleCreateTicket = async (e) => {
-    e.preventDefault();
-    if (!newTicketForm.title || !newTicketForm.description) return;
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/tickets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: newTicketForm.title,
-          description: newTicketForm.description,
-          domain: "General"
-        })
-      });
-      if (res.ok) {
-        setNewTicketForm({ title: "", description: "" });
-        setShowTicketForm(false);
-        fetchTickets();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleReplyTicket = async (e) => {
-    e.preventDefault();
-    if (!ticketReply.trim() || !selectedTicket) return;
-    
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ action: "message", message: ticketReply })
-      });
-      if (response.ok) {
-        const t = await response.json();
-        setTicketsData(ticketsData.map(tkt => tkt.id === selectedTicket.id ? t : tkt));
-        setSelectedTicket(t);
-        setTicketReply("");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  ];
 
   const [mcqStarted, setMcqStarted] = useState(false);
   const [mcqSubmitted, setMcqSubmitted] = useState(false);
@@ -476,21 +338,23 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const currentCurriculum = getCurrentDayData();
-  
-  let mcqQuestionsList = [];
-  try {
-    const rawQuestions = currentCurriculum.mcq_questions ? JSON.parse(currentCurriculum.mcq_questions) : [];
-    if (Array.isArray(rawQuestions)) {
-      mcqQuestionsList = rawQuestions.map(q => ({
-        id: q.id,
-        text: q.question || q.text,
-        options: q.options.map(opt => typeof opt === 'string' ? { label: opt, val: opt } : opt)
-      }));
-    }
-  } catch (e) {
-    console.error("Failed to parse MCQ questions", e);
-  }
+  const mcqQuestionsList = [
+    { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
+    { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
+    { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
+    { id: 4, text: "Virtual DOM updates are slower than Real DOM updates.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
+    { id: 5, text: "Which function is used to update state in useState hook?", options: [{ label: "setState()", val: "setState" }, { label: "The second returned element", val: "updater" }] },
+    { id: 6, text: "React components must start with a capital letter.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
+    { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
+    { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
+    { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
+    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
+    ...Array.from({ length: 20 }, (_, i) => ({
+      id: i + 11,
+      text: `Mock Question ${i + 11} for React assessment.`,
+      options: [{ label: "Option A", val: "A" }, { label: "Option B", val: "B" }, { label: "Option C", val: "C" }, { label: "Option D", val: "D" }]
+    }))
+  ];
 
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
@@ -500,15 +364,91 @@ export default function InternDashboard() {
   const [evalResult, setEvalResult] = useState(null);
 
   // Chat message state
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "Mentor", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
-  ]);
+  
+  
+
+  
+  // Global chat history from localstorage
+  const getInitialChat = () => {
+    const saved = localStorage.getItem("global_chat_history");
+    if (saved) return JSON.parse(saved);
+    return [
+      { sender: "Mentor", recipientId: "INT001", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
+    ];
+  };
+
+  const [chatMessages, setChatMessages] = useState(getInitialChat());
+
+  // Listen for cross-tab updates
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "global_chat_history" && e.newValue) {
+        setChatMessages(JSON.parse(e.newValue));
+      }
+      if (e.key === "app_bonus_airdrops" && e.newValue) {
+        const mockData = [
+          { id: 101, title: "React Context API Quick Fire", question: "In one sentence, explain when to use Context API vs Redux?", points: 50, timeLimit: 60, status: "Completed" }
+        ];
+        setBonusAirdrops([...JSON.parse(e.newValue), ...mockData]);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const [inputMsg, setInputMsg] = useState("");
+
+  const [userId, setUserId] = useState(null);
+  const ws = useRef(null);
+
+  useEffect(() => {
+    api.get("/api/auth/me")
+      .then(res => setUserId(res.data.id))
+      .catch(err => console.error("Could not fetch user ID:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const wsUri = baseUri.replace(/^http/, 'ws') + `/ws/chat/${userId}`;
+    
+    ws.current = new WebSocket(wsUri);
+    ws.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setChatMessages(prev => [...prev, {
+        sender: "Mentor", 
+        text: msg.content,
+        time: new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    };
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
+  }, [userId]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!inputMsg.trim()) return;
+
+    
+    const newMsg = { sender: "Intern", internId: "INT001", text: inputMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const updatedMessages = [...chatMessages, newMsg];
+    setChatMessages(updatedMessages);
+    localStorage.setItem("global_chat_history", JSON.stringify(updatedMessages));
+
+    setInputMsg("");
+  };
+
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
+    const score = Object.keys(answers).length * 50; // simple score
+    setMcqGrade(score);
     setMcqDone(true);
-    alert(`MCQ Test submitted! Your score will be evaluated by the backend upon final submission. Part A completed.`);
+    alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
     setAssessmentView("selection");
   };
 
@@ -541,7 +481,7 @@ export default function InternDashboard() {
     // Simulate AI compilation & scoring
     setTimeout(() => {
       setEvaluating(false);
-      const randomScore = Math.floor(6 + Math.random() * 5); // Score out of 10
+      const randomScore = Math.floor(80 + Math.random() * 20);
       setAiScore(randomScore);
       setEvalResult({
         score: randomScore,
@@ -551,38 +491,13 @@ export default function InternDashboard() {
         performance: 95,
         suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
       });
-      alert(`Coding assessment submitted! Score: ${randomScore}/10. Part B completed.`);
+      alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
       setCodingDone(true);
       setAssessmentView("selection");
     }, 2000);
   };
 
-  const handleCompleteDay = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const currentTask = getCurrentDayData();
-      
-      const payload = {
-        task_id: currentTask.id,
-        code_submission: code,
-        language: language,
-        mcq_answers: JSON.stringify(answers)
-      };
-
-      const res = await fetch("http://localhost:8000/submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        // Option to do something with data.mcq_score and data.ai_score
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
+  const handleCompleteDay = () => {
     alert(`Day ${currentDay} complete! Day ${currentDay + 1} will unlock at 12:00 AM.`);
     setIsDayLockedUntilMidnight(true);
     if (currentDay < curriculumData.length) {
@@ -591,7 +506,6 @@ export default function InternDashboard() {
     // Reset test states
     setMcqDone(false);
     setCodingDone(false);
-    setScenarioDone(false);
     setMcqStarted(false);
     setMcqSubmitted(false);
     setAnswers({});
@@ -600,19 +514,9 @@ export default function InternDashboard() {
     setEvalResult(null);
     setShowAssessment(false);
     setAssessmentView("selection");
-    
-    // Refresh tasks, analytics, and leaderboard to show updated status and points
-    fetchTasks();
-    fetchLeaderboard();
-    fetchAnalytics();
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: inputMsg, time: "Just now" }]);
-    setInputMsg("");
-  };
+
 
   const renderContent = () => {
     switch (activeTab) {
@@ -625,17 +529,17 @@ export default function InternDashboard() {
               <div className="stat-card">
                 <span className="stat-title">Current Milestone</span>
                 <span className="stat-value">Day {currentDay}</span>
-                <span className="stat-desc">{getCurrentDayData().topic}</span>
+                <span className="stat-desc">React Framework Basics</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Course Progress</span>
                 <span className="stat-value">{progress}%</span>
-                <span className="stat-desc">{completedDaysCount} of {curriculumData.length || 30} days completed</span>
+                <span className="stat-desc">{daysCompleted} of {totalDays} days completed</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">Attendance Rate</span>
                 <span className="stat-value">{attendancePercent}%</span>
-                <span className="stat-desc">{daysPresent} Days Present / {missedDaysCount} Days Absent</span>
+                <span className="stat-desc">{daysPresent} Days Present / {daysAbsent} Day{daysAbsent !== 1 ? "s" : ""} Absent</span>
               </div>
               <div className="stat-card">
                 <span className="stat-title">AI Evaluation Average</span>
@@ -643,6 +547,8 @@ export default function InternDashboard() {
                 <span className="stat-desc">Last updated 1 hour ago</span>
               </div>
             </div>
+              <InternCertificateCard />
+
 
             {/* Removed Attendance Calendar & Portfolio summary as requested */}
             
@@ -653,65 +559,33 @@ export default function InternDashboard() {
               <div style={{ flex: "1.2", display: "flex", flexDirection: "column", gap: "20px", overflowY: "auto", paddingRight: "4px" }}>
                 {/* Bonus Airdrops Banner */}
                 {(() => {
-                  const activeDrops = bonusAirdrops.filter(a => {
-                    if (a.status !== "PUBLISHED") return false;
-                    if (a.start_mode === 'fixed') {
-                      const t = a.start_time.endsWith('Z') ? a.start_time : a.start_time + 'Z';
-                      const startTime = new Date(t).getTime();
-                      const endTime = startTime + (parseInt(a.time_limit) || 0) * 1000;
-                      if (Date.now() > endTime) return false;
-                    }
-                    return true;
-                  });
+                  const activeDrops = bonusAirdrops.filter(a => a.status === "APPROVED");
                   const hasActive = activeDrops.length > 0;
                   const drop = hasActive ? activeDrops[0] : null;
-
-                  let canParticipateBanner = true;
-                  let upcomingTimeBanner = "";
-                  if (drop && drop.start_mode === 'fixed') {
-                    const t = drop.start_time.endsWith('Z') ? drop.start_time : drop.start_time + 'Z';
-                    const startTime = new Date(t).getTime();
-                    if (Date.now() < startTime) {
-                      canParticipateBanner = false;
-                      upcomingTimeBanner = new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    }
-                  }
 
                   return (
                     <div className="bonus-airdrop-banner" style={{ margin: 0, padding: "16px 20px" }}>
                       <div className="airdrop-content">
                         <h3 className="airdrop-title" style={{ fontSize: "16px" }}>
-                          🎁 {hasActive ? "Live Bonus Airdrop!" : "Bonus Airdrops"}
+                          ≡ƒÄü {hasActive ? "Live Bonus Airdrop!" : "Bonus Airdrops"}
                           {hasActive && <span className="airdrop-badge" style={{ fontSize: "10px", padding: "2px 8px" }}>Active Now</span>}
                         </h3>
                         <p className="airdrop-question" style={{ fontSize: "14px" }}>
-                          {hasActive ? drop.title : "Stay tuned for unexpected pop quizes and bonus points!"}
+                          {hasActive ? drop.question : "Stay tuned for unexpected pop quizes and bonus points!"}
                         </p>
                       </div>
                       <div className="airdrop-actions">
                         {hasActive && (
                           <div className="airdrop-timer" style={{ fontSize: "14px" }}>
-                            {drop.start_mode === 'fixed' ? '🔒 Fixed: ' : '⏱️ Flexible: '} {drop.time_limit || drop.timeLimit}s
+                            ΓÅ▒∩╕Å {drop.timeLimit}s
                           </div>
                         )}
                         <button 
                           className="btn-participate"
-                          style={{ 
-                            padding: "8px 16px", 
-                            fontSize: "12px",
-                            opacity: (hasActive && !canParticipateBanner) ? 0.6 : 1,
-                            cursor: (hasActive && !canParticipateBanner) ? "not-allowed" : "pointer"
-                          }}
-                          onClick={() => {
-                            if (hasActive) {
-                              if (canParticipateBanner) handleStartAirdrop(drop);
-                            } else {
-                              setActiveTab("Bonus Airdrops");
-                            }
-                          }}
-                          disabled={hasActive && !canParticipateBanner}
+                          style={{ padding: "8px 16px", fontSize: "12px" }}
+                          onClick={() => hasActive ? handleStartAirdrop(drop) : setActiveTab("Bonus Airdrops")}
                         >
-                          {!hasActive ? "View" : (!canParticipateBanner ? `Starts at ${upcomingTimeBanner}` : "Participate")}
+                          {hasActive ? "Participate" : "View"}
                         </button>
                       </div>
                     </div>
@@ -720,16 +594,7 @@ export default function InternDashboard() {
 
                 {/* Daily Scenario Activity Calendar */}
                 <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <DailyScenarioCalendar 
-                    onStartScenario={(day) => setActiveTab("Daily Scenario")} 
-                    curriculumData={curriculumData.filter(t => t.task_type === "simulation")}
-                    currentDay={(() => {
-                      const simTasks = curriculumData.filter(t => t.task_type === "simulation");
-                      if (simTasks.length === 0) return 1;
-                      const activeTask = simTasks.find(t => t.status !== "completed") || simTasks[simTasks.length - 1];
-                      return activeTask.day;
-                    })()}
-                  />
+                  <DailyScenarioCalendar onStartScenario={(day) => setActiveTab("Daily Scenario")} />
                 </div>
               </div>
 
@@ -740,38 +605,38 @@ export default function InternDashboard() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <div style={{ width: "32px", height: "32px", borderRadius: "8px", backgroundColor: "var(--bg-blue-light)", color: "var(--primary-color)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px" }}>
-                        🎯
+                        ≡ƒÄ»
                       </div>
                       <div>
                         <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "var(--text-dark)" }}>Today's Objective</h3>
-                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {currentDay}: {getCurrentDayData().topic}</span>
+                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day 12: React Framework</span>
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "4px", backgroundColor: "var(--bg-red-light)", padding: "4px 8px", borderRadius: "12px" }}>
-                      <span style={{ fontSize: "12px" }}>⏳</span>
+                      <span style={{ fontSize: "12px" }}>ΓÅ│</span>
                       <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--danger-color)" }}>45m</span>
                     </div>
                   </div>
                   
                   <div style={{ marginBottom: "16px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", marginBottom: "6px", fontWeight: 600 }}>
-                      <span style={{ color: "var(--text-muted)" }}>Course Progress</span>
-                      <span style={{ color: "var(--primary-color)" }}>{progress}%</span>
+                      <span style={{ color: "var(--text-muted)" }}>Module Progress</span>
+                      <span style={{ color: "var(--primary-color)" }}>65%</span>
                     </div>
                     <div style={{ width: "100%", backgroundColor: "var(--border-color)", borderRadius: "6px", height: "6px", overflow: "hidden" }}>
-                      <div style={{ width: `${progress}%`, backgroundColor: "var(--primary-color)", height: "100%", borderRadius: "6px", transition: "width 0.3s ease" }}></div>
+                      <div style={{ width: "65%", backgroundColor: "var(--primary-color)", height: "100%", borderRadius: "6px" }}></div>
                     </div>
                   </div>
 
                   <div style={{ marginBottom: "16px" }}>
                     <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "8px" }}>
                       <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
-                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-green-light)", color: "var(--success-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", flexShrink: 0 }}>✓</div>
-                        {getCurrentDayData().topic}
+                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-green-light)", color: "var(--success-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px" }}>Γ£ô</div>
+                        Component Composition
                       </li>
                       <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-slate-dark)", fontWeight: 500 }}>
-                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-gray-light)", color: "var(--text-gray-light)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", flexShrink: 0 }}>▶</div>
-                        {getCurrentDayData().desc}
+                        <div style={{ width: "20px", height: "20px", borderRadius: "6px", backgroundColor: "var(--bg-gray-light)", color: "var(--text-gray-light)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px" }}>Γû╢</div>
+                        JSX Syntax & Rules
                       </li>
                     </ul>
                   </div>
@@ -779,10 +644,10 @@ export default function InternDashboard() {
                   <div style={{ padding: "12px", backgroundColor: "var(--bg-light)", borderRadius: "10px", border: "1px solid var(--border-color)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                        <span style={{ fontSize: "12px" }}>📅</span>
+                        <span style={{ fontSize: "12px" }}>≡ƒôà</span>
                         <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Upcoming</span>
                       </div>
-                      <h4 style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--text-dark)" }}>{getNextDayData().topic}</h4>
+                      <h4 style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--text-dark)" }}>React Hook Refactor</h4>
                     </div>
                     <button className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "11px", fontWeight: 600, backgroundColor: "var(--text-dark)", color: "var(--card-bg)", border: "none", borderRadius: "6px" }} onClick={handleJoinMeeting}>Join</button>
                   </div>
@@ -809,16 +674,22 @@ export default function InternDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {leaderboardData.slice(0, 5).map((intern) => (
-                          <tr key={intern.user_id}>
+                        {[
+                          { rank: 1, name: "Anu Sharma", points: 950 },
+                          { rank: 2, name: "Raj Patel", points: 880 },
+                          { rank: 3, name: "John Doe (You)", points: 850, isCurrent: true },
+                          { rank: 4, name: "Alice Smith", points: 790 },
+                          { rank: 5, name: "Bob Jones", points: 720 },
+                        ].map((intern) => (
+                          <tr key={intern.rank} style={intern.isCurrent ? { backgroundColor: "var(--bg-blue-light)", fontWeight: "bold" } : {}}>
                             <td style={{ padding: "8px" }}>{intern.rank}</td>
                             <td style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px" }}>
-                              <div style={{ width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "var(--border-gray)", color: "var(--text-gray-muted)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", fontWeight: "bold" }}>
-                                {intern.user_name.split(" ")[0][0]}{intern.user_name.split(" ")[1] ? intern.user_name.split(" ")[1][0] : ""}
+                              <div style={{ width: "24px", height: "24px", borderRadius: "50%", backgroundColor: intern.isCurrent ? "var(--primary-color)" : "var(--border-gray)", color: intern.isCurrent ? "var(--card-bg)" : "var(--text-gray-muted)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "10px", fontWeight: "bold" }}>
+                                {intern.name.split(" ")[0][0]}{intern.name.split(" ")[1] ? intern.name.split(" ")[1][0] : ""}
                               </div>
-                              {intern.user_name}
+                              {intern.name}
                             </td>
-                            <td style={{ color: "var(--primary-dark)", fontWeight: 600, padding: "8px" }}>{intern.total_points} pts</td>
+                            <td style={{ color: "var(--primary-dark)", fontWeight: 600, padding: "8px" }}>{intern.points} pts</td>
                           </tr>
                         ))}
                       </tbody>
@@ -831,14 +702,15 @@ export default function InternDashboard() {
         );
 
       case "Learning":
-        const currentCurriculum = getCurrentDayData();
+        const currentCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[curriculumData.length - 1];
         
         if (isDayLockedUntilMidnight) {
           return (
             <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
-              <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🔒</p>
+              <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>≡ƒöÆ</p>
               <h3>Day {currentDay} is Locked</h3>
               <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
+              <button className="btn btn-secondary" onClick={() => setIsDayLockedUntilMidnight(false)}>Bypass / Unlock Now (Demo Mode)</button>
             </div>
           );
         }
@@ -857,7 +729,7 @@ export default function InternDashboard() {
                       <h4>Part A: MCQ Assessment</h4>
                       <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
                       {mcqDone ? (
-                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
+                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>Γ£ô Completed</span>
                       ) : (
                         <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
                       )}
@@ -866,7 +738,7 @@ export default function InternDashboard() {
                       <h4>Part B: Coding Assessment</h4>
                       <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Write and execute code in our compiler.</p>
                       {codingDone ? (
-                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
+                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>Γ£ô Completed</span>
                       ) : (
                         <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ width: "100%", marginTop: "12px" }}>Start Coding</button>
                       )}
@@ -875,7 +747,7 @@ export default function InternDashboard() {
 
                   <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "var(--bg-light)", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
                     <h4 style={{ margin: "0 0 12px 0", color: "var(--text-dark)", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                      📋 Rules and Conditions for Assessment
+                      ≡ƒôï Rules and Conditions for Assessment
                     </h4>
                     <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6" }}>
                       <li><b>Completion:</b> Both Part A (MCQ) and Part B (Coding) must be completed to unlock the next day's module.</li>
@@ -908,7 +780,7 @@ export default function InternDashboard() {
                       {/* Top Bar: Timer and Submit */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-gray)", paddingBottom: "12px", marginBottom: "16px" }}>
                         <div style={{ color: "var(--danger-color)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                          ⏱️ Timer: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
+                          ΓÅ▒∩╕Å Timer: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
                         </div>
                         <button className="btn btn-primary" onClick={handleMcqSubmit} style={{ padding: "8px 16px", backgroundColor: "var(--success-color)", borderColor: "var(--success-color)" }}>Submit Test</button>
                       </div>
@@ -942,30 +814,22 @@ export default function InternDashboard() {
 
                         {/* Right Content: Current Question */}
                         <div style={{ flex: 1 }}>
-                          {mcqQuestionsList.length > 0 ? (
-                            <>
-                              <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
-                                <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
-                              </h4>
-                              
-                              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
-                                  <button 
-                                    key={opt.val}
-                                    className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                    onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                    style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
-                                  >
-                                    {opt.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </>
-                          ) : (
-                            <div style={{ textAlign: "center", padding: "40px" }}>
-                              <p>No questions available for this day.</p>
-                            </div>
-                          )}
+                          <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
+                            <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
+                          </h4>
+                          
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
+                              <button 
+                                key={opt.val}
+                                className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
+                                onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
+                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
 
                           {/* Navigation Buttons */}
                           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>
@@ -1070,7 +934,7 @@ export default function InternDashboard() {
                 <h3 style={{ margin: 0 }}>Day {currentCurriculum.day}: {currentCurriculum.topic}</h3>
                 <p style={{ fontSize: "14px", color: "var(--text-gray-muted)", marginTop: "6px", marginBottom: "16px" }}>{currentCurriculum.desc}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "var(--bg-gray-light)", padding: "10px 16px", borderRadius: "8px", width: "fit-content" }}>
-                  <span style={{ fontSize: "13px", color: "#374151" }}>📄 {currentCurriculum.notes}</span>
+                  <span style={{ fontSize: "13px", color: "#374151" }}>≡ƒôä {currentCurriculum.notes}</span>
                   <button onClick={() => alert(`Downloading ${currentCurriculum.notes}`)} style={{ background: "none", border: "none", color: "var(--primary-dark)", fontWeight: "600", cursor: "pointer", fontSize: "13px", padding: 0, textDecoration: "underline" }}>Download PDF Notes</button>
                 </div>
               </div>
@@ -1086,17 +950,30 @@ export default function InternDashboard() {
               <div className="table-container">
                 <table className="table">
                   <thead>
-                    <tr><th>Host</th><th>Topic</th><th>Time</th><th>Action</th></tr>
+                    <tr>
+                      <th>Topic</th>
+                      <th>Scheduled Time</th>
+                      <th>Action</th>
+                    </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td><b>Dr. Sakthi</b></td>
-                      <td>React Hook Refactoring Standup</td>
-                      <td>Today, 3:00 PM</td>
-                      <td>
-                        <button onClick={handleJoinMeeting} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join zoom</button>
-                      </td>
-                    </tr>
+                    {meetings.length > 0 ? meetings.map((meeting) => (
+                      <tr key={meeting.id}>
+                        <td>{meeting.title}</td>
+                        <td>{new Date().toLocaleDateString()} (Active)</td>
+                        <td>
+                          <button onClick={() => {
+                            setActiveMeetingRoom(meeting.room_code);
+                            setIsMeetingActive(true);
+                            setIsMeetingMinimized(false);
+                          }} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join</button>
+                        </td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan="3" style={{textAlign: 'center'}}>No upcoming meetings</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1110,7 +987,7 @@ export default function InternDashboard() {
           return (
             <div className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "var(--danger-darker)", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
+                <h3 style={{ margin: 0, color: "var(--danger-darker)", display: "flex", alignItems: "center", gap: "8px" }}>ΓÜá∩╕Å File a Support Ticket</h3>
                 <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Tickets</button>
               </div>
               
@@ -1136,16 +1013,19 @@ export default function InternDashboard() {
 
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
-                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" value={newTicketForm.title} onChange={e => setNewTicketForm({...newTicketForm, title: e.target.value})} />
+                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" />
                 </div>
                 
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
-                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..." value={newTicketForm.description} onChange={e => setNewTicketForm({...newTicketForm, description: e.target.value})}></textarea>
+                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..."></textarea>
                 </div>
                 
                 <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "var(--danger-darker)", borderColor: "var(--danger-darker)" }} onClick={handleCreateTicket}>Submit Ticket</button>
+                  <button className="btn btn-primary" style={{ backgroundColor: "var(--danger-darker)", borderColor: "var(--danger-darker)" }} onClick={() => {
+                    alert("Ticket submitted successfully! Admin will review it shortly.");
+                    setShowTicketForm(false);
+                  }}>Submit Ticket</button>
                 </div>
               </div>
             </div>
@@ -1174,42 +1054,21 @@ export default function InternDashboard() {
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
-                          <span style={{ fontSize: "11px", color: "var(--danger-darkest)", fontWeight: 700, backgroundColor: "var(--bg-red-lighter)", padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>TKT-{ticket.id}</span>
-                          <span style={{ fontSize: "13px", color: "var(--text-gray-dark)", fontWeight: 500, textDecoration: ticket.status === "closed" ? "line-through" : "none" }}>{ticket.title}</span>
+                          <span style={{ fontSize: "11px", color: ticket.tagColor, fontWeight: 700, backgroundColor: ticket.tagBg, padding: "2px 6px", borderRadius: "4px", marginRight: "8px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "13px", color: "var(--text-gray-dark)", fontWeight: 500, textDecoration: ticket.status === "Resolved" ? "line-through" : "none" }}>{ticket.title}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "var(--text-gray-muted)" }}>Filed: {new Date(ticket.created_at).toLocaleDateString()}</span>
-                          <span className={`badge ${ticket.status === 'resolved' ? 'badge-success' : ticket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'resolved' ? '#d1fae5' : ticket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'resolved' ? '#065f46' : ticket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
-                          {ticket.status === 'in_progress' ? 'Assigned' : ticket.status}
-                        </span>
+                          <span style={{ fontSize: "11px", color: "var(--text-gray-muted)" }}>Filed: {ticket.date}</span>
+                          <span className="badge" style={{ backgroundColor: ticket.statusBg, color: ticket.statusColor }}>{ticket.status}</span>
                         </div>
                       </div>
                       
                       {selectedTicket?.id === ticket.id && (
-                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--bg-gray-light)" }} onClick={(e) => e.stopPropagation()}>
-                          <div style={{ padding: "12px", backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5", marginBottom: "12px" }}>
-                            {ticket.description}
+                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--bg-gray-light)" }}>
+                          <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Admin Reply</h5>
+                          <div style={{ backgroundColor: "var(--bg-light)", padding: "12px", borderRadius: "6px", borderLeft: "3px solid var(--primary-color)" }}>
+                            <p style={{ margin: 0, fontSize: "13px", color: "var(--text-slate-dark)", lineHeight: "1.5" }}>{ticket.adminReply}</p>
                           </div>
-                          
-                          <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Messages</h5>
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
-                            {ticket.messages && ticket.messages.length === 0 ? (
-                              <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
-                            ) : (
-                              ticket.messages && ticket.messages.map((m, idx) => (
-                                <div key={idx} style={{ padding: "12px", backgroundColor: m.sender_role === "intern" ? "#f3f4f6" : "#eff6ff", borderRadius: "8px", border: `1px solid ${m.sender_role === "intern" ? "#e5e7eb" : "#bfdbfe"}` }}>
-                                  <div style={{ fontSize: "12px", fontWeight: 700, color: m.sender_role === "intern" ? "#374151" : "#1d4ed8", marginBottom: "4px" }}>{m.sender_name}</div>
-                                  <div style={{ fontSize: "13px", color: "#1f2937" }}>{m.message}</div>
-                                </div>
-                              ))
-                            )}
-                          </div>
-                          {ticket.status !== "closed" && ticket.status !== "resolved" && (
-                            <div style={{ display: "flex", gap: "10px" }}>
-                              <input type="text" className="form-control" placeholder="Write a reply..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
-                              <button className="btn btn-primary" onClick={handleReplyTicket}>Send Reply</button>
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -1230,29 +1089,29 @@ export default function InternDashboard() {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: "16px", color: "var(--card-bg)", fontWeight: 600 }}>Dr. Sakthi</h3>
-                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Mentor • Online</p>
+                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Mentor ΓÇó Online</p>
               </div>
             </div>
 
             {/* Chat Body */}
             <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
-              {chatMessages.map((msg, i) => (
-                <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
+              {chatMessages.filter(m => m.internId === "INT001" || m.recipientId === "INT001").map((msg, i) => (
+                <div key={i} style={{ alignSelf: msg.sender === "Intern" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
                   <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
-                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
+                    backgroundColor: msg.sender === "Intern" ? "var(--primary-dark)" : "var(--card-bg)", 
+                    color: msg.sender === "Intern" ? "var(--card-bg)" : "var(--text-darker)", 
                     padding: "10px 14px 22px 14px", 
                     borderRadius: "12px", 
-                    borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
-                    borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
+                    borderBottomRightRadius: msg.sender === "Intern" ? "0" : "12px",
+                    borderBottomLeftRadius: msg.sender !== "Intern" ? "0" : "12px",
                     fontSize: "14px", 
                     boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
                     wordBreak: "break-word",
-                    border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
+                    border: msg.sender !== "Intern" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
-                      {msg.time} {msg.sender === "You" && "✓✓"}
+                    <span style={{ fontSize: "10px", color: msg.sender === "Intern" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
+                      {msg.time} {msg.sender === "Intern" && "Γ£ôΓ£ô"}
                     </span>
                   </div>
                 </div>
@@ -1278,29 +1137,11 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} onComplete={() => setScenarioDone(true)} internId={localStorage.getItem("user_id") || 1} />;
+        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
 
       case "Bonus Airdrops":
-        const activeDrops = bonusAirdrops.filter(a => {
-          if (a.status !== "PUBLISHED") return false;
-          if (a.start_mode === 'fixed') {
-            const t = a.start_time.endsWith('Z') ? a.start_time : a.start_time + 'Z';
-            const startTime = new Date(t).getTime();
-            const endTime = startTime + (parseInt(a.time_limit) || 0) * 1000;
-            if (Date.now() > endTime) return false;
-          }
-          return true;
-        });
-        const completedDrops = bonusAirdrops.filter(a => {
-          if (a.status === "FINALIZED") return true;
-          if (a.status === "PUBLISHED" && a.start_mode === 'fixed') {
-            const t = a.start_time.endsWith('Z') ? a.start_time : a.start_time + 'Z';
-            const startTime = new Date(t).getTime();
-            const endTime = startTime + (parseInt(a.time_limit) || 0) * 1000;
-            if (Date.now() > endTime) return true;
-          }
-          return false;
-        });
+        const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
+        const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
         
         return (
           <div style={{ paddingBottom: "40px" }}>
@@ -1329,27 +1170,7 @@ export default function InternDashboard() {
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {activeDrops.map(drop => {
-                      let canParticipate = true;
-                      let upcomingTime = "";
-                      if (drop.start_mode === 'fixed') {
-                        const t = drop.start_time.endsWith('Z') ? drop.start_time : drop.start_time + 'Z';
-                        const startTime = new Date(t).getTime();
-                        if (Date.now() < startTime) {
-                          canParticipate = false;
-                          upcomingTime = new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        }
-                        if (drop.end_time) {
-                          const e = drop.end_time.endsWith('Z') ? drop.end_time : drop.end_time + 'Z';
-                          const endTime = new Date(e).getTime();
-                          if (Date.now() > endTime) {
-                            canParticipate = false;
-                            upcomingTime = "Ended";
-                          }
-                        }
-                      }
-                      
-                      return (
+                    {activeDrops.map(drop => (
                       <div key={drop.id} style={{ 
                         backgroundColor: "var(--card-bg)", 
                         border: "1px solid var(--border-color)", 
@@ -1363,36 +1184,35 @@ export default function InternDashboard() {
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8" }}>
-                              🎁 POP QUIZ
+                              ≡ƒÄü POP QUIZ
                             </span>
                             <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-                              {drop.start_mode === 'fixed' ? '🔒 Fixed: ' : '⏱️ Flexible: '} {drop.time_limit || drop.timeLimit}s
+                              {drop.timeLimit}s time limit
                             </span>
                           </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.title}</p>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
                         </div>
                         
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                           <button 
-                            onClick={() => canParticipate && handleStartAirdrop(drop)}
-                            disabled={!canParticipate}
+                            onClick={() => handleStartAirdrop(drop)}
                             style={{ 
-                              backgroundColor: canParticipate ? "#ec4899" : "#fbcfe8", 
-                              color: canParticipate ? "#fff" : "#be185d", 
+                              backgroundColor: "#ec4899", 
+                              color: "#fff", 
                               border: "none", 
                               padding: "8px 16px", 
                               borderRadius: "6px", 
                               fontWeight: 600, 
                               fontSize: "13px",
-                              cursor: canParticipate ? "pointer" : "not-allowed",
-                              boxShadow: canParticipate ? "0 2px 4px rgba(236, 72, 153, 0.2)" : "none"
+                              cursor: "pointer",
+                              boxShadow: "0 2px 4px rgba(236, 72, 153, 0.2)"
                             }}
                           >
-                            {!canParticipate ? (upcomingTime === "Ended" ? "Ended" : `Starts at ${upcomingTime}`) : "Participate"}
+                            Participate
                           </button>
                         </div>
                       </div>
-                    )})}
+                    ))}
                   </div>
                 )}
               </div>
@@ -1419,15 +1239,15 @@ export default function InternDashboard() {
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 700, backgroundColor: "#e2e8f0", padding: "2px 8px", borderRadius: "4px" }}>
-                              🏁 FINISHED
+                              ≡ƒÅü FINISHED
                             </span>
                           </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.title}</p>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
                         </div>
                         
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
                           <div style={{ backgroundColor: "#e2e8f0", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600 }}>
-                            ✓ Challenge Ended
+                            Γ£ô Challenge Ended
                           </div>
                         </div>
                       </div>
@@ -1451,16 +1271,16 @@ export default function InternDashboard() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
             {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>Γÿ░</button>
           </div>
           <ul>
             {[
-              { id: "Overview", icon: "📊" },
-              { id: "Learning", icon: "📚" },
-              { id: "Daily Scenario", icon: "🧩" },
-              { id: "Tickets", icon: "🎫" },
-              { id: "Chat with Mentor", icon: "💬" },
-              { id: "Bonus Airdrops", icon: "🎁" }
+              { id: "Overview", icon: "≡ƒôè" },
+              { id: "Learning", icon: "≡ƒôÜ" },
+              { id: "Daily Scenario", icon: "≡ƒº⌐" },
+              { id: "Tickets", icon: "≡ƒÄ½" },
+              { id: "Chat with Mentor", icon: "≡ƒÆ¼" },
+              { id: "Bonus Airdrops", icon: "≡ƒÄü" }
             ].map((tab) => (
               <li
                 key={tab.id}
@@ -1475,7 +1295,7 @@ export default function InternDashboard() {
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          {isSidebarOpen ? "Logout" : "🚪"}
+          {isSidebarOpen ? "Logout" : "≡ƒÜ¬"}
         </button>
       </div>
 
@@ -1483,7 +1303,7 @@ export default function InternDashboard() {
       <div className="main">
         <div className="header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: "var(--text-color)" }}>☰</button>}
+            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: "var(--text-color)" }}>Γÿ░</button>}
             <h2>{isMeetingActive && !isMeetingMinimized ? "Live Meeting Room" : activeTab}</h2>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -1599,7 +1419,7 @@ export default function InternDashboard() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: "#2b2d31", borderBottom: "1px solid #3f4248" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#da373c", display: "inline-block" }}></span>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5" }}>LIVE • {activeMeetingRoom}</span>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5" }}>LIVE ΓÇó {activeMeetingRoom}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button 
@@ -1607,14 +1427,14 @@ export default function InternDashboard() {
                 style={{ background: "none", border: "none", color: "#b5bac1", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Maximize to full meeting screen"
               >
-                ⛶
+                Γ¢╢
               </button>
               <button 
                 onClick={handleEndMeeting}
                 style={{ background: "none", border: "none", color: "#fa5252", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Leave Meeting"
               >
-                🚪
+                ≡ƒÜ¬
               </button>
             </div>
           </div>
@@ -1632,7 +1452,7 @@ export default function InternDashboard() {
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: "#2b2d31" }}>
             <button onClick={() => setIsMeetingMinimized(false)} style={{ backgroundColor: "#5865f2", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
-              <span>Expand Call</span> ⛶
+              <span>Expand Call</span> Γ¢╢
             </button>
             <button onClick={handleEndMeeting} style={{ backgroundColor: "#da373c", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
               Leave Call
@@ -1646,7 +1466,7 @@ export default function InternDashboard() {
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
           <div style={{ backgroundColor: "#ffffff", borderRadius: "20px", padding: "36px", maxWidth: "460px", width: "100%", textAlign: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
             <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "32px", margin: "0 auto 16px auto" }}>
-              🎉
+              ≡ƒÄë
             </div>
             <h2 style={{ fontSize: "22px", fontWeight: 800, color: "#0f172a", margin: "0 0 8px 0" }}>Thank You for Attending!</h2>
             <p style={{ color: "#64748b", fontSize: "14px", lineHeight: "1.6", margin: "0 0 20px 0" }}>
@@ -1712,7 +1532,7 @@ export default function InternDashboard() {
                 justifyContent: "center"
               }}
             >
-              ✕
+              Γ£ò
             </button>
 
             {/* Top Star/Sparkle Icon Badge */}
@@ -1748,7 +1568,7 @@ export default function InternDashboard() {
               display: "inline-block",
               marginBottom: "24px"
             }}>
-              {currentInsight.domain}
+              FRONTEND
             </span>
 
             {/* Fact Box */}
@@ -1766,7 +1586,7 @@ export default function InternDashboard() {
                 lineHeight: "1.6",
                 margin: 0
               }}>
-                "{currentInsight.text}"
+                "{domainInsights[currentInsightIndex]}"
               </p>
             </div>
 
@@ -1807,99 +1627,32 @@ export default function InternDashboard() {
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "24px" }}>🎁</span>
+                <span style={{ fontSize: "24px" }}>≡ƒÄü</span>
                 <h3 style={{ margin: 0, fontSize: "18px", color: "var(--text-color)" }}>Bonus Airdrop Challenge</h3>
               </div>
               <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "#fee2e2" : "#f1f5f9", color: airdropTimeLeft <= 10 ? "#ef4444" : "#475569", padding: "6px 12px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                ⏱ {airdropTimeLeft}s
+                ΓÅ▒ {airdropTimeLeft}s
               </div>
             </div>
             
             <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0", marginBottom: "20px" }}>
-              <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "var(--primary-dark)" }}>{activeAirdrop.title}</h4>
               <p style={{ margin: 0, fontSize: "15px", fontWeight: 500, color: "#1e293b", lineHeight: 1.5 }}>
-                {activeAirdrop.task_config?.question || activeAirdrop.task_config?.statement || activeAirdrop.description}
+                {activeAirdrop.question}
               </p>
             </div>
 
-            <div style={{ marginBottom: "20px" }}>
-              {activeAirdrop.task_type === "mcq" && activeAirdrop.task_config?.options && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {activeAirdrop.task_config.options.map((opt, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setAirdropAnswer(opt)}
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        backgroundColor: airdropAnswer === opt ? "var(--primary-color)" : "#fff",
-                        color: airdropAnswer === opt ? "#fff" : "var(--text-dark)",
-                        border: airdropAnswer === opt ? "none" : "1px solid var(--border-color)",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        fontWeight: 500
-                      }}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {activeAirdrop.task_type === "true_false" && (
-                <div style={{ display: "flex", gap: "12px" }}>
-                  {["True", "False"].map(val => (
-                    <button
-                      key={val}
-                      onClick={() => setAirdropAnswer(val === "True")}
-                      style={{
-                        flex: 1,
-                        padding: "12px",
-                        textAlign: "center",
-                        backgroundColor: String(airdropAnswer) === val ? "var(--primary-color)" : "#fff",
-                        color: String(airdropAnswer) === val ? "#fff" : "var(--text-dark)",
-                        border: String(airdropAnswer) === val ? "none" : "1px solid var(--border-color)",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        fontWeight: 600
-                      }}
-                    >
-                      {val}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {["pattern", "fill_blank"].includes(activeAirdrop.task_type) && (
-                <div>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", marginBottom: "8px" }}>Your Answer</label>
-                  <input 
-                    type="text" 
-                    value={airdropAnswer || ""}
-                    onChange={(e) => setAirdropAnswer(e.target.value)}
-                    style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none" }}
-                    placeholder="Type your answer here..."
-                    autoFocus
-                  />
-                </div>
-              )}
-
-              {["match", "arrange"].includes(activeAirdrop.task_type) && (
-                <div>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", marginBottom: "8px" }}>Your Answer (Format as JSON)</label>
-                  <p style={{ fontSize: "12px", color: "var(--text-gray-light)", marginBottom: "8px" }}>
-                    {activeAirdrop.task_type === "match" ? "Provide a JSON object mapping keys to values (e.g. {\"A\":\"1\", \"B\":\"2\"})" : "Provide a JSON array of strings in correct order (e.g. [\"A\", \"B\"])"}
-                  </p>
-                  <textarea 
-                    rows="4" 
-                    value={airdropAnswer || ""}
-                    onChange={(e) => setAirdropAnswer(e.target.value)}
-                    style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", resize: "none" }}
-                    placeholder="Enter JSON here..."
-                    autoFocus
-                  />
-                </div>
-              )}
+            <div>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", marginBottom: "8px" }}>Your Answer (Run fast!)</label>
+              <textarea 
+                rows="4" 
+                value={airdropAnswer}
+                onChange={(e) => setAirdropAnswer(e.target.value)}
+                style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", resize: "none", color: "var(--text-color)", transition: "border-color 0.2s" }}
+                onFocus={(e) => e.target.style.borderColor = "#6366f1"}
+                onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
+                placeholder="Type your solution here..."
+                autoFocus
+              />
             </div>
 
             <button 
@@ -1914,4 +1667,3 @@ export default function InternDashboard() {
     </div>
   );
 }
-

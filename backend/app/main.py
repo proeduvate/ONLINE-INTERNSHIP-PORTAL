@@ -120,7 +120,9 @@ from app.api.v1.endpoints.airdrops import router as airdrops_router
 from app.api.v1.endpoints.leaderboard import router as leaderboard_router
 from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
+from app.api.v1.endpoints.batch_analytics import router as batch_analytics_router
 from routers import meetings
+from routers import certificates
 
 # Initialize analytics DB
 from app.db.analytics_session import engine as analytics_engine
@@ -133,7 +135,13 @@ app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
-app.include_router(meetings.router)
+app.include_router(batch_analytics_router)
+
+# Support both /api/v1 and old paths for meetings
+app.include_router(meetings.router, prefix="/api/v1/meetings", tags=["meetings"])
+app.include_router(meetings.router, prefix="/api/meetings", tags=["meetings"])
+app.include_router(certificates.router, prefix="/api/v1/certificates", tags=["certificates"])
+app.include_router(certificates.router, prefix="/api/certificates", tags=["certificates"])
 
 
 # ==========================================
@@ -491,6 +499,7 @@ def get_intern_tasks_with_unlock_status(
             
         results.append({
             "id": t.id,
+            "task_type": t.task_type,
             "day_number": t.day_number,
             "title": t.title,
             "description": t.description,
@@ -2095,6 +2104,7 @@ def process_end_of_day_deadline():
 
 @app.on_event("startup")
 def start_scheduler():
+
     scheduler = BackgroundScheduler()
     # UTC times mapped from IST: 9 AM IST = 3:30 AM UTC, 2 PM IST = 8:30 AM UTC, 7 PM IST = 1:30 PM UTC
     scheduler.add_job(send_daily_reminders, 'cron', hour=3, minute=30, args=["morning"])

@@ -43,7 +43,7 @@ const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDa
               onClick={() => setSelectedDay(selectedDay === day ? null : day)}
             >
               <span className="day-number">{day}</span>
-              {status === 'completed' && <span className="day-icon">✓</span>}
+              {status === 'completed' && <span className="day-icon">✅</span>}
               {status === 'missed' && <span className="day-icon">×</span>}
               {status === 'upcoming' && <span className="day-icon">🔒</span>}
               {status === 'current' && <span className="day-icon">🔥</span>}
@@ -62,9 +62,25 @@ const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDa
                 return (
                   <>
                     <p className="scenario-title">{task ? task.topic : scenario.title}</p>
-                    <p className="scenario-situation">{task ? task.desc : scenario.situation.substring(0, 100) + '...'}</p>
-                    <button className="btn btn-primary" onClick={() => onStartScenario(selectedDay)}>
-                      {getDayStatus(selectedDay) === 'current' ? 'Start Scenario' : 'Review Scenario'}
+                    {getDayStatus(selectedDay) === 'completed' ? (
+                      <p className="scenario-situation" style={{ color: "var(--success-color)", fontWeight: "600", marginTop: "8px" }}>
+                        ✅ You have successfully completed this scenario.
+                      </p>
+                    ) : (
+                      <p className="scenario-situation">{task ? task.desc : scenario.situation.substring(0, 100) + '...'}</p>
+                    )}
+                    <button 
+                      className="btn btn-primary" 
+                      onClick={() => onStartScenario(selectedDay)}
+                      disabled={getDayStatus(selectedDay) === 'completed' || getDayStatus(selectedDay) === 'upcoming'}
+                      style={{ 
+                        opacity: getDayStatus(selectedDay) === 'completed' || getDayStatus(selectedDay) === 'upcoming' ? 0.6 : 1,
+                        cursor: getDayStatus(selectedDay) === 'completed' || getDayStatus(selectedDay) === 'upcoming' ? 'not-allowed' : 'pointer',
+                        backgroundColor: getDayStatus(selectedDay) === 'completed' ? 'var(--success-color)' : '',
+                        borderColor: getDayStatus(selectedDay) === 'completed' ? 'var(--success-color)' : ''
+                      }}
+                    >
+                      {getDayStatus(selectedDay) === 'completed' ? 'Completed' : (getDayStatus(selectedDay) === 'current' ? 'Start Scenario' : 'Locked')}
                     </button>
                   </>
                 );

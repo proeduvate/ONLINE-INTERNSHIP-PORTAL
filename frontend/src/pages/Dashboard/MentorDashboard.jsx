@@ -6,6 +6,86 @@ import "../../styles/Dashboard.css";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 
+
+
+export function AdminCertificateApprovals() {
+  const [pending, setPending] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const api = require('../../api/axios').default || require('../../api/axios');
+
+  React.useEffect(() => {
+    fetchPending();
+  }, []);
+
+  const fetchPending = async () => {
+    try {
+      const res = await api.get("/api/certificates/pending");
+      setPending(res.data);
+    } catch (err) {
+      console.error("Failed to load pending certificates", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAction = async (certId, action) => {
+    try {
+      await api.post(`/api/certificates/${certId}/${action}`);
+      alert(`Certificate ${action}d successfully!`);
+      fetchPending();
+    } catch(err) {
+      alert(`Failed to ${action} certificate.`);
+    }
+  };
+
+  return (
+    <div className="card" style={{ marginTop: "24px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <h3 style={{ margin: 0 }}>Pending Certificate Approvals</h3>
+      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : pending.length === 0 ? (
+        <p>No pending certificates.</p>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table className="table" style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid #e2e8f0", textAlign: "left" }}>
+                <th style={{ padding: "12px" }}>Intern ID</th>
+                <th style={{ padding: "12px" }}>Name</th>
+                <th style={{ padding: "12px" }}>Grade / Score</th>
+                <th style={{ padding: "12px" }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pending.map(cert => (
+                <tr key={cert.certificate_id} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px" }}>{cert.user_id}</td>
+                  <td style={{ padding: "12px" }}>{cert.intern_name}</td>
+                  <td style={{ padding: "12px" }}>{cert.grade} ({cert.final_score}%)</td>
+                  <td style={{ padding: "12px", display: "flex", gap: "8px" }}>
+                    <button 
+                      className="btn" 
+                      style={{ backgroundColor: "#10b981", color: "white", padding: "6px 12px", fontSize: "12px" }}
+                      onClick={() => handleAction(cert.certificate_id, 'approve')} 
+                    >Approve</button>
+                    <button 
+                      className="btn" 
+                      style={{ backgroundColor: "#ef4444", color: "white", padding: "6px 12px", fontSize: "12px" }}
+                      onClick={() => handleAction(cert.certificate_id, 'reject')} 
+                    >Reject</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MentorDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
@@ -579,6 +659,7 @@ export default function MentorDashboard() {
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
+              <AdminCertificateApprovals />
 
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "24px" }}>
               <div className="card" style={{ margin: 0, paddingBottom: 0 }}>
@@ -1962,3 +2043,4 @@ export default function MentorDashboard() {
     </div>
   );
 }
+
