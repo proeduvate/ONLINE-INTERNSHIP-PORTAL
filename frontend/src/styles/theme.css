@@ -1,0 +1,161 @@
+/* src/styles/theme.css - Centralized Light Theme Design Tokens */
+
+:root {
+  /* --- Brand & Primary Colors --- */
+  --brand-primary: #0B82F6;
+  --brand-primary-hover: #0875E1;
+  --brand-primary-active: #0664C7;
+  --accent: #2563EB;
+
+  /* --- Navy Scale --- */
+  --navy-950: #06152B; /* Hero sections / deepest backgrounds */
+  --navy-900: #081B35; /* Header / dark components */
+  --navy-800: #0B2445; /* Dark cards */
+  --navy-700: #12345C; /* Strong text */
+  --navy-600: #1C4675; /* Secondary dark elements */
+  --navy-500: #315A87; /* Muted dark elements */
+
+  /* --- Backgrounds & Surfaces --- */
+  --background: #F5F9FE;
+  --surface: #FFFFFF;
+  --surface-soft: #F8FBFF;
+  --surface-blue: #EFF7FF;
+
+  /* --- Typography / Text Colors --- */
+  --text-primary: #081B35;
+  --text-secondary: #45617F;
+  --text-muted: #7890AA;
+  --text-placeholder: #9DB0C5;
+
+  /* --- Borders --- */
+  --border-default: #DCE7F2;
+  --border-light: #E8F0F8;
+  --border-strong: #C7D8EA;
+
+  /* --- Card Tokens --- */
+  --card-standard: #FFFFFF;
+  --card-blue-tinted: #F4F9FF;
+  --card-selected: #EDF6FF;
+  --card-dark-feature: #081B35;
+
+  /* --- Gradients --- */
+  --gradient-primary: linear-gradient(135deg, #0875E1, #0B82F6);
+  --gradient-soft-blue: linear-gradient(135deg, #EFF7FF, #DCEEFF);
+  --gradient-hero: linear-gradient(135deg, #06152B, #0B4F91, #0B82F6);
+
+  /* --- Status & Feedback Colors --- */
+  --success: #10B981;
+  --success-dark: #059669;
+  --success-bg: #ECFDF5;
+  --success-border: #A7F3D0;
+
+  --warning: #F59E0B;
+  --warning-dark: #D97706;
+  --warning-bg: #FFFBEB;
+  --warning-border: #FDE68A;
+
+  --error: #EF4444;
+  --error-dark: #DC2626;
+  --error-bg: #FEF2F2;
+  --error-border: #FECACA;
+
+  --info: #0284C7;
+  --info-bg: #E0F2FE;
+  --info-border: #BAE6FD;
+
+  /* --- Compatibility Aliases & Fallbacks --- */
+  --bg-page: var(--background);
+  --bg-surface: var(--surface);
+  --bg-surface-elevated: var(--surface-soft);
+  --background-color: var(--background);
+
+  --primary-color: var(--brand-primary);
+  --primary-color-hover: var(--brand-primary-hover);
+  --primary-color-active: var(--brand-primary-active);
+  --secondary-color: var(--surface);
+  --secondary-color-hover: var(--surface-soft);
+  
+  --accent-color: var(--accent);
+  --accent-color-hover: var(--brand-primary-hover);
+
+  --text-color: var(--text-primary);
+  --text-tertiary: var(--text-muted);
+
+  --border-color: var(--border-default);
+  --border-color-hover: var(--border-strong);
+
+  --card-bg: var(--surface);
+
+  --success-color: var(--success);
+  --warning-color: var(--warning);
+  --error-color: var(--error);
+  --danger-color: var(--error);
+  --info-color: var(--info);
+
+  /* --- Typography --- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* --- Spacing --- */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* --- Border Radius --- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 2px 0 rgba(8, 27, 53, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(8, 27, 53, 0.08), 0 2px 4px -2px rgba(8, 27, 53, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(8, 27, 53, 0.1), 0 4px 6px -4px rgba(8, 27, 53, 0.05);
+  --shadow-elevated: 0 20px 25px -5px rgba(8, 27, 53, 0.12), 0 8px 10px -6px rgba(8, 27, 53, 0.05);
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --bg-page: #06152B;
+  --bg-surface: #081B35;
+  --bg-surface-elevated: #0B2445;
+  
+  --primary-color: #0B82F6;
+  --primary-color-hover: #0875E1;
+  --secondary-color: #0B2445;
+  --secondary-color-hover: #12345C;
+  
+  --accent-color: #2563EB;
+  --accent-color-hover: #0875E1;
+
+  --text-primary: #F5F9FE;
+  --text-secondary: #9DB0C5;
+  --text-tertiary: #7890AA;
+  
+  --border-color: #12345C;
+  --border-color-hover: #1C4675;
+
+  --success-color: #10B981;
+  --success-bg: rgba(16, 185, 129, 0.2);
+  
+  --warning-color: #F59E0B;
+  --warning-bg: rgba(245, 158, 11, 0.2);
+  
+  --error-color: #EF4444;
+  --error-bg: rgba(239, 68, 68, 0.2);
+
+  --info-color: #0284C7;
+  --info-bg: rgba(2, 132, 199, 0.2);
+}
+

@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LayoutDashboard, FileText, ArrowLeft, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, ArrowLeft, LogOut, FileCode, Database, Image, Folder, Download, Copy, ExternalLink, ThumbsUp, AlertCircle, Check } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { PageContainer } from "../../components/layout/PageContainer";
 import "../../styles/Dashboard.css";
 
 export default function InternDetails() {
@@ -309,15 +310,11 @@ CREATE TABLE submission_files (
 
   const getFileIcon = (fileName, type) => {
     const ext = fileName.split('.').pop().toLowerCase();
-    if (ext === 'py') return '🐍';
-    if (ext === 'js' || ext === 'jsx' || ext === 'ts' || ext === 'tsx') return '📄';
-    if (ext === 'html' || ext === 'css') return '🎨';
-    if (ext === 'sql') return '🗄️';
-    if (ext === 'json' || ext === 'csv') return '📊';
-    if (ext === 'pdf') return '📑';
-    if (ext === 'zip' || ext === 'rar' || ext === 'tar') return '📦';
-    if (ext === 'png' || ext === 'jpg' || ext === 'svg') return '🖼️';
-    return '📄';
+    if (ext === 'py' || ext === 'js' || ext === 'jsx' || ext === 'ts' || ext === 'tsx' || ext === 'html' || ext === 'css') return <FileCode size={16} color="#3b82f6" />;
+    if (ext === 'sql' || ext === 'json' || ext === 'csv') return <Database size={16} color="#10b981" />;
+    if (ext === 'png' || ext === 'jpg' || ext === 'svg') return <Image size={16} color="#8b5cf6" />;
+    if (ext === 'zip' || ext === 'rar' || ext === 'tar') return <Folder size={16} color="#f59e0b" />;
+    return <FileText size={16} color="#64748b" />;
   };
 
   const getPillClass = (type) => {
@@ -347,10 +344,9 @@ CREATE TABLE submission_files (
   };
 
   return (
-    <div className="container">
-      {/* Main Content Area */}
-      <div className="main" style={{ overflowY: "auto", width: "100%", paddingLeft: "32px", paddingRight: "32px" }}>
-        <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "20px", borderBottom: "1px solid #e2e8f0", marginBottom: "24px" }}>
+    <PageContainer>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "20px", borderBottom: "1px solid var(--border-color)", marginBottom: "24px" }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div>
               <h2 style={{ margin: 0 }}>Intern Details: {intern.name}</h2>
@@ -461,13 +457,13 @@ CREATE TABLE submission_files (
                 <div className="card" style={{ margin: 0, padding: "20px" }}>
                   <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b" }}>Strengths & Weaknesses</h3>
                   <div style={{ marginBottom: "16px" }}>
-                    <h4 style={{ color: "#10b981", margin: "0 0 8px 0", fontSize: "14px" }}>👍 Strengths</h4>
+                    <h4 style={{ color: "#10b981", margin: "0 0 8px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><ThumbsUp size={14} /> Strengths</h4>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                       {intern.strengths.split(", ").map((s, i) => <span key={i} className="badge badge-success" style={{ fontSize: "12px", padding: "4px 8px" }}>{s}</span>)}
                     </div>
                   </div>
                   <div>
-                    <h4 style={{ color: "#ef4444", margin: "0 0 8px 0", fontSize: "14px" }}>⚠️ Areas for Improvement</h4>
+                    <h4 style={{ color: "#ef4444", margin: "0 0 8px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><AlertCircle size={14} /> Areas for Improvement</h4>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                       {intern.weakAreas.split(", ").map((w, i) => <span key={i} className="badge badge-danger" style={{ backgroundColor: "#fee2e2", color: "#991b1b", fontSize: "12px", padding: "4px 8px" }}>{w}</span>)}
                     </div>
@@ -666,8 +662,8 @@ CREATE TABLE submission_files (
             <div className="modal-header">
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>
-                    📁 Submitted Daily Task Files: {activeSubmission.task}
+                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Folder size={18} color="#2563eb" /> Submitted Daily Task Files: {activeSubmission.task}
                   </h3>
                   <span className={`badge ${activeSubmission.status === 'Approved' ? 'badge-success' : activeSubmission.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}`}>
                     {activeSubmission.status}
@@ -687,7 +683,7 @@ CREATE TABLE submission_files (
                     rel="noreferrer"
                     style={{ padding: "6px 14px", background: "#0f172a", color: "#ffffff", borderRadius: "6px", fontSize: "12px", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    View on GitHub ↗
+                    View on GitHub <ExternalLink size={12} />
                   </a>
                 )}
 
@@ -698,7 +694,7 @@ CREATE TABLE submission_files (
                   title={`Click to download all ${activeSubmission.files.length} submitted files`}
                   style={{ background: "#2563eb", color: "#ffffff", padding: "6px 14px", border: "none", borderRadius: "6px", fontSize: "12px", fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 >
-                  <span>⬇️ Download All Files (.zip)</span>
+                  <Download size={14} /> Download All Files (.zip)
                 </button>
 
                 <button
@@ -768,16 +764,16 @@ CREATE TABLE submission_files (
                         {activeSubmission.files[activeFileIndex].type === "code" && (
                           <button
                             onClick={() => handleCopyCode(activeSubmission.files[activeFileIndex].content)}
-                            style={{ padding: "5px 10px", background: "#334155", border: "none", color: "#f8fafc", borderRadius: "4px", fontSize: "12px", cursor: "pointer" }}
+                            style={{ padding: "5px 10px", background: "#334155", border: "none", color: "#f8fafc", borderRadius: "4px", fontSize: "12px", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
                           >
-                            📋 Copy Code
+                            <Copy size={12} /> Copy Code
                           </button>
                         )}
                         <button
                           onClick={() => handleDownloadFile(activeSubmission.files[activeFileIndex].name)}
-                          style={{ padding: "5px 10px", background: "#2563eb", border: "none", color: "#ffffff", borderRadius: "4px", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}
+                          style={{ padding: "5px 10px", background: "#2563eb", border: "none", color: "#ffffff", borderRadius: "4px", fontSize: "12px", cursor: "pointer", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
                         >
-                          ⬇️ Download
+                          <Download size={12} /> Download
                         </button>
                       </div>
                     </div>
@@ -808,9 +804,9 @@ CREATE TABLE submission_files (
                         <button
                           className="btn btn-primary"
                           onClick={() => handleDownloadFile(activeSubmission.files[activeFileIndex].name)}
-                          style={{ padding: "10px 24px", fontSize: "14px" }}
+                          style={{ padding: "10px 24px", fontSize: "14px", display: "inline-flex", alignItems: "center", gap: "8px" }}
                         >
-                          ⬇️ Download Submitted File
+                          <Download size={16} /> Download Submitted File
                         </button>
                       </div>
                     )}
@@ -821,7 +817,7 @@ CREATE TABLE submission_files (
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

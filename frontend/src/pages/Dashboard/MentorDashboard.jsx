@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock } from "lucide-react";
-import "../../styles/Dashboard.css";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import AdminLeaderboard from "./AdminLeaderboard";
-
+import { PageContainer } from "../../components/layout/PageContainer";
+import { Button } from "../../components/ui/Button";
+import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
@@ -16,6 +17,14 @@ export default function MentorDashboard() {
   });
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const mockNotifications = [
+    { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
+    { id: 2, text: "New support ticket assigned to you", time: "1 hour ago" },
+    { id: 3, text: "Breakout room session scheduled", time: "3 hours ago" }
+  ];
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -126,14 +135,14 @@ export default function MentorDashboard() {
 
   // State Mock Data
   const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Batch A" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Batch A" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "Batch A" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Batch B" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "Batch B" },
+    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
+    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
+    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
+    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
+    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
   ]);
 
-  const [selectedBatch, setSelectedBatch] = useState("Batch A");
+  const [selectedBatch, setSelectedBatch] = useState("Harvard");
 
   const [submissions, setSubmissions] = useState([
     { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
@@ -325,7 +334,9 @@ export default function MentorDashboard() {
           <div className="card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "280px" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "28px" }}>💬</span>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb" }}>
+                  <MessageSquare size={20} />
+                </div>
                 <h3 style={{ margin: 0 }}>Breakout Rooms Meeting</h3>
               </div>
               <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6", marginBottom: "20px" }}>
@@ -352,7 +363,9 @@ export default function MentorDashboard() {
           {/* Card 2: Schedule Meeting */}
           <div className="card" style={{ minHeight: "280px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <span style={{ fontSize: "28px" }}>📅</span>
+              <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", color: "#b45309" }}>
+                <Calendar size={20} />
+              </div>
               <h3 style={{ margin: 0 }}>Schedule a Future Meeting</h3>
             </div>
             <form onSubmit={handleScheduleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -400,32 +413,32 @@ export default function MentorDashboard() {
 
 
             <div className="grid">
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Assigned Interns</span>
                 <span className="stat-value">{assignedInterns.length}</span>
                 <span className="stat-desc">Tracking active progression</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Pending Reviews</span>
                 <span className="stat-value">{submissions.filter(s => s.status === "Pending").length}</span>
                 <span className="stat-desc">Awaiting your feedback & score</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Meetings Today</span>
                 <span className="stat-value">1</span>
                 <span className="stat-desc">Review meeting at 3:00 PM</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Average Performance</span>
                 <span className="stat-value">83%</span>
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "24px" }}>
-              <div className="card" style={{ margin: 0, paddingBottom: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
-                <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={225}>
                   <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
@@ -442,7 +455,7 @@ export default function MentorDashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
                   <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
@@ -466,10 +479,10 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
-              <div className="card" style={{ marginBottom: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", flex: 1, minHeight: 0 }}>
+              <div className="card animate-slide-up" style={{ marginBottom: 0, display: 'flex', flexDirection: 'column', minHeight: 0, animationDelay: '0.7s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
-                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div style={{ padding: "12px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", flex: 1 }}>
                   {meetings.length > 0 ? meetings.map((m, index) => (
                     <div key={m.id || index} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -500,7 +513,7 @@ export default function MentorDashboard() {
                 </div>
               </div>
 
-              <div style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%" }}>
+              <div className="animate-slide-up" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.8s' }}>
                 <AdminLeaderboard usersList={assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
               </div>
             </div>
@@ -1458,84 +1471,159 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div className="container">
-      {/* Sidebar Navigation */}
-      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
-            {isSidebarOpen && <h2>Mentor Panel</h2>}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Menu size={24} /></button>
-          </div>
-          <ul>
-            {[
-              { id: "Overview", icon: <LayoutDashboard size={20} /> },
-              { id: "Cohort", icon: <Users size={20} /> },
-              { id: "Evaluations", icon: <ClipboardCheck size={20} /> },
-              { id: "Programs", icon: <BookOpen size={20} /> },
-              { id: "Bonus Airdrops", icon: <Gift size={20} /> },
-              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> }
-            ].map((tab) => (
-              <li
-                key={tab.id}
-                className={activeTab === tab.id ? "active" : ""}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                }}
-                title={!isSidebarOpen ? tab.id : ""}
-              >
-                <span>{tab.icon}</span>
-                {isSidebarOpen && <span className="sidebar-text">{tab.id}</span>}
-              </li>
-            ))}
-          </ul>
+    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+      {/* Top Monolithic Webpage Hub Header */}
+      <header style={{ 
+        height: "70px", 
+        backgroundColor: "var(--card-bg, #ffffff)", 
+        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        padding: "0 32px",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
+      }}>
+        {/* Brand Logo & Portal Tag */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--primary-color, #2563eb)", letterSpacing: "-0.5px" }}>
+            ProEduvate
+          </h2>
+          <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#ecfdf5", color: "#047857", padding: "4px 10px", borderRadius: "12px" }}>
+            Mentor Panel
+          </span>
         </div>
-        <button className="sidebar-logout" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          {isSidebarOpen ? "Logout" : <LogOut size={20} />}
-        </button>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="main" style={(activeTab === "Breakout Rooms" && isMeetingActive) ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
-        {(activeTab !== "Breakout Rooms" || !isMeetingActive) ? (
-          <div className="header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
-              <h2>{activeTab}</h2>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              {activeTab === "Bonus Airdrops" && (
-                <button className="btn btn-primary" onClick={() => setShowAirdropModal(true)}>+ Create Airdrop</button>
-              )}
-              <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
-                Role: <b>Mentor</b>
-              </span>
-            </div>
-          </div>
-        ) : (
-          !isSidebarOpen && (
-            <button 
-              onClick={() => setIsSidebarOpen(true)} 
-              style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2000, background: '#ffffff', border: '1px solid #e3e5e8', borderRadius: '4px', cursor: 'pointer', fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-              ☰
+        {/* Module Access Navigation Hub (Monolithic Pill Bar) */}
+        <nav style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px", borderRadius: "28px" }}>
+          {[
+            { id: "Overview", icon: <LayoutDashboard size={16} /> },
+            { id: "Cohort", icon: <Users size={16} /> },
+            { id: "Evaluations", icon: <ClipboardList size={16} /> },
+            { id: "Programs", icon: <Layers size={16} /> },
+            { id: "Bonus Airdrops", icon: <Coins size={16} /> },
+            { id: "Breakout Rooms", icon: <Video size={16} /> }
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: isActive ? "600" : "500",
+                  backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
+                  color: isActive ? "#ffffff" : "var(--text-color, #475569)",
+                  boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.icon}</span>
+                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.id}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Actions & Utilities */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {activeTab === "Bonus Airdrops" && (
+            <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: "13px" }} onClick={() => setShowAirdropModal(true)}>
+              + Create Airdrop
             </button>
-          )
-        )}
+          )}
 
-        {isMeetingActive && (
-          <div style={{ display: activeTab === "Breakout Rooms" ? "block" : "none", height: "100%", width: "100%", position: activeTab === "Breakout Rooms" ? "absolute" : "relative", inset: 0, zIndex: 10 }}>
-            <BreakoutRoomsApp 
-              onRoomChange={(r) => setActiveMeetingRoom(r)} 
-              onLeaveMeeting={() => {
-                setIsMeetingActive(false);
-                localStorage.setItem("breakout_meeting_active", "false");
-                setActiveTab("Overview");
-              }}
-            />
+          {/* Notifications */}
+          <div style={{ position: 'relative', cursor: 'pointer' }}>
+            <div onClick={() => setShowNotifications(!showNotifications)}>
+              <Bell size={20} color="var(--text-gray, #64748b)" />
+              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+            </div>
+            
+            {showNotifications && (
+              <div style={{ 
+                position: 'absolute', 
+                top: '100%', 
+                right: 0, 
+                marginTop: '12px', 
+                width: '300px', 
+                backgroundColor: 'var(--card-bg, #ffffff)', 
+                borderRadius: '12px', 
+                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
+                border: '1px solid var(--border-color, #e2e8f0)',
+                zIndex: 50,
+                overflow: 'hidden'
+              }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', fontWeight: 600, color: 'var(--text-dark, #0f172a)', backgroundColor: 'var(--bg-light, #f8fafc)' }}>
+                  Notifications
+                </div>
+                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                  {mockNotifications.map(notif => (
+                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
-        {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
-      </div>
+          <div style={{ height: '24px', width: '1px', backgroundColor: 'var(--border-color, #cbd5e1)' }}></div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
+            <div 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
+            >
+              DM
+            </div>
+            
+            {isProfileDropdownOpen && (
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
+                <button 
+                  onClick={handleLogout}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Workspace Content (Full Width) */}
+      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+
+        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          {isMeetingActive && (
+            <div style={{ display: activeTab === "Breakout Rooms" ? "flex" : "none", flex: 1, minHeight: 0, width: "100%", borderRadius: "16px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+              <BreakoutRoomsApp 
+                onRoomChange={(r) => setActiveMeetingRoom(r)} 
+                onLeaveMeeting={() => {
+                  setIsMeetingActive(false);
+                  localStorage.setItem("breakout_meeting_active", "false");
+                  setActiveTab("Overview");
+                }}
+              />
+            </div>
+          )}
+
+          {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
+        </div>
+      </main>
 
       {/* Floating Minimized Call Widget (Bottom Right) */}
       {isMeetingActive && activeTab !== "Breakout Rooms" && (
