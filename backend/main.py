@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
+from pydantic import BaseModel
+from services.email_service import dispatch_notification, EventType
+
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -80,9 +83,7 @@ app = FastAPI(
 
 # 2. Register routers
 
-app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
-app.include_router(tasks.router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
 app.include_router(airdrops.router, prefix="/api/airdrops", tags=["Airdrops"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
@@ -469,3 +470,28 @@ def get_intern_stats(current_user: models.User = Depends(get_current_user), db: 
         "daysAbsent": days_absent,
         "aiScore": ai_score
     }
+
+
+class NotificationTrigger(BaseModel):
+    recipient_email: str
+    event_type: str
+    title: str
+    message: str
+    action_url: str
+
+@app.post("/api/notifications/trigger")
+def trigger_notification(data: NotificationTrigger, bg_tasks: BackgroundTasks):
+    try:
+        e_type = EventType(data.event_type)
+    except ValueError:
+        e_type = EventType.SYSTEM_ALERT
+
+    bg_tasks.add_task(
+        dispatch_notification,
+        recipient_email=data.recipient_email,
+        event_type=e_type,
+        title=data.title,
+        message=data.message,
+        action_url=data.action_url
+    )
+    return {"status": "dispatched"}

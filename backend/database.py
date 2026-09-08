@@ -26,10 +26,17 @@ if not DATABASE_URL or "YOUR_PROJECT_REF" in DATABASE_URL or "YOUR_ACTUAL_PASSWO
     )
 
 # 4. Initialize the SQLAlchemy engine
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,  # Automatically check and restore dropped connections
-)
+if DATABASE_URL and DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        pool_recycle=300
+    )
 
 # 5. Create SessionLocal class for database queries
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

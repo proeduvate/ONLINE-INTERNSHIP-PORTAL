@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
+import { notificationService } from '../../services/notificationService';
 import './BreakoutRooms.css';
 import WorkspaceSidebar from './WorkspaceSidebar';
 import MeetingArea from './MeetingArea';
@@ -96,9 +97,11 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
     }
   };
 
-  const handleApprove = (k) => {
+  const handleApprove = async (k) => {
     setKnocks(prev => prev.filter(x => x.internId !== k.internId));
     localStorage.setItem("room_knock_response", JSON.stringify({ internId: k.internId, status: "approved", time: Date.now() }));
+    // Send EmailJS Notification
+    await notificationService.notifyRoomAdmit(k.name, activeRoom || 'Main Meeting');
   };
   
   const handleDeny = (k) => {
