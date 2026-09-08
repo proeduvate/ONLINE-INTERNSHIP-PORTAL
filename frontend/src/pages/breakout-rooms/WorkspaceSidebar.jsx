@@ -75,10 +75,10 @@ export default function WorkspaceSidebar({
       <div className="br-user-profile">
         <div className="br-user-info">
           <div className="br-avatar-small" style={{ backgroundColor: isIntern ? '#10b981' : '#5865f2' }}>
-            {isIntern ? 'Me' : 'M'}
+            {isIntern ? 'Me' : 'An'}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'You' : 'Mentor'}</span>
+            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'You' : 'Ananya'}</span>
             <span style={{ fontSize: '11px', color: '#5c5e66' }}>{isIntern ? 'Intern' : 'Mentor'}</span>
           </div>
         </div>

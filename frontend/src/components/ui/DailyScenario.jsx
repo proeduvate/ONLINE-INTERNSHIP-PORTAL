@@ -1,4 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { 
+  CheckCircle2, 
+  AlertTriangle, 
+  XCircle, 
+  Star, 
+  Briefcase, 
+  Clock, 
+  Sparkles, 
+  ShieldAlert, 
+  Target, 
+  TrendingUp, 
+  CheckCircle, 
+  ArrowRight, 
+  Lock, 
+  Award,
+  Lightbulb,
+  ChevronRight,
+  HelpCircle
+} from "lucide-react";
 
 // Mock 30-Day Real-World Workplace Simulation Data
 export const scenarioData = [
@@ -400,10 +419,9 @@ export default function DailyScenario({ onBackToDashboard }) {
   const [selectedDay, setSelectedDay] = useState(1);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
   const [submittedDays, setSubmittedDays] = useState({}); // { [day]: { selectedOptionId, isCorrect } }
-  const [isDemoBypass, setIsDemoBypass] = useState(false); // Default false: locked until 12 AM midnight, can preview via Demo button
+  const [isDemoBypass, setIsDemoBypass] = useState(false);
   const [nowTime, setNowTime] = useState(new Date());
 
-  // Track live countdown to midnight 12:00 AM
   useEffect(() => {
     const timer = setInterval(() => {
       setNowTime(new Date());
@@ -411,19 +429,16 @@ export default function DailyScenario({ onBackToDashboard }) {
     return () => clearInterval(timer);
   }, []);
 
-  // Compute unlock status based on day or 12 AM midnight schedule
-  // Day 1 is always unlocked. Next day unlocks only at 12:00 AM midnight unless Demo mode is clicked.
   const isDayUnlocked = (day) => {
     if (isDemoBypass) return true;
     if (day === 1) return true;
-    return false; // Locked until 12:00 AM midnight
+    return false;
   };
 
-  // Helper to format countdown until 12:00 AM Midnight
   const getTimeUntilMidnight = () => {
     const now = new Date();
     const midnight = new Date(now);
-    midnight.setHours(24, 0, 0, 0); // Next 12:00 AM
+    midnight.setHours(24, 0, 0, 0);
     const diff = midnight - now;
 
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -437,6 +452,8 @@ export default function DailyScenario({ onBackToDashboard }) {
   const currentSubmission = submittedDays[selectedDay];
   const isCompleted = !!currentSubmission;
   const chosenOption = currentScenario.options.find((o) => o.id === (currentSubmission?.selectedOptionId || selectedOptionId));
+
+  const completedCount = Object.keys(submittedDays).length;
 
   const handleSubmitDecision = () => {
     if (!selectedOptionId) {
@@ -459,262 +476,334 @@ export default function DailyScenario({ onBackToDashboard }) {
   };
 
   return (
-    <div style={{ padding: "0 4px", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Top Bar Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
-        <div>
-          <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "1px", display: "block" }}>
-            DAY {selectedDay} OF 30
-          </span>
-          <h1 style={{ margin: "4px 0 0 0", fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", letterSpacing: "-0.5px" }}>
-            REAL-WORLD WORKPLACE SIMULATION
-          </h1>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
+      
+      {/* Hero Banner Header */}
+      <div style={{ 
+        background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)", 
+        borderRadius: "12px", 
+        padding: "16px 24px", 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
+        border: "1px solid #bfdbfe"
+      }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: "700", color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <Briefcase size={14} color="#1d4ed8" /> Day {selectedDay} of 30 &bull; Workplace Simulation
+          </div>
+          <h2 style={{ fontSize: "20px", fontWeight: "800", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
+            Real-World Workplace Simulation
+          </h2>
+          <p style={{ color: "#475569", fontSize: "13px", margin: "2px 0 0 0" }}>
+            Analyze realistic engineering situations, choose your technical path, and receive instant feedback.
+          </p>
         </div>
-
-
       </div>
 
+      {/* Main Grid Content */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "24px" }}>
+        
+        {/* Left Column: Workplace Scenario Main Area */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          
+          {!isDayUnlocked(selectedDay) ? (
+            /* Locked Day Card */
+            <div className="card" style={{ textAlign: "center", padding: "50px 24px", backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid var(--border-color)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", margin: "0 auto 20px auto" }}>
+                <Lock size={32} />
+              </div>
+              <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-dark)", margin: "0 0 10px 0" }}>
+                Day {selectedDay} Scenario is Locked
+              </h2>
+              <p style={{ color: "var(--text-muted)", fontSize: "15px", maxWidth: "480px", margin: "0 auto 24px auto", lineHeight: "1.6" }}>
+                Daily workplace simulations unlock automatically every night at <b>12:00 AM Midnight</b>.
+              </p>
 
-      {/* Main Workplace Simulation View Card */}
-      {!isDayUnlocked(selectedDay) ? (
-        /* Locked Day Card */
-        <div className="card" style={{ textAlign: "center", padding: "60px 24px", backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid var(--border-color)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-          <div style={{ width: "70px", height: "70px", borderRadius: "50%", backgroundColor: "var(--bg-blue-light)", color: "var(--primary-dark)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "32px", margin: "0 auto 20px auto" }}>
-            🔒
-          </div>
-          <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-dark)", margin: "0 0 10px 0" }}>
-            Day {selectedDay} Scenario is Locked
-          </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "15px", maxWidth: "520px", margin: "0 auto 24px auto", lineHeight: "1.6" }}>
-            In production, each daily scenario unlocks automatically at <b>12:00 AM Midnight</b>.
-          </p>
+              <div style={{ display: "inline-block", backgroundColor: "#eff6ff", padding: "12px 24px", borderRadius: "10px", border: "1px solid #bfdbfe", marginBottom: "24px" }}>
+                <span style={{ fontSize: "13px", color: "#1e40af", fontWeight: 600 }}>Unlocks in: </span>
+                <span style={{ fontFamily: "monospace", fontSize: "16px", fontWeight: "800", color: "#1d4ed8" }}>{getTimeUntilMidnight()}</span>
+              </div>
 
-          <div style={{ display: "inline-block", backgroundColor: "var(--bg-blue-light)", padding: "12px 24px", borderRadius: "10px", border: "1px solid var(--border-color)", marginBottom: "24px" }}>
-            <span style={{ fontSize: "13px", color: "var(--primary-darker)", fontWeight: 600 }}>Next Day Unlocks in (12:00 AM): </span>
-            <span style={{ fontFamily: "monospace", fontSize: "16px", fontWeight: 800, color: "var(--primary-dark)" }}>{getTimeUntilMidnight()}</span>
-          </div>
+              <div>
+                <button
+                  onClick={() => setIsDemoBypass(true)}
+                  className="btn btn-primary"
+                  style={{ padding: "12px 24px", fontWeight: 700, borderRadius: "8px" }}
+                >
+                  Preview Day {selectedDay} Scenario (Demo Mode) &rarr;
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Main Unlocked Scenario Container */
+            <div className="card" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "24px", border: "1px solid var(--border-color)" }}>
+              
+              {/* Demo Mode Notice Banner */}
+              {isDemoBypass && selectedDay > 1 && (
+                <div style={{ backgroundColor: "#eff6ff", border: "1px solid #93c5fd", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", color: "#1e40af", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span>ℹ️ <b>Demo Mode Active:</b> Previewing Day {selectedDay}. (Normally unlocks at 12:00 AM Midnight).</span>
+                  <button onClick={() => setIsDemoBypass(false)} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: "700", cursor: "pointer", textDecoration: "underline", fontSize: "12px" }}>
+                    Re-enable Lock
+                  </button>
+                </div>
+              )}
 
-          <div>
-            <button
-              onClick={() => setIsDemoBypass(true)}
-              style={{ padding: "12px 24px", backgroundColor: "#5b5bd6", color: "#ffffff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "14px", cursor: "pointer", boxShadow: "0 4px 10px rgba(91, 91, 214, 0.25)" }}
-            >
-              Preview Day {selectedDay} Scenario (Demo Mode) →
-            </button>
-          </div>
-        </div>
-      ) : (
-        /* Unlocked Day Main Card matching attached images 2 & 3 */
-        <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid var(--border-color)", padding: "32px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-          {/* Demo Mode Notice Banner if previewing next day */}
-          {isDemoBypass && selectedDay > 1 && (
-            <div style={{ backgroundColor: "var(--bg-blue-light)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "10px 16px", marginBottom: "20px", fontSize: "13px", color: "var(--primary-darker)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>ℹ️ <b>Demo Mode Active:</b> Previewing Day {selectedDay}. (In production, unlocks at 12:00 AM Midnight).</span>
-              <button onClick={() => setIsDemoBypass(false)} style={{ background: "none", border: "none", color: "var(--primary-color)", fontWeight: 700, cursor: "pointer", textDecoration: "underline", fontSize: "12px" }}>
-                Re-enable 12 AM Lock
-              </button>
+              {/* Title Header */}
+              <div style={{ borderBottom: "1px solid var(--border-color)", paddingBottom: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "700", color: "var(--text-dark)" }}>
+                    {currentScenario.title}
+                  </h3>
+                  <span style={{ fontSize: "12px", background: "#f1f5f9", padding: "4px 10px", borderRadius: "20px", color: "#475569", fontWeight: "600" }}>
+                    {currentScenario.subtitle}
+                  </span>
+                </div>
+              </div>
+
+              {/* SITUATION Callout Card */}
+              <div style={{
+                backgroundColor: "#f0f9ff",
+                borderLeft: "4px solid #0284c7",
+                borderRadius: "0 12px 12px 0",
+                padding: "20px 24px",
+                borderTop: "1px solid #e0f2fe",
+                borderRight: "1px solid #e0f2fe",
+                borderBottom: "1px solid #e0f2fe"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "800", color: "#0284c7", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
+                  <Briefcase size={16} /> SITUATION BRIEFING
+                </div>
+                <p style={{ margin: 0, fontSize: "15px", color: "#0f172a", lineHeight: "1.65", fontWeight: 400 }}>
+                  {currentScenario.situation}
+                </p>
+              </div>
+
+              {/* If NOT completed yet */}
+              {!isCompleted ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h4 style={{ fontSize: "16px", fontWeight: "700", color: "var(--text-dark)", margin: 0, lineHeight: "1.5" }}>
+                    {currentScenario.question}
+                  </h4>
+
+                  {/* Options List */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {currentScenario.options.map((option) => {
+                      const isSelected = selectedOptionId === option.id;
+
+                      return (
+                        <div
+                          key={option.id}
+                          onClick={() => setSelectedOptionId(option.id)}
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: "14px",
+                            padding: "16px 20px",
+                            borderRadius: "12px",
+                            border: isSelected ? "2px solid #3b82f6" : "1px solid var(--border-color)",
+                            backgroundColor: isSelected ? "#eff6ff" : "var(--card-bg)",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            boxShadow: isSelected ? "0 2px 8px rgba(59, 130, 246, 0.15)" : "none"
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            name={`scenario-day-${selectedDay}`}
+                            checked={isSelected}
+                            onChange={() => setSelectedOptionId(option.id)}
+                            style={{ marginTop: "3px", accentColor: "#2563eb", width: "18px", height: "18px", cursor: "pointer" }}
+                          />
+                          <span style={{ fontSize: "14px", color: isSelected ? "#1e40af" : "var(--text-color)", fontWeight: isSelected ? 600 : 400, lineHeight: "1.5", flex: 1 }}>
+                            {option.text}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    onClick={handleSubmitDecision}
+                    className="btn btn-primary"
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      borderRadius: "10px",
+                      fontSize: "15px",
+                      fontWeight: "700",
+                      marginTop: "8px",
+                      boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)"
+                    }}
+                  >
+                    Submit Decision &rarr;
+                  </button>
+                </div>
+              ) : (
+                /* IF COMPLETED: Feedback view */
+                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  
+                  {/* Status Banner */}
+                  <div style={{
+                    padding: "16px 20px",
+                    borderRadius: "12px",
+                    backgroundColor: chosenOption?.isCorrect ? "#f0fdf4" : chosenOption?.feedbackType === "warning" ? "#fffbeb" : "#fef2f2",
+                    border: "1px solid",
+                    borderColor: chosenOption?.isCorrect ? "#86efac" : chosenOption?.feedbackType === "warning" ? "#fde68a" : "#fca5a5",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px"
+                  }}>
+                    {chosenOption?.isCorrect ? <CheckCircle2 size={24} color="#16a34a" /> : chosenOption?.feedbackType === "warning" ? <AlertTriangle size={24} color="#d97706" /> : <XCircle size={24} color="#dc2626" />}
+                    <div>
+                      <h4 style={{
+                        margin: 0,
+                        fontSize: "16px",
+                        fontWeight: "800",
+                        color: chosenOption?.isCorrect ? "#15803d" : chosenOption?.feedbackType === "warning" ? "#b45309" : "#b91c1c"
+                      }}>
+                        {chosenOption?.feedbackTitle || "DECISION SUBMITTED"}
+                      </h4>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--text-muted)" }}>
+                        Your decision has been logged for Day {selectedDay}.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* WHAT HAPPENED & WHY Box */}
+                  <div style={{
+                    backgroundColor: "var(--bg-light)",
+                    border: "1px solid var(--border-color)",
+                    borderRadius: "12px",
+                    padding: "20px 24px"
+                  }}>
+                    <h4 style={{
+                      margin: "0 0 10px 0",
+                      fontSize: "12px",
+                      fontWeight: "800",
+                      color: "var(--text-dark)",
+                      textTransform: "uppercase",
+                      letterSpacing: "1px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px"
+                    }}>
+                      <Lightbulb size={16} color="#eab308" /> WHAT HAPPENED & WHY
+                    </h4>
+                    <div style={{ whiteSpace: "pre-line", fontSize: "14px", color: "var(--text-dark)", lineHeight: "1.7", fontWeight: 400 }}>
+                      {chosenOption?.explanation}
+                    </div>
+                  </div>
+
+                  {/* Completion Action Box */}
+                  <div style={{
+                    backgroundColor: "linear-gradient(to right, #f8fafc, #f1f5f9)",
+                    borderRadius: "12px",
+                    padding: "20px",
+                    textAlign: "center",
+                    border: "1px solid var(--border-color)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "12px"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#16a34a", fontWeight: "700", fontSize: "15px" }}>
+                      <CheckCircle size={20} /> Day {selectedDay} Simulation Complete
+                    </div>
+                    
+                    <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+                      {onBackToDashboard && (
+                        <button
+                          onClick={onBackToDashboard}
+                          className="btn btn-secondary"
+                          style={{ padding: "10px 20px", borderRadius: "8px", fontWeight: "600" }}
+                        >
+                          Return to Dashboard
+                        </button>
+                      )}
+
+                      {selectedDay < 30 && (
+                        <button
+                          onClick={() => handleSelectDay(selectedDay + 1)}
+                          className="btn btn-primary"
+                          style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600" }}
+                        >
+                          Next Day Scenario &rarr;
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
             </div>
           )}
 
-          {/* Card Header */}
-          <div style={{ marginBottom: "24px" }}>
-            <h2 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: 700, color: "var(--text-dark)" }}>
-              {currentScenario.title}
-            </h2>
-            <span style={{ fontSize: "14px", color: "var(--text-muted)", fontWeight: 500 }}>
-              {currentScenario.subtitle}
-            </span>
+        </div>
+
+        {/* Right Column: Sidebar Stats & Guidance */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          
+          {/* Simulation Progress Card */}
+          <div className="card" style={{ padding: "20px" }}>
+            <h4 style={{ fontSize: "15px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 16px 0", display: "flex", alignItems: "center", gap: "8px" }}>
+              <TrendingUp size={18} color="#3b82f6" /> Simulation Progress
+            </h4>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
+                  <span>Completed Scenarios</span>
+                  <span style={{ color: "#2563eb" }}>{completedCount} / 30</span>
+                </div>
+                <div style={{ height: "8px", width: "100%", background: "#f1f5f9", borderRadius: "4px", overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${(completedCount / 30) * 100}%`, background: "linear-gradient(to right, #3b82f6, #6366f1)", borderRadius: "4px" }}></div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "4px" }}>
+                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Current Day</div>
+                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#0f172a", marginTop: "2px" }}>Day {selectedDay}</div>
+                </div>
+                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Streak</div>
+                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>{completedCount} Days 🔥</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* SITUATION Callout Box - Styled exactly as Image 2 & 3 */}
-          <div
-            style={{
-              backgroundColor: "var(--bg-blue-light)",
-              borderLeft: "4px solid var(--primary-color)",
-              borderRadius: "0 12px 12px 0",
-              padding: "20px 24px",
-              marginBottom: "28px"
-            }}
-          >
-            <h4 style={{ margin: "0 0 10px 0", fontSize: "13px", fontWeight: 800, color: "var(--primary-color)", textTransform: "uppercase", letterSpacing: "1px" }}>
-              SITUATION
+          {/* Guidance Card */}
+          <div className="card" style={{ padding: "20px", background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "#15803d", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+              <Lightbulb size={18} /> Workplace Engineering Tip
             </h4>
-            <p style={{ margin: 0, fontSize: "15px", color: "var(--text-color)", lineHeight: "1.65", fontWeight: 400 }}>
-              {currentScenario.situation}
+            <p style={{ margin: 0, fontSize: "13px", color: "#166534", lineHeight: "1.6" }}>
+              Real-world engineering decisions involve trade-offs between speed, maintainability, and user experience. Always evaluate long-term impacts before writing code.
             </p>
           </div>
 
-          {/* If NOT completed yet: Show question choices and submit button */}
-          {!isCompleted ? (
-            <div>
-              <h3 style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-dark)", marginBottom: "20px", lineHeight: "1.5" }}>
-                {currentScenario.question}
-              </h3>
+          {/* Rules & Guidelines Card */}
+          <div className="card" style={{ padding: "20px", background: "#fffbeb", border: "1px solid #fde68a" }}>
+            <h4 style={{ margin: "0 0 12px 0", color: "#b45309", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+              <ShieldAlert size={18} color="#b45309" /> Simulation Rules
+            </h4>
+            <ul style={{ margin: 0, paddingLeft: "18px", color: "#92400e", fontSize: "13px", lineHeight: "1.6" }}>
+              <li><b>Daily Rhythm:</b> 1 scenario unlocks per day at 12:00 AM Midnight.</li>
+              <li><b>Instant Feedback:</b> Detailed explanation follows every submitted decision.</li>
+              <li><b>Impact:</b> Choices shape the scenario context for upcoming days.</li>
+            </ul>
+          </div>
 
-              {/* Options List */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "28px" }}>
-                {currentScenario.options.map((option) => {
-                  const isSelected = selectedOptionId === option.id;
 
-                  return (
-                    <div
-                      key={option.id}
-                      onClick={() => setSelectedOptionId(option.id)}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "14px",
-                        padding: "16px 20px",
-                        borderRadius: "12px",
-                        border: isSelected ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
-                        backgroundColor: isSelected ? "var(--bg-blue-light)" : "var(--card-bg)",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease",
-                        boxShadow: isSelected ? "0 2px 8px rgba(99, 102, 241, 0.12)" : "none"
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        name={`scenario-day-${selectedDay}`}
-                        checked={isSelected}
-                        onChange={() => setSelectedOptionId(option.id)}
-                        style={{ marginTop: "3px", accentColor: "var(--primary-color)", width: "18px", height: "18px", cursor: "pointer" }}
-                      />
-                      <span style={{ fontSize: "15px", color: isSelected ? "var(--primary-darker)" : "var(--text-color)", fontWeight: isSelected ? 600 : 400, lineHeight: "1.5", flex: 1 }}>
-                        {option.text}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Submit Button - Styled like Image 2 */}
-              <button
-                onClick={handleSubmitDecision}
-                style={{
-                  width: "100%",
-                  padding: "14px 24px",
-                  borderRadius: "10px",
-                  backgroundColor: "#5b5bd6",
-                  color: "#ffffff",
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  border: "none",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 12px rgba(91, 91, 214, 0.25)",
-                  transition: "background-color 0.2s ease"
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#4c4cb8")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#5b5bd6")}
-              >
-                Submit Decision
-              </button>
-            </div>
-          ) : (
-            /* IF COMPLETED: Feedback view styled matching Image 3 */
-            <div>
-              {/* Decision Feedback Header */}
-              <div style={{ marginBottom: "24px", marginTop: "12px" }}>
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: "18px",
-                    fontWeight: 800,
-                    color: chosenOption?.isCorrect ? "#16a34a" : chosenOption?.feedbackType === "warning" ? "#d97706" : "#dc2626",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px"
-                  }}
-                >
-                  {chosenOption?.feedbackTitle || "✓ DECISION SUBMITTED"}
-                </h3>
-              </div>
-
-              {/* WHAT HAPPENED & WHY Box - Styled matching Image 3 */}
-              <div
-                style={{
-                  backgroundColor: chosenOption?.isCorrect ? "var(--bg-green-light)" : "var(--bg-red-light)",
-                  border: chosenOption?.isCorrect ? "1px solid var(--border-color)" : "1px solid var(--border-color)",
-                  borderRadius: "12px",
-                  padding: "24px",
-                  marginBottom: "28px"
-                }}
-              >
-                <h4
-                  style={{
-                    margin: "0 0 12px 0",
-                    fontSize: "13px",
-                    fontWeight: 800,
-                    color: chosenOption?.isCorrect ? "var(--success-dark)" : "var(--danger-color)",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px"
-                  }}
-                >
-                  WHAT HAPPENED & WHY
-                </h4>
-                <div style={{ whiteSpace: "pre-line", fontSize: "14px", color: chosenOption?.isCorrect ? "var(--success-dark)" : "var(--danger-color)", lineHeight: "1.7", fontWeight: 500 }}>
-                  {chosenOption?.explanation}
-                </div>
-              </div>
-
-              {/* DAY X COMPLETED Card - Matching Image 3 bottom card */}
-              <div
-                style={{
-                  backgroundColor: "var(--bg-light)",
-                  borderRadius: "12px",
-                  padding: "24px",
-                  textAlign: "center",
-                  border: "1px solid var(--border-color)"
-                }}
-              >
-                <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", fontWeight: 800, color: "var(--text-dark)" }}>
-                  DAY {selectedDay} COMPLETED ✓
-                </h4>
-                <p style={{ margin: "0 0 18px 0", fontSize: "13px", color: "var(--text-muted)", fontWeight: 500 }}>
-                  Your decisions will influence future workplace situations.
-                </p>
-
-                <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
-                  <button
-                    onClick={onBackToDashboard}
-                    style={{
-                      padding: "12px 28px",
-                      borderRadius: "8px",
-                      backgroundColor: "#5b5bd6",
-                      color: "#ffffff",
-                      border: "none",
-                      fontSize: "14px",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      boxShadow: "0 4px 10px rgba(91, 91, 214, 0.2)"
-                    }}
-                  >
-                    Return to Dashboard
-                  </button>
-
-                  {selectedDay < 30 && (
-                    <button
-                      onClick={() => handleSelectDay(selectedDay + 1)}
-                      style={{
-                        padding: "12px 24px",
-                        borderRadius: "8px",
-                        backgroundColor: "#ffffff",
-                        color: "#4f46e5",
-                        border: "1px solid #6366f1",
-                        fontSize: "14px",
-                        fontWeight: 700,
-                        cursor: "pointer"
-                      }}
-                    >
-                      Next Day Scenario →
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      )}
+
+      </div>
+
     </div>
   );
 }

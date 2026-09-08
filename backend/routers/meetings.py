@@ -92,6 +92,12 @@ def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None
     return meetings
 
 
+from database import get_db 
+import models, schemas
+
+router = APIRouter(prefix="/meetings", tags=["meetings"])
+
+# --- WebSocket Connection Manager ---
 class ConnectionManager:
     def __init__(self):
         # Maps room_id -> list of active WebSockets
@@ -171,3 +177,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
     except WebSocketDisconnect:
         manager.disconnect(room_id, websocket)
         await manager.broadcast_to_room(room_id, {"sender": client_id, "type": "user-leave", "payload": {}})
+    try:
+        while True:
+            data = await websocket.receive_json()
+            # Relay WebRTC signals (offer, answer, ICE candidates) to other room participants
+            await manager.broadcast_to_room(room_id, {"sender": client_id, "payload": data})
+    except WebSocketDisconnect:
+        manager.disconnect(room_id, websocket)
+        await manager.broadcast_to_room(room_id, {"type": "USER_DISCONNECTED", "client_id": client_id})
