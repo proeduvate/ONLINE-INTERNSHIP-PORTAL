@@ -135,6 +135,9 @@ app.include_router(simulation_router)
 app.include_router(batch_analytics_router)
 app.include_router(meetings.router)
 
+from routers import onboarding
+app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+
 
 # ==========================================
 #           JWT SECURITY DEPENDENCY

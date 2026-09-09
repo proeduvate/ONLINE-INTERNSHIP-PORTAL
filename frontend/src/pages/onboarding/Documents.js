@@ -53,6 +53,9 @@ export default function Documents() {
         "DOCUMENTS_GENERATED", 
         "DOCUMENTS_SENT", 
         "ACCOUNT_CREATION_PENDING",
+        "ACCOUNT_ACTIVATION_PENDING",
+        "DOCUMENTS_UPLOADED",
+        "ACTIVE",
         "ACCOUNT_CREATED",
         "ONBOARDING_COMPLETED"
     ].includes(status);

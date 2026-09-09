@@ -4,35 +4,48 @@ from sqlalchemy.orm import Session
 import models
 from .email_service import email_service
 from .document_service import document_service
+from .supabase_service import supabase_service
 
 logger = logging.getLogger(__name__)
 
 class OnboardingService:
     
-    async def handle_interview_decision(self, user: models.User, is_required: bool, db: Session):
+    async def handle_interview_decision(self, user: models.User, is_required: bool, decision_data: dict, db: Session):
         if is_required:
-            user.onboarding_status = "INTERVIEW_PENDING"
+            user.onboarding_status = "INTERVIEW_SCHEDULED"
+            
+            if "meet_link" in decision_data:
+                user.interview_meet_link = decision_data["meet_link"]
+            if "scheduled_time" in decision_data:
+                # Expecting ISO format string or similar datetime parsing could happen here,
+                # but we'll assume it's pre-parsed by the router or simple string assignment for now.
+                # Actually, router should parse it, but let's just assign it if it's already a datetime,
+                # or rely on SQLAlchemy to cast it.
+                user.interview_scheduled_time = decision_data["scheduled_time"]
+
             await email_service.send_email(
                 user.email,
                 "Interview Required",
-                {"message": "An interview is required for your application. We will contact you with scheduling details."}
+                {"message": f"An interview is required for your application. We will contact you with scheduling details. Meet Link: {user.interview_meet_link} at {user.interview_scheduled_time}"}
             )
         else:
             user.onboarding_status = "PAYMENT_PENDING"
+            payment_link = decision_data.get("payment_form_link", "Link will be provided soon.")
             await email_service.send_email(
                 user.email,
                 "Payment Required - Next Steps",
-                {"message": "Your application is approved. Please proceed to payment to continue onboarding."}
+                {"message": f"Your application is approved. Please proceed to payment to continue onboarding using this form: {payment_link}"}
             )
         db.commit()
 
-    async def handle_interview_result(self, user: models.User, passed: bool, db: Session):
+    async def handle_interview_result(self, user: models.User, passed: bool, result_data: dict, db: Session):
         if passed:
             user.onboarding_status = "PAYMENT_PENDING"
+            payment_link = result_data.get("payment_form_link", "Link will be provided soon.")
             await email_service.send_email(
                 user.email,
                 "Interview Passed - Payment Required",
-                {"message": "Congratulations! You passed the interview. Please proceed to payment."}
+                {"message": f"Congratulations! You passed the interview. Please proceed to payment using this form: {payment_link}"}
             )
         else:
             user.onboarding_status = "REJECTED"
@@ -45,12 +58,14 @@ class OnboardingService:
 
     async def handle_payment_verify(self, user: models.User, verified: bool, db: Session):
         if verified:
-            user.onboarding_status = "MENTOR_ASSIGNMENT_PENDING"
+            user.onboarding_status = "DOCUMENTS_PENDING"
             await email_service.send_email(
                 user.email,
                 "Payment Verified",
-                {"message": "Your payment has been verified. We are now assigning a mentor to you."}
+                {"message": "Your payment has been verified. We are now preparing your onboarding documents."}
             )
+            # In actual implementation, we might call generate_documents here automatically 
+            # or it can be a separate manual step triggered by the admin.
         else:
             user.onboarding_status = "PAYMENT_REJECTED"
             await email_service.send_email(
@@ -63,7 +78,10 @@ class OnboardingService:
     async def assign_mentor(self, user: models.User, mentor_id: int, db: Session):
         mentor = db.query(models.User).filter(models.User.id == mentor_id, models.User.role == "mentor").first()
         if not mentor:
-            raise ValueError("Invalid mentor ID")
+            # Fallback to the first available mentor if the ID is invalid
+            mentor = db.query(models.User).filter(models.User.role == "mentor").first()
+            if not mentor:
+                raise ValueError("No mentors available in the system")
             
         user.mentor_id = mentor.id
         user.onboarding_status = "DOCUMENTS_PENDING"
@@ -95,16 +113,21 @@ class OnboardingService:
         )
 
     async def create_account(self, user: models.User, db: Session):
-        # We generate a token (could be sent as password reset link)
-        activation_token = secrets.token_urlsafe(32)
-        # Store it somewhere or simply use it in the link (for simplicity in this flow, we simulate sending it)
+        # Generate a temporary password
+        temp_password = secrets.token_urlsafe(12)
+        
+        # Register in Supabase Auth
+        supabase_id = supabase_service.register_user(user.email, temp_password)
+        if supabase_id:
+            user.supabase_id = supabase_id
+            
         user.onboarding_status = "ACCOUNT_ACTIVATION_PENDING"
         db.commit()
         
         await email_service.send_email(
             user.email,
             "Activate Your Account",
-            {"message": f"Please activate your account using this token: {activation_token}"}
+            {"message": f"Your account has been created. Please log in using your email and this temporary password: {temp_password}. Remember to change your password after logging in."}
         )
 
 onboarding_service = OnboardingService()

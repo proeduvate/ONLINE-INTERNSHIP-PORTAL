@@ -5,7 +5,7 @@ import logging
 from datetime import datetime
 from fpdf import FPDF
 import models
-from .google_drive_service import google_drive_service
+from .supabase_service import supabase_service
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +64,13 @@ class DocumentService:
             offer_filename = f"Offer_Letter_{user.intern_id}.pdf"
             tnc_filename = f"Terms_and_Conditions_{user.intern_id}.pdf"
             
-            offer_url = google_drive_service.upload_file(offer_path, offer_filename)
-            tnc_url = google_drive_service.upload_file(tnc_path, tnc_filename)
+            with open(offer_path, "rb") as f:
+                offer_bytes = f.read()
+            with open(tnc_path, "rb") as f:
+                tnc_bytes = f.read()
+
+            offer_url = supabase_service.upload_file(offer_bytes, "documents", offer_filename)
+            tnc_url = supabase_service.upload_file(tnc_bytes, "documents", tnc_filename)
             
             # Clean up temporary files
             os.remove(offer_path)

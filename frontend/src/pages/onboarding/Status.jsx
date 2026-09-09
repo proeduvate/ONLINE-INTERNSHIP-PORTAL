@@ -19,7 +19,7 @@ export default function Status() {
     try {
       const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
       const response = await axios.get(`${baseUrl}/api/v1/onboarding/status/${appId.trim()}`);
-      setStatusResult(response.data.status);
+      setStatusResult(response.data);
     } catch (err) {
       if (err.response && err.response.status === 404) {
         setError("Application not found. Please check the Application ID.");
@@ -69,8 +69,15 @@ export default function Status() {
           <div style={{ marginTop: "1.5rem", padding: "1.5rem", backgroundColor: "#e6f4ea", border: "1px solid #c3e6cb", borderRadius: "4px", textAlign: "center" }}>
             <h3 style={{ margin: "0 0 0.5rem 0", color: "#155724" }}>Status Found</h3>
             <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: "bold", color: "#28a745" }}>
-              {statusResult.replace(/_/g, ' ')}
+              {statusResult.status.replace(/_/g, ' ')}
             </p>
+            {statusResult.status === "INTERVIEW_SCHEDULED" && statusResult.interview_meet_link && (
+              <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "#fff", border: "1px solid #dee2e6", borderRadius: "4px", textAlign: "left" }}>
+                <h4 style={{ margin: "0 0 0.5rem 0", color: "#495057" }}>Interview Details</h4>
+                <p style={{ margin: "0 0 0.5rem 0" }}><strong>Time:</strong> {new Date(statusResult.interview_scheduled_time).toLocaleString()}</p>
+                <p style={{ margin: 0 }}><strong>Link:</strong> <a href={statusResult.interview_meet_link} target="_blank" rel="noopener noreferrer">{statusResult.interview_meet_link}</a></p>
+              </div>
+            )}
             <div style={{ marginTop: "1.5rem", display: "flex", gap: "10px", justifyContent: "center" }}>
               <button 
                 type="button"

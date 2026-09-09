@@ -8,6 +8,9 @@ export default function AdminOnboardingDetails() {
     const { id } = useParams();
     const [app, setApp] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [meetLink, setMeetLink] = useState('');
+    const [scheduledTime, setScheduledTime] = useState('');
+    const [paymentFormLink, setPaymentFormLink] = useState('');
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -27,10 +30,66 @@ export default function AdminOnboardingDetails() {
     const handleAction = async (newStatus) => {
         try {
             await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}/status`, { status: newStatus });
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
-            setApp(response.data);
+            refreshApp();
         } catch (error) {
             console.error("Error updating status", error);
+        }
+    };
+
+    const refreshApp = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
+            setApp(response.data);
+        } catch (error) {}
+    };
+
+    const handleInterviewDecision = async (isRequired) => {
+        try {
+            const data = { required: isRequired };
+            if (isRequired) {
+                if (!meetLink || !scheduledTime) {
+                    alert("Please provide both meet link and scheduled time.");
+                    return;
+                }
+                data.meet_link = meetLink;
+                data.scheduled_time = scheduledTime;
+            } else {
+                if (!paymentFormLink) {
+                    alert("Please provide the payment form link.");
+                    return;
+                }
+                data.payment_form_link = paymentFormLink;
+            }
+            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/interview`, data);
+            refreshApp();
+        } catch (error) {
+            console.error("Error submitting decision", error);
+        }
+    };
+
+    const handleInterviewResult = async (passed) => {
+        try {
+            const data = { passed };
+            if (passed) {
+                if (!paymentFormLink) {
+                    alert("Please provide the payment form link.");
+                    return;
+                }
+                data.payment_form_link = paymentFormLink;
+            }
+            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/interview/result`, data);
+            refreshApp();
+        } catch (error) {
+            console.error("Error submitting result", error);
+        }
+    };
+
+    const handlePaymentVerify = async (verified) => {
+        try {
+            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/payment/verify`, { verified });
+            refreshApp();
+        } catch (error) {
+            console.error("Error verifying payment", error);
         }
     };
 
@@ -96,44 +155,93 @@ export default function AdminOnboardingDetails() {
                     
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         {app.status === ONBOARDING_STATUSES.PENDING_REVIEW && (
-                            <>
-                                <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_REQUIRED)}>Require Interview</button>
-                                <button className="btn btn-secondary" onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT)}>Skip Interview (Eligible)</button>
-                            </>
-                        )}
-
-                        {app.status === ONBOARDING_STATUSES.INTERVIEW_REQUIRED && (
-                            <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_SCHEDULED)}>Schedule Interview</button>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <input type="text" placeholder="Meet Link" className="input-field" value={meetLink} onChange={e => setMeetLink(e.target.value)} />
+                                    <input type="datetime-local" className="input-field" value={scheduledTime} onChange={e => setScheduledTime(e.target.value)} />
+                                    <button className="btn btn-primary" onClick={() => handleInterviewDecision(true)}>Require Interview & Schedule</button>
+                                </div>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <input type="text" placeholder="Google Form Payment Link" className="input-field" value={paymentFormLink} onChange={e => setPaymentFormLink(e.target.value)} />
+                                    <button className="btn btn-secondary" onClick={() => handleInterviewDecision(false)}>Skip Interview & Send Payment Link</button>
+                                </div>
+                            </div>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_SCHEDULED && (
-                            <>
-                                <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_PASSED)}>Mark Passed</button>
-                                <button className="btn" style={{ backgroundColor: 'var(--danger-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_FAILED)}>Mark Failed</button>
-                            </>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <input type="text" placeholder="Google Form Payment Link" className="input-field" value={paymentFormLink} onChange={e => setPaymentFormLink(e.target.value)} />
+                                    <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleInterviewResult(true)}>Mark Passed & Send Payment Link</button>
+                                </div>
+                                <div>
+                                    <button className="btn" style={{ backgroundColor: 'var(--danger-color)', color: 'white' }} onClick={() => handleInterviewResult(false)}>Mark Failed</button>
+                                </div>
+                            </div>
                         )}
                         
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_PASSED && (
-                            <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT)}>Move to Payment Stage</button>
+                            <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_PENDING)}>Move to Payment Stage</button>
+                        )}
+
+                        {app.status === ONBOARDING_STATUSES.PAYMENT_PENDING && (
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handlePaymentVerify(true)}>Payment Completed / Verified</button>
+                                <button className="btn btn-secondary" onClick={() => alert("Payment reminder sent to intern.")}>Send Reminder for Clear Payment</button>
+                            </div>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED && (
                             <>
-                                <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_VERIFIED)}>Verify Payment</button>
-                                <button className="btn" style={{ backgroundColor: 'var(--danger-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_REJECTED)}>Reject Payment</button>
+                                <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handlePaymentVerify(true)}>Verify Payment</button>
+                                <button className="btn" style={{ backgroundColor: 'var(--danger-color)', color: 'white' }} onClick={() => handlePaymentVerify(false)}>Reject Payment</button>
                             </>
                         )}
 
-                        {app.status === ONBOARDING_STATUSES.PAYMENT_VERIFIED && (
-                            <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.MENTOR_ASSIGNED)}>Assign Mentor</button>
+                        {app.status === ONBOARDING_STATUSES.DOCUMENTS_PENDING && (
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <button className="btn btn-primary" onClick={async () => {
+                                    try {
+                                        await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/assign-mentor`, { mentor_id: 1 }); // Hardcoded for now
+                                        alert("Mentor assigned successfully");
+                                        refreshApp();
+                                    } catch (e) { 
+                                        console.error(e); 
+                                        alert("Failed to assign mentor: " + (e.response?.data?.detail || e.message));
+                                    }
+                                }}>Assign Default Mentor</button>
+                                <button className="btn btn-secondary" onClick={async () => {
+                                    try {
+                                        await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
+                                        alert("Documents generated successfully");
+                                        refreshApp();
+                                    } catch (e) { 
+                                        console.error(e); 
+                                        alert("Failed to generate documents: " + (e.response?.data?.detail || e.message));
+                                    }
+                                }}>Generate & Send Documents</button>
+                            </div>
                         )}
                         
-                        {app.status === ONBOARDING_STATUSES.MENTOR_ASSIGNED && (
-                            <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.ACCOUNT_CREATED)}>Generate Docs & Create Account</button>
+                        {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && (
+                            <button className="btn btn-primary" onClick={async () => {
+                                try {
+                                    await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/create-account`);
+                                    refreshApp();
+                                } catch (e) { console.error(e); }
+                            }}>Create Account</button>
                         )}
 
-                        {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATED && (
-                            <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.ONBOARDING_COMPLETED)}>Complete Onboarding</button>
+                        {app.status === ONBOARDING_STATUSES.ACCOUNT_ACTIVATION_PENDING && (
+                            <p style={{ color: 'var(--text-muted)' }}>Waiting for intern to activate account...</p>
+                        )}
+                        
+                        {app.status === ONBOARDING_STATUSES.DOCUMENTS_UPLOADED && (
+                            <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.ACTIVE)}>Mark as Active / Complete Onboarding</button>
+                        )}
+                        
+                        {app.status === ONBOARDING_STATUSES.ACTIVE && (
+                            <p style={{ color: 'var(--success-color)', fontWeight: 'bold' }}>Intern is active and onboarding is complete.</p>
                         )}
                     </div>
                 </div>

@@ -57,6 +57,12 @@ class User(Base):
     last_task_completion_date = Column(DateTime(timezone=True), nullable=True)
     resume_url = Column(String(255), nullable=True)
 
+    # Onboarding Fields
+    interview_scheduled_time = Column(DateTime(timezone=True), nullable=True)
+    interview_meet_link = Column(String(255), nullable=True)
+    signed_offer_letter_url = Column(String(255), nullable=True)
+    signed_tc_url = Column(String(255), nullable=True)
+
     # Relationships
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
     domain = relationship("Domain", back_populates="users")

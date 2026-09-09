@@ -7,14 +7,7 @@ from typing import List, Dict, Any
 from services.n8n_service import trigger_n8n_webhook
 from services.onboarding_service import onboarding_service
 from services.email_service import email_service
-from services.google_drive_service import GoogleDriveService
-from datetime import datetime
-import asyncio
-import tempfile
-import shutil
-import os
-
-drive_service = GoogleDriveService()
+from services.supabase_service import supabase_service
 
 router = APIRouter(
     prefix="",
@@ -43,24 +36,18 @@ async def apply_for_onboarding(
     db_domain = db.query(models.Domain).filter(models.Domain.name.ilike(domain)).first()
     domain_id = db_domain.id if db_domain else None
 
-    # Upload resume to Google Drive
     resume_url = None
     if resume and resume.filename:
-        # Create temp file
-        temp_fd, temp_path = tempfile.mkstemp(suffix=".pdf")
-        os.close(temp_fd)
         try:
-            with open(temp_path, "wb") as buffer:
-                shutil.copyfileobj(resume.file, buffer)
-            
-            resume_url = drive_service.upload_file(
-                file_path=temp_path,
+            resume_bytes = await resume.read()
+            resume_url = supabase_service.upload_file(
+                file_content=resume_bytes,
+                bucket_name="documents",
                 filename=f"Resume_{name.replace(' ', '_')}.pdf",
-                mime_type=resume.content_type
+                content_type=resume.content_type
             )
-        finally:
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to upload resume: {str(e)}")
 
     new_user = models.User(
         name=name,
@@ -89,7 +76,11 @@ def get_application_status(email: str, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Application not found")
-    return {"status": user.onboarding_status}
+    return {
+        "status": user.onboarding_status,
+        "interview_meet_link": user.interview_meet_link,
+        "interview_scheduled_time": str(user.interview_scheduled_time) if user.interview_scheduled_time else None
+    }
 
 @router.get("/status/{application_id}")
 def get_application_status_by_id(application_id: str, db: Session = Depends(get_db)):
@@ -102,7 +93,11 @@ def get_application_status_by_id(application_id: str, db: Session = Depends(get_
     if not user:
         raise HTTPException(status_code=404, detail="Application not found")
         
-    return {"status": user.onboarding_status}
+    return {
+        "status": user.onboarding_status,
+        "interview_meet_link": user.interview_meet_link,
+        "interview_scheduled_time": str(user.interview_scheduled_time) if user.interview_scheduled_time else None
+    }
 
 @router.post("/{application_id}/interview")
 async def interview_decision(application_id: str, decision: dict, db: Session = Depends(get_db)):
@@ -116,7 +111,7 @@ async def interview_decision(application_id: str, decision: dict, db: Session = 
         raise HTTPException(status_code=404, detail="Application not found")
         
     is_required = decision.get("required", False)
-    await onboarding_service.handle_interview_decision(user, is_required, db)
+    await onboarding_service.handle_interview_decision(user, is_required, decision, db)
     
     return {"message": "Interview decision recorded", "status": user.onboarding_status}
 
@@ -132,7 +127,7 @@ async def interview_result(application_id: str, result: dict, db: Session = Depe
         raise HTTPException(status_code=404, detail="Application not found")
         
     passed = result.get("passed", False)
-    await onboarding_service.handle_interview_result(user, passed, db)
+    await onboarding_service.handle_interview_result(user, passed, result, db)
     
     return {"message": "Interview result recorded", "status": user.onboarding_status}
 
@@ -227,6 +222,51 @@ async def create_account(application_id: str, db: Session = Depends(get_db)):
     await onboarding_service.create_account(user, db)
     
     return {"message": "Account created, activation email sent", "status": user.onboarding_status}
+
+@router.post("/{application_id}/upload-signed-documents")
+async def upload_signed_documents(
+    application_id: str,
+    offer_letter: UploadFile = File(...),
+    terms_conditions: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = int(application_id.split("-")[1])
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid application ID")
+        
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Application not found")
+        
+    if offer_letter and offer_letter.filename:
+        try:
+            offer_bytes = await offer_letter.read()
+            user.signed_offer_letter_url = supabase_service.upload_file(
+                file_content=offer_bytes,
+                bucket_name="documents",
+                filename=f"Signed_Offer_Letter_{user.name.replace(' ', '_')}.pdf",
+                content_type=offer_letter.content_type
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to upload offer letter: {str(e)}")
+
+    if terms_conditions and terms_conditions.filename:
+        try:
+            tc_bytes = await terms_conditions.read()
+            user.signed_tc_url = supabase_service.upload_file(
+                file_content=tc_bytes,
+                bucket_name="documents",
+                filename=f"Signed_TC_{user.name.replace(' ', '_')}.pdf",
+                content_type=terms_conditions.content_type
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to upload T&C: {str(e)}")
+
+    user.onboarding_status = "DOCUMENTS_UPLOADED"
+    db.commit()
+    
+    return {"message": "Signed documents uploaded successfully", "status": user.onboarding_status}
 
 @router.post("/activate-account")
 async def activate_account(request: schemas.AccountActivationRequest, db: Session = Depends(get_db)):

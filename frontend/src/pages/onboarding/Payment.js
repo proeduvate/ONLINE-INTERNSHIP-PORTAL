@@ -58,7 +58,7 @@ export default function Payment() {
     }
 
     const { status, applicationId } = statusData;
-    const isPending = status === "PAYMENT_REQUIRED" || status === "ELIGIBLE_FOR_PAYMENT";
+    const isPending = status === "PAYMENT_REQUIRED" || status === "ELIGIBLE_FOR_PAYMENT" || status === "PAYMENT_PENDING";
     const isSubmitted = status === "PAYMENT_SUBMITTED";
     const isVerified = status === "PAYMENT_VERIFIED" || status === "MENTOR_ASSIGNED" || status === "ONBOARDING_COMPLETED";
     const isRejected = status === "PAYMENT_REJECTED";
