@@ -1,12 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef } from 'react';
+import apiClient from '../../services/apiClient';
+import { useState, useEffect } from "react";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell } from "lucide-react";
-import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
-import AdminLeaderboard from "./AdminLeaderboard";
-import { PageContainer } from "../../components/layout/PageContainer";
-import { Button } from "../../components/ui/Button";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, MessageSquare, Bot, Maximize2, ClipboardList, Clock, Check, X } from 'lucide-react';
 import "../../styles/Dashboard.css";
+import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+
+
+export function AdminCertificateApprovals() {
+  const [pendingCerts, setPendingCerts] = useState([]);
+
+  useEffect(() => {
+    fetchPending();
+  }, []);
+
+  const fetchPending = async () => {
+    try {
+      const res = await api.get("/api/certificates/pending");
+      setPendingCerts(res.data);
+    } catch (err) {
+      console.error("Failed to load pending certificates", err);
+    }
+  };
+
+  const handleAction = async (certId, action) => {
+    try {
+      await api.post(`/api/certificates/${certId}/${action}`);
+      alert(`Certificate ${action}d successfully!`);
+      fetchPending();
+    } catch (err) {
+      alert(`Failed to ${action} certificate.`);
+    }
+  };
+
+  return (
+    <div className="card" style={{ marginTop: "24px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+        <Award size={20} color="#F59E0B" />
+        <h3 style={{ margin: 0 }}>Pending Certificate Approvals</h3>
+      </div>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Intern Name</th>
+              <th>Domain</th>
+              <th>Achievement</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pendingCerts.length === 0 ? (
+              <tr><td colSpan="4" style={{ textAlign: "center", padding: "16px" }}>No pending requests</td></tr>
+            ) : (
+              pendingCerts.map((cert) => (
+                <tr key={cert.id}>
+                  <td>{cert.intern_name}</td>
+                  <td>{cert.domain}</td>
+                  <td><span className="badge" style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}>{cert.achievement || "N/A"}</span></td>
+                  <td style={{ display: "flex", gap: "8px" }}>
+                    <button 
+                      onClick={() => handleAction(cert.certificate_id, 'approve')} 
+                      className="btn btn-primary" 
+                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px" }}
+                    >
+                      <Check size={14} /> Approve & Mail
+                    </button>
+                    <button 
+                      onClick={() => handleAction(cert.certificate_id, 'reject')} 
+                      className="btn btn-secondary" 
+                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px", backgroundColor: "#FEE2E2", color: "#DC2626", borderColor: "#FEE2E2" }}
+                    >
+                      <X size={14} /> Reject
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function MentorDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
@@ -17,14 +96,6 @@ export default function MentorDashboard() {
   });
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-
-  const mockNotifications = [
-    { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
-    { id: 2, text: "New support ticket assigned to you", time: "1 hour ago" },
-    { id: 3, text: "Breakout room session scheduled", time: "3 hours ago" }
-  ];
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -135,35 +206,49 @@ export default function MentorDashboard() {
 
   // State Mock Data
   const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
+    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Batch A" },
+    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Batch A" },
+    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "Batch A" },
+    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Batch B" },
+    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "Batch B" },
   ]);
 
-  const [selectedBatch, setSelectedBatch] = useState("Harvard");
+  const [selectedBatch, setSelectedBatch] = useState("Batch A");
 
   const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
+    { id: 1, intern: "John Doe", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 2, intern: "Raj Patel", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" }
   ]);
-  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
   const [meetings, setMeetings] = useState([
     { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
+    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
   ]);
 
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
+  
+  // Global chat history from localstorage
+  const getInitialChat = () => {
+    const saved = localStorage.getItem("global_chat_history");
+    if (saved) return JSON.parse(saved);
+    return [
+      { sender: "John Doe", internId: "INT001", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
+      { sender: "Mentor", recipientId: "INT001", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
+    ];
+  };
+
+  const [chatMessages, setChatMessages] = useState(getInitialChat());
+
+  // Listen for cross-tab updates
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "global_chat_history" && e.newValue) {
+        setChatMessages(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
@@ -275,7 +360,7 @@ export default function MentorDashboard() {
   const handleSendChatMessage = (e) => {
     e.preventDefault();
     if (!currentMessage.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: currentMessage, time: "Just now" }]);
+    setChatMessages([...chatMessages, { sender: "Mentor", text: currentMessage, time: "Just now" }]);
     setCurrentMessage("");
   };
 
@@ -288,10 +373,22 @@ export default function MentorDashboard() {
     alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      const response = await api.post('/api/meetings', {
+        title: title,
+        room_code: "meeting-" + Date.now(), // Generate a unique room code
+        status: "scheduled",
+        scheduled_time: time
+      });
+      // Optionally refresh mentor's local meetings array
+      setMeetings([...meetings, { id: response.data.id || meetings.length + 1, title, time, status: "Scheduled", room_code: response.data.room_code }]);
+      alert("Meeting created and saved to database!");
+    } catch (err) {
+      console.error("Failed to create meeting:", err);
+      alert("Error saving meeting to database.");
+    }
   };
 
   const handleWeeklySubmit = (e) => {
@@ -334,9 +431,7 @@ export default function MentorDashboard() {
           <div className="card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "280px" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb" }}>
-                  <MessageSquare size={20} />
-                </div>
+                <span style={{ fontSize: "28px" }}>💬</span>
                 <h3 style={{ margin: 0 }}>Breakout Rooms Meeting</h3>
               </div>
               <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6", marginBottom: "20px" }}>
@@ -363,9 +458,7 @@ export default function MentorDashboard() {
           {/* Card 2: Schedule Meeting */}
           <div className="card" style={{ minHeight: "280px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", color: "#b45309" }}>
-                <Calendar size={20} />
-              </div>
+              <span style={{ fontSize: "28px" }}>📅</span>
               <h3 style={{ margin: 0 }}>Schedule a Future Meeting</h3>
             </div>
             <form onSubmit={handleScheduleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -413,32 +506,32 @@ export default function MentorDashboard() {
 
 
             <div className="grid">
-              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <div className="stat-card">
                 <span className="stat-title">Assigned Interns</span>
                 <span className="stat-value">{assignedInterns.length}</span>
                 <span className="stat-desc">Tracking active progression</span>
               </div>
-              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <div className="stat-card">
                 <span className="stat-title">Pending Reviews</span>
                 <span className="stat-value">{submissions.filter(s => s.status === "Pending").length}</span>
                 <span className="stat-desc">Awaiting your feedback & score</span>
               </div>
-              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <div className="stat-card">
                 <span className="stat-title">Meetings Today</span>
                 <span className="stat-value">1</span>
                 <span className="stat-desc">Review meeting at 3:00 PM</span>
               </div>
-              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
+              <div className="stat-card">
                 <span className="stat-title">Average Performance</span>
                 <span className="stat-value">83%</span>
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
-              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "24px" }}>
+              <div className="card" style={{ margin: 0, paddingBottom: 0 }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
-                <ResponsiveContainer width="100%" height={225}>
+                <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
@@ -455,7 +548,7 @@ export default function MentorDashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
+              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
                   <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
@@ -479,45 +572,69 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", flex: 1, minHeight: 0 }}>
-              <div className="card animate-slide-up" style={{ marginBottom: 0, display: 'flex', flexDirection: 'column', minHeight: 0, animationDelay: '0.7s' }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
+              <div className="card" style={{ marginBottom: 0 }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
-                <div style={{ padding: "12px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", flex: 1 }}>
-                  {meetings.length > 0 ? meetings.map((m, index) => (
-                    <div key={m.id || index} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div>
-                          <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>{m.title}</h4>
-                          <span style={{ fontSize: "12px", color: "#6b7280" }}>{m.time}</span>
-                        </div>
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                          <span className={m.status === 'Scheduled' ? "badge badge-success" : "badge badge-warning"} style={{ fontSize: "10px" }}>{m.status === 'Upcoming' ? 'Meeting' : m.status}</span>
-                          <button 
-                            onClick={() => {
-                              setIsMeetingActive(true);
-                              localStorage.setItem("breakout_meeting_active", "true");
-                              setActiveTab("Breakout Rooms");
-                            }}
-                            className="btn btn-primary"
-                            style={{ padding: "4px 8px", fontSize: "11px", borderRadius: "4px" }}
-                          >
-                            Join
-                          </button>
-                        </div>
-                      </div>
-                      {index < meetings.length - 1 && <div style={{ borderTop: "1px solid #e5e7eb" }}></div>}
+                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>React Code Review</h4>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Today, 2:00 PM - 3:00 PM</span>
                     </div>
-                  )) : (
-                    <div style={{ fontSize: "13px", color: "#6b7280", textAlign: "center", padding: "10px" }}>No upcoming meetings</div>
-                  )}
+                    <span className="badge badge-warning" style={{ fontSize: "10px" }}>Meeting</span>
+                  </div>
+                  <div style={{ borderTop: "1px solid #e5e7eb" }}></div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>Final Project Submissions</h4>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Tomorrow, 11:59 PM</span>
+                    </div>
+                    <span className="badge badge-danger" style={{ fontSize: "10px" }}>Deadline</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="animate-slide-up" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.8s' }}>
-                <AdminLeaderboard usersList={assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
+              <div className="card" style={{ marginBottom: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <h3 style={{ margin: 0, fontSize: "16px" }}>Batch Leaderboard</h3>
+                  <select 
+                    value={selectedBatch} 
+                    onChange={(e) => setSelectedBatch(e.target.value)} 
+                    style={{ padding: "4px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid #e5e7eb", outline: "none", backgroundColor: "#f9fafb" }}
+                  >
+                    <option value="Batch A">Batch A</option>
+                    <option value="Batch B">Batch B</option>
+                  </select>
+                </div>
+                <div className="table-container" style={{ margin: 0 }}>
+                  <table className="table" style={{ margin: 0, fontSize: "13px" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "8px 12px" }}>Rank</th>
+                        <th style={{ padding: "8px 12px" }}>Intern Name</th>
+                        <th style={{ padding: "8px 12px", textAlign: "right" }}>Avg Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...assignedInterns]
+                        .filter(intern => intern.batch === selectedBatch)
+                        .sort((a, b) => parseInt(b.score) - parseInt(a.score))
+                        .map((intern, index) => (
+                        <tr key={intern.id}>
+                          <td style={{ padding: "8px 12px" }}>
+                            {index === 0 ? <Trophy size={16} color="#eab308" /> : index === 1 ? <Medal size={16} color="#9ca3af" /> : index === 2 ? <Award size={16} color="#b45309" /> : `#${index + 1}`}
+                          </td>
+                          <td style={{ padding: "8px 12px", fontWeight: 600 }}>{intern.name}</td>
+                          <td style={{ padding: "8px 12px", textAlign: "right" }}><span className="badge badge-primary">{intern.score}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </>
+            <AdminCertificateApprovals />
+            </>
         );
 
       case "Cohort":
@@ -543,7 +660,7 @@ export default function MentorDashboard() {
                         <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{i.weakAreas}</td>
                         <td>
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button onClick={() => setSelectedInternForChat(i.name)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
+                            <button onClick={() => setSelectedInternForChat(i)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
                               Chat
                             </button>
                             <button onClick={() => handleCreateMeeting(`${i.name} - Code Review`, "Tomorrow, 2:00 PM")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>
@@ -600,99 +717,70 @@ export default function MentorDashboard() {
           <div>
             {/* Row 1: Submissions review & grading */}
             <div className="card">
-              <h3 style={{ marginBottom: "16px" }}>Submissions Review</h3>
               {submissions.filter(s => s.status === "Pending").length === 0 ? (
                 <p style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}><Trophy size={18} color="#10b981" /> All submissions have been evaluated!</p>
               ) : (
-                <div className="table-container">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Intern</th>
-                        <th>Task</th>
-                        <th>Domain</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {submissions.filter(s => s.status === "Pending").map(sub => (
-                        <tr key={sub.id}>
-                          <td style={{ fontWeight: 600 }}>{sub.intern}</td>
-                          <td>{sub.task}</td>
-                          <td>{sub.domain}</td>
-                          <td><span className="badge badge-warning">{sub.status}</span></td>
-                          <td>
-                            <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px" }} onClick={() => setSelectedEvaluation(sub)}>Review</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                submissions.filter(s => s.status === "Pending").map(sub => {
+                  let tempScore = "";
+                  let tempFeedback = "";
+                  return (
+                    <div key={sub.id} className="card" style={{ border: "1px solid #E5E7EB", background: "#ffffff", marginBottom: "16px", padding: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                        {/* Left Side: Intern Details & AI Analysis */}
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                            <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
+                              {sub.intern.split(" ")[0][0]}{sub.intern.split(" ")[1] ? sub.intern.split(" ")[1][0] : ""}
+                            </div>
+                            <div>
+                              <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>{sub.intern}</h4>
+                              <div style={{ fontSize: "13px", color: "#6b7280" }}>Task: <span style={{ fontWeight: 600, color: "#374151" }}>{sub.task}</span></div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "12px", borderRadius: "8px", fontSize: "12px", color: "#1E3A8A" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "4px", fontSize: "13px" }}>
+                              <Bot size={16} /> AI Evaluation: {sub.aiScore}
+                            </div>
+                            <div style={{ lineHeight: "1.5" }}>{sub.aiFeedback}</div>
+                          </div>
+                        </div>
+
+                        {/* Right Side: GitHub, Inputs & Actions */}
+                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                          <div style={{ alignSelf: "flex-end" }}>
+                            <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "8px 16px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                              <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
+                                <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                              </svg>
+                              View on GitHub
+                            </a>
+                          </div>
+
+                          <div style={{ marginTop: "16px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", marginBottom: "12px" }}>
+                              <div>
+                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Final Score</label>
+                                <input className="form-control" placeholder="e.g. 85%" onChange={(e) => { tempScore = e.target.value; }} style={{ margin: 0 }} />
+                              </div>
+                              <div>
+                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Mentor Feedback</label>
+                                <input className="form-control" placeholder="Constructive remarks..." onChange={(e) => { tempFeedback = e.target.value; }} style={{ margin: 0 }} />
+                              </div>
+                            </div>
+
+                            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                              <button onClick={() => handleReviewSubmission(sub.id, "Reject", "0%", tempFeedback || "Needs rework")} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "8px 24px" }}>Reject</button>
+                              <button onClick={() => handleReviewSubmission(sub.id, "Approve", tempScore || "80%", tempFeedback || "Approved")} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "8px 24px" }}>Approve</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
-
-            {selectedEvaluation && (
-              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
-                <div style={{ backgroundColor: "#fff", width: "700px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", maxHeight: "90vh", overflowY: "auto" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Evaluation Details</h2>
-                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>✕</button>
-                  </div>
-                  
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
-                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Intern:</span> {selectedEvaluation.intern}</div>
-                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Domain:</span> {selectedEvaluation.domain}</div>
-                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Curriculum:</span> {selectedEvaluation.curriculum}</div>
-                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Task:</span> {selectedEvaluation.task}</div>
-                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>MCQ Results:</span> {selectedEvaluation.mcqResults}</div>
-                  </div>
-
-                  <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "16px", borderRadius: "8px", color: "#1E3A8A", marginBottom: "20px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "8px", fontSize: "14px" }}>
-                      <Bot size={18} /> AI Evaluation: {selectedEvaluation.aiScore}
-                    </div>
-                    <div style={{ lineHeight: "1.5", fontSize: "13px" }}>{selectedEvaluation.aiFeedback}</div>
-                  </div>
-
-                  <div style={{ marginBottom: "24px", display: "flex", justifyContent: "flex-end" }}>
-                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
-                      <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
-                        <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                      </svg>
-                      View on GitHub
-                    </a>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "20px" }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Final Score</label>
-                      <input id="modalTempScore" className="form-control" placeholder="e.g. 85%" style={{ margin: 0 }} />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Mentor Feedback</label>
-                      <input id="modalTempFeedback" className="form-control" placeholder="Constructive remarks..." style={{ margin: 0 }} />
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
-                    <button onClick={() => {
-                      const score = document.getElementById("modalTempScore").value;
-                      const feedback = document.getElementById("modalTempFeedback").value;
-                      handleReviewSubmission(selectedEvaluation.id, "Reject", score || "0%", feedback || "Needs rework");
-                      setSelectedEvaluation(null);
-                    }} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "10px 24px", fontWeight: 600 }}>Reject</button>
-                    <button onClick={() => {
-                      const score = document.getElementById("modalTempScore").value;
-                      const feedback = document.getElementById("modalTempFeedback").value;
-                      handleReviewSubmission(selectedEvaluation.id, "Approve", score || "80%", feedback || "Approved");
-                      setSelectedEvaluation(null);
-                    }} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "10px 24px", fontWeight: 600 }}>Approve</button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         );
 
@@ -1471,159 +1559,85 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
-      {/* Top Monolithic Webpage Hub Header */}
-      <header style={{ 
-        height: "70px", 
-        backgroundColor: "var(--card-bg, #ffffff)", 
-        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "space-between", 
-        padding: "0 32px",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
-      }}>
-        {/* Brand Logo & Portal Tag */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--primary-color, #2563eb)", letterSpacing: "-0.5px" }}>
-            ProEduvate
-          </h2>
-          <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#ecfdf5", color: "#047857", padding: "4px 10px", borderRadius: "12px" }}>
-            Mentor Panel
-          </span>
-        </div>
-
-        {/* Module Access Navigation Hub (Monolithic Pill Bar) */}
-        <nav style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px", borderRadius: "28px" }}>
-          {[
-            { id: "Overview", icon: <LayoutDashboard size={16} /> },
-            { id: "Cohort", icon: <Users size={16} /> },
-            { id: "Evaluations", icon: <ClipboardList size={16} /> },
-            { id: "Programs", icon: <Layers size={16} /> },
-            { id: "Bonus Airdrops", icon: <Coins size={16} /> },
-            { id: "Breakout Rooms", icon: <Video size={16} /> }
-          ].map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
+    <div className="container">
+      {/* Sidebar Navigation */}
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
+            {isSidebarOpen && <h2>Mentor Panel</h2>}
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Menu size={24} /></button>
+          </div>
+          <ul>
+            {[
+              { id: "Overview", icon: <LayoutDashboard size={20} /> },
+              { id: "Cohort", icon: <Users size={20} /> },
+              { id: "Evaluations", icon: <ClipboardCheck size={20} /> },
+              { id: "Programs", icon: <BookOpen size={20} /> },
+              { id: "Bonus Airdrops", icon: <Gift size={20} /> },
+              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> },
+                { id: "Chat with Interns", icon: <MessageSquare size={20} /> }
+            ].map((tab) => (
+              <li
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px 16px",
-                  borderRadius: "20px",
-                  border: "none",
-                  fontSize: "14px",
-                  fontWeight: isActive ? "600" : "500",
-                  backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
-                  color: isActive ? "#ffffff" : "var(--text-color, #475569)",
-                  boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease"
+                className={activeTab === tab.id ? "active" : ""}
+                onClick={() => {
+                  setActiveTab(tab.id);
                 }}
+                title={!isSidebarOpen ? tab.id : ""}
               >
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.icon}</span>
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.id}</span>
-              </button>
-            );
-          })}
-        </nav>
+                <span>{tab.icon}</span>
+                {isSidebarOpen && <span className="sidebar-text">{tab.id}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <button className="sidebar-logout" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          {isSidebarOpen ? "Logout" : <LogOut size={20} />}
+        </button>
+      </div>
 
-        {/* Right Actions & Utilities */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {activeTab === "Bonus Airdrops" && (
-            <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: "13px" }} onClick={() => setShowAirdropModal(true)}>
-              + Create Airdrop
+      {/* Main Content Area */}
+      <div className="main" style={(activeTab === "Breakout Rooms" && isMeetingActive) ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
+        {(activeTab !== "Breakout Rooms" || !isMeetingActive) ? (
+          <div className="header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
+              <h2>{activeTab}</h2>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              {activeTab === "Bonus Airdrops" && (
+                <button className="btn btn-primary" onClick={() => setShowAirdropModal(true)}>+ Create Airdrop</button>
+              )}
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
+                Role: <b>Mentor</b>
+              </span>
+            </div>
+          </div>
+        ) : (
+          !isSidebarOpen && (
+            <button 
+              onClick={() => setIsSidebarOpen(true)} 
+              style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2000, background: '#ffffff', border: '1px solid #e3e5e8', borderRadius: '4px', cursor: 'pointer', fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+              ☰
             </button>
-          )}
+          )
+        )}
 
-          {/* Notifications */}
-          <div style={{ position: 'relative', cursor: 'pointer' }}>
-            <div onClick={() => setShowNotifications(!showNotifications)}>
-              <Bell size={20} color="var(--text-gray, #64748b)" />
-              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
-            </div>
-            
-            {showNotifications && (
-              <div style={{ 
-                position: 'absolute', 
-                top: '100%', 
-                right: 0, 
-                marginTop: '12px', 
-                width: '300px', 
-                backgroundColor: 'var(--card-bg, #ffffff)', 
-                borderRadius: '12px', 
-                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
-                border: '1px solid var(--border-color, #e2e8f0)',
-                zIndex: 50,
-                overflow: 'hidden'
-              }}>
-                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', fontWeight: 600, color: 'var(--text-dark, #0f172a)', backgroundColor: 'var(--bg-light, #f8fafc)' }}>
-                  Notifications
-                </div>
-                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
-                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+        {isMeetingActive && (
+          <div style={{ display: activeTab === "Breakout Rooms" ? "block" : "none", height: "100%", width: "100%", position: activeTab === "Breakout Rooms" ? "absolute" : "relative", inset: 0, zIndex: 10 }}>
+            <BreakoutRoomsApp 
+              onRoomChange={(r) => setActiveMeetingRoom(r)} 
+              onLeaveMeeting={() => {
+                setIsMeetingActive(false);
+                localStorage.setItem("breakout_meeting_active", "false");
+                setActiveTab("Overview");
+              }}
+            />
           </div>
+        )}
 
-          <div style={{ height: '24px', width: '1px', backgroundColor: 'var(--border-color, #cbd5e1)' }}></div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
-            <div 
-              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
-            >
-              DM
-            </div>
-            
-            {isProfileDropdownOpen && (
-              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
-                <button 
-                  onClick={handleLogout}
-                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <LogOut size={16} /> Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
-
-        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
-          {isMeetingActive && (
-            <div style={{ display: activeTab === "Breakout Rooms" ? "flex" : "none", flex: 1, minHeight: 0, width: "100%", borderRadius: "16px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
-              <BreakoutRoomsApp 
-                onRoomChange={(r) => setActiveMeetingRoom(r)} 
-                onLeaveMeeting={() => {
-                  setIsMeetingActive(false);
-                  localStorage.setItem("breakout_meeting_active", "false");
-                  setActiveTab("Overview");
-                }}
-              />
-            </div>
-          )}
-
-          {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
-        </div>
-      </main>
+        {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
+      </div>
 
       {/* Floating Minimized Call Widget (Bottom Right) */}
       {isMeetingActive && activeTab !== "Breakout Rooms" && (
@@ -1682,7 +1696,7 @@ export default function MentorDashboard() {
       )}
 
       {/* Floating Side Chat Popup */}
-      {selectedInternForChat && (
+      {selectedInternForChat && activeTab !== "Chat with Interns" && (
         <div style={{
           position: "fixed",
           bottom: "24px",
@@ -1702,7 +1716,7 @@ export default function MentorDashboard() {
           <div style={{ padding: "12px 16px", backgroundColor: "#1e293b", color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
-              Chat with {selectedInternForChat}
+              Chat with {typeof selectedInternForChat === 'string' ? selectedInternForChat : selectedInternForChat?.name}
             </div>
             <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>âœ–</button>
           </div>
@@ -1710,16 +1724,16 @@ export default function MentorDashboard() {
           {/* Chat Messages */}
           <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc" }}>
             {chatMessages.map((msg, i) => (
-              <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
-                <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
-                  {msg.sender === "You" ? "" : `${msg.sender} â€¢ `}{msg.time}
+              <div key={i} style={{ alignSelf: msg.sender === "Mentor" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
+                <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "Mentor" ? "right" : "left" }}>
+                  {msg.sender === "Mentor" ? "" : `${msg.sender} â€¢ `}{msg.time}
                 </span>
                 <div style={{ 
-                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 
-                  color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                  backgroundColor: msg.sender === "Mentor" ? "#3b82f6" : "#ffffff", 
+                  color: msg.sender === "Mentor" ? "#ffffff" : "#1e293b", 
                   padding: "8px 12px", 
-                  borderRadius: msg.sender === "You" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
-                  border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none",
+                  borderRadius: msg.sender === "Mentor" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
+                  border: msg.sender !== "Mentor" ? "1px solid #e2e8f0" : "none",
                   fontSize: "13px",
                   lineHeight: "1.4"
                 }}>

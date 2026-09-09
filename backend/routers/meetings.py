@@ -61,6 +61,9 @@ def get_user_id_from_token(authorization: str = Header(None)):
 @router.post("/", response_model=MeetingResponse)
 def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), authorization: str = Header(None)):
     mentor_id = get_user_id_from_token(authorization)
+    if not mentor_id:
+        mentor_id = 1 # Fallback for demo
+
 
     # We save the meeting fields that exist in the database model
     # (If scheduled_time/domain exist in the model, they should be assigned. Assuming they might be missing from schema, we'll try to map what we can safely)
@@ -92,13 +95,25 @@ def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None
     return meetings
 
 
-from database import get_db 
-import models, schemas
-
-router = APIRouter(prefix="/meetings", tags=["meetings"])
+# (Removed duplicated APIRouter definition)
 
 # --- WebSocket Connection Manager ---
+
+global_meeting_active = False
+
+@router.get("/global-status")
+def get_global_status():
+    global global_meeting_active
+    return {"active": global_meeting_active}
+
+@router.post("/global-status")
+def set_global_status(active: bool):
+    global global_meeting_active
+    global_meeting_active = active
+    return {"active": global_meeting_active}
+
 class ConnectionManager:
+
     def __init__(self):
         # Maps room_id -> list of active WebSockets
         self.active_rooms: Dict[str, List[WebSocket]] = {}

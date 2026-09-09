@@ -87,7 +87,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-<<<<<<<< HEAD:backend/app/main.py
 from app.core.security import pwd_context, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 ========
 # --- Security & Auth Configuration ---
@@ -99,7 +98,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 Hours
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
-<<<<<<<< HEAD:backend/app/main.py
 # OAuth2 Scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -297,7 +295,6 @@ def create_task(
     db: Session = Depends(get_db), 
     current_user: models.User = Depends(require_role(["mentor", "admin"]))
 ):
-<<<<<<<< HEAD:backend/app/main.py
     if current_user.role != models.UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -336,7 +333,6 @@ def create_task(
     return task
 
 
-<<<<<<<< HEAD:backend/app/main.py
 @app.get("/tasks")
 def get_tasks(
     domain_id: int = None, 
@@ -509,7 +505,6 @@ def submit_task(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-<<<<<<<< HEAD:backend/app/main.py
     if task.domain_id != current_user.domain_id:
         raise HTTPException(status_code=403, detail="Task does not belong to your assigned domain")
 

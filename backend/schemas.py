@@ -208,6 +208,9 @@ class MeetingBase(BaseModel):
     title: str
     scheduled_time: Optional[datetime] = None
     duration_minutes: Optional[int] = 60
+    room_code: Optional[str] = "main-room"
+    status: Optional[str] = "active"
+
 
 class MeetingCreate(MeetingBase):
     pass

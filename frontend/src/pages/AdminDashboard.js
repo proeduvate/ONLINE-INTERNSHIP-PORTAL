@@ -1,113 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, Check, X } from 'lucide-react';
-import AdminAnalytics from "./AdminAnalytics";
-import AdminAirdropDetails from "./AdminAirdropDetails";
-import AdminLeaderboard from "./AdminLeaderboard";
-import "../../styles/Dashboard.css";
-import api from "../../api/axios";
-
-
-export function AdminCertificateApprovals() {
-  const [pendingCerts, setPendingCerts] = useState([]);
-
-  useEffect(() => {
-    fetchPending();
-  }, []);
-
-  const fetchPending = async () => {
-    try {
-      const res = await api.get("/api/certificates/pending");
-      setPendingCerts(res.data);
-    } catch (err) {
-      console.error("Failed to load pending certificates", err);
-    }
-  };
-
-  const handleAction = async (certId, action) => {
-    try {
-      await api.post(`/api/certificates/${certId}/${action}`);
-      alert(`Certificate ${action}d successfully!`);
-      fetchPending();
-    } catch (err) {
-      alert(`Failed to ${action} certificate.`);
-    }
-  };
-
-  return (
-    <div className="card" style={{ marginTop: "24px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-        <Award size={20} color="#F59E0B" />
-        <h3 style={{ margin: 0 }}>Pending Certificate Approvals</h3>
-      </div>
-      <div className="table-container">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Intern Name</th>
-              <th>Domain</th>
-              <th>Achievement</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingCerts.length === 0 ? (
-              <tr><td colSpan="4" style={{ textAlign: "center", padding: "16px" }}>No pending requests</td></tr>
-            ) : (
-              pendingCerts.map((cert) => (
-                <tr key={cert.id}>
-                  <td>{cert.intern_name}</td>
-                  <td>{cert.domain}</td>
-                  <td><span className="badge" style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}>{cert.achievement || "N/A"}</span></td>
-                  <td style={{ display: "flex", gap: "8px" }}>
-                    <button 
-                      onClick={() => handleAction(cert.certificate_id, 'approve')} 
-                      className="btn btn-primary" 
-                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px" }}
-                    >
-                      <Check size={14} /> Approve & Mail
-                    </button>
-                    <button 
-                      onClick={() => handleAction(cert.certificate_id, 'reject')} 
-                      className="btn btn-secondary" 
-                      style={{ padding: "6px 12px", display: "flex", alignItems: "center", gap: "4px", backgroundColor: "#FEE2E2", color: "#DC2626", borderColor: "#FEE2E2" }}
-                    >
-                      <X size={14} /> Reject
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy } from "lucide-react";
+import "../styles/Dashboard.css";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // Bonus Airdrops State
-  const [bonusAirdrops, setBonusAirdrops] = useState([]);
-  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
-
-  useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    if (storedAirdrops) {
-      setBonusAirdrops(JSON.parse(storedAirdrops));
-    }
-  }, []);
-
-  const handleApproveAirdrop = (id) => {
-    const updatedAirdrops = bonusAirdrops.map(a => 
-      a.id === id ? { ...a, status: "APPROVED" } : a
-    );
-    setBonusAirdrops(updatedAirdrops);
-    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
-  };
 
   // State Mock Data
   // State Mock Data
@@ -430,10 +328,6 @@ export default function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "Analytics":
-        return <AdminAnalytics usersList={usersList} />;
-      case "Leaderboard":
-        return <AdminLeaderboard usersList={usersList} />;
       case "Overview":
         return (
           <>
@@ -1015,83 +909,98 @@ export default function AdminDashboard() {
                 </div>
               </>
             ) : (
-              <div className="card">
-                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
-                  <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    &larr; Back
-                  </button>
-                  <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>Program Details - {selectedProgramDomain}</h3>
-                </div>
-
-                <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-                  <button 
-                    className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
-                    onClick={() => setDetailSubTab("Curriculum")}
-                  >Curriculum</button>
-                  <button 
-                    className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
-                    onClick={() => setDetailSubTab("Tasks")}
-                  >Tasks</button>
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      &larr; Back
+                    </button>
+                    <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>{selectedProgramDomain} Program</h3>
+                  </div>
+                  <div style={{ display: "flex", gap: "12px" }}>
+                    {["Curriculum", "Tasks"].map((tab) => (
+                      <button 
+                        key={tab} 
+                        onClick={() => setDetailSubTab(tab)} 
+                        className={`btn ${detailSubTab === tab ? "btn-primary" : "btn-secondary"}`}
+                        style={{ padding: "8px 16px", borderRadius: "20px" }}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {detailSubTab === "Curriculum" && (
-                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
-                    <table className="table">
-                      <thead>
-                        <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
-                      </thead>
-                      <tbody>
-                        {/* Render custom user-uploaded curriculum first */}
-                        {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
-                          <tr key={`custom-${i}`}>
-                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
-                            <td><b>{cur.topic}</b></td>
-                            <td>{cur.resources}</td>
-                            <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
-                          </tr>
-                        ))}
-                        
-                        {/* Render generated 30 days mock curriculum */}
-                        {[...Array(30)].map((_, i) => {
-                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
+                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h3 style={{ margin: 0 }}>30-Day Learning Plan</h3>
+                      <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "6px 12px" }}>Edit Mode</button>
+                    </div>
+                    
+                    <div className="table-container" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                      <table className="table">
+                        <thead>
+                          <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                          {/* Render custom user-uploaded curriculum first */}
+                          {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
+                            <tr key={`custom-${i}`}>
+                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                              <td><b>{cur.topic}</b></td>
+                              <td>{cur.resources}</td>
+                              <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                            </tr>
+                          ))}
                           
-                          return (
-                          <tr key={i}>
-                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
-                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
-                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
-                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
-                          </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                          {/* Render generated 30 days mock curriculum */}
+                          {[...Array(30)].map((_, i) => {
+                            if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
+                            
+                            return (
+                            <tr key={i}>
+                              <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
+                              <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
+                              <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
+                              <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                            </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
 
                 {detailSubTab === "Tasks" && (
-                  <div className="table-container">
-                    <table className="table">
-                      <thead>
-                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                      </thead>
-                      <tbody>
-                        {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
-                          <tr key={t.id}>
-                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                            <td><b>{t.title}</b></td>
-                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                            <td>{t.deadline}</td>
-                          </tr>
-                        ))}
-                        {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
-                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
-                        )}
-                      </tbody>
-                    </table>
+                  <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h3 style={{ margin: 0 }}>Tasks for {selectedProgramDomain}</h3>
+
+                    
+                    <div className="table-container">
+                      <table className="table">
+                        <thead>
+                          <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                        </thead>
+                        <tbody>
+                          {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                            <tr key={t.id}>
+                              <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                              <td><b>{t.title}</b></td>
+                              <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                              <td>{t.deadline}</td>
+                            </tr>
+                          ))}
+                          {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
+                            <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {/* Add Domain Modal */}
@@ -1121,7 +1030,152 @@ export default function AdminDashboard() {
 
       case "Credentials":
         return (
-          <AdminCertificateApprovals />
+          <div className="card">
+            <h3>Certificate Credentials Panel</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Generate professional verification-keyed certificates for graduating intern cohorts.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Intern Name</th>
+                    <th>Domain</th>
+                    <th>Final Average Grade</th>
+                    <th>Leaderboard Ranking</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>Raj Patel</b></td>
+                    <td>Data Science</td>
+                    <td><span style={{ color: "#10b981", fontWeight: 600 }}>80%</span></td>
+                    <td><span className="badge badge-success" style={{ padding: "4px 8px", fontSize: "13px" }}>#1</span></td>
+                    <td>
+                      <button onClick={() => alert("Certificate generated for Raj Patel! Verification Key: CERT-DS-884")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
+                        Generate & Email
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Anu Sharma</b></td>
+                    <td>Cyber Security</td>
+                    <td><span style={{ color: "#10b981", fontWeight: 600 }}>75%</span></td>
+                    <td><span className="badge badge-warning" style={{ padding: "4px 8px", fontSize: "13px" }}>#5</span></td>
+                    <td>
+                      <button onClick={() => alert("Certificate generated for Anu Sharma! Verification Key: CERT-CS-122")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
+                        Generate & Email
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case "Onboarding":
+        const currentCandidates = onboardingCandidates.filter(c => c.stage === onboardingSubTab);
+        return (
+          <div className="card" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+              {["Resume", "Interview", "Payment"].map((tab) => (
+                <button 
+                  key={tab} 
+                  onClick={() => setOnboardingSubTab(tab)} 
+                  className={`btn ${onboardingSubTab === tab ? "btn-primary" : "btn-secondary"}`}
+                  style={{ padding: "8px 16px", borderRadius: "20px" }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Candidate Name</th>
+                    <th>Domain</th>
+                    {onboardingSubTab === "Resume" && <th>Resume</th>}
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentCandidates.length === 0 ? (
+                    <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No candidates in this stage.</td></tr>
+                  ) : currentCandidates.map((c) => (
+                    <tr key={c.id}>
+                      <td><b>{c.name}</b></td>
+                      <td><span className="badge badge-success">{c.domain}</span></td>
+                      {onboardingSubTab === "Resume" && (
+                        <td>
+                          <button onClick={(e) => { e.preventDefault(); setActiveDocument({ type: 'Resume', candidate: c }); setViewedDocs({...viewedDocs, [`${c.id}-resume`]: true }); }} style={{ color: "#2563eb", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", padding: 0 }}>View Resume</button>
+                        </td>
+                      )}
+                      <td>
+                        {onboardingSubTab === "Resume" && viewedDocs[`${c.id}-resume`] && (
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button onClick={() => moveCandidateStage(c.id, "Interview")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>Require Interview</button>
+                            <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>Skip to Payment</button>
+                          </div>
+                        )}
+                        {onboardingSubTab === "Interview" && (
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button onClick={() => setOnboardingCandidates(onboardingCandidates.filter(cand => cand.id !== c.id))} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#dc2626", borderColor: "#fecaca" }}>Decline</button>
+                            <button onClick={() => moveCandidateStage(c.id, "Payment")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve</button>
+                          </div>
+                        )}
+                        {onboardingSubTab === "Payment" && (
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button onClick={() => { setActiveDocument({ type: 'PaymentProof', candidate: c }); setViewedDocs({...viewedDocs, [`${c.id}-payment`]: true }); }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>View Proof</button>
+                            {viewedDocs[`${c.id}-payment`] && (
+                              <button onClick={() => enrollCandidate(c.id)} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Verify Payment & Enroll</button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Modal for viewing documents */}
+            {activeDocument && (
+              <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.6)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 2000 }}>
+                <div className="card" style={{ width: "500px", margin: 0, minHeight: "300px", display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px", marginBottom: "16px" }}>
+                    <h3 style={{ margin: 0 }}>
+                      {activeDocument.type === 'Resume' ? `Resume: ${activeDocument.candidate.name}` :
+                       activeDocument.type === 'Interview' ? `Interview Results: ${activeDocument.candidate.name}` :
+                       `Payment Proof: ${activeDocument.candidate.name}`}
+                    </h3>
+                    <button onClick={() => setActiveDocument(null)} style={{ background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#6b7280" }}>&times;</button>
+                  </div>
+                  
+                  <div style={{ flex: 1, backgroundColor: "#f9fafb", borderRadius: "8px", padding: "20px", display: "flex", justifyContent: "center", alignItems: "center", border: "1px dashed #d1d5db" }}>
+                    {activeDocument.type === 'Resume' && <p style={{ color: "#6b7280", textAlign: "center" }}>📄 [PDF Mock]<br/>Resume document loaded for {activeDocument.candidate.name}.</p>}
+                    {activeDocument.type === 'Interview' && (
+                      <div style={{ textAlign: "center" }}>
+                        <h4 style={{ color: "#10b981", marginBottom: "8px", fontSize: "24px" }}>Status: Passed</h4>
+                        <p style={{ color: "#4b5563", margin: "8px 0", fontSize: "16px" }}>Technical Score: <strong>85/100</strong></p>
+                        <p style={{ color: "#4b5563", margin: "8px 0", fontSize: "16px" }}>Communication: <strong>Excellent</strong></p>
+                      </div>
+                    )}
+                    {activeDocument.type === 'PaymentProof' && (
+                      <div style={{ textAlign: "center" }}>
+                        <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🧾</p>
+                        <p style={{ color: "#10b981", margin: "0 0 8px 0", fontWeight: "bold", fontSize: "18px" }}>Transaction Successful</p>
+                        <p style={{ color: "#4b5563", margin: 0 }}>Amount: $500.00</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <button className="btn btn-primary" onClick={() => setActiveDocument(null)} style={{ marginTop: "16px", alignSelf: "flex-end" }}>Close & Continue</button>
+                </div>
+              </div>
+            )}
+          </div>
         );
 
       case "Tickets":
@@ -1233,77 +1287,6 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Bonus Airdrops":
-        if (selectedAirdrop) {
-          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
-        }
-        return (
-          <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
-
-            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
-              <div className="table-container" style={{ margin: 0 }}>
-                <table className="table" style={{ margin: 0 }}>
-                  <thead>
-                    <tr>
-                      <th style={{ padding: "12px 16px" }}>ID</th>
-                      <th style={{ padding: "12px 16px" }}>Question</th>
-                      <th style={{ padding: "12px 16px" }}>Points</th>
-                      <th style={{ padding: "12px 16px" }}>Status</th>
-                      <th style={{ padding: "12px 16px" }}>Time Limit</th>
-                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bonusAirdrops.length === 0 ? (
-                      <tr>
-                        <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
-                      </tr>
-                    ) : (
-                      [...bonusAirdrops].reverse().map(airdrop => (
-                        <tr 
-                          key={airdrop.id} 
-                          onClick={() => setSelectedAirdrop(airdrop)} 
-                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        >
-                          <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
-                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
-                          <td style={{ padding: "12px 16px" }}>
-                            {airdrop.status === "PENDING_APPROVAL" ? (
-                              <span className="badge badge-warning">PENDING_APPROVAL</span>
-                            ) : (
-                              <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
-                                {airdrop.status}
-                              </span>
-                            )}
-                          </td>
-                          <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
-                          <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                            {airdrop.status === "PENDING_APPROVAL" && (
-                              <button 
-                                className="btn btn-primary" 
-                                style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleApproveAirdrop(airdrop.id);
-                                }}
-                              >
-                                Approve
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        );
-
       default:
         return null;
     }
@@ -1311,54 +1294,43 @@ export default function AdminDashboard() {
 
   const navItems = [
     { id: "Overview", icon: <LayoutDashboard size={18} /> },
-    { id: "Analytics", icon: <TrendingUp size={18} /> },
     { id: "Onboarding", icon: <ClipboardCheck size={18} /> },
     { id: "Users", icon: <Users size={18} /> },
     { id: "Programs", icon: <BookOpen size={18} /> },
     { id: "Credentials", icon: <Award size={18} /> },
-    { id: "Tickets", icon: <LifeBuoy size={18} /> },
-    { id: "Bonus Airdrops", icon: <Gift size={18} /> },
-    { id: "Leaderboard", icon: <Medal size={18} /> }
+    { id: "Tickets", icon: <LifeBuoy size={18} /> }
   ];
 
   return (
     <div className="container">
       {/* Sidebar Navigation */}
-      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
+      <div className="sidebar">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
-            {isSidebarOpen && <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
+            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "50px", maxWidth: "100%" }} />
           </div>
           <ul>
             {navItems.map((item) => (
               <li
                 key={item.id}
                 className={activeTab === item.id ? "active" : ""}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  if (item.id === "Bonus Airdrops") setSelectedAirdrop(null);
-                }}
-                title={!isSidebarOpen ? item.id : ""}
+                onClick={() => setActiveTab(item.id)}
               >
-                <span>{item.icon}</span>
-                {isSidebarOpen && <span className="sidebar-text" style={{ marginLeft: "12px" }}>{item.id}</span>}
+                {item.icon}
+                {item.id}
               </li>
             ))}
           </ul>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>
-          {isSidebarOpen ? "Logout" : "🚪"}
+          Logout
         </button>
       </div>
 
       {/* Main Content Area */}
       <div className="main">
         <div className="header" style={{ flexShrink: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
-            <h2 style={{ margin: 0 }}>{activeTab}</h2>
-          </div>
+          <h2 style={{ margin: 0 }}>{activeTab}</h2>
           
           {/* Top right profile & actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
