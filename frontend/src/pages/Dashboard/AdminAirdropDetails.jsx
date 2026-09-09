@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Clock, Calendar, Award, CheckCircle, Target, Users, Zap, Gift, ListOrdered, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Award, CheckCircle, Target, Users, Zap, Gift, ListOrdered, CheckCircle2, Trophy, Medal } from 'lucide-react';
 
 export default function AdminAirdropDetails({ airdrop, onBack }) {
   if (!airdrop) return null;
@@ -129,8 +129,8 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                   border: '1px solid #fef3c7',
                   boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
                 }}>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#92400e' }}>
-                    {idx === 0 ? "🥇 1st Winner" : idx === 1 ? "🥈 2nd Winner" : idx === 2 ? "🥉 3rd Winner" : `${idx + 1}th Winner`}
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#92400e', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {idx === 0 ? <><Trophy size={16} /> 1st Winner</> : idx === 1 ? <><Medal size={16} /> 2nd Winner</> : idx === 2 ? <><Award size={16} /> 3rd Winner</> : `${idx + 1}th Winner`}
                   </span>
                   <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#d97706' }}>{pts} pts</span>
                 </div>

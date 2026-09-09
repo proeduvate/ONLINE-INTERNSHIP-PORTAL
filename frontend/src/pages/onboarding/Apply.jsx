@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Check, Target, FileText } from 'lucide-react';
 import { mockOnboardingService } from '../../services/mockOnboardingService';
 import './Onboarding.css';
 
@@ -55,7 +56,7 @@ export default function Apply() {
     if (submitted) {
         return (
             <div className="onboarding-container success-state">
-                <div className="success-icon-badge">✓</div>
+                <div className="success-icon-badge"><Check size={32} /></div>
                 <h2>Application Submitted Successfully</h2>
                 <p>Your internship application has been submitted and is now under administrative review.</p>
                 <div className="status-card">
@@ -90,7 +91,7 @@ export default function Apply() {
                     return (
                         <React.Fragment key={s.num}>
                             <div className={`step-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}>
-                                <div className="step-badge">{isCompleted ? '✓' : s.num}</div>
+                                <div className="step-badge">{isCompleted ? <Check size={14} strokeWidth={3} /> : s.num}</div>
                                 <span className="step-label">{s.label}</span>
                             </div>
                             {idx < steps.length - 1 && <div className={`step-connector ${step > s.num ? 'active' : ''}`} />}
@@ -255,7 +256,7 @@ export default function Apply() {
                         <div className="domain-card-preview">
                             {formData.domain ? (
                                 <div className="track-info-box">
-                                    <h4>🎯 {formData.domain}</h4>
+                                    <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Target size={18} /> {formData.domain}</h4>
                                     <p>Comprehensive 3-month hands-on industry internship program with live projects, mentor feedback, and certification.</p>
                                 </div>
                             ) : (
@@ -282,7 +283,7 @@ export default function Apply() {
                         </div>
                         
                         <div className="upload-dropzone">
-                            <div className="upload-icon">📄</div>
+                            <div className="upload-icon"><FileText size={48} color="#94a3b8" /></div>
                             <h4>Upload your latest Resume / CV</h4>
                             <p className="upload-desc">Drag and drop your document here, or click to browse</p>
                             <input 
@@ -299,7 +300,7 @@ export default function Apply() {
                             <span className="hint">Supported Formats: PDF, DOC, DOCX (Max 5MB)</span>
                             {formData.resume && (
                                 <div className="file-selected-card">
-                                    <span className="file-icon">✓</span>
+                                    <span className="file-icon"><Check size={16} /></span>
                                     <div className="file-details">
                                         <strong>{formData.resume.name}</strong>
                                         <span>{(formData.resume.size / 1024).toFixed(1)} KB</span>
@@ -373,7 +374,7 @@ export default function Apply() {
                                 &larr; Back
                             </button>
                             <button type="submit" className="btn-primary btn-submit" disabled={isSubmitting}>
-                                {isSubmitting ? 'Submitting Application...' : 'Submit Application ✓'}
+                                {isSubmitting ? 'Submitting Application...' : <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>Submit Application <Check size={18} /></span>}
                             </button>
                         </div>
                     </div>

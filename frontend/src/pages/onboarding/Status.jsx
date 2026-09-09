@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CheckCircle2, Circle, CircleDot, PartyPopper } from 'lucide-react';
 import { mockOnboardingService, ONBOARDING_STATUSES } from '../../services/mockOnboardingService';
 import './Onboarding.css';
 
@@ -53,20 +54,20 @@ export default function Status() {
 
             <div className="status-timeline" style={{ marginTop: '28px', paddingLeft: '24px', borderLeft: '3px solid #e2e8f0' }}>
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: '#16a34a', fontSize: '1.1rem', margin: '0 0 4px 0' }}>✓ Application Submitted</h3>
+                    <h3 style={{ color: '#16a34a', fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={20} /> Application Submitted</h3>
                     <p style={{ margin: 0, color: '#64748b' }}>Your application was received.</p>
                 </div>
                 
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: status === ONBOARDING_STATUSES.PENDING_REVIEW ? '#2563eb' : (status !== ONBOARDING_STATUSES.PENDING_REVIEW ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0' }}>
-                        {status === ONBOARDING_STATUSES.PENDING_REVIEW ? '●' : '✓'} Application Review
+                    <h3 style={{ color: status === ONBOARDING_STATUSES.PENDING_REVIEW ? '#2563eb' : (status !== ONBOARDING_STATUSES.PENDING_REVIEW ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {status === ONBOARDING_STATUSES.PENDING_REVIEW ? <CircleDot size={20} /> : <CheckCircle2 size={20} />} Application Review
                     </h3>
                     <p style={{ margin: 0, color: '#64748b' }}>{status === ONBOARDING_STATUSES.PENDING_REVIEW ? 'Currently being reviewed by our administrative team.' : 'Review completed.'}</p>
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: status.includes('INTERVIEW') ? '#2563eb' : (status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT || status.includes('PAYMENT') || status.includes('MENTOR') || status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0' }}>
-                        ○ Interview Stage
+                    <h3 style={{ color: status.includes('INTERVIEW') ? '#2563eb' : (status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT || status.includes('PAYMENT') || status.includes('MENTOR') || status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Circle size={20} /> Interview Stage
                     </h3>
                     {status === ONBOARDING_STATUSES.INTERVIEW_REQUIRED && <p style={{ margin: 0, color: '#64748b' }}>Your application requires an interview. Waiting for scheduling.</p>}
                     {status === ONBOARDING_STATUSES.INTERVIEW_SCHEDULED && (
@@ -77,14 +78,14 @@ export default function Status() {
                             <button style={{ marginTop: '12px' }}>Join Interview Link</button>
                         </div>
                     )}
-                    {status === ONBOARDING_STATUSES.INTERVIEW_PASSED && <p style={{ margin: 0, color: '#16a34a' }}>Passed interview step ✓</p>}
+                    {status === ONBOARDING_STATUSES.INTERVIEW_PASSED && <p style={{ margin: 0, color: '#16a34a', display: 'flex', alignItems: 'center', gap: '6px' }}>Passed interview step <CheckCircle2 size={16} /></p>}
                     {status === ONBOARDING_STATUSES.INTERVIEW_FAILED && <p style={{ margin: 0, color: '#dc2626' }}>Interview not cleared. Please contact support.</p>}
                     {status === ONBOARDING_STATUSES.INTERVIEW_NOT_REQUIRED && <p style={{ margin: 0, color: '#64748b' }}>Interview step waived. Proceed to payment.</p>}
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: status.includes('PAYMENT') || status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT ? '#2563eb' : (status.includes('MENTOR') || status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0' }}>
-                        ○ Payment Verification
+                    <h3 style={{ color: status.includes('PAYMENT') || status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT ? '#2563eb' : (status.includes('MENTOR') || status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Circle size={20} /> Payment Verification
                     </h3>
                     {(status === ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT || status === ONBOARDING_STATUSES.PAYMENT_PENDING) && (
                         <div className="status-box">
@@ -94,21 +95,21 @@ export default function Status() {
                         </div>
                     )}
                     {status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED && <p style={{ margin: 0, color: '#2563eb' }}>Payment Submitted. Admin verification in progress.</p>}
-                    {status === ONBOARDING_STATUSES.PAYMENT_VERIFIED && <p style={{ margin: 0, color: '#16a34a' }}>Payment Verified ✓</p>}
+                    {status === ONBOARDING_STATUSES.PAYMENT_VERIFIED && <p style={{ margin: 0, color: '#16a34a', display: 'flex', alignItems: 'center', gap: '6px' }}>Payment Verified <CheckCircle2 size={16} /></p>}
                     {status === ONBOARDING_STATUSES.PAYMENT_REJECTED && <p style={{ margin: 0, color: '#dc2626' }}>Payment verification failed. Please contact admin.</p>}
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: status.includes('MENTOR') ? '#2563eb' : (status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0' }}>
-                        ○ Mentor Assignment
+                    <h3 style={{ color: status.includes('MENTOR') ? '#2563eb' : (status.includes('ACCOUNT') || status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Circle size={20} /> Mentor Assignment
                     </h3>
                     {status === ONBOARDING_STATUSES.MENTOR_ASSIGNMENT_PENDING && <p style={{ margin: 0, color: '#64748b' }}>Waiting for mentor assignment...</p>}
-                    {status === ONBOARDING_STATUSES.MENTOR_ASSIGNED && <p style={{ margin: 0, color: '#16a34a' }}>Mentor Assigned ✓</p>}
+                    {status === ONBOARDING_STATUSES.MENTOR_ASSIGNED && <p style={{ margin: 0, color: '#16a34a', display: 'flex', alignItems: 'center', gap: '6px' }}>Mentor Assigned <CheckCircle2 size={16} /></p>}
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ color: status.includes('ACCOUNT') ? '#2563eb' : (status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0' }}>
-                        ○ Account Creation
+                    <h3 style={{ color: status.includes('ACCOUNT') ? '#2563eb' : (status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED ? '#16a34a' : '#94a3b8'), fontSize: '1.1rem', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Circle size={20} /> Account Creation
                     </h3>
                     {status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && <p style={{ margin: 0, color: '#64748b' }}>Your student account is being initialized.</p>}
                     {status === ONBOARDING_STATUSES.ACCOUNT_CREATED && <p style={{ margin: 0, color: '#16a34a' }}>Account active! Credentials emailed.</p>}
@@ -117,7 +118,7 @@ export default function Status() {
             
             {status === ONBOARDING_STATUSES.ONBOARDING_COMPLETED && (
                 <div className="success-state" style={{ marginTop: '32px' }}>
-                    <h2>🎉 Welcome to ProEduvate Internship!</h2>
+                    <h2 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><PartyPopper size={32} color="#10b981" /> Welcome to ProEduvate Internship!</h2>
                     <p style={{ marginBottom: '20px' }}>Your onboarding process is complete.</p>
                     <button onClick={() => window.location.href='/login'}>Go to Login</button>
                 </div>

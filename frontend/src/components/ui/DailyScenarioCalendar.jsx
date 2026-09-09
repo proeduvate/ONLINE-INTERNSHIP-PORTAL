@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Check, CircleDot, Circle } from 'lucide-react';
 import '../../styles/Dashboard.css';
 import { scenarioData } from './DailyScenario';
 
@@ -36,10 +37,10 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
           return (
             <div key={day} style={{ background: bg, border: `1px solid ${borderColor}`, borderRadius: "6px", padding: "6px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px" }}>
               <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a" }}>{day}</span>
-              <div style={{ fontSize: "0.55rem", color: iconColor, fontWeight: "bold", lineHeight: 1 }}>
-                {status === "completed" && "✓"}
-                {status === "missed" && "●"}
-                {status === "current" && "●"}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor }}>
+                {status === "completed" && <Check size={10} strokeWidth={4} />}
+                {status === "missed" && <Circle size={10} strokeWidth={4} />}
+                {status === "current" && <CircleDot size={10} strokeWidth={3} />}
                 {status === "upcoming" && "\u00A0"}
               </div>
             </div>
@@ -48,9 +49,9 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
       </div>
       
       <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "4px", fontSize: "0.65rem", fontWeight: 700, color: "#64748b" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><span style={{ color: "#16a34a" }}>●</span> Done</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><span style={{ color: "#d97706" }}>●</span> Present</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><span style={{ color: "#94a3b8" }}>●</span> Missed</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Check size={10} strokeWidth={3} color="#16a34a" /> Done</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><CircleDot size={10} strokeWidth={3} color="#d97706" /> Present</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Circle size={10} strokeWidth={3} color="#94a3b8" /> Missed</span>
       </div>
     </div>
   );

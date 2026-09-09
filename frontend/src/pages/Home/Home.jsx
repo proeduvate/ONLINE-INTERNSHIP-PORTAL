@@ -108,7 +108,7 @@ export default function LandingPage() {
       </section>
 
       {/* --- TRUST METRICS BANNER --- */}
-      <section className="hs-trust-banner">
+      <section className="hs-trust-banner hs-animate-fade" style={{ animationDelay: '0.2s' }}>
         <div className="hs-trust-grid">
           <div className="hs-trust-item">
             <h4>50,000+</h4>
@@ -131,7 +131,7 @@ export default function LandingPage() {
 
       {/* --- INTERNSHIP TRACKS (ID: internship-tracks) --- */}
       <section id="internship-tracks" className="hs-section">
-        <div className="hs-section-header">
+        <div className="hs-section-header hs-animate-fade" style={{ animationDelay: '0.3s' }}>
           <span className="hs-section-tag">Technology Tracks</span>
           <h2 className="hs-section-title">Industry-Guided Specialization Tracks</h2>
           <p className="hs-section-subtitle">
@@ -163,7 +163,7 @@ export default function LandingPage() {
 
       {/* --- WIDE FULL-WIDTH CONTACT US SECTION (ID: contact-us) --- */}
       <section id="contact-us" className="hs-contact-wide-section">
-        <div className="hs-contact-wide-container">
+        <div className="hs-contact-wide-container hs-animate-fade" style={{ animationDelay: '0.4s' }}>
           <div className="hs-contact-wide-grid">
             
             {/* Left Details Column */}

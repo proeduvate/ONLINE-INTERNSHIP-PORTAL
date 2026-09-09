@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LayoutDashboard, FileText, ArrowLeft, LogOut, FileCode, Database, Image, Folder, Download, Copy, ExternalLink, ThumbsUp, AlertCircle, Check } from "lucide-react";
+import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, Award, Lock, Target, Zap, Users, Activity, FileCode, Database, Image, Folder, ExternalLink, Download, Copy } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { PageContainer } from "../../components/layout/PageContainer";
 import "../../styles/Dashboard.css";
@@ -407,163 +407,248 @@ CREATE TABLE submission_files (
         </div>
 
         {activeTab === "Overview" && (
-          <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: "20px", alignItems: "start" }}>
-              {/* Left Column: Stats & Profile */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    Intern Profile <span className="badge badge-success" style={{ fontSize: "12px" }}>Active</span>
-                  </h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "14px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "#64748b" }}>Domain</span>
-                      <span style={{ fontWeight: 600, color: "#1e293b" }}>{intern.domain}</span>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "#64748b" }}>Batch</span>
-                      <span style={{ fontWeight: 600, color: "#1e293b" }}>{intern.batch}</span>
-                    </div>
-                  </div>
-                </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", overflowY: "hidden", height: "calc(100vh - 140px)" }}>
 
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Core Metrics</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
-                        <span style={{ color: "#475569" }}>Overall Progress</span>
-                        <span style={{ fontWeight: 700, color: "#3b82f6" }}>{intern.progress}%</span>
-                      </div>
-                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.progress}%`, backgroundColor: "#3b82f6", height: "100%", borderRadius: "4px" }}></div></div>
-                    </div>
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
-                        <span style={{ color: "#475569" }}>Average Score</span>
-                        <span style={{ fontWeight: 700, color: "#10b981" }}>{intern.score}%</span>
-                      </div>
-                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.score}%`, backgroundColor: "#10b981", height: "100%", borderRadius: "4px" }}></div></div>
-                    </div>
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "8px" }}>
-                        <span style={{ color: "#475569" }}>Attendance</span>
-                        <span style={{ fontWeight: 700, color: "#f59e0b" }}>{intern.attendance}%</span>
-                      </div>
-                      <div style={{ height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px" }}><div style={{ width: `${intern.attendance}%`, backgroundColor: "#f59e0b", height: "100%", borderRadius: "4px" }}></div></div>
-                    </div>
-                  </div>
+            {/* === ROW 1: 4 Metric Cards === */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+              {/* Days Completed */}
+              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Calendar size={20} />
                 </div>
-
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b" }}>Strengths & Weaknesses</h3>
-                  <div style={{ marginBottom: "16px" }}>
-                    <h4 style={{ color: "#10b981", margin: "0 0 8px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><ThumbsUp size={14} /> Strengths</h4>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                      {intern.strengths.split(", ").map((s, i) => <span key={i} className="badge badge-success" style={{ fontSize: "12px", padding: "4px 8px" }}>{s}</span>)}
-                    </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "#0f172a" }}>18 / 30</h3>
+                    <span style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 700 }}>{intern.progress}%</span>
                   </div>
-                  <div>
-                    <h4 style={{ color: "#ef4444", margin: "0 0 8px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><AlertCircle size={14} /> Areas for Improvement</h4>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                      {intern.weakAreas.split(", ").map((w, i) => <span key={i} className="badge badge-danger" style={{ backgroundColor: "#fee2e2", color: "#991b1b", fontSize: "12px", padding: "4px 8px" }}>{w}</span>)}
-                    </div>
-                  </div>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600, display: "block", marginBottom: "6px" }}>Days Completed</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "5px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${intern.progress}%`, background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
-              {/* Middle Column: Chart & Activity */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Performance Trend</h3>
-                  <ResponsiveContainer width="100%" height={240}>
-                    <LineChart data={performanceData} margin={{ top: 5, right: 10, bottom: -5, left: -25 }}>
-                      <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={4} dot={{ r: 5, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }} />
-                      <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
-                      <XAxis dataKey="week" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: "14px" }} />
-                    </LineChart>
-                  </ResponsiveContainer>
+              {/* Tasks Completed */}
+              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <CheckCircle size={20} />
                 </div>
-                
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 20px 0", color: "#1e293b" }}>Recent Activity</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={{ display: "flex", gap: "16px" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#3b82f6", zIndex: 1 }}></div>
-                        <div style={{ width: "2px", height: "100%", backgroundColor: "#e2e8f0", marginTop: "4px" }}></div>
-                      </div>
-                      <div style={{ paddingBottom: "16px" }}>
-                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Submitted <b>React To-Do App</b> for review.</p>
-                        <span style={{ fontSize: "13px", color: "#64748b" }}>Today, 10:30 AM</span>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "16px" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#10b981", zIndex: 1 }}></div>
-                        <div style={{ width: "2px", height: "100%", backgroundColor: "#e2e8f0", marginTop: "4px" }}></div>
-                      </div>
-                      <div style={{ paddingBottom: "16px" }}>
-                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Attended <b>Daily Standup</b> meeting.</p>
-                        <span style={{ fontSize: "13px", color: "#64748b" }}>Yesterday, 04:15 PM</span>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "16px" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#8b5cf6", zIndex: 1 }}></div>
-                      </div>
-                      <div>
-                        <p style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#1e293b", fontWeight: 500 }}>Completed <b>React Hooks Module</b>.</p>
-                        <span style={{ fontSize: "13px", color: "#64748b" }}>Aug 25, 11:00 AM</span>
-                      </div>
-                    </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "#0f172a" }}>16 / 24</h3>
+                    <span style={{ fontSize: "0.78rem", color: "#16a34a", fontWeight: 700 }}>67%</span>
                   </div>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600, display: "block", marginBottom: "6px" }}>Tasks Completed</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "5px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "67%", background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
-              {/* Right Column: Actions & Goals */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div className="card" style={{ margin: 0, padding: "20px", backgroundColor: "#fffbeb", border: "1px solid #fef3c7" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#b45309" }}>Mentor Action Items</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <div style={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px", border: "1px solid #fde68a" }}>
-                      <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", color: "#92400e" }}>Review React To-Do App</h4>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: "13px", color: "#ef4444", fontWeight: 600 }}>Overdue by 1 day</span>
-                        <button className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "13px" }} onClick={() => setActiveTab("Task Submissions")}>Review</button>
-                      </div>
-                    </div>
-                    <div style={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px", border: "1px solid #fde68a" }}>
-                      <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", color: "#92400e" }}>Schedule 1-on-1</h4>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: "13px", color: "#b45309" }}>Discuss progress</span>
-                        <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", backgroundColor: "#fff", border: "1px solid #cbd5e1" }}>Schedule</button>
-                      </div>
-                    </div>
-                  </div>
+              {/* Average Score */}
+              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#faf5ff", color: "#9333ea", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Star size={20} />
                 </div>
-
-                <div className="card" style={{ margin: 0, padding: "20px" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#1e293b" }}>Current Goals</h3>
-                  <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px", color: "#475569", display: "flex", flexDirection: "column", gap: "10px" }}>
-                    <li>Improve state management understanding and use of context.</li>
-                    <li>Contribute to the team's main repository via PRs.</li>
-                    <li>Participate more actively in breakout sessions.</li>
-                  </ul>
-                </div>
-
-                <div className="card" style={{ margin: 0, padding: "20px", backgroundColor: "#f0fdf4", border: "1px solid #dcfce3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-                  <h3 style={{ fontSize: "16px", margin: "0 0 12px 0", color: "#166534" }}>Peer Review Score</h3>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                    <span style={{ fontSize: "36px", fontWeight: 700, color: "#15803d" }}>4.8</span>
-                    <span style={{ fontSize: "16px", color: "#166534" }}>/ 5.0</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "#0f172a" }}>{intern.score}%</h3>
+                    <span style={{ fontSize: "0.78rem", color: "#9333ea", fontWeight: 700 }}>Avg Score</span>
                   </div>
-                  <p style={{ margin: "8px 0 0 0", fontSize: "13px", color: "#166534" }}>Based on 3 recent peer evaluations</p>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600, display: "block", marginBottom: "6px" }}>Assessment Score</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "5px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${intern.score}%`, background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
+                </div>
+              </div>
+
+              {/* Attendance */}
+              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#fff7ed", color: "#ea580c", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Clock size={20} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "#0f172a" }}>{intern.attendance}%</h3>
+                    <span style={{ fontSize: "0.78rem", color: "#ea580c", fontWeight: 700 }}>Excellent</span>
+                  </div>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600, display: "block", marginBottom: "6px" }}>Attendance Rate</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "5px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${intern.attendance}%`, background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
             </div>
-          </>
+
+            {/* === ROW 2: 3-Column Grid === */}
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "10px" }}>
+
+              {/* Column 1: Performance Trend Chart */}
+              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Performance Trend</h3>
+                    <p style={{ margin: "3px 0 0 0", fontSize: "0.78rem", color: "#64748b" }}>Weekly score trajectory</p>
+                  </div>
+                  <div style={{ padding: "4px 10px", background: "#f8fafc", borderRadius: "7px", border: "1px solid #e2e8f0", fontSize: "0.78rem", color: "#334155", fontWeight: 600 }}>Last 4 Weeks</div>
+                </div>
+                <ResponsiveContainer width="100%" height={155}>
+                  <LineChart data={performanceData} margin={{ top: 5, right: 10, bottom: -5, left: -25 }}>
+                    <Line type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} dot={{ r: 4, fill: "#2563eb", strokeWidth: 2, stroke: "#fff" }} />
+                    <CartesianGrid stroke="#f1f5f9" strokeDasharray="4 4" vertical={false} />
+                    <XAxis dataKey="week" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} domain={[60, 100]} />
+                    <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: "12px" }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Column 2: Skill Development */}
+              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ marginBottom: "10px" }}>
+                  <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Skill Development</h3>
+                  <p style={{ margin: "3px 0 0 0", fontSize: "0.78rem", color: "#64748b" }}>Growth across key areas</p>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, justifyContent: "center" }}>
+                  {[
+                    { name: "Problem Solving", val: 84 },
+                    { name: "Data Structures", val: 76 },
+                    { name: "React / Frontend", val: 60 },
+                    { name: "Async Operations", val: 55 },
+                    { name: "CSS & Layouts", val: 48 },
+                  ].map(skill => (
+                    <div key={skill.name}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#334155" }}>{skill.name}</span>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a" }}>{skill.val}%</span>
+                      </div>
+                      <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
+                        <div style={{ width: `${skill.val}%`, background: skill.val >= 75 ? "#16a34a" : skill.val >= 60 ? "#2563eb" : "#f59e0b", height: "100%", borderRadius: "3px" }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column 3: Performance Overview Donut */}
+              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Performance Overview</h3>
+                <div style={{ position: "relative", width: "118px", height: "118px", margin: "0 auto 10px auto" }}>
+                  <svg width="100%" height="100%" viewBox="0 0 160 160">
+                    <circle cx="80" cy="80" r="68" fill="none" stroke="#f1f5f9" strokeWidth="16" />
+                    <circle cx="80" cy="80" r="68" fill="none" stroke="#2563eb" strokeWidth="16"
+                      strokeDasharray={`${(intern.score / 100) * 427} 427`}
+                      strokeDashoffset="0" strokeLinecap="round" transform="rotate(-90 80 80)" />
+                  </svg>
+                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                    <span style={{ fontSize: "1.35rem", fontWeight: 800, color: "#0f172a" }}>{intern.score}%</span>
+                    <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 600 }}>Overall</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px" }}><div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#2563eb" }}></div><span style={{ color: "#475569", fontSize: "0.82rem" }}>MCQ Score</span></div>
+                    <strong style={{ fontSize: "0.82rem" }}>85%</strong>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px" }}><div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#a855f7" }}></div><span style={{ color: "#475569", fontSize: "0.82rem" }}>AI Evaluation</span></div>
+                    <strong style={{ fontSize: "0.82rem" }}>88%</strong>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px" }}><div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981" }}></div><span style={{ color: "#475569", fontSize: "0.82rem" }}>Mentor Reviews</span></div>
+                    <strong style={{ fontSize: "0.82rem" }}>79%</strong>
+                  </div>
+                </div>
+                <div style={{ marginTop: "10px", padding: "7px 10px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "8px", display: "flex", alignItems: "center", gap: "7px" }}>
+                  <TrendingUp size={14} color="#16a34a" />
+                  <p style={{ margin: 0, fontSize: "0.75rem", color: "#166534" }}>Above average! Keep it up.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* === ROW 3: Bottom Grid === */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+
+              {/* Strengths & Weaknesses */}
+              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Strengths & Areas</h3>
+                <div style={{ marginBottom: "10px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "7px" }}>
+                    <ThumbsUp size={13} color="#16a34a" />
+                    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#16a34a" }}>Strengths</span>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                    {intern.strengths.split(", ").map((s, i) => (
+                      <span key={i} style={{ fontSize: "12px", padding: "4px 10px", background: "#f0fdf4", color: "#166534", borderRadius: "20px", border: "1px solid #bbf7d0", fontWeight: 600 }}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "7px" }}>
+                    <AlertCircle size={13} color="#ef4444" />
+                    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#ef4444" }}>Improvement Areas</span>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                    {intern.weakAreas.split(", ").map((w, i) => (
+                      <span key={i} style={{ fontSize: "12px", padding: "4px 10px", background: "#fef2f2", color: "#991b1b", borderRadius: "20px", border: "1px solid #fecaca", fontWeight: 600 }}>{w}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mentor Action Items */}
+              <div style={{ background: "#fffbeb", border: "1px solid #fef3c7", padding: "13px 14px", borderRadius: "14px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#b45309" }}>Mentor Action Items</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                    <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Review React To-Do App</h4>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "12px", color: "#ef4444", fontWeight: 600 }}>Overdue by 1 day</span>
+                      <button className="btn btn-primary" style={{ padding: "4px 11px", fontSize: "12px" }} onClick={() => setActiveTab("Task Submissions")}>Review</button>
+                    </div>
+                  </div>
+                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                    <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Schedule 1-on-1</h4>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "12px", color: "#b45309" }}>Discuss progress</span>
+                      <button className="btn btn-secondary" style={{ padding: "4px 11px", fontSize: "12px", backgroundColor: "#fff", border: "1px solid #cbd5e1" }}>Schedule</button>
+                    </div>
+                  </div>
+                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                    <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Current Goals</h4>
+                    <ul style={{ margin: 0, paddingLeft: "15px", fontSize: "12px", color: "#78350f", display: "flex", flexDirection: "column", gap: "3px" }}>
+                      <li>Improve state management</li>
+                      <li>Contribute to team repo via PRs</li>
+                      <li>Be more active in breakout sessions</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Activity + Peer Score */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Recent Activity</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
+                    {[
+                      { color: "#2563eb", text: "Submitted React To-Do App for review", time: "Today, 10:30 AM" },
+                      { color: "#16a34a", text: "Attended Daily Standup meeting", time: "Yesterday, 4:15 PM" },
+                      { color: "#8b5cf6", text: "Completed React Hooks Module", time: "Aug 25, 11:00 AM" },
+                    ].map((item, i) => (
+                      <div key={i} style={{ display: "flex", gap: "9px", alignItems: "flex-start" }}>
+                        <div style={{ width: "9px", height: "9px", borderRadius: "50%", background: item.color, flexShrink: 0, marginTop: "4px" }}></div>
+                        <div>
+                          <p style={{ margin: "0 0 2px 0", fontSize: "0.82rem", color: "#1e293b", fontWeight: 500 }}>{item.text}</p>
+                          <span style={{ fontSize: "0.73rem", color: "#64748b" }}>{item.time}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ background: "#f0fdf4", border: "1px solid #dcfce3", padding: "13px 14px", borderRadius: "14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                  <h3 style={{ fontSize: "0.88rem", margin: "0 0 6px 0", color: "#166534", fontWeight: 700 }}>Peer Review Score</h3>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "4px" }}>
+                    <span style={{ fontSize: "2rem", fontWeight: 800, color: "#15803d" }}>4.8</span>
+                    <span style={{ fontSize: "13px", color: "#166534" }}>/ 5.0</span>
+                  </div>
+                  <p style={{ margin: "4px 0 0 0", fontSize: "11.5px", color: "#166534" }}>Based on 3 recent evaluations</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
         )}
 
         {/* Task Submissions Card */}
@@ -616,7 +701,7 @@ CREATE TABLE submission_files (
                         <div style={{ fontWeight: 600, color: isSubmitted ? "#1f2937" : "#9ca3af", fontStyle: isSubmitted ? "normal" : "italic" }}>{taskName}</div>
                         {isSubmitted && githubUrl && (
                           <a href={githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
-                            🔗 GitHub Repo
+                            <ExternalLink size={12} /> GitHub Repo
                           </a>
                         )}
                       </td>
@@ -624,7 +709,7 @@ CREATE TABLE submission_files (
                          {isSubmitted ? (
                            <div style={{ display: "flex", gap: "8px" }}>
                              <span className="file-pill" style={{ padding: "6px 12px", fontSize: "12px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", color: "#475569", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                               📄 MCQ_{dayStr.replace(" ", "")}.pdf
+                               <FileText size={14} color="#64748b" /> MCQ_{dayStr.replace(" ", "")}.pdf
                              </span>
                            </div>
                          ) : (

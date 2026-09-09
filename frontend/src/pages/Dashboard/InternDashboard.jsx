@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle } from "lucide-react";
+import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+import InternProfile from "./InternProfile";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import { Card, CardHeader, CardContent } from "../../components/ui/Card";
@@ -18,7 +19,7 @@ export default function InternDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
-  const [isInternshipCompleted, setIsInternshipCompleted] = useState(false);
+  const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
 
   const mockNotifications = [
     { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
@@ -33,11 +34,7 @@ export default function InternDashboard() {
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const handleJoinMeeting = () => {
-    const isMeetingRunning = localStorage.getItem("breakout_meeting_active") === "true";
-    if (!isMeetingRunning) {
-      alert("The mentor has not started this breakout meeting yet. Please try again once the meeting has commenced.");
-      return;
-    }
+    // Bypassing mentor restriction for trial/demo purposes
     setIsMeetingActive(true);
     setIsMeetingMinimized(false);
   };
@@ -1282,7 +1279,7 @@ export default function InternDashboard() {
                           </div>
                         </div>
                       </div>
-                      <button style={{ background: "#2563eb", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
+                      <button onClick={handleJoinMeeting} style={{ background: "#2563eb", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
                         Join Zoom
                       </button>
                     </div>
@@ -1316,16 +1313,7 @@ export default function InternDashboard() {
 
                 )}
 
-                {/* Footer Navigation */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", paddingTop: "24px", borderTop: "1px solid #e2e8f0" }}>
-                  <button style={{ background: "none", border: "1px solid #cbd5e1", color: "#3b82f6", fontWeight: 700, padding: "10px 20px", borderRadius: "8px", fontSize: "13px", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
-                    <ArrowLeft size={16} /> Previous Day
-                  </button>
-                  
-                  <button onClick={() => setShowAssessment(true)} style={{ background: "#2563eb", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                    Mark as Completed &rarr;
-                  </button>
-                </div>
+
               </div>
 
               {/* Right Column: Sidebar */}
@@ -1650,8 +1638,8 @@ export default function InternDashboard() {
                     border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px" }}>
-                      {msg.time} {msg.sender === "You" && "✓✓"}
+                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
+                      {msg.time} {msg.sender === "You" && <CheckCheck size={12} />}
                     </span>
                   </div>
                 </div>
@@ -1831,16 +1819,16 @@ export default function InternDashboard() {
                       }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 700, backgroundColor: "#e2e8f0", padding: "2px 8px", borderRadius: "4px" }}>
-                              🏁 FINISHED
+                            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 700, backgroundColor: "#e2e8f0", padding: "2px 8px", borderRadius: "4px", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <Flag size={12} /> FINISHED
                             </span>
                           </div>
                           <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
                         </div>
                         
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-                          <div style={{ backgroundColor: "#e2e8f0", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600 }}>
-                            ✓ Challenge Ended
+                          <div style={{ backgroundColor: "#e2e8f0", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                            <Check size={14} /> Challenge Ended
                           </div>
                         </div>
                       </div>
@@ -1855,98 +1843,116 @@ export default function InternDashboard() {
       case "Progress & Certificate":
         if (showCertificateView) {
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "24px", overflowY: "auto", paddingBottom: "30px", height: "calc(100vh - 110px)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "hidden", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
               {/* Back Button */}
-              <div style={{ marginBottom: "-10px" }}>
-                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#64748b", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "8px 0" }}>
-                  <ArrowLeft size={16} /> Back to Dashboard
+              <div style={{ marginBottom: "-8px" }}>
+                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "#0f172a"} onMouseOut={(e) => e.target.style.color = "#475569"}>
+                  <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
                 </button>
               </div>
 
-              {/* Completion Banner */}
+              {/* Premium Completion Banner - Theme Aligned */}
               <div style={{
-                background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #0284c7 100%)",
+                background: "var(--gradient-primary, linear-gradient(135deg, #0875E1, #0B82F6))",
                 borderRadius: "20px",
-                padding: "32px 36px",
+                padding: "24px 32px",
                 color: "#ffffff",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                boxShadow: "0 10px 25px rgba(37, 99, 235, 0.2)"
+                boxShadow: "var(--shadow-lg, 0 10px 15px -3px rgba(8, 27, 53, 0.1))",
+                position: "relative",
+                overflow: "hidden",
+                flexShrink: 0
               }}>
-                <div>
-                  <span style={{ fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", opacity: 0.9, display: "inline-block", backgroundColor: "rgba(255,255,255,0.2)", padding: "4px 12px", borderRadius: "20px", marginBottom: "8px" }}>
-                    INTERNSHIP COMPLETED
+                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "rgba(255,255,255,0.9)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "rgba(255,255,255,0.2)", padding: "4px 10px", borderRadius: "10px" }}>
+                    Mission Accomplished <Rocket size={12} />
                   </span>
-                  <h2 style={{ fontSize: "2.2rem", fontWeight: 800, margin: "0 0 8px 0" }}>
-                    Congratulations, Dhanush! 🎉
+                  <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "#ffffff" }}>
+                    Boom! You did it, Dhanush!
                   </h2>
-                  <p style={{ margin: 0, fontSize: "1rem", opacity: 0.9, lineHeight: "1.5" }}>
-                    You have successfully completed your 30-day internship program. A step forward in your journey to a brighter future.
+                  <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255,255,255,0.9)", lineHeight: "1.4", maxWidth: "600px" }}>
+                    Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
                   </p>
                 </div>
 
-                <div style={{ background: "rgba(255, 255, 255, 0.15)", padding: "16px 24px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.3)", textAlign: "center" }}>
-                  <span style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "1px", opacity: 0.8, display: "block" }}>Overall Performance</span>
-                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0" }}>91%</span>
-                  <span style={{ fontSize: "0.75rem", background: "#dcfce7", color: "#166534", padding: "2px 8px", borderRadius: "10px", fontWeight: 700 }}>Excellent</span>
+                <div style={{ background: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid rgba(255, 255, 255, 0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.8)", display: "block" }}>Performance</span>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "#ffffff" }}>91%</span>
+                  <span style={{ fontSize: "0.75rem", background: "#dcfce7", color: "#166534", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid #bbf7d0" }}>Excellent</span>
                 </div>
               </div>
 
               {/* Main Grid: Certificate & Actions */}
-              <div style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr", gap: "24px" }}>
-                {/* Certificate Card Preview */}
-                <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "24px", boxShadow: "0 4px 15px rgba(0,0,0,0.03)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-dark, #0f172a)" }}>Official Certificate of Completion</h3>
-                    <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 600, background: "#f0fdf4", padding: "4px 12px", borderRadius: "20px", border: "1px solid #bbf7d0" }}>✓ Verified & Active</span>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "24px", flexGrow: 1, minHeight: 0 }}>
+                
+                {/* Certificate Render */}
+                <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "20px", padding: "20px 24px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Official Certificate</h3>
+                    <span style={{ fontSize: "0.75rem", color: "var(--success-dark, #059669)", fontWeight: 600, background: "var(--success-bg, #ECFDF5)", padding: "4px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid var(--success-border, #A7F3D0)" }}>
+                      <CheckCircle size={12} /> Verified
+                    </span>
                   </div>
 
-                  {/* Rendered Certificate Container */}
                   <div style={{
-                    border: "8px double #1e3a8a",
+                    flexGrow: 1,
+                    border: "1px solid var(--border-color, #e2e8f0)",
                     borderRadius: "12px",
-                    padding: "36px 32px",
-                    background: "#ffffff",
+                    padding: "24px 32px",
+                    background: "linear-gradient(180deg, #ffffff 0%, var(--surface-soft, #F8FBFF) 100%)",
                     textAlign: "center",
                     position: "relative",
-                    boxShadow: "inset 0 0 20px rgba(30, 58, 138, 0.05)"
+                    boxShadow: "0 20px 25px -5px rgba(8, 27, 53, 0.05), 0 8px 10px -6px rgba(8, 27, 53, 0.01)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between"
                   }}>
-                    {/* Header Badge */}
+                    {/* Corner accents */}
+                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+
+                    {/* Logo Area */}
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#2563eb", color: "#ffffff", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>P</div>
-                      <span style={{ fontSize: "1.4rem", fontWeight: 800, color: "#1e3a8a", letterSpacing: "-0.5px" }}>ProEduvate</span>
+                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--brand-primary, #0B82F6)", color: "#ffffff", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
+                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #081B35)", letterSpacing: "-0.5px" }}>ProEduvate</span>
                     </div>
 
-                    <span style={{ fontSize: "0.9rem", fontWeight: 800, letterSpacing: "3px", color: "#64748b", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
-                      CERTIFICATE OF INTERNSHIP
-                    </span>
+                    <div>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
+                        Certificate of Internship
+                      </span>
 
-                    <p style={{ fontSize: "0.9rem", color: "#475569", margin: "0 0 12px 0" }}>This is to certify that</p>
+                      <p style={{ fontSize: "0.9rem", color: "var(--text-secondary, #45617F)", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
 
-                    <h1 style={{ fontSize: "2.2rem", fontFamily: "Georgia, serif", fontWeight: 700, color: "#0f172a", margin: "0 0 16px 0" }}>
-                      Sadie Sink
-                    </h1>
+                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "var(--brand-primary, #0B82F6)", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
+                        Sadie Sink
+                      </h1>
 
-                    <p style={{ fontSize: "0.95rem", color: "#334155", maxWidth: "480px", margin: "0 auto 24px auto", lineHeight: "1.6" }}>
-                      has successfully completed the 30-day Internship Program in <strong>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
-                    </p>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #45617F)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
+                        has successfully completed the 30-day Internship Program in <strong style={{ color: "var(--text-primary, #081B35)" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
+                      </p>
+                    </div>
 
                     {/* Dates & Signatures Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "32px", paddingTop: "20px", borderTop: "1px solid #e2e8f0" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
                       <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", display: "block" }}>01 Aug 2025 – 30 Aug 2025</span>
-                        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>Program Duration</span>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary, #081B35)", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
+                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
                       </div>
 
                       <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: "1.5px solid #0f172a", width: "120px", margin: "0 auto 4px auto", fontWeight: "bold", fontFamily: "cursive" }}>Arun Prakash</div>
-                        <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>Program Mentor</span>
+                        <div style={{ borderBottom: "1px solid var(--border-strong, #C7D8EA)", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "var(--text-primary, #081B35)" }}>Arun Prakash</div>
+                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
                       </div>
 
-                      <div style={{ textAlign: "right" }}>
-                        <div style={{ width: "48px", height: "48px", background: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "6px", margin: "0 0 4px auto", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: "bold" }}>QR</div>
-                        <span style={{ fontSize: "0.7rem", color: "#64748b" }}>ID: EX-PL-INT-2025-041</span>
+                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                        <div style={{ width: "40px", height: "40px", background: "#ffffff", border: "1px dashed var(--border-strong, #C7D8EA)", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "var(--text-placeholder, #9DB0C5)" }}>QR</div>
+                        <span style={{ fontSize: "0.55rem", color: "var(--text-muted, #7890AA)", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
                       </div>
                     </div>
                   </div>
@@ -1954,27 +1960,19 @@ export default function InternDashboard() {
 
                 {/* Actions Column */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                    <h4 style={{ margin: "0 0 14px 0", fontSize: "1rem", color: "var(--text-dark, #0f172a)" }}>Download & Share</h4>
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "20px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                    <h4 style={{ margin: "0 0 16px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Share & Download</h4>
                     
-                    <button className="btn-primary" style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => alert("Downloading Official Certificate PDF...")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "#ffffff", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={() => alert("Downloading Official Certificate PDF...")}>
                       <Download size={16} /> Download PDF
                     </button>
 
-                    <button className="btn-secondary" style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--surface-blue, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-default, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--border-default, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--surface-blue, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
                       <Share2 size={16} /> Share on LinkedIn
                     </button>
 
-                    <button className="btn-secondary" style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => alert("Shareable link copied to clipboard!")}>
-                      <ExternalLink size={16} /> Copy Verification Link
-                    </button>
-                  </div>
-
-                  <div style={{ background: "#f0fdf4", padding: "20px", borderRadius: "16px", border: "1px solid #bbf7d0" }}>
-                    <h4 style={{ margin: "0 0 8px 0", fontSize: "0.95rem", color: "#166534" }}>🌟 Add to Portfolio</h4>
-                    <p style={{ margin: "0 0 12px 0", fontSize: "0.85rem", color: "#15803d" }}>Showcase this verified certificate on your public ProEduvate portfolio page.</p>
-                    <button style={{ padding: "8px 16px", background: "#16a34a", color: "#ffffff", border: "none", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }} onClick={() => setActiveTab("Portfolio")}>
-                      Go to Portfolio &rarr;
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "#ffffff", color: "var(--text-secondary, #45617F)", border: "1px solid var(--border-color, #e2e8f0)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.color = "var(--text-primary, #081B35)"; e.currentTarget.style.borderColor = "var(--border-strong, #C7D8EA)"; }} onMouseOut={(e) => { e.currentTarget.style.color = "var(--text-secondary, #45617F)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }} onClick={() => alert("Shareable link copied to clipboard!")}>
+                      <ExternalLink size={16} /> Copy Link
                     </button>
                   </div>
                 </div>
@@ -2192,7 +2190,7 @@ export default function InternDashboard() {
                   <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All Days →</span>
                 </div>
 
-                <div style={{ display: "flex", gap: "16px", overflowX: "auto", paddingBottom: "10px" }}>
+                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "hidden", paddingBottom: "40px" }}>
                   {[
                     { day: 10, title: "Git & GitHub", complete: true },
                     { day: 11, title: "Database Basics", complete: true },
@@ -2234,7 +2232,7 @@ export default function InternDashboard() {
                     </div>
                   ))}
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "40px", fontSize: "0.85rem", fontWeight: 600, color: "#64748b" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "#64748b" }}>
                   <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
                   <span style={{ width: "160px", textAlign: "center", color: "#2563eb" }}>Current Day</span>
                   <span style={{ width: "160px", textAlign: "center" }}>Locked</span>
@@ -2321,6 +2319,8 @@ export default function InternDashboard() {
             </div>
           </div>
         );
+      case "Profile":
+        return <InternProfile />;
     }
   };
 
@@ -2448,6 +2448,12 @@ export default function InternDashboard() {
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
                 <button 
+                  onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", borderBottom: "1px solid #e2e8f0", color: "#0f172a", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
+                >
+                  <User size={16} /> Profile
+                </button>
+                <button 
                   onClick={handleLogout}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
@@ -2538,7 +2544,7 @@ export default function InternDashboard() {
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
           <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "40px", maxWidth: "460px", width: "100%", textAlign: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
-              🎉
+              <PartyPopper size={40} />
             </div>
             <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", margin: "0 0 12px 0" }}>Thank You for Attending!</h2>
             <p style={{ color: "var(--text-gray)", fontSize: "15px", lineHeight: "1.6", margin: "0 0 32px 0" }}>

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import AdminLeaderboard from "./AdminLeaderboard";
+import MentorProfile from "./MentorProfile";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
@@ -19,6 +20,17 @@ export default function MentorDashboard() {
   const [scheduleTime, setScheduleTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [profileTab, setProfileTab] = useState("overview");
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
+
+  const handlePasswordChange = (e) => {
+    e.preventDefault();
+    if (pwForm.next !== pwForm.confirm) return alert("Passwords do not match.");
+    if (pwForm.next.length < 8) return alert("Password must be at least 8 characters.");
+    alert("Password updated successfully!");
+    setPwForm({ current: "", next: "", confirm: "" });
+  };
 
   const mockNotifications = [
     { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
@@ -51,6 +63,10 @@ export default function MentorDashboard() {
     timeLimit: "60"
   };
   const [newAirdrop, setNewAirdrop] = useState(defaultAirdropState);
+
+  const [airdropPage, setAirdropPage] = useState(1);
+  const [airdropFilter, setAirdropFilter] = useState("All");
+  const airdropsPerPage = 13;
 
   useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
@@ -181,30 +197,30 @@ export default function MentorDashboard() {
     { day: "Day 3",  topic: "NumPy & Pandas Basics",            resources: "Kaggle Tutorial, Practice Dataset" },
     { day: "Day 4",  topic: "Data Visualization (Matplotlib)",  resources: "Seaborn Docs, Lab Exercise" },
     { day: "Day 5",  topic: "Statistics for ML",                resources: "Khan Academy, PDF Notes" },
-    { day: "Day 6",  topic: "Supervised Learning â€“ Regression", resources: "Slides, Colab Notebook" },
-    { day: "Day 7",  topic: "Supervised Learning â€“ Classification", resources: "Github Repo, Slides PDF" },
+    { day: "Day 6",  topic: "Supervised Learning Ã¢â‚¬â€œ Regression", resources: "Slides, Colab Notebook" },
+    { day: "Day 7",  topic: "Supervised Learning Ã¢â‚¬â€œ Classification", resources: "Github Repo, Slides PDF" },
     { day: "Day 8",  topic: "Model Evaluation & Metrics",       resources: "Scikit-learn Docs, Quiz" },
     { day: "Day 9",  topic: "Feature Engineering",              resources: "Kaggle Notebook, PDF" },
-    { day: "Day 10", topic: "Unsupervised Learning â€“ Clustering", resources: "K-Means Lab, Video" },
+    { day: "Day 10", topic: "Unsupervised Learning Ã¢â‚¬â€œ Clustering", resources: "K-Means Lab, Video" },
     { day: "Day 11", topic: "Dimensionality Reduction (PCA)",   resources: "Slides, Code Exercise" },
     { day: "Day 12", topic: "Decision Trees & Random Forests",  resources: "Scikit-learn Guide, Notebook" },
     { day: "Day 13", topic: "Support Vector Machines",          resources: "Research Paper, Lab" },
-    { day: "Day 14", topic: "Neural Networks â€“ Basics",         resources: "3Blue1Brown Video, PDF" },
+    { day: "Day 14", topic: "Neural Networks Ã¢â‚¬â€œ Basics",         resources: "3Blue1Brown Video, PDF" },
     { day: "Day 15", topic: "Mid-term Assessment",              resources: "Assessment Portal" },
     { day: "Day 16", topic: "Deep Learning with TensorFlow",    resources: "TF Docs, Colab" },
-    { day: "Day 17", topic: "CNN â€“ Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
-    { day: "Day 18", topic: "RNN & LSTM â€“ Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
-    { day: "Day 19", topic: "NLP â€“ Text Processing",            resources: "NLTK Docs, Notebook" },
+    { day: "Day 17", topic: "CNN Ã¢â‚¬â€œ Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
+    { day: "Day 18", topic: "RNN & LSTM Ã¢â‚¬â€œ Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
+    { day: "Day 19", topic: "NLP Ã¢â‚¬â€œ Text Processing",            resources: "NLTK Docs, Notebook" },
     { day: "Day 20", topic: "Transformers & Attention",         resources: "Hugging Face Tutorial" },
     { day: "Day 21", topic: "Transfer Learning",                resources: "Keras Guide, Pretrained Models" },
-    { day: "Day 22", topic: "Model Deployment â€“ Flask API",     resources: "Flask Docs, Postman" },
+    { day: "Day 22", topic: "Model Deployment Ã¢â‚¬â€œ Flask API",     resources: "Flask Docs, Postman" },
     { day: "Day 23", topic: "Docker & Cloud Basics",            resources: "Docker Tutorial, AWS Guide" },
     { day: "Day 24", topic: "MLOps Fundamentals",               resources: "MLflow Docs, Video" },
     { day: "Day 25", topic: "Project Planning & Architecture",  resources: "Project Template, Rubric" },
-    { day: "Day 26", topic: "Project â€“ Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
-    { day: "Day 27", topic: "Project â€“ Model Training",         resources: "Training Guide, GPU Colab" },
-    { day: "Day 28", topic: "Project â€“ Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
-    { day: "Day 29", topic: "Project â€“ Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
+    { day: "Day 26", topic: "Project Ã¢â‚¬â€œ Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
+    { day: "Day 27", topic: "Project Ã¢â‚¬â€œ Model Training",         resources: "Training Guide, GPU Colab" },
+    { day: "Day 28", topic: "Project Ã¢â‚¬â€œ Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
+    { day: "Day 29", topic: "Project Ã¢â‚¬â€œ Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
     { day: "Day 30", topic: "Final Presentation & Review",      resources: "Presentation Rubric, Feedback Form" },
   ]);
   const [tasks, setTasks] = useState(() => [
@@ -638,7 +654,7 @@ export default function MentorDashboard() {
                 <div style={{ backgroundColor: "#fff", width: "700px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", maxHeight: "90vh", overflowY: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                     <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Evaluation Details</h2>
-                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>✕</button>
+                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>âœ•</button>
                   </div>
                   
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
@@ -837,7 +853,7 @@ export default function MentorDashboard() {
                   <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <button className="btn btn-secondary" style={{ padding: "4px 8px" }} onClick={() => setViewingTask(null)}>← Back</button>
+                        <button className="btn btn-secondary" style={{ padding: "4px 8px" }} onClick={() => setViewingTask(null)}>â† Back</button>
                         <h4 style={{ margin: 0 }}>View Task TSK-{viewingTask.id}: {viewingTask.title}</h4>
                         <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px", marginLeft: "8px" }} onClick={() => { setEditingTask(viewingTask); setViewingTask(null); setTaskDetailTab("General"); }}>Edit Task</button>
                       </div>
@@ -855,7 +871,7 @@ export default function MentorDashboard() {
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                               {mcq.options.map((opt, oi) => (
                                 <div key={oi} style={{ fontSize: "13px", padding: "8px 12px", borderRadius: "6px", backgroundColor: oi === mcq.answer ? "#dcfce7" : "#f1f5f9", border: `1px solid ${oi === mcq.answer ? "#86efac" : "transparent"}` }}>
-                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi]}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right" }}>✅</span>}
+                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi]}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right" }}>âœ…</span>}
                                 </div>
                               ))}
                             </div>
@@ -866,7 +882,7 @@ export default function MentorDashboard() {
 
                     {taskDetailTab === "Coding" && (
                       <div style={{ padding: "16px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                        <h5 style={{ margin: "0 0 12px", fontSize: "16px" }}>💻 {viewingTask.codingQuestion.title}</h5>
+                        <h5 style={{ margin: "0 0 12px", fontSize: "16px" }}>ðŸ’» {viewingTask.codingQuestion.title}</h5>
                         <div style={{ fontSize: "14px", marginBottom: "16px", lineHeight: "1.5" }}>{viewingTask.codingQuestion.description}</div>
                         <div style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", marginBottom: "6px" }}>Starter Code:</div>
                         <pre style={{ backgroundColor: "#1e293b", color: "#f8fafc", padding: "16px", borderRadius: "8px", fontSize: "13px", overflowX: "auto", margin: "0 0 16px 0", fontFamily: "monospace" }}>
@@ -902,35 +918,58 @@ export default function MentorDashboard() {
             )}
           </div>
         );
-      case "Bonus Airdrops":
+      case "Bonus Airdrops": {
+        const filteredAirdrops = bonusAirdrops.filter(a => {
+          if (airdropFilter === "All") return true;
+          if (airdropFilter === "Active") return a.status === "Active" || a.status === "ACTIVE" || a.status === "APPROVED";
+          if (airdropFilter === "Completed") return a.status === "Completed" || a.status === "FINALIZED" || a.status === "COMPLETED";
+          return a.status === airdropFilter;
+        });
+        const totalPages = Math.ceil(filteredAirdrops.length / airdropsPerPage) || 1;
+        const currentAirdrops = [...filteredAirdrops].reverse().slice((airdropPage - 1) * airdropsPerPage, airdropPage * airdropsPerPage);
+
         return (
-          <div style={{ position: "relative", height: "100%" }}>
+          <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column" }}>
             
-            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
-              <div className="table-container" style={{ margin: 0 }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+              <select 
+                className="form-control" 
+                style={{ width: "220px", margin: 0 }} 
+                value={airdropFilter} 
+                onChange={(e) => { setAirdropFilter(e.target.value); setAirdropPage(1); }}
+              >
+                <option value="All">All Statuses</option>
+                <option value="Active">Active / Approved</option>
+                <option value="Completed">Completed / Finalized</option>
+                <option value="PENDING_APPROVAL">Pending Approval</option>
+              </select>
+            </div>
+
+            <div className="card" style={{ padding: "0", overflow: "hidden", flex: 1, display: "flex", flexDirection: "column" }}>
+              <div className="table-container" style={{ margin: 0, flex: 1, overflowY: "auto" }}>
                 <table className="table" style={{ margin: 0 }}>
                   <thead>
                     <tr>
-                      <th style={{ padding: "12px 16px" }}>ID</th>
-                      <th style={{ padding: "12px 16px" }}>Question</th>
-                      <th style={{ padding: "12px 16px" }}>Points</th>
-                      <th style={{ padding: "12px 16px" }}>Status</th>
-                      <th style={{ padding: "12px 16px" }}>Time Limit</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>ID</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Question</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Points</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Status</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Time Limit</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {bonusAirdrops.length === 0 ? (
+                    {currentAirdrops.length === 0 ? (
                       <tr>
-                        <td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops created yet.</td>
+                        <td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops found.</td>
                       </tr>
                     ) : (
-                      [...bonusAirdrops].reverse().map(airdrop => (
+                      currentAirdrops.map(airdrop => (
                         <tr key={airdrop.id}>
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
                           <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 60 ? airdrop.question.substring(0, 60) + "..." : airdrop.question}</td>
                           <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
                           <td style={{ padding: "12px 16px" }}>
-                            <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : airdrop.status === 'FINALIZED' ? 'badge-success' : 'badge-warning'}`}>
+                            <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'Active' || airdrop.status === 'ACTIVE' ? 'badge-primary' : airdrop.status === 'FINALIZED' || airdrop.status === 'Completed' || airdrop.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`}>
                               {airdrop.status}
                             </span>
                           </td>
@@ -940,6 +979,13 @@ export default function MentorDashboard() {
                     )}
                   </tbody>
                 </table>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderTop: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
+                <span style={{ fontSize: "13px", color: "#64748b" }}>Showing page {airdropPage} of {totalPages}</span>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === 1} onClick={() => setAirdropPage(p => Math.max(1, p - 1))}>Previous</button>
+                  <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === totalPages} onClick={() => setAirdropPage(p => Math.min(totalPages, p + 1))}>Next</button>
+                </div>
               </div>
             </div>
 
@@ -958,7 +1004,7 @@ export default function MentorDashboard() {
                         <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>Create a time-bound bonus challenge for interns.</p>
                       </div>
                     </div>
-                    <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>✕</button>
+                    <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>âœ•</button>
                   </div>
 
                   <form onSubmit={handleCreateAirdrop} style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
@@ -1194,7 +1240,7 @@ export default function MentorDashboard() {
                                     setNewAirdrop({...newAirdrop, matchPairs: updated});
                                   }} 
                                 />
-                                <span style={{ color: "#94a3b8", fontWeight: "bold" }}>➔</span>
+                                <span style={{ color: "#94a3b8", fontWeight: "bold" }}>âž”</span>
                                 <input 
                                   type="text" 
                                   required 
@@ -1212,7 +1258,7 @@ export default function MentorDashboard() {
                                   <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
                                     const updated = newAirdrop.matchPairs.filter((_, i) => i !== idx);
                                     setNewAirdrop({...newAirdrop, matchPairs: updated});
-                                  }}>🗑️</button>
+                                  }}>ðŸ—‘ï¸</button>
                                 )}
                               </div>
                             ))}
@@ -1252,7 +1298,7 @@ export default function MentorDashboard() {
                                   <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
                                     const updated = newAirdrop.arrangeItems.filter((_, i) => i !== idx);
                                     setNewAirdrop({...newAirdrop, arrangeItems: updated});
-                                  }}>🗑️</button>
+                                  }}>ðŸ—‘ï¸</button>
                                 )}
                               </div>
                             ))}
@@ -1464,7 +1510,9 @@ export default function MentorDashboard() {
             )}
           </div>
         );
-
+      }
+      case "My Profile":
+        return <MentorProfile />;
       default:
         return null;
     }
@@ -1589,14 +1637,26 @@ export default function MentorDashboard() {
             </div>
             
             {isProfileDropdownOpen && (
-              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
-                <button 
-                  onClick={handleLogout}
-                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#0f172a" }}>Dr. Ananya Menon</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "#64748b" }}>ananya@proedu.com</p>
+                </div>
+                <button
+                  onClick={() => { setActiveTab("My Profile"); setIsProfileDropdownOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "11px 16px", backgroundColor: "transparent", border: "none", color: "#334155", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500" }}
+                  onMouseOver={e => e.currentTarget.style.backgroundColor = "#f1f5f9"}
+                  onMouseOut={e => e.currentTarget.style.backgroundColor = "transparent"}
                 >
-                  <LogOut size={16} /> Logout
+                  ðŸ‘¤ My Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "11px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500" }}
+                  onMouseOver={e => e.currentTarget.style.backgroundColor = "#fef2f2"}
+                  onMouseOut={e => e.currentTarget.style.backgroundColor = "transparent"}
+                >
+                  <LogOut size={14} /> Logout
                 </button>
               </div>
             )}
@@ -1704,7 +1764,7 @@ export default function MentorDashboard() {
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
               Chat with {selectedInternForChat}
             </div>
-            <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>âœ–</button>
+            <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>Ã¢Å“â€“</button>
           </div>
 
           {/* Chat Messages */}
@@ -1712,7 +1772,7 @@ export default function MentorDashboard() {
             {chatMessages.map((msg, i) => (
               <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
                 <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
-                  {msg.sender === "You" ? "" : `${msg.sender} â€¢ `}{msg.time}
+                  {msg.sender === "You" ? "" : `${msg.sender} Ã¢â‚¬Â¢ `}{msg.time}
                 </span>
                 <div style={{ 
                   backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 

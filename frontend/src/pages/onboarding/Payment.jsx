@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { mockOnboardingService, ONBOARDING_STATUSES } from '../../services/mockOnboardingService';
 import './Onboarding.css';
 
@@ -58,14 +59,14 @@ export default function Payment() {
                 </div>
             ) : status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED ? (
                 <div className="status-box">
-                    <h3 style={{ color: '#2563eb', margin: '0 0 12px 0' }}>Payment Submitted ✓</h3>
+                    <h3 style={{ color: '#2563eb', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={20} /> Payment Submitted</h3>
                     <p>Your payment details have been submitted.</p>
                     <p>The administrative team is currently verifying your payment transaction.</p>
                     <button style={{ marginTop: '20px' }} onClick={() => window.location.href='/onboarding/status'}>Back to Status</button>
                 </div>
             ) : status === ONBOARDING_STATUSES.PAYMENT_VERIFIED ? (
                 <div className="status-box">
-                    <h3 style={{ color: '#16a34a', margin: '0 0 12px 0' }}>Payment Verified ✓</h3>
+                    <h3 style={{ color: '#16a34a', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={20} /> Payment Verified</h3>
                     <p>Your payment has been verified.</p>
                     <p style={{ fontWeight: 500, color: '#0f172a' }}>Next step: Mentor Assignment</p>
                     <button style={{ marginTop: '20px' }} onClick={() => window.location.href='/onboarding/status'}>Back to Status</button>
