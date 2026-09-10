@@ -14,6 +14,23 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
+  
+  const [meetings, setMeetings] = useState([]);
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const res = await fetch(API_BASE + '/api/meetings/');
+        if (res.ok) {
+          const data = await res.json();
+          setMeetings(data);
+        }
+      } catch (err) {
+        console.error("Could not fetch meetings", err);
+      }
+    };
+    fetchMeetings();
+  }, []);
+
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(true);
   const [tasksError, setTasksError] = useState(null);
@@ -379,350 +396,21 @@ export default function InternDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {[
-                        { rank: 1, name: "Anu Sharma", domain: "Cyber Security", points: 950, badge: "🥇 Gold" },
-                        { rank: 2, name: "Raj Patel", domain: "Data Science", points: 880, badge: "🥈 Silver" },
-                        { rank: 3, name: "John Doe (You)", domain: "Artificial Intelligence", points: 850, badge: "🥉 Bronze", isCurrent: true },
-                        { rank: 4, name: "Alice Smith", domain: "Data Science", points: 790, badge: "Member" },
-                        { rank: 5, name: "Bob Jones", domain: "Web Development", points: 720, badge: "Member" },
-                      ].map((intern) => (
-                        <tr key={intern.rank} style={intern.isCurrent ? { backgroundColor: "#eff6ff", fontWeight: "bold" } : {}}>
-                          <td>{intern.rank}</td>
-                          <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ width: "28px", height: "28px", borderRadius: "50%", backgroundColor: intern.isCurrent ? "#3b82f6" : "#e5e7eb", color: intern.isCurrent ? "#fff" : "#6b7280", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px", fontWeight: "bold" }}>
-                              {intern.name.split(" ")[0][0]}{intern.name.split(" ")[1] ? intern.name.split(" ")[1][0] : ""}
-                            </div>
-                            {intern.name}
-                          </td>
-                          <td><span className="badge badge-success">{intern.domain}</span></td>
-                          <td style={{ color: "#2563eb", fontWeight: 600 }}>{intern.points} pts</td>
-                          <td>{intern.badge}</td>
-                        </tr>
-                      ))}
+                      {meetings.length === 0 ? (
+                        <tr><td colSpan="4" style={{textAlign:"center"}}>No upcoming meetings</td></tr>
+                      ) : (
+                        meetings.map((m, idx) => (
+                          <tr key={idx}>
+                            <td><b>{m.host_id || "Mentor"}</b></td>
+                            <td>{m.title}</td>
+                            <td>{new Date(m.scheduled_time).toLocaleString()}</td>
+                            <td>
+                              <button onClick={() => alert("Joining room " + m.room_code)} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join zoom</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </>
-        );
-
-      case "Learning":
-        const currentCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[curriculumData.length - 1];
-        
-        if (showTicketForm) {
-          return (
-            <div className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
-                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Learning</button>
-              </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>John Doe</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Mentor Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Dr. Sakthi</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Artificial Intelligence</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>Computer Science (MIT)</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
-                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" />
-                </div>
-                
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
-                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..."></textarea>
-                </div>
-                
-                <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#b91c1c", borderColor: "#b91c1c" }} onClick={() => {
-                    alert("Ticket submitted successfully! Admin will review it shortly.");
-                    setShowTicketForm(false);
-                  }}>Submit Ticket</button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        if (isDayLockedUntilMidnight) {
-          return (
-            <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
-              <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🔒</p>
-              <h3>Day {currentDay} is Locked</h3>
-              <p style={{ color: "#6b7280", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
-              <button className="btn btn-secondary" onClick={() => setIsDayLockedUntilMidnight(false)}>Bypass / Unlock Now (Demo Mode)</button>
-            </div>
-          );
-        }
-
-        if (showAssessment) {
-          return (
-            <div>
-              {assessmentView === "selection" && (
-                <div className="card" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h3 style={{ margin: 0 }}>Day {currentDay} Assessment Selection</h3>
-                    <button className="btn btn-secondary" onClick={() => setShowAssessment(false)} style={{ padding: "6px 12px", fontSize: "12px" }}>Back to Learning</button>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid #e5e7eb", background: mcqDone ? "#ecfdf5" : "#fff" }}>
-                      <h4>Part A: MCQ Assessment</h4>
-                      <p style={{ color: "#6b7280", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
-                      {mcqDone ? (
-                        <span style={{ color: "#10b981", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
-                      ) : (
-                        <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
-                      )}
-                    </div>
-                    <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid #e5e7eb", background: codingDone ? "#ecfdf5" : "#fff" }}>
-                      <h4>Part B: Coding Assessment</h4>
-                      <p style={{ color: "#6b7280", fontSize: "13px" }}>Write and execute code in our compiler.</p>
-                      {codingDone ? (
-                        <span style={{ color: "#10b981", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
-                      ) : (
-                        <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ width: "100%", marginTop: "12px" }}>Start Coding</button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                    <h4 style={{ margin: "0 0 12px 0", color: "#0f172a", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                      📋 Rules and Conditions for Assessment
-                    </h4>
-                    <ul style={{ margin: 0, paddingLeft: "20px", color: "#475569", fontSize: "14px", lineHeight: "1.6" }}>
-                      <li><b>Completion:</b> Both Part A (MCQ) and Part B (Coding) must be completed to unlock the next day's module.</li>
-                      <li><b>Timing:</b> The MCQ section is strictly timed. The timer cannot be paused once started.</li>
-                      <li><b>Navigation:</b> During the MCQ test, you cannot return to the selection menu without submitting your answers.</li>
-                      <li><b>Integrity:</b> Do not refresh the page during an active assessment, as this may result in automatic submission.</li>
-                      <li><b>Grading:</b> AI Evaluation scores will be available immediately, while Mentor reviews may take up to 24 hours.</li>
-                    </ul>
-                  </div>
-
-                  {mcqDone && codingDone && (
-                    <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
-                      <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "12px 32px", fontSize: "16px" }}>Complete & Unlock Next Day</button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Timed MCQ Assessment */}
-              {assessmentView === "mcq" && (
-                <div className="card">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
-                    {mcqSubmitted && (
-                      <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
-                    )}
-                  </div>
-                  {!mcqSubmitted ? (
-                    <div>
-                      {/* Top Bar: Timer and Submit */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px", marginBottom: "16px" }}>
-                        <div style={{ color: "var(--danger-color)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                          ⏱️ Timer: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
-                        </div>
-                        <button className="btn btn-primary" onClick={handleMcqSubmit} style={{ padding: "8px 16px", backgroundColor: "#10b981", borderColor: "#10b981" }}>Submit Test</button>
-                      </div>
-
-                      <div style={{ display: "flex", gap: "24px" }}>
-                        {/* Left Sidebar: Question Numbers Grid */}
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid #e5e7eb", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
-                          {mcqQuestionsList.map((q, idx) => (
-                            <button 
-                              key={q.id}
-                              onClick={() => setCurrentQuestionIndex(idx)}
-                              style={{
-                                aspectRatio: "1/1",
-                                padding: 0,
-                                borderRadius: "6px",
-                                  border: currentQuestionIndex === idx ? "2px solid #3b82f6" : (answers[q.id] ? "1px solid #10b981" : "1px solid #e5e7eb"),
-                                  backgroundColor: answers[q.id] ? "#10b981" : (currentQuestionIndex === idx ? "#eff6ff" : "#fff"),
-                                  color: answers[q.id] ? "#fff" : (currentQuestionIndex === idx ? "#1d4ed8" : "#4b5563"),
-                                  fontWeight: currentQuestionIndex === idx ? 700 : 500,
-                                cursor: "pointer",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                fontSize: "14px"
-                              }}
-                            >
-                              {idx + 1}
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* Right Content: Current Question */}
-                        <div style={{ flex: 1 }}>
-                          {mcqQuestionsList.length > 0 ? (
-                            <>
-                              <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "#1e293b", lineHeight: "1.5" }}>
-                                <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex]?.text}
-                              </h4>
-                              
-                              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                {mcqQuestionsList[currentQuestionIndex]?.options?.map(opt => (
-                                  <button 
-                                    key={opt.val}
-                                    className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                    onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                    style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#3b82f6" : "#fff", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "#fff" : "#333", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid #d1d5db" }}
-                                  >
-                                    {opt.label}
-                                  </button>
-                                ))}
-                              </div>
-
-                              {/* Navigation Buttons */}
-                              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid #e5e7eb", paddingTop: "16px" }}>
-                                <button 
-                                  className="btn btn-secondary" 
-                                  disabled={currentQuestionIndex === 0} 
-                                  onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
-                                  style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
-                                >
-                                  Previous
-                                </button>
-                                <button 
-                                  className="btn btn-secondary" 
-                                  disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
-                                  onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                                  style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
-                                >
-                                  Next
-                                </button>
-                              </div>
-                            </>
-                          ) : (
-                            <p>No questions available for this task.</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>
-                      <button className="btn btn-primary" onClick={() => setAssessmentView("selection")}>Continue</button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Coding assignment compiler terminal */}
-              {assessmentView === "coding" && (
-                <div className="card">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Part B: Coding Assessment</h3>
-                    <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
-                  </div>
-                  <div style={{ marginBottom: "12px" }}>
-                    <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
-                    <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
-                      <option value="javascript">JavaScript</option>
-                      <option value="python">Python</option>
-                    </select>
-                  </div>
-
-                  <textarea 
-                    className="form-control" 
-                    rows="6" 
-                    style={{ fontFamily: "monospace", fontSize: "13px" }}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                  />
-
-                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                    <button className="btn btn-secondary" onClick={handleRunCode}>Run Test Cases</button>
-                    <button className="btn btn-primary" onClick={handleSubmitCode}>Submit to AI Evaluator</button>
-                  </div>
-
-                  {evaluating || evalResult ? (
-                    <div style={{ marginTop: "24px" }}>
-                      <h3>AI evaluation results</h3>
-                      {evaluating ? (
-                        <p>Analyzing code structure complexity and performance time...</p>
-                      ) : (
-                        <div>
-                          <div style={{ display: "flex", gap: "20px", alignItems: "center", marginBottom: "16px" }}>
-                            <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "6px solid #2563EB", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-                              <span style={{ fontSize: "20px", fontWeight: "800", color: "#2563EB" }}>{evalResult.score}%</span>
-                              <span style={{ fontSize: "8px", color: "var(--text-muted)" }}>Grade</span>
-                            </div>
-                            <p style={{ fontSize: "13px" }}>Code complies with structural specifications. Recommended adjustments logged below.</p>
-                          </div>
-                          <div className="grid">
-                            <div className="card" style={{ margin: 0, padding: "12px" }}>
-                              <span>Correctness: <b>{evalResult.correctness}%</b></span>
-                            </div>
-                            <div className="card" style={{ margin: 0, padding: "12px" }}>
-                              <span>Code Quality: <b>{evalResult.quality}%</b></span>
-                            </div>
-                          </div>
-                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "#1E3A8A", marginTop: "16px" }}>
-                            <b>AI Suggestions:</b> {evalResult.suggestions}
-                          </div>
-                          <button className="btn btn-primary" onClick={() => setAssessmentView("selection")} style={{ marginTop: "16px" }}>Continue</button>
-                        </div>
-                      )}
-                    </div>
-                  ) : null}
-                </div>
-              )}
-            </div>
-          );
-        }
-
-        return (
-          <div>
-            {/* Course notes ONLY, NO video */}
-            <div className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "24px" }}>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ margin: 0 }}>Day {currentCurriculum.day}: {currentCurriculum.topic}</h3>
-                <p style={{ fontSize: "14px", color: "#6b7280", marginTop: "6px", marginBottom: "16px" }}>{currentCurriculum.desc}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#f3f4f6", padding: "10px 16px", borderRadius: "8px", width: "fit-content" }}>
-                  <span style={{ fontSize: "13px", color: "#374151" }}>📄 {currentCurriculum.notes}</span>
-                  <button onClick={() => alert(`Downloading ${currentCurriculum.notes}`)} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: "600", cursor: "pointer", fontSize: "13px", padding: 0, textDecoration: "underline" }}>Download PDF Notes</button>
-                </div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", borderLeft: "1px solid #e5e7eb", paddingLeft: "24px", minWidth: "180px" }}>
-                <span style={{ fontSize: "11px", color: "#9ca3af", fontWeight: "600", letterSpacing: "0.5px" }}>DAY ASSESSMENT</span>
-                <button className="btn btn-primary" onClick={() => setShowAssessment(true)} style={{ padding: "10px 20px", fontSize: "13px", width: "100%" }}>Start Test</button>
-              </div>
-            </div>
-
-            {/* Row 2: Meetings list */}
-            <div className="card">
-              <h3>Upcoming Live Mentoring Calls</h3>
-              <div className="table-container">
-                <table className="table">
-                  <thead>
-                    <tr><th>Host</th><th>Topic</th><th>Time</th><th>Action</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><b>Dr. Sakthi</b></td>
-                      <td>React Hook Refactoring Standup</td>
-                      <td>Today, 3:00 PM</td>
-                      <td>
-                        <button onClick={() => alert("Joining mock Zoom room...")} className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }}>Join zoom</button>
-                      </td>
-                    </tr>
-                  </tbody>
                 </table>
               </div>
             </div>

@@ -23,10 +23,22 @@ export default function MentorDashboard() {
     { id: 2, intern: "Raj Patel", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" }
   ]);
 
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
-  ]);
+  
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const res = await fetch(API_BASE + '/api/meetings/');
+        if (res.ok) {
+          const data = await res.json();
+          setMeetings(data);
+        }
+      } catch (err) {
+        console.error("Could not fetch meetings", err);
+      }
+    };
+    fetchMeetings();
+  }, []);
+  const [meetings, setMeetings] = useState([]);
 
   const [chatMessages, setChatMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
@@ -172,10 +184,31 @@ export default function MentorDashboard() {
     alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      const res = await fetch(API_BASE + '/api/meetings/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          scheduled_time: new Date().toISOString(),
+          duration_minutes: 60,
+          room_code: "room-" + Math.random().toString(36).substring(7),
+          status: "Scheduled"
+        })
+      });
+      if (res.ok) {
+        const newMeeting = await res.json();
+        setMeetings([...meetings, newMeeting]);
+        alert("Meeting created and saved!");
+      } else {
+        alert("Failed to create meeting.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating meeting.");
+    }
   };
 
   const handleWeeklySubmit = (e) => {

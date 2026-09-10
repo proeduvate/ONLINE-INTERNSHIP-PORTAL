@@ -5,45 +5,30 @@ from datetime import datetime
 import uuid
 
 from database import get_db
+from dependencies import get_current_user
 import models, schemas
 from services.certificate_generator import generate_certificate_pdf
 from services.email_service import send_certificate_email
-from fastapi import Header
 
 
 
-from fastapi import Header
-from core.security import decode_token
 
-def get_current_user_from_token(authorization: str = Header(None), db: Session = Depends(get_db)):
-    if authorization and authorization.startswith("Bearer "):
-        token = authorization.split(" ")[1]
-        payload = decode_token(token)
-        if payload and payload.get("user_id"):
-            user = db.query(models.User).filter(models.User.id == payload.get("user_id")).first()
-            if user:
-                return user
-    
-    # Fallback to an intern user for demo if token fails/missing
-    fallback_user = db.query(models.User).filter(models.User.role == "intern").first()
-    if fallback_user:
-        return fallback_user
+
     # If no users exist, create a mock one so it doesn't crash
-    return models.User(id=1, role="intern", name="Guest Intern", domain="Data Science")
-
+    
 router = APIRouter(prefix="/api/certificates", tags=["Certificates"])
 
 @router.post("/request", response_model=schemas.CertificateResponse)
 
 @router.get("/me", response_model=schemas.CertificateResponse)
-def get_my_certificate(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_token)):
+def get_my_certificate(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     cert = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).order_by(models.Certificate.id.desc()).first()
     if not cert:
         raise HTTPException(status_code=404, detail="No certificate found")
     return cert
 
 @router.post("/request", response_model=schemas.CertificateResponse)
-def request_certificate(req: schemas.CertificateRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_token)):
+def request_certificate(req: schemas.CertificateRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     if current_user.role != "intern":
         raise HTTPException(status_code=403, detail="Only interns can request certificates.")
         

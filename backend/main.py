@@ -24,7 +24,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
 # 1. Import the meetings router module
-from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates
+from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates, batch_analytics, facts, leaderboard, simulation, tickets
 
 
 try:
@@ -91,6 +91,13 @@ app.include_router(onboarding.router, prefix="/api/onboarding", tags=["Onboardin
 # Meetings uses a custom prefix internally for WS, but we'll register the router
 app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
 app.include_router(certificates.router)
+
+app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
+app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
+app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
+app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
+app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
+
 
 # CORS configuration
 app.add_middleware(
