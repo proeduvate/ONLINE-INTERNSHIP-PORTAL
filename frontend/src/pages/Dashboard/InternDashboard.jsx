@@ -79,6 +79,7 @@ export default function InternDashboard() {
 
   useEffect(() => {
     fetchLeaderboard();
+    fetchSimProgress();
   }, []);
 
   useEffect(() => {
@@ -208,6 +209,41 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   const [curriculumData, setCurriculumData] = useState([]);
+
+  // Simulation Calendar State (completely separate from Learning)
+  const [simCurrentDay, setSimCurrentDay] = useState(1);
+  const [simCalendarData, setSimCalendarData] = useState([]);
+
+  const fetchSimProgress = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8000/simulation/intern/current", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const currentSimDay = data.day || 1;
+        setSimCurrentDay(currentSimDay);
+        // Build calendar data: days before currentSimDay are completed,
+        // currentSimDay is current (locked or active), rest are upcoming.
+        const calData = Array.from({ length: 30 }, (_, i) => {
+          const day = i + 1;
+          let status;
+          if (day < currentSimDay) {
+            status = "completed";
+          } else if (day === currentSimDay) {
+            status = data.unlocked === false ? "current" : "current";
+          } else {
+            status = "locked";
+          }
+          return { day, status };
+        });
+        setSimCalendarData(calData);
+      }
+    } catch (e) {
+      console.error("Failed to fetch sim progress", e);
+    }
+  };
 
   // Mock State (AI and Attendance)
   const completedDaysCount = curriculumData.filter(t => t.status === "completed").length;
@@ -625,8 +661,8 @@ export default function InternDashboard() {
                 <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
                   <DailyScenarioCalendar 
                     onStartScenario={(day) => setActiveTab("Daily Scenario")} 
-                    curriculumData={curriculumData}
-                    currentDay={currentDay}
+                    curriculumData={simCalendarData}
+                    currentDay={simCurrentDay}
                   />
                 </div>
               </div>
