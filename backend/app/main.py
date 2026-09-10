@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -31,7 +32,6 @@ except ImportError:
 
 from services.n8n_service import trigger_n8n_webhook
 
-# Optional sandbox runner using Docker; falls back to local subprocess if unavailable
 try:
     from app.utils.sandbox_runner import run_submission as sandbox_run_submission
 except Exception as e:
@@ -180,6 +180,7 @@ def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTas
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Supabase auth is not configured on the backend. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
         )
+def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.get_db)):
     existing_user = db.query(models.User).filter(models.User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(
@@ -203,6 +204,7 @@ def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTas
         "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email}
     }
     background_tasks.add_task(trigger_n8n_webhook, "ACCOUNT_CREATED", payload)
+    
     return {"message": "User registered successfully", "user_id": new_user.id}
 
 

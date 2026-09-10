@@ -42,6 +42,8 @@ class User(Base):
     supabase_id = Column(String(100), nullable=True, unique=True)
     role = Column(Enum(UserRole), default=UserRole.INTERN, nullable=False)
     onboarding_status = Column(String(50), default="PENDING_REVIEW") # for onboarding flow
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.INTERN, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Intern specific profile fields
@@ -225,6 +227,17 @@ class Certificate(Base):
     grade = Column(String(5), nullable=False) # e.g. "A+", "A", "B", "C"
     final_score = Column(Integer, nullable=False)
     generated_at = Column(DateTime(timezone=True), server_default=func.now())
+    intern_name = Column(String(150), nullable=False)
+    certificate_id = Column(String(100), nullable=False, unique=True)
+    domain = Column(String(100), nullable=False)
+    duration = Column(String(50), nullable=False)
+    achievement = Column(String(100), nullable=True)
+    status = Column(String(50), default="PENDING_ADMIN_APPROVAL")
+    grade = Column(String(5), nullable=True)
+    final_score = Column(Integer, nullable=True)
+    pdf_path = Column(String(255), nullable=True)
+    issued_date = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
     intern = relationship("User", back_populates="certificates")

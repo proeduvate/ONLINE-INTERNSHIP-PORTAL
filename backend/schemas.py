@@ -385,6 +385,10 @@ class BonusAirdropBase(BaseModel):
     time_limit_seconds: int = 60
     reward_points: int = 10
     is_active: bool = True
+    title: str
+    description: str
+    claim_code: Optional[str] = None
+    is_active: Optional[bool] = True
 
 class BonusAirdropCreate(BonusAirdropBase):
     pass
@@ -427,3 +431,28 @@ class DocumentGenerationRequest(BaseModel):
     date: Optional[str] = None
 
 
+
+# --- CERTIFICATES ---
+from datetime import datetime
+
+class CertificateRequest(BaseModel):
+    duration: str
+    achievement: Optional[str] = None
+    grade: Optional[str] = None
+    final_score: Optional[int] = None
+
+class CertificateResponse(BaseModel):
+    id: int
+    intern_id: int
+    intern_name: str
+    certificate_id: str
+    domain: str
+    duration: str
+    achievement: Optional[str] = None
+    status: str
+    pdf_path: Optional[str] = None
+    issued_date: Optional[datetime] = None
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
