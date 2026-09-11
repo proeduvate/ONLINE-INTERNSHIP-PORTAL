@@ -50,7 +50,7 @@ class User(Base):
     progress_pct = Column(Integer, default=0)
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime(timezone=True), nullable=True)
-    batch_id = Column(Integer, nullable=True) # ForeignKey("batches.id") omitted to avoid circularity if Batch is below
+    batch_id = Column(Integer, ForeignKey("batches.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
@@ -61,6 +61,7 @@ class User(Base):
     
     submissions = relationship("Submission", back_populates="intern", cascade="all, delete-orphan")
     certificates = relationship("Certificate", back_populates="intern", cascade="all, delete-orphan")
+    batch = relationship("Batch", back_populates="users")
 
 
 class Domain(Base):

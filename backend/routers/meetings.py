@@ -37,13 +37,14 @@ class MeetingResponse(BaseModel):
     mentor_id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
+import os
 from fastapi import Header
 import jwt
 
-SECRET_KEY = "supersecretkey_change_in_production"
+SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 
 def get_user_id_from_token(authorization: str = Header(None)):
@@ -58,6 +59,7 @@ def get_user_id_from_token(authorization: str = Header(None)):
             pass
     return 1 # Fallback mentor ID
 
+@router.post("", response_model=MeetingResponse)
 @router.post("/", response_model=MeetingResponse)
 def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), authorization: str = Header(None)):
     mentor_id = get_user_id_from_token(authorization)
@@ -87,6 +89,7 @@ def verify_intern(intern_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Intern not found or invalid role")
     return {"status": "success", "intern_id": user.id, "name": user.name}
 
+@router.get("", response_model=List[MeetingResponse])
 @router.get("/", response_model=List[MeetingResponse])
 def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None)):
 
@@ -139,6 +142,45 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 # --- Endpoints ---
+
+waiting_rooms: Dict[str, Dict[str, dict]] = {} # room_id -> { intern_id -> { "name": ..., "status": "waiting" } }
+
+class JoinRequest(BaseModel):
+    intern_id: str
+    name: str
+
+@router.post("/{room_id}/join-request")
+async def request_join(room_id: str, req: JoinRequest):
+    if room_id not in waiting_rooms:
+        waiting_rooms[room_id] = {}
+    waiting_rooms[room_id][req.intern_id] = {"name": req.name, "status": "waiting"}
+    
+    await manager.broadcast_to_room(room_id, {
+        "type": "join-request",
+        "payload": {"internId": req.intern_id, "name": req.name}
+    })
+    return {"status": "success"}
+
+@router.get("/{room_id}/waiting-list")
+def get_waiting_list(room_id: str):
+    return {"waiting": waiting_rooms.get(room_id, {})}
+
+class ApproveRequest(BaseModel):
+    intern_id: str
+    status: str
+
+@router.post("/{room_id}/approve")
+def approve_join(room_id: str, req: ApproveRequest):
+    if room_id in waiting_rooms and req.intern_id in waiting_rooms[room_id]:
+        waiting_rooms[room_id][req.intern_id]["status"] = req.status
+    return {"status": "success"}
+
+@router.get("/{room_id}/join-status/{intern_id}")
+def check_join_status(room_id: str, intern_id: str):
+    status = "prompt"
+    if room_id in waiting_rooms and intern_id in waiting_rooms[room_id]:
+        status = waiting_rooms[room_id][intern_id]["status"]
+    return {"status": status}
 
 @router.post("/switch-room")
 def switch_room(participant_id: int, target_room_id: str, db: Session = Depends(get_db)):

@@ -61,27 +61,39 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
   const [knocks, setKnocks] = useState([]);
 
   useEffect(() => {
-    const handleStorage = (e) => {
-      if (e.key === "room_knock" && e.newValue) {
-        const data = JSON.parse(e.newValue);
-        if (!isIntern) {
-          setKnocks(prev => [...prev, data]);
+    let intervalId;
+    
+    if (isIntern && entryState === "waiting" && inputId) {
+      // Intern polling for status
+      intervalId = setInterval(async () => {
+        try {
+          const res = await api.get(`/api/meetings/${activeRoom}/join-status/${inputId}`);
+          if (res.data.status === "approved") setEntryState("approved");
+          else if (res.data.status === "denied") setEntryState("denied");
+        } catch (e) {
+          console.error(e);
         }
-      }
-      if (e.key === "room_knock_response" && e.newValue) {
-        const data = JSON.parse(e.newValue);
-        if (isIntern && data.internId === inputId) {
-          if (data.status === "approved") {
-            setEntryState("approved");
-          } else {
-            setEntryState("denied");
-          }
+      }, 3000);
+    } else if (!isIntern) {
+      // Mentor polling for knocks
+      intervalId = setInterval(async () => {
+        try {
+          const res = await api.get(`/api/meetings/${activeRoom}/waiting-list`);
+          const waitingData = res.data.waiting || {};
+          const waitingKnocks = Object.entries(waitingData)
+            .filter(([id, data]) => data.status === "waiting")
+            .map(([id, data]) => ({ internId: id, name: data.name, time: Date.now() }));
+          setKnocks(waitingKnocks);
+        } catch (e) {
+          console.error(e);
         }
-      }
+      }, 3000);
+    }
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
     };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, [isIntern, inputId]);
+  }, [isIntern, entryState, inputId, activeRoom]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -89,8 +101,8 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
     try {
       const res = await api.get(`/api/meetings/verify-intern/${inputId}`);
       if (res.data.status === "success") {
+        await api.post(`/api/meetings/${activeRoom}/join-request`, { intern_id: inputId, name: res.data.name });
         setEntryState("waiting");
-        localStorage.setItem("room_knock", JSON.stringify({ internId: inputId, name: res.data.name, time: Date.now() }));
       }
     } catch (err) {
       setErrorMsg("Invalid Intern ID or not found in database.");
@@ -99,14 +111,14 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
 
   const handleApprove = async (k) => {
     setKnocks(prev => prev.filter(x => x.internId !== k.internId));
-    localStorage.setItem("room_knock_response", JSON.stringify({ internId: k.internId, status: "approved", time: Date.now() }));
+    await api.post(`/api/meetings/${activeRoom}/approve`, { intern_id: k.internId, status: "approved" });
     // Send EmailJS Notification
     await notificationService.notifyRoomAdmit(k.name, activeRoom || 'Main Meeting');
   };
   
-  const handleDeny = (k) => {
+  const handleDeny = async (k) => {
     setKnocks(prev => prev.filter(x => x.internId !== k.internId));
-    localStorage.setItem("room_knock_response", JSON.stringify({ internId: k.internId, status: "denied", time: Date.now() }));
+    await api.post(`/api/meetings/${activeRoom}/approve`, { intern_id: k.internId, status: "denied" });
   };
 
   return (
