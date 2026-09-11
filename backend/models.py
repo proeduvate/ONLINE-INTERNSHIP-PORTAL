@@ -62,6 +62,8 @@ class User(Base):
     # Onboarding Fields
     interview_scheduled_time = Column(DateTime(timezone=True), nullable=True)
     interview_meet_link = Column(String(255), nullable=True)
+    offer_letter_url = Column(String(255), nullable=True)
+    tc_url = Column(String(255), nullable=True)
     signed_offer_letter_url = Column(String(255), nullable=True)
     signed_tc_url = Column(String(255), nullable=True)
 

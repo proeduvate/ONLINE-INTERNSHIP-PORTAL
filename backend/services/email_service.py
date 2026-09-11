@@ -11,6 +11,7 @@ class EmailService:
     def __init__(self):
         self.service_id = os.getenv("EMAILJS_SERVICE_ID")
         self.template_id = os.getenv("EMAILJS_TEMPLATE_ID")
+        self.activation_template_id = os.getenv("EMAILJS_ACTIVATION_TEMPLATE_ID")
         self.public_key = os.getenv("EMAILJS_PUBLIC_KEY")
         self.private_key = os.getenv("EMAILJS_PRIVATE_KEY")
         self.is_configured = all([self.service_id, self.template_id, self.public_key, self.private_key])
@@ -18,7 +19,7 @@ class EmailService:
         if not self.is_configured:
             logger.warning("[EmailService] EmailJS is not fully configured. Emails will only be logged.")
 
-    async def send_email(self, to_email: str, subject: str, template_params: Dict[str, Any]) -> bool:
+    async def send_email(self, to_email: str, subject: str, template_params: Dict[str, Any], template_id: Optional[str] = None) -> bool:
         """
         Send an email using EmailJS.
         template_params should contain variables mapped in the EmailJS template.
@@ -36,7 +37,7 @@ class EmailService:
 
         payload = {
             "service_id": self.service_id,
-            "template_id": self.template_id,
+            "template_id": template_id or self.template_id,
             "user_id": self.public_key,
             "accessToken": self.private_key,
             "template_params": params

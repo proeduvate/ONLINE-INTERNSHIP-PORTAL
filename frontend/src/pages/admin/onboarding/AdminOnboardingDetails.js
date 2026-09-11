@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 import { ONBOARDING_STATUSES } from '../../../services/mockOnboardingService'; // Keep for enum
 import '../../onboarding/Onboarding.css';
 
@@ -11,6 +12,20 @@ export default function AdminOnboardingDetails() {
     const [meetLink, setMeetLink] = useState('');
     const [scheduledTime, setScheduledTime] = useState('');
     const [paymentFormLink, setPaymentFormLink] = useState('');
+    const [mentors, setMentors] = useState([]);
+    const [selectedMentorId, setSelectedMentorId] = useState('');
+
+    useEffect(() => {
+        const fetchMentors = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/users?role=mentor`);
+                setMentors(response.data);
+            } catch (error) {
+                console.error("Error fetching mentors", error);
+            }
+        };
+        fetchMentors();
+    }, []);
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -40,7 +55,7 @@ export default function AdminOnboardingDetails() {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
             setApp(response.data);
-        } catch (error) {}
+        } catch (error) { }
     };
 
     const handleInterviewDecision = async (isRequired) => {
@@ -102,7 +117,7 @@ export default function AdminOnboardingDetails() {
             </div>
         );
     }
-    
+
     if (!app) {
         return (
             <div className="onboarding-page-wrapper">
@@ -116,8 +131,8 @@ export default function AdminOnboardingDetails() {
     return (
         <div className="onboarding-page-wrapper">
             <div className="onboarding-container" style={{ maxWidth: '800px' }}>
-                <button className="btn btn-secondary" onClick={() => window.location.href='/admin/onboarding'} style={{ marginBottom: '24px' }}>&larr; Back to List</button>
-                
+                <button className="btn btn-secondary" onClick={() => window.location.href = '/admin/onboarding'} style={{ marginBottom: '24px' }}>&larr; Back to List</button>
+
                 <h2>Application: {app.applicationId}</h2>
                 <div style={{ marginBottom: '24px' }}>
                     <span className={
@@ -135,12 +150,12 @@ export default function AdminOnboardingDetails() {
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-color)' }}>Phone:</strong> {app.phone}</p>
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-color)' }}>College:</strong> {app.college}</p>
                     </div>
-                    
+
                     <div className="status-box" style={{ background: 'var(--background-color)' }}>
                         <h3 style={{ marginBottom: '12px', fontSize: '16px' }}>Internship Information</h3>
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-color)' }}>Domain:</strong> {app.domain}</p>
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
-                            <strong style={{ color: 'var(--text-color)' }}>Resume:</strong> 
+                            <strong style={{ color: 'var(--text-color)' }}>Resume:</strong>
                             {app.resume && app.resume !== "#" ? (
                                 <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '12px', marginLeft: '8px' }} onClick={() => window.open(app.resume, "_blank")}>View Resume</button>
                             ) : (
@@ -150,9 +165,59 @@ export default function AdminOnboardingDetails() {
                     </div>
                 </div>
 
+                <div className="status-box" style={{ marginTop: '24px', border: '1px solid var(--border-color)', background: 'var(--background-color)' }}>
+                    <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>Documents</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div>
+                            <strong style={{ color: 'var(--text-color)' }}>Offer Letter (Generated): </strong>
+                            {app.offer_letter_url ? <a href={app.offer_letter_url} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)' }}>View PDF</a> : <span style={{ color: 'var(--text-muted)' }}>Not generated</span>}
+                        </div>
+                        <div>
+                            <strong style={{ color: 'var(--text-color)' }}>T&C (Generated): </strong>
+                            {app.tc_url ? <a href={app.tc_url} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)' }}>View PDF</a> : <span style={{ color: 'var(--text-muted)' }}>Not generated</span>}
+                        </div>
+                        <div>
+                            <strong style={{ color: 'var(--text-color)' }}>Signed Offer Letter (Intern): </strong>
+                            {app.signed_offer_letter_url ? <a href={app.signed_offer_letter_url} target="_blank" rel="noreferrer" style={{ color: 'var(--success-color)' }}>View Uploaded PDF</a> : <span style={{ color: 'var(--text-muted)' }}>Not uploaded</span>}
+                        </div>
+                        <div>
+                            <strong style={{ color: 'var(--text-color)' }}>Signed T&C (Intern): </strong>
+                            {app.signed_tc_url ? <a href={app.signed_tc_url} target="_blank" rel="noreferrer" style={{ color: 'var(--success-color)' }}>View Uploaded PDF</a> : <span style={{ color: 'var(--text-muted)' }}>Not uploaded</span>}
+                        </div>
+                        
+                        {(app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING || app.offer_letter_url) && (
+                            <div style={{ marginTop: '16px' }}>
+                                <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }} onClick={async () => {
+                                    try {
+                                        const response = await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
+                                        if (response.data.urls) {
+                                            const templateParams = {
+                                                intern_name: app.name,
+                                                to_email: app.email,
+                                                document_link: response.data.urls.offer_letter_url
+                                            };
+                                            await emailjs.send(
+                                                'service_tcpvv7r',
+                                                'template_mpcare4',
+                                                templateParams,
+                                                'AUbUjQbyafx3K-_aP'
+                                            );
+                                        }
+                                        alert("Documents regenerated and sent successfully");
+                                        refreshApp();
+                                    } catch (e) {
+                                        console.error(e);
+                                        alert("Failed to regenerate documents: " + (e.response?.data?.detail || e.message));
+                                    }
+                                }}>Regenerate & Resend Documents</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 <div className="status-box" style={{ marginTop: '24px', border: '1px solid var(--primary-color)' }}>
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '16px' }}>Admin Actions</h3>
-                    
+
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         {app.status === ONBOARDING_STATUSES.PENDING_REVIEW && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
@@ -179,7 +244,7 @@ export default function AdminOnboardingDetails() {
                                 </div>
                             </div>
                         )}
-                        
+
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_PASSED && (
                             <button className="btn btn-primary" onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_PENDING)}>Move to Payment Stage</button>
                         )}
@@ -200,29 +265,56 @@ export default function AdminOnboardingDetails() {
 
                         {app.status === ONBOARDING_STATUSES.DOCUMENTS_PENDING && (
                             <div style={{ display: 'flex', gap: '10px' }}>
+                                <select className="input-field" value={selectedMentorId} onChange={e => setSelectedMentorId(e.target.value)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+                                    <option value="">Select Mentor</option>
+                                    {mentors.map(mentor => (
+                                        <option key={mentor.id} value={mentor.id}>{mentor.name} ({mentor.email})</option>
+                                    ))}
+                                </select>
                                 <button className="btn btn-primary" onClick={async () => {
+                                    if (!selectedMentorId) {
+                                        alert("Please select a mentor first.");
+                                        return;
+                                    }
                                     try {
-                                        await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/assign-mentor`, { mentor_id: 1 }); // Hardcoded for now
+                                        await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/assign-mentor`, { mentor_id: parseInt(selectedMentorId) });
                                         alert("Mentor assigned successfully");
                                         refreshApp();
-                                    } catch (e) { 
-                                        console.error(e); 
+                                    } catch (e) {
+                                        console.error(e);
                                         alert("Failed to assign mentor: " + (e.response?.data?.detail || e.message));
                                     }
-                                }}>Assign Default Mentor</button>
+                                }}>Assign Mentor</button>
                                 <button className="btn btn-secondary" onClick={async () => {
                                     try {
-                                        await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
-                                        alert("Documents generated successfully");
+                                        const response = await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
+
+                                        if (response.data.urls) {
+                                            const templateParams = {
+                                                intern_name: app.name,
+                                                to_email: app.email,
+                                                document_link: response.data.urls.offer_letter_url
+                                            };
+
+                                            // Make sure to replace these with your actual EmailJS IDs
+                                            await emailjs.send(
+                                                'service_tcpvv7r',
+                                                'template_mpcare4',
+                                                templateParams,
+                                                'AUbUjQbyafx3K-_aP'
+                                            );
+                                        }
+
+                                        alert("Documents generated and sent successfully");
                                         refreshApp();
-                                    } catch (e) { 
-                                        console.error(e); 
+                                    } catch (e) {
+                                        console.error(e);
                                         alert("Failed to generate documents: " + (e.response?.data?.detail || e.message));
                                     }
                                 }}>Generate & Send Documents</button>
                             </div>
                         )}
-                        
+
                         {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && (
                             <button className="btn btn-primary" onClick={async () => {
                                 try {
@@ -235,11 +327,11 @@ export default function AdminOnboardingDetails() {
                         {app.status === ONBOARDING_STATUSES.ACCOUNT_ACTIVATION_PENDING && (
                             <p style={{ color: 'var(--text-muted)' }}>Waiting for intern to activate account...</p>
                         )}
-                        
+
                         {app.status === ONBOARDING_STATUSES.DOCUMENTS_UPLOADED && (
                             <button className="btn" style={{ backgroundColor: 'var(--success-color)', color: 'white' }} onClick={() => handleAction(ONBOARDING_STATUSES.ACTIVE)}>Mark as Active / Complete Onboarding</button>
                         )}
-                        
+
                         {app.status === ONBOARDING_STATUSES.ACTIVE && (
                             <p style={{ color: 'var(--success-color)', fontWeight: 'bold' }}>Intern is active and onboarding is complete.</p>
                         )}

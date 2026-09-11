@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../services/AuthContext";
 import "./Login.css";
 
 export default function Login() {
@@ -11,14 +12,9 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
+  const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -38,20 +34,15 @@ export default function Login() {
       return;
     }
 
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
+    try {
+      const user = await login(email, password);
+      if (user && user.role) {
+          navigate(`/${user.role}`);
+      } else {
+          navigate("/dashboard"); // Fallback
       }
-    }
-
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+    } catch (err) {
+      setErrorMessage(err.message || "Invalid email or password.");
     }
   };
 

@@ -204,9 +204,13 @@ async def generate_documents(application_id: str, db: Session = Depends(get_db))
     if not user:
         raise HTTPException(status_code=404, detail="Application not found")
         
-    await onboarding_service.generate_documents(user, db)
+    urls = await onboarding_service.generate_documents(user, db)
     
-    return {"message": "Documents generated and sent", "status": user.onboarding_status}
+    return {
+        "message": "Documents generated successfully", 
+        "status": user.onboarding_status,
+        "urls": urls
+    }
 
 @router.post("/{application_id}/create-account")
 async def create_account(application_id: str, db: Session = Depends(get_db)):
@@ -353,7 +357,11 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
         "college": user.college or "N/A",
         "domain": user.domain.name if user.domain else "Unknown",
         "resume": user.resume_url or "#",
-        "status": user.onboarding_status
+        "status": user.onboarding_status,
+        "offer_letter_url": user.offer_letter_url,
+        "tc_url": user.tc_url,
+        "signed_offer_letter_url": user.signed_offer_letter_url,
+        "signed_tc_url": user.signed_tc_url
     }
 
 @router.post("/applications/{application_id}/status")

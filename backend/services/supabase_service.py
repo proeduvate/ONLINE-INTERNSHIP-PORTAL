@@ -9,7 +9,8 @@ logger = logging.getLogger(__name__)
 class SupabaseService:
     def __init__(self):
         self.url = os.getenv("SUPABASE_URL")
-        self.key = os.getenv("SUPABASE_ANON_KEY")
+        # Prefer the service role key to bypass RLS, fallback to anon key
+        self.key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
         if not self.url or not self.key:
             logger.warning("[SupabaseService] SUPABASE_URL or SUPABASE_ANON_KEY not set!")
             self.client = None

@@ -104,17 +104,19 @@ class OnboardingService:
             
         urls = document_service.process_document_generation(user)
         user.onboarding_status = "ACCOUNT_CREATION_PENDING"
+        user.offer_letter_url = urls.get('offer_letter_url')
+        user.tc_url = urls.get('terms_url')
         db.commit()
         
-        await email_service.send_email(
-            user.email,
-            "Your Onboarding Documents",
-            {"message": f"Please find your documents here: Offer Letter: {urls['offer_letter_url']} | T&C: {urls['terms_url']}"}
-        )
+        return urls
 
     async def create_account(self, user: models.User, db: Session):
         # Generate a temporary password
         temp_password = secrets.token_urlsafe(12)
+        
+        # Hash it for local DB login
+        from app.core.security import pwd_context
+        user.hashed_password = pwd_context.hash(temp_password)
         
         # Register in Supabase Auth
         supabase_id = supabase_service.register_user(user.email, temp_password)
@@ -127,7 +129,12 @@ class OnboardingService:
         await email_service.send_email(
             user.email,
             "Activate Your Account",
-            {"message": f"Your account has been created. Please log in using your email and this temporary password: {temp_password}. Remember to change your password after logging in."}
+            {
+                "intern_name": user.name,
+                "temp_password": temp_password,
+                "login_url": "http://localhost:3000/login"
+            },
+            template_id=email_service.activation_template_id
         )
 
 onboarding_service = OnboardingService()
