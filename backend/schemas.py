@@ -14,6 +14,10 @@ class UserRole(str, Enum):
 #        USER / AUTHENTICATION SCHEMAS
 # ==========================================
 
+class InlineSignatureRequest(BaseModel):
+    document_type: str
+    signature_base64: str
+
 class UserCreate(BaseModel):
     name: str
     email: EmailStr

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../../api/axios';
 import './Onboarding.css';
+import SignatureCanvas from 'react-signature-canvas';
 
 export default function Documents() {
     const [statusData, setStatusData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [offerFile, setOfferFile] = useState(null);
-    const [tcFile, setTcFile] = useState(null);
-    const [uploading, setUploading] = useState(false);
+    const [showSignatureModal, setShowSignatureModal] = useState(false);
+    const [documentToSign, setDocumentToSign] = useState("");
+    const [signing, setSigning] = useState(false);
+    const sigCanvas = useRef({});
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -70,27 +72,34 @@ export default function Documents() {
         "ONBOARDING_COMPLETED"
     ].includes(status);
 
-    const handleUpload = async () => {
-        if (!offerFile || !tcFile) {
-            alert("Please select both signed files before uploading.");
+    const openSignModal = (type) => {
+        setDocumentToSign(type);
+        setShowSignatureModal(true);
+    };
+
+    const handleSignSubmit = async () => {
+        if (sigCanvas.current.isEmpty()) {
+            alert("Please draw your signature first.");
             return;
         }
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('offer_letter', offerFile);
-        formData.append('terms_conditions', tcFile);
-
+        
+        setSigning(true);
         try {
-            await api.post(`/api/v1/onboarding/${applicationId}/upload-signed-documents`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            const signatureDataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+            
+            await api.post(`/api/v1/onboarding/${applicationId}/sign-document-inline`, {
+                document_type: documentToSign,
+                signature_base64: signatureDataUrl
             });
-            alert("Signed documents uploaded successfully!");
+            
+            alert(`${documentToSign === 'offer_letter' ? 'Offer Letter' : 'Terms & Conditions'} signed successfully!`);
+            setShowSignatureModal(false);
             window.location.reload();
         } catch (error) {
-            console.error("Upload failed", error);
-            alert("Upload failed: " + (error.response?.data?.detail || error.message));
+            console.error("Signature failed", error);
+            alert("Failed to save signature: " + (error.response?.data?.detail || error.message));
         } finally {
-            setUploading(false);
+            setSigning(false);
         }
     };
 
@@ -131,27 +140,26 @@ export default function Documents() {
                             
                             {statusData.signed_offer_letter_url && statusData.signed_tc_url ? (
                                 <div style={{ color: 'var(--success-color)' }}>
-                                    <p>✅ You have successfully uploaded your signed documents.</p>
+                                    <p>✅ You have successfully signed and uploaded your documents.</p>
                                 </div>
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px' }}>Signed Offer Letter (PDF):</label>
-                                        <input type="file" accept="application/pdf" onChange={e => setOfferFile(e.target.files[0])} className="input-field" />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span style={{ fontWeight: '500' }}>Offer Letter:</span>
+                                        {statusData.signed_offer_letter_url ? (
+                                            <span style={{ color: 'var(--success-color)' }}>✅ Signed</span>
+                                        ) : (
+                                            <button className="btn btn-primary" onClick={() => openSignModal('offer_letter')}>Sign Offer Letter</button>
+                                        )}
                                     </div>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px' }}>Signed Terms & Conditions (PDF):</label>
-                                        <input type="file" accept="application/pdf" onChange={e => setTcFile(e.target.files[0])} className="input-field" />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span style={{ fontWeight: '500' }}>Terms & Conditions:</span>
+                                        {statusData.signed_tc_url ? (
+                                            <span style={{ color: 'var(--success-color)' }}>✅ Signed</span>
+                                        ) : (
+                                            <button className="btn btn-primary" onClick={() => openSignModal('tc')}>Sign Terms & Conditions</button>
+                                        )}
                                     </div>
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-primary" 
-                                        onClick={handleUpload}
-                                        disabled={uploading}
-                                        style={{ marginTop: '10px', alignSelf: 'flex-start' }}
-                                    >
-                                        {uploading ? "Uploading..." : "Submit Signed Documents"}
-                                    </button>
                                 </div>
                             )}
                         </div>
@@ -172,6 +180,27 @@ export default function Documents() {
                     </div>
                 )}
             </div>
+            
+            {showSignatureModal && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div style={{ background: 'white', padding: '20px', borderRadius: '8px', minWidth: '400px', maxWidth: '600px', color: 'black' }}>
+                        <h3 style={{ marginBottom: '10px' }}>Sign {documentToSign === 'offer_letter' ? 'Offer Letter' : 'Terms & Conditions'}</h3>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '15px' }}>Please draw your signature below:</p>
+                        <div style={{ border: '1px solid #ccc', borderRadius: '4px', background: '#f9f9f9', cursor: 'crosshair', marginBottom: '15px' }}>
+                            <SignatureCanvas 
+                                ref={sigCanvas}
+                                penColor="black"
+                                canvasProps={{width: 500, height: 200, className: 'sigCanvas'}} 
+                            />
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                            <button className="btn btn-secondary" onClick={() => {if(sigCanvas.current) sigCanvas.current.clear()}} disabled={signing}>Clear</button>
+                            <button className="btn btn-secondary" onClick={() => setShowSignatureModal(false)} disabled={signing}>Cancel</button>
+                            <button className="btn btn-primary" onClick={handleSignSubmit} disabled={signing}>{signing ? 'Saving...' : 'Save Signature'}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

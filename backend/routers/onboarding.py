@@ -8,6 +8,9 @@ from services.n8n_service import trigger_n8n_webhook
 from services.onboarding_service import onboarding_service
 from services.email_service import email_service
 from services.supabase_service import supabase_service
+import fitz
+import base64
+import httpx
 
 router = APIRouter(
     prefix="",
@@ -226,6 +229,77 @@ async def create_account(application_id: str, db: Session = Depends(get_db)):
     await onboarding_service.create_account(user, db)
     
     return {"message": "Account created, activation email sent", "status": user.onboarding_status}
+
+@router.post("/{application_id}/sign-document-inline")
+async def sign_document_inline(
+    application_id: str,
+    request: schemas.InlineSignatureRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = int(application_id.split("-")[1])
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid application ID")
+        
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Application not found")
+        
+    if request.document_type == "offer_letter":
+        source_url = user.offer_letter_url
+        filename = f"Signed_Offer_Letter_{user.name.replace(' ', '_')}.pdf"
+    elif request.document_type == "tc":
+        source_url = user.tc_url
+        filename = f"Signed_TC_{user.name.replace(' ', '_')}.pdf"
+    else:
+        raise HTTPException(status_code=400, detail="Invalid document type")
+        
+    if not source_url:
+        raise HTTPException(status_code=400, detail=f"No generated {request.document_type} found.")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(source_url)
+            resp.raise_for_status()
+            pdf_bytes = resp.content
+            
+        if "," in request.signature_base64:
+            sig_data = request.signature_base64.split(",")[1]
+        else:
+            sig_data = request.signature_base64
+        sig_bytes = base64.b64decode(sig_data)
+        
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        page = doc[-1] 
+        
+        # Place signature at bottom left
+        rect = fitz.Rect(50, 650, 250, 750)
+        page.insert_image(rect, stream=sig_bytes)
+        
+        modified_pdf_bytes = doc.write()
+        doc.close()
+        
+        uploaded_url = supabase_service.upload_file(
+            file_content=modified_pdf_bytes,
+            bucket_name="documents",
+            filename=filename,
+            content_type="application/pdf"
+        )
+        
+        if request.document_type == "offer_letter":
+            user.signed_offer_letter_url = uploaded_url
+        else:
+            user.signed_tc_url = uploaded_url
+            
+        if user.signed_offer_letter_url and user.signed_tc_url:
+            user.onboarding_status = "DOCUMENTS_UPLOADED"
+            
+        db.commit()
+        return {"message": f"{request.document_type} signed successfully", "url": uploaded_url, "status": user.onboarding_status}
+        
+    except Exception as e:
+        print(f"Error signing document: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process signature: {str(e)}")
 
 @router.post("/{application_id}/upload-signed-documents")
 async def upload_signed_documents(
