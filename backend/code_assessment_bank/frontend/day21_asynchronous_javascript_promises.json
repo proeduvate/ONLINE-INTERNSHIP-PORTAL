@@ -1,0 +1,41 @@
+{
+    "day": 21,
+    "topic": "Asynchronous JavaScript & Promises",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D21-Q001",
+            "title": "Delayed Message",
+            "description": "Use setTimeout() to display a message after a delay.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D21-Q002",
+            "title": "Promise Simulator",
+            "description": "Create a Promise that resolves after 2 seconds and displays a success message.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D21-Q003",
+            "title": "Promise Chain",
+            "description": "Create a three-step Promise chain representing:",
+            "requirements": [
+                "Login",
+                "Fetch profile",
+                "Load dashboard"
+            ]
+        },
+        {
+            "id": "CODE-D21-Q004",
+            "title": "Async/Await",
+            "description": "Rewrite a Promise-based operation using async/await.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D21-Q005",
+            "title": "Async Error Handling",
+            "description": "Create an asynchronous function that can succeed or fail and handle both cases using try/catch.",
+            "requirements": []
+        }
+    ]
+}

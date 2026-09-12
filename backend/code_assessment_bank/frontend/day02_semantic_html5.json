@@ -1,0 +1,62 @@
+{
+    "day": 2,
+    "topic": "Semantic HTML5",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D2-Q001",
+            "title": "Semantic Portfolio",
+            "description": "Convert a basic portfolio into a semantic HTML5 structure using:",
+            "requirements": [
+                "header",
+                "nav",
+                "main",
+                "section",
+                "article",
+                "aside",
+                "footer"
+            ]
+        },
+        {
+            "id": "CODE-D2-Q002",
+            "title": "News Article",
+            "description": "Create a news article webpage containing:",
+            "requirements": [
+                "Header",
+                "Navigation",
+                "Article",
+                "Author information",
+                "Related articles",
+                "Footer"
+            ]
+        },
+        {
+            "id": "CODE-D2-Q003",
+            "title": "Blog Layout",
+            "description": "Build a blog page containing at least three <article> elements and a sidebar.",
+            "requirements": [
+                "At least three <article> elements representing individual blog posts",
+                "A sidebar using the <aside> element",
+                "Proper use of <header> and <footer> within the page"
+            ]
+        },
+        {
+            "id": "CODE-D2-Q004",
+            "title": "Company Website Structure",
+            "description": "Create a company homepage using semantic HTML5 elements instead of generic <div> elements wherever appropriate.",
+            "requirements": [
+                "Use <header> for the site branding and primary navigation",
+                "Use <nav> for navigation links",
+                "Use <main> for the primary content area",
+                "Use <section> to divide different parts of the homepage",
+                "Use <footer> for contact info and copyrights"
+            ]
+        },
+        {
+            "id": "CODE-D2-Q005",
+            "title": "Semantic Refactoring",
+            "description": "Given a poorly structured HTML page, rewrite it using appropriate semantic elements.",
+            "requirements": []
+        }
+    ]
+}

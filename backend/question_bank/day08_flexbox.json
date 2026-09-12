@@ -1,0 +1,557 @@
+{
+    "day": 8,
+    "topic": "Flexbox",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D8-001",
+            "question": "What is the primary purpose of Flexbox feature 1 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-002",
+            "question": "How do you correctly use Flexbox feature 2?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-003",
+            "question": "Which of the following best describes Flexbox feature 3?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-004",
+            "question": "Why is Flexbox feature 4 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-005",
+            "question": "When should you avoid using Flexbox feature 5?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-006",
+            "question": "What is the primary purpose of Flexbox feature 6 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-007",
+            "question": "How do you correctly use Flexbox feature 7?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-008",
+            "question": "Which of the following best describes Flexbox feature 8?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-009",
+            "question": "Why is Flexbox feature 9 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-010",
+            "question": "When should you avoid using Flexbox feature 10?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-011",
+            "question": "What is the primary purpose of Flexbox feature 11 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-012",
+            "question": "How do you correctly use Flexbox feature 12?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-013",
+            "question": "Which of the following best describes Flexbox feature 13?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-014",
+            "question": "Why is Flexbox feature 14 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-015",
+            "question": "When should you avoid using Flexbox feature 15?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-016",
+            "question": "What is the primary purpose of Flexbox feature 16 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-017",
+            "question": "How do you correctly use Flexbox feature 17?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-018",
+            "question": "Which of the following best describes Flexbox feature 18?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-019",
+            "question": "Why is Flexbox feature 19 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-020",
+            "question": "When should you avoid using Flexbox feature 20?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-021",
+            "question": "What is the primary purpose of Flexbox feature 21 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-022",
+            "question": "How do you correctly use Flexbox feature 22?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-023",
+            "question": "Which of the following best describes Flexbox feature 23?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-024",
+            "question": "Why is Flexbox feature 24 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-025",
+            "question": "When should you avoid using Flexbox feature 25?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-026",
+            "question": "What is the primary purpose of Flexbox feature 26 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-027",
+            "question": "How do you correctly use Flexbox feature 27?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-028",
+            "question": "Which of the following best describes Flexbox feature 28?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-029",
+            "question": "Why is Flexbox feature 29 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-030",
+            "question": "When should you avoid using Flexbox feature 30?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-031",
+            "question": "What is the primary purpose of Flexbox feature 31 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-032",
+            "question": "How do you correctly use Flexbox feature 32?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-033",
+            "question": "Which of the following best describes Flexbox feature 33?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-034",
+            "question": "Why is Flexbox feature 34 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-035",
+            "question": "When should you avoid using Flexbox feature 35?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-036",
+            "question": "What is the primary purpose of Flexbox feature 36 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-037",
+            "question": "How do you correctly use Flexbox feature 37?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-038",
+            "question": "Which of the following best describes Flexbox feature 38?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-039",
+            "question": "Why is Flexbox feature 39 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-040",
+            "question": "When should you avoid using Flexbox feature 40?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-041",
+            "question": "What is the primary purpose of Flexbox feature 41 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-042",
+            "question": "How do you correctly use Flexbox feature 42?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-043",
+            "question": "Which of the following best describes Flexbox feature 43?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-044",
+            "question": "Why is Flexbox feature 44 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-045",
+            "question": "When should you avoid using Flexbox feature 45?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-046",
+            "question": "What is the primary purpose of Flexbox feature 46 in Flexbox?",
+            "options": {
+                "A": "To implement Flexbox feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-047",
+            "question": "How do you correctly use Flexbox feature 47?",
+            "options": {
+                "A": "By following standard Flexbox guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-048",
+            "question": "Which of the following best describes Flexbox feature 48?",
+            "options": {
+                "A": "A key concept in Flexbox",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-049",
+            "question": "Why is Flexbox feature 49 important for Flexbox?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D8-050",
+            "question": "When should you avoid using Flexbox feature 50?",
+            "options": {
+                "A": "When it violates Flexbox best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "day": 16,
+    "topic": "Encapsulation & Access Modifiers",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D16-Q001",
+            "title": "Secure BankAccount",
+            "description": "Create a BankAccount with a private balance.",
+            "requirements": [
+                "Make balance private",
+                "Provide getBalance() getter",
+                "Provide deposit() and withdraw() with validation",
+                "No direct balance modification from outside",
+                "Test from main class"
+            ]
+        },
+        {
+            "id": "CODE-PY-D16-Q002",
+            "title": "Student Getters and Setters",
+            "description": "Create getter and setter methods for student information.",
+            "requirements": [
+                "Private fields: name, rollNo, marks, grade",
+                "Getter for each field",
+                "Setter for each field",
+                "Validate in setters",
+                "Test get/set from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D16-Q003",
+            "title": "Marks Validation",
+            "description": "Validate student marks before storing them.",
+            "requirements": [
+                "Private marks field",
+                "Setter validates 0-100 range",
+                "Throw exception or print error if invalid",
+                "Accept valid marks only",
+                "Display final valid marks"
+            ]
+        },
+        {
+            "id": "CODE-PY-D16-Q004",
+            "title": "Employee Salary Encapsulation",
+            "description": "Create an employee class with private salary information.",
+            "requirements": [
+                "Private: baseSalary, allowances, deductions",
+                "Getter only for netSalary (computed)",
+                "No public setter for individual components",
+                "Admin method to update salary",
+                "Demonstrate encapsulation from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D16-Q005",
+            "title": "Secure User Profile",
+            "description": "Build a secure user profile class using encapsulation.",
+            "requirements": [
+                "Private fields: username, email, password",
+                "Password stored as hash (simplified)",
+                "Getter for username and email only",
+                "Method: changePassword(old, new)",
+                "Test all operations from main"
+            ]
+        }
+    ]
+}

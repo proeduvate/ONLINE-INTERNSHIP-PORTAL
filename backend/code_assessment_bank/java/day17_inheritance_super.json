@@ -1,0 +1,67 @@
+{
+    "day": 17,
+    "topic": "Inheritance & super",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D17-Q001",
+            "title": "Person to Student and Teacher",
+            "description": "Create a Person class and derive Student and Teacher.",
+            "requirements": [
+                "Person class with name and age",
+                "Student extends Person, adds department and marks",
+                "Teacher extends Person, adds subject and salary",
+                "Override toString() in each",
+                "Create objects of all three in main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D17-Q002",
+            "title": "Vehicle Hierarchy",
+            "description": "Create a Vehicle class and derive Car, Bike and Bus.",
+            "requirements": [
+                "Vehicle class with brand, speed, fuel",
+                "Car adds numDoors",
+                "Bike adds hasSidecar (boolean)",
+                "Bus adds passengerCapacity",
+                "Override display() in each subclass"
+            ]
+        },
+        {
+            "id": "CODE-PY-D17-Q003",
+            "title": "Using super()",
+            "description": "Use super() to initialize inherited attributes.",
+            "requirements": [
+                "Base class with parameterized constructor",
+                "Derived class calls super(args)",
+                "Add derived-specific fields",
+                "Use super.method() to call parent methods",
+                "Demonstrate from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D17-Q004",
+            "title": "Employee Hierarchy",
+            "description": "Create an employee hierarchy using inheritance.",
+            "requirements": [
+                "Employee base class with name, id, baseSalary",
+                "Manager extends Employee, adds teamSize",
+                "Developer extends Employee, adds techStack",
+                "Override calculateBonus() in each",
+                "Display all in main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D17-Q005",
+            "title": "University Management Hierarchy",
+            "description": "Build a university management hierarchy using multiple classes.",
+            "requirements": [
+                "Person base class",
+                "Student and Staff extend Person",
+                "GraduateStudent extends Student",
+                "HodStaff extends Staff",
+                "Show data at each level from main"
+            ]
+        }
+    ]
+}

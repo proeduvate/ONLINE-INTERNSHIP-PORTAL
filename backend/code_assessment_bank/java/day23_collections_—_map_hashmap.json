@@ -1,0 +1,67 @@
+{
+    "day": 23,
+    "topic": "Collections — Map & HashMap",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D23-Q001",
+            "title": "Student ID-Name HashMap",
+            "description": "Create a HashMap containing student IDs and names.",
+            "requirements": [
+                "Create HashMap<Integer, String>",
+                "Add at least 5 student ID-name pairs",
+                "Retrieve name by ID",
+                "Display all entries",
+                "Remove an entry and display again"
+            ]
+        },
+        {
+            "id": "CODE-PY-D23-Q002",
+            "title": "Word Frequency Counter",
+            "description": "Count the frequency of words using HashMap.",
+            "requirements": [
+                "Accept a sentence as input",
+                "Split into words",
+                "Count each word's frequency using HashMap",
+                "Display each word and its count",
+                "Sort by frequency if possible"
+            ]
+        },
+        {
+            "id": "CODE-PY-D23-Q003",
+            "title": "Subject-Wise Marks Map",
+            "description": "Store subject-wise marks using a nested map.",
+            "requirements": [
+                "HashMap<String, HashMap<String, Integer>>",
+                "Outer key: student name",
+                "Inner key: subject name, value: marks",
+                "Add 3 students with 3 subjects each",
+                "Display all in formatted table"
+            ]
+        },
+        {
+            "id": "CODE-PY-D23-Q004",
+            "title": "Inventory System",
+            "description": "Build an inventory system using HashMap.",
+            "requirements": [
+                "HashMap<String, Integer> for item and quantity",
+                "Add items with quantities",
+                "Update quantity of existing item",
+                "Remove an item",
+                "Display full inventory"
+            ]
+        },
+        {
+            "id": "CODE-PY-D23-Q005",
+            "title": "Highest Marks Finder",
+            "description": "Find the student with the highest marks using a map.",
+            "requirements": [
+                "HashMap<String, Integer> for student and marks",
+                "Iterate through entries",
+                "Find maximum value",
+                "Print student name and their marks",
+                "Handle tie case"
+            ]
+        }
+    ]
+}

@@ -4,6 +4,7 @@ import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+import MCQAssessment from "./MCQAssessment";
 
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
@@ -88,6 +89,7 @@ export default function InternDashboard() {
         const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:8000/bonus-airdrops`, {
           headers: { "Authorization": `Bearer ${token}` }
+
         });
         if (response.ok) {
           const data = await response.json();
@@ -217,8 +219,11 @@ export default function InternDashboard() {
   const fetchSimProgress = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/simulation/intern/current", {
-        headers: { "Authorization": `Bearer ${token}` }
+      const res = await fetch(`http://localhost:8000/simulation/intern/current?t=${new Date().getTime()}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Cache-Control": "no-cache"
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -232,7 +237,7 @@ export default function InternDashboard() {
           if (day < currentSimDay) {
             status = "completed";
           } else if (day === currentSimDay) {
-            status = data.unlocked === false ? "current" : "current";
+            status = data.completed ? "completed" : "current";
           } else {
             status = "locked";
           }
@@ -245,14 +250,14 @@ export default function InternDashboard() {
     }
   };
 
-  // Mock State (AI and Attendance)
-  const completedDaysCount = curriculumData.filter(t => t.status === "completed").length;
-  const missedDaysCount = curriculumData.filter(t => t.day < currentDay && t.status !== "completed").length;
-  const daysPresent = completedDaysCount + 1; // count current active day as present
+  // Attendance: use backend's day_attendance field for accuracy
+  const completedDaysCount = curriculumData.filter(t => t.day_attendance === "present").length;
+  const missedDaysCount = curriculumData.filter(t => t.day_attendance === "absent").length;
+  const daysPresent = completedDaysCount;
   const totalAttendanceDays = daysPresent + missedDaysCount;
   const progress = curriculumData.length > 0 ? Math.round((completedDaysCount / curriculumData.length) * 100) : 0;
-  
-  const attendancePercent = totalAttendanceDays > 0 ? Math.round((daysPresent / totalAttendanceDays) * 100) : 100;
+
+  const attendancePercent = totalAttendanceDays > 0 ? Math.round((daysPresent / totalAttendanceDays) * 100) : 0;
 
   const [aiScore, setAiScore] = useState(0);
 
@@ -281,17 +286,31 @@ export default function InternDashboard() {
             topic: t.title,
             desc: t.description || `Learning materials for Day ${t.day_number}`,
             notes: `Lecture_Notes_Day${t.day_number}.pdf`,
-            status: t.status, // "locked", "in_progress", "completed", "pending"
+            status: t.status, // "Not started", "in_progress", "completed"
+            day_attendance: t.day_attendance, // "present", "absent", "current", "future"
             coding_prompt: t.coding_prompt,
-            mcq_questions: t.mcq_questions
+            mcq_questions: t.mcq_questions,
+            unlocked: t.unlocked
           }));
           setCurriculumData(mappedTasks);
-          // Auto-set current day based on progress (first non-completed task)
-          const activeTask = mappedTasks.find(t => t.status !== "completed") || mappedTasks[mappedTasks.length - 1];
-          // For demo purposes, we lock it to Day 1 initially
-          // if (activeTask) {
-          //   setCurrentDay(activeTask.day);
-          // }
+
+          // Current day determination:
+          // 1. Pick the task marked "current" by backend (today's calendar day)
+          // 2. Else pick first unlocked+pending task
+          // 3. Else pick highest completed day (so UI stays on last done day, not Day 1)
+          // 4. Fallback to first task
+          const currentCalendarTask = mappedTasks.find(t => t.day_attendance === "current");
+          const firstUnlockedPending = mappedTasks.find(t => t.unlocked && t.status !== "completed");
+          const lastCompletedTask = [...mappedTasks].reverse().find(t => t.status === "completed");
+          
+          let currentDayTask = firstUnlockedPending; // Always prioritize the day they actually need to work on
+          if (!currentDayTask) {
+              currentDayTask = currentCalendarTask && currentCalendarTask.unlocked ? currentCalendarTask : lastCompletedTask || mappedTasks[0];
+          }
+          
+          if (currentDayTask) {
+            setCurrentDay(currentDayTask.day);
+          }
         }
       }
     } catch (e) {
@@ -386,7 +405,7 @@ export default function InternDashboard() {
   const handleReplyTicket = async (e) => {
     e.preventDefault();
     if (!ticketReply.trim() || !selectedTicket) return;
-    
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
@@ -416,7 +435,7 @@ export default function InternDashboard() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const currentCurriculum = getCurrentDayData();
-  
+
   let mcqQuestionsList = [];
   try {
     const rawQuestions = currentCurriculum.mcq_questions ? JSON.parse(currentCurriculum.mcq_questions) : [];
@@ -474,60 +493,91 @@ export default function InternDashboard() {
     alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
   };
 
-  const handleSubmitCode = () => {
-    setEvaluating(true);
+  const [codingStarted, setCodingStarted] = useState(false);
+  const [codingSubmitting, setCodingSubmitting] = useState(false);
 
-    // Simulate AI compilation & scoring
-    setTimeout(() => {
-      setEvaluating(false);
-      const randomScore = Math.floor(6 + Math.random() * 5); // Score out of 10
-      setAiScore(randomScore);
-      setEvalResult({
-        score: randomScore,
-        correctness: 100,
-        logic: 90,
-        quality: 85,
-        performance: 95,
-        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
-      });
-      alert(`Coding assessment submitted! Score: ${randomScore}/10. Part B completed.`);
-      setCodingDone(true);
-      setAssessmentView("selection");
-    }, 2000);
+  // Called when intern clicks "Start Coding" - triggers backend random question selection
+  const handleStartCoding = async () => {
+    const token = localStorage.getItem("token");
+    const task = getCurrentDayData();
+    if (task && task.id) {
+      try {
+        const token = localStorage.getItem("token");
+        await fetch(`http://localhost:8000/tasks/${task.id}/start`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+      } catch (e) {
+        console.error("Failed to start coding task", e);
+      }
+    }
+    // Fetch fresh tasks BEFORE showing coding view so coding_prompt is always current from backend
+    await fetchTasks();
+    setCodingStarted(true);
+    setAssessmentView("coding");
   };
 
-  const handleCompleteDay = async () => {
+  const handleSubmitCode = async () => {
+    setCodingSubmitting(true);
+    setEvaluating(true);
     try {
       const token = localStorage.getItem("token");
       const currentTask = getCurrentDayData();
-      
       const payload = {
         task_id: currentTask.id,
         code_submission: code,
         language: language,
         mcq_answers: JSON.stringify(answers)
       };
-
       const res = await fetch("http://localhost:8000/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(payload)
       });
-      
-      if (res.ok) {
-        const data = await res.json();
-        // Option to do something with data.mcq_score and data.ai_score
-      }
-    } catch (e) {
-      console.error(e);
-    }
 
-    alert(`Day ${currentDay} complete! Day ${currentDay + 1} will unlock at 12:00 AM.`);
-    setIsDayLockedUntilMidnight(true);
-    if (currentDay < curriculumData.length) {
-      setCurrentDay(currentDay + 1);
+      if (!res.ok) {
+        if (res.status === 401) {
+          alert("Your session has expired. Please log in again.");
+          window.location.href = "/login";
+          return;
+        }
+        let errMsg = "Failed to submit";
+        try {
+          const errData = await res.json();
+          errMsg = errData.detail || errMsg;
+        } catch (e) { }
+        throw new Error(errMsg);
+      }
+
+      const data = await res.json();
+      const score = data.ai_score || data.runtime_score || data.score || 0;
+      setAiScore(score);
+      setEvalResult({
+        score: score,
+        correctness: data.test_cases_passed > 0 ? 100 : (data.correctness || 85),
+        quality: data.quality || 80,
+        suggestions: data.ai_feedback || "Good effort."
+      });
+      setCodingDone(true);
+      fetchLeaderboard();
+      fetchAnalytics();
+
+      // Important: fetch tasks again to update the curriculumData with the new status!
+      await fetchTasks();
+    } catch (e) {
+      console.error("Failed to submit code", e);
+      alert(`Error: ${e.message}`);
+    } finally {
+      setCodingSubmitting(false);
+      setEvaluating(false);
     }
-    // Reset test states
+  };
+
+  const handleCompleteDay = async () => {
+    // Code submission is already done by handleSubmitCode.
+    // MCQ is submitted by MCQAssessment component.
+    // This function just resets UI state and refreshes data.
+    alert(`Day ${currentDay} Assessments Submitted!`);
     setMcqDone(false);
     setCodingDone(false);
     setScenarioDone(false);
@@ -539,7 +589,7 @@ export default function InternDashboard() {
     setEvalResult(null);
     setShowAssessment(false);
     setAssessmentView("selection");
-    
+
     // Refresh tasks, analytics, and leaderboard to show updated status and points
     fetchTasks();
     fetchLeaderboard();
@@ -584,10 +634,10 @@ export default function InternDashboard() {
             </div>
 
             {/* Removed Attendance Calendar & Portfolio summary as requested */}
-            
+
             {/* Main Non-Scrollable Layout Content */}
             <div style={{ display: "flex", gap: "24px", marginTop: "20px", height: "calc(100vh - 250px)", overflow: "hidden" }}>
-              
+
               {/* Left Column */}
               <div style={{ flex: "1.2", display: "flex", flexDirection: "column", gap: "20px", overflowY: "auto", paddingRight: "4px" }}>
                 {/* Bonus Airdrops Banner */}
@@ -612,7 +662,7 @@ export default function InternDashboard() {
                     const startTime = new Date(t).getTime();
                     if (Date.now() < startTime) {
                       canParticipateBanner = false;
-                      upcomingTimeBanner = new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                      upcomingTimeBanner = new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     }
                   }
 
@@ -633,10 +683,10 @@ export default function InternDashboard() {
                             {drop.start_mode === 'fixed' ? '🔒 Fixed: ' : '⏱️ Flexible: '} {drop.time_limit || drop.timeLimit}s
                           </div>
                         )}
-                        <button 
+                        <button
                           className="btn-participate"
-                          style={{ 
-                            padding: "8px 16px", 
+                          style={{
+                            padding: "8px 16px",
                             fontSize: "12px",
                             opacity: (hasActive && !canParticipateBanner) ? 0.6 : 1,
                             cursor: (hasActive && !canParticipateBanner) ? "not-allowed" : "pointer"
@@ -659,8 +709,8 @@ export default function InternDashboard() {
 
                 {/* Daily Scenario Activity Calendar */}
                 <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <DailyScenarioCalendar 
-                    onStartScenario={(day) => setActiveTab("Daily Scenario")} 
+                  <DailyScenarioCalendar
+                    onStartScenario={(day) => setActiveTab("Daily Scenario")}
                     curriculumData={simCalendarData}
                     currentDay={simCurrentDay}
                   />
@@ -678,7 +728,7 @@ export default function InternDashboard() {
                       </div>
                       <div>
                         <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "var(--text-dark)" }}>Today's Objective</h3>
-                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {currentDay}: {getCurrentDayData().topic}</span>
+                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-slate)", letterSpacing: "0.5px" }}>{getCurrentDayData().topic}</span>
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "4px", backgroundColor: "var(--bg-red-light)", padding: "4px 8px", borderRadius: "12px" }}>
@@ -686,7 +736,7 @@ export default function InternDashboard() {
                       <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--danger-color)" }}>45m</span>
                     </div>
                   </div>
-                  
+
                   <div style={{ marginBottom: "16px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", marginBottom: "6px", fontWeight: 600 }}>
                       <span style={{ color: "var(--text-muted)" }}>Course Progress</span>
@@ -766,16 +816,42 @@ export default function InternDashboard() {
 
       case "Learning":
         const currentCurriculum = getCurrentDayData();
-        
-        if (isDayLockedUntilMidnight) {
+
+        // Locking is now strictly calendar-based, handled directly by whether the task is unlocked
+        if (currentCurriculum && !currentCurriculum.unlocked) {
           return (
             <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
               <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🔒</p>
               <h3>Day {currentDay} is Locked</h3>
-              <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>Your next learning materials will unlock automatically tomorrow at 12:00 AM.</p>
+              <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>Your learning materials will unlock on the corresponding day of your internship.</p>
             </div>
           );
         }
+        // If today's task is already completed, show a "completed today" screen
+        if (currentCurriculum && currentCurriculum.status === "completed" && currentCurriculum.day_attendance !== "absent") {
+          const nextDay = curriculumData.find(d => d.day === currentDay + 1);
+          return (
+            <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
+              <p style={{ fontSize: "48px", margin: "0 0 16px 0" }}>🎉</p>
+              <h3 style={{ color: "var(--success-color)" }}>Day {currentDay} Completed!</h3>
+              <p style={{ color: "var(--text-gray-muted)", margin: "8px 0 24px 0" }}>
+                Great work! You have finished all assessments for Day {currentDay}.
+              </p>
+              {nextDay ? (
+                <div style={{ marginTop: "16px", padding: "16px", background: "var(--bg-gray-light)", borderRadius: "12px", border: "1px solid var(--border-gray)" }}>
+                  <p style={{ fontSize: "20px", margin: "0 0 8px 0" }}>🔒</p>
+                  <p style={{ fontWeight: 600, margin: "0 0 4px 0" }}>Day {currentDay + 1}: {nextDay.topic}</p>
+                  <p style={{ color: "var(--text-gray-muted)", fontSize: "13px", margin: 0 }}>
+                    Unlocks tomorrow. Come back then to continue your learning journey!
+                  </p>
+                </div>
+              ) : (
+                <p style={{ fontWeight: 600, color: "var(--primary-color)" }}>You have reached today's milestone. See you tomorrow! 🚀</p>
+              )}
+            </div>
+          );
+        }
+
 
         if (showAssessment) {
           return (
@@ -791,9 +867,9 @@ export default function InternDashboard() {
                       <h4>Part A: MCQ Assessment</h4>
                       <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
                       {mcqDone ? (
-                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
+                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed. Score: {mcqGrade}%</span>
                       ) : (
-                        <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
+                        <button className="btn btn-primary" onClick={() => setAssessmentView("mcq")} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
                       )}
                     </div>
                     <div className="card" style={{ margin: 0, textAlign: "center", border: "1px solid var(--border-gray)", background: codingDone ? "var(--bg-emerald-light)" : "var(--card-bg)" }}>
@@ -802,7 +878,7 @@ export default function InternDashboard() {
                       {codingDone ? (
                         <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed</span>
                       ) : (
-                        <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ width: "100%", marginTop: "12px" }}>Start Coding</button>
+                        <button className="btn btn-primary" onClick={handleStartCoding} style={{ width: "100%", marginTop: "12px" }}>Start Coding</button>
                       )}
                     </div>
                   </div>
@@ -812,7 +888,7 @@ export default function InternDashboard() {
                       📋 Rules and Conditions for Assessment
                     </h4>
                     <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6" }}>
-                      <li><b>Completion:</b> Part A (MCQ), Part B (Coding), AND the <b>Daily Scenario</b> must be completed to unlock the next day's module.</li>
+                      <li><b>Completion:</b> MCQ and Coding Assessments are optional practice, but recommended.</li>
                       <li><b>Daily Scenario Status:</b> {scenarioDone ? <span style={{ color: "var(--success-color)", fontWeight: "bold" }}>✓ Completed</span> : <span style={{ color: "var(--danger-color)", fontWeight: "bold" }}>❌ Pending (Complete in Overview tab)</span>}</li>
                       <li><b>Timing:</b> The MCQ section is strictly timed. The timer cannot be paused once started.</li>
                       <li><b>Navigation:</b> During the MCQ test, you cannot return to the selection menu without submitting your answers.</li>
@@ -821,9 +897,9 @@ export default function InternDashboard() {
                     </ul>
                   </div>
 
-                  {mcqDone && codingDone && scenarioDone && (
+                  {mcqDone && codingDone && (
                     <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
-                      <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "var(--success-color)", borderColor: "var(--success-color)", padding: "12px 32px", fontSize: "16px" }}>Complete & Unlock Next Day</button>
+                      <button className="btn btn-primary" onClick={handleCompleteDay} style={{ backgroundColor: "var(--success-color)", borderColor: "var(--success-color)", padding: "12px 32px", fontSize: "16px" }}>Submit Assessments</button>
                     </div>
                   )}
                 </div>
@@ -831,106 +907,15 @@ export default function InternDashboard() {
 
               {/* Timed MCQ Assessment */}
               {assessmentView === "mcq" && (
-                <div className="card">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
-                    {mcqSubmitted && (
-                      <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
-                    )}
-                  </div>
-                  {!mcqSubmitted ? (
-                    <div>
-                      {/* Top Bar: Timer and Submit */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-gray)", paddingBottom: "12px", marginBottom: "16px" }}>
-                        <div style={{ color: "var(--danger-color)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                          ⏱️ Timer: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
-                        </div>
-                        <button className="btn btn-primary" onClick={handleMcqSubmit} style={{ padding: "8px 16px", backgroundColor: "var(--success-color)", borderColor: "var(--success-color)" }}>Submit Test</button>
-                      </div>
-
-                      <div style={{ display: "flex", gap: "24px" }}>
-                        {/* Left Sidebar: Question Numbers Grid */}
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid var(--border-gray)", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
-                          {mcqQuestionsList.map((q, idx) => (
-                            <button 
-                              key={q.id}
-                              onClick={() => setCurrentQuestionIndex(idx)}
-                              style={{
-                                aspectRatio: "1/1",
-                                padding: 0,
-                                borderRadius: "6px",
-                                  border: currentQuestionIndex === idx ? "2px solid var(--primary-color)" : (answers[q.id] ? "1px solid var(--success-color)" : "1px solid var(--border-gray)"),
-                                  backgroundColor: answers[q.id] ? "var(--success-color)" : (currentQuestionIndex === idx ? "var(--bg-blue-light)" : "var(--card-bg)"),
-                                  color: answers[q.id] ? "var(--card-bg)" : (currentQuestionIndex === idx ? "var(--primary-darker)" : "var(--text-gray)"),
-                                  fontWeight: currentQuestionIndex === idx ? 700 : 500,
-                                cursor: "pointer",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                fontSize: "14px"
-                              }}
-                            >
-                              {idx + 1}
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* Right Content: Current Question */}
-                        <div style={{ flex: 1 }}>
-                          {mcqQuestionsList.length > 0 ? (
-                            <>
-                              <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
-                                <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
-                              </h4>
-                              
-                              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
-                                  <button 
-                                    key={opt.val}
-                                    className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                    onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                    style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
-                                  >
-                                    {opt.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </>
-                          ) : (
-                            <div style={{ textAlign: "center", padding: "40px" }}>
-                              <p>No questions available for this day.</p>
-                            </div>
-                          )}
-
-                          {/* Navigation Buttons */}
-                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === 0} 
-                              onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
-                              style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
-                            >
-                              Previous
-                            </button>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
-                              onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                              style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
-                            >
-                              Next
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>
-                      <button className="btn btn-primary" onClick={() => setAssessmentView("selection")}>Continue</button>
-                    </div>
-                  )}
-                </div>
+                <MCQAssessment
+                  day={currentDay}
+                  onComplete={(result) => {
+                    setMcqDone(true);
+                    setMcqGrade(result.percentage);
+                    setAssessmentView("selection");
+                  }}
+                  onBack={() => setAssessmentView("selection")}
+                />
               )}
 
               {/* Coding assignment compiler terminal */}
@@ -940,32 +925,70 @@ export default function InternDashboard() {
                     <h3 style={{ margin: 0 }}>Part B: Coding Assessment</h3>
                     <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                   </div>
+
+                  {/* Show the randomly selected coding task */}
+                  {(() => {
+                    const taskData = getCurrentDayData();
+                    const prompt = taskData && taskData.coding_prompt;
+                    if (!prompt) return null;
+                    let promptStr = prompt;
+                    try {
+                      if (promptStr.trim().startsWith('[')) {
+                        const questions = JSON.parse(promptStr);
+                        if (questions && questions.length > 0) {
+                          // Pick one question (e.g. the first one)
+                          const q = questions[0];
+                          promptStr = `### ${q.title}\n\n${q.description}\n\n**Requirements:**\n${q.requirements ? q.requirements.map(r => `- ${r}`).join('\n') : ''}`;
+                        }
+                      }
+                    } catch (e) {
+                      console.error("Error parsing coding prompt", e);
+                    }
+                    // Render markdown-style prompt
+                    const lines = promptStr.split('\n');
+                    return (
+                      <div style={{ background: "var(--bg-light)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginBottom: "16px", fontSize: "13px", lineHeight: "1.7" }}>
+                        {lines.map((line, i) => {
+                          if (line.startsWith('### ')) return <h4 key={i} style={{ margin: "0 0 8px 0", color: "var(--primary-dark)", fontSize: "15px" }}>{line.replace('### ', '')}</h4>;
+                          if (line.startsWith('**') && line.endsWith('**')) return <p key={i} style={{ fontWeight: 700, margin: "10px 0 4px 0", color: "var(--text-dark)" }}>{line.replace(/\*\*/g, '')}</p>;
+                          if (line.startsWith('- ')) return <li key={i} style={{ marginLeft: "16px", color: "var(--text-muted)" }}>{line.replace('- ', '')}</li>;
+                          if (line.trim() === '') return <br key={i} />;
+                          return <p key={i} style={{ margin: "4px 0", color: "var(--text-muted)" }}>{line}</p>;
+                        })}
+                      </div>
+                    );
+                  })()}
+
                   <div style={{ marginBottom: "12px" }}>
                     <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
                     <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
                       <option value="javascript">JavaScript</option>
                       <option value="python">Python</option>
+                      <option value="html">HTML</option>
+                      <option value="css">CSS</option>
                     </select>
                   </div>
 
-                  <textarea 
-                    className="form-control" 
-                    rows="6" 
+                  <textarea
+                    className="form-control"
+                    rows="10"
+                    placeholder="Write your solution here..."
                     style={{ fontFamily: "monospace", fontSize: "13px" }}
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                   />
 
                   <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                    <button className="btn btn-secondary" onClick={handleRunCode}>Run Test Cases</button>
-                    <button className="btn btn-primary" onClick={handleSubmitCode}>Submit to AI Evaluator</button>
+                    <button className="btn btn-primary" onClick={handleSubmitCode} disabled={codingSubmitting}>
+                      {codingSubmitting ? "Submitting..." : "Submit to AI Evaluator"}
+                    </button>
                   </div>
 
                   {evaluating || evalResult ? (
                     <div style={{ marginTop: "24px" }}>
-                      <h3>AI evaluation results</h3>
+                      <h3>AI Evaluation Results</h3>
                       {evaluating ? (
-                        <p>Analyzing code structure complexity and performance time...</p>
+                        <p>Analyzing code structure, complexity and performance...</p>
                       ) : (
                         <div>
                           <div style={{ display: "flex", gap: "20px", alignItems: "center", marginBottom: "16px" }}>
@@ -973,7 +996,7 @@ export default function InternDashboard() {
                               <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary-dark)" }}>{evalResult.score}%</span>
                               <span style={{ fontSize: "8px", color: "var(--text-muted)" }}>Grade</span>
                             </div>
-                            <p style={{ fontSize: "13px" }}>Code complies with structural specifications. Recommended adjustments logged below.</p>
+                            <p style={{ fontSize: "13px" }}>Code evaluation complete. Review suggestions below.</p>
                           </div>
                           <div className="grid">
                             <div className="card" style={{ margin: 0, padding: "12px" }}>
@@ -1048,7 +1071,7 @@ export default function InternDashboard() {
                 <h3 style={{ margin: 0, color: "var(--danger-darker)", display: "flex", alignItems: "center", gap: "8px" }}>⚠️ File a Support Ticket</h3>
                 <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Back to Tickets</button>
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid var(--border-gray)" }}>
                   <div>
@@ -1071,14 +1094,14 @@ export default function InternDashboard() {
 
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Issue Description (Short Title)</label>
-                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" value={newTicketForm.title} onChange={e => setNewTicketForm({...newTicketForm, title: e.target.value})} />
+                  <input type="text" className="form-control" placeholder="e.g. Cannot access Week 2 GitHub repo" value={newTicketForm.title} onChange={e => setNewTicketForm({ ...newTicketForm, title: e.target.value })} />
                 </div>
-                
+
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Detailed Content (Exact Issue)</label>
-                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..." value={newTicketForm.description} onChange={e => setNewTicketForm({...newTicketForm, description: e.target.value})}></textarea>
+                  <textarea className="form-control" rows="5" placeholder="Please describe exactly what you are facing, steps to reproduce, and any error messages..." value={newTicketForm.description} onChange={e => setNewTicketForm({ ...newTicketForm, description: e.target.value })}></textarea>
                 </div>
-                
+
                 <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end" }}>
                   <button className="btn btn-primary" style={{ backgroundColor: "var(--danger-darker)", borderColor: "var(--danger-darker)" }} onClick={handleCreateTicket}>Submit Ticket</button>
                 </div>
@@ -1102,7 +1125,7 @@ export default function InternDashboard() {
                 <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "var(--danger-darkest)" }}>Your Filed Tickets</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {ticketsData.map(ticket => (
-                    <div 
+                    <div
                       key={ticket.id}
                       onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
                       style={{ backgroundColor: "var(--card-bg)", padding: "12px", borderRadius: "8px", border: selectedTicket?.id === ticket.id ? "2px solid var(--danger-color)" : "1px solid var(--border-gray)", display: "flex", flexDirection: "column", cursor: "pointer" }}
@@ -1115,17 +1138,17 @@ export default function InternDashboard() {
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <span style={{ fontSize: "11px", color: "var(--text-gray-muted)" }}>Filed: {new Date(ticket.created_at).toLocaleDateString()}</span>
                           <span className={`badge ${ticket.status === 'resolved' ? 'badge-success' : ticket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'resolved' ? '#d1fae5' : ticket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'resolved' ? '#065f46' : ticket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
-                          {ticket.status === 'in_progress' ? 'Assigned' : ticket.status}
-                        </span>
+                            {ticket.status === 'in_progress' ? 'Assigned' : ticket.status}
+                          </span>
                         </div>
                       </div>
-                      
+
                       {selectedTicket?.id === ticket.id && (
                         <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--bg-gray-light)" }} onClick={(e) => e.stopPropagation()}>
                           <div style={{ padding: "12px", backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5", marginBottom: "12px" }}>
                             {ticket.description}
                           </div>
-                          
+
                           <h5 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Messages</h5>
                           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
                             {ticket.messages && ticket.messages.length === 0 ? (
@@ -1173,15 +1196,15 @@ export default function InternDashboard() {
             <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
               {chatMessages.map((msg, i) => (
                 <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
-                  <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
-                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
-                    padding: "10px 14px 22px 14px", 
-                    borderRadius: "12px", 
+                  <div style={{
+                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)",
+                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)",
+                    padding: "10px 14px 22px 14px",
+                    borderRadius: "12px",
                     borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
                     borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
-                    fontSize: "14px", 
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
+                    fontSize: "14px",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                     wordBreak: "break-word",
                     border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
@@ -1196,12 +1219,12 @@ export default function InternDashboard() {
 
             {/* Input Area */}
             <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--card-bg)", margin: 0, borderTop: "1px solid var(--border-color)" }}>
-              <input 
-                type="text" 
-                placeholder="Type your message..." 
-                value={inputMsg} 
-                onChange={(e) => setInputMsg(e.target.value)} 
-                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
+              <input
+                type="text"
+                placeholder="Type your message..."
+                value={inputMsg}
+                onChange={(e) => setInputMsg(e.target.value)}
+                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }}
               />
               <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--primary-darker)"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "var(--primary-dark)"}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -1236,19 +1259,19 @@ export default function InternDashboard() {
           }
           return false;
         });
-        
+
         return (
           <div style={{ paddingBottom: "40px" }}>
             <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-              <button 
-                className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`} 
+              <button
+                className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => setAirdropTab("Active")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Active Airdrops ({activeDrops.length})
               </button>
-              <button 
-                className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`} 
+              <button
+                className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => setAirdropTab("Completed")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
@@ -1272,7 +1295,7 @@ export default function InternDashboard() {
                         const startTime = new Date(t).getTime();
                         if (Date.now() < startTime) {
                           canParticipate = false;
-                          upcomingTime = new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                          upcomingTime = new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         }
                         if (drop.end_time) {
                           const e = drop.end_time.endsWith('Z') ? drop.end_time : drop.end_time + 'Z';
@@ -1283,51 +1306,52 @@ export default function InternDashboard() {
                           }
                         }
                       }
-                      
+
                       return (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--card-bg)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
-                        padding: "16px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        boxShadow: "var(--shadow-sm)"
-                      }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8" }}>
-                              🎁 POP QUIZ
-                            </span>
-                            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-                              {drop.start_mode === 'fixed' ? '🔒 Fixed: ' : '⏱️ Flexible: '} {drop.time_limit || drop.timeLimit}s
-                            </span>
+                        <div key={drop.id} style={{
+                          backgroundColor: "var(--card-bg)",
+                          border: "1px solid var(--border-color)",
+                          borderRadius: "8px",
+                          padding: "16px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          boxShadow: "var(--shadow-sm)"
+                        }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8" }}>
+                                🎁 POP QUIZ
+                              </span>
+                              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
+                                {drop.start_mode === 'fixed' ? '🔒 Fixed: ' : '⏱️ Flexible: '} {drop.time_limit || drop.timeLimit}s
+                              </span>
+                            </div>
+                            <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.title}</p>
                           </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.title}</p>
+
+                          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                            <button
+                              onClick={() => canParticipate && handleStartAirdrop(drop)}
+                              disabled={!canParticipate}
+                              style={{
+                                backgroundColor: canParticipate ? "#ec4899" : "#fbcfe8",
+                                color: canParticipate ? "#fff" : "#be185d",
+                                border: "none",
+                                padding: "8px 16px",
+                                borderRadius: "6px",
+                                fontWeight: 600,
+                                fontSize: "13px",
+                                cursor: canParticipate ? "pointer" : "not-allowed",
+                                boxShadow: canParticipate ? "0 2px 4px rgba(236, 72, 153, 0.2)" : "none"
+                              }}
+                            >
+                              {!canParticipate ? (upcomingTime === "Ended" ? "Ended" : `Starts at ${upcomingTime}`) : "Participate"}
+                            </button>
+                          </div>
                         </div>
-                        
-                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <button 
-                            onClick={() => canParticipate && handleStartAirdrop(drop)}
-                            disabled={!canParticipate}
-                            style={{ 
-                              backgroundColor: canParticipate ? "#ec4899" : "#fbcfe8", 
-                              color: canParticipate ? "#fff" : "#be185d", 
-                              border: "none", 
-                              padding: "8px 16px", 
-                              borderRadius: "6px", 
-                              fontWeight: 600, 
-                              fontSize: "13px",
-                              cursor: canParticipate ? "pointer" : "not-allowed",
-                              boxShadow: canParticipate ? "0 2px 4px rgba(236, 72, 153, 0.2)" : "none"
-                            }}
-                          >
-                            {!canParticipate ? (upcomingTime === "Ended" ? "Ended" : `Starts at ${upcomingTime}`) : "Participate"}
-                          </button>
-                        </div>
-                      </div>
-                    )})}
+                      )
+                    })}
                   </div>
                 )}
               </div>
@@ -1342,10 +1366,10 @@ export default function InternDashboard() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {completedDrops.map(drop => (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--bg-gray-lighter)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
+                      <div key={drop.id} style={{
+                        backgroundColor: "var(--bg-gray-lighter)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "8px",
                         padding: "16px",
                         display: "flex",
                         justifyContent: "space-between",
@@ -1359,7 +1383,7 @@ export default function InternDashboard() {
                           </div>
                           <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.title}</p>
                         </div>
-                        
+
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
                           <div style={{ backgroundColor: "#e2e8f0", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600 }}>
                             ✓ Challenge Ended
@@ -1419,7 +1443,7 @@ export default function InternDashboard() {
         <div className="header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: "var(--text-color)" }}>☰</button>}
-            <h2>{isMeetingActive && !isMeetingMinimized ? "Live Meeting Room" : activeTab}</h2>
+            <h2>{isMeetingActive && !isMeetingMinimized ? "Live Meeting Room" : activeTab}{activeTab === "Learning" ? ` — Day ${currentDay}: ${getCurrentDayData().topic || ""}` : ""}</h2>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 
@@ -1497,15 +1521,15 @@ export default function InternDashboard() {
               )}
             </button>
             <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-gray-muted)" }}>
-              Role: <b>Intern</b>
+              Role: <b style={{ textTransform: "capitalize" }}>{currentInsight?.domain || "Intern"}</b>
             </span>
           </div>
         </div>
 
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "block" : "none", height: "calc(100vh - 120px)", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border-color, #e2e8f0)" }}>
-          <BreakoutRoomsApp 
-            isIntern={true} 
-            onLeaveMeeting={handleEndMeeting} 
+          <BreakoutRoomsApp
+            isIntern={true}
+            onLeaveMeeting={handleEndMeeting}
             onMinimize={() => setIsMeetingMinimized(true)}
             onRoomChange={(roomName) => setActiveMeetingRoom(roomName)}
           />
@@ -1515,7 +1539,7 @@ export default function InternDashboard() {
 
       {/* Floating Minimized Call Widget (Bottom Right - Google Meet Style) */}
       {isMeetingActive && isMeetingMinimized && (
-        <div 
+        <div
           style={{
             position: "fixed",
             bottom: "24px",
@@ -1537,14 +1561,14 @@ export default function InternDashboard() {
               <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5" }}>LIVE • {activeMeetingRoom}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <button 
+              <button
                 onClick={() => setIsMeetingMinimized(false)}
                 style={{ background: "none", border: "none", color: "#b5bac1", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Maximize to full meeting screen"
               >
                 ⛶
               </button>
-              <button 
+              <button
                 onClick={handleEndMeeting}
                 style={{ background: "none", border: "none", color: "#fa5252", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Leave Meeting"
@@ -1554,7 +1578,7 @@ export default function InternDashboard() {
             </div>
           </div>
 
-          <div 
+          <div
             onClick={() => setIsMeetingMinimized(false)}
             style={{ padding: "20px 16px", textAlign: "center", backgroundColor: "#111214", cursor: "pointer" }}
           >
@@ -1664,7 +1688,7 @@ export default function InternDashboard() {
               boxShadow: "0 10px 22px rgba(99, 102, 241, 0.35)"
             }}>
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L14.85 8.65L22 9.24L16.5 13.97L18.18 21L12 17.27L5.82 21L7.5 13.97L2 9.24L9.15 8.65L12 2Z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 2L14.85 8.65L22 9.24L16.5 13.97L18.18 21L12 17.27L5.82 21L7.5 13.97L2 9.24L9.15 8.65L12 2Z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
 
@@ -1749,7 +1773,7 @@ export default function InternDashboard() {
                 ⏱ {airdropTimeLeft}s
               </div>
             </div>
-            
+
             <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0", marginBottom: "20px" }}>
               <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "var(--primary-dark)" }}>{activeAirdrop.title}</h4>
               <p style={{ margin: 0, fontSize: "15px", fontWeight: 500, color: "#1e293b", lineHeight: 1.5 }}>
@@ -1808,8 +1832,8 @@ export default function InternDashboard() {
               {["pattern", "fill_blank"].includes(activeAirdrop.task_type) && (
                 <div>
                   <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", marginBottom: "8px" }}>Your Answer</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={airdropAnswer || ""}
                     onChange={(e) => setAirdropAnswer(e.target.value)}
                     style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none" }}
@@ -1825,8 +1849,8 @@ export default function InternDashboard() {
                   <p style={{ fontSize: "12px", color: "var(--text-gray-light)", marginBottom: "8px" }}>
                     {activeAirdrop.task_type === "match" ? "Provide a JSON object mapping keys to values (e.g. {\"A\":\"1\", \"B\":\"2\"})" : "Provide a JSON array of strings in correct order (e.g. [\"A\", \"B\"])"}
                   </p>
-                  <textarea 
-                    rows="4" 
+                  <textarea
+                    rows="4"
                     value={airdropAnswer || ""}
                     onChange={(e) => setAirdropAnswer(e.target.value)}
                     style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", resize: "none" }}
@@ -1837,7 +1861,7 @@ export default function InternDashboard() {
               )}
             </div>
 
-            <button 
+            <button
               onClick={handleSubmitAirdrop}
               style={{ width: "100%", marginTop: "24px", backgroundColor: "#4f46e5", color: "#fff", border: "none", padding: "14px", borderRadius: "12px", fontWeight: 700, fontSize: "15px", cursor: "pointer", boxShadow: "0 4px 6px -1px rgba(79, 70, 229, 0.2)" }}
             >
@@ -1848,4 +1872,4 @@ export default function InternDashboard() {
       )}
     </div>
   );
-}
+}

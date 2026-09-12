@@ -1,0 +1,67 @@
+{
+    "day": 29,
+    "topic": "Multithreading, Debugging & Testing",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D29-Q001",
+            "title": "Thread Printing 1 to 100",
+            "description": "Create a thread that prints numbers from 1 to 100.",
+            "requirements": [
+                "Create class extending Thread or implementing Runnable",
+                "Override run() method",
+                "Start thread from main",
+                "Print 1 to 100 in run()",
+                "Show thread name alongside numbers"
+            ]
+        },
+        {
+            "id": "CODE-PY-D29-Q002",
+            "title": "Two Simultaneous Threads",
+            "description": "Create two threads that perform different tasks simultaneously.",
+            "requirements": [
+                "Thread 1: prints even numbers 2 to 20",
+                "Thread 2: prints odd numbers 1 to 19",
+                "Start both from main",
+                "Both run concurrently",
+                "Observe interleaved output"
+            ]
+        },
+        {
+            "id": "CODE-PY-D29-Q003",
+            "title": "Thread-Safe Counter",
+            "description": "Implement a thread-safe counter.",
+            "requirements": [
+                "Counter class with private count field",
+                "Synchronized increment() method",
+                "Synchronized getCount() method",
+                "Launch 5 threads each incrementing 100 times",
+                "Print final count (should be 500)"
+            ]
+        },
+        {
+            "id": "CODE-PY-D29-Q004",
+            "title": "Unit Tests for Calculator",
+            "description": "Write unit tests for a calculator class.",
+            "requirements": [
+                "Calculator class with add, subtract, multiply, divide",
+                "Write JUnit or manual assertion tests",
+                "Test normal cases",
+                "Test edge cases (divide by zero)",
+                "Print PASS/FAIL for each test"
+            ]
+        },
+        {
+            "id": "CODE-PY-D29-Q005",
+            "title": "Debug and Fix a Program",
+            "description": "Debug and correct a Java program containing logical and runtime errors.",
+            "requirements": [
+                "Identify at least 3 bugs in provided code",
+                "Fix logical errors",
+                "Fix runtime errors",
+                "Add input validation",
+                "Verify fixed program runs correctly"
+            ]
+        }
+    ]
+}

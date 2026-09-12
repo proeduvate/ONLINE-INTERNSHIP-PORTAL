@@ -1,0 +1,42 @@
+{
+    "day": 25,
+    "topic": "React State & Event Handling",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D25-Q001",
+            "title": "Counter",
+            "description": "Create a React counter with increment, decrement and reset.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D25-Q002",
+            "title": "Toggle",
+            "description": "Create a component that toggles between two states.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D25-Q003",
+            "title": "Shopping Cart",
+            "description": "Build a cart where users can add and remove products.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D25-Q004",
+            "title": "Interactive Form",
+            "description": "Create a form whose input values are controlled using React state.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D25-Q005",
+            "title": "Task Manager",
+            "description": "Build a task manager supporting:",
+            "requirements": [
+                "Add",
+                "Complete",
+                "Delete",
+                "Filter tasks"
+            ]
+        }
+    ]
+}

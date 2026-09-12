@@ -1,0 +1,42 @@
+{
+    "day": 5,
+    "topic": "CSS Fundamentals & Selectors",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D5-Q001",
+            "title": "Style a Portfolio",
+            "description": "Create CSS styles for the portfolio developed earlier.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D5-Q002",
+            "title": "Selector Challenge",
+            "description": "Create a page containing headings, paragraphs, lists and buttons and style them using:",
+            "requirements": [
+                "Element selectors",
+                "Class selectors",
+                "ID selectors",
+                "Attribute selectors"
+            ]
+        },
+        {
+            "id": "CODE-D5-Q003",
+            "title": "Navigation Styling",
+            "description": "Create a horizontal navigation bar and style its normal, hover and active states.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D5-Q004",
+            "title": "Card Component",
+            "description": "Create a reusable product card using CSS.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D5-Q005",
+            "title": "Landing Page",
+            "description": "Create a complete landing page using CSS selectors and reusable classes.",
+            "requirements": []
+        }
+    ]
+}

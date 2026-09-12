@@ -1,0 +1,67 @@
+{
+    "day": 27,
+    "topic": "Stream API",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D27-Q001",
+            "title": "Filter Even Numbers",
+            "description": "Filter even numbers from a list using Streams.",
+            "requirements": [
+                "Create List<Integer>",
+                "Use stream().filter()",
+                "Filter even numbers",
+                "Collect to new list",
+                "Print filtered result"
+            ]
+        },
+        {
+            "id": "CODE-PY-D27-Q002",
+            "title": "Students Above 80",
+            "description": "Find students who scored above 80.",
+            "requirements": [
+                "Create List<Student>",
+                "Use stream().filter() with marks > 80",
+                "Collect filtered students",
+                "Print their names and marks",
+                "Count how many qualify"
+            ]
+        },
+        {
+            "id": "CODE-PY-D27-Q003",
+            "title": "Average Marks with Streams",
+            "description": "Calculate the average marks using Streams.",
+            "requirements": [
+                "Create List<Integer> of marks",
+                "Use stream().mapToInt().average()",
+                "Handle empty list with orElse(0)",
+                "Print the average",
+                "Also find max and min"
+            ]
+        },
+        {
+            "id": "CODE-PY-D27-Q004",
+            "title": "Sort Employees by Salary",
+            "description": "Sort employees by salary using Streams.",
+            "requirements": [
+                "Create List<Employee>",
+                "Use stream().sorted() with comparator",
+                "Sort by salary ascending",
+                "Collect sorted list",
+                "Print name and salary of each"
+            ]
+        },
+        {
+            "id": "CODE-PY-D27-Q005",
+            "title": "Student Analytics System",
+            "description": "Build a student analytics system using multiple Stream operations.",
+            "requirements": [
+                "Combine filter, map, sorted, collect",
+                "Find top 5 students by marks",
+                "Get names of students with grade A",
+                "Count students per department",
+                "Display all analytics results"
+            ]
+        }
+    ]
+}

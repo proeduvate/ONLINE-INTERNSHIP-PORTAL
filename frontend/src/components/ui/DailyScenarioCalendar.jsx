@@ -9,14 +9,13 @@ const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDa
   const missedDaysCount = curriculumData.filter(t => t.day < currentDay && t.status !== 'completed').length;
 
   const getDayStatus = (day) => {
-    if (day === currentDay) return 'current';
     const task = curriculumData.find(t => t.day === day);
     if (task) {
       if (task.status === 'completed') return 'completed';
-      if (day < currentDay) return 'missed';
-      return 'upcoming';
+      if (task.status === 'current') return 'current';
     }
-    if (day < currentDay) return 'missed'; 
+    if (day === currentDay) return 'current';
+    if (day < currentDay) return 'missed';
     return 'upcoming';
   };
 

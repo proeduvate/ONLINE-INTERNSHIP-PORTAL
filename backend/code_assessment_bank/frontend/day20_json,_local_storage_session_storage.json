@@ -1,0 +1,37 @@
+{
+    "day": 20,
+    "topic": "JSON, Local Storage & Session Storage",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D20-Q001",
+            "title": "JSON Profile",
+            "description": "Create a JavaScript object, convert it to JSON and display the resulting JSON.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D20-Q002",
+            "title": "Local Storage To-Do",
+            "description": "Create a to-do list whose tasks remain after refreshing the browser.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D20-Q003",
+            "title": "Theme Persistence",
+            "description": "Save the user's selected theme in Local Storage.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D20-Q004",
+            "title": "Session Login",
+            "description": "Create a simulated login system using Session Storage.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D20-Q005",
+            "title": "Shopping Cart Persistence",
+            "description": "Create a shopping cart that saves products to Local Storage and restores them when the page reloads.",
+            "requirements": []
+        }
+    ]
+}

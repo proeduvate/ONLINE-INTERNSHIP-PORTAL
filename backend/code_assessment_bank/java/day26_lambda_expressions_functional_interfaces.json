@@ -1,0 +1,67 @@
+{
+    "day": 26,
+    "topic": "Lambda Expressions & Functional Interfaces",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D26-Q001",
+            "title": "Sort Names with Lambda",
+            "description": "Sort a list of names using a lambda expression.",
+            "requirements": [
+                "Create ArrayList<String> of names",
+                "Use Collections.sort() with lambda",
+                "Sort alphabetically ascending",
+                "Also sort descending",
+                "Print both sorted results"
+            ]
+        },
+        {
+            "id": "CODE-PY-D26-Q002",
+            "title": "Square Calculator Lambda",
+            "description": "Create a lambda function to calculate the square of a number.",
+            "requirements": [
+                "Use Function<Integer, Integer> interface",
+                "Define lambda for squaring",
+                "Apply to a number",
+                "Test with multiple values",
+                "Print input and output"
+            ]
+        },
+        {
+            "id": "CODE-PY-D26-Q003",
+            "title": "Student Filter with Predicate",
+            "description": "Use Predicate to filter students based on marks.",
+            "requirements": [
+                "Create list of Student objects",
+                "Define Predicate<Student> for marks > 70",
+                "Filter list using predicate",
+                "Print filtered results",
+                "Also filter for marks < 50"
+            ]
+        },
+        {
+            "id": "CODE-PY-D26-Q004",
+            "title": "Student Display with Consumer",
+            "description": "Use Consumer to display student records.",
+            "requirements": [
+                "Create list of Student objects",
+                "Define Consumer<Student> to print details",
+                "Use forEach with Consumer",
+                "Display all students",
+                "Use method reference alternative"
+            ]
+        },
+        {
+            "id": "CODE-PY-D26-Q005",
+            "title": "Student Filtering System",
+            "description": "Build a student filtering system using functional interfaces.",
+            "requirements": [
+                "Combine Predicate, Function and Consumer",
+                "Filter by marks and department",
+                "Transform to report format",
+                "Display results",
+                "Demonstrate chaining of operations"
+            ]
+        }
+    ]
+}

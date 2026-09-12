@@ -120,6 +120,8 @@ from app.api.v1.endpoints.airdrops import router as airdrops_router
 from app.api.v1.endpoints.leaderboard import router as leaderboard_router
 from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
+from app.api.v1.endpoints.mcq import router as mcq_router
+from app.api.v1.endpoints.questions import router as questions_router
 from routers import meetings
 
 # Initialize analytics DB
@@ -133,6 +135,8 @@ app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
+app.include_router(mcq_router)
+app.include_router(questions_router, tags=["questions"])
 app.include_router(meetings.router)
 
 
@@ -203,7 +207,13 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
             detail="Invalid Credentials"
         )
     
-    if not pwd_context.verify(user_credentials.password, user.hashed_password):
+    import bcrypt
+    try:
+        is_valid = bcrypt.checkpw(user_credentials.password.encode('utf-8'), user.hashed_password.encode('utf-8'))
+    except Exception:
+        is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
             detail="Invalid Credentials"
@@ -453,15 +463,24 @@ def get_intern_tasks_with_unlock_status(
     if current_user.domain_id is None:
         return {"tasks": [], "message": "No domain assigned yet"}
         
-    tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).order_by(models.Task.day_number).all()
+    tasks = db.query(models.Task).filter(
+        models.Task.domain_id == current_user.domain_id,
+        models.Task.task_type == "coding"
+    ).order_by(models.Task.day_number).all()
     submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
     
     sub_map = {sub.task_id: sub for sub in submissions}
     
-    from datetime import datetime
-    current_date = datetime.utcnow()
+    from datetime import datetime, timezone
+    current_date = datetime.now(timezone.utc)
     start_date = current_user.start_date or current_date
-    internship_day = (current_date - start_date).days + 1
+    # Use calendar date comparison (not 24-hour periods) so that
+    # Sep 11 → Sep 12 counts as Day 2 regardless of the time of day.
+    if hasattr(start_date, 'tzinfo') and start_date.tzinfo is None:
+        start_date_d = start_date.date()
+    else:
+        start_date_d = start_date.date() if hasattr(start_date, 'date') else start_date
+    internship_day = (current_date.date() - start_date_d).days + 1
     if internship_day < 1:
         internship_day = 1
 
@@ -487,7 +506,31 @@ def get_intern_tasks_with_unlock_status(
             ai_score_val = sub.ai_score or 0
             mentor_score_val = sub.mentor_score or 0
             
-        is_unlocked = sequential_unlocked
+        is_unlocked = sequential_unlocked and (t.day_number <= internship_day)
+        
+        if sub and getattr(sub, "attendance_marked", False):
+            day_attendance = "present"
+        elif t.day_number < internship_day:
+            day_attendance = "absent"
+        elif t.day_number == internship_day:
+            day_attendance = "current"
+        else:
+            day_attendance = "future"
+        
+        coding_prompt = t.coding_prompt
+        if coding_prompt and sub and getattr(sub, "selected_question_id", None):
+            parts = re.split(r'\n(?=\d+\.\s+)', coding_prompt)
+            if len(parts) > 1:
+                title = parts[0]
+                questions = parts[1:]
+                try:
+                    q_idx = int(sub.selected_question_id) - 1
+                    if 0 <= q_idx < len(questions):
+                        coding_prompt = f"{title}\n{questions[q_idx]}"
+                    else:
+                        coding_prompt = f"{title}\n{questions[0]}"
+                except ValueError:
+                    pass
             
         results.append({
             "id": t.id,
@@ -499,9 +542,10 @@ def get_intern_tasks_with_unlock_status(
             "notes": t.notes,
             "resources": t.resources,
             "mcq_questions": t.mcq_questions,
-            "coding_prompt": t.coding_prompt,
+            "coding_prompt": coding_prompt,
             "unlocked": is_unlocked,
             "status": status_val,
+            "day_attendance": day_attendance,
             "score": score_val,
             "ai_score": ai_score_val,
             "mentor_score": mentor_score_val,
@@ -538,7 +582,8 @@ def start_task(
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
             models.Task.domain_id == task.domain_id,
-            models.Task.day_number == task.day_number - 1
+            models.Task.day_number == task.day_number - 1,
+            models.Task.task_type == task.task_type
         ).first()
         prev_sub = None
         if previous_task:
@@ -559,6 +604,11 @@ def start_task(
         if existing.status == "not_started":
             existing.status = "in_progress"
             existing.started_at = datetime.utcnow()
+            if not existing.selected_question_id:
+                existing.selected_question_id = str(random.randint(1, 5))
+            db.commit()
+        elif not getattr(existing, "selected_question_id", None):
+            existing.selected_question_id = str(random.randint(1, 5))
             db.commit()
         return {"message": "Task already started", "status": existing.status}
         
@@ -566,7 +616,8 @@ def start_task(
         intern_id=current_user.id,
         task_id=task_id,
         status="in_progress",
-        started_at=datetime.utcnow()
+        started_at=datetime.utcnow(),
+        selected_question_id=str(random.randint(1, 5))
     )
     db.add(new_sub)
     db.commit()
@@ -981,7 +1032,8 @@ def create_submission(
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
             models.Task.domain_id == task.domain_id,
-            models.Task.day_number == task.day_number - 1
+            models.Task.day_number == task.day_number - 1,
+            models.Task.task_type == task.task_type
         ).first()
         prev_submission = None
         if previous_task:

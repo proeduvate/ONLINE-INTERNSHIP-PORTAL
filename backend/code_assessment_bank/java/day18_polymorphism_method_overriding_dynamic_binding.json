@@ -1,0 +1,67 @@
+{
+    "day": 18,
+    "topic": "Polymorphism, Method Overriding & Dynamic Binding",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D18-Q001",
+            "title": "Animal Sound Override",
+            "description": "Demonstrate method overriding using Animal, Dog and Cat.",
+            "requirements": [
+                "Abstract Animal with makeSound()",
+                "Dog overrides makeSound() with 'Woof'",
+                "Cat overrides makeSound() with 'Meow'",
+                "Use Animal reference to call method",
+                "Demonstrate dynamic binding"
+            ]
+        },
+        {
+            "id": "CODE-PY-D18-Q002",
+            "title": "Payment System",
+            "description": "Create different payment classes with a common pay() method.",
+            "requirements": [
+                "Payment base class with pay(double amount)",
+                "CreditCard overrides pay()",
+                "UPI overrides pay()",
+                "Cash overrides pay()",
+                "Process payments via base reference"
+            ]
+        },
+        {
+            "id": "CODE-PY-D18-Q003",
+            "title": "Notification System",
+            "description": "Build a notification system supporting Email, SMS and Push notifications.",
+            "requirements": [
+                "Notification base class with send(String msg)",
+                "EmailNotification overrides send()",
+                "SMSNotification overrides send()",
+                "PushNotification overrides send()",
+                "Send all via base reference list"
+            ]
+        },
+        {
+            "id": "CODE-PY-D18-Q004",
+            "title": "Employee Salary Calculation",
+            "description": "Create different employee types with their own salary calculations.",
+            "requirements": [
+                "Employee base with calculateSalary()",
+                "FullTime employee overrides it",
+                "PartTime employee overrides it",
+                "Contractor employee overrides it",
+                "Display salary for all from base list"
+            ]
+        },
+        {
+            "id": "CODE-PY-D18-Q005",
+            "title": "Shape Area System",
+            "description": "Build a shape system where each shape calculates its own area.",
+            "requirements": [
+                "Shape base class with area()",
+                "Circle overrides area()",
+                "Rectangle overrides area()",
+                "Triangle overrides area()",
+                "Print areas via Shape reference array"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+{
+    "day": 28,
+    "topic": "React Router & Application Architecture",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D28-Q001",
+            "title": "Multi-Page React App",
+            "description": "Create routes for:",
+            "requirements": [
+                "Home",
+                "About",
+                "Contact"
+            ]
+        },
+        {
+            "id": "CODE-D28-Q002",
+            "title": "Dashboard Routing",
+            "description": "Create:",
+            "requirements": [
+                "Dashboard",
+                "Profile",
+                "Settings",
+                "Reports routes"
+            ]
+        },
+        {
+            "id": "CODE-D28-Q003",
+            "title": "Dynamic Route",
+            "description": "Create a product details route such as:",
+            "requirements": [
+                "/products/:id and display the selected product"
+            ]
+        },
+        {
+            "id": "CODE-D28-Q004",
+            "title": "Protected Route",
+            "description": "Create a simulated authentication system where Dashboard is accessible only after login.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D28-Q005",
+            "title": "React Application Architecture",
+            "description": "Build a small application using a clean folder structure containing:",
+            "requirements": [
+                "Components",
+                "Pages",
+                "Services",
+                "Hooks",
+                "Routes",
+                "Utilities"
+            ]
+        }
+    ]
+}

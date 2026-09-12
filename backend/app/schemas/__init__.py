@@ -364,6 +364,8 @@ class SimulationScenarioResponse(BaseModel):
     situation: str
     question: str
     choices: List[SimulationChoice]
+    completed: Optional[bool] = False
+    decisionResult: Optional[dict] = None
 
 class SimulationDecision(BaseModel):
     scenario_id: str

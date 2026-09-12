@@ -1,0 +1,41 @@
+{
+    "day": 4,
+    "topic": "HTML Media, Links, Lists & Tables",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D4-Q001",
+            "title": "Media Page",
+            "description": "Create a webpage containing an image gallery, audio player and video player.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D4-Q002",
+            "title": "Navigation Website",
+            "description": "Create a multi-section website with navigation links that jump to different sections of the same page.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D4-Q003",
+            "title": "Restaurant Menu",
+            "description": "Create a restaurant menu using ordered and unordered lists.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D4-Q004",
+            "title": "Student Marks Table",
+            "description": "Create a table displaying: Student name, Subject, Marks, Grade, Result Include table headings and appropriate row/column structure.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D4-Q005",
+            "title": "Product Comparison Table",
+            "description": "",
+            "requirements": [
+                "Create a product comparison table for three products with pricing",
+                "features",
+                "ratings and availability"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "day": 6,
+    "topic": "Loops & Iteration",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D6-Q001",
+            "title": "Numbers 1 to 100",
+            "description": "Print numbers from 1 to 100.",
+            "requirements": [
+                "Use a for loop",
+                "Print each number",
+                "Print 10 numbers per line",
+                "Format output neatly",
+                "Complete without user input"
+            ]
+        },
+        {
+            "id": "CODE-PY-D6-Q002",
+            "title": "Sum of 1 to N",
+            "description": "Calculate the sum of numbers from 1 to N.",
+            "requirements": [
+                "Accept N from user",
+                "Use a loop to accumulate sum",
+                "Print the final sum",
+                "Validate N is positive",
+                "Also display average"
+            ]
+        },
+        {
+            "id": "CODE-PY-D6-Q003",
+            "title": "Multiplication Table Generator",
+            "description": "Generate a multiplication table.",
+            "requirements": [
+                "Accept a number",
+                "Print table from 1 to 10",
+                "Format with proper spacing",
+                "Use a for loop",
+                "Display table header"
+            ]
+        },
+        {
+            "id": "CODE-PY-D6-Q004",
+            "title": "Factorial Calculator",
+            "description": "Calculate the factorial of a number.",
+            "requirements": [
+                "Accept a number",
+                "Use a loop to calculate factorial",
+                "Handle 0! = 1",
+                "Print the result",
+                "Validate non-negative input"
+            ]
+        },
+        {
+            "id": "CODE-PY-D6-Q005",
+            "title": "Prime Number Finder",
+            "description": "Find all prime numbers within a given range.",
+            "requirements": [
+                "Accept start and end range",
+                "Loop through all numbers",
+                "Check each for primality",
+                "Print all primes found",
+                "Count total primes found"
+            ]
+        }
+    ]
+}

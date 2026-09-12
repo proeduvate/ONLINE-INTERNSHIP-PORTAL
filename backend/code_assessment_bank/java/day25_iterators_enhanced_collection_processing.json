@@ -1,0 +1,67 @@
+{
+    "day": 25,
+    "topic": "Iterators & Enhanced Collection Processing",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D25-Q001",
+            "title": "ArrayList Iterator",
+            "description": "Iterate through an ArrayList using Iterator.",
+            "requirements": [
+                "Create ArrayList<String>",
+                "Get iterator using iterator()",
+                "Use while(it.hasNext()) loop",
+                "Print each element",
+                "Compare with for-each loop"
+            ]
+        },
+        {
+            "id": "CODE-PY-D25-Q002",
+            "title": "Safe Element Removal",
+            "description": "Remove specific elements safely using an iterator.",
+            "requirements": [
+                "Create ArrayList with mixed data",
+                "Use Iterator to traverse",
+                "Remove elements meeting a condition (e.g., marks < 50)",
+                "Avoid ConcurrentModificationException",
+                "Print list before and after"
+            ]
+        },
+        {
+            "id": "CODE-PY-D25-Q003",
+            "title": "HashSet Iterator",
+            "description": "Iterate through a HashSet.",
+            "requirements": [
+                "Create HashSet<String>",
+                "Use Iterator to traverse",
+                "Print all elements",
+                "Show unordered nature of HashSet",
+                "Count elements using iterator"
+            ]
+        },
+        {
+            "id": "CODE-PY-D25-Q004",
+            "title": "HashMap EntrySet Iteration",
+            "description": "Iterate through a HashMap using entrySet().",
+            "requirements": [
+                "Create HashMap<String, Integer>",
+                "Use entrySet() with Iterator",
+                "Print each key-value pair",
+                "Calculate sum of all values",
+                "Find key with maximum value"
+            ]
+        },
+        {
+            "id": "CODE-PY-D25-Q005",
+            "title": "Student Search System",
+            "description": "Build a collection-based student search system.",
+            "requirements": [
+                "ArrayList<Student> with multiple students",
+                "Search by name using Iterator",
+                "Search by marks range",
+                "Return matching students",
+                "Print search results"
+            ]
+        }
+    ]
+}

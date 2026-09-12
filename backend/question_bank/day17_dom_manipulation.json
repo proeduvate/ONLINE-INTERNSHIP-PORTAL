@@ -1,0 +1,557 @@
+{
+    "day": 17,
+    "topic": "DOM Manipulation",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D17-001",
+            "question": "What is the primary purpose of DOM Manipulation feature 1 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-002",
+            "question": "How do you correctly use DOM Manipulation feature 2?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-003",
+            "question": "Which of the following best describes DOM Manipulation feature 3?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-004",
+            "question": "Why is DOM Manipulation feature 4 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-005",
+            "question": "When should you avoid using DOM Manipulation feature 5?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-006",
+            "question": "What is the primary purpose of DOM Manipulation feature 6 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-007",
+            "question": "How do you correctly use DOM Manipulation feature 7?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-008",
+            "question": "Which of the following best describes DOM Manipulation feature 8?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-009",
+            "question": "Why is DOM Manipulation feature 9 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-010",
+            "question": "When should you avoid using DOM Manipulation feature 10?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-011",
+            "question": "What is the primary purpose of DOM Manipulation feature 11 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-012",
+            "question": "How do you correctly use DOM Manipulation feature 12?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-013",
+            "question": "Which of the following best describes DOM Manipulation feature 13?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-014",
+            "question": "Why is DOM Manipulation feature 14 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-015",
+            "question": "When should you avoid using DOM Manipulation feature 15?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-016",
+            "question": "What is the primary purpose of DOM Manipulation feature 16 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-017",
+            "question": "How do you correctly use DOM Manipulation feature 17?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-018",
+            "question": "Which of the following best describes DOM Manipulation feature 18?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-019",
+            "question": "Why is DOM Manipulation feature 19 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-020",
+            "question": "When should you avoid using DOM Manipulation feature 20?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-021",
+            "question": "What is the primary purpose of DOM Manipulation feature 21 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-022",
+            "question": "How do you correctly use DOM Manipulation feature 22?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-023",
+            "question": "Which of the following best describes DOM Manipulation feature 23?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-024",
+            "question": "Why is DOM Manipulation feature 24 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-025",
+            "question": "When should you avoid using DOM Manipulation feature 25?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-026",
+            "question": "What is the primary purpose of DOM Manipulation feature 26 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-027",
+            "question": "How do you correctly use DOM Manipulation feature 27?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-028",
+            "question": "Which of the following best describes DOM Manipulation feature 28?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-029",
+            "question": "Why is DOM Manipulation feature 29 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-030",
+            "question": "When should you avoid using DOM Manipulation feature 30?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-031",
+            "question": "What is the primary purpose of DOM Manipulation feature 31 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-032",
+            "question": "How do you correctly use DOM Manipulation feature 32?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-033",
+            "question": "Which of the following best describes DOM Manipulation feature 33?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-034",
+            "question": "Why is DOM Manipulation feature 34 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-035",
+            "question": "When should you avoid using DOM Manipulation feature 35?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-036",
+            "question": "What is the primary purpose of DOM Manipulation feature 36 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-037",
+            "question": "How do you correctly use DOM Manipulation feature 37?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-038",
+            "question": "Which of the following best describes DOM Manipulation feature 38?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-039",
+            "question": "Why is DOM Manipulation feature 39 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-040",
+            "question": "When should you avoid using DOM Manipulation feature 40?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-041",
+            "question": "What is the primary purpose of DOM Manipulation feature 41 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-042",
+            "question": "How do you correctly use DOM Manipulation feature 42?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-043",
+            "question": "Which of the following best describes DOM Manipulation feature 43?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-044",
+            "question": "Why is DOM Manipulation feature 44 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-045",
+            "question": "When should you avoid using DOM Manipulation feature 45?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-046",
+            "question": "What is the primary purpose of DOM Manipulation feature 46 in DOM Manipulation?",
+            "options": {
+                "A": "To implement DOM Manipulation feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-047",
+            "question": "How do you correctly use DOM Manipulation feature 47?",
+            "options": {
+                "A": "By following standard DOM Manipulation guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-048",
+            "question": "Which of the following best describes DOM Manipulation feature 48?",
+            "options": {
+                "A": "A key concept in DOM Manipulation",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-049",
+            "question": "Why is DOM Manipulation feature 49 important for DOM Manipulation?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D17-050",
+            "question": "When should you avoid using DOM Manipulation feature 50?",
+            "options": {
+                "A": "When it violates DOM Manipulation best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

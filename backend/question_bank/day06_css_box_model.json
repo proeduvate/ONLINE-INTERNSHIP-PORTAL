@@ -1,0 +1,557 @@
+{
+    "day": 6,
+    "topic": "CSS Box Model",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D6-001",
+            "question": "What is the primary purpose of CSS Box Model feature 1 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-002",
+            "question": "How do you correctly use CSS Box Model feature 2?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-003",
+            "question": "Which of the following best describes CSS Box Model feature 3?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-004",
+            "question": "Why is CSS Box Model feature 4 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-005",
+            "question": "When should you avoid using CSS Box Model feature 5?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-006",
+            "question": "What is the primary purpose of CSS Box Model feature 6 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-007",
+            "question": "How do you correctly use CSS Box Model feature 7?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-008",
+            "question": "Which of the following best describes CSS Box Model feature 8?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-009",
+            "question": "Why is CSS Box Model feature 9 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-010",
+            "question": "When should you avoid using CSS Box Model feature 10?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-011",
+            "question": "What is the primary purpose of CSS Box Model feature 11 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-012",
+            "question": "How do you correctly use CSS Box Model feature 12?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-013",
+            "question": "Which of the following best describes CSS Box Model feature 13?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-014",
+            "question": "Why is CSS Box Model feature 14 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-015",
+            "question": "When should you avoid using CSS Box Model feature 15?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-016",
+            "question": "What is the primary purpose of CSS Box Model feature 16 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-017",
+            "question": "How do you correctly use CSS Box Model feature 17?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-018",
+            "question": "Which of the following best describes CSS Box Model feature 18?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-019",
+            "question": "Why is CSS Box Model feature 19 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-020",
+            "question": "When should you avoid using CSS Box Model feature 20?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-021",
+            "question": "What is the primary purpose of CSS Box Model feature 21 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-022",
+            "question": "How do you correctly use CSS Box Model feature 22?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-023",
+            "question": "Which of the following best describes CSS Box Model feature 23?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-024",
+            "question": "Why is CSS Box Model feature 24 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-025",
+            "question": "When should you avoid using CSS Box Model feature 25?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-026",
+            "question": "What is the primary purpose of CSS Box Model feature 26 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-027",
+            "question": "How do you correctly use CSS Box Model feature 27?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-028",
+            "question": "Which of the following best describes CSS Box Model feature 28?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-029",
+            "question": "Why is CSS Box Model feature 29 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-030",
+            "question": "When should you avoid using CSS Box Model feature 30?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-031",
+            "question": "What is the primary purpose of CSS Box Model feature 31 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-032",
+            "question": "How do you correctly use CSS Box Model feature 32?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-033",
+            "question": "Which of the following best describes CSS Box Model feature 33?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-034",
+            "question": "Why is CSS Box Model feature 34 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-035",
+            "question": "When should you avoid using CSS Box Model feature 35?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-036",
+            "question": "What is the primary purpose of CSS Box Model feature 36 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-037",
+            "question": "How do you correctly use CSS Box Model feature 37?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-038",
+            "question": "Which of the following best describes CSS Box Model feature 38?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-039",
+            "question": "Why is CSS Box Model feature 39 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-040",
+            "question": "When should you avoid using CSS Box Model feature 40?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-041",
+            "question": "What is the primary purpose of CSS Box Model feature 41 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-042",
+            "question": "How do you correctly use CSS Box Model feature 42?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-043",
+            "question": "Which of the following best describes CSS Box Model feature 43?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-044",
+            "question": "Why is CSS Box Model feature 44 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-045",
+            "question": "When should you avoid using CSS Box Model feature 45?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-046",
+            "question": "What is the primary purpose of CSS Box Model feature 46 in CSS Box Model?",
+            "options": {
+                "A": "To implement CSS Box Model feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-047",
+            "question": "How do you correctly use CSS Box Model feature 47?",
+            "options": {
+                "A": "By following standard CSS Box Model guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-048",
+            "question": "Which of the following best describes CSS Box Model feature 48?",
+            "options": {
+                "A": "A key concept in CSS Box Model",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-049",
+            "question": "Why is CSS Box Model feature 49 important for CSS Box Model?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D6-050",
+            "question": "When should you avoid using CSS Box Model feature 50?",
+            "options": {
+                "A": "When it violates CSS Box Model best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

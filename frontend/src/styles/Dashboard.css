@@ -98,13 +98,13 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: var(--background-color, #f3f4f6);
 }
 
 .main-content-scroll {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   padding-bottom: 0px;
   display: flex;
   flex-direction: column;

@@ -1,0 +1,557 @@
+{
+    "day": 4,
+    "topic": "HTML Media, Links, Lists and Tables",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D4-001",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 1 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-002",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 2?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-003",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 3?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-004",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 4 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-005",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 5?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-006",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 6 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-007",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 7?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-008",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 8?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-009",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 9 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-010",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 10?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-011",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 11 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-012",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 12?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-013",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 13?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-014",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 14 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-015",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 15?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-016",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 16 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-017",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 17?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-018",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 18?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-019",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 19 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-020",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 20?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-021",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 21 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-022",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 22?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-023",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 23?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-024",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 24 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-025",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 25?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-026",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 26 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-027",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 27?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-028",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 28?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-029",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 29 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-030",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 30?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-031",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 31 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-032",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 32?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-033",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 33?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-034",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 34 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-035",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 35?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-036",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 36 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-037",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 37?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-038",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 38?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-039",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 39 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-040",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 40?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-041",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 41 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-042",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 42?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-043",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 43?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-044",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 44 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-045",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 45?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-046",
+            "question": "What is the primary purpose of HTML Media, Links, Lists and Tables feature 46 in HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "To implement HTML Media, Links, Lists and Tables feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-047",
+            "question": "How do you correctly use HTML Media, Links, Lists and Tables feature 47?",
+            "options": {
+                "A": "By following standard HTML Media, Links, Lists and Tables guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-048",
+            "question": "Which of the following best describes HTML Media, Links, Lists and Tables feature 48?",
+            "options": {
+                "A": "A key concept in HTML Media, Links, Lists and Tables",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-049",
+            "question": "Why is HTML Media, Links, Lists and Tables feature 49 important for HTML Media, Links, Lists and Tables?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D4-050",
+            "question": "When should you avoid using HTML Media, Links, Lists and Tables feature 50?",
+            "options": {
+                "A": "When it violates HTML Media, Links, Lists and Tables best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

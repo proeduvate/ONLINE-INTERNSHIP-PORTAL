@@ -123,6 +123,7 @@ class Submission(Base):
     
     code_submission = Column(Text, nullable=True)
     mcq_answers = Column(Text, nullable=True) # JSON String of user answers
+    selected_question_id = Column(String(50), nullable=True) # ID of randomly selected coding task
     
     # Scoring components
     mcq_score = Column(Integer, default=0)
@@ -560,3 +561,82 @@ class GitHubRepositoryRequest(Base):
     def task_title(self):
         return self.task.title if self.task else f"Task {self.task_id}"
 
+
+# ==========================================
+#    30-DAY MCQ SYSTEM MODELS
+# ==========================================
+
+class MCQAttemptStatus(str, enum.Enum):
+    IN_PROGRESS = "in_progress"
+    SUBMITTED = "submitted"
+
+class MCQAttempt(Base):
+    __tablename__ = "mcq_attempts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    day = Column(Integer, nullable=False)
+    topic = Column(String(200), nullable=False)
+    status = Column(Enum(MCQAttemptStatus), default=MCQAttemptStatus.IN_PROGRESS)
+    
+    selected_question_ids = Column(Text, nullable=False) # JSON list of IDs
+    submitted_answers = Column(Text, nullable=True) # JSON dict mapping ID -> Answer
+    
+    total_questions = Column(Integer, default=10)
+    correct_answers = Column(Integer, default=0)
+    wrong_answers = Column(Integer, default=0)
+    score = Column(Integer, default=0)
+    percentage = Column(Float, default=0.0)
+    
+    started_at = Column(DateTime, default=datetime.utcnow)
+    submitted_at = Column(DateTime, nullable=True)
+
+    # Relationship
+    intern = relationship("User", foreign_keys=[intern_id])
+
+
+# ==========================================
+#    DOMAIN-AWARE QUESTION BANK MODELS
+# ==========================================
+
+class DomainMCQQuestion(Base):
+    """Stores MCQ questions for each domain and day.
+    Seeded from question_bank/dayXX_*.json files.
+    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
+    """
+    __tablename__ = "domain_mcq_questions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain_name = Column(String(100), nullable=False, index=True)
+    day_number = Column(Integer, nullable=False, index=True)
+    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "Q-D1-001"
+    topic = Column(String(200), nullable=True)
+
+    question_text = Column(Text, nullable=False)
+    option_a = Column(Text, nullable=False)
+    option_b = Column(Text, nullable=False)
+    option_c = Column(Text, nullable=True)
+    option_d = Column(Text, nullable=True)
+    correct_answer = Column(String(5), nullable=False)  # "A", "B", "C", or "D"
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class DomainCodeAssessment(Base):
+    """Stores code challenge prompts for each domain and day.
+    Seeded from code_assessment_bank/<domain>/dayXX_*.json files.
+    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
+    """
+    __tablename__ = "domain_code_assessments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain_name = Column(String(100), nullable=False, index=True)
+    day_number = Column(Integer, nullable=False, index=True)
+    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "CODE-D1-Q001"
+    topic = Column(String(200), nullable=True)
+
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    requirements = Column(Text, nullable=True)  # JSON list of requirement strings
+
+    created_at = Column(DateTime, default=datetime.utcnow)

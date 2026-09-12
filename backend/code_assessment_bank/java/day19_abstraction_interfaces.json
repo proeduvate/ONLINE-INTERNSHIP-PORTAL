@@ -1,0 +1,67 @@
+{
+    "day": 19,
+    "topic": "Abstraction & Interfaces",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D19-Q001",
+            "title": "Abstract Shape Class",
+            "description": "Create an abstract Shape class with an area() method.",
+            "requirements": [
+                "Abstract class Shape",
+                "Abstract method area()",
+                "Concrete subclasses: Circle, Rectangle",
+                "Implement area() in each",
+                "Create and call area via Shape reference"
+            ]
+        },
+        {
+            "id": "CODE-PY-D19-Q002",
+            "title": "Payment Processing Interface",
+            "description": "Create an interface for payment processing.",
+            "requirements": [
+                "Interface Payable with processPayment(double amount)",
+                "Implement in CreditCard class",
+                "Implement in UPI class",
+                "Implement in NetBanking class",
+                "Test all implementations from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D19-Q003",
+            "title": "Vehicle Interface",
+            "description": "Implement a Vehicle interface using multiple vehicle classes.",
+            "requirements": [
+                "Interface Vehicle with start(), stop(), refuel()",
+                "Car implements Vehicle",
+                "ElectricCar implements Vehicle",
+                "Motorcycle implements Vehicle",
+                "Demonstrate via interface references"
+            ]
+        },
+        {
+            "id": "CODE-PY-D19-Q004",
+            "title": "Abstract Employee Payroll",
+            "description": "Create an abstract employee payroll system.",
+            "requirements": [
+                "Abstract Employee with abstract calculatePay()",
+                "PermanentEmployee implements it",
+                "ContractEmployee implements it",
+                "FreelanceEmployee implements it",
+                "Print pay for all via abstract reference"
+            ]
+        },
+        {
+            "id": "CODE-PY-D19-Q005",
+            "title": "Notification Framework",
+            "description": "Build a notification framework using interfaces.",
+            "requirements": [
+                "Interface Notifiable with notify(String message)",
+                "Interface Loggable with log(String event)",
+                "Class EmailService implements both",
+                "Demonstrate dual interface usage",
+                "Test all methods from main"
+            ]
+        }
+    ]
+}

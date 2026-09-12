@@ -1,0 +1,69 @@
+{
+    "day": 1,
+    "topic": "HTML Fundamentals & Document Structure",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D1-Q001",
+            "title": "Personal Profile Page",
+            "description": "Create an HTML page containing your name, profile photo, short bio, skills, and contact information. Requirements:",
+            "requirements": [
+                "Use proper html",
+                "head",
+                "body",
+                "headings",
+                "paragraphs and image elements"
+            ]
+        },
+        {
+            "id": "CODE-D1-Q002",
+            "title": "Student Resume",
+            "description": "Create a one-page resume using only HTML. Include:",
+            "requirements": [
+                "Name",
+                "Career objective",
+                "Education",
+                "Skills",
+                "Projects",
+                "Contact details"
+            ]
+        },
+        {
+            "id": "CODE-D1-Q003",
+            "title": "My Portfolio Structure",
+            "description": "Create the basic HTML structure for a portfolio website with:",
+            "requirements": [
+                "Header",
+                "About",
+                "Skills",
+                "Projects",
+                "Contact",
+                "Footer"
+            ]
+        },
+        {
+            "id": "CODE-D1-Q004",
+            "title": "Product Information Page",
+            "description": "Create a product page containing:",
+            "requirements": [
+                "Product name",
+                "Image",
+                "Description",
+                "Price",
+                "Features",
+                "Availability"
+            ]
+        },
+        {
+            "id": "CODE-D1-Q005",
+            "title": "Complete Webpage Challenge",
+            "description": "Build a complete static webpage for a fictional company using proper HTML document structure. AI evaluation:",
+            "requirements": [
+                "semantic structure",
+                "nesting",
+                "attributes",
+                "completeness and HTML validity"
+            ]
+        }
+    ]
+}

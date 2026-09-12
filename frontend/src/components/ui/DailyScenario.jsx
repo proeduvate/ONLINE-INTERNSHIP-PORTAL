@@ -409,14 +409,32 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8000/simulation/intern/current`, {
-        headers: { "Authorization": `Bearer ${token}` }
+      const res = await fetch(`http://localhost:8000/simulation/intern/current?t=${new Date().getTime()}`, {
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Cache-Control": "no-cache"
+        }
       });
       if (res.ok) {
         const data = await res.json();
         setCurrentScenarioData(data);
-        setSelectedDay(data.day || 1);
-        setDecisionResult(null);
+        const currentDataDay = data.day || 1;
+        if (data.completed) {
+            setSelectedDay(currentDataDay + 1);
+        } else {
+            setSelectedDay(currentDataDay);
+        }
+        if (data.completed) {
+            setDecisionResult({
+                isCorrect: true,
+                feedbackType: "success",
+                feedbackTitle: "✓ DECISION SUBMITTED",
+                explanation: data.decisionResult.consequence,
+                day_completed: true
+            });
+        } else {
+            setDecisionResult(null);
+        }
         setSelectedOptionId(null);
       }
     } catch (e) {
@@ -441,12 +459,14 @@ export default function DailyScenario({ onBackToDashboard, onComplete, internId 
     return () => clearInterval(timer);
   }, []);
 
-  // Compute unlock status based on day or 12 AM midnight schedule
-  // Day 1 is always unlocked. Next day unlocks only at 12:00 AM midnight unless Demo mode is clicked.
+  // Compute unlock status based on the backend's current day
+  // The backend already handles day progression - if it returned day N as current,
+  // then days 1 through N are unlocked. Only future days beyond N are locked.
+  const backendCurrentDay = currentScenarioData?.day || 1;
   const isDayUnlocked = (day) => {
     if (isDemoBypass) return true;
-    if (day === 1) return true;
-    return false; // Locked until 12:00 AM midnight
+    if (day <= backendCurrentDay) return true;
+    return false; // Future days remain locked until backend advances
   };
 
   // Helper to format countdown until 12:00 AM Midnight

@@ -1,0 +1,557 @@
+{
+  "day": 1,
+  "topic": "HTML Fundamentals and Document Structure",
+  "total_questions": 50,
+  "questions": [
+    {
+      "id": "Q-D1-001",
+      "question": "What does HTML stand for?",
+      "options": {
+        "A": "HyperText Markup Language",
+        "B": "HighText Machine Language",
+        "C": "Hyperlink Text Management Language",
+        "D": "Home Tool Markup Language"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-002",
+      "question": "Which HTML element is used to define the main heading of a webpage?",
+      "options": {
+        "A": "<heading>",
+        "B": "<h1>",
+        "C": "<head>",
+        "D": "<title>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-003",
+      "question": "Which declaration tells the browser that the document uses HTML5?",
+      "options": {
+        "A": "<html5>",
+        "B": "<doctype html5>",
+        "C": "<!DOCTYPE html>",
+        "D": "<html version=\"5\">"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-004",
+      "question": "Which element contains metadata and references to stylesheets?",
+      "options": {
+        "A": "<body>",
+        "B": "<main>",
+        "C": "<section>",
+        "D": "<head>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-005",
+      "question": "Which element contains the visible content of an HTML document?",
+      "options": {
+        "A": "<body>",
+        "B": "<head>",
+        "C": "<meta>",
+        "D": "<title>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-006",
+      "question": "Which HTML element defines the title displayed in a browser tab?",
+      "options": {
+        "A": "<header>",
+        "B": "<title>",
+        "C": "<h1>",
+        "D": "<caption>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-007",
+      "question": "Which attribute specifies the language of an HTML document?",
+      "options": {
+        "A": "language",
+        "B": "lang",
+        "C": "locale",
+        "D": "charset"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-008",
+      "question": "Which element is the root element of a standard HTML document?",
+      "options": {
+        "A": "<body>",
+        "B": "<document>",
+        "C": "<html>",
+        "D": "<root>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-009",
+      "question": "Which meta tag correctly specifies UTF-8 character encoding?",
+      "options": {
+        "A": "<meta charset=\"UTF-8\">",
+        "B": "<meta encoding=\"UTF-8\">",
+        "C": "<charset value=\"UTF-8\">",
+        "D": "<meta type=\"UTF-8\">"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-010",
+      "question": "What is the purpose of the lang attribute in the html element?",
+      "options": {
+        "A": "To change the page background",
+        "B": "To specify the document's primary language",
+        "C": "To load a JavaScript file",
+        "D": "To define the page width"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-011",
+      "question": "Which HTML element is used to create a paragraph?",
+      "options": {
+        "A": "<para>",
+        "B": "<text>",
+        "C": "<p>",
+        "D": "<paragraph>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-012",
+      "question": "Which tag inserts a line break without creating a new paragraph?",
+      "options": {
+        "A": "<lb>",
+        "B": "<newline>",
+        "C": "<break>",
+        "D": "<br>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-013",
+      "question": "Which element represents a thematic break between sections of content?",
+      "options": {
+        "A": "<hr>",
+        "B": "<line>",
+        "C": "<separator>",
+        "D": "<breakline>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-014",
+      "question": "Which element represents the highest-level heading in HTML?",
+      "options": {
+        "A": "<h6>",
+        "B": "<h1>",
+        "C": "<heading1>",
+        "D": "<head>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-015",
+      "question": "How many standard heading levels are defined in HTML?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "6",
+        "D": "8"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-016",
+      "question": "Which element is used to display text with strong importance?",
+      "options": {
+        "A": "<bold>",
+        "B": "<important>",
+        "C": "<b>",
+        "D": "<strong>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-017",
+      "question": "Which element represents emphasized text?",
+      "options": {
+        "A": "<em>",
+        "B": "<italic>",
+        "C": "<i-text>",
+        "D": "<emphasis-text>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-018",
+      "question": "Which element is appropriate for a short inline quotation?",
+      "options": {
+        "A": "<quote>",
+        "B": "<q>",
+        "C": "<blockquote-inline>",
+        "D": "<quotation>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-019",
+      "question": "Which element is designed for a longer quotation taken from another source?",
+      "options": {
+        "A": "<quote>",
+        "B": "<citation>",
+        "C": "<blockquote>",
+        "D": "<longquote>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-020",
+      "question": "Which HTML element is used to represent a fragment of computer code?",
+      "options": {
+        "A": "<program>",
+        "B": "<source>",
+        "C": "<syntax>",
+        "D": "<code>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-021",
+      "question": "Which HTML element creates a hyperlink to another page?",
+      "options": {
+        "A": "<a>",
+        "B": "<link>",
+        "C": "<href>",
+        "D": "<url>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-022",
+      "question": "Which attribute specifies the destination URL of an anchor element?",
+      "options": {
+        "A": "src",
+        "B": "href",
+        "C": "url",
+        "D": "destination"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-023",
+      "question": "Which attribute opens a hyperlink in a new browsing context when set to _blank?",
+      "options": {
+        "A": "window",
+        "B": "open",
+        "C": "target",
+        "D": "new"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-024",
+      "question": "Which element is used to display an image in an HTML document?",
+      "options": {
+        "A": "<picturebox>",
+        "B": "<photo>",
+        "C": "<image>",
+        "D": "<img>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-025",
+      "question": "Which attribute specifies the image file location in an img element?",
+      "options": {
+        "A": "src",
+        "B": "href",
+        "C": "path",
+        "D": "file"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-026",
+      "question": "What is the primary purpose of the alt attribute on an image?",
+      "options": {
+        "A": "To set the image width",
+        "B": "To provide alternative text for the image",
+        "C": "To add an image animation",
+        "D": "To specify the image format"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-027",
+      "question": "Which HTML element is used to group related content into a generic block-level container?",
+      "options": {
+        "A": "<group>",
+        "B": "<container>",
+        "C": "<div>",
+        "D": "<block>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-028",
+      "question": "Which HTML element is used to group inline content without adding semantic meaning?",
+      "options": {
+        "A": "<inline>",
+        "B": "<textgroup>",
+        "C": "<labelgroup>",
+        "D": "<span>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-029",
+      "question": "Which of the following is a valid HTML comment?",
+      "options": {
+        "A": "<!-- This is a comment -->",
+        "B": "// This is a comment",
+        "C": "/* This is a comment */",
+        "D": "<comment>This is a comment</comment>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-030",
+      "question": "Which statement about HTML elements and attributes is correct?",
+      "options": {
+        "A": "Attributes must always appear after the closing tag",
+        "B": "Attributes provide additional information about elements",
+        "C": "Every attribute must contain JavaScript",
+        "D": "Attributes can only be used on headings"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-031",
+      "question": "Which attribute assigns a unique identifier to an HTML element?",
+      "options": {
+        "A": "name",
+        "B": "key",
+        "C": "id",
+        "D": "identifier"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-032",
+      "question": "Which attribute is commonly used to assign one or more reusable CSS class names to an element?",
+      "options": {
+        "A": "styleclass",
+        "B": "css",
+        "C": "group",
+        "D": "class"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-033",
+      "question": "Which HTML element is used to link an external CSS stylesheet?",
+      "options": {
+        "A": "<link>",
+        "B": "<css>",
+        "C": "<stylesheet>",
+        "D": "<stylelink>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-034",
+      "question": "Which attribute value is normally used on a link element to identify a CSS stylesheet?",
+      "options": {
+        "A": "type=\"css\"",
+        "B": "rel=\"stylesheet\"",
+        "C": "style=\"external\"",
+        "D": "href=\"stylesheet\""
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-035",
+      "question": "Which element is used to place CSS rules directly inside an HTML document?",
+      "options": {
+        "A": "<css>",
+        "B": "<design>",
+        "C": "<style>",
+        "D": "<stylesheet>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-036",
+      "question": "Which element is used to embed JavaScript in an HTML document?",
+      "options": {
+        "A": "<javascript>",
+        "B": "<js>",
+        "C": "<code>",
+        "D": "<script>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-037",
+      "question": "Which attribute can be used on a script element to load a JavaScript file without blocking HTML parsing while downloading?",
+      "options": {
+        "A": "async",
+        "B": "background",
+        "C": "defer-only",
+        "D": "nonblocking"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-038",
+      "question": "Which script attribute defers script execution until HTML parsing is complete?",
+      "options": {
+        "A": "wait",
+        "B": "defer",
+        "C": "later",
+        "D": "after"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-039",
+      "question": "Which HTML element provides metadata about a document, such as its character encoding?",
+      "options": {
+        "A": "<data>",
+        "B": "<info>",
+        "C": "<meta>",
+        "D": "<metadata>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-040",
+      "question": "Which meta tag is commonly used to make a webpage adapt to the device's viewport width?",
+      "options": {
+        "A": "<meta screen=\"responsive\">",
+        "B": "<meta device=\"mobile\">",
+        "C": "<meta responsive=\"true\">",
+        "D": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-041",
+      "question": "Which of the following is a void element in HTML?",
+      "options": {
+        "A": "<img>",
+        "B": "<div>",
+        "C": "<p>",
+        "D": "<section>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-042",
+      "question": "Which statement about HTML tag names is correct in modern HTML?",
+      "options": {
+        "A": "All tags must use uppercase letters",
+        "B": "HTML tag names are case-insensitive",
+        "C": "Tags must contain numbers",
+        "D": "Every tag must have a closing slash"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-043",
+      "question": "Which character sequence is used to represent an ampersand in HTML text?",
+      "options": {
+        "A": "&amp;",
+        "B": "&and;",
+        "C": "&symbol;",
+        "D": "&char;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-044",
+      "question": "Which HTML element is used to display preformatted text while preserving whitespace and line breaks?",
+      "options": {
+        "A": "<format>",
+        "B": "<pre>",
+        "C": "<preserve>",
+        "D": "<text-format>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-045",
+      "question": "Which element is appropriate for displaying a short abbreviation with an optional expanded description?",
+      "options": {
+        "A": "<short>",
+        "B": "<acronym-text>",
+        "C": "<abbr>",
+        "D": "<expand>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-046",
+      "question": "Which HTML element is used to associate a visible caption with a figure?",
+      "options": {
+        "A": "<caption-text>",
+        "B": "<figure-title>",
+        "C": "<figtitle>",
+        "D": "<figcaption>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D1-047",
+      "question": "Which element is commonly used to represent a standalone piece of content that could be distributed independently?",
+      "options": {
+        "A": "<article>",
+        "B": "<content>",
+        "C": "<post>",
+        "D": "<standalone>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D1-048",
+      "question": "Which HTML element is intended for a thematic grouping of content, typically with a heading?",
+      "options": {
+        "A": "<group>",
+        "B": "<section>",
+        "C": "<block>",
+        "D": "<division>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D1-049",
+      "question": "Which element is used to mark content that is no longer accurate or relevant?",
+      "options": {
+        "A": "<remove>",
+        "B": "<old>",
+        "C": "<del>",
+        "D": "<strikeout>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D1-050",
+      "question": "Which HTML structure is the most appropriate starting point for a valid HTML5 document?",
+      "options": {
+        "A": "<body><head><html></html></head></body>",
+        "B": "<html><title>Page</title><body></body></html>",
+        "C": "<document><header></header><content></content></document>",
+        "D": "<!DOCTYPE html><html><head><title>Page</title></head><body></body></html>"
+      },
+      "correct_answer": "D"
+    }
+  ]
+}

@@ -32,6 +32,8 @@ def get_domain_facts(
         )
 
     domain_name = current_user.domain.name
+    if domain_name.lower() in ["java", "python"]:
+        domain_name = "Backend"
 
     # Removed the 10-minute cache block so a new fact is picked on every request.
 
@@ -77,7 +79,7 @@ def get_domain_facts(
 
     return schemas_facts.DomainFactResponse(
         id=selected_fact.id,
-        domain=selected_fact.domain,
+        domain=current_user.domain.name,
         fact=selected_fact.fact,
         seen=False,
         completed=False

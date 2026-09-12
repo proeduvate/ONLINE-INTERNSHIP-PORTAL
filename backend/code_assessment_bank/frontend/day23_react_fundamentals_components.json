@@ -1,0 +1,43 @@
+{
+    "day": 23,
+    "topic": "React Fundamentals & Components",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D23-Q001",
+            "title": "React Profile Card",
+            "description": "Create a reusable ProfileCard component.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D23-Q002",
+            "title": "Product Component",
+            "description": "Create reusable product cards from an array of product data.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D23-Q003",
+            "title": "Component-Based Portfolio",
+            "description": "Build a portfolio using:",
+            "requirements": [
+                "Header",
+                "About",
+                "Skills",
+                "Projects",
+                "Contact components"
+            ]
+        },
+        {
+            "id": "CODE-D23-Q004",
+            "title": "Component Tree",
+            "description": "Create a dashboard with multiple nested React components.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D23-Q005",
+            "title": "React Product Listing",
+            "description": "Build a complete product listing page using reusable components and mapped data.",
+            "requirements": []
+        }
+    ]
+}
