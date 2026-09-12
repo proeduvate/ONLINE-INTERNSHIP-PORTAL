@@ -20,6 +20,7 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
+  const [internDomain, setInternDomain] = useState("UI/UX");
 
   const mockNotifications = [
     { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
@@ -373,7 +374,7 @@ export default function InternDashboard() {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputMsg.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: inputMsg, time: "Just now" }]);
+    setChatMessages(prev => [...prev, { sender: "You", text: inputMsg, time: "Just now" }]);
     setInputMsg("");
   };
 
@@ -488,7 +489,7 @@ export default function InternDashboard() {
             </div>
 
             {/* Main Content Row */}
-            <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+            <div style={{ display: "flex", gap: "20px", alignItems: "stretch" }}>
               
               {/* Left Column: Your 30-Day Journey Timeline */}
               <div style={{ flex: "0.65", background: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
@@ -497,11 +498,11 @@ export default function InternDashboard() {
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "space-between" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "flex-start", paddingTop: "10px" }}>
                   <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
 
                   {(() => {
-                    const visibleDaysCount = 7;
+                    const visibleDaysCount = 10;
                     let startDay = Math.max(1, currentDay - 2);
                     if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
                     
@@ -658,7 +659,7 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Recent Submissions Card */}
-                <div style={{ background: "#ffffff", padding: "16px", borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
+                <div style={{ flex: 1, background: "#ffffff", padding: "16px", borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "#0f172a", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
@@ -738,7 +739,8 @@ export default function InternDashboard() {
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
                       { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
-                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false }
+                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
+                      { rank: 5, name: "David Lee", points: 890, isMe: false }
                     ].map((user) => (
                       <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "#f8fafc" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
                         <span style={{ fontSize: "0.9rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "#64748b")) }}>#{user.rank}</span>
@@ -839,8 +841,8 @@ export default function InternDashboard() {
                           <Code size={32} color={codingDone ? "#16a34a" : "#9333ea"} />
                         </div>
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 6px 0" }}>Coding Assignment</h4>
-                          <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "0 0 8px 0" }}>Part B: Write and execute code in our compiler.</p>
+                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 6px 0" }}>{internDomain.toLowerCase() === "ui/ux" ? "UI/UX Assignment" : "Coding Assignment"}</h4>
+                          <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "0 0 8px 0" }}>Part B: {internDomain.toLowerCase() === "ui/ux" ? "Upload your photos and Figma link." : "Write and execute code in our compiler."}</p>
                           <div style={{ display: "flex", gap: "16px", color: "var(--text-muted)", fontSize: "12px" }}>
                             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Clock size={14} /> Untimed</span>
                             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Target size={14} /> Practical Skill</span>
@@ -1016,29 +1018,48 @@ export default function InternDashboard() {
               {assessmentView === "coding" && (
                 <div className="card">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ margin: 0 }}>Part B: Coding Assessment</h3>
+                    <h3 style={{ margin: 0 }}>Part B: {internDomain.toLowerCase() === "ui/ux" ? "UI/UX Assessment" : "Coding Assessment"}</h3>
                     <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                   </div>
-                  <div style={{ marginBottom: "12px" }}>
-                    <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
-                    <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
-                      <option value="javascript">JavaScript</option>
-                      <option value="python">Python</option>
-                    </select>
-                  </div>
+                  
+                  {internDomain.toLowerCase() === "ui/ux" ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "12px" }}>
+                      <div>
+                        <label style={{ fontWeight: 600, fontSize: "13px", display: "block", marginBottom: "8px" }}>Upload Design Photos: </label>
+                        <input type="file" multiple className="form-control" style={{ fontSize: "13px", width: "100%", boxSizing: "border-box" }} />
+                      </div>
+                      <div>
+                        <label style={{ fontWeight: 600, fontSize: "13px", display: "block", marginBottom: "8px" }}>Figma Project Link: </label>
+                        <input type="url" placeholder="https://www.figma.com/file/..." className="form-control" style={{ fontSize: "13px", width: "100%", boxSizing: "border-box" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                        <button className="btn btn-primary" onClick={handleSubmitCode}>Submit Design Work</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ marginBottom: "12px" }}>
+                        <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
+                        <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
+                          <option value="javascript">JavaScript</option>
+                          <option value="python">Python</option>
+                        </select>
+                      </div>
 
-                  <textarea 
-                    className="form-control" 
-                    rows="6" 
-                    style={{ fontFamily: "monospace", fontSize: "13px" }}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                  />
+                      <textarea 
+                        className="form-control" 
+                        rows="6" 
+                        style={{ fontFamily: "monospace", fontSize: "13px" }}
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                      />
 
-                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                    <button className="btn btn-secondary" onClick={handleRunCode}>Run Test Cases</button>
-                    <button className="btn btn-primary" onClick={handleSubmitCode}>Submit to AI Evaluator</button>
-                  </div>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                        <button className="btn btn-secondary" onClick={handleRunCode}>Run Test Cases</button>
+                        <button className="btn btn-primary" onClick={handleSubmitCode}>Submit to AI Evaluator</button>
+                      </div>
+                    </>
+                  )}
 
                   {evaluating || evalResult ? (
                     <div style={{ marginTop: "24px" }}>
@@ -1433,7 +1454,7 @@ export default function InternDashboard() {
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Artificial Intelligence</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
@@ -1483,29 +1504,51 @@ export default function InternDashboard() {
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
             {/* Top Hero Banner */}
-            <div style={{ 
-              background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)", 
-              borderRadius: "12px", 
-              padding: "16px 24px", 
-              display: "flex", 
-              justifyContent: "space-between", 
-              alignItems: "center",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
-              border: "1px solid #bfdbfe"
+            <div style={{
+              background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)",
+              borderRadius: "12px",
+              padding: "14px 20px",
+              color: "#0f172a",
+              position: "relative",
+              overflow: "hidden",
+              boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
+              border: "1px solid #bfdbfe",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
             }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: "700", color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  <Ticket size={14} color="#1d4ed8" /> Support & Ticketing Hub
-                </div>
-                <h2 style={{ fontSize: "20px", fontWeight: "800", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
-                  Support & Help Center
-                </h2>
-                <p style={{ color: "#475569", fontSize: "13px", margin: "2px 0 0 0" }}>
-                  File tickets for curriculum questions, environment bugs, or platform assistance.
-                </p>
+              {/* Mountain Silhouette Background SVG */}
+              <svg style={{ position: "absolute", right: "0", bottom: 0, height: "100%", width: "50%", opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
+                <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
+                <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
+              </svg>
+              
+              {/* "Learn Build Grow" Watermark */}
+              <div style={{ position: "absolute", right: "160px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
               </div>
-              <div>
-                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px" }} onClick={() => setShowTicketForm(true)}>
+
+              <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
+                <div style={{ width: "44px", height: "44px", background: "#ffffff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
+                  <Ticket size={22} color="#2563eb" />
+                </div>
+                <div>
+                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
+                    Support & Ticketing Hub
+                  </span>
+                  <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "#0f172a", letterSpacing: "-0.02em" }}>
+                    Support & Help Center
+                  </h1>
+                  <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
+                    File tickets for curriculum questions, environment bugs, or platform assistance.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ position: "relative", zIndex: 2 }}>
+                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} onClick={() => setShowTicketForm(true)}>
                   + File a Ticket
                 </button>
               </div>
@@ -1622,9 +1665,24 @@ export default function InternDashboard() {
             </div>
 
             {/* Chat Body */}
-            <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", position: "relative" }}>
+              
+              {/* Generative Background Image Overlay */}
+              <div style={{ 
+                position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+                pointerEvents: "none", zIndex: 1, opacity: 0.6,
+                backgroundImage: (() => {
+                  const domain = (internDomain || "").toLowerCase();
+                  if (domain.includes("ui/ux") || domain.includes("design")) return "url('/images/chat_bg_uiux.png')";
+                  if (domain.includes("data") || domain.includes("ai") || domain.includes("machine learning")) return "url('/images/chat_bg_data.png')";
+                  return "url('/images/chat_bg_code.png')";
+                })(),
+                backgroundSize: "cover",
+                backgroundPosition: "center"
+              }}></div>
+
               {chatMessages.map((msg, i) => (
-                <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px" }}>
+                <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px", zIndex: 2 }}>
                   <div style={{ 
                     backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
                     color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
@@ -1764,8 +1822,8 @@ export default function InternDashboard() {
                       }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8" }}>
-                              🎁 POP QUIZ
+                            <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8", display: "inline-flex", alignItems: "center" }}>
+                              <Gift size={12} style={{ marginRight: "4px" }} /> POP QUIZ
                             </span>
                             <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
                               {drop.timeLimit}s time limit

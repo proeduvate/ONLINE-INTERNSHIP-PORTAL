@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, Award, Lock, Target, Zap, Users, Activity, FileCode, Database, Image, Folder, ExternalLink, Download, Copy } from "lucide-react";
+import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, Award, Lock, Target, Zap, Users, Activity, FileCode, Database, Image, Folder, ExternalLink, Download, Copy, X } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { PageContainer } from "../../components/layout/PageContainer";
 import "../../styles/Dashboard.css";
@@ -412,7 +412,7 @@ CREATE TABLE submission_files (
             {/* === ROW 1: 4 Metric Cards === */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
               {/* Days Completed */}
-              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ padding: "13px 14px", background: "var(--surface-blue, #EFF7FF)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Calendar size={20} />
                 </div>
@@ -427,7 +427,7 @@ CREATE TABLE submission_files (
               </div>
 
               {/* Tasks Completed */}
-              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ padding: "13px 14px", background: "var(--surface-blue, #EFF7FF)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <CheckCircle size={20} />
                 </div>
@@ -442,7 +442,7 @@ CREATE TABLE submission_files (
               </div>
 
               {/* Average Score */}
-              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ padding: "13px 14px", background: "var(--surface-blue, #EFF7FF)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#faf5ff", color: "#9333ea", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Star size={20} />
                 </div>
@@ -457,7 +457,7 @@ CREATE TABLE submission_files (
               </div>
 
               {/* Attendance */}
-              <div style={{ padding: "13px 14px", background: "var(--card-bg, #ffffff)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ padding: "13px 14px", background: "var(--surface-blue, #EFF7FF)", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ width: "42px", height: "42px", borderRadius: "11px", background: "#fff7ed", color: "#ea580c", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Clock size={20} />
                 </div>
@@ -476,7 +476,7 @@ CREATE TABLE submission_files (
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "10px" }}>
 
               {/* Column 1: Performance Trend Chart */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Performance Trend</h3>
@@ -496,7 +496,7 @@ CREATE TABLE submission_files (
               </div>
 
               {/* Column 2: Skill Development */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <div style={{ marginBottom: "10px" }}>
                   <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Skill Development</h3>
                   <p style={{ margin: "3px 0 0 0", fontSize: "0.78rem", color: "#64748b" }}>Growth across key areas</p>
@@ -523,7 +523,7 @@ CREATE TABLE submission_files (
               </div>
 
               {/* Column 3: Performance Overview Donut */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Performance Overview</h3>
                 <div style={{ position: "relative", width: "118px", height: "118px", margin: "0 auto 10px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
@@ -562,7 +562,7 @@ CREATE TABLE submission_files (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
 
               {/* Strengths & Weaknesses */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+              <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Strengths & Areas</h3>
                 <div style={{ marginBottom: "10px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "7px" }}>
@@ -592,21 +592,21 @@ CREATE TABLE submission_files (
               <div style={{ background: "#fffbeb", border: "1px solid #fef3c7", padding: "13px 14px", borderRadius: "14px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                 <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#b45309" }}>Mentor Action Items</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
-                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                  <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
                     <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Review React To-Do App</h4>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "12px", color: "#ef4444", fontWeight: 600 }}>Overdue by 1 day</span>
                       <button className="btn btn-primary" style={{ padding: "4px 11px", fontSize: "12px" }} onClick={() => setActiveTab("Task Submissions")}>Review</button>
                     </div>
                   </div>
-                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                  <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
                     <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Schedule 1-on-1</h4>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "12px", color: "#b45309" }}>Discuss progress</span>
                       <button className="btn btn-secondary" style={{ padding: "4px 11px", fontSize: "12px", backgroundColor: "#fff", border: "1px solid #cbd5e1" }}>Schedule</button>
                     </div>
                   </div>
-                  <div style={{ background: "#ffffff", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
+                  <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "9px 11px", borderRadius: "9px", border: "1px solid #fde68a" }}>
                     <h4 style={{ margin: "0 0 5px 0", fontSize: "0.85rem", color: "#92400e" }}>Current Goals</h4>
                     <ul style={{ margin: 0, paddingLeft: "15px", fontSize: "12px", color: "#78350f", display: "flex", flexDirection: "column", gap: "3px" }}>
                       <li>Improve state management</li>
@@ -619,7 +619,7 @@ CREATE TABLE submission_files (
 
               {/* Recent Activity + Peer Score */}
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div style={{ background: "var(--card-bg, #ffffff)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ background: "var(--surface-blue, #EFF7FF)", padding: "13px 14px", borderRadius: "14px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
                   <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>Recent Activity</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
                     {[
@@ -786,7 +786,7 @@ CREATE TABLE submission_files (
                   onClick={() => setActiveSubmission(null)}
                   style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "#64748b", marginLeft: "4px" }}
                 >
-                  ✕
+                  <X size={22} />
                 </button>
               </div>
             </div>

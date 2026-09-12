@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   CheckCircle2, 
   AlertTriangle, 
@@ -32,7 +32,7 @@ export const scenarioData = [
         id: "a",
         text: "Plan a responsive mobile-first component grid layout and define breakpoint utility variables before writing styling.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "A responsive application should be planned for different screen sizes from the beginning. You understood the requirements before implementation.\n\nDay 2 situation: Your mentor gives you the approved desktop, tablet and mobile designs."
       },
@@ -40,7 +40,7 @@ export const scenarioData = [
         id: "b",
         text: "Start writing desktop styles immediately with fixed pixel widths and adjust mobile later if bugs are reported.",
         isCorrect: false,
-        feedbackTitle: "âš¡ SUBOPTIMAL APPROACH",
+        feedbackTitle: "[WARNING] SUBOPTIMAL APPROACH",
         feedbackType: "warning",
         explanation: "Starting with fixed desktop widths often leads to hard-to-maintain CSS refactors later. Mobile-first or pre-planned breakpoints prevent responsive regression bugs."
       },
@@ -65,7 +65,7 @@ export const scenarioData = [
         id: "a",
         text: "Create a reusable product-card component that receives product information through props.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Creating a reusable product-card component ensures consistency across all catalog pages, simplifies maintenance, and enables component testing.\n\nDay 3 situation: Your component is ready. Now you need to handle real-time shopping cart updates."
       },
@@ -73,7 +73,7 @@ export const scenarioData = [
         id: "b",
         text: "Create the card directly inside the product page and reuse it later if needed.",
         isCorrect: false,
-        feedbackTitle: "âš¡ SUBOPTIMAL APPROACH",
+        feedbackTitle: "[WARNING] SUBOPTIMAL APPROACH",
         feedbackType: "warning",
         explanation: "Tightly coupling the card to a single page prevents reuse on search, recommendations, or checkout pages."
       },
@@ -83,7 +83,7 @@ export const scenarioData = [
         isCorrect: false,
         feedbackTitle: "âŒ POOR PRACTICE",
         feedbackType: "danger",
-        explanation: "Duplicating JSX code creates maintenance bottlenecksâ€”updating a price tag would require changes in 20+ files."
+        explanation: "Duplicating JSX code creates maintenance bottlenecks - updating a price tag would require changes in 20+ files."
       }
     ]
   },
@@ -98,7 +98,7 @@ export const scenarioData = [
         id: "a",
         text: "Implement React Context API or Global State Management (Zustand/Redux) to maintain a single source of truth for cart items.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Centralized state management prevents prop drilling and guarantees synchronized UI updates across disconnected header, side drawer, and checkout components.\n\nDay 4 situation: Your cart logic is solid! Next, the backend team deploys a new REST API endpoint."
       },
@@ -106,7 +106,7 @@ export const scenarioData = [
         id: "b",
         text: "Pass cart state and update functions through 8 levels of parent and child component props manually.",
         isCorrect: false,
-        feedbackTitle: "âš¡ PROP DRILLING WARNING",
+        feedbackTitle: "[WARNING] PROP DRILLING WARNING",
         feedbackType: "warning",
         explanation: "Deep prop drilling makes intermediate components unnecessary re-render targets and hard to refactor."
       },
@@ -131,7 +131,7 @@ export const scenarioData = [
         id: "a",
         text: "Implement Skeleton loader components during pending fetches and Error Boundary retry cards with user-friendly error messages.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Skeleton loaders reduce perceived user wait time, and fallback retry UI prevents app crashes on network flickers.\n\nDay 5 situation: Users love the smooth loading experience! Now search volume is surging."
       },
@@ -139,7 +139,7 @@ export const scenarioData = [
         id: "b",
         text: "Keep the screen blank until data loads, and show a raw browser `alert()` modal if the API returns an error.",
         isCorrect: false,
-        feedbackTitle: "âš¡ POOR USER EXPERIENCE",
+        feedbackTitle: "[WARNING] POOR USER EXPERIENCE",
         feedbackType: "warning",
         explanation: "Blank screens confuse users into thinking the app is frozen, and native alert modals ruin user experience."
       },
@@ -164,7 +164,7 @@ export const scenarioData = [
         id: "a",
         text: "Apply a 300ms Debounce custom hook on search input changes so requests fire only when typing pauses.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Debouncing reduces network request volume by over 80% while retaining instant responsiveness.\n\nDay 6 situation: Search is optimized! Now catalog data is growing rapidly."
       },
@@ -172,7 +172,7 @@ export const scenarioData = [
         id: "b",
         text: "Disable the live search feature entirely and force users to click a 'Submit Search' button.",
         isCorrect: false,
-        feedbackTitle: "âš¡ FEATURE REDUCTION",
+        feedbackTitle: "[WARNING] FEATURE REDUCTION",
         feedbackType: "warning",
         explanation: "Removing live search reduces user experience modern standards when simple debouncing easily solves the problem."
       },
@@ -197,7 +197,7 @@ export const scenarioData = [
         id: "a",
         text: "Implement server-side pagination with query params (`page=1&limit=20`) combined with virtualized list rendering.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Server pagination keeps payload size under 50KB, while windowing/virtualization renders only DOM nodes visible in viewport.\n\nDay 7 situation: Mobile performance is top-tier! Senior dev schedule code review."
       },
@@ -213,7 +213,7 @@ export const scenarioData = [
         id: "c",
         text: "Limit the entire database response to only 10 items total permanently.",
         isCorrect: false,
-        feedbackTitle: "âš¡ ARTIFICIAL LIMITATION",
+        feedbackTitle: "[WARNING] ARTIFICIAL LIMITATION",
         feedbackType: "warning",
         explanation: "Hardcoding a 10-item cap hides 99.9% of catalog products from customers."
       }
@@ -230,7 +230,7 @@ export const scenarioData = [
         id: "a",
         text: "Decompose into smaller single-responsibility components, extract API calls into custom hooks (`useProducts`), and add prop-types validation.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Clean Architecture separates UI presentational layers from data hooks, making unit testing and maintainability effortless.\n\nDay 8 situation: Your refactored PR was approved and merged! Time for assets optimization."
       },
@@ -238,7 +238,7 @@ export const scenarioData = [
         id: "b",
         text: "Comment on the PR arguing that a single file is easier to open in the code editor.",
         isCorrect: false,
-        feedbackTitle: "âš¡ TEAM CONFLICT",
+        feedbackTitle: "[WARNING] TEAM CONFLICT",
         feedbackType: "warning",
         explanation: "Monolithic files increase git merge conflicts and violate modular design patterns."
       },
@@ -263,7 +263,7 @@ export const scenarioData = [
         id: "a",
         text: "Serve WebP/AVIF image formats, dynamic srcset responsive sizes, and apply `loading=\"lazy\"` for off-screen images.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Next-gen formats reduce image size by up to 80% without quality loss, boosting Lighthouse score to 95+.\n\nDay 9 situation: Speed is blazing! Now let's handle customer input security."
       },
@@ -279,7 +279,7 @@ export const scenarioData = [
         id: "c",
         text: "Resize all images to 100x100 pixels fixed size regardless of display resolution.",
         isCorrect: false,
-        feedbackTitle: "âš¡ BLURRY QUALITY",
+        feedbackTitle: "[WARNING] BLURRY QUALITY",
         feedbackType: "warning",
         explanation: "Fixed low-res thumbnails look pixelated on Retina and desktop displays."
       }
@@ -296,7 +296,7 @@ export const scenarioData = [
         id: "a",
         text: "Sanitize HTML using DOMPurify before rendering, avoid `dangerouslySetInnerHTML`, and set Content Security Policy headers.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "Proper string escaping and DOM sanitization prevents script injection attacks, protecting customer session tokens.\n\nDay 10 situation: Security patch deployed! Next up: Persistent user authentication."
       },
@@ -312,7 +312,7 @@ export const scenarioData = [
         id: "c",
         text: "Filter out only the exact word 'script' with string replace.",
         isCorrect: false,
-        feedbackTitle: "âš¡ BYPASSABLE FILTER",
+        feedbackTitle: "[WARNING] BYPASSABLE FILTER",
         feedbackType: "warning",
         explanation: "Simple string matching is easily bypassed using tags like `<img src=x onerror=alert(1)>`."
       }
@@ -329,7 +329,7 @@ export const scenarioData = [
         id: "a",
         text: "Use HttpOnly SameSite Secure Cookies for JWT refresh tokens with an automated silent token refresh interceptor in Axios/Fetch.",
         isCorrect: true,
-        feedbackTitle: "âœ“ EXCELLENT DECISION",
+        feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
         feedbackType: "success",
         explanation: "HttpOnly cookies prevent JavaScript access (XSS protection), while silent refresh keeps user sessions seamless.\n\nDay 11 situation: Auth system is enterprise-grade! Next: CI/CD deployment checks."
       },
@@ -345,7 +345,7 @@ export const scenarioData = [
         id: "c",
         text: "Keep session state solely in React component local state (`useState`).",
         isCorrect: false,
-        feedbackTitle: "âš¡ POOR PERSISTENCE",
+        feedbackTitle: "[WARNING] POOR PERSISTENCE",
         feedbackType: "warning",
         explanation: "React memory state resets on every hard browser refresh or tab navigation."
       }
@@ -389,7 +389,7 @@ export const scenarioData = [
           id: "a",
           text: item.best,
           isCorrect: true,
-          feedbackTitle: "âœ“ EXCELLENT DECISION",
+          feedbackTitle: "[SUCCESS] EXCELLENT DECISION",
           feedbackType: "success",
           explanation: `Great choice! Applying industry best practices for ${item.t.toLowerCase()} keeps application quality high.\n\nDay ${dayNum < 30 ? dayNum + 1 : 30} situation: Your team advances to the next operational phase.`
         },
@@ -397,7 +397,7 @@ export const scenarioData = [
           id: "b",
           text: item.alt1,
           isCorrect: false,
-          feedbackTitle: "âš¡ SUBOPTIMAL APPROACH",
+          feedbackTitle: "[WARNING] SUBOPTIMAL APPROACH",
           feedbackType: "warning",
           explanation: `This approach introduces technical debt or temporary workarounds that don't address the root cause.`
         },
@@ -479,26 +479,44 @@ export default function DailyScenario({ onBackToDashboard }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
       
       {/* Hero Banner Header */}
-      <div style={{ 
-        background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)", 
-        borderRadius: "12px", 
-        padding: "16px 24px", 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
+      <div style={{
+        background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)",
+        borderRadius: "12px",
+        padding: "14px 20px",
+        color: "#0f172a",
+        position: "relative",
+        overflow: "hidden",
+        boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
         border: "1px solid #bfdbfe"
       }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: "700", color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-            <Briefcase size={14} color="#1d4ed8" /> Day {selectedDay} of 30 &bull; Workplace Simulation
+        {/* Mountain Silhouette Background SVG */}
+        <svg style={{ position: "absolute", right: "0", bottom: 0, height: "100%", width: "50%", opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
+          <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
+          <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
+        </svg>
+        
+        {/* "Learn Build Grow" Watermark */}
+        <div style={{ position: "absolute", right: "24px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
+        </div>
+
+        <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
+          <div style={{ width: "44px", height: "44px", background: "#ffffff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
+            <Briefcase size={22} color="#2563eb" />
           </div>
-          <h2 style={{ fontSize: "20px", fontWeight: "800", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
-            Real-World Workplace Simulation
-          </h2>
-          <p style={{ color: "#475569", fontSize: "13px", margin: "2px 0 0 0" }}>
-            Analyze realistic engineering situations, choose your technical path, and receive instant feedback.
-          </p>
+          <div>
+            <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
+              Day {selectedDay} of 30 &bull; Workplace Simulation
+            </span>
+            <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "#0f172a", letterSpacing: "-0.02em" }}>
+              Real-World Workplace Simulation
+            </h1>
+            <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
+              Analyze realistic engineering situations, choose your technical path, and receive instant feedback.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -543,7 +561,7 @@ export default function DailyScenario({ onBackToDashboard }) {
               {/* Demo Mode Notice Banner */}
               {isDemoBypass && selectedDay > 1 && (
                 <div style={{ backgroundColor: "#eff6ff", border: "1px solid #93c5fd", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", color: "#1e40af", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>â„¹ï¸ <b>Demo Mode Active:</b> Previewing Day {selectedDay}. (Normally unlocks at 12:00 AM Midnight).</span>
+                  <span>[NOTICE] <b>Demo Mode Active:</b> Previewing Day {selectedDay}. (Normally unlocks at 12:00 AM Midnight).</span>
                   <button onClick={() => setIsDemoBypass(false)} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: "700", cursor: "pointer", textDecoration: "underline", fontSize: "12px" }}>
                     Re-enable Lock
                   </button>
@@ -771,7 +789,7 @@ export default function DailyScenario({ onBackToDashboard }) {
                 </div>
                 <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Streak</div>
-                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>{completedCount} Days ðŸ”¥</div>
+                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>{completedCount} Days</div>
                 </div>
               </div>
             </div>

@@ -123,13 +123,13 @@ export default function AdminDashboard() {
   ]);
 
   const [domainsList, setDomainsList] = useState([
-    { name: "Artificial Intelligence", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
-    { name: "Data Science", duration: "8 Weeks", interns: 12, mentors: 2, status: "Active" },
-    { name: "Cyber Security", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
-    { name: "Web Development", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
-    { name: "UI UX Design", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
-    { name: "Cloud Computing", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
-    { name: "Mobile App Dev", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
+    { name: "Frontend", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
+    { name: "Python", duration: "8 Weeks", interns: 12, mentors: 2, status: "Active" },
+    { name: "Fullstack", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
+    { name: "Java", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
+    { name: "UI/UX", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
+    { name: "AI/ML", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
+    { name: "Data Analytics", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
   ]);
 
   const [tasks, setTasks] = useState([

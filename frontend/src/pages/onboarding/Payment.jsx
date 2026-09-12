@@ -55,7 +55,7 @@ export default function Payment() {
                     <p><strong>Status:</strong> <span style={{ color: '#d97706', fontWeight: 600 }}>Pending</span></p>
                     <p style={{ marginTop: '16px', color: '#475569' }}>Please submit payment confirmation details using the link below.</p>
                     
-                    <button style={{ marginTop: '20px' }} onClick={handlePaymentSubmit}>Submit Payment Details ↗</button>
+                    <button style={{ marginTop: '20px' }} onClick={handlePaymentSubmit}>Submit Payment Details</button>
                 </div>
             ) : status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED ? (
                 <div className="status-box">

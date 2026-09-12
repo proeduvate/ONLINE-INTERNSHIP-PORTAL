@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Users, Maximize, Minimize, Mic, MicOff, Video, VideoOff, 
-  MonitorUp, MonitorOff, Hand, MessageSquare, LogOut, LayoutGrid
+  MonitorUp, MonitorOff, Hand, MessageSquare, LogOut, LayoutGrid, CheckCircle2
 } from 'lucide-react';
 
 export default function MeetingArea({ 
@@ -51,8 +51,8 @@ export default function MeetingArea({
           </span>
 
           {isIntern && room?.type !== 'main' && (
-            <span style={{ fontSize: '11px', color: '#10b981', backgroundColor: '#ecfdf5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #10b981' }}>
-              ✅ Assigned to {room?.name}
+            <span style={{ fontSize: '11px', color: '#10b981', backgroundColor: '#ecfdf5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #10b981', display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <CheckCircle2 size={12} /> Assigned to {room?.name}
             </span>
           )}
         </div>

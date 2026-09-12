@@ -16,10 +16,10 @@
   --navy-500: #315A87; /* Muted dark elements */
 
   /* --- Backgrounds & Surfaces --- */
-  --background: #F5F9FE;
+  --background: #EAF2F8; /* More distinct blue so it doesn't fade to white at high brightness */
   --surface: #FFFFFF;
-  --surface-soft: #F8FBFF;
-  --surface-blue: #EFF7FF;
+  --surface-soft: #F0F6FC;
+  --surface-blue: #E1EFFF;
 
   /* --- Typography / Text Colors --- */
   --text-primary: #081B35;
@@ -92,6 +92,20 @@
   --danger-color: var(--error);
   --info-color: var(--info);
 
+  /* Dashboard specific aliases */
+  --primary-dark: #1d4ed8;
+  --primary-darker: #1e3a8a;
+  --primary-darkest: #1e3a8a;
+  --text-dark: #1e293b;
+  --text-darker: #0f172a;
+  --text-gray: #64748b;
+  --text-slate-light: #94a3b8;
+  --bg-light: #f8fafc;
+  --bg-gray-lighter: #f1f5f9;
+  --bg-blue-light: #eff6ff;
+  --border-blue-light: #bfdbfe;
+  --border-gray-dark: #cbd5e1;
+
   /* --- Typography --- */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
@@ -157,5 +171,19 @@
 
   --info-color: #0284C7;
   --info-bg: rgba(2, 132, 199, 0.2);
+
+  /* Dashboard specific aliases for Dark Theme */
+  --primary-dark: #3b82f6;
+  --primary-darker: #2563eb;
+  --primary-darkest: #1d4ed8;
+  --text-dark: #e2e8f0;
+  --text-darker: #f8fafc;
+  --text-gray: #94a3b8;
+  --text-slate-light: #64748b;
+  --bg-light: #0f172a;
+  --bg-gray-lighter: #1e293b;
+  --bg-blue-light: #1e3a8a;
+  --border-blue-light: #1e40af;
+  --border-gray-dark: #334155;
 }
 

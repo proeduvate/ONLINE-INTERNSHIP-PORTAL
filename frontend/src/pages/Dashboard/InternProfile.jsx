@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { User, Shield, Bell, Camera, Key, Lock, Save, Trash2, Mail, MapPin, Briefcase, Code2, Building2 } from "lucide-react";
 
 export default function InternProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+  const fileInputRef = useRef(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setProfileImage(url);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+  };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -70,19 +84,20 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Manage your personal details and how they appear on your profile.</p>
             </div>
 
-            <div style={{ background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               {/* Avatar Section */}
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc" alt="Profile" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }} />
-                  <button style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "#ffffff", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                  <img src={profileImage} alt="Profile" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }} />
+                  <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--surface-blue, #EFF7FF)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
-                    <button style={{ background: "#ffffff", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#0f172a", cursor: "pointer" }}>Change Photo</button>
-                    <button style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
+                    <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
+                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--surface-blue, #EFF7FF)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#0f172a", cursor: "pointer" }}>Change Photo</button>
+                    <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
                   </div>
                   <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
                 </div>
@@ -167,7 +182,7 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.9rem", color: "#64748b" }}>Manage your password and secure your account.</p>
             </div>
 
-            <div style={{ background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "#0f172a" }}>Change Password</h4>
               <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
@@ -217,7 +232,7 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.9rem", color: "#64748b" }}>Choose how you receive updates and alerts.</p>
             </div>
 
-            <div style={{ background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "#0f172a" }}>Email Notifications</h4>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
