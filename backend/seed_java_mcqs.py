@@ -31,17 +31,21 @@ def seed_java_mcqs():
             file_path = os.path.join(java_mcq_dir, filename)
             with open(file_path, 'r', encoding='utf-8') as f:
                 day_data = json.load(f)
+            if isinstance(day_data, list):
+                day_data = day_data[0]
             
             day_number = day_data.get('day')
             topic = day_data.get('topic')
-            questions = day_data.get('questions', [])
+            questions = day_data.get('questions', day_data.get('mcqs', []))
             
-            # Fetch existing questions for this day to do a quick lookup
-            existing_questions_for_day = db.query(DomainMCQQuestion).filter(
+            # Erase existing questions for this day before seeding
+            db.query(DomainMCQQuestion).filter(
                 DomainMCQQuestion.domain_name == "Java",
                 DomainMCQQuestion.day_number == day_number
-            ).all()
-            existing_map = {q.question_id: q for q in existing_questions_for_day}
+            ).delete()
+            db.commit()
+            
+            existing_map = {}
 
             for q in questions:
                 # Make the ID domain-specific to avoid unique constraint violations
