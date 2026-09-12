@@ -76,6 +76,28 @@ export default function AdminOnboardingDetails() {
                 data.payment_form_link = paymentFormLink;
             }
             await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/interview`, data);
+            
+            if (isRequired) {
+                try {
+                    const templateParams = {
+                        intern_name: app.name,
+                        to_email: app.email,
+                        meet_link: meetLink,
+                        scheduled_time: new Date(scheduledTime).toLocaleString()
+                    };
+                    await emailjs.send(
+                        'service_tcpvv7r',
+                        'template_mpcare4',
+                        templateParams,
+                        'AUbUjQbyafx3K-_aP'
+                    );
+                    alert("Interview scheduled and email sent successfully");
+                } catch (e) {
+                    console.error("Failed to send email", e);
+                    alert("Interview scheduled, but failed to send email.");
+                }
+            }
+            
             refreshApp();
         } catch (error) {
             console.error("Error submitting decision", error);
