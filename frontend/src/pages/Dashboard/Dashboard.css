@@ -1,8 +1,8 @@
-/* Layout Container */
 .container {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: var(--background-color, #f3f4f6);
 }
 
@@ -95,16 +95,18 @@
 .main {
   padding: 24px 40px;
   flex: 1;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: var(--background-color, #f3f4f6);
 }
 
 .main-content-scroll {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-bottom: 0px;
   display: flex;
   flex-direction: column;

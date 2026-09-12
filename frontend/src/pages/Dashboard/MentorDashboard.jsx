@@ -1519,7 +1519,7 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", overflowX: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 

@@ -382,7 +382,7 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflow: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflowY: "auto", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div style={{ display: "flex", gap: "20px", flexShrink: 0, height: "180px" }}>
@@ -1652,7 +1652,7 @@ export default function InternDashboard() {
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflowY: "auto", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
             <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
               <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
@@ -2383,7 +2383,7 @@ export default function InternDashboard() {
   };
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", overflowX: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 

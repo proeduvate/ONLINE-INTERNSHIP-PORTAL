@@ -674,7 +674,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {usersSubTab === "Interns" ? (
-              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 170px)", overflow: "hidden" }}>
+              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", minHeight: "calc(100vh - 170px)" }}>
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "#f8fafc", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
@@ -1356,7 +1356,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", overflowX: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
