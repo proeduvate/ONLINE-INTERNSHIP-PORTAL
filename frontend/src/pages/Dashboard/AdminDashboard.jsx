@@ -403,7 +403,7 @@ export default function AdminDashboard() {
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
                     <Tooltip 
                       cursor={{fill: '#f3f4f6'}} 
-                      contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
                       wrapperStyle={{ zIndex: 1000 }}
                     />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                       <PolarRadiusAxis angle={90} domain={[0, 'auto']} tick={false} axisLine={false} />
                       <Radar name="Interns" dataKey="value" stroke="#8b5cf6" strokeWidth={2} fill="#8b5cf6" fillOpacity={0.4} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} 
+                        contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} 
                         wrapperStyle={{ zIndex: 1000 }}
                       />
                     </RadarChart>
@@ -441,7 +441,7 @@ export default function AdminDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
@@ -450,7 +450,7 @@ export default function AdminDashboard() {
                     <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
                   </div>
                   
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
@@ -459,7 +459,7 @@ export default function AdminDashboard() {
                     <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
                   </div>
                   
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
@@ -517,7 +517,7 @@ export default function AdminDashboard() {
                 </div>
                 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
-                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
                     <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
                       <TrendingUp size={16} /> Performance Overview
                     </h4>
@@ -528,14 +528,14 @@ export default function AdminDashboard() {
                           <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Progress</span>
                           <span style={{ fontWeight: 700, color: "#10b981", fontSize: "14px" }}>{selectedIntern.progress}</span>
                         </div>
-                        <div style={{ width: "100%", height: "8px", backgroundColor: "#e2e8f0", borderRadius: "4px", overflow: "hidden" }}>
+                        <div style={{ width: "100%", height: "8px", backgroundColor: "var(--border-color, #e2e8f0)", borderRadius: "4px", overflow: "hidden" }}>
                           <div style={{ width: selectedIntern.progress, height: "100%", backgroundColor: "#10b981" }}></div>
                         </div>
                       </div>
                       
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed #cbd5e1" }}>
                         <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Internship Duration</span>
-                        <span style={{ fontWeight: 600, color: "#64748b", fontSize: "14px" }}>Week 4 of 8</span>
+                        <span style={{ fontWeight: 600, color: "var(--text-muted, #64748b)", fontSize: "14px" }}>Week 4 of 8</span>
                       </div>
                     </div>
                   </div>
@@ -553,7 +553,7 @@ export default function AdminDashboard() {
                             setActiveTab("tickets");
                             setSelectedTicket(ticket);
                           }}
-                          style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
+                          style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
                           onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                           onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                         >
@@ -612,7 +612,7 @@ export default function AdminDashboard() {
                 </div>
                 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
-                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
                     <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
                       <Users size={16} /> Mentorship Overview
                     </h4>
@@ -635,7 +635,7 @@ export default function AdminDashboard() {
                     </h4>
                     
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                      <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                      <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                           <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>Week 4 Review</span>
                           <span style={{ fontSize: "11px", color: "#6b7280" }}>Today, 2:00 PM</span>
@@ -674,10 +674,10 @@ export default function AdminDashboard() {
                 </div>
 
                 {usersSubTab === "Interns" ? (
-              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", minHeight: "calc(100vh - 170px)" }}>
+              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 170px)", overflow: "hidden" }}>
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
-                  <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "#f8fafc", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
+                  <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
                   {["MIT", "Stanford", "IIT", "Harvard", "Berkeley"].map((batch) => {
                     const batchInterns = filteredUsers.filter(u => u.role === "Intern" && u.college === batch);
                     const activeCount = batchInterns.filter(i => i.status === "Active").length;
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
                                   key={user.id}
                                   onClick={() => setSelectedIntern(user)}
                                   style={{ cursor: "pointer", transition: "background-color 0.2s" }}
-                                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
+                                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
                                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                                 >
                                   <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
@@ -817,7 +817,7 @@ export default function AdminDashboard() {
                           key={user.id}
                           onClick={() => setSelectedMentor(user)}
                           style={{ cursor: "pointer", transition: "background-color 0.2s" }}
-                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
                           onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                         >
                           <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
@@ -1197,7 +1197,7 @@ export default function AdminDashboard() {
 
               <div style={{ marginBottom: "24px" }}>
                 <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1f2937" }}>{selectedTicket.title}</h4>
-                <div style={{ padding: "16px", backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
+                <div style={{ padding: "16px", backgroundColor: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
                   {selectedTicket.description}
                 </div>
               </div>
@@ -1298,7 +1298,7 @@ export default function AdminDashboard() {
                           key={airdrop.id} 
                           onClick={() => setSelectedAirdrop(airdrop)} 
                           style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
                           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
@@ -1356,7 +1356,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", overflowX: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
@@ -1402,14 +1402,14 @@ export default function AdminDashboard() {
                   fontSize: "14px",
                   fontWeight: isActive ? "600" : "500",
                   backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
-                  color: isActive ? "#ffffff" : "var(--text-color, #475569)",
+                  color: isActive ? "var(--bg-surface, #ffffff)" : "var(--text-color, #475569)",
                   boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
                   cursor: "pointer",
                   transition: "all 0.2s ease"
                 }}
               >
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.icon}</span>
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.id}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.icon}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.id}</span>
               </button>
             );
           })}

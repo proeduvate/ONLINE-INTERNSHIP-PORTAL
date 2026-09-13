@@ -141,49 +141,67 @@
 }
 
 [data-theme="dark"] {
-  --bg-page: #06152B;
-  --bg-surface: #081B35;
-  --bg-surface-elevated: #0B2445;
+  --bg-page: #09090b; /* Zinc 950 */
+  --background-color: var(--bg-page);
+  --background: var(--bg-page);
+  --bg-surface: #18181b; /* Zinc 900 */
+  --bg-surface-elevated: #27272a; /* Zinc 800 */
+  --bg-surface-glass: rgba(24, 24, 27, 0.8);
   
-  --primary-color: #0B82F6;
-  --primary-color-hover: #0875E1;
-  --secondary-color: #0B2445;
-  --secondary-color-hover: #12345C;
+  --button-primary-bg: #3b82f6; /* Blue 500 */
+  --button-primary-text: #ffffff;
+  --button-secondary-bg: #27272a; /* Zinc 800 */
+  --button-secondary-text: #f4f4f5; /* Zinc 100 */
   
-  --accent-color: #2563EB;
-  --accent-color-hover: #0875E1;
+  --primary-color: #3b82f6; /* Blue 500 */
+  --primary-color-hover: #60a5fa; /* Blue 400 */
+  --secondary-color: #18181b; 
+  --secondary-color-hover: #27272a;
+  
+  --accent-color: #8b5cf6; /* Violet 500 */
+  --accent-color-hover: #a78bfa; /* Violet 400 */
 
-  --text-primary: #F5F9FE;
-  --text-secondary: #9DB0C5;
-  --text-tertiary: #7890AA;
+  --text-primary: #fafafa; /* Zinc 50 */
+  --text-secondary: #a1a1aa; /* Zinc 400 */
+  --text-tertiary: #71717a; /* Zinc 500 */
+  --text-muted: #71717a;
   
-  --border-color: #12345C;
-  --border-color-hover: #1C4675;
+  --border-color: #27272a; /* Zinc 800 */
+  --border-color-hover: #3f3f46; /* Zinc 700 */
 
-  --success-color: #10B981;
-  --success-bg: rgba(16, 185, 129, 0.2);
+  --success-color: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.15);
   
-  --warning-color: #F59E0B;
-  --warning-bg: rgba(245, 158, 11, 0.2);
+  --warning-color: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.15);
   
-  --error-color: #EF4444;
-  --error-bg: rgba(239, 68, 68, 0.2);
+  --error-color: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.15);
 
-  --info-color: #0284C7;
-  --info-bg: rgba(2, 132, 199, 0.2);
+  --info-color: #3b82f6;
+  --info-bg: rgba(59, 130, 246, 0.15);
+
+  /* Professional Dark Theme Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 
   /* Dashboard specific aliases for Dark Theme */
   --primary-dark: #3b82f6;
   --primary-darker: #2563eb;
   --primary-darkest: #1d4ed8;
-  --text-dark: #e2e8f0;
-  --text-darker: #f8fafc;
-  --text-gray: #94a3b8;
-  --text-slate-light: #64748b;
-  --bg-light: #0f172a;
-  --bg-gray-lighter: #1e293b;
-  --bg-blue-light: #1e3a8a;
-  --border-blue-light: #1e40af;
-  --border-gray-dark: #334155;
+  --text-dark: #e4e4e7;
+  --text-darker: #fafafa;
+  --text-gray: #a1a1aa;
+  --text-slate-light: #71717a;
+  --bg-light: #18181b;
+  --bg-gray-lighter: #27272a;
+  --bg-blue-light: rgba(59, 130, 246, 0.1); 
+  --border-blue-light: rgba(59, 130, 246, 0.2);
+  --border-gray-dark: #27272a;
+  
+  /* Additional overrides */
+  --card-bg: #18181b;
 }
 

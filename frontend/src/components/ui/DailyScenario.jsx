@@ -483,7 +483,7 @@ export default function DailyScenario({ onBackToDashboard }) {
         background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)",
         borderRadius: "12px",
         padding: "14px 20px",
-        color: "#0f172a",
+        color: "var(--text-primary, #0f172a)",
         position: "relative",
         overflow: "hidden",
         boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
@@ -503,14 +503,14 @@ export default function DailyScenario({ onBackToDashboard }) {
         </div>
 
         <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
-          <div style={{ width: "44px", height: "44px", background: "#ffffff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
+          <div style={{ width: "44px", height: "44px", background: "var(--bg-surface, #ffffff)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
             <Briefcase size={22} color="#2563eb" />
           </div>
           <div>
             <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
               Day {selectedDay} of 30 &bull; Workplace Simulation
             </span>
-            <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "#0f172a", letterSpacing: "-0.02em" }}>
+            <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
               Real-World Workplace Simulation
             </h1>
             <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
@@ -593,7 +593,7 @@ export default function DailyScenario({ onBackToDashboard }) {
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "800", color: "#0284c7", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
                   <Briefcase size={16} /> SITUATION BRIEFING
                 </div>
-                <p style={{ margin: 0, fontSize: "15px", color: "#0f172a", lineHeight: "1.65", fontWeight: 400 }}>
+                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", lineHeight: "1.65", fontWeight: 400 }}>
                   {currentScenario.situation}
                 </p>
               </div>
@@ -783,11 +783,11 @@ export default function DailyScenario({ onBackToDashboard }) {
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "4px" }}>
-                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Current Day</div>
-                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#0f172a", marginTop: "2px" }}>Day {selectedDay}</div>
+                  <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--text-primary, #0f172a)", marginTop: "2px" }}>Day {selectedDay}</div>
                 </div>
-                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Streak</div>
                   <div style={{ fontSize: "18px", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>{completedCount} Days</div>
                 </div>

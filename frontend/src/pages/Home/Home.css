@@ -64,7 +64,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 16px;
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   border: 1px solid #bfdbfe;
   border-radius: 9999px;
   color: #1d4ed8;
@@ -97,7 +97,7 @@
 
 /* --- Trust Metrics Banner --- */
 .hs-trust-banner {
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   border-bottom: 1px solid var(--hs-border);
   padding: 36px 5%;
 }
@@ -172,7 +172,7 @@
 }
 
 .hs-track-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid var(--hs-border);
   border-radius: 14px;
   padding: 24px;
@@ -234,7 +234,7 @@
 
 /* --- WIDE FULL-WIDTH CONTACT US SECTION --- */
 .hs-contact-wide-section {
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   border-top: 1px solid var(--hs-border);
   padding: 80px 5%;
 }
@@ -266,7 +266,7 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 18px 20px;
@@ -285,7 +285,7 @@
 }
 
 .hs-contact-form-wide {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 32px;
@@ -301,9 +301,9 @@
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 14px;
-  color: #0f172a;
+  color: var(--text-primary);
   outline: none;
-  background: #ffffff;
+  background: var(--bg-surface);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   font-family: inherit;
 }

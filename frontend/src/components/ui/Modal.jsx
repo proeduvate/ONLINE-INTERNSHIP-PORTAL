@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from './Button';
 import './Modal.css';
@@ -17,7 +18,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = '' }) => {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="modal-backdrop" onClick={onClose}>
       <div className={`modal-container ${className}`} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
@@ -32,4 +33,6 @@ export const Modal = ({ isOpen, onClose, title, children, className = '' }) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };

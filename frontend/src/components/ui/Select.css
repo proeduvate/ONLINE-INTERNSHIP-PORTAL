@@ -18,7 +18,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid var(--border-color, #d0d5dd);
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
   color: var(--text-dark, #101828);
   font-size: 14px;
   font-weight: 500;

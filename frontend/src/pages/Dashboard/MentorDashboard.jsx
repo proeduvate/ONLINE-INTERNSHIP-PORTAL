@@ -461,7 +461,7 @@ export default function MentorDashboard() {
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
                     <Tooltip 
                       cursor={{fill: '#f3f4f6'}}
-                      contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
                       wrapperStyle={{ zIndex: 1000 }}
                     />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
@@ -474,7 +474,7 @@ export default function MentorDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
@@ -483,7 +483,7 @@ export default function MentorDashboard() {
                     <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
                   </div>
                   
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
@@ -673,7 +673,7 @@ export default function MentorDashboard() {
                   </div>
 
                   <div style={{ marginBottom: "24px", display: "flex", justifyContent: "flex-end" }}>
-                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "var(--bg-surface, #ffffff)", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
                       <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
                         <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
                       </svg>
@@ -754,7 +754,7 @@ export default function MentorDashboard() {
             {detailSubTab === "Tasks" && (
               <div>
                 {editingTask ? (
-                  <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                  <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <h4 style={{ margin: 0 }}>Edit Task TSK-{editingTask.id}</h4>
                       <div style={{ display: "flex", gap: "8px" }}>
@@ -850,7 +850,7 @@ export default function MentorDashboard() {
                     </form>
                   </div>
                 ) : viewingTask ? (
-                  <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                  <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                         <button className="btn btn-secondary" style={{ padding: "4px 8px", display: "flex", alignItems: "center", gap: "6px" }} onClick={() => setViewingTask(null)}><ArrowLeft size={16} /> Back</button>
@@ -884,8 +884,8 @@ export default function MentorDashboard() {
                       <div style={{ padding: "16px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                         <h5 style={{ margin: "0 0 12px", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}><Laptop size={18} /> {viewingTask.codingQuestion.title}</h5>
                         <div style={{ fontSize: "14px", marginBottom: "16px", lineHeight: "1.5" }}>{viewingTask.codingQuestion.description}</div>
-                        <div style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", marginBottom: "6px" }}>Starter Code:</div>
-                        <pre style={{ backgroundColor: "#1e293b", color: "#f8fafc", padding: "16px", borderRadius: "8px", fontSize: "13px", overflowX: "auto", margin: "0 0 16px 0", fontFamily: "monospace" }}>
+                        <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted, #64748b)", marginBottom: "6px" }}>Starter Code:</div>
+                        <pre style={{ backgroundColor: "var(--text-primary, #1e293b)", color: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "8px", fontSize: "13px", overflowX: "auto", margin: "0 0 16px 0", fontFamily: "monospace" }}>
                           {viewingTask.codingQuestion.starterCode}
                         </pre>
                         <div style={{ fontSize: "13px", backgroundColor: "#fefce8", padding: "12px", borderRadius: "6px", border: "1px solid #fef08a" }}>
@@ -950,11 +950,11 @@ export default function MentorDashboard() {
                 <table className="table" style={{ margin: 0 }}>
                   <thead>
                     <tr>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>ID</th>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Question</th>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Points</th>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Status</th>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "#f8fafc" }}>Time Limit</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>ID</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Question</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Points</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Status</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Time Limit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -980,8 +980,8 @@ export default function MentorDashboard() {
                   </tbody>
                 </table>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderTop: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
-                <span style={{ fontSize: "13px", color: "#64748b" }}>Showing page {airdropPage} of {totalPages}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderTop: "1px solid #e2e8f0", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)" }}>Showing page {airdropPage} of {totalPages}</span>
                 <div style={{ display: "flex", gap: "8px" }}>
                   <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === 1} onClick={() => setAirdropPage(p => Math.max(1, p - 1))}>Previous</button>
                   <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === totalPages} onClick={() => setAirdropPage(p => Math.min(totalPages, p + 1))}>Next</button>
@@ -991,7 +991,7 @@ export default function MentorDashboard() {
 
             {showAirdropModal && (
               <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px" }}>
-                <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", width: "100%", maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+                <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", borderRadius: "16px", width: "100%", maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
                   
                   {/* Modal Header */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
@@ -1000,8 +1000,8 @@ export default function MentorDashboard() {
                         <Trophy size={20} />
                       </div>
                       <div>
-                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>Create New Bonus Airdrop</h3>
-                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>Create a time-bound bonus challenge for interns.</p>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "var(--text-primary, #1e293b)" }}>Create New Bonus Airdrop</h3>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--text-muted, #64748b)" }}>Create a time-bound bonus challenge for interns.</p>
                       </div>
                     </div>
                     <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}><X size={20} /></button>
@@ -1053,7 +1053,7 @@ export default function MentorDashboard() {
                       </div>
 
                       {/* Task Details Section */}
-                      <div style={{ backgroundColor: "#f8fafc", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
+                      <div style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
                           <ClipboardList size={16} />
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>
@@ -1092,7 +1092,7 @@ export default function MentorDashboard() {
                                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                   {["A", "B", "C", "D"].map((opt) => (
                                     <div key={opt} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 600, color: "#64748b", backgroundColor: "#ffffff" }}>
+                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 600, color: "var(--text-muted, #64748b)", backgroundColor: "var(--bg-surface, #ffffff)" }}>
                                         {opt}
                                       </div>
                                       <input 
@@ -1280,7 +1280,7 @@ export default function MentorDashboard() {
                             <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569" }}>Items in Correct Order <span style={{ color: "#ef4444" }}>*</span></label>
                             {newAirdrop.arrangeItems.map((item, idx) => (
                               <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                <span style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", width: "20px" }}>{idx + 1}.</span>
+                                <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted, #64748b)", width: "20px" }}>{idx + 1}.</span>
                                 <input 
                                   type="text" 
                                   required 
@@ -1335,7 +1335,7 @@ export default function MentorDashboard() {
                               display: "flex",
                               gap: "12px",
                               alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "#ffffff",
+                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
                               transition: "all 0.2s"
                             }}
                             onClick={() => setNewAirdrop({...newAirdrop, startMode: "Fixed Start Time"})}
@@ -1347,8 +1347,8 @@ export default function MentorDashboard() {
                               style={{ marginTop: "4px", accentColor: "#4f46e5" }}
                             />
                             <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Fixed Start Time</div>
-                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>All eligible interns start at the same time</div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Fixed Start Time</div>
+                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>All eligible interns start at the same time</div>
                             </div>
                           </div>
 
@@ -1362,7 +1362,7 @@ export default function MentorDashboard() {
                               display: "flex",
                               gap: "12px",
                               alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "#ffffff",
+                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
                               transition: "all 0.2s"
                             }}
                             onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
@@ -1374,8 +1374,8 @@ export default function MentorDashboard() {
                               style={{ marginTop: "4px", accentColor: "#4f46e5" }}
                             />
                             <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Flexible Start</div>
-                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>Interns can start anytime in the window</div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Flexible Start</div>
+                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>Interns can start anytime in the window</div>
                             </div>
                           </div>
                         </div>
@@ -1399,7 +1399,7 @@ export default function MentorDashboard() {
                               <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeHour: e.target.value})}>
                                 {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
                               </select>
-                              <span style={{ color: "#64748b" }}>:</span>
+                              <span style={{ color: "var(--text-muted, #64748b)" }}>:</span>
                               <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeMinute: e.target.value})}>
                                 {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
                               </select>
@@ -1429,7 +1429,7 @@ export default function MentorDashboard() {
                               <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeHour: e.target.value})}>
                                 {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
                               </select>
-                              <span style={{ color: "#64748b" }}>:</span>
+                              <span style={{ color: "var(--text-muted, #64748b)" }}>:</span>
                               <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeMinute: e.target.value})}>
                                 {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
                               </select>
@@ -1468,7 +1468,7 @@ export default function MentorDashboard() {
                             >
                               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
-                            <span style={{ fontSize: "11px", color: "#64748b", display: "block", marginTop: "4px" }}>Exact number of winners to be selected</span>
+                            <span style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", display: "block", marginTop: "4px" }}>Exact number of winners to be selected</span>
                           </div>
 
                           <div>
@@ -1500,7 +1500,7 @@ export default function MentorDashboard() {
                     </div>
 
                     {/* Modal Footer */}
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", padding: "16px 24px", borderTop: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", padding: "16px 24px", borderTop: "1px solid #f1f5f9", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
                       <button type="button" className="btn btn-secondary" style={{ padding: "10px 20px" }} onClick={() => setShowAirdropModal(false)}>Cancel</button>
                       <button type="submit" className="btn btn-primary" style={{ padding: "10px 20px" }}>Create Airdrop</button>
                     </div>
@@ -1519,7 +1519,7 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", overflowX: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
@@ -1569,14 +1569,14 @@ export default function MentorDashboard() {
                   fontSize: "14px",
                   fontWeight: isActive ? "600" : "500",
                   backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
-                  color: isActive ? "#ffffff" : "var(--text-color, #475569)",
+                  color: isActive ? "var(--bg-surface, #ffffff)" : "var(--text-color, #475569)",
                   boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
                   cursor: "pointer",
                   transition: "all 0.2s ease"
                 }}
               >
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.icon}</span>
-                <span style={{ color: isActive ? "#ffffff" : "inherit" }}>{tab.id}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.icon}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.id}</span>
               </button>
             );
           })}
@@ -1638,9 +1638,9 @@ export default function MentorDashboard() {
             
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
-                <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "#f8fafc" }}>
-                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#0f172a" }}>Dr. Ananya Menon</p>
-                  <p style={{ margin: 0, fontSize: "11px", color: "#64748b" }}>ananya@proedu.com</p>
+                <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Dr. Ananya Menon</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
                 </div>
                 <button
                   onClick={() => { setActiveTab("My Profile"); setIsProfileDropdownOpen(false); }}
@@ -1695,7 +1695,7 @@ export default function MentorDashboard() {
             zIndex: 99999,
             width: "320px",
             backgroundColor: "#1e1f22",
-            color: "#ffffff",
+            color: "var(--bg-surface, #ffffff)",
             borderRadius: "16px",
             boxShadow: "0 16px 40px rgba(0, 0, 0, 0.45)",
             border: "2px solid #5865f2",
@@ -1749,7 +1749,7 @@ export default function MentorDashboard() {
           right: "24px",
           width: "320px",
           height: "450px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--bg-surface, #ffffff)",
           borderRadius: "12px",
           boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
           display: "flex",
@@ -1759,7 +1759,7 @@ export default function MentorDashboard() {
           overflow: "hidden"
         }}>
           {/* Chat Header */}
-          <div style={{ padding: "12px 16px", backgroundColor: "#1e293b", color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "12px 16px", backgroundColor: "var(--text-primary, #1e293b)", color: "var(--bg-surface, #ffffff)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
               Chat with {selectedInternForChat}
@@ -1768,15 +1768,15 @@ export default function MentorDashboard() {
           </div>
 
           {/* Chat Messages */}
-          <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc" }}>
+          <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
             {chatMessages.map((msg, i) => (
               <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
                 <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
                   {msg.sender === "You" ? "" : `${msg.sender} - `}{msg.time}
                 </span>
                 <div style={{ 
-                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 
-                  color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "var(--bg-surface, #ffffff)", 
+                  color: msg.sender === "You" ? "var(--bg-surface, #ffffff)" : "var(--text-primary, #1e293b)", 
                   padding: "8px 12px", 
                   borderRadius: msg.sender === "You" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
                   border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none",
@@ -1790,13 +1790,13 @@ export default function MentorDashboard() {
           </div>
 
           {/* Chat Input */}
-          <form onSubmit={handleSendChatMessage} style={{ display: "flex", padding: "12px", borderTop: "1px solid #e2e8f0", backgroundColor: "#ffffff" }}>
+          <form onSubmit={handleSendChatMessage} style={{ display: "flex", padding: "12px", borderTop: "1px solid #e2e8f0", backgroundColor: "var(--bg-surface, #ffffff)" }}>
             <input 
               type="text" 
               placeholder="Type your message..." 
               value={currentMessage} 
               onChange={(e) => setCurrentMessage(e.target.value)} 
-              style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: "20px", padding: "8px 16px", fontSize: "13px", outline: "none", backgroundColor: "#f8fafc" }} 
+              style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: "20px", padding: "8px 16px", fontSize: "13px", outline: "none", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }} 
             />
             <button type="submit" style={{ background: "none", border: "none", color: "#3b82f6", fontWeight: "600", cursor: "pointer", marginLeft: "12px" }}>Send</button>
           </form>

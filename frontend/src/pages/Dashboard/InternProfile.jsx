@@ -31,7 +31,7 @@ export default function InternProfile() {
       
       {/* Left Sidebar Navigation */}
       <div style={{ width: "260px", flexShrink: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-        <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", marginBottom: "16px", paddingLeft: "12px" }}>Settings</h2>
+        <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", marginBottom: "16px", paddingLeft: "12px" }}>Settings</h2>
         
         <button 
           onClick={() => setActiveSettingsTab("personal")}
@@ -80,8 +80,8 @@ export default function InternProfile() {
         {activeSettingsTab === "personal" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
-              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: 700, color: "#0f172a" }}>Personal Information</h3>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Manage your personal details and how they appear on your profile.</p>
+              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Personal Information</h3>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your personal details and how they appear on your profile.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
@@ -96,7 +96,7 @@ export default function InternProfile() {
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
                     <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
-                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--surface-blue, #EFF7FF)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#0f172a", cursor: "pointer" }}>Change Photo</button>
+                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--surface-blue, #EFF7FF)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
                     <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
                   </div>
                   <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
@@ -108,11 +108,11 @@ export default function InternProfile() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#64748b", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#64748b", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -120,7 +120,7 @@ export default function InternProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#64748b", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -129,14 +129,14 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>GitHub ID</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#0f172a" }} />
+                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#0f172a" }} />
+                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
@@ -146,26 +146,26 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#0f172a" }} />
+                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
                     <div style={{ position: "relative" }}>
                       <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#0f172a" }} />
+                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "20px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "#0f172a", fontFamily: "inherit", resize: "none" }}></textarea>
+                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }}></textarea>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
                   <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#ffffff", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                     <Save size={16} /> Save Changes
                   </button>
                 </div>
@@ -178,12 +178,12 @@ export default function InternProfile() {
         {activeSettingsTab === "security" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
-              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "#0f172a" }}>Account Security</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "#64748b" }}>Manage your password and secure your account.</p>
+              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Account Security</h3>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and secure your account.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "#0f172a" }}>Change Password</h4>
+              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
               <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
                   <div>
@@ -213,7 +213,7 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>Confirm New Password</label>
                     <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
                   </div>
-                  <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#ffffff", cursor: "pointer", marginTop: "8px" }}>
+                  <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
                     Update Password
                   </button>
                 </div>
@@ -228,32 +228,32 @@ export default function InternProfile() {
         {activeSettingsTab === "notifications" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
-              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "#0f172a" }}>Notifications</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "#64748b" }}>Choose how you receive updates and alerts.</p>
+              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Notifications</h3>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Choose how you receive updates and alerts.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "#0f172a" }}>Email Notifications</h4>
+              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Email Notifications</h4>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "#0f172a" }}>Weekly Summary</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Receive a weekly email summarizing your progress.</p>
+                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Weekly Summary</h5>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Receive a weekly email summarizing your progress.</p>
                   </div>
                   <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "#0f172a" }}>Mentor Messages</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Get notified when a mentor replies to your ticket.</p>
+                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Mentor Messages</h5>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Get notified when a mentor replies to your ticket.</p>
                   </div>
                   <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "#0f172a" }}>New Airdrops</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Alerts when a new bonus challenge is available.</p>
+                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>New Airdrops</h5>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Alerts when a new bonus challenge is available.</p>
                   </div>
                   <input type="checkbox" style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
                 </div>

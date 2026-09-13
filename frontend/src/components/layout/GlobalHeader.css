@@ -82,7 +82,7 @@
 .hs-brand-name {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.03em;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .hs-nav-link:hover {
-  color: #0f172a;
+  color: var(--text-primary);
   background-color: #f1f5f9;
 }
 
@@ -129,13 +129,13 @@
 }
 
 .hs-nav-btn-track:hover {
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .hs-nav-btn-login {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid #cbd5e1;
-  color: #0f172a;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   padding: 7px 16px;
