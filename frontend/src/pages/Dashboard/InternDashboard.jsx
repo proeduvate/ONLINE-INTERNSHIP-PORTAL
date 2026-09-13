@@ -283,34 +283,33 @@ export default function InternDashboard() {
           const mappedTasks = data.map(t => ({
             id: t.id,
             day: t.day_number,
+            title: t.title,
             topic: t.title,
-            desc: t.description || `Learning materials for Day ${t.day_number}`,
-            notes: `Lecture_Notes_Day${t.day_number}.pdf`,
-            status: t.status, // "Not started", "in_progress", "completed"
-            day_attendance: t.day_attendance, // "present", "absent", "current", "future"
-            coding_prompt: t.coding_prompt,
+            status: t.status,
+            day_attendance: t.day_attendance,
+            description: t.description,
+            video_url: t.video_url,
+            document_url: t.document_url,
             mcq_questions: t.mcq_questions,
-            unlocked: t.unlocked
+            coding_prompt: t.coding_prompt,
+            unlocked: t.unlocked,
+            score: t.score,
+            ai_score: t.ai_score,
+            mentor_score: t.mentor_score,
+            mcq_score: t.mcq_score,
+            ai_feedback: t.ai_feedback,
+            mentor_feedback: t.mentor_feedback
           }));
           setCurriculumData(mappedTasks);
 
-          // Current day determination:
-          // 1. Pick the task marked "current" by backend (today's calendar day)
-          // 2. Else pick first unlocked+pending task
-          // 3. Else pick highest completed day (so UI stays on last done day, not Day 1)
-          // 4. Fallback to first task
-          const currentCalendarTask = mappedTasks.find(t => t.day_attendance === "current");
-          const firstUnlockedPending = mappedTasks.find(t => t.unlocked && t.status !== "completed");
-          const lastCompletedTask = [...mappedTasks].reverse().find(t => t.status === "completed");
-          
-          let currentDayTask = firstUnlockedPending; // Always prioritize the day they actually need to work on
-          if (!currentDayTask) {
-              currentDayTask = currentCalendarTask && currentCalendarTask.unlocked ? currentCalendarTask : lastCompletedTask || mappedTasks[0];
+          let maxUnlocked = 1;
+          for (let i = 0; i < mappedTasks.length; i++) {
+             if (mappedTasks[i].unlocked) {
+                maxUnlocked = mappedTasks[i].day;
+             }
           }
           
-          if (currentDayTask) {
-            setCurrentDay(currentDayTask.day);
-          }
+          setCurrentDay(maxUnlocked);
         }
       }
     } catch (e) {
@@ -867,7 +866,16 @@ export default function InternDashboard() {
                       <h4>Part A: MCQ Assessment</h4>
                       <p style={{ color: "var(--text-gray-muted)", fontSize: "13px" }}>Answer timed questions on today's concepts.</p>
                       {mcqDone ? (
-                        <span style={{ color: "var(--success-color)", fontWeight: "bold", fontSize: "14px" }}>✓ Completed. Score: {mcqGrade}%</span>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center", marginTop: "12px" }}>
+                          <span style={{ color: mcqGrade >= 50 ? "var(--success-color)" : "var(--danger-color)", fontWeight: "bold", fontSize: "14px" }}>
+                            {mcqGrade >= 50 ? "✓ Passed." : "❌ Failed."} Score: {mcqGrade}%
+                          </span>
+                          {mcqGrade < 50 && (
+                            <button className="btn btn-primary" onClick={() => { setMcqDone(false); setAssessmentView("mcq"); }} style={{ width: "100%" }}>
+                              Retry MCQ
+                            </button>
+                          )}
+                        </div>
                       ) : (
                         <button className="btn btn-primary" onClick={() => setAssessmentView("mcq")} style={{ width: "100%", marginTop: "12px" }}>Start MCQ</button>
                       )}

@@ -94,10 +94,16 @@ def start_mcq_assessment(day: int, db: Session = Depends(database.get_db), curre
     
     if attempt:
         if attempt.status == models.MCQAttemptStatus.SUBMITTED:
-            raise HTTPException(status_code=400, detail="This MCQ assessment has already been submitted.")
+            if attempt.percentage is not None and attempt.percentage < 50:
+                db.delete(attempt)
+                db.commit()
+                attempt = None
+            else:
+                raise HTTPException(status_code=400, detail="This MCQ assessment has already been submitted.")
         
-        # Return existing IN_PROGRESS attempt
-        selected_ids = json.loads(attempt.selected_question_ids)
+        if attempt:
+            # Return existing IN_PROGRESS attempt
+            selected_ids = json.loads(attempt.selected_question_ids)
         # Fetch the actual questions from the bank
         selected_questions = [q for q in all_questions if q["id"] in selected_ids]
         

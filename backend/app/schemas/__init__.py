@@ -357,7 +357,8 @@ class SimulationChoice(BaseModel):
 
 class SimulationScenarioResponse(BaseModel):
     day: int
-    simulation_title: str
+    title: str
+    subtitle: Optional[str] = None
     scenario_number: int
     scenario_id: str
     total_scenarios: int

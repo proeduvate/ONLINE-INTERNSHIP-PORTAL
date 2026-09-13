@@ -74,16 +74,28 @@ def get_current_simulation(
     if not sim_tasks:
         raise HTTPException(status_code=404, detail="No simulations available for this domain")
 
-    current_date = datetime.utcnow()
-    start_date = current_user.start_date or current_date
+    current_date_local = datetime.now()
+    start_date = current_user.start_date or current_date_local
     # Fetch all tasks and submissions to calculate the max unlocked day purely for simulations
     sim_tasks = db.query(models.Task).filter(
         models.Task.domain_id == current_user.domain_id,
         models.Task.task_type == "simulation"
     ).order_by(models.Task.day_number).all()
 
-    all_subs = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
-    sub_map = {s.task_id: s for s in all_subs}
+    all_subs = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).order_by(models.Submission.id.asc()).all()
+    
+    sub_map = {}
+    for sub in all_subs:
+        if sub.task_id not in sub_map:
+            sub_map[sub.task_id] = sub
+        else:
+            if sub.ai_feedback:
+                try:
+                    state = json.loads(sub.ai_feedback)
+                    if state.get("day_completed", False):
+                        sub_map[sub.task_id] = sub
+                except:
+                    pass
     
     completed_sim_days = set()
     completion_dates = {}
@@ -95,15 +107,20 @@ def get_current_simulation(
                 state = json.loads(s.ai_feedback)
                 if state.get("day_completed", False):
                     completed_sim_days.add(task_item.day_number)
-                    sub_date = s.submitted_at or s.started_at or current_date
-                    completion_dates[task_item.day_number] = sub_date
+                    sub_date = s.submitted_at or s.started_at
+                    if sub_date:
+                        utc_offset = current_date_local - datetime.utcnow()
+                        local_sub_date = sub_date + utc_offset
+                    else:
+                        local_sub_date = current_date_local
+                    completion_dates[task_item.day_number] = local_sub_date
             except Exception:
                 pass
 
     max_unlocked_day = 1
     unique_days = sorted(list(set([t.day_number for t in sim_tasks])))
     for d in unique_days:
-        if d in completed_sim_days and completion_dates[d].date() < current_date.date():
+        if d in completed_sim_days and completion_dates[d].date() < current_date_local.date():
             if d >= max_unlocked_day:
                 max_unlocked_day = d + 1
         else:
@@ -122,7 +139,7 @@ def get_current_simulation(
             current_submission = db.query(models.Submission).filter(
                 models.Submission.intern_id == current_user.id,
                 models.Submission.task_id == task.id
-            ).first()
+            ).order_by(models.Submission.id.desc()).first()
             break
             
     if not current_task:
@@ -132,7 +149,7 @@ def get_current_simulation(
             current_submission = db.query(models.Submission).filter(
                 models.Submission.intern_id == current_user.id,
                 models.Submission.task_id == current_task.id
-            ).first()
+            ).order_by(models.Submission.id.desc()).first()
         else:
             raise HTTPException(status_code=404, detail="No simulation scenario found for today")
 
@@ -193,8 +210,6 @@ def get_current_simulation(
     # But for the very first step, we might only have "start" as a placeholder and need to find root
     if current_scenario_val == "start" or current_scenario_val == "1":
         domain_query = current_task.domain.name
-        if domain_query.lower() in ["java", "python"]:
-            domain_query = "Backend"
             
         scenario = db.query(models.DailyScenario).filter(
             models.DailyScenario.domain.ilike(f"%{domain_query}%"),
@@ -237,7 +252,8 @@ def get_current_simulation(
         "total_scenarios": 1,
         "situation": scenario.scenario_text,
         "question": scenario.question_text or "What is your decision?",
-        "choices": choices
+        "choices": choices,
+        "completed": state.get("day_completed", False)
     }
 
 
@@ -268,7 +284,7 @@ def submit_decision(
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
-        ).first()
+        ).order_by(models.Submission.id.desc()).first()
         
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
@@ -365,8 +381,6 @@ def submit_decision(
     })
     
     domain_to_save = current_task.domain.name if current_task.domain else None
-    if domain_to_save and domain_to_save.lower() in ["java", "python"]:
-        domain_to_save = "Backend"
         
     # Store in the DB table as requested by user
     history_record = models.ScenarioHistory(

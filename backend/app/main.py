@@ -122,7 +122,6 @@ from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
 from app.api.v1.endpoints.mcq import router as mcq_router
 from app.api.v1.endpoints.questions import router as questions_router
-from routers import meetings
 
 # Initialize analytics DB
 from app.db.analytics_session import engine as analytics_engine
@@ -137,7 +136,6 @@ app.include_router(facts_router)
 app.include_router(simulation_router)
 app.include_router(mcq_router)
 app.include_router(questions_router, tags=["questions"])
-app.include_router(meetings.router)
 
 
 # ==========================================
@@ -467,22 +465,29 @@ def get_intern_tasks_with_unlock_status(
         models.Task.domain_id == current_user.domain_id,
         models.Task.task_type == "coding"
     ).order_by(models.Task.day_number).all()
-    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
+    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).order_by(models.Submission.id.asc()).all()
     
-    sub_map = {sub.task_id: sub for sub in submissions}
+    sub_map = {}
+    for sub in submissions:
+        if sub.task_id not in sub_map:
+            sub_map[sub.task_id] = sub
+        else:
+            if sub.status in ["submitted", "approved"]:
+                sub_map[sub.task_id] = sub
     
-    from datetime import datetime, timezone
-    current_date = datetime.now(timezone.utc)
-    start_date = current_user.start_date or current_date
-    # Use calendar date comparison (not 24-hour periods) so that
-    # Sep 11 → Sep 12 counts as Day 2 regardless of the time of day.
-    if hasattr(start_date, 'tzinfo') and start_date.tzinfo is None:
-        start_date_d = start_date.date()
-    else:
-        start_date_d = start_date.date() if hasattr(start_date, 'date') else start_date
-    internship_day = (current_date.date() - start_date_d).days + 1
-    if internship_day < 1:
-        internship_day = 1
+    current_date_local = datetime.now()
+    
+    # Calculate max_unlocked_day strictly based on when tasks were submitted
+    max_unlocked_day = 1
+    for t in tasks:
+        sub = sub_map.get(t.id)
+        if sub and sub.status in ["submitted", "approved"]:
+            if t.day_number >= max_unlocked_day:
+                max_unlocked_day = t.day_number + 1
+        else:
+            break
+            
+    internship_day = max_unlocked_day
 
     # Sequential Day Locking logic:
     # Day 1 is unlocked if internship_day >= 1
