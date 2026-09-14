@@ -1250,7 +1250,6 @@ export default function InternDashboard() {
               </div>
               )}
             </div>
-          </div>
         );
 
       case "Tickets":
