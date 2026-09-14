@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, Ticket } from "lucide-react";
-import "../../styles/Dashboard.css";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
-import AdminAirdropDetails from "./AdminAirdropDetails";
-
+import AdminLeaderboard from "./AdminLeaderboard";
+import MentorProfile from "./MentorProfile";
+import { PageContainer } from "../../components/layout/PageContainer";
+import { Button } from "../../components/ui/Button";
+import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
@@ -16,11 +18,28 @@ export default function MentorDashboard() {
   });
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [profileTab, setProfileTab] = useState("overview");
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
+
+  const handlePasswordChange = (e) => {
+    e.preventDefault();
+    if (pwForm.next !== pwForm.confirm) return alert("Passwords do not match.");
+    if (pwForm.next.length < 8) return alert("Password must be at least 8 characters.");
+    alert("Password updated successfully!");
+    setPwForm({ current: "", next: "", confirm: "" });
+  };
+
+  const mockNotifications = [
+    { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
+    { id: 2, text: "New support ticket assigned to you", time: "1 hour ago" },
+    { id: 3, text: "Breakout room session scheduled", time: "3 hours ago" }
+  ];
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
-  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
-  const [mentorAirdropPage, setMentorAirdropPage] = useState(1);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
   const defaultAirdropState = {
     title: "",
@@ -45,253 +64,116 @@ export default function MentorDashboard() {
   };
   const [newAirdrop, setNewAirdrop] = useState(defaultAirdropState);
 
+  const [airdropPage, setAirdropPage] = useState(1);
+  const [airdropFilter, setAirdropFilter] = useState("All");
+  const airdropsPerPage = 13;
+
   useEffect(() => {
-    const fetchAirdrops = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/bonus-airdrops", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setBonusAirdrops(data);
-        }
-      } catch (error) {
-        console.error("Error fetching airdrops:", error);
-      }
-    };
-    fetchAirdrops();
-  }, []);
-
-  const [ticketsList, setTicketsList] = useState([]);
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [ticketReply, setTicketReply] = useState("");
-
-  const fetchTickets = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/tickets", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setTicketsList(data);
-      }
-    } catch (e) {
-      console.error(e);
+    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
+    if (storedAirdrops) {
+      setBonusAirdrops(JSON.parse(storedAirdrops));
     }
-  };
-
-  useEffect(() => {
-    fetchTickets();
   }, []);
 
-  const handleReplyTicket = async (e) => {
+  const handleCreateAirdrop = (e) => {
     e.preventDefault();
-    if (!ticketReply.trim() || !selectedTicket) return;
+    if (!newAirdrop.title.trim()) return alert("Please enter an airdrop title.");
     
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ action: "message", message: ticketReply })
-      });
-      if (response.ok) {
-        const t = await response.json();
-        setTicketsList(ticketsList.map(tkt => tkt.id === selectedTicket.id ? t : tkt));
-        setSelectedTicket(t);
-        setTicketReply("");
+    // Validate based on taskType
+    if (newAirdrop.taskType === "Multiple Choice") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the question.");
+      if (!newAirdrop.mcqOptions.A.trim() || !newAirdrop.mcqOptions.B.trim() || !newAirdrop.mcqOptions.C.trim() || !newAirdrop.mcqOptions.D.trim()) {
+        return alert("Please fill all MCQ options A, B, C, and D.");
       }
-    } catch (error) {
-      console.error(error);
+      if (!newAirdrop.correctAnswer) return alert("Please select the correct option.");
+    } else if (newAirdrop.taskType === "Pattern / Sequence") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the pattern series.");
+      if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+    } else if (newAirdrop.taskType === "True / False") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the statement.");
+      if (!newAirdrop.correctAnswer) return alert("Please select the correct answer (True or False).");
+    } else if (newAirdrop.taskType === "Fill in the Blank") {
+      if (!newAirdrop.question.trim()) return alert("Please enter the sentence with blank.");
+      if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+    } else if (newAirdrop.taskType === "Match the Following") {
+      const invalidPair = newAirdrop.matchPairs.some(p => !p.key.trim() || !p.value.trim());
+      if (invalidPair || newAirdrop.matchPairs.length === 0) {
+        return alert("Please fill all Match pairs keys and values.");
+      }
+    } else if (newAirdrop.taskType === "Arrange in Order") {
+      const invalidItem = newAirdrop.arrangeItems.some(item => !item.trim());
+      if (invalidItem || newAirdrop.arrangeItems.length < 2) {
+        return alert("Please fill all items in correct order. At least 2 items are required.");
+      }
     }
-  };
 
-  const handleUpdateTicketStatus = async (status) => {
-    if (!selectedTicket) return;
-    try {
-      const token = localStorage.getItem("token");
-      const bodyPayload = { action: "resolve", resolution: "Resolved by Mentor" };
-        
-      const response = await fetch(`http://localhost:8000/tickets/${selectedTicket.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(bodyPayload)
-      });
-      if (response.ok) {
-        const t = await response.json();
-        setTicketsList(ticketsList.map(tkt => tkt.id === selectedTicket.id ? t : tkt));
-        setSelectedTicket(t);
-      }
-    } catch (error) {
-      console.error("Error updating ticket status:", error);
+    if (!newAirdrop.startDate || !newAirdrop.endDate) {
+      return alert("Please select start and end dates.");
     }
-  };
 
-    const handleCreateAirdrop = async (e) => {
-      e.preventDefault();
-      // ... basic validation omitted for brevity ...
-      
-      const taskTypeMapping = {
-        "Multiple Choice": "mcq",
-        "Pattern Series": "pattern",
-        "True / False": "true_false",
-        "Fill in the Blanks": "fill_blank",
-        "Match the Following": "match",
-        "Arrange in Order": "arrange"
-      };
-      const backendTaskType = taskTypeMapping[newAirdrop.taskType] || "mcq";
-
-      let taskConfig = {};
-      if (backendTaskType === "mcq") {
-        taskConfig = {
-          question: newAirdrop.question,
-          options: Object.values(newAirdrop.mcqOptions).filter(Boolean),
-          correct_answer: newAirdrop.correctAnswer
-        };
-      } else if (backendTaskType === "pattern") {
-        taskConfig = {
-          question: newAirdrop.question,
-          correct_answer: newAirdrop.correctAnswer
-        };
-      } else if (backendTaskType === "true_false") {
-        taskConfig = {
-          statement: newAirdrop.question,
-          correct_answer: newAirdrop.correctAnswer === "True"
-        };
-      } else if (backendTaskType === "fill_blank") {
-        taskConfig = {
-          question: newAirdrop.question,
-          correct_answer: newAirdrop.correctAnswer
-        };
-      } else if (backendTaskType === "match") {
-        const pairsDict = {};
-        if (newAirdrop.matchPairs) {
-          newAirdrop.matchPairs.forEach(p => { if (p.key && p.value) pairsDict[p.key] = p.value; });
-        }
-        taskConfig = { pairs: pairsDict };
-      } else if (backendTaskType === "arrange") {
-        const items = newAirdrop.arrangeItems ? newAirdrop.arrangeItems.filter(Boolean) : [];
-        taskConfig = {
-          items: items,
-          correct_order: items
-        };
-      }
-
-      const backendStartMode = newAirdrop.startMode === "Fixed Start Time" ? "fixed" : "flexible";
-
-      let startTimeISO = null;
-      let endTimeISO = null;
-      let calculatedTimeLimit = parseInt(newAirdrop.timeLimit) || 60;
-
-      if (backendStartMode === "fixed" && newAirdrop.startDate && newAirdrop.endDate) {
-        let hour = parseInt(newAirdrop.startTimeHour) || 0;
-        const min = parseInt(newAirdrop.startTimeMinute) || 0;
-        if (newAirdrop.startTimeAmPm === "PM" && hour < 12) hour += 12;
-        if (newAirdrop.startTimeAmPm === "AM" && hour === 12) hour = 0;
-        const startObj = new Date(`${newAirdrop.startDate}T${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`);
-        startTimeISO = startObj.toISOString();
-
-        let endHour = parseInt(newAirdrop.endTimeHour) || 0;
-        const endMin = parseInt(newAirdrop.endTimeMinute) || 0;
-        if (newAirdrop.endTimeAmPm === "PM" && endHour < 12) endHour += 12;
-        if (newAirdrop.endTimeAmPm === "AM" && endHour === 12) endHour = 0;
-        const endObj = new Date(`${newAirdrop.endDate}T${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}:00`);
-        endTimeISO = endObj.toISOString();
-      }
-
-      const pointsDist = (newAirdrop.points || []).filter(p => p).join(",");
-      
-      const newAirdropObj = {
-        title: newAirdrop.title,
-        description: newAirdrop.question || "Bonus Airdrop Challenge",
-        task_type: backendTaskType,
-        task_config: taskConfig,
-        start_mode: backendStartMode,
-        time_limit: calculatedTimeLimit,
-        start_time: startTimeISO,
-        end_time: endTimeISO,
-        points_distribution: pointsDist || "100",
-        winner_count: parseInt(newAirdrop.winners) || 3
-      };
-
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/bonus-airdrops", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(newAirdropObj)
-        });
-        if (response.ok) {
-          const createdAirdrop = await response.json();
-          setBonusAirdrops([...bonusAirdrops, createdAirdrop]);
-          setShowAirdropModal(false);
-          setNewAirdrop(defaultAirdropState);
-          alert("Bonus Airdrop created and sent to Admin for approval!");
-        }
-      } catch (err) {
-        console.error("Failed to create airdrop", err);
-        alert("Failed to create airdrop.");
-      }
+    const newAirdropObj = {
+      id: bonusAirdrops.length > 0 ? Math.max(...bonusAirdrops.map(a => a.id)) + 1 : 1,
+      title: newAirdrop.title,
+      taskType: newAirdrop.taskType,
+      question: newAirdrop.taskType === "Match the Following"
+        ? "Match the following pairs correctly."
+        : newAirdrop.taskType === "Arrange in Order"
+        ? "Arrange the items in the correct sequence."
+        : newAirdrop.question,
+      correctAnswer: newAirdrop.taskType === "Match the Following"
+        ? JSON.stringify(newAirdrop.matchPairs)
+        : newAirdrop.taskType === "Arrange in Order"
+        ? JSON.stringify(newAirdrop.arrangeItems)
+        : newAirdrop.correctAnswer,
+      mcqOptions: newAirdrop.taskType === "Multiple Choice" ? newAirdrop.mcqOptions : null,
+      matchPairs: newAirdrop.taskType === "Match the Following" ? newAirdrop.matchPairs : null,
+      arrangeItems: newAirdrop.taskType === "Arrange in Order" ? newAirdrop.arrangeItems : null,
+      startMode: newAirdrop.startMode,
+      startDate: newAirdrop.startDate,
+      startTime: `${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`,
+      endDate: newAirdrop.endDate,
+      endTime: `${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`,
+      winners: newAirdrop.winners,
+      points: newAirdrop.points.map(p => p || "0"),
+      timeLimit: newAirdrop.timeLimit || "60",
+      status: "PENDING_APPROVAL",
+      createdAt: new Date().toISOString()
     };
+
+    const updatedAirdrops = [...bonusAirdrops, newAirdropObj];
+    setBonusAirdrops(updatedAirdrops);
+    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+
+    setShowAirdropModal(false);
+    setNewAirdrop(defaultAirdropState);
+    alert("Bonus Airdrop created and sent to Admin for approval!");
+  };
 
   // State Mock Data
-  const [assignedInterns, setAssignedInterns] = useState([]);
-  const [batchesList, setBatchesList] = useState([]);
-  
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/leaderboard", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          // Map backend LeaderboardEntry to frontend user shape
-          const mappedUsers = data.map(item => ({
-            id: item.user_id,
-            name: item.user_name,
-            progress: Math.min(item.total_points, 100) + "%",
-            attendance: "95%",
-            score: Math.min(item.total_points + 10, 100) + "%", // mock score
-            weakAreas: "None",
-            batch: item.batch || "Unassigned"
-          }));
-          setAssignedInterns(mappedUsers);
-          
-          // Extract unique batches from leaderboard
-          const uniqueBatches = [...new Set(data.map(item => item.batch).filter(Boolean))];
-          setBatchesList(uniqueBatches.map(b => ({ name: b })));
-        }
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
+  const [assignedInterns] = useState([
+    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
+    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
+    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
+    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
+    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
+  ]);
 
-    fetchUsers();
-  }, []);
-
-  const [selectedBatch, setSelectedBatch] = useState("MIT");
+  const [selectedBatch, setSelectedBatch] = useState("Harvard");
 
   const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" }
+    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
+    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
   ]);
+  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
   const [meetings, setMeetings] = useState([
     { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" }
+    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
+    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
+    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
   ]);
 
   const [chatMessages, setChatMessages] = useState([
@@ -315,30 +197,30 @@ export default function MentorDashboard() {
     { day: "Day 3",  topic: "NumPy & Pandas Basics",            resources: "Kaggle Tutorial, Practice Dataset" },
     { day: "Day 4",  topic: "Data Visualization (Matplotlib)",  resources: "Seaborn Docs, Lab Exercise" },
     { day: "Day 5",  topic: "Statistics for ML",                resources: "Khan Academy, PDF Notes" },
-    { day: "Day 6",  topic: "Supervised Learning â€“ Regression", resources: "Slides, Colab Notebook" },
-    { day: "Day 7",  topic: "Supervised Learning â€“ Classification", resources: "Github Repo, Slides PDF" },
+    { day: "Day 6",  topic: "Supervised Learning - Regression", resources: "Slides, Colab Notebook" },
+    { day: "Day 7",  topic: "Supervised Learning - Classification", resources: "Github Repo, Slides PDF" },
     { day: "Day 8",  topic: "Model Evaluation & Metrics",       resources: "Scikit-learn Docs, Quiz" },
     { day: "Day 9",  topic: "Feature Engineering",              resources: "Kaggle Notebook, PDF" },
-    { day: "Day 10", topic: "Unsupervised Learning â€“ Clustering", resources: "K-Means Lab, Video" },
+    { day: "Day 10", topic: "Unsupervised Learning - Clustering", resources: "K-Means Lab, Video" },
     { day: "Day 11", topic: "Dimensionality Reduction (PCA)",   resources: "Slides, Code Exercise" },
     { day: "Day 12", topic: "Decision Trees & Random Forests",  resources: "Scikit-learn Guide, Notebook" },
     { day: "Day 13", topic: "Support Vector Machines",          resources: "Research Paper, Lab" },
-    { day: "Day 14", topic: "Neural Networks â€“ Basics",         resources: "3Blue1Brown Video, PDF" },
+    { day: "Day 14", topic: "Neural Networks - Basics",         resources: "3Blue1Brown Video, PDF" },
     { day: "Day 15", topic: "Mid-term Assessment",              resources: "Assessment Portal" },
     { day: "Day 16", topic: "Deep Learning with TensorFlow",    resources: "TF Docs, Colab" },
-    { day: "Day 17", topic: "CNN â€“ Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
-    { day: "Day 18", topic: "RNN & LSTM â€“ Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
-    { day: "Day 19", topic: "NLP â€“ Text Processing",            resources: "NLTK Docs, Notebook" },
+    { day: "Day 17", topic: "CNN - Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
+    { day: "Day 18", topic: "RNN & LSTM - Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
+    { day: "Day 19", topic: "NLP - Text Processing",            resources: "NLTK Docs, Notebook" },
     { day: "Day 20", topic: "Transformers & Attention",         resources: "Hugging Face Tutorial" },
     { day: "Day 21", topic: "Transfer Learning",                resources: "Keras Guide, Pretrained Models" },
-    { day: "Day 22", topic: "Model Deployment â€“ Flask API",     resources: "Flask Docs, Postman" },
+    { day: "Day 22", topic: "Model Deployment - Flask API",     resources: "Flask Docs, Postman" },
     { day: "Day 23", topic: "Docker & Cloud Basics",            resources: "Docker Tutorial, AWS Guide" },
     { day: "Day 24", topic: "MLOps Fundamentals",               resources: "MLflow Docs, Video" },
     { day: "Day 25", topic: "Project Planning & Architecture",  resources: "Project Template, Rubric" },
-    { day: "Day 26", topic: "Project â€“ Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
-    { day: "Day 27", topic: "Project â€“ Model Training",         resources: "Training Guide, GPU Colab" },
-    { day: "Day 28", topic: "Project â€“ Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
-    { day: "Day 29", topic: "Project â€“ Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
+    { day: "Day 26", topic: "Project - Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
+    { day: "Day 27", topic: "Project - Model Training",         resources: "Training Guide, GPU Colab" },
+    { day: "Day 28", topic: "Project - Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
+    { day: "Day 29", topic: "Project - Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
     { day: "Day 30", topic: "Final Presentation & Review",      resources: "Presentation Rubric, Feedback Form" },
   ]);
   const [tasks, setTasks] = useState(() => [
@@ -391,22 +273,7 @@ export default function MentorDashboard() {
   const [viewingTask, setViewingTask] = useState(null);
   const [taskDetailTab, setTaskDetailTab] = useState("MCQ"); // "MCQ" or "Coding"
   const [detailSubTab, setDetailSubTab] = useState("Curriculum");
-  const [leaderboardData, setLeaderboardData] = useState([]);
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/leaderboard");
-        if (response.ok) {
-          const data = await response.json();
-          setLeaderboardData(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch leaderboard", err);
-      }
-    };
-    fetchLeaderboard();
-  }, []);
 
   // Chart Data
   const backlogData = [
@@ -483,7 +350,9 @@ export default function MentorDashboard() {
           <div className="card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "280px" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "28px" }}>💬</span>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb" }}>
+                  <MessageSquare size={20} />
+                </div>
                 <h3 style={{ margin: 0 }}>Breakout Rooms Meeting</h3>
               </div>
               <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: "1.6", marginBottom: "20px" }}>
@@ -510,7 +379,9 @@ export default function MentorDashboard() {
           {/* Card 2: Schedule Meeting */}
           <div className="card" style={{ minHeight: "280px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <span style={{ fontSize: "28px" }}>📅</span>
+              <div style={{ width: "40px", height: "40px", borderRadius: "10px", backgroundColor: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", color: "#b45309" }}>
+                <Calendar size={20} />
+              </div>
               <h3 style={{ margin: 0 }}>Schedule a Future Meeting</h3>
             </div>
             <form onSubmit={handleScheduleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -558,39 +429,39 @@ export default function MentorDashboard() {
 
 
             <div className="grid">
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Assigned Interns</span>
                 <span className="stat-value">{assignedInterns.length}</span>
                 <span className="stat-desc">Tracking active progression</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Pending Reviews</span>
                 <span className="stat-value">{submissions.filter(s => s.status === "Pending").length}</span>
                 <span className="stat-desc">Awaiting your feedback & score</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Meetings Today</span>
                 <span className="stat-value">1</span>
                 <span className="stat-desc">Review meeting at 3:00 PM</span>
               </div>
-              <div className="stat-card">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Average Performance</span>
                 <span className="stat-value">83%</span>
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "24px" }}>
-              <div className="card" style={{ margin: 0, paddingBottom: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
-                <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={225}>
                   <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
                     <Tooltip 
                       cursor={{fill: '#f3f4f6'}}
-                      contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
                       wrapperStyle={{ zIndex: 1000 }}
                     />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
@@ -600,10 +471,10 @@ export default function MentorDashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="card" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
@@ -612,7 +483,7 @@ export default function MentorDashboard() {
                     <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
                   </div>
                   
-                  <div style={{ backgroundColor: "#ffffff", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
@@ -624,73 +495,42 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
-              <div className="card" style={{ marginBottom: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", flex: 1, minHeight: 0 }}>
+              <div className="card animate-slide-up" style={{ marginBottom: 0, display: 'flex', flexDirection: 'column', minHeight: 0, animationDelay: '0.7s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
-                <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>React Code Review</h4>
-                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Today, 2:00 PM - 3:00 PM</span>
+                <div style={{ padding: "12px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", flex: 1 }}>
+                  {meetings.length > 0 ? meetings.map((m, index) => (
+                    <div key={m.id || index} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>{m.title}</h4>
+                          <span style={{ fontSize: "12px", color: "#6b7280" }}>{m.time}</span>
+                        </div>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                          <span className={m.status === 'Scheduled' ? "badge badge-success" : "badge badge-warning"} style={{ fontSize: "10px" }}>{m.status === 'Upcoming' ? 'Meeting' : m.status}</span>
+                          <button 
+                            onClick={() => {
+                              setIsMeetingActive(true);
+                              localStorage.setItem("breakout_meeting_active", "true");
+                              setActiveTab("Breakout Rooms");
+                            }}
+                            className="btn btn-primary"
+                            style={{ padding: "4px 8px", fontSize: "11px", borderRadius: "4px" }}
+                          >
+                            Join
+                          </button>
+                        </div>
+                      </div>
+                      {index < meetings.length - 1 && <div style={{ borderTop: "1px solid #e5e7eb" }}></div>}
                     </div>
-                    <span className="badge badge-warning" style={{ fontSize: "10px" }}>Meeting</span>
-                  </div>
-                  <div style={{ borderTop: "1px solid #e5e7eb" }}></div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#1f2937" }}>Final Project Submissions</h4>
-                      <span style={{ fontSize: "12px", color: "#6b7280" }}>Tomorrow, 11:59 PM</span>
-                    </div>
-                    <span className="badge badge-danger" style={{ fontSize: "10px" }}>Deadline</span>
-                  </div>
+                  )) : (
+                    <div style={{ fontSize: "13px", color: "#6b7280", textAlign: "center", padding: "10px" }}>No upcoming meetings</div>
+                  )}
                 </div>
               </div>
 
-              <div className="card" style={{ marginBottom: 0 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <h3 style={{ margin: 0, fontSize: "16px" }}>Batch Leaderboard</h3>
-                  <select 
-                    value={selectedBatch} 
-                    onChange={(e) => setSelectedBatch(e.target.value)} 
-                    style={{ padding: "8px", borderRadius: "8px", border: "1px solid #e5e7eb", backgroundColor: "#f8fafc", fontSize: "14px", fontWeight: "600", outline: "none", cursor: "pointer" }}
-                  >
-                    {batchesList.map((b, i) => (
-                      <option key={i} value={b.name}>{b.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="table-container" style={{ margin: 0 }}>
-                  <table className="table" style={{ margin: 0, fontSize: "13px" }}>
-                    <thead>
-                      <tr>
-                        <th style={{ padding: "8px 12px" }}>Rank</th>
-                        <th style={{ padding: "8px 12px" }}>Intern Name</th>
-                        <th style={{ padding: "8px 12px", textAlign: "right" }}>Avg Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {leaderboardData
-                        .filter(intern => intern.batch === selectedBatch)
-                        .slice(0, 10)
-                        .map((intern, i) => (
-                          <tr key={intern.user_id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                            <td style={{ padding: "8px 12px", fontWeight: "bold", color: i < 3 ? "var(--primary-color)" : "inherit" }}>
-                              {intern.rank}
-                            </td>
-                            <td style={{ padding: "8px 12px", fontWeight: 500 }}>{intern.user_name}</td>
-                            <td style={{ padding: "8px 12px" }}>{intern.total_points} pts</td>
-                          </tr>
-                        ))}
-                      {leaderboardData.filter(intern => intern.batch === selectedBatch).length === 0 && (
-                        <tr>
-                          <td colSpan="3" style={{ padding: "16px", textAlign: "center", color: "#6b7280" }}>
-                            No data for this batch yet.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+              <div className="animate-slide-up" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.8s' }}>
+                <AdminLeaderboard usersList={assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
               </div>
             </div>
           </>
@@ -776,70 +616,99 @@ export default function MentorDashboard() {
           <div>
             {/* Row 1: Submissions review & grading */}
             <div className="card">
+              <h3 style={{ marginBottom: "16px" }}>Submissions Review</h3>
               {submissions.filter(s => s.status === "Pending").length === 0 ? (
                 <p style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}><Trophy size={18} color="#10b981" /> All submissions have been evaluated!</p>
               ) : (
-                submissions.filter(s => s.status === "Pending").map(sub => {
-                  let tempScore = "";
-                  let tempFeedback = "";
-                  return (
-                    <div key={sub.id} className="card" style={{ border: "1px solid #E5E7EB", background: "#ffffff", marginBottom: "16px", padding: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                        {/* Left Side: Intern Details & AI Analysis */}
-                        <div>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                            <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
-                              {sub.intern.split(" ")[0][0]}{sub.intern.split(" ")[1] ? sub.intern.split(" ")[1][0] : ""}
-                            </div>
-                            <div>
-                              <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>{sub.intern}</h4>
-                              <div style={{ fontSize: "13px", color: "#6b7280" }}>Task: <span style={{ fontWeight: 600, color: "#374151" }}>{sub.task}</span></div>
-                            </div>
-                          </div>
-                          
-                          <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "12px", borderRadius: "8px", fontSize: "12px", color: "#1E3A8A" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "4px", fontSize: "13px" }}>
-                              <Bot size={16} /> AI Evaluation: {sub.aiScore}
-                            </div>
-                            <div style={{ lineHeight: "1.5" }}>{sub.aiFeedback}</div>
-                          </div>
-                        </div>
-
-                        {/* Right Side: GitHub, Inputs & Actions */}
-                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                          <div style={{ alignSelf: "flex-end" }}>
-                            <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "8px 16px", backgroundColor: "#24292e", color: "#ffffff", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "600", transition: "opacity 0.2s" }}>
-                              <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
-                                <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                              </svg>
-                              View on GitHub
-                            </a>
-                          </div>
-
-                          <div style={{ marginTop: "16px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", marginBottom: "12px" }}>
-                              <div>
-                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Final Score</label>
-                                <input className="form-control" placeholder="e.g. 85%" onChange={(e) => { tempScore = e.target.value; }} style={{ margin: 0 }} />
-                              </div>
-                              <div>
-                                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#4b5563", marginBottom: "4px" }}>Mentor Feedback</label>
-                                <input className="form-control" placeholder="Constructive remarks..." onChange={(e) => { tempFeedback = e.target.value; }} style={{ margin: 0 }} />
-                              </div>
-                            </div>
-
-                            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-                              <button onClick={() => handleReviewSubmission(sub.id, "Reject", "0%", tempFeedback || "Needs rework")} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "8px 24px" }}>Reject</button>
-                              <button onClick={() => handleReviewSubmission(sub.id, "Approve", tempScore || "80%", tempFeedback || "Approved")} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "8px 24px" }}>Approve</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
+                <div className="table-container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Intern</th>
+                        <th>Task</th>
+                        <th>Domain</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {submissions.filter(s => s.status === "Pending").map(sub => (
+                        <tr key={sub.id}>
+                          <td style={{ fontWeight: 600 }}>{sub.intern}</td>
+                          <td>{sub.task}</td>
+                          <td>{sub.domain}</td>
+                          <td><span className="badge badge-warning">{sub.status}</span></td>
+                          <td>
+                            <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px" }} onClick={() => setSelectedEvaluation(sub)}>Review</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
+
+            {selectedEvaluation && (
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+                <div style={{ backgroundColor: "#fff", width: "700px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", maxHeight: "90vh", overflowY: "auto" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Evaluation Details</h2>
+                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center" }}><X size={16} /></button>
+                  </div>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Intern:</span> {selectedEvaluation.intern}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Domain:</span> {selectedEvaluation.domain}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Curriculum:</span> {selectedEvaluation.curriculum}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Task:</span> {selectedEvaluation.task}</div>
+                    <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>MCQ Results:</span> {selectedEvaluation.mcqResults}</div>
+                  </div>
+
+                  <div style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", padding: "16px", borderRadius: "8px", color: "#1E3A8A", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, marginBottom: "8px", fontSize: "14px" }}>
+                      <Bot size={18} /> AI Evaluation: {selectedEvaluation.aiScore}
+                    </div>
+                    <div style={{ lineHeight: "1.5", fontSize: "13px" }}>{selectedEvaluation.aiFeedback}</div>
+                  </div>
+
+                  <div style={{ marginBottom: "24px", display: "flex", justifyContent: "flex-end" }}>
+                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "var(--bg-surface, #ffffff)", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                      <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
+                        <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                      </svg>
+                      View on GitHub
+                    </a>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "20px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Final Score</label>
+                      <input id="modalTempScore" className="form-control" placeholder="e.g. 85%" style={{ margin: 0 }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Mentor Feedback</label>
+                      <input id="modalTempFeedback" className="form-control" placeholder="Constructive remarks..." style={{ margin: 0 }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end", paddingTop: "16px", borderTop: "1px solid var(--border-color)" }}>
+                    <button onClick={() => {
+                      const score = document.getElementById("modalTempScore").value;
+                      const feedback = document.getElementById("modalTempFeedback").value;
+                      handleReviewSubmission(selectedEvaluation.id, "Reject", score || "0%", feedback || "Needs rework");
+                      setSelectedEvaluation(null);
+                    }} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "10px 24px", fontWeight: 600 }}>Reject</button>
+                    <button onClick={() => {
+                      const score = document.getElementById("modalTempScore").value;
+                      const feedback = document.getElementById("modalTempFeedback").value;
+                      handleReviewSubmission(selectedEvaluation.id, "Approve", score || "80%", feedback || "Approved");
+                      setSelectedEvaluation(null);
+                    }} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "10px 24px", fontWeight: 600 }}>Approve</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 
@@ -885,7 +754,7 @@ export default function MentorDashboard() {
             {detailSubTab === "Tasks" && (
               <div>
                 {editingTask ? (
-                  <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                  <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <h4 style={{ margin: 0 }}>Edit Task TSK-{editingTask.id}</h4>
                       <div style={{ display: "flex", gap: "8px" }}>
@@ -981,10 +850,10 @@ export default function MentorDashboard() {
                     </form>
                   </div>
                 ) : viewingTask ? (
-                  <div className="card" style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                  <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <button className="btn btn-secondary" style={{ padding: "4px 8px" }} onClick={() => setViewingTask(null)}>← Back</button>
+                        <button className="btn btn-secondary" style={{ padding: "4px 8px", display: "flex", alignItems: "center", gap: "6px" }} onClick={() => setViewingTask(null)}><ArrowLeft size={16} /> Back</button>
                         <h4 style={{ margin: 0 }}>View Task TSK-{viewingTask.id}: {viewingTask.title}</h4>
                         <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px", marginLeft: "8px" }} onClick={() => { setEditingTask(viewingTask); setViewingTask(null); setTaskDetailTab("General"); }}>Edit Task</button>
                       </div>
@@ -1002,7 +871,7 @@ export default function MentorDashboard() {
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                               {mcq.options.map((opt, oi) => (
                                 <div key={oi} style={{ fontSize: "13px", padding: "8px 12px", borderRadius: "6px", backgroundColor: oi === mcq.answer ? "#dcfce7" : "#f1f5f9", border: `1px solid ${oi === mcq.answer ? "#86efac" : "transparent"}` }}>
-                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi]}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right" }}>✅</span>}
+                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi]}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right", color: "#16a34a", display: "flex" }}><CheckCircle2 size={16} /></span>}
                                 </div>
                               ))}
                             </div>
@@ -1013,10 +882,10 @@ export default function MentorDashboard() {
 
                     {taskDetailTab === "Coding" && (
                       <div style={{ padding: "16px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                        <h5 style={{ margin: "0 0 12px", fontSize: "16px" }}>💻 {viewingTask.codingQuestion.title}</h5>
+                        <h5 style={{ margin: "0 0 12px", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}><Laptop size={18} /> {viewingTask.codingQuestion.title}</h5>
                         <div style={{ fontSize: "14px", marginBottom: "16px", lineHeight: "1.5" }}>{viewingTask.codingQuestion.description}</div>
-                        <div style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", marginBottom: "6px" }}>Starter Code:</div>
-                        <pre style={{ backgroundColor: "#1e293b", color: "#f8fafc", padding: "16px", borderRadius: "8px", fontSize: "13px", overflowX: "auto", margin: "0 0 16px 0", fontFamily: "monospace" }}>
+                        <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted, #64748b)", marginBottom: "6px" }}>Starter Code:</div>
+                        <pre style={{ backgroundColor: "var(--text-primary, #1e293b)", color: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "8px", fontSize: "13px", overflowX: "auto", margin: "0 0 16px 0", fontFamily: "monospace" }}>
                           {viewingTask.codingQuestion.starterCode}
                         </pre>
                         <div style={{ fontSize: "13px", backgroundColor: "#fefce8", padding: "12px", borderRadius: "6px", border: "1px solid #fef08a" }}>
@@ -1049,110 +918,80 @@ export default function MentorDashboard() {
             )}
           </div>
         );
-      case "Bonus Airdrops":
-        if (selectedAirdrop) {
-          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} role="mentor" />;
-        }
-        
-        const reversedAirdrops = [...bonusAirdrops].reverse();
-        const indexOfLastAirdrop = mentorAirdropPage * 10;
-        const indexOfFirstAirdrop = indexOfLastAirdrop - 10;
-        const currentAirdrops = reversedAirdrops.slice(indexOfFirstAirdrop, indexOfLastAirdrop);
-        const totalPages = Math.ceil(reversedAirdrops.length / 10);
-        
+      case "Bonus Airdrops": {
+        const filteredAirdrops = bonusAirdrops.filter(a => {
+          if (airdropFilter === "All") return true;
+          if (airdropFilter === "Active") return a.status === "Active" || a.status === "ACTIVE" || a.status === "APPROVED";
+          if (airdropFilter === "Completed") return a.status === "Completed" || a.status === "FINALIZED" || a.status === "COMPLETED";
+          return a.status === airdropFilter;
+        });
+        const totalPages = Math.ceil(filteredAirdrops.length / airdropsPerPage) || 1;
+        const currentAirdrops = [...filteredAirdrops].reverse().slice((airdropPage - 1) * airdropsPerPage, airdropPage * airdropsPerPage);
+
         return (
-          <div style={{ position: "relative", height: "100%" }}>
+          <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column" }}>
             
-            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
-              <div className="table-container" style={{ margin: 0 }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+              <select 
+                className="form-control" 
+                style={{ width: "220px", margin: 0 }} 
+                value={airdropFilter} 
+                onChange={(e) => { setAirdropFilter(e.target.value); setAirdropPage(1); }}
+              >
+                <option value="All">All Statuses</option>
+                <option value="Active">Active / Approved</option>
+                <option value="Completed">Completed / Finalized</option>
+                <option value="PENDING_APPROVAL">Pending Approval</option>
+              </select>
+            </div>
+
+            <div className="card" style={{ padding: "0", overflow: "hidden", flex: 1, display: "flex", flexDirection: "column" }}>
+              <div className="table-container" style={{ margin: 0, flex: 1, overflowY: "auto" }}>
                 <table className="table" style={{ margin: 0 }}>
                   <thead>
                     <tr>
-                      <th style={{ padding: "12px 16px" }}>ID</th>
-                      <th style={{ padding: "12px 16px" }}>Question</th>
-                      <th style={{ padding: "12px 16px" }}>Points</th>
-                      <th style={{ padding: "12px 16px" }}>Status</th>
-                      <th style={{ padding: "12px 16px" }}>Mode & Time Limit</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>ID</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Question</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Points</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Status</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Time Limit</th>
                     </tr>
                   </thead>
                   <tbody>
                     {currentAirdrops.length === 0 ? (
                       <tr>
-                        <td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops created yet.</td>
+                        <td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops found.</td>
                       </tr>
                     ) : (
                       currentAirdrops.map(airdrop => (
-                        <tr 
-                          key={airdrop.id}
-                          onClick={() => setSelectedAirdrop(airdrop)}
-                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        >
+                        <tr key={airdrop.id}>
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{(airdrop.title || "").length > 50 ? airdrop.title.substring(0, 50) + "..." : (airdrop.title || "N/A")}</td>
-                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{airdrop.points_distribution ? airdrop.points_distribution.split(',')[0] : 0} pts</td>
+                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 60 ? airdrop.question.substring(0, 60) + "..." : airdrop.question}</td>
+                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
                           <td style={{ padding: "12px 16px" }}>
-                            <span 
-                              className="badge"
-                              style={{
-                                backgroundColor: airdrop.status === 'PUBLISHED' ? '#dcfce7' : 
-                                                 airdrop.status === 'FINALIZED' ? '#dcfce7' : 
-                                                 airdrop.status === 'PENDING_APPROVAL' ? '#fef08a' : 
-                                                 (airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? '#fee2e2' : '#f1f5f9',
-                                color: airdrop.status === 'PUBLISHED' ? '#166534' : 
-                                       airdrop.status === 'FINALIZED' ? '#166534' : 
-                                       airdrop.status === 'PENDING_APPROVAL' ? '#854d0e' : 
-                                       (airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? '#991b1b' : '#475569',
-                                padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600'
-                              }}
-                            >
-                              {(airdrop.status === 'DRAFT' && airdrop.rejection_reason) ? 'REJECTED' : airdrop.status}
+                            <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'Active' || airdrop.status === 'ACTIVE' ? 'badge-primary' : airdrop.status === 'FINALIZED' || airdrop.status === 'Completed' || airdrop.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`}>
+                              {airdrop.status}
                             </span>
                           </td>
-                          <td style={{ padding: "12px 16px", color: "#6b7280", fontSize: "13px" }}>
-                            <span style={{ fontWeight: 600, color: airdrop.start_mode === 'fixed' ? '#ef4444' : '#3b82f6' }}>{airdrop.start_mode === 'fixed' ? 'Fixed' : 'Flexible'}</span><br/>
-                            {airdrop.start_mode === 'fixed' ? (airdrop.start_time ? (() => {
-                              const t = airdrop.start_time.endsWith('Z') ? airdrop.start_time : airdrop.start_time + 'Z';
-                              const s = new Date(t);
-                              const e = new Date(s.getTime() + airdrop.time_limit * 1000);
-                              const opts = {hour: '2-digit', minute:'2-digit'};
-                              return `${s.toLocaleTimeString([], opts)} - ${e.toLocaleTimeString([], opts)}`;
-                            })() : 'N/A') : `${airdrop.time_limit}s`}
-                          </td>
+                          <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
                         </tr>
                       ))
                     )}
                   </tbody>
                 </table>
               </div>
-              
-              {totalPages > 1 && (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px', gap: '8px', borderTop: '1px solid #f1f5f9' }}>
-                  <button 
-                    onClick={() => setMentorAirdropPage(prev => Math.max(prev - 1, 1))}
-                    disabled={mentorAirdropPage === 1}
-                    style={{ padding: '6px 12px', border: '1px solid #cbd5e1', backgroundColor: mentorAirdropPage === 1 ? '#f8fafc' : '#fff', color: mentorAirdropPage === 1 ? '#94a3b8' : '#334155', borderRadius: '4px', cursor: mentorAirdropPage === 1 ? 'not-allowed' : 'pointer' }}
-                  >
-                    Previous
-                  </button>
-                  <span style={{ padding: '6px 12px', fontSize: '14px', color: '#475569' }}>
-                    Page {mentorAirdropPage} of {totalPages}
-                  </span>
-                  <button 
-                    onClick={() => setMentorAirdropPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={mentorAirdropPage === totalPages}
-                    style={{ padding: '6px 12px', border: '1px solid #cbd5e1', backgroundColor: mentorAirdropPage === totalPages ? '#f8fafc' : '#fff', color: mentorAirdropPage === totalPages ? '#94a3b8' : '#334155', borderRadius: '4px', cursor: mentorAirdropPage === totalPages ? 'not-allowed' : 'pointer' }}
-                  >
-                    Next
-                  </button>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderTop: "1px solid #e2e8f0", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)" }}>Showing page {airdropPage} of {totalPages}</span>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === 1} onClick={() => setAirdropPage(p => Math.max(1, p - 1))}>Previous</button>
+                  <button className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }} disabled={airdropPage === totalPages} onClick={() => setAirdropPage(p => Math.min(totalPages, p + 1))}>Next</button>
                 </div>
-              )}
+              </div>
             </div>
 
             {showAirdropModal && (
               <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px" }}>
-                <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", width: "100%", maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+                <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", borderRadius: "16px", width: "100%", maxWidth: "680px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
                   
                   {/* Modal Header */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
@@ -1161,11 +1000,11 @@ export default function MentorDashboard() {
                         <Trophy size={20} />
                       </div>
                       <div>
-                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>Create New Bonus Airdrop</h3>
-                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>Create a time-bound bonus challenge for interns.</p>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "var(--text-primary, #1e293b)" }}>Create New Bonus Airdrop</h3>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--text-muted, #64748b)" }}>Create a time-bound bonus challenge for interns.</p>
                       </div>
                     </div>
-                    <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>✕</button>
+                    <button type="button" onClick={() => setShowAirdropModal(false)} style={{ background: "none", border: "none", fontSize: "20px", color: "#94a3b8", cursor: "pointer", transition: "color 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => e.target.style.color = "#475569"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}><X size={20} /></button>
                   </div>
 
                   <form onSubmit={handleCreateAirdrop} style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
@@ -1214,7 +1053,7 @@ export default function MentorDashboard() {
                       </div>
 
                       {/* Task Details Section */}
-                      <div style={{ backgroundColor: "#f8fafc", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
+                      <div style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "12px", padding: "16px 20px", border: "1px solid #f1f5f9" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
                           <ClipboardList size={16} />
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>
@@ -1253,7 +1092,7 @@ export default function MentorDashboard() {
                                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                   {["A", "B", "C", "D"].map((opt) => (
                                     <div key={opt} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 600, color: "#64748b", backgroundColor: "#ffffff" }}>
+                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 600, color: "var(--text-muted, #64748b)", backgroundColor: "var(--bg-surface, #ffffff)" }}>
                                         {opt}
                                       </div>
                                       <input 
@@ -1401,7 +1240,7 @@ export default function MentorDashboard() {
                                     setNewAirdrop({...newAirdrop, matchPairs: updated});
                                   }} 
                                 />
-                                <span style={{ color: "#94a3b8", fontWeight: "bold" }}>➔</span>
+                                <span style={{ color: "#94a3b8", fontWeight: "bold", display: "flex", alignItems: "center" }}><ArrowRight size={14} /></span>
                                 <input 
                                   type="text" 
                                   required 
@@ -1416,10 +1255,10 @@ export default function MentorDashboard() {
                                   }} 
                                 />
                                 {newAirdrop.matchPairs.length > 1 && (
-                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
+                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px", display: "flex", alignItems: "center" }} onClick={() => {
                                     const updated = newAirdrop.matchPairs.filter((_, i) => i !== idx);
                                     setNewAirdrop({...newAirdrop, matchPairs: updated});
-                                  }}>🗑️</button>
+                                  }}><Trash2 size={16} /></button>
                                 )}
                               </div>
                             ))}
@@ -1441,7 +1280,7 @@ export default function MentorDashboard() {
                             <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569" }}>Items in Correct Order <span style={{ color: "#ef4444" }}>*</span></label>
                             {newAirdrop.arrangeItems.map((item, idx) => (
                               <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                <span style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", width: "20px" }}>{idx + 1}.</span>
+                                <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted, #64748b)", width: "20px" }}>{idx + 1}.</span>
                                 <input 
                                   type="text" 
                                   required 
@@ -1456,10 +1295,10 @@ export default function MentorDashboard() {
                                   }} 
                                 />
                                 {newAirdrop.arrangeItems.length > 2 && (
-                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px" }} onClick={() => {
+                                  <button type="button" style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "16px", display: "flex", alignItems: "center" }} onClick={() => {
                                     const updated = newAirdrop.arrangeItems.filter((_, i) => i !== idx);
                                     setNewAirdrop({...newAirdrop, arrangeItems: updated});
-                                  }}>🗑️</button>
+                                  }}><Trash2 size={16} /></button>
                                 )}
                               </div>
                             ))}
@@ -1485,7 +1324,7 @@ export default function MentorDashboard() {
                         </div>
 
                         <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "16px" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                           {/* Fixed Start Time Option */}
                           <div 
                             style={{ 
@@ -1496,7 +1335,7 @@ export default function MentorDashboard() {
                               display: "flex",
                               gap: "12px",
                               alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "#ffffff",
+                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
                               transition: "all 0.2s"
                             }}
                             onClick={() => setNewAirdrop({...newAirdrop, startMode: "Fixed Start Time"})}
@@ -1508,89 +1347,99 @@ export default function MentorDashboard() {
                               style={{ marginTop: "4px", accentColor: "#4f46e5" }}
                             />
                             <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "#1e293b" }}>Fixed Start Time</div>
-                              <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>All eligible interns start at the same time</div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Fixed Start Time</div>
+                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>All eligible interns start at the same time</div>
+                            </div>
+                          </div>
+
+                          {/* Flexible Start Option */}
+                          <div 
+                            style={{ 
+                              border: newAirdrop.startMode === "Flexible Start" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
+                              borderRadius: "10px",
+                              padding: "12px 16px",
+                              cursor: "pointer",
+                              display: "flex",
+                              gap: "12px",
+                              alignItems: "flex-start",
+                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
+                              transition: "all 0.2s"
+                            }}
+                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
+                          >
+                            <input 
+                              type="radio" 
+                              checked={newAirdrop.startMode === "Flexible Start"} 
+                              readOnly 
+                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Flexible Start</div>
+                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>Interns can start anytime in the window</div>
                             </div>
                           </div>
                         </div>
 
-                        <div style={{ marginBottom: "16px" }}>
-                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (in seconds) <span style={{ color: "#ef4444" }}>*</span></label>
-                          <input 
-                            type="number" 
-                            required 
-                            className="form-control" 
-                            style={{ width: "100%", margin: 0 }} 
-                            value={newAirdrop.timeLimit || ""} 
-                            onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} 
-                            placeholder="e.g. 60 for 1 minute"
-                          />
+                        {/* Dates and Dropdowns */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px", marginBottom: "12px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Date <span style={{ color: "#ef4444" }}>*</span></label>
+                            <input 
+                              type="date" 
+                              required
+                              className="form-control" 
+                              style={{ width: "100%", margin: 0 }} 
+                              value={newAirdrop.startDate} 
+                              onChange={(e) => setNewAirdrop({...newAirdrop, startDate: e.target.value})} 
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Time <span style={{ color: "#ef4444" }}>*</span></label>
+                            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeHour: e.target.value})}>
+                                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
+                              </select>
+                              <span style={{ color: "var(--text-muted, #64748b)" }}>:</span>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeMinute: e.target.value})}>
+                                {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeAmPm: e.target.value})}>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
 
-                        {newAirdrop.startMode === "Fixed Start Time" && (
-                          <>
-                            {/* Dates and Dropdowns */}
-                            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px", marginBottom: "12px" }}>
-                              <div>
-                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Date <span style={{ color: "#ef4444" }}>*</span></label>
-                                <input 
-                                  type="date" 
-                                  required
-                                  className="form-control" 
-                                  style={{ width: "100%", margin: 0 }} 
-                                  value={newAirdrop.startDate} 
-                                  onChange={(e) => setNewAirdrop({...newAirdrop, startDate: e.target.value})} 
-                                />
-                              </div>
-                              <div>
-                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Start Time <span style={{ color: "#ef4444" }}>*</span></label>
-                                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeHour: e.target.value})}>
-                                    {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
-                                  </select>
-                                  <span style={{ color: "#64748b" }}>:</span>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeMinute: e.target.value})}>
-                                    {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
-                                  </select>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.startTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, startTimeAmPm: e.target.value})}>
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                  </select>
-                                </div>
-                              </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Date <span style={{ color: "#ef4444" }}>*</span></label>
+                            <input 
+                              type="date" 
+                              required
+                              className="form-control" 
+                              style={{ width: "100%", margin: 0 }} 
+                              value={newAirdrop.endDate} 
+                              onChange={(e) => setNewAirdrop({...newAirdrop, endDate: e.target.value})} 
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Time <span style={{ color: "#ef4444" }}>*</span></label>
+                            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeHour: e.target.value})}>
+                                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
+                              </select>
+                              <span style={{ color: "var(--text-muted, #64748b)" }}>:</span>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeMinute: e.target.value})}>
+                                {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeAmPm: e.target.value})}>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                              </select>
                             </div>
-
-                            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px" }}>
-                              <div>
-                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Date <span style={{ color: "#ef4444" }}>*</span></label>
-                                <input 
-                                  type="date" 
-                                  required
-                                  className="form-control" 
-                                  style={{ width: "100%", margin: 0 }} 
-                                  value={newAirdrop.endDate} 
-                                  onChange={(e) => setNewAirdrop({...newAirdrop, endDate: e.target.value})} 
-                                />
-                              </div>
-                              <div>
-                                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>End Time <span style={{ color: "#ef4444" }}>*</span></label>
-                                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeHour} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeHour: e.target.value})}>
-                                    {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => <option key={h} value={h}>{h}</option>)}
-                                  </select>
-                                  <span style={{ color: "#64748b" }}>:</span>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeMinute} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeMinute: e.target.value})}>
-                                    {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => <option key={m} value={m}>{m}</option>)}
-                                  </select>
-                                  <select className="form-control" style={{ flex: 1, margin: 0, padding: "8px 6px" }} value={newAirdrop.endTimeAmPm} onChange={(e) => setNewAirdrop({...newAirdrop, endTimeAmPm: e.target.value})}>
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        )}
+                          </div>
+                        </div>
                       </div>
 
                       {/* Winners & Rewards Section */}
@@ -1619,7 +1468,7 @@ export default function MentorDashboard() {
                             >
                               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
-                            <span style={{ fontSize: "11px", color: "#64748b", display: "block", marginTop: "4px" }}>Exact number of winners to be selected</span>
+                            <span style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", display: "block", marginTop: "4px" }}>Exact number of winners to be selected</span>
                           </div>
 
                           <div>
@@ -1651,7 +1500,7 @@ export default function MentorDashboard() {
                     </div>
 
                     {/* Modal Footer */}
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", padding: "16px 24px", borderTop: "1px solid #f1f5f9", backgroundColor: "#f8fafc" }}>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", padding: "16px 24px", borderTop: "1px solid #f1f5f9", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
                       <button type="button" className="btn btn-secondary" style={{ padding: "10px 20px" }} onClick={() => setShowAirdropModal(false)}>Cancel</button>
                       <button type="submit" className="btn btn-primary" style={{ padding: "10px 20px" }}>Create Airdrop</button>
                     </div>
@@ -1661,185 +1510,180 @@ export default function MentorDashboard() {
             )}
           </div>
         );
-
-      case "Tickets":
-        if (selectedTicket) {
-          return (
-            <div className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
-                  <h3 style={{ margin: 0 }}>Ticket TKT-{selectedTicket.id}</h3>
-                  <span className={`badge ${selectedTicket.status === 'resolved' ? 'badge-success' : selectedTicket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'resolved' ? '#d1fae5' : selectedTicket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'resolved' ? '#065f46' : selectedTicket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
-                    {selectedTicket.status === 'in_progress' ? 'Assigned' : selectedTicket.status}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("RESOLVED")}>Mark as Resolved</button>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "24px" }}>
-                <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1f2937" }}>{selectedTicket.title}</h4>
-                <div style={{ padding: "16px", backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
-                  {selectedTicket.description}
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
-                  {selectedTicket.messages && selectedTicket.messages.length === 0 ? (
-                    <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
-                  ) : (
-                    selectedTicket.messages && selectedTicket.messages.map((m, idx) => (
-                      <div key={idx} style={{ padding: "12px", backgroundColor: m.sender_role === "mentor" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${m.sender_role === "mentor" ? "#bfdbfe" : "#e5e7eb"}` }}>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: m.sender_role === "mentor" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{m.sender_name} ({m.sender_role})</div>
-                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{m.message}</div>
-                      </div>
-                    ))
-                  )}
-                </div>
-                {selectedTicket.status !== 'closed' && selectedTicket.status !== 'resolved' && (
-                  <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
-                    <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
-                    <button type="submit" className="btn btn-primary">Send Reply</button>
-                  </form>
-                )}
-              </div>
-            </div>
-          );
-        }
-
-        return (
-          <div className="card">
-            <h3>Assigned Support Tickets</h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Manage issues assigned to you by Admins.</p>
-            <div className="table-container">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Ticket ID</th>
-                    <th>Issue Title</th>
-                    <th>Status</th>
-                    <th>Date Filed</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ticketsList.map((ticket) => (
-                    <tr key={ticket.id}>
-                      <td><span style={{ fontWeight: 600, color: "#1f2937" }}>TKT-{ticket.id}</span></td>
-                      <td><span style={{ color: "#4b5563" }}>{ticket.title}</span></td>
-                      <td>
-                        <span className={`badge ${ticket.status === 'resolved' ? 'badge-success' : ticket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'resolved' ? '#d1fae5' : ticket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'resolved' ? '#065f46' : ticket.status === 'in_progress' ? '#92400e' : '#991b1b' }}>
-                          {ticket.status === 'in_progress' ? 'Assigned' : ticket.status}
-                        </span>
-                      </td>
-                      <td>{new Date(ticket.created_at).toLocaleDateString()}</td>
-                      <td>
-                        <button className="btn btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {ticketsList.length === 0 && (
-                    <tr>
-                      <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>No tickets assigned to you yet.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
-
+      }
+      case "My Profile":
+        return <MentorProfile />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="container">
-      {/* Sidebar Navigation */}
-      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', gap: '10px', marginBottom: '30px' }}>
-            {isSidebarOpen && <h2>Mentor Panel</h2>}
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Menu size={24} /></button>
-          </div>
-          <ul>
-            {[
-              { id: "Overview", icon: <LayoutDashboard size={20} /> },
-              { id: "Cohort", icon: <Users size={20} /> },
-              { id: "Evaluations", icon: <ClipboardCheck size={20} /> },
-              { id: "Programs", icon: <BookOpen size={20} /> },
-              { id: "Tickets", icon: <Ticket size={20} /> },
-              { id: "Bonus Airdrops", icon: <Gift size={20} /> },
-              { id: "Breakout Rooms", icon: <MonitorPlay size={20} /> }
-            ].map((tab) => (
-              <li
-                key={tab.id}
-                className={activeTab === tab.id ? "active" : ""}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                }}
-                title={!isSidebarOpen ? tab.id : ""}
-              >
-                <span>{tab.icon}</span>
-                {isSidebarOpen && <span className="sidebar-text">{tab.id}</span>}
-              </li>
-            ))}
-          </ul>
+    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+      {/* Top Monolithic Webpage Hub Header */}
+      <header style={{ 
+        height: "70px", 
+        backgroundColor: "var(--card-bg, #ffffff)", 
+        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        padding: "0 32px",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
+      }}>
+        {/* Brand Logo & Portal Tag */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--primary-color, #2563eb)", letterSpacing: "-0.5px" }}>
+            ProEduvate
+          </h2>
+          <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#ecfdf5", color: "#047857", padding: "4px 10px", borderRadius: "12px" }}>
+            Mentor Panel
+          </span>
         </div>
-        <button className="sidebar-logout" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          {isSidebarOpen ? "Logout" : <LogOut size={20} />}
-        </button>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="main" style={(activeTab === "Breakout Rooms" && isMeetingActive) ? { padding: 0, overflow: 'hidden', position: 'relative' } : {}}>
-        {(activeTab !== "Breakout Rooms" || !isMeetingActive) ? (
-          <div className="header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {!isSidebarOpen && <button onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px' }}>☰</button>}
-              <h2>{activeTab}</h2>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              {activeTab === "Bonus Airdrops" && (
-                <button className="btn btn-primary" onClick={() => setShowAirdropModal(true)}>+ Create Airdrop</button>
-              )}
-              <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280" }}>
-                Role: <b>Mentor</b>
-              </span>
-            </div>
-          </div>
-        ) : (
-          !isSidebarOpen && (
-            <button 
-              onClick={() => setIsSidebarOpen(true)} 
-              style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2000, background: '#ffffff', border: '1px solid #e3e5e8', borderRadius: '4px', cursor: 'pointer', fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-              ☰
+        {/* Module Access Navigation Hub (Monolithic Pill Bar) */}
+        <nav style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px", borderRadius: "28px" }}>
+          {[
+            { id: "Overview", icon: <LayoutDashboard size={16} /> },
+            { id: "Cohort", icon: <Users size={16} /> },
+            { id: "Evaluations", icon: <ClipboardList size={16} /> },
+            { id: "Programs", icon: <Layers size={16} /> },
+            { id: "Bonus Airdrops", icon: <Coins size={16} /> },
+            { id: "Breakout Rooms", icon: <Video size={16} /> }
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: isActive ? "600" : "500",
+                  backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
+                  color: isActive ? "var(--bg-surface, #ffffff)" : "var(--text-color, #475569)",
+                  boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.icon}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.id}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Actions & Utilities */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {activeTab === "Bonus Airdrops" && (
+            <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: "13px" }} onClick={() => setShowAirdropModal(true)}>
+              + Create Airdrop
             </button>
-          )
-        )}
+          )}
 
-        {isMeetingActive && (
-          <div style={{ display: activeTab === "Breakout Rooms" ? "block" : "none", height: "100%", width: "100%", position: activeTab === "Breakout Rooms" ? "absolute" : "relative", inset: 0, zIndex: 10 }}>
-            <BreakoutRoomsApp 
-              onRoomChange={(r) => setActiveMeetingRoom(r)} 
-              onLeaveMeeting={() => {
-                setIsMeetingActive(false);
-                localStorage.setItem("breakout_meeting_active", "false");
-                setActiveTab("Overview");
-              }}
-            />
+          {/* Notifications */}
+          <div style={{ position: 'relative', cursor: 'pointer' }}>
+            <div onClick={() => setShowNotifications(!showNotifications)}>
+              <Bell size={20} color="var(--text-gray, #64748b)" />
+              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+            </div>
+            
+            {showNotifications && (
+              <div style={{ 
+                position: 'absolute', 
+                top: '100%', 
+                right: 0, 
+                marginTop: '12px', 
+                width: '300px', 
+                backgroundColor: 'var(--card-bg, #ffffff)', 
+                borderRadius: '12px', 
+                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
+                border: '1px solid var(--border-color, #e2e8f0)',
+                zIndex: 50,
+                overflow: 'hidden'
+              }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', fontWeight: 600, color: 'var(--text-dark, #0f172a)', backgroundColor: 'var(--bg-light, #f8fafc)' }}>
+                  Notifications
+                </div>
+                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                  {mockNotifications.map(notif => (
+                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
-        {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
-      </div>
+          <div style={{ height: '24px', width: '1px', backgroundColor: 'var(--border-color, #cbd5e1)' }}></div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
+            <div 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
+            >
+              DM
+            </div>
+            
+            {isProfileDropdownOpen && (
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Dr. Ananya Menon</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
+                </div>
+                <button
+                  onClick={() => { setActiveTab("My Profile"); setIsProfileDropdownOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "11px 16px", backgroundColor: "transparent", border: "none", color: "#334155", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500" }}
+                  onMouseOver={e => e.currentTarget.style.backgroundColor = "#f1f5f9"}
+                  onMouseOut={e => e.currentTarget.style.backgroundColor = "transparent"}
+                >
+                  <User size={16} /> My Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "11px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500" }}
+                  onMouseOver={e => e.currentTarget.style.backgroundColor = "#fef2f2"}
+                  onMouseOut={e => e.currentTarget.style.backgroundColor = "transparent"}
+                >
+                  <LogOut size={14} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Workspace Content (Full Width) */}
+      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+
+        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          {isMeetingActive && (
+            <div style={{ display: activeTab === "Breakout Rooms" ? "flex" : "none", flex: 1, minHeight: 0, width: "100%", borderRadius: "16px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+              <BreakoutRoomsApp 
+                onRoomChange={(r) => setActiveMeetingRoom(r)} 
+                onLeaveMeeting={() => {
+                  setIsMeetingActive(false);
+                  localStorage.setItem("breakout_meeting_active", "false");
+                  setActiveTab("Overview");
+                }}
+              />
+            </div>
+          )}
+
+          {activeTab !== "Breakout Rooms" ? renderContent() : (!isMeetingActive && renderLobby())}
+        </div>
+      </main>
 
       {/* Floating Minimized Call Widget (Bottom Right) */}
       {isMeetingActive && activeTab !== "Breakout Rooms" && (
@@ -1851,7 +1695,7 @@ export default function MentorDashboard() {
             zIndex: 99999,
             width: "320px",
             backgroundColor: "#1e1f22",
-            color: "#ffffff",
+            color: "var(--bg-surface, #ffffff)",
             borderRadius: "16px",
             boxShadow: "0 16px 40px rgba(0, 0, 0, 0.45)",
             border: "2px solid #5865f2",
@@ -1905,7 +1749,7 @@ export default function MentorDashboard() {
           right: "24px",
           width: "320px",
           height: "450px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--bg-surface, #ffffff)",
           borderRadius: "12px",
           boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
           display: "flex",
@@ -1915,24 +1759,24 @@ export default function MentorDashboard() {
           overflow: "hidden"
         }}>
           {/* Chat Header */}
-          <div style={{ padding: "12px 16px", backgroundColor: "#1e293b", color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "12px 16px", backgroundColor: "var(--text-primary, #1e293b)", color: "var(--bg-surface, #ffffff)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
               Chat with {selectedInternForChat}
             </div>
-            <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}>âœ–</button>
+            <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", display: "flex", alignItems: "center" }}><X size={16} /></button>
           </div>
 
           {/* Chat Messages */}
-          <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc" }}>
+          <div style={{ flexGrow: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }}>
             {chatMessages.map((msg, i) => (
               <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "80%" }}>
                 <span style={{ fontSize: "10px", color: "#94a3b8", display: "block", marginBottom: "4px", textAlign: msg.sender === "You" ? "right" : "left" }}>
-                  {msg.sender === "You" ? "" : `${msg.sender} â€¢ `}{msg.time}
+                  {msg.sender === "You" ? "" : `${msg.sender} - `}{msg.time}
                 </span>
                 <div style={{ 
-                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "#ffffff", 
-                  color: msg.sender === "You" ? "#ffffff" : "#1e293b", 
+                  backgroundColor: msg.sender === "You" ? "#3b82f6" : "var(--bg-surface, #ffffff)", 
+                  color: msg.sender === "You" ? "var(--bg-surface, #ffffff)" : "var(--text-primary, #1e293b)", 
                   padding: "8px 12px", 
                   borderRadius: msg.sender === "You" ? "12px 12px 2px 12px" : "12px 12px 12px 2px", 
                   border: msg.sender !== "You" ? "1px solid #e2e8f0" : "none",
@@ -1946,13 +1790,13 @@ export default function MentorDashboard() {
           </div>
 
           {/* Chat Input */}
-          <form onSubmit={handleSendChatMessage} style={{ display: "flex", padding: "12px", borderTop: "1px solid #e2e8f0", backgroundColor: "#ffffff" }}>
+          <form onSubmit={handleSendChatMessage} style={{ display: "flex", padding: "12px", borderTop: "1px solid #e2e8f0", backgroundColor: "var(--bg-surface, #ffffff)" }}>
             <input 
               type="text" 
               placeholder="Type your message..." 
               value={currentMessage} 
               onChange={(e) => setCurrentMessage(e.target.value)} 
-              style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: "20px", padding: "8px 16px", fontSize: "13px", outline: "none", backgroundColor: "#f8fafc" }} 
+              style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: "20px", padding: "8px 16px", fontSize: "13px", outline: "none", backgroundColor: "var(--bg-surface-elevated, #f8fafc)" }} 
             />
             <button type="submit" style={{ background: "none", border: "none", color: "#3b82f6", fontWeight: "600", cursor: "pointer", marginLeft: "12px" }}>Send</button>
           </form>

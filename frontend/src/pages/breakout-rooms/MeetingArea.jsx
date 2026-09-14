@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Users, Maximize, Minimize, Mic, MicOff, Video, VideoOff, 
-  MonitorUp, MonitorOff, Hand, MessageSquare, LogOut, LayoutGrid
+  MonitorUp, MonitorOff, Hand, MessageSquare, LogOut, LayoutGrid, CheckCircle2, ArrowLeft
 } from 'lucide-react';
 
 export default function MeetingArea({ 
@@ -44,15 +44,24 @@ export default function MeetingArea({
   return (
     <div className="br-main-area">
       <div className="br-main-header">
-        <div className="br-header-left">
-          <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {room?.name} 
-            <span style={{ fontSize: '10px', backgroundColor: '#da373c', color: 'white', padding: '2px 6px', borderRadius: '10px' }}>LIVE</span>
+        <div className="br-header-left" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {onMinimize && (
+            <button 
+              onClick={onMinimize} 
+              style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "6px 12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "#475569", whiteSpace: "nowrap" }}
+              title="Return to Dashboard (Keeps meeting active)"
+            >
+              <ArrowLeft size={16} /> Back
+            </button>
+          )}
+          <span className="br-header-title">
+            {room?.name || 'Main Meeting'} 
+            <span style={{ fontSize: '10px', backgroundColor: '#da373c', color: 'white', padding: '2px 6px', borderRadius: '10px', marginLeft: "8px" }}>LIVE</span>
           </span>
 
           {isIntern && room?.type !== 'main' && (
-            <span style={{ fontSize: '11px', color: '#10b981', backgroundColor: '#ecfdf5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #10b981' }}>
-              ✅ Assigned to {room?.name}
+            <span style={{ fontSize: '11px', color: '#10b981', backgroundColor: '#ecfdf5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #10b981', display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <CheckCircle2 size={12} /> Assigned to {room?.name}
             </span>
           )}
         </div>
@@ -63,11 +72,6 @@ export default function MeetingArea({
           {!isIntern && (
             <button className="br-btn br-btn-secondary" onClick={openManager}>
               <LayoutGrid size={18} /> Breakout Rooms
-            </button>
-          )}
-          {onMinimize && (
-            <button className="br-icon-btn" onClick={onMinimize} title="Minimize">
-              <Minimize size={18} />
             </button>
           )}
           <button className="br-icon-btn" onClick={toggleFullscreen}>

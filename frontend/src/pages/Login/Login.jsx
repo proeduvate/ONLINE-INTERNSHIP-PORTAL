@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
-
-export default function Login() {
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
+import { Card, CardContent } from "../../components/ui/Card";
+import "./Login.css";export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,7 @@ export default function Login() {
     intern: { email: "intern@gmail.com", password: "intern123" },
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -38,120 +39,116 @@ export default function Login() {
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.access_token);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("user_id", data.user_id);
-        navigate(`/${data.role}`);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.detail || "Invalid email or password.");
+    let foundRole = null;
+    for (const [key, u] of Object.entries(users)) {
+      if (u.email === email && u.password === password) {
+        foundRole = key;
+        break;
       }
-    } catch (err) {
-      setErrorMessage("Server error. Please try again later.");
-      console.error(err);
+    }
+
+    if (foundRole) {
+      localStorage.setItem("token", "dummy-token-123");
+      localStorage.setItem("role", foundRole);
+      navigate(`/${foundRole}`);
+    } else {
+      setErrorMessage("Invalid email or password.");
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-          <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "32px", width: "auto" }} />
-          <div>
-            <h2 className="title">Internship Portal</h2>
-            <p className="subtitle">Welcome back! Please login</p>
+    <div className="login-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg-light)' }}>
+      <Card style={{ width: '100%', maxWidth: '400px', animation: 'fadeIn 0.4s ease-out' }}>
+        <CardContent style={{ padding: '32px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", justifyContent: "center" }}>
+            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "40px", width: "auto" }} />
           </div>
-        </div>
-
-        {errorMessage && (
-          <div style={{
-            backgroundColor: "#FEE2E2",
-            color: "#EF4444",
-            padding: "10px",
-            borderRadius: "6px",
-            fontSize: "13px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            textAlign: "center"
-          }}>
-            {errorMessage}
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 700, color: 'var(--text-darker)' }}>Welcome Back</h2>
+            <p style={{ margin: 0, color: 'var(--text-muted)' }}>Sign in to continue to Proeduvate</p>
           </div>
-        )}
 
-        <form onSubmit={handleLogin}>
+          {errorMessage && (
+            <div style={{
+              backgroundColor: "#FEE2E2",
+              color: "#EF4444",
+              padding: "12px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontWeight: "500",
+              marginBottom: "20px",
+              textAlign: "center"
+            }}>
+              {errorMessage}
+            </div>
+          )}
 
-
-          <input 
-            type="email"
-            placeholder="Email"
-            className="input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <div style={{ position: "relative" }}>
-            <input 
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              className="input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{ paddingRight: "45px" }}
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Input 
+              type="email"
+              label="Email Address"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "12px",
-                border: "none",
-                background: "transparent",
-                color: "#6B7280",
-                fontSize: "12px",
-                cursor: "pointer",
-                fontWeight: "600"
-              }}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
 
-          <div className="login-footer">
-            <label>
-              <input 
-                type="checkbox" 
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
+            <div style={{ position: "relative" }}>
+              <Input 
+                type={showPassword ? "text" : "password"}
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: "60px" }}
               />
-              Remember Me
-            </label>
-            <button 
-              type="button"
-              onClick={() => {
-                alert("Password reset instructions have been simulated & sent to your email!");
-              }}
-              style={{ color: "#2563EB", fontWeight: "600", border: "none", background: "none", cursor: "pointer", padding: 0, fontSize: "13px" }}
-            >
-              Forgot Password?
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "36px",
+                  border: "none",
+                  background: "transparent",
+                  color: "var(--text-gray)",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                  fontWeight: "600"
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
 
-          <button type="submit" className="login-btn">
-            Login
-          </button>
-        </form>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', marginBottom: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-color)', cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={{ cursor: 'pointer' }}
+                />
+                Remember me
+              </label>
+              <button 
+                type="button"
+                onClick={() => {
+                  alert("Password reset instructions have been simulated & sent to your email!");
+                }}
+                style={{ color: "var(--primary-color)", fontWeight: "600", border: "none", background: "none", cursor: "pointer", padding: 0, fontSize: "14px" }}
+              >
+                Forgot Password?
+              </button>
+            </div>
 
-      </div>
+            <Button type="submit" variant="primary" style={{ width: '100%', padding: '12px', fontSize: '16px' }}>
+              Sign In
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
