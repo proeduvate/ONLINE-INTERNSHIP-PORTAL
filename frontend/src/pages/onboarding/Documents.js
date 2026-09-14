@@ -85,7 +85,7 @@ export default function Documents() {
         
         setSigning(true);
         try {
-            const signatureDataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+            const signatureDataUrl = sigCanvas.current.getCanvas().toDataURL('image/png');
             
             await api.post(`/api/v1/onboarding/${applicationId}/sign-document-inline`, {
                 document_type: documentToSign,

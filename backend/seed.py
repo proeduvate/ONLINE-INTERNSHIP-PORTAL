@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 try:
     import database, models, app
+    from app.core.security import pwd_context
 except ImportError:
     from . import database, models, app
+    from .app.core.security import pwd_context
 import json
 import os
 from datetime import datetime, timedelta
@@ -28,9 +30,12 @@ def seed():
     # Drop tables with CASCADE
     with database.engine.connect() as conn:
         from sqlalchemy import text
-        conn.execute(text("DROP SCHEMA public CASCADE;"))
-        conn.execute(text("CREATE SCHEMA public;"))
-        conn.commit()
+        try:
+            conn.execute(text("DROP SCHEMA public CASCADE;"))
+            conn.execute(text("CREATE SCHEMA public;"))
+            conn.commit()
+        except Exception as e:
+            print("Skipping schema drop (likely running on SQLite). Error:", e)
 
     models.Base.metadata.create_all(bind=database.engine)
     
@@ -51,7 +56,7 @@ def seed():
     admin = models.User(
         name="System Admin",
         email="admin1@gmail.com",
-        hashed_password=app.pwd_context.hash("admin123"),
+        hashed_password=pwd_context.hash("admin123"),
         role=models.UserRole.ADMIN,
         attendance_pct=100
     )
@@ -62,7 +67,7 @@ def seed():
     mentor = models.User(
         name="Sarah Connor (Senior Lead)",
         email="mentor1@gmail.com",
-        hashed_password=app.pwd_context.hash("mentor123"),
+        hashed_password=pwd_context.hash("mentor123"),
         role=models.UserRole.MENTOR,
         attendance_pct=100
     )
@@ -75,7 +80,7 @@ def seed():
     intern = models.User(
         name="John Doe",
         email="intern1@gmail.com",
-        hashed_password=app.pwd_context.hash("intern123"),
+        hashed_password=pwd_context.hash("intern123"),
         role=models.UserRole.INTERN,
         intern_id="INT-2026-0101",
         college="MIT University",
