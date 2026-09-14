@@ -1,6 +1,6 @@
 from app.db import session as database
 from app import models
-from app.core.security import pwd_context
+from core.security import pwd_context
 
 def reset_pwd():
     db = next(database.get_db())

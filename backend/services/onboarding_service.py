@@ -115,7 +115,7 @@ class OnboardingService:
         temp_password = secrets.token_urlsafe(12)
         
         # Hash it for local DB login
-        from app.core.security import pwd_context
+        from core.security import pwd_context
         user.hashed_password = pwd_context.hash(temp_password)
         
         # Register in Supabase Auth

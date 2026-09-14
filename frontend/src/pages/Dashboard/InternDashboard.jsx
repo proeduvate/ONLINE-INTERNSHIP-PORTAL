@@ -169,7 +169,26 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
-  const curriculumData = [];
+  const [curriculumData, setCurriculumData] = useState([]);
+  const [loadingTasks, setLoadingTasks] = useState(true);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get('/tasks/intern');
+        if (Array.isArray(res.data)) {
+           setCurriculumData(res.data);
+        } else if (res.data && res.data.tasks) {
+           setCurriculumData(res.data.tasks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch curriculum tasks", err);
+      } finally {
+        setLoadingTasks(false);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
@@ -2369,6 +2388,24 @@ export default function InternDashboard() {
         <div style={{ padding: "16px 24px", flex: 1, overflow: "hidden" }}>
            <AIClientReview />
         </div>
+      </div>
+    );
+  }
+
+  if (loadingTasks) {
+    return (
+      <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc" }}>
+        <h2 style={{ color: "#334155" }}>Loading Dashboard...</h2>
+      </div>
+    );
+  }
+
+  if (curriculumData.length === 0) {
+    return (
+      <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#f8fafc", flexDirection: "column" }}>
+        <h2 style={{ color: "#334155" }}>No Tasks Available</h2>
+        <p style={{ color: "#64748b" }}>Please wait for the Admin to assign curriculum tasks to your domain.</p>
+        <button className="btn btn-secondary" onClick={handleLogout} style={{ marginTop: "20px" }}>Log Out</button>
       </div>
     );
   }
