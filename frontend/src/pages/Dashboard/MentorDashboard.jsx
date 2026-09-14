@@ -33,11 +33,19 @@ export default function MentorDashboard() {
     setPwForm({ current: "", next: "", confirm: "" });
   };
 
-  const mockNotifications = [
-    { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
-    { id: 2, text: "New support ticket assigned to you", time: "1 hour ago" },
-    { id: 3, text: "Breakout room session scheduled", time: "3 hours ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get("/api/v1/notifications").catch(() => ({ data: [] }));
+        setNotifications(res.data || []);
+      } catch (err) {
+        setNotifications([]);
+      }
+    };
+    fetchNotifications();
+  }, []);
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -150,37 +158,33 @@ export default function MentorDashboard() {
     alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
-  // State Mock Data
-  const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
-  ]);
-
+  // State Live Data
+  const [assignedInterns, setAssignedInterns] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState("Harvard");
-
-  const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
-  ]);
+  const [submissions, setSubmissions] = useState([]);
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
+  const [meetings, setMeetings] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
 
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
-  ]);
+  useEffect(() => {
+    const fetchMentorData = async () => {
+      try {
+        const internsRes = await api.get("/api/v1/users?role=intern").catch(() => ({ data: [] }));
+        setAssignedInterns(internsRes.data || []);
+      } catch (err) {}
+      
+      try {
+        const subRes = await api.get("/api/v1/submissions").catch(() => ({ data: [] }));
+        setSubmissions(subRes.data || []);
+      } catch (err) {}
 
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
+      try {
+        const meetRes = await api.get("/api/v1/meetings").catch(() => ({ data: [] }));
+        setMeetings(meetRes.data || []);
+      } catch (err) {}
+    };
+    fetchMentorData();
+  }, []);
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
@@ -192,38 +196,8 @@ export default function MentorDashboard() {
   const [weeklyNotes, setWeeklyNotes] = useState("");
 
   const [mentorDomain] = useState("Artificial Intelligence");
-  const [curriculumList] = useState([
-    { day: "Day 1",  topic: "Introduction to AI & ML",          resources: "Video Link, Documentation PDF" },
-    { day: "Day 2",  topic: "Python for Data Science",          resources: "Python Notebook, Cheatsheet" },
-    { day: "Day 3",  topic: "NumPy & Pandas Basics",            resources: "Kaggle Tutorial, Practice Dataset" },
-    { day: "Day 4",  topic: "Data Visualization (Matplotlib)",  resources: "Seaborn Docs, Lab Exercise" },
-    { day: "Day 5",  topic: "Statistics for ML",                resources: "Khan Academy, PDF Notes" },
-    { day: "Day 6",  topic: "Supervised Learning - Regression", resources: "Slides, Colab Notebook" },
-    { day: "Day 7",  topic: "Supervised Learning - Classification", resources: "Github Repo, Slides PDF" },
-    { day: "Day 8",  topic: "Model Evaluation & Metrics",       resources: "Scikit-learn Docs, Quiz" },
-    { day: "Day 9",  topic: "Feature Engineering",              resources: "Kaggle Notebook, PDF" },
-    { day: "Day 10", topic: "Unsupervised Learning - Clustering", resources: "K-Means Lab, Video" },
-    { day: "Day 11", topic: "Dimensionality Reduction (PCA)",   resources: "Slides, Code Exercise" },
-    { day: "Day 12", topic: "Decision Trees & Random Forests",  resources: "Scikit-learn Guide, Notebook" },
-    { day: "Day 13", topic: "Support Vector Machines",          resources: "Research Paper, Lab" },
-    { day: "Day 14", topic: "Neural Networks - Basics",         resources: "3Blue1Brown Video, PDF" },
-    { day: "Day 15", topic: "Mid-term Assessment",              resources: "Assessment Portal" },
-    { day: "Day 16", topic: "Deep Learning with TensorFlow",    resources: "TF Docs, Colab" },
-    { day: "Day 17", topic: "CNN - Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
-    { day: "Day 18", topic: "RNN & LSTM - Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
-    { day: "Day 19", topic: "NLP - Text Processing",            resources: "NLTK Docs, Notebook" },
-    { day: "Day 20", topic: "Transformers & Attention",         resources: "Hugging Face Tutorial" },
-    { day: "Day 21", topic: "Transfer Learning",                resources: "Keras Guide, Pretrained Models" },
-    { day: "Day 22", topic: "Model Deployment - Flask API",     resources: "Flask Docs, Postman" },
-    { day: "Day 23", topic: "Docker & Cloud Basics",            resources: "Docker Tutorial, AWS Guide" },
-    { day: "Day 24", topic: "MLOps Fundamentals",               resources: "MLflow Docs, Video" },
-    { day: "Day 25", topic: "Project Planning & Architecture",  resources: "Project Template, Rubric" },
-    { day: "Day 26", topic: "Project - Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
-    { day: "Day 27", topic: "Project - Model Training",         resources: "Training Guide, GPU Colab" },
-    { day: "Day 28", topic: "Project - Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
-    { day: "Day 29", topic: "Project - Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
-    { day: "Day 30", topic: "Final Presentation & Review",      resources: "Presentation Rubric, Feedback Form" },
-  ]);
+  const [curriculumList, setCurriculumList] = useState([]);
+
   const [tasks, setTasks] = useState(() => [
     { id: 1,  title: "Explore AI & ML use cases",               difficulty: "Easy",   deadline: "2026-08-01", domain: "Artificial Intelligence", status: "Completed" },
     { id: 2,  title: "Python data manipulation with Pandas",     difficulty: "Easy",   deadline: "2026-08-02", domain: "Artificial Intelligence", status: "Completed" },
@@ -1628,7 +1602,7 @@ export default function MentorDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
+                  {notifications.map(notif => (
                     <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
                       <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>

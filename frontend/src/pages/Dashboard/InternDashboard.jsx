@@ -11,6 +11,7 @@ import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
+import api from "../../api/axios";
 export default function InternDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
@@ -23,11 +24,19 @@ export default function InternDashboard() {
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
   const [internDomain, setInternDomain] = useState("UI/UX");
 
-  const mockNotifications = [
-    { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
-    { id: 2, text: "Mentor replied to your ticket", time: "5 hours ago" },
-    { id: 3, text: "New bonus airdrop available", time: "1 day ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
+  
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get("/api/v1/notifications").catch(() => ({ data: [] }));
+        setNotifications(res.data || []);
+      } catch (err) {
+        setNotifications([]);
+      }
+    };
+    fetchNotifications();
+  }, []);
 
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
@@ -71,51 +80,15 @@ export default function InternDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
 
   useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    let parsed = [];
-    if (storedAirdrops) {
-      parsed = JSON.parse(storedAirdrops);
-    }
-    
-    const mockData = [
-      {
-        id: 101,
-        question: "What is the primary purpose of React's Virtual DOM?",
-        timeLimit: "60",
-        points: [20, 15, 10],
-        status: "Active"
-      },
-      {
-        id: 102,
-        question: "Explain the difference between useState and useReducer.",
-        timeLimit: "45",
-        points: [15, 10],
-        status: "Active"
-      },
-      {
-        id: 103,
-        question: "What are the core web vitals and why do they matter?",
-        timeLimit: "90",
-        points: [30, 20, 10],
-        status: "Completed"
-      },
-      {
-        id: 104,
-        question: "How does the Event Loop work in Node.js?",
-        timeLimit: "120",
-        points: [50, 25],
-        status: "Completed"
+    const fetchAirdrops = async () => {
+      try {
+        const res = await api.get("/api/features/airdrops").catch(() => ({ data: [] }));
+        setBonusAirdrops(res.data || []);
+      } catch (err) {
+        setBonusAirdrops([]);
       }
-    ];
-    
-    // Merge real airdrops with mock data so there is always something to see
-    const merged = [...parsed];
-    mockData.forEach(mockItem => {
-      if (!merged.find(item => item.id === mockItem.id)) {
-        merged.push(mockItem);
-      }
-    });
-    setBonusAirdrops(merged);
+    };
+    fetchAirdrops();
   }, []);
 
   useEffect(() => {
@@ -196,13 +169,7 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
-  const curriculumData = [
-    { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
-    { day: 2, topic: "State and Props", desc: "Learn to handle component data flow using props and local state.", notes: "Lecture_Notes_Day2.pdf" },
-    { day: 3, topic: "React Hooks Lifecycle", desc: "Implement useEffect and customize functional hooks.", notes: "Lecture_Notes_Day3.pdf" },
-    { day: 4, topic: "Context API & Global State", desc: "Avoid prop drilling by introducing context providers.", notes: "Lecture_Notes_Day4.pdf" },
-    { day: 5, topic: "Routing and Layouts", desc: "Route single page interfaces cleanly using react-router.", notes: "Lecture_Notes_Day5.pdf" }
-  ];
+  const curriculumData = [];
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
@@ -2515,7 +2482,7 @@ export default function InternDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
+                  {notifications.map(notif => (
                     <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
                       <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
                       <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
