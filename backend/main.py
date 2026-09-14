@@ -367,31 +367,60 @@ def generate_certificate(
     if not intern:
         raise HTTPException(status_code=404, detail="Intern record not found")
 
-    pdf = FPDF(orientation="L", unit="mm", format="A4")
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 24)
-    pdf.cell(0, 20, "CERTIFICATE OF COMPLETION", ln=True, align="C")
+    from datetime import datetime, timedelta
+    from fastapi.responses import FileResponse
+    from services.certificate_generator import generate_certificate_pdf
     
-    pdf.ln(10)
-    pdf.set_font("Arial", "", 14)
-    pdf.cell(0, 10, "This is proudly presented to", ln=True, align="C")
+    # Calculate Date & Duration
+    start_date = intern.start_date or datetime.utcnow() - timedelta(days=30)
+    end_date = intern.end_date or start_date + timedelta(days=30)
     
-    pdf.set_font("Arial", "B", 20)
-    pdf.cell(0, 15, intern.full_name, ln=True, align="C")
+    period = f"{start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}"
+    issued_date = datetime.utcnow().strftime('%B %d, %Y')
     
-    pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, "for successfully completing the Software Engineering Internship Program.", ln=True, align="C")
+    cert_id = f"PRO-INT-26-{intern.id:04d}"
     
-    pdf.ln(20)
-    pdf.cell(0, 10, f"Issued Date: {datetime.utcnow().strftime('%B %d, %Y')}", ln=True, align="C")
+    # Grade Calculation
+    submissions = db.query(models.Submission).filter(models.Submission.intern_id == intern.id).all()
+    completed_tasks = len([s for s in submissions if s.status in ['evaluated', 'approved']])
     
-    pdf_output = io.BytesIO()
-    pdf_bytes = pdf.output(dest='S').encode('latin1')
-    pdf_output.write(pdf_bytes)
-    pdf_output.seek(0)
+    if len(submissions) > 0:
+        # Compute avg based on multiple components if available, else fallback to progress_pct
+        avg_score = sum((s.mcq_score or 0) + (s.ai_score or 0) for s in submissions) / (len(submissions) * 2) 
+    else:
+        avg_score = intern.progress_pct or 0
 
-    headers = {'Content-Disposition': f'attachment; filename="Certificate_{intern.full_name.replace(" ", "_")}.pdf"'}
-    return StreamingResponse(pdf_output, headers=headers, media_type="application/pdf")
+    if avg_score >= 90:
+        grade = "A+"
+    elif avg_score >= 80:
+        grade = "A"
+    elif avg_score >= 70:
+        grade = "B+"
+    elif avg_score >= 60:
+        grade = "B"
+    else:
+        grade = "C"
+
+    # Domain
+    domain_name = intern.domain.name if intern.domain else "Software Engineering"
+    
+    cert_data = {
+        'intern_name': intern.name,
+        'domain': domain_name,
+        'duration': '1 MONTH',
+        'period': period,
+        'issued_date': issued_date,
+        'certificate_id': cert_id,
+        'grade': grade
+    }
+    
+    pdf_path = generate_certificate_pdf(cert_data)
+    
+    return FileResponse(
+        pdf_path, 
+        media_type="application/pdf", 
+        filename=f"Certificate_{intern.name.replace(' ', '_')}.pdf"
+    )
 
 
 # ==========================================

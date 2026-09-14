@@ -10,7 +10,7 @@ os.makedirs(STATIC_DIR, exist_ok=True)
 LOGO_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "logo.png")
 
 def generate_certificate_pdf(cert_data: dict) -> str:
-    cert_id = cert_data.get('certificate_id')
+    cert_id = cert_data.get('certificate_id', 'PRO-INT-0000')
     file_name = f"{cert_id}.pdf"
     file_path = os.path.join(STATIC_DIR, file_name)
     
@@ -39,6 +39,17 @@ def generate_certificate_pdf(cert_data: dict) -> str:
         c.setFillColor(HexColor("#64748B"))
         c.drawCentredString(width / 2.0, height - 105, "Empowering the next generation of tech leaders")
     
+    # Grade Badge in Top Right
+    grade = cert_data.get('grade', 'A')
+    c.setFillColor(HexColor("#EAB308")) 
+    c.circle(width - 90, height - 90, 45, stroke=0, fill=1)
+    
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setFont("Helvetica-Bold", 10)
+    c.drawCentredString(width - 90, height - 80, "GRADE")
+    c.setFont("Helvetica-Bold", 28)
+    c.drawCentredString(width - 90, height - 105, grade)
+    
     # Main Certificate Content
     c.setFont("Helvetica-Bold", 36)
     c.setFillColor(HexColor("#0F172A"))
@@ -46,37 +57,43 @@ def generate_certificate_pdf(cert_data: dict) -> str:
     
     c.setFont("Helvetica", 16)
     c.setFillColor(HexColor("#475569"))
-    c.drawCentredString(width / 2.0, height - 210, "This is proudly presented to")
+    c.drawCentredString(width / 2.0, height - 210, "THIS CERTIFICATE IS AWARDED TO")
     
     c.setFont("Helvetica-Bold", 32)
     c.setFillColor(HexColor("#4F46E5"))
-    c.drawCentredString(width / 2.0, height - 260, cert_data.get('intern_name', 'Student Name').upper())
+    intern_name = cert_data.get('intern_name', 'Student Name').upper()
+    c.drawCentredString(width / 2.0, height - 260, intern_name)
     
-    body_text = f"For successfully completing the {cert_data.get('duration', 'Internship')} program in"
+    body_text = f"who was associated with ProEduvate as an intern in the field of"
     c.setFont("Helvetica", 14)
     c.setFillColor(HexColor("#475569"))
     c.drawCentredString(width / 2.0, height - 305, body_text)
     
+    domain_text = cert_data.get('domain', 'Domain').upper()
     c.setFont("Helvetica-Bold", 20)
     c.setFillColor(HexColor("#0F172A"))
-    c.drawCentredString(width / 2.0, height - 340, cert_data.get('domain', 'Domain').upper())
+    c.drawCentredString(width / 2.0, height - 340, domain_text)
     
-    achievement = cert_data.get('achievement')
-    if achievement:
-        c.setFont("Helvetica-Oblique", 14)
-        c.setFillColor(HexColor("#EAB308")) 
-        c.drawCentredString(width / 2.0, height - 370, f"Achievement: {achievement}")
+    # Details Table
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColor(HexColor("#475569"))
+    table_x = 80
+    table_y = height - 400
+    c.drawString(table_x, table_y, f"INTERN NAME: {intern_name}")
+    c.drawString(table_x, table_y - 20, f"DURATION: {cert_data.get('duration', '1 MONTH')}")
+    c.drawString(table_x, table_y - 40, f"PERIOD: {cert_data.get('period', 'N/A')}")
+    c.drawString(table_x, table_y - 60, f"ISSUED DATE: {cert_data.get('issued_date', 'N/A')}")
     
-    c.setFont("Helvetica", 12)
+    # CEO Signature
+    c.setFont("Helvetica-Bold", 14)
     c.setFillColor(HexColor("#0F172A"))
+    c.drawString(width - 250, 110, "UMA DEVI. G / CEO")
+    c.line(width - 250, 105, width - 100, 105)
+    c.setFont("Helvetica", 12)
+    c.setFillColor(HexColor("#475569"))
+    c.drawString(width - 250, 85, "Authorized Signature")
     
-    date_str = cert_data.get('issued_date', 'N/A')
-    c.drawString(100, 100, f"Date: {date_str}")
-    c.line(100, 120, 250, 120)
-    
-    c.drawString(width - 250, 100, "Authorized Signature")
-    c.line(width - 250, 120, width - 100, 120)
-    
+    # QR Code
     qr = qrcode.QRCode(box_size=3, border=1)
     verify_url = f"http://127.0.0.1:3001/verify/{cert_id}"
     qr.add_data(verify_url)
@@ -98,4 +115,4 @@ def generate_certificate_pdf(cert_data: dict) -> str:
     
     c.save()
     
-    return f"/static/certificates/{file_name}"
+    return file_path
