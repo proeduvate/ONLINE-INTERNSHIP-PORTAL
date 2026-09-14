@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # JWT security configurations
-SECRET_KEY = os.environ.get("SECRET_KEY", "SUPER_SECRET_COMPLEX_KEY_HERE_THAT_IS_LONGER_THAN_32_BYTES")
+SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 240
 

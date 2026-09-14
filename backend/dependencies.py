@@ -5,7 +5,8 @@ from database import get_db
 import models
 import jwt
 
-SECRET_KEY = "supersecretkey"
+import os
+SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
