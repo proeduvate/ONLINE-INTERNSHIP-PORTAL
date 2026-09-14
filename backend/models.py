@@ -222,9 +222,6 @@ class Certificate(Base):
     pdf_path = Column(String(255), nullable=True)
     issued_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    certificate_id = Column(String(100), nullable=False, unique=True)
-    grade = Column(String(5), nullable=False) # e.g. "A+", "A", "B", "C"
-    final_score = Column(Integer, nullable=False)
     generated_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
