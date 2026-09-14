@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }) => {
             }
 
             const data = await response.json();
+            localStorage.setItem('token', data.access_token);
             localStorage.setItem('authToken', data.access_token);
             setAuthToken(data.access_token);
             setUser(data.user);
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem('token');
         localStorage.removeItem('authToken');
         setAuthToken(null);
         setUser(null);

@@ -95,7 +95,11 @@ export default function InternDashboard() {
     const fetchUpcomingMeetings = async () => {
       try {
         const response = await api.get('/api/meetings');
-        setMeetings(response.data);
+        const visibleMeetings = (response.data || []).filter((meeting) => {
+          const status = String(meeting.status || "").toLowerCase();
+          return status !== "completed";
+        });
+        setMeetings(visibleMeetings);
       } catch (error) {
         console.error("Failed to fetch meetings:", error);
       }

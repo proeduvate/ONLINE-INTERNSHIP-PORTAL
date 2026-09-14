@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../api";
 import "./Login.css";
 
 export default function Login() {
@@ -11,14 +12,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -31,27 +25,35 @@ export default function Login() {
       return;
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
-      }
-    }
+    try {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Invalid email or password.");
+      }
+
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("authToken", data.access_token);
+      localStorage.setItem("role", data.user.role);
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+
+      navigate(`/${data.user.role}`);
+    } catch (error) {
+      setErrorMessage(error.message || "Invalid email or password.");
     }
   };
 

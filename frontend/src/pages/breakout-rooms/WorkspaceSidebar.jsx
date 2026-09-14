@@ -50,7 +50,11 @@ export default function WorkspaceSidebar({
         ))}
 
         <div className="br-section-title">BREAKOUT ROOMS</div>
-        {rooms.filter(r => r.type !== 'main').map(room => (
+        {rooms.filter(r => r.type !== 'main').length === 0 ? (
+          <div style={{ padding: '10px 12px', color: '#80848e', fontSize: '12px' }}>
+            No breakout rooms yet
+          </div>
+        ) : rooms.filter(r => r.type !== 'main').map(room => (
           <div key={room.id}>
             <div 
               className={`br-room-item ${activeRoom === room.id ? 'active' : ''}`}

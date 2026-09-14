@@ -16,6 +16,8 @@ const LiveMeetingPage = () => {
     const [activeRoom, setActiveRoom] = useState(meetingId); // State to track the current active room
     const ws = useRef(null);
 
+    const breakoutRooms = meeting?.breakout_rooms || [];
+
     const localVideoRef = useRef(null);
     const remoteVideoRefs = useRef({});
 
@@ -149,6 +151,41 @@ const LiveMeetingPage = () => {
 
         } catch (error) {
             console.error('Error updating participant status:', error);
+        }
+    };
+
+    const createBreakoutRoom = async () => {
+        if (!meetingId || !user || (user.role !== 'mentor' && user.role !== 'admin')) {
+            return;
+        }
+
+        const roomName = window.prompt('Enter breakout room name');
+        if (!roomName || !roomName.trim()) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/api/meetings/${meetingId}/breakout-rooms`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: roomName.trim() })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to create breakout room');
+            }
+
+            const newRoom = await response.json();
+            setMeeting(prev => prev ? {
+                ...prev,
+                breakout_rooms: [...(prev.breakout_rooms || []), newRoom]
+            } : prev);
+            setActiveRoom(String(newRoom.id));
+        } catch (error) {
+            console.error('Error creating breakout room:', error);
+            alert(error.message || 'Failed to create breakout room');
         }
     };
 
@@ -637,48 +674,46 @@ const LiveMeetingPage = () => {
                         </form>
                     </div>
 
-                    {(user.role === 'admin' || user.role === 'mentor') && ( // Only Admin/Mentor can manage breakout rooms
+                    {(user.role === 'admin' || user.role === 'mentor') && (
                         <div className="breakout-room-section">
                             <h2>Breakout Rooms</h2>
-                            {meeting.breakout_rooms.length === 0 ? (
-                                <p>No breakout rooms created.</p>
+                            {breakoutRooms.length === 0 ? (
+                                <p>No breakout rooms yet.</p>
                             ) : (
                                 <ul className="breakout-room-list">
-                                    {meeting.breakout_rooms.map(room => (
+                                    {breakoutRooms.map(room => (
                                         <li key={room.id} className="breakout-room-item">
                                             <strong>{room.name}</strong> ({room.sub_room_code})
-                                            <p>Participants: {room.participants.length}</p>
-                                            {/* Implement join/assign logic here */}
+                                            <p>Participants: {room.participants?.length || 0}</p>
                                         </li>
                                     ))}
                                 </ul>
                             )}
-                            {/* Add functionality to create new breakout rooms */}
-                            <button className="create-breakout-btn">Create Breakout Room</button>
+                            <button className="create-breakout-btn" onClick={createBreakoutRoom}>Create Breakout Room</button>
                         </div>
                     )}
 
                     <div className="channels-section">
                         <h2>Channels</h2>
                         <ul className="channel-list">
-                            <li className="channel-item" onClick={() => switchRoom('main-meeting')} style={{ fontWeight: activeRoom === 'main-meeting' ? 'bold' : 'normal' }}>
+                            <li className="channel-item" onClick={() => switchRoom(meetingId)} style={{ fontWeight: activeRoom === meetingId ? 'bold' : 'normal' }}>
                                 Main Meeting
                             </li>
-                            <li className="channel-item" onClick={() => switchRoom('team-alpha')} style={{ fontWeight: activeRoom === 'team-alpha' ? 'bold' : 'normal' }}>
-                                Team Alpha
-                            </li>
-                            <li className="channel-item" onClick={() => switchRoom('team-beta')} style={{ fontWeight: activeRoom === 'team-beta' ? 'bold' : 'normal' }}>
-                                Team Beta
-                            </li>
-                            <li className="channel-item" onClick={() => switchRoom('team-gamma')} style={{ fontWeight: activeRoom === 'team-gamma' ? 'bold' : 'normal' }}>
-                                Team Gamma
-                            </li>
-                            <li className="channel-item" onClick={() => switchRoom('team-delta')} style={{ fontWeight: activeRoom === 'team-delta' ? 'bold' : 'normal' }}>
-                                Team Delta
-                            </li>
-                            <li className="channel-item" onClick={() => switchRoom('mentor-room')} style={{ fontWeight: activeRoom === 'mentor-room' ? 'bold' : 'normal' }}>
-                                Mentor Room 🔒
-                            </li>
+                            {breakoutRooms.map(room => (
+                                <li
+                                    key={room.id}
+                                    className="channel-item"
+                                    onClick={() => switchRoom(String(room.id))}
+                                    style={{ fontWeight: activeRoom === String(room.id) ? 'bold' : 'normal' }}
+                                >
+                                    {room.name}
+                                </li>
+                            ))}
+                            {breakoutRooms.length === 0 && (
+                                <li className="channel-item" style={{ opacity: 0.65, cursor: 'default' }}>
+                                    No breakout rooms yet
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>

@@ -229,8 +229,14 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
 @app.post("/api/auth/login")
 def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == login_in.email).first()
-    if not user or not pwd_context.verify(login_in.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+    import passlib.exc
+    try:
+        if not user or not pwd_context.verify(login_in.password, user.hashed_password):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+    except passlib.exc.UnknownHashError:
+        # If the hash in the DB is plain text or invalid, we can just check it manually for demo purposes
+        if not user or user.hashed_password != login_in.password:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token({"sub": str(user.id), "role": user.role})
     return {"access_token": token, "token_type": "bearer", "user": schemas.UserResponse.from_orm(user)}

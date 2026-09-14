@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { notificationService } from '../../services/notificationService';
+import { useAuth } from '../../services/AuthContext';
 import './BreakoutRooms.css';
 import WorkspaceSidebar from './WorkspaceSidebar';
 import MeetingArea from './MeetingArea';
 import MembersPanel from './MembersPanel';
 import BreakoutManagerModal from './BreakoutManagerModal';
-import { mockInterns, mockMentor, mockRooms } from './MockData';
+import { mockInterns, mockMentor } from './MockData';
 
 export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isIntern = false, onMinimize }) {
-  const [rooms, setRooms] = useState(mockRooms);
+  const { user } = useAuth() || {};
+  const [meetingId, setMeetingId] = useState(null);
+  const [rooms, setRooms] = useState([
+    { id: 'main', name: 'Main Meeting', type: 'main' }
+  ]);
   // Interns always start in Main Meeting — mentor allocates them to breakout rooms
   const [interns, setInterns] = useState(
     isIntern
@@ -20,14 +25,85 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
   const [rightPanelMode, setRightPanelMode] = useState('members'); // 'members', 'chat', 'closed'
   const [isManagerOpen, setIsManagerOpen] = useState(false);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPersistedRooms = async () => {
+      try {
+        const meetingsResponse = await api.get('/api/meetings');
+        if (!isMounted) return;
+
+        const firstMeeting = meetingsResponse.data?.[0];
+        if (!firstMeeting) {
+          setRooms([{ id: 'main', name: 'Main Meeting', type: 'main' }]);
+          setMeetingId(null);
+          return;
+        }
+
+        setMeetingId(firstMeeting.id);
+
+        const roomResponse = await api.get(`/api/meetings/${firstMeeting.id}/breakout-rooms`);
+        if (!isMounted) return;
+
+        const savedBreakoutRooms = roomResponse.data || [];
+        const normalizedRooms = [
+          { id: 'main', name: 'Main Meeting', type: 'main' },
+          ...savedBreakoutRooms.map(room => ({
+            ...room,
+            id: String(room.id),
+            type: 'breakout',
+            name: room.name,
+          }))
+        ];
+
+        setRooms(normalizedRooms);
+        setActiveRoom((current) => {
+          const hasCurrent = normalizedRooms.some(room => room.id === current);
+          return hasCurrent ? current : 'main';
+        });
+      } catch (error) {
+        console.error('Failed to load breakout rooms from backend:', error);
+        if (isMounted) {
+          setRooms([{ id: 'main', name: 'Main Meeting', type: 'main' }]);
+          setMeetingId(null);
+        }
+      }
+    };
+
+    loadPersistedRooms();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Safe fallback if activeRoom is deleted
   const currentRoomData = rooms.find(r => r.id === activeRoom) || rooms[0] || { id: 'main', name: 'Main Meeting', type: 'main' };
   
   // Mentor joins the currently active room being viewed
   const updatedMentor = { ...mockMentor, room: currentRoomData.name };
 
+  const resolvedInterns = isIntern && user
+    ? [
+        {
+          id: user.id,
+          name: user.name || user.email || 'You',
+          role: 'Intern',
+          online: true,
+          room: currentRoomData.name,
+          micOn: false,
+          camOn: false,
+          avatar: (user.name || user.email || 'Y').charAt(0).toUpperCase(),
+        },
+        ...interns
+      ].filter((participant, index, arr) => {
+        const participantId = String(participant.id ?? '');
+        return arr.findIndex(item => String(item.id ?? '') === participantId) === index;
+      })
+    : interns;
+
   // Combine mentor and interns for easier lookup
-  const allParticipants = [updatedMentor, ...interns];
+  const allParticipants = [updatedMentor, ...resolvedInterns];
 
   const currentRoomParticipants = allParticipants.filter(
     p => p.room === currentRoomData.name && p.online
@@ -47,12 +123,6 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
       setActiveRoom('main');
     }
   };
-
-  // For interns: follow the room they've been assigned to (simulate mentor moving them)
-  const internAssignedRoom = isIntern
-    ? rooms.find(r => r.name === (interns.find(i => i.name === 'Tobi')?.room || 'Main Meeting'))?.id || 'main'
-    : null;
-
 
   // Waiting Room Logic
   const [entryState, setEntryState] = useState(isIntern ? "prompt" : "approved");
@@ -105,13 +175,36 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         setEntryState("waiting");
       }
     } catch (err) {
-      setErrorMsg("Invalid Intern ID or not found in database.");
+      if (!err.response) {
+        setErrorMsg("Network error: Backend server is not running.");
+      } else if (err.response.status === 404) {
+        setErrorMsg("Invalid Intern ID or not found in database.");
+      } else {
+        setErrorMsg(`Server error: ${err.response.status}`);
+      }
     }
   };
 
   const handleApprove = async (k) => {
     setKnocks(prev => prev.filter(x => x.internId !== k.internId));
     await api.post(`/api/meetings/${activeRoom}/approve`, { intern_id: k.internId, status: "approved" });
+    
+    // Add the newly admitted intern to the active session list
+    setInterns(prev => {
+      // Avoid duplicates
+      if (prev.find(i => i.id === k.internId)) return prev;
+      return [...prev, {
+        id: k.internId,
+        name: k.name,
+        role: 'Intern',
+        online: true,
+        room: currentRoomData?.name || 'Main Meeting',
+        micOn: false,
+        camOn: false,
+        avatar: k.name ? k.name.charAt(0).toUpperCase() : 'I'
+      }];
+    });
+
     // Send EmailJS Notification
     await notificationService.notifyRoomAdmit(k.name, activeRoom || 'Main Meeting');
   };
@@ -207,7 +300,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         <MembersPanel 
           mode={rightPanelMode}
           onClose={() => setRightPanelMode('closed')}
-          interns={interns}
+          interns={resolvedInterns}
           mentor={updatedMentor}
           isIntern={isIntern}
         />
@@ -222,6 +315,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
           setInterns={setInterns}
           activeRoom={activeRoom}
           setActiveRoom={setActiveRoom}
+          meetingId={meetingId}
         />
       )}
     </div>

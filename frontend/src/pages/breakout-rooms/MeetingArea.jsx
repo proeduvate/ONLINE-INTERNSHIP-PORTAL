@@ -243,23 +243,37 @@ export default function MeetingArea({
     setTimeout(() => setActiveEmoji(null), 3000);
   };
 
-  const displayPeers = Object.entries(peerStates).map(([id, state]) => ({
-    id,
-    name: state.name || id,
-    micOn: state.micOn,
-    videoOn: state.videoOn,
-    handRaised: state.handRaised,
-    reaction: state.reaction,
-    stream: peerStreams[id]
-  }));
+  const displayPeers = (participants || [])
+    .reduce((acc, participant) => {
+      const participantId = String(participant.id ?? '');
+      const existingIndex = acc.findIndex(item => {
+        const itemId = String(item.id ?? '');
+        return itemId === participantId || item.name === participant.name;
+      });
+
+      if (existingIndex !== -1) return acc;
+
+      const state = peerStates[participant.id] || {};
+      acc.push({
+        id: participant.id,
+        name: participant.name || `User ${participant.id}`,
+        role: participant.role || 'Intern',
+        micOn: state.micOn ?? participant.micOn ?? false,
+        videoOn: state.videoOn ?? participant.camOn ?? participant.videoOn ?? false,
+        handRaised: state.handRaised ?? participant.handRaised ?? false,
+        reaction: state.reaction ?? null,
+        stream: peerStreams[participant.id] || null
+      });
+
+      return acc;
+    }, []);
 
   const getGridLayout = (count) => {
-    const total = count + 1;
-    if (total <= 1) return 'layout-1';
-    if (total === 2) return 'layout-2';
-    if (total === 3) return 'layout-3';
-    if (total <= 4) return 'layout-4';
-    if (total <= 6) return 'layout-6';
+    if (count <= 1) return 'layout-1';
+    if (count === 2) return 'layout-2';
+    if (count === 3) return 'layout-3';
+    if (count <= 4) return 'layout-4';
+    if (count <= 6) return 'layout-6';
     return 'layout-many';
   };
 
@@ -281,7 +295,7 @@ export default function MeetingArea({
         </div>
         <div className="br-header-right">
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#5c5e66' }}>
-            <Users size={18} /> {displayPeers.length + 1}
+            <Users size={18} /> {displayPeers.length}
           </div>
           {!isIntern && (
             <button className="br-btn br-btn-secondary" onClick={openManager}>
@@ -302,36 +316,6 @@ export default function MeetingArea({
       <div className="br-video-grid-container">
         <div className={`br-video-grid ${layoutClass}`}>
           
-          <div className="br-video-tile">
-            {isVideoOn ? (
-              <video 
-                ref={localVideoRef} 
-                autoPlay 
-                muted 
-                playsInline 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <div className="br-video-avatar">{(user?.name || user?.email || 'Y')[0].toUpperCase()}</div>
-            )}
-            
-            {isHandRaised && (
-              <div style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#4F46E5', padding: '6px', borderRadius: '50%' }}>
-                <Hand size={20} color="#FBBF24" />
-              </div>
-            )}
-            {activeEmoji && (
-              <div style={{ position: 'absolute', top: '10px', left: '10px', fontSize: '24px' }}>
-                {activeEmoji === 'smile' ? '😄' : '👍'}
-              </div>
-            )}
-            
-            <div className="br-video-overlay">
-              {isMicOn ? <Mic size={14} color="#23a559" /> : <MicOff size={14} color="#da373c" />}
-              {user?.name || 'You'}
-            </div>
-          </div>
-
           {displayPeers.map(peer => (
             <div key={peer.id} className="br-video-tile">
               {peer.videoOn ? (
@@ -356,9 +340,14 @@ export default function MeetingArea({
                 </div>
               )}
 
-              <div className="br-video-overlay">
-                {peer.micOn ? <Mic size={14} color="#23a559" /> : <MicOff size={14} color="#da373c" />}
-                {peer.name}
+              <div className="br-video-overlay" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {peer.micOn ? <Mic size={14} color="#23a559" /> : <MicOff size={14} color="#da373c" />}
+                  <span>{peer.name}</span>
+                </div>
+                <span style={{ fontSize: '10px', opacity: 0.85, textTransform: 'capitalize' }}>
+                  {peer.role || 'Intern'}
+                </span>
               </div>
             </div>
           ))}

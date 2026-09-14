@@ -26,6 +26,11 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [groupMessages, dmTarget, dmChats]);
 
+  // Sync propInterns so newly admitted interns appear
+  useEffect(() => {
+    setInterns(propInterns);
+  }, [propInterns]);
+
   // ── Group chat send ──
   const handleGroupSend = (e) => {
     e.preventDefault();

@@ -136,8 +136,14 @@ class ConnectionManager:
 
     async def broadcast_to_room(self, room_id: str, message: dict):
         if room_id in self.active_rooms:
+            stale_connections = []
             for connection in self.active_rooms[room_id]:
-                await connection.send_json(message)
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    stale_connections.append(connection)
+            for stale in stale_connections:
+                self.disconnect(room_id, stale)
 
 manager = ConnectionManager()
 
@@ -234,11 +240,4 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
     except WebSocketDisconnect:
         manager.disconnect(room_id, websocket)
         await manager.broadcast_to_room(room_id, {"sender": client_id, "type": "user-leave", "payload": {}})
-    try:
-        while True:
-            data = await websocket.receive_json()
-            # Relay WebRTC signals (offer, answer, ICE candidates) to other room participants
-            await manager.broadcast_to_room(room_id, {"sender": client_id, "payload": data})
-    except WebSocketDisconnect:
-        manager.disconnect(room_id, websocket)
-        await manager.broadcast_to_room(room_id, {"type": "USER_DISCONNECTED", "client_id": client_id})
+

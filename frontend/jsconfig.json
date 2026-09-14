@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "jsx": "react",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "baseUrl": ".",
+    "paths": {
+      "*": ["src/*"]
+    },
+    "jsx": "react"
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*"
+  ]
 }

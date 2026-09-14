@@ -375,19 +375,24 @@ export default function MentorDashboard() {
 
   const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
+
+    const parsedTime = new Date(time);
+    const validScheduledTime = Number.isNaN(parsedTime.getTime()) ? null : parsedTime.toISOString();
+
     try {
       const response = await api.post('/api/meetings', {
         title: title,
         room_code: "meeting-" + Date.now(), // Generate a unique room code
         status: "scheduled",
-        scheduled_time: time
+        scheduled_time: validScheduledTime
       });
       // Optionally refresh mentor's local meetings array
       setMeetings([...meetings, { id: response.data.id || meetings.length + 1, title, time, status: "Scheduled", room_code: response.data.room_code }]);
       alert("Meeting created and saved to database!");
     } catch (err) {
       console.error("Failed to create meeting:", err);
-      alert("Error saving meeting to database.");
+      const errMsg = err.response ? `Server error: ${err.response.status}` : "Network error: Backend is not running.";
+      alert(`Error saving meeting to database: ${errMsg}`);
     }
   };
 
@@ -410,15 +415,7 @@ export default function MentorDashboard() {
     const handleScheduleSubmit = (e) => {
       e.preventDefault();
       // Format time for presentation
-      const dateObj = new Date(scheduleTime);
-      const formattedTime = dateObj.toLocaleString("en-US", { 
-        weekday: "short", 
-        month: "short", 
-        day: "numeric", 
-        hour: "numeric", 
-        minute: "2-digit" 
-      });
-      handleCreateMeeting(scheduleTitle, formattedTime);
+      handleCreateMeeting(scheduleTitle, scheduleTime);
       setScheduleTitle("");
       setScheduleTime("");
     };
