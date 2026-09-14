@@ -149,7 +149,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
       intervalId = setInterval(async () => {
         try {
           const res = await api.get(`/api/meetings/${activeRoom}/waiting-list`);
-          const waitingData = res.data.waiting || {};
+          const waitingData = res.data.waiting || res.data;
           const waitingKnocks = Object.entries(waitingData)
             .filter(([id, data]) => data.status === "waiting")
             .map(([id, data]) => ({ internId: id, name: data.name, time: Date.now() }));
