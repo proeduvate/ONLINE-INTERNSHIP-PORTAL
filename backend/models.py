@@ -222,7 +222,6 @@ class Certificate(Base):
     pdf_path = Column(String(255), nullable=True)
     issued_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    generated_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
     intern = relationship("User", back_populates="certificates")
