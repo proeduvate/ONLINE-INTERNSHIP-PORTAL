@@ -126,19 +126,7 @@ def dispatch_notification(
 ) -> None:
     try:
         from datetime import datetime
-        formatted_time = "Just now" # Based on the screenshots, they expect 'Just now' or actual time
-        
-        prefix = ""
-        if event_type == EventType.MEETING_SCHEDULED:
-            prefix = "?? [MEETING] "
-        elif event_type == EventType.TASK_ASSIGNED:
-            prefix = "?? [NEW RESOURCE] "
-        elif event_type == EventType.AIRDROP_ASSIGNMENT:
-            prefix = "?? [AIRDROP] "
-        elif event_type == EventType.ROOM_ADMISSION:
-            prefix = "?? [BREAKOUT ROOM] "
-            
-        full_title = f"{prefix}{title}"
+        formatted_time = datetime.now().strftime("%d/%m/%Y, %I:%M:%S %p")
         
         url = 'https://api.emailjs.com/api/v1.0/email/send'
         payload = {
@@ -148,7 +136,7 @@ def dispatch_notification(
             'template_params': {
                 'to_email': recipient_email,
                 'sender_name': sender_name,
-                'event_type': full_title,
+                'event_type': event_type.value if hasattr(event_type, 'value') else str(event_type),
                 'details': message or title,
                 'action_link': action_url or "https://internship-portal.example.com",
                 'timestamp': formatted_time
