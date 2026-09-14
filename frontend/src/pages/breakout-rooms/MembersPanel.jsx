@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Send, X, ArrowLeft, UserX, MessageSquare } from 'lucide-react';
+import { Search, Send, X, ArrowLeft, UserX, MessageSquare, MessageCircle, Users, AlertTriangle } from 'lucide-react';
 import { mockChatMessages, mockInterns, mockMentor } from './MockData';
 
 export default function MembersPanel({ mode, onClose, interns: propInterns = mockInterns, mentor = mockMentor, isIntern = false }) {
@@ -134,7 +134,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
           <div className="br-chat-messages">
             {dmMessages.length === 0 ? (
               <div style={{ textAlign: 'center', color: '#80848e', fontSize: '13px', marginTop: '40px' }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>💬</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><MessageCircle size={32} color="#80848e" /></div>
                 Start a private conversation with <b>{dmTarget.name}</b>
               </div>
             ) : dmMessages.map(msg => (
@@ -190,7 +190,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
             backgroundColor: '#fff', borderRadius: '12px', padding: '24px',
             width: '260px', textAlign: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.2)'
           }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>⚠️</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><AlertTriangle size={32} color="#da373c" /></div>
             <div style={{ fontWeight: 700, fontSize: '15px', color: '#313338', marginBottom: '6px' }}>
               Kick {kickTarget.name}?
             </div>

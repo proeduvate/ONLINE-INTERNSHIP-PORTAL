@@ -57,7 +57,7 @@ export default function WorkspaceSidebar({
               onClick={() => handleRoomClick(room.id)}
               style={{ cursor: isIntern ? 'default' : 'pointer', opacity: isIntern && activeRoom !== room.id ? 0.6 : 1 }}
             >
-              <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && '🔒'}
+              <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && ' (Locked)'}
               {isIntern && activeRoom === room.id && (
                 <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#10b981', color: '#fff', padding: '1px 5px', borderRadius: '8px' }}>You</span>
               )}
