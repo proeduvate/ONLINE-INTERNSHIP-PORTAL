@@ -1,3 +1,4 @@
+import api from "../../api/axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
@@ -169,12 +170,26 @@ export default function MentorDashboard() {
   ]);
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
-  ]);
+  const [meetings, setMeetings] = useState([]);
+
+  const fetchMeetings = async () => {
+    try {
+      const response = await api.get('/api/meetings');
+      const formatted = response.data.map(m => ({
+        id: m.id,
+        title: m.title,
+        time: m.scheduled_time ? new Date(m.scheduled_time).toLocaleString() : "Scheduled",
+        status: m.status
+      }));
+      setMeetings(formatted);
+    } catch (err) {
+      console.error("Failed to load meetings", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMeetings();
+  }, []);
 
   const [chatMessages, setChatMessages] = useState([
     { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
@@ -304,10 +319,28 @@ export default function MentorDashboard() {
     alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      let isoTime = null;
+      try {
+        const d = new Date(time);
+        if (!isNaN(d.getTime())) isoTime = d.toISOString();
+      } catch (e) {}
+
+      await api.post("/api/meetings", {
+        title,
+        scheduled_time: isoTime,
+        duration_minutes: 60,
+        room_code: "main-room-" + Math.floor(Math.random()*10000),
+        status: "scheduled"
+      });
+      alert("Meeting created!");
+      fetchMeetings();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create meeting");
+    }
   };
 
   const handleWeeklySubmit = (e) => {

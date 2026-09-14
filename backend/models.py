@@ -185,6 +185,7 @@ class Meeting(Base):
     title = Column(String(200), nullable=False)
     room_code = Column(String(100), nullable=False, unique=True)
     status = Column(String(50), default="active") # "active", "completed"
+    scheduled_time = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationship to Breakout Rooms

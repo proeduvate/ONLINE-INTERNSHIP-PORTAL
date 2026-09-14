@@ -73,7 +73,8 @@ def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), author
         mentor_id=mentor_id,
         title=meeting.title,
         room_code=meeting.room_code,
-        status=meeting.status
+        status=meeting.status,
+        scheduled_time=meeting.scheduled_time
     )
     db.add(db_meeting)
     db.commit()
