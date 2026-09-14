@@ -2485,10 +2485,11 @@ export default function InternDashboard() {
 
         {/* Right User Actions & Profile */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Theme Toggle */}
+          {/* Theme Toggle 
           <div onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s ease" }} title="Toggle Theme">
             {theme === 'light' ? <Moon size={18} color="var(--text-gray, #64748b)" /> : <Sun size={18} color="var(--text-gray, #94a3b8)" />}
           </div>
+          */}
 
           {/* Bell Notifications */}
           <div style={{ position: 'relative', cursor: 'pointer' }}>
