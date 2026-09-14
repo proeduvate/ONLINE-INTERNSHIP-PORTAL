@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
@@ -19,40 +20,32 @@ import "./Login.css";export default function Login() {
     intern: { email: "intern@gmail.com", password: "intern123" },
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!email) {
-      setErrorMessage("Please enter your email address.");
-      return;
-    }
-    if (!password) {
-      setErrorMessage("Please enter your password.");
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password.");
       return;
     }
 
-    // Basic email format check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorMessage("Please enter a valid email address.");
-      return;
-    }
-
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
+    try {
+      const response = await api.post("/api/auth/login", { email, password });
+      const { access_token, user } = response.data;
+      
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("role", user.role);
+      
+      if (user.role === "mentor") {
+        navigate("/mentor");
+      } else if (user.role === "intern") {
+        navigate("/intern");
+      } else {
+        navigate("/admin");
       }
-    }
-
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+    } catch (error) {
+      console.error("Login failed", error);
+      setErrorMessage(error.response?.data?.detail || "Invalid email or password.");
     }
   };
 
