@@ -1,4 +1,4 @@
-﻿import emailjs from '@emailjs/browser';
+import emailjs from '@emailjs/browser';
 
 // ---------------------------------------------------------
 // 1. PROVIDERS (The actual implementations)
@@ -62,10 +62,11 @@ class NotificationService {
   async notify(eventTitle, eventDetails, ctaUrl = "http://localhost:3000/dashboard") {
     const templateParams = {
       to_email: this.targetEmail,
+      sender_name: "Portal System", // Sender Name
       event_type: eventTitle,
-      event_details: eventDetails,
+      details: eventDetails || eventTitle,
       timestamp: new Date().toLocaleString(),
-      cta_url: ctaUrl
+      action_link: ctaUrl || "https://internship-portal.example.com"
     };
 
     return await this.provider.send(templateParams);

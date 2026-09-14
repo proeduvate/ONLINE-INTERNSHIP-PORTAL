@@ -121,20 +121,12 @@ def dispatch_notification(
     title: str, 
     message: str, 
     action_url: str, 
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None,
+    sender_name: str = "Portal System"
 ) -> None:
     try:
-        prefix = ""
-        if event_type == EventType.MEETING_SCHEDULED:
-            prefix = "?? [MEETING] "
-        elif event_type == EventType.TASK_ASSIGNED:
-            prefix = "?? [NEW RESOURCE] "
-        elif event_type == EventType.AIRDROP_ASSIGNMENT:
-            prefix = "?? [AIRDROP] "
-        elif event_type == EventType.ROOM_ADMISSION:
-            prefix = "?? [BREAKOUT ROOM] "
-            
-        full_title = f"{prefix}{title}"
+        from datetime import datetime
+        formatted_time = datetime.now().strftime("%d/%m/%Y, %I:%M:%S %p")
         
         url = 'https://api.emailjs.com/api/v1.0/email/send'
         payload = {
@@ -143,10 +135,11 @@ def dispatch_notification(
             'user_id': EMAILJS_PUBLIC_KEY,
             'template_params': {
                 'to_email': recipient_email,
-                'notification_title': full_title,
-                'message_body': message,
-                'action_link': action_url,
-                'timestamp': 'Just now'
+                'sender_name': sender_name,
+                'event_type': event_type.value if hasattr(event_type, 'value') else str(event_type),
+                'details': message or title,
+                'action_link': action_url or "https://internship-portal.example.com",
+                'timestamp': formatted_time
             }
         }
         if EMAILJS_PRIVATE_KEY:
@@ -156,7 +149,7 @@ def dispatch_notification(
         response = requests.post(url, json=payload, headers=headers, timeout=10)
         
         if response.status_code == 200:
-            print(f"[DISPATCH SUCCESS] Notified {recipient_email} about {event_type.value}")
+            print(f"[DISPATCH SUCCESS] Notified {recipient_email} about {event_type}")
         else:
             print(f"[DISPATCH HTTP ERROR] {response.status_code}: {response.text}")
             
