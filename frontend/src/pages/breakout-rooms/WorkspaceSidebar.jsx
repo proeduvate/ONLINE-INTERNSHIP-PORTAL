@@ -50,18 +50,14 @@ export default function WorkspaceSidebar({
         ))}
 
         <div className="br-section-title">BREAKOUT ROOMS</div>
-        {rooms.filter(r => r.type !== 'main').length === 0 ? (
-          <div style={{ padding: '10px 12px', color: '#80848e', fontSize: '12px' }}>
-            No breakout rooms yet
-          </div>
-        ) : rooms.filter(r => r.type !== 'main').map(room => (
+        {rooms.filter(r => r.type !== 'main').map(room => (
           <div key={room.id}>
             <div 
               className={`br-room-item ${activeRoom === room.id ? 'active' : ''}`}
               onClick={() => handleRoomClick(room.id)}
               style={{ cursor: isIntern ? 'default' : 'pointer', opacity: isIntern && activeRoom !== room.id ? 0.6 : 1 }}
             >
-              <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && '🔒'}
+              <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && ' (Locked)'}
               {isIntern && activeRoom === room.id && (
                 <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#10b981', color: '#fff', padding: '1px 5px', borderRadius: '8px' }}>You</span>
               )}
@@ -79,10 +75,10 @@ export default function WorkspaceSidebar({
       <div className="br-user-profile">
         <div className="br-user-info">
           <div className="br-avatar-small" style={{ backgroundColor: isIntern ? '#10b981' : '#5865f2' }}>
-            {isIntern ? 'Me' : 'M'}
+            {isIntern ? 'Me' : 'An'}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'You' : 'Mentor'}</span>
+            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'You' : 'Ananya'}</span>
             <span style={{ fontSize: '11px', color: '#5c5e66' }}>{isIntern ? 'Intern' : 'Mentor'}</span>
           </div>
         </div>

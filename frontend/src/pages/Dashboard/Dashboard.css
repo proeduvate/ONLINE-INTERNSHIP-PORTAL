@@ -104,7 +104,7 @@
 
 .main-content-scroll {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   padding-bottom: 0px;
   display: flex;
   flex-direction: column;
@@ -362,6 +362,23 @@
   color: var(--danger-color);
 }
 
+/* --- Scale Down for Small Laptop Screens (e.g., 16-inch laptops) --- */
+@media (max-width: 1600px) and (max-height: 950px) {
+  .container {
+    zoom: 0.85;
+    height: calc(100vh / 0.85);
+    width: calc(100% / 0.85);
+  }
+}
+
+@media (max-width: 1440px) and (max-height: 800px) {
+  .container {
+    zoom: 0.75;
+    height: calc(100vh / 0.75);
+    width: calc(100% / 0.75);
+  }
+}
+
 /* Responsive sidebar */
 @media (max-width: 768px) {
   .sidebar {
@@ -405,7 +422,7 @@
 .file-pill:hover {
   background-color: #e2e8f0;
   border-color: #94a3b8;
-  color: #0f172a;
+  color: var(--text-primary);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -443,7 +460,7 @@
 }
 
 .modal-content {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 12px;
   width: 90%;
   max-width: 1050px;
@@ -495,7 +512,7 @@
 
 .modal-sidebar-item:hover {
   background: #e2e8f0;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .modal-sidebar-item.active {
@@ -542,7 +559,7 @@
   justify-content: center;
   align-items: center;
   background: #f8fafc;
-  color: #1e293b;
+  color: var(--text-primary);
   padding: 40px;
   text-align: center;
 }
@@ -578,7 +595,7 @@
   right: 0;
   margin-top: 8px;
   width: 250px;
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -593,7 +610,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: #1e293b;
+  color: var(--text-primary);
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -640,7 +657,7 @@
 
 .stat-badge.completed { background-color: #10b981; }
 .stat-badge.missed { background-color: #ef4444; }
-.stat-badge.current { background-color: #f59e0b; color: #1e293b; }
+.stat-badge.current { background-color: #f59e0b; color: var(--text-primary); }
 
 .calendar-grid {
   display: grid;
@@ -697,7 +714,7 @@
 .calendar-day-details h4 {
   margin: 0 0 8px 0;
   font-size: 14px;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .scenario-title {
@@ -814,7 +831,7 @@
 }
 
 .btn-participate {
-  background: #ffffff;
+  background: var(--bg-surface);
   color: #ec4899;
   border: none;
   padding: 12px 24px;
@@ -829,4 +846,4 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
+
