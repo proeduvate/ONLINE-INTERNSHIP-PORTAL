@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockOnboardingService } from '../../../services/mockOnboardingService';
-import '../../onboarding/Onboarding.css';
+import '../pages/Onboarding.css';
 
 export default function AdminOnboardingList() {
     const [applications, setApplications] = useState([]);
