@@ -206,10 +206,17 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
         )
     
     import bcrypt
+    from passlib.exc import UnknownHashError
     try:
         is_valid = bcrypt.checkpw(user_credentials.password.encode('utf-8'), user.hashed_password.encode('utf-8'))
+    except ValueError:
+        try:
+            is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+        except UnknownHashError:
+            # Fallback for plain text passwords in seeded DB
+            is_valid = (user_credentials.password == user.hashed_password)
     except Exception:
-        is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+        is_valid = False
 
     if not is_valid:
         raise HTTPException(
