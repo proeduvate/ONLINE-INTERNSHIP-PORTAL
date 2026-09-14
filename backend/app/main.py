@@ -217,7 +217,12 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
             detail="Invalid Credentials"
         )
     
-    if not pwd_context.verify(user_credentials.password, user.hashed_password):
+    try:
+        is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+    except Exception:
+        is_valid = False
+
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
             detail="Invalid Credentials"
@@ -239,7 +244,12 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
 @app.post("/token")
 def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
-    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
+    try:
+        is_valid = user and pwd_context.verify(form_data.password, user.hashed_password)
+    except Exception:
+        is_valid = False
+
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
