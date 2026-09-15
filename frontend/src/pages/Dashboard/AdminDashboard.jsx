@@ -29,27 +29,27 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const notifRes = await api.get("/api/v1/notifications").catch(() => ({ data: [] }));
+        const notifRes = await api.get("/notifications").catch(() => ({ data: [] }));
         setNotifications(notifRes.data || []);
       } catch (e) {}
 
       try {
-        const usersRes = await api.get("/api/v1/users").catch(() => ({ data: [] }));
+        const usersRes = await api.get("/users").catch(() => ({ data: [] }));
         setUsersList(usersRes.data || []);
       } catch (e) {}
       
       try {
-        const domainsRes = await api.get("/api/v1/onboarding/domains").catch(() => ({ data: [] }));
+        const domainsRes = await api.get("/domains").catch(() => ({ data: [] }));
         setDomainsList(domainsRes.data || []);
       } catch (e) {}
       
       try {
-        const appsRes = await api.get("/api/v1/onboarding/applications").catch(() => ({ data: [] }));
+        const appsRes = await api.get("/applications").catch(() => ({ data: [] }));
         setOnboardingCandidates(appsRes.data || []);
       } catch (e) {}
       
       try {
-        const meetRes = await api.get("/api/v1/meetings").catch(() => ({ data: [] }));
+        const meetRes = await api.get("/meetings").catch(() => ({ data: [] }));
         setMeetings(meetRes.data || []);
       } catch (e) {}
     };
@@ -290,12 +290,12 @@ export default function AdminDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Total Interns</span>
-                <span className="stat-value">{usersList.filter(u => u.role === "Intern").length}</span>
+                <span className="stat-value">{usersList.filter(u => u.role === "Intern" || u.role === "intern").length}</span>
                 <span className="stat-desc">Based on active users</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Total Mentors</span>
-                <span className="stat-value">{usersList.filter(u => u.role === "Mentor").length}</span>
+                <span className="stat-value">{usersList.filter(u => u.role === "Mentor" || u.role === "mentor").length}</span>
                 <span className="stat-desc">Assigned across domains</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
@@ -381,8 +381,8 @@ export default function AdminDashboard() {
         );
 
       case "Users":
-        const interns = filteredUsers.filter(u => u.role === "Intern");
-        const mentors = filteredUsers.filter(u => u.role === "Mentor");
+        const interns = filteredUsers.filter(u => u.role === "Intern" || u.role === "intern");
+        const mentors = filteredUsers.filter(u => u.role === "Mentor" || u.role === "mentor");
         
         // Group interns by college (batch)
         const batches = {};
