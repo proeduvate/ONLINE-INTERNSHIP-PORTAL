@@ -1284,3 +1284,99 @@
   background: var(--primary-color);
 }
 
+/* Global Responsive Classes */
+@media (max-width: 1024px) {
+  .responsive-flex-tablet {
+    flex-direction: column !important;
+  }
+  .responsive-grid-tablet {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-flex {
+    flex-direction: column !important;
+  }
+  .responsive-flex-reverse {
+    flex-direction: column-reverse !important;
+  }
+  .responsive-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: block !important;
+  }
+  .show-flex-on-mobile {
+    display: flex !important;
+  }
+  .mobile-w-full {
+    width: 100% !important;
+  }
+  .mobile-h-auto {
+    height: auto !important;
+  }
+  .mobile-scroll-x {
+    overflow-x: auto !important;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  .mobile-scroll-x::-webkit-scrollbar {
+    height: 4px;
+  }
+  .mobile-scroll-x::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  .mobile-no-padding {
+    padding: 0 !important;
+  }
+  .mobile-p-10 {
+    padding: 10px !important;
+  }
+  .mobile-gap-10 {
+    gap: 10px !important;
+  }
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column !important;
+  }
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    flex-direction: row !important;
+    padding: 10px !important;
+    overflow-x: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+  }
+  .sidebar h2 {
+    display: none !important; 
+  }
+  .sidebar ul {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding-bottom: 5px !important;
+  }
+  .sidebar ul li {
+    margin-bottom: 0 !important;
+  }
+  .sidebar-logout {
+    margin-top: 0 !important;
+    width: auto !important;
+    padding: 8px 12px !important;
+    white-space: nowrap;
+  }
+}

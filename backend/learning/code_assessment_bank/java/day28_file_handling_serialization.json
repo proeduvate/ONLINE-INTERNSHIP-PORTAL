@@ -1,0 +1,67 @@
+{
+    "day": 28,
+    "topic": "File Handling & Serialization",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D28-Q001",
+            "title": "Write Student Info to File",
+            "description": "Create a text file and write student information into it.",
+            "requirements": [
+                "Use FileWriter or BufferedWriter",
+                "Write at least 5 student records",
+                "Each record on a new line",
+                "Close file properly",
+                "Confirm successful write"
+            ]
+        },
+        {
+            "id": "CODE-PY-D28-Q002",
+            "title": "File Reader and Counter",
+            "description": "Read a file and count its lines, words and characters.",
+            "requirements": [
+                "Read an existing text file",
+                "Count total lines",
+                "Count total words",
+                "Count total characters",
+                "Print all three counts"
+            ]
+        },
+        {
+            "id": "CODE-PY-D28-Q003",
+            "title": "Append Employee Records",
+            "description": "Append employee records to an existing file.",
+            "requirements": [
+                "Open file in append mode",
+                "Add 3 new employee records",
+                "Do not overwrite existing content",
+                "Verify by reading and displaying file",
+                "Use BufferedWriter with append=true"
+            ]
+        },
+        {
+            "id": "CODE-PY-D28-Q004",
+            "title": "Serialize Student Object",
+            "description": "Serialize a Student object and save it to a file.",
+            "requirements": [
+                "Student class implements Serializable",
+                "Use ObjectOutputStream",
+                "Write student object to .ser file",
+                "Handle IOException",
+                "Confirm serialization success"
+            ]
+        },
+        {
+            "id": "CODE-PY-D28-Q005",
+            "title": "Deserialize Student Object",
+            "description": "Deserialize the student object and display its information.",
+            "requirements": [
+                "Use ObjectInputStream",
+                "Read from .ser file",
+                "Cast to Student object",
+                "Display all student fields",
+                "Handle ClassNotFoundException and IOException"
+            ]
+        }
+    ]
+}

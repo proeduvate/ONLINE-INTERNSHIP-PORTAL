@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 13 Code Assessment",
+  "day": 13,
+  "topic": "Functions & Scope",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY13-Q01",
+      "day": 13,
+      "topic": "Functions & Scope",
+      "question": "Create a function that calculates the factorial of a number."
+    },
+    {
+      "id": "DAY13-Q02",
+      "day": 13,
+      "topic": "Functions & Scope",
+      "question": "Create a function that determines whether a number is prime."
+    },
+    {
+      "id": "DAY13-Q03",
+      "day": 13,
+      "topic": "Functions & Scope",
+      "question": "Create separate functions for addition, subtraction, multiplication, and division."
+    },
+    {
+      "id": "DAY13-Q04",
+      "day": 13,
+      "topic": "Functions & Scope",
+      "question": "Create a function that calculates student grade from marks."
+    },
+    {
+      "id": "DAY13-Q05",
+      "day": 13,
+      "topic": "Functions & Scope",
+      "question": "Build a menu-driven calculator using reusable functions."
+    }
+  ]
+}

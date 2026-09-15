@@ -473,7 +473,7 @@ export default function MentorDashboard() {
 
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
                   <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
@@ -946,7 +946,7 @@ export default function MentorDashboard() {
             </div>
 
             <div className="card" style={{ padding: "0", overflow: "hidden", flex: 1, display: "flex", flexDirection: "column" }}>
-              <div className="table-container" style={{ margin: 0, flex: 1, overflowY: "auto" }}>
+              <div className="table-container" style={{ margin: 0, flex: 1 }}>
                 <table className="table" style={{ margin: 0 }}>
                   <thead>
                     <tr>
@@ -1519,7 +1519,7 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
@@ -1665,7 +1665,7 @@ export default function MentorDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
 
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
           {isMeetingActive && (

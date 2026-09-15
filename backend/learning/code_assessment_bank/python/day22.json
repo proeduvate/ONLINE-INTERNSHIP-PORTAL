@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 22 Code Assessment",
+  "day": 22,
+  "topic": "OOP — Classes & Objects",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY22-Q01",
+      "day": 22,
+      "topic": "OOP — Classes & Objects",
+      "question": "Create a Student class with name, age, department, and marks."
+    },
+    {
+      "id": "DAY22-Q02",
+      "day": 22,
+      "topic": "OOP — Classes & Objects",
+      "question": "Create an Employee class with salary calculation functionality."
+    },
+    {
+      "id": "DAY22-Q03",
+      "day": 22,
+      "topic": "OOP — Classes & Objects",
+      "question": "Create a BankAccount class with deposit and withdrawal methods."
+    },
+    {
+      "id": "DAY22-Q04",
+      "day": 22,
+      "topic": "OOP — Classes & Objects",
+      "question": "Create a Book class and implement book borrowing functionality."
+    },
+    {
+      "id": "DAY22-Q05",
+      "day": 22,
+      "topic": "OOP — Classes & Objects",
+      "question": "Build a simple student management system using classes and objects."
+    }
+  ]
+}

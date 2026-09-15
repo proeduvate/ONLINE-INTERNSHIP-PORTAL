@@ -384,10 +384,10 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflow: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
-            <div style={{ display: "flex", gap: "20px", flexShrink: 0, height: "180px" }}>
+            <div className="responsive-flex" style={{ display: "flex", gap: "20px", flexShrink: 0, minHeight: "180px" }}>
               
               {/* Hero Banner ("Learn. Build. Grow.") */}
               <div className="hero-banner-card" style={{
@@ -707,7 +707,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "20px", overflow: "hidden" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "20px", overflow: "hidden" }}>
                 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
@@ -732,7 +732,7 @@ export default function InternDashboard() {
                     <span style={{ textAlign: "right", paddingRight: "40px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -1905,7 +1905,7 @@ export default function InternDashboard() {
       case "Progress & Certificate":
         if (showCertificateView) {
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "hidden", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "auto", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
                 <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
@@ -2044,7 +2044,7 @@ export default function InternDashboard() {
         }
 
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "hidden", paddingRight: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "auto", paddingRight: "8px" }}>
             
 
             {/* Top 4 Metrics Cards */}
@@ -2252,7 +2252,7 @@ export default function InternDashboard() {
                   <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All Days →</span>
                 </div>
 
-                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "hidden", paddingBottom: "40px" }}>
+                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "auto", paddingBottom: "40px" }}>
                   {[
                     { day: 10, title: "Git & GitHub", complete: true },
                     { day: 11, title: "Database Basics", complete: true },
@@ -2407,7 +2407,7 @@ export default function InternDashboard() {
   }
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 
@@ -2554,7 +2554,7 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>

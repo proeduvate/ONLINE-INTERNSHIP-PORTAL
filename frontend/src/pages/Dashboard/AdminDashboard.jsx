@@ -442,7 +442,7 @@ export default function AdminDashboard() {
 
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
                   <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {selectedIntern ? (
-              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
                   <button onClick={() => setSelectedIntern(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
@@ -547,7 +547,7 @@ export default function AdminDashboard() {
                       <AlertTriangle size={16} /> Active Tickets / Issues
                     </h4>
                     
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
                       {ticketsList.filter(t => t.status !== "Resolved").slice(0, 2).map(ticket => (
                         <div 
                           key={ticket.id}
@@ -591,7 +591,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ) : selectedMentor ? (
-              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", height: "calc(100vh - 100px)", overflowY: "auto", boxSizing: "border-box" }}>
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
                   <button onClick={() => setSelectedMentor(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
@@ -636,7 +636,7 @@ export default function AdminDashboard() {
                       <Calendar size={16} /> Upcoming Meetings
                     </h4>
                     
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
                       <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                           <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>Week 4 Review</span>
@@ -676,7 +676,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {usersSubTab === "Interns" ? (
-              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 170px)", overflow: "hidden" }}>
+              <div style={{ display: "flex", gap: "24px", alignItems: "stretch",  }}>
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
@@ -728,7 +728,7 @@ export default function AdminDashboard() {
                         </span>
                       </div>
                       
-                      <div className="table-container" style={{ marginTop: 0, flex: 1, overflowY: "auto", minHeight: 0 }}>
+                      <div className="table-container" style={{ marginTop: 0, flex: 1, minHeight: 0 }}>
                         <table className="table">
                           <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
                             <tr>
@@ -1253,7 +1253,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
@@ -1386,7 +1386,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
 
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
           {renderContent()}
