@@ -195,18 +195,73 @@ class AssignMentorReq(BaseModel):
 
 @router.post("/{application_id}/assign-mentor")
 def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depends(get_db)):
-    return {"message": "Mentor assigned"}
-
-@router.post("/{application_id}/create-account")
-def create_account(application_id: str, db: Session = Depends(get_db)):
     app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
+    db_app.assigned_mentor_id = req.mentor_id
+    db.commit()
+    return {"message": "Mentor assigned"}
+
+@router.post("/{application_id}/create-account")
+def create_account(application_id: str, db: Session = Depends(get_db)):
+    from app.core.security import pwd_context
+    from datetime import datetime
+
+    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
+    if not db_app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    
+    # Generate account if not exists
+    if not db_app.user_id:
+        existing_user = db.query(models.User).filter(models.User.email == db_app.email).first()
+        if existing_user:
+            db_app.user_id = existing_user.id
+            db_app.status = models.ApplicationStatus.ACTIVE
+            db.commit()
+            return {"message": "Linked to existing account", "password": "User already has a password"}
+        
+        # Determine Domain ID
+        domain_obj = db.query(models.Domain).filter(models.Domain.name == db_app.domain).first()
+        domain_id = domain_obj.id if domain_obj else None
+        
+        # Determine Intern ID
+        count = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).count()
+        intern_id = f"INT-{datetime.now().year}-{count + 101:04d}"
+        
+        # Default password
+        default_pwd = "ProEduvate@123"
+        hashed_password = pwd_context.hash(default_pwd)
+        
+        new_user = models.User(
+            name=db_app.name,
+            email=db_app.email,
+            hashed_password=hashed_password,
+            role=models.UserRole.INTERN,
+            college=db_app.college,
+            domain_id=domain_id,
+            mentor_id=db_app.assigned_mentor_id,
+            start_date=datetime.now(),
+            intern_id=intern_id,
+            attendance_pct=100,
+            progress_pct=0
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        
+        # Update app link
+        db_app.user_id = new_user.id
+        db_app.status = models.ApplicationStatus.ACTIVE
+        db.commit()
+        
+        return {"message": "Account created successfully", "password": default_pwd}
+        
     db_app.status = models.ApplicationStatus.ACTIVE
     db.commit()
-    return {"message": "Account created"}
+    return {"message": "Account activated", "password": "User already has a password"}
 class SignDocumentReq(BaseModel):
     document_type: str
     signature_base64: str

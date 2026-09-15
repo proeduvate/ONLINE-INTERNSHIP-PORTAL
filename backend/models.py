@@ -299,6 +299,7 @@ class OnboardingApplication(Base):
     tc_url = Column(String(255), nullable=True)
     signed_offer_letter_url = Column(String(255), nullable=True)
     signed_tc_url = Column(String(255), nullable=True)
+    assigned_mentor_id = Column(Integer, ForeignKey('users.id', ondelete="SET NULL"), nullable=True)
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING_REVIEW)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

@@ -30,7 +30,6 @@ except ImportError:
     from app import models, schemas
     from app.db import session as database
 
-from services.n8n_service import trigger_n8n_webhook
 
 try:
     from app.utils.sandbox_runner import run_submission as sandbox_run_submission
@@ -193,11 +192,7 @@ def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTas
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    payload = {
-        "event": "ACCOUNT_CREATED",
-        "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email}
-    }
-    background_tasks.add_task(trigger_n8n_webhook, "ACCOUNT_CREATED", payload)
+    # N8N webhook trigger removed
     
     return {"message": "User registered successfully", "user_id": new_user.id}
 
@@ -308,19 +303,7 @@ def onboard_user(
     db.commit()
     db.refresh(new_user)
     
-    payload = {
-        "event": "ACCOUNT_CREATED",
-        "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email}
-    }
-    background_tasks.add_task(trigger_n8n_webhook, "ACCOUNT_CREATED", payload)
-    
-    if data.mentor_id:
-        mentor_payload = {
-            "event": "MENTOR_ASSIGNED",
-            "intern": {"id": new_user.id, "name": new_user.name, "email": new_user.email},
-            "mentor": {"id": data.mentor_id}
-        }
-        background_tasks.add_task(trigger_n8n_webhook, "MENTOR_ASSIGNED", mentor_payload)
+    # N8N webhook triggers removed
     
     return {"message": "User onboarded successfully", "user_id": new_user.id, "intern_id": intern_id}
 

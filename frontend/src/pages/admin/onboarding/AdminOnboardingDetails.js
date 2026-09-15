@@ -340,10 +340,30 @@ export default function AdminOnboardingDetails() {
                         {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && (
                             <button className="btn btn-primary" onClick={async () => {
                                 try {
-                                    await api.post(`/api/v1/onboarding/${id}/create-account`);
+                                    const response = await api.post(`/api/v1/onboarding/${id}/create-account`);
+                                    if (response.data.password) {
+                                        const templateParams = {
+                                            intern_name: app.name,
+                                            to_email: app.email,
+                                            password: response.data.password,
+                                            login_link: window.location.origin + '/login'
+                                        };
+                                        await emailjs.send(
+                                            'service_tcpvv7r',
+                                            'template_9f3unnm',
+                                            templateParams,
+                                            'AUbUjQbyafx3K-_aP'
+                                        );
+                                        alert("Account created and welcome email sent!");
+                                    } else {
+                                        alert("Account activated.");
+                                    }
                                     refreshApp();
-                                } catch (e) { console.error(e); }
-                            }}>Create Account</button>
+                                } catch (e) { 
+                                    console.error(e);
+                                    alert("Error creating account: " + (e.response?.data?.detail || e.message));
+                                }
+                            }}>Create Account & Send Welcome Email</button>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.ACCOUNT_ACTIVATION_PENDING && (
