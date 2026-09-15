@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mockOnboardingService } from '../../../services/mockOnboardingService';
+import api from '../../../api/axios';
 import '../pages/Onboarding.css';
 
 export default function AdminOnboardingList() {
@@ -10,8 +10,8 @@ export default function AdminOnboardingList() {
         const fetchApps = async () => {
             setLoading(true);
             try {
-                const data = await mockOnboardingService.adminGetApplications();
-                setApplications(data);
+                const response = await api.get('/api/v1/onboarding/applications');
+                setApplications(response.data);
             } catch (error) {
                 console.error("Error fetching applications", error);
             } finally {

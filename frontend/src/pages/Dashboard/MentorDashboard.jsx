@@ -38,7 +38,7 @@ export default function MentorDashboard() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await api.get("/api/v1/notifications").catch(() => ({ data: [] }));
+        const res = await api.get("/notifications").catch(() => ({ data: [] }));
         setNotifications(res.data || []);
       } catch (err) {
         setNotifications([]);
@@ -169,17 +169,17 @@ export default function MentorDashboard() {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const internsRes = await api.get("/api/v1/users?role=intern").catch(() => ({ data: [] }));
+        const internsRes = await api.get("/users?role=intern").catch(() => ({ data: [] }));
         setAssignedInterns(internsRes.data || []);
       } catch (err) {}
       
       try {
-        const subRes = await api.get("/api/v1/submissions").catch(() => ({ data: [] }));
+        const subRes = await api.get("/submissions").catch(() => ({ data: [] }));
         setSubmissions(subRes.data || []);
       } catch (err) {}
 
       try {
-        const meetRes = await api.get("/api/v1/meetings").catch(() => ({ data: [] }));
+        const meetRes = await api.get("/meetings").catch(() => ({ data: [] }));
         setMeetings(meetRes.data || []);
       } catch (err) {}
     };
@@ -282,7 +282,7 @@ export default function MentorDashboard() {
   const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
     try {
-      const response = await api.post('/api/meetings', {
+      const response = await api.post('/meetings', {
         title: title,
         room_code: "meeting-" + Date.now(), // Generate a unique room code
         status: "scheduled",

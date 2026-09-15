@@ -44,7 +44,7 @@ export default function AdminDashboard() {
       } catch (e) {}
       
       try {
-        const appsRes = await api.get("/applications").catch(() => ({ data: [] }));
+        const appsRes = await api.get("/api/v1/onboarding/applications").catch(() => ({ data: [] }));
         setOnboardingCandidates(appsRes.data || []);
       } catch (e) {}
       

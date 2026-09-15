@@ -24,6 +24,28 @@ class ApplicationStatus(str, enum.Enum):
     PENDING_REVIEW = "PENDING_REVIEW"
     ACCEPTED = "ACCEPTED"
     REJECTED = "REJECTED"
+    INTERVIEW_REQUIRED = "INTERVIEW_REQUIRED"
+    INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
+    INTERVIEW_PASSED = "INTERVIEW_PASSED"
+    INTERVIEW_FAILED = "INTERVIEW_FAILED"
+    INTERVIEW_NOT_REQUIRED = "INTERVIEW_NOT_REQUIRED"
+    ELIGIBLE_FOR_PAYMENT = "ELIGIBLE_FOR_PAYMENT"
+    PAYMENT_PENDING = "PAYMENT_PENDING"
+    PAYMENT_SUBMITTED = "PAYMENT_SUBMITTED"
+    PAYMENT_VERIFIED = "PAYMENT_VERIFIED"
+    PAYMENT_REJECTED = "PAYMENT_REJECTED"
+    DOCUMENTS_PENDING = "DOCUMENTS_PENDING"
+    MENTOR_ASSIGNMENT_PENDING = "MENTOR_ASSIGNMENT_PENDING"
+    MENTOR_ASSIGNED = "MENTOR_ASSIGNED"
+    DOCUMENTS_GENERATED = "DOCUMENTS_GENERATED"
+    DOCUMENTS_SENT = "DOCUMENTS_SENT"
+    DOCUMENTS_UPLOADED = "DOCUMENTS_UPLOADED"
+    ACCOUNT_CREATION_PENDING = "ACCOUNT_CREATION_PENDING"
+    ACCOUNT_ACTIVATION_PENDING = "ACCOUNT_ACTIVATION_PENDING"
+    ACCOUNT_CREATED = "ACCOUNT_CREATED"
+    ACTIVE = "ACTIVE"
+    ONBOARDING_COMPLETED = "ONBOARDING_COMPLETED"
+    APPLICATION_REJECTED = "APPLICATION_REJECTED"
 
 # ==========================================
 #          SQLALCHEMY DATABASE MODELS
@@ -273,6 +295,10 @@ class OnboardingApplication(Base):
     graduation_year = Column(Integer)
     domain = Column(String(100))
     resume_url = Column(String(255))
+    offer_letter_url = Column(String(255), nullable=True)
+    tc_url = Column(String(255), nullable=True)
+    signed_offer_letter_url = Column(String(255), nullable=True)
+    signed_tc_url = Column(String(255), nullable=True)
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING_REVIEW)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

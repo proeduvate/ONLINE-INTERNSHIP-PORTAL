@@ -133,7 +133,7 @@ app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
 app.include_router(batch_analytics_router)
-app.include_router(meetings.router)
+app.include_router(meetings.router, prefix="/api/v1/meetings")
 
 from routers import onboarding
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
@@ -175,12 +175,6 @@ def root():
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
-    if not SUPABASE_URL or not SUPABASE_ANON_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Supabase auth is not configured on the backend. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
-        )
-def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.get_db)):
     existing_user = db.query(models.User).filter(models.User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(

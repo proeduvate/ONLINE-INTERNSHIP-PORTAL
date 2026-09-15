@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from enum import Enum
 from datetime import datetime
+import json
 
 # Role alignment matching the model
 class UserRole(str, Enum):

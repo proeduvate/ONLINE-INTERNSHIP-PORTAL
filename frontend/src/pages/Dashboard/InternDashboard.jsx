@@ -29,7 +29,7 @@ export default function InternDashboard() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await api.get("/api/v1/notifications").catch(() => ({ data: [] }));
+        const res = await api.get("/notifications").catch(() => ({ data: [] }));
         setNotifications(res.data || []);
       } catch (err) {
         setNotifications([]);
@@ -82,7 +82,7 @@ export default function InternDashboard() {
   useEffect(() => {
     const fetchAirdrops = async () => {
       try {
-        const res = await api.get("/api/features/airdrops").catch(() => ({ data: [] }));
+        const res = await api.get("/bonus-airdrops").catch(() => ({ data: [] }));
         setBonusAirdrops(res.data || []);
       } catch (err) {
         setBonusAirdrops([]);
