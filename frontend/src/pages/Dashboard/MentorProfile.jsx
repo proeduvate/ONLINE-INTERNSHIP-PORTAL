@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, Save } from "lucide-react";
 
 export default function MentorProfile() {
@@ -93,7 +93,7 @@ export default function MentorProfile() {
 
               {/* Form Grid */}
               <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
                     <input type="text" defaultValue="Ananya" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
@@ -112,7 +112,7 @@ export default function MentorProfile() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Domain / Specialization</label>
                     <div style={{ position: "relative" }}>
@@ -129,7 +129,7 @@ export default function MentorProfile() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>

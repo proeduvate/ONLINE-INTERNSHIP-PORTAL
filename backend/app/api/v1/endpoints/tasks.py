@@ -51,4 +51,65 @@ def get_tasks(
         query = query.filter(models.Task.domain_id == current_user.domain_id)
     
     tasks = query.all()
-    return tasks
+    
+    # Pre-fetch domains to map IDs to Names
+    domains = db.query(models.Domain).all()
+    domain_id_to_name = {d.id: d.name for d in domains}
+    domain_name_to_id = {d.name: d.id for d in domains}
+    
+    result = []
+    
+    for task in tasks:
+        result.append({
+            "id": task.id,
+            "domain_id": task.domain_id,
+            "day_number": task.day_number,
+            "title": task.title,
+            "description": task.description,
+            "difficulty": task.difficulty,
+            "deadline_days": task.deadline_days,
+            "domain_name": domain_id_to_name.get(task.domain_id, "Unknown"),
+            "task_type": "curriculum"
+        })
+        
+    # Fetch DomainCodeAssessments
+    ca_query = db.query(models.DomainCodeAssessment)
+    if role_str == "intern" and current_user.domain_id:
+        intern_domain_name = domain_id_to_name.get(current_user.domain_id)
+        ca_query = ca_query.filter(models.DomainCodeAssessment.domain_name == intern_domain_name)
+    code_assessments = ca_query.all()
+    
+    for ca in code_assessments:
+        result.append({
+            "id": ca.id + 10000, # Fake ID to avoid collisions
+            "domain_id": domain_name_to_id.get(ca.domain_name, 0),
+            "day_number": ca.day_number,
+            "title": ca.title,
+            "description": ca.description,
+            "difficulty": "Medium",
+            "deadline_days": 1,
+            "domain_name": ca.domain_name,
+            "task_type": "coding"
+        })
+        
+    # Fetch DomainMcqs
+    mcq_query = db.query(models.DomainMCQQuestion)
+    if role_str == "intern" and current_user.domain_id:
+        intern_domain_name = domain_id_to_name.get(current_user.domain_id)
+        mcq_query = mcq_query.filter(models.DomainMCQQuestion.domain_name == intern_domain_name)
+    mcqs = mcq_query.all()
+    
+    for mcq in mcqs:
+        result.append({
+            "id": mcq.id + 20000, # Fake ID to avoid collisions
+            "domain_id": domain_name_to_id.get(mcq.domain_name, 0),
+            "day_number": mcq.day_number,
+            "title": mcq.question_text,
+            "description": mcq.topic,
+            "difficulty": "Medium",
+            "deadline_days": 1,
+            "domain_name": mcq.domain_name,
+            "task_type": "mcq"
+        })
+        
+    return result

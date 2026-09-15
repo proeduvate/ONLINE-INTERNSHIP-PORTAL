@@ -24,7 +24,8 @@ def get_leaderboard(
         users_query = users_query.filter(models.User.batch_id == batch_id)
     
     users = users_query.all()
-    
+    user_ids = [u.id for u in users]
+
     now = datetime.utcnow()
     start_date = None
     if period.lower() == "weekly":
@@ -33,35 +34,41 @@ def get_leaderboard(
     elif period.lower() == "monthly":
         start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
+    if not user_ids:
+        return []
+
+    # 1. PointTransactions
+    pt_query = db.query(models.PointTransaction.user_id, func.sum(models.PointTransaction.points)).filter(models.PointTransaction.user_id.in_(user_ids))
+    if start_date:
+        pt_query = pt_query.filter(models.PointTransaction.created_at >= start_date)
+    pt_data = {row[0]: row[1] or 0 for row in pt_query.group_by(models.PointTransaction.user_id).all()}
+
+    # 2. Submissions (ai_score for code assessment/scenario)
+    sub_query = db.query(models.Submission.intern_id, func.sum(models.Submission.ai_score)).filter(models.Submission.intern_id.in_(user_ids))
+    if start_date:
+        sub_query = sub_query.filter(models.Submission.submitted_at >= start_date)
+    sub_data = {row[0]: row[1] or 0 for row in sub_query.group_by(models.Submission.intern_id).all()}
+
+    # 2b. MCQ Assessment (score)
+    mcq_query = db.query(models.MCQAttempt.intern_id, func.sum(models.MCQAttempt.score)).filter(models.MCQAttempt.intern_id.in_(user_ids))
+    if start_date:
+        mcq_query = mcq_query.filter(models.MCQAttempt.submitted_at >= start_date)
+    mcq_data = {row[0]: row[1] or 0 for row in mcq_query.group_by(models.MCQAttempt.intern_id).all()}
+
+    # 3. Airdrop Results (bonus_points)
+    air_query = db.query(models.AirdropResult.intern_id, func.sum(models.AirdropResult.bonus_points)).filter(models.AirdropResult.intern_id.in_(user_ids))
+    air_data = {row[0]: row[1] or 0 for row in air_query.group_by(models.AirdropResult.intern_id).all()}
+
     results = []
     for user in users:
-        # 1. PointTransactions
-        pt_query = db.query(func.sum(models.PointTransaction.points)).filter(models.PointTransaction.user_id == user.id)
-        if start_date:
-            pt_query = pt_query.filter(models.PointTransaction.created_at >= start_date)
-        pt_points = pt_query.scalar() or 0
-        
-        # 2. Submissions (ai_score for code assessment/scenario)
-        sub_query = db.query(func.sum(models.Submission.ai_score)).filter(models.Submission.intern_id == user.id)
-        if start_date:
-            sub_query = sub_query.filter(models.Submission.submitted_at >= start_date)
-        sub_points = sub_query.scalar() or 0
-        
-        # 2b. MCQ Assessment (score)
-        mcq_query = db.query(func.sum(models.MCQAttempt.score)).filter(models.MCQAttempt.intern_id == user.id)
-        if start_date:
-            mcq_query = mcq_query.filter(models.MCQAttempt.submitted_at >= start_date)
-        mcq_points = mcq_query.scalar() or 0
-        
-        # 3. Airdrop Results (bonus_points)
-        air_query = db.query(func.sum(models.AirdropResult.bonus_points)).filter(models.AirdropResult.intern_id == user.id)
-        # Note: AirdropResult has no created_at, so we include them globally. 
-        # Alternatively, we could join with BonusAirdrop to get published_at, but this is fine.
-        air_points = air_query.scalar() or 0
+        pt_points = pt_data.get(user.id, 0)
+        sub_points = sub_data.get(user.id, 0)
+        mcq_points = mcq_data.get(user.id, 0)
+        air_points = air_data.get(user.id, 0)
         
         total = pt_points + sub_points + air_points + mcq_points
         
-        batch_name = user.batch.name if user.batch else None
+        batch_name = user.batch.name if getattr(user, 'batch', None) else None
         domain_name = user.domain.name if user.domain else None
         
         results.append({

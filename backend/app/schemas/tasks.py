@@ -17,6 +17,11 @@ class TaskResponse(BaseModel):
     description: str
     difficulty: Optional[str] = None
     deadline_days: Optional[int] = None
+    resources: Optional[str] = None
+    mcq_questions: Optional[str] = None
+    coding_prompt: Optional[str] = None
+    domain_name: Optional[str] = None
+    task_type: Optional[str] = "curriculum"
 
     class Config:
         from_attributes = True

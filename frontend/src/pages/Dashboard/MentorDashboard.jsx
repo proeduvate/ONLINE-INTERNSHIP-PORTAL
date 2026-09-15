@@ -69,12 +69,7 @@ export default function MentorDashboard() {
   const [airdropFilter, setAirdropFilter] = useState("All");
   const airdropsPerPage = 13;
 
-  useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    if (storedAirdrops) {
-      setBonusAirdrops(JSON.parse(storedAirdrops));
-    }
-  }, []);
+  // Bonus Airdrops now fetched via API in fetchMentorData
 
   const handleCreateAirdrop = (e) => {
     e.preventDefault();
@@ -150,152 +145,130 @@ export default function MentorDashboard() {
     alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
-  // State Mock Data
+  // State from DB
+  const [dashboardStats, setDashboardStats] = useState({
+    assigned_interns_count: 0,
+    pending_reviews_count: 0,
+    meetings_today_count: 0,
+    avg_performance: 0,
+    backlog_data: [],
+    at_risk_interns: []
+  });
   const [assignedInterns, setAssignedInterns] = useState([]);
   const [loadingInterns, setLoadingInterns] = useState(true);
+  const [submissions, setSubmissions] = useState([]);
+  const [meetings, setMeetings] = useState([]);
+  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
+  const [allTasks, setAllTasks] = useState([]);
+  const [availableDomains, setAvailableDomains] = useState([]);
+  const [selectedDomain, setSelectedDomain] = useState("");
+  const [chartData, setChartData] = useState([]);
+  const [selectedChartInternId, setSelectedChartInternId] = useState("");
 
   useEffect(() => {
-    const fetchInterns = async () => {
+    const fetchMentorData = async () => {
       try {
-        const response = await api.get('/users?role=intern');
-        if (response.data && response.data.length > 0) {
-          setAssignedInterns(response.data.map((user, idx) => ({
-            id: `INT00${idx+1}`,
-            db_id: user.id,
-            name: user.name || user.email.split('@')[0],
-            progress: "0%", 
-            attendance: "N/A", 
-            score: "N/A", 
-            weakAreas: "N/A", 
-            batch: "N/A"
-          })));
-        } else {
-          // Fallback to mock data if no interns assigned
-          setAssignedInterns([
-            { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-            { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" }
-          ]);
+        const [statsRes, internsRes, subsRes, meetRes, tasksRes, airdropsRes] = await Promise.all([
+          api.get('/mentor/dashboard'),
+          api.get('/mentor/interns'),
+          api.get('/mentor/submissions'),
+          api.get('/mentor/meetings'),
+          api.get('/tasks'),
+          api.get('/bonus-airdrops')
+        ]);
+        
+        setDashboardStats(statsRes.data);
+        setAssignedInterns(internsRes.data);
+        if (internsRes.data && internsRes.data.length > 0) {
+          setSelectedChartInternId(internsRes.data[0].db_id);
         }
+        setSubmissions(subsRes.data);
+        setMeetings(meetRes.data);
+
+        const fetchedTasks = tasksRes.data;
+        
+        const domains = [...new Set(fetchedTasks.map(t => t.domain_name).filter(Boolean))];
+        setAvailableDomains(domains);
+        if (domains.length > 0) setSelectedDomain(domains[0]);
+
+        setAllTasks(fetchedTasks.map(t => ({
+          id: t.id,
+          title: t.title,
+          day_number: t.day_number,
+          domain_name: t.domain_name,
+          difficulty: "Medium",
+          deadline: t.deadline_days ? `${t.deadline_days} days` : "Flexible",
+          status: "Active",
+          type: t.title.includes("Scenario:") ? "Coding" : "MCQ",
+          resources: t.resources || "No resources",
+          mcqs: t.mcq_questions ? (typeof t.mcq_questions === "string" ? JSON.parse(t.mcq_questions) : t.mcq_questions) : [],
+          codingQuestion: {
+            title: `${t.title} Challenge`,
+            description: t.description || "Complete the coding challenge.",
+            starterCode: t.coding_prompt || "",
+            expectedOutput: "Valid execution based on requirements"
+          }
+        })));
+
+        const fetchedAirdrops = airdropsRes.data;
+        setBonusAirdrops(fetchedAirdrops.map(a => ({
+          id: a.id,
+          question: a.title || "No Title",
+          points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
+          status: a.status,
+          timeLimit: a.time_limit
+        })));
+
       } catch (error) {
-        console.error("Failed to fetch interns:", error);
+        console.error("Failed to fetch mentor data:", error);
       } finally {
         setLoadingInterns(false);
       }
     };
-    fetchInterns();
-  }, []);
+    fetchMentorData();
+  }, [navigate]);
 
-  const [selectedBatch, setSelectedBatch] = useState("Harvard");
+  useEffect(() => {
+    if (selectedChartInternId) {
+      api.get(`/analytics/daily-questions/intern/${selectedChartInternId}`)
+        .then(res => setChartData(res.data))
+        .catch(err => console.error("Failed to fetch daily analytics", err));
+    }
+  }, [selectedChartInternId]);
 
-  const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
-  ]);
-  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
-
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
-  ]);
-
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
+  const [chatMessages, setChatMessages] = useState([]);
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
 
+  const handleEvaluationSubmit = (action) => {
+    if (!selectedEvaluation) return;
+    
+    const payload = {
+      action: action,
+      score: action === "Approve" ? 10 : 0,
+      feedback: action === "Approve" ? "Great job, code looks good!" : "Needs revision. Please check feedback."
+    };
+
+    api.put(`/mentor/submissions/${selectedEvaluation.id}/review`, payload)
+      .then(() => {
+        // Remove from pending UI
+        setSubmissions(submissions.map(s => s.id === selectedEvaluation.id ? {...s, status: action === "Approve" ? "Approved" : "Rejected"} : s));
+        setSelectedEvaluation(null);
+        // Refresh stats
+        api.get('/mentor/dashboard').then(res => setDashboardStats(res.data));
+      })
+      .catch(err => console.error("Failed to submit review:", err));
+  };
+
   // Weekly review state inputs
-  const [weeklyIntern, setWeeklyIntern] = useState("John Doe");
+  const [weeklyIntern, setWeeklyIntern] = useState("");
   const [weeklyStrengths, setWeeklyStrengths] = useState("");
   const [weeklyWeaknesses, setWeeklyWeaknesses] = useState("");
   const [weeklyNotes, setWeeklyNotes] = useState("");
 
   const [mentorDomain] = useState("Artificial Intelligence");
-  const [curriculumList] = useState([
-    { day: "Day 1",  topic: "Introduction to AI & ML",          resources: "Video Link, Documentation PDF" },
-    { day: "Day 2",  topic: "Python for Data Science",          resources: "Python Notebook, Cheatsheet" },
-    { day: "Day 3",  topic: "NumPy & Pandas Basics",            resources: "Kaggle Tutorial, Practice Dataset" },
-    { day: "Day 4",  topic: "Data Visualization (Matplotlib)",  resources: "Seaborn Docs, Lab Exercise" },
-    { day: "Day 5",  topic: "Statistics for ML",                resources: "Khan Academy, PDF Notes" },
-    { day: "Day 6",  topic: "Supervised Learning - Regression", resources: "Slides, Colab Notebook" },
-    { day: "Day 7",  topic: "Supervised Learning - Classification", resources: "Github Repo, Slides PDF" },
-    { day: "Day 8",  topic: "Model Evaluation & Metrics",       resources: "Scikit-learn Docs, Quiz" },
-    { day: "Day 9",  topic: "Feature Engineering",              resources: "Kaggle Notebook, PDF" },
-    { day: "Day 10", topic: "Unsupervised Learning - Clustering", resources: "K-Means Lab, Video" },
-    { day: "Day 11", topic: "Dimensionality Reduction (PCA)",   resources: "Slides, Code Exercise" },
-    { day: "Day 12", topic: "Decision Trees & Random Forests",  resources: "Scikit-learn Guide, Notebook" },
-    { day: "Day 13", topic: "Support Vector Machines",          resources: "Research Paper, Lab" },
-    { day: "Day 14", topic: "Neural Networks - Basics",         resources: "3Blue1Brown Video, PDF" },
-    { day: "Day 15", topic: "Mid-term Assessment",              resources: "Assessment Portal" },
-    { day: "Day 16", topic: "Deep Learning with TensorFlow",    resources: "TF Docs, Colab" },
-    { day: "Day 17", topic: "CNN - Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
-    { day: "Day 18", topic: "RNN & LSTM - Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
-    { day: "Day 19", topic: "NLP - Text Processing",            resources: "NLTK Docs, Notebook" },
-    { day: "Day 20", topic: "Transformers & Attention",         resources: "Hugging Face Tutorial" },
-    { day: "Day 21", topic: "Transfer Learning",                resources: "Keras Guide, Pretrained Models" },
-    { day: "Day 22", topic: "Model Deployment - Flask API",     resources: "Flask Docs, Postman" },
-    { day: "Day 23", topic: "Docker & Cloud Basics",            resources: "Docker Tutorial, AWS Guide" },
-    { day: "Day 24", topic: "MLOps Fundamentals",               resources: "MLflow Docs, Video" },
-    { day: "Day 25", topic: "Project Planning & Architecture",  resources: "Project Template, Rubric" },
-    { day: "Day 26", topic: "Project - Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
-    { day: "Day 27", topic: "Project - Model Training",         resources: "Training Guide, GPU Colab" },
-    { day: "Day 28", topic: "Project - Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
-    { day: "Day 29", topic: "Project - Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
-    { day: "Day 30", topic: "Final Presentation & Review",      resources: "Presentation Rubric, Feedback Form" },
-  ]);
-  const [tasks, setTasks] = useState(() => [
-    { id: 1,  title: "Explore AI & ML use cases",               difficulty: "Easy",   deadline: "2026-08-01", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 2,  title: "Python data manipulation with Pandas",     difficulty: "Easy",   deadline: "2026-08-02", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 3,  title: "NumPy array operations assignment",        difficulty: "Easy",   deadline: "2026-08-03", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 4,  title: "Matplotlib visualization project",         difficulty: "Easy",   deadline: "2026-08-04", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 5,  title: "Statistical analysis on a dataset",        difficulty: "Medium", deadline: "2026-08-05", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 6,  title: "Build a Linear Regression model",          difficulty: "Medium", deadline: "2026-08-06", domain: "Artificial Intelligence", status: "Active" },
-    { id: 7,  title: "Classification with Logistic Regression",  difficulty: "Medium", deadline: "2026-08-07", domain: "Artificial Intelligence", status: "Active" },
-    { id: 8,  title: "Model evaluation metrics report",          difficulty: "Medium", deadline: "2026-08-08", domain: "Artificial Intelligence", status: "Active" },
-    { id: 9,  title: "Feature engineering pipeline",             difficulty: "Medium", deadline: "2026-08-09", domain: "Artificial Intelligence", status: "Active" },
-    { id: 10, title: "Implement K-Means Clustering",             difficulty: "Hard",   deadline: "2026-08-10", domain: "Artificial Intelligence", status: "Active" },
-    { id: 11, title: "PCA dimensionality reduction exercise",    difficulty: "Hard",   deadline: "2026-08-11", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 12, title: "Build a Random Forest classifier",         difficulty: "Medium", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 13, title: "SVM classification on real dataset",       difficulty: "Hard",   deadline: "2026-08-13", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 14, title: "Build a Simple Neural Network",            difficulty: "Hard",   deadline: "2026-08-14", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 15, title: "Mid-term Assessment",                      difficulty: "Hard",   deadline: "2026-08-15", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 16, title: "Deep Learning model with TensorFlow",      difficulty: "Hard",   deadline: "2026-08-16", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 17, title: "CNN for image classification (CIFAR-10)",  difficulty: "Hard",   deadline: "2026-08-17", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 18, title: "LSTM sequence prediction model",           difficulty: "Hard",   deadline: "2026-08-18", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 19, title: "NLP text classification pipeline",         difficulty: "Medium", deadline: "2026-08-19", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 20, title: "Fine-tune a Transformer model",            difficulty: "Hard",   deadline: "2026-08-20", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 21, title: "Transfer learning with pre-trained CNN",   difficulty: "Hard",   deadline: "2026-08-21", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 22, title: "Deploy ML model as Flask REST API",        difficulty: "Medium", deadline: "2026-08-22", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 23, title: "Dockerize and push ML app to cloud",       difficulty: "Medium", deadline: "2026-08-23", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 24, title: "MLOps pipeline with MLflow tracking",      difficulty: "Hard",   deadline: "2026-08-24", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 25, title: "Define capstone project architecture",     difficulty: "Medium", deadline: "2026-08-25", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 26, title: "Collect data & perform EDA",              difficulty: "Hard",   deadline: "2026-08-26", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 27, title: "Train final project model",               difficulty: "Hard",   deadline: "2026-08-27", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 28, title: "Evaluate & tune the project model",       difficulty: "Hard",   deadline: "2026-08-28", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 29, title: "Deploy & demo the final project",         difficulty: "Hard",   deadline: "2026-08-29", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 30, title: "Final Presentation & Peer Review",        difficulty: "Hard",   deadline: "2026-08-30", domain: "Artificial Intelligence", status: "Upcoming" },
-  ].map((t, i) => ({
-    ...t,
-    mcqs: Array.from({ length: 10 }, (_, m_idx) => ({
-      id: m_idx + 1,
-      question: `Question ${m_idx + 1} for Day ${i+1}: What is the main concept here?`,
-      options: ["Option A", "Option B", "Option C", "Option D"],
-      answer: m_idx % 4
-    })),
-    codingQuestion: {
-      title: `Day ${i+1} Coding Challenge`,
-      description: `Implement a solution related to: "${t.title}". Write clean, documented Python code.`,
-      starterCode: `# Day ${i+1} Starter Code\nimport numpy as np\nimport pandas as pd\n\n# TODO: Implement your solution here\ndef solve():\n    pass\n\nsolve()`,
-      expectedOutput: "Your output should demonstrate mastery of today's concept."
-    }
-  })));
+  // Curriculum and Tasks data is now populated dynamically via API
   const [editingTask, setEditingTask] = useState(null);
   const [viewingTask, setViewingTask] = useState(null);
   const [taskDetailTab, setTaskDetailTab] = useState("MCQ"); // "MCQ" or "Coding"
@@ -303,12 +276,7 @@ export default function MentorDashboard() {
 
 
   // Chart Data
-  const backlogData = [
-    { name: 'Week 1', Submitted: 40, Evaluated: 38 },
-    { name: 'Week 2', Submitted: 45, Evaluated: 40 },
-    { name: 'Week 3', Submitted: 50, Evaluated: 30 },
-    { name: 'Week 4', Submitted: 60, Evaluated: 25 },
-  ];
+  const backlogData = dashboardStats.backlog_data || [];
 
   const handleLogout = () => {
     alert("Logged out successfully.");
@@ -322,19 +290,31 @@ export default function MentorDashboard() {
     setCurrentMessage("");
   };
 
-  const handleReviewSubmission = (id, action, score, feedback) => {
-    setSubmissions(submissions.map(sub => 
-      sub.id === id 
-        ? { ...sub, status: action === "Approve" ? "Approved" : "Rejected", score: score, mentorFeedback: feedback } 
-        : sub
-    ));
-    alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
+  const handleReviewSubmission = async (id, action, score, feedback) => {
+    try {
+      await api.put(`/mentor/submissions/${id}/review`, { action, score: parseInt(score), feedback });
+      setSubmissions(submissions.map(sub => 
+        sub.id === id 
+          ? { ...sub, status: action === "Approve" ? "Approved" : "Rejected", score: score, mentorFeedback: feedback } 
+          : sub
+      ));
+      alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to review submission");
+    }
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      const response = await api.post('/mentor/meetings', { title, time });
+      setMeetings([...meetings, response.data]);
+      alert("Meeting created!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create meeting");
+    }
   };
 
   const handleWeeklySubmit = (e) => {
@@ -458,71 +438,82 @@ export default function MentorDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Assigned Interns</span>
-                <span className="stat-value">{assignedInterns.length}</span>
+                <span className="stat-value">{dashboardStats.assigned_interns_count}</span>
                 <span className="stat-desc">Tracking active progression</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Pending Reviews</span>
-                <span className="stat-value">{submissions.filter(s => s.status === "Pending").length}</span>
+                <span className="stat-value">{dashboardStats.pending_reviews_count}</span>
                 <span className="stat-desc">Awaiting your feedback & score</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Meetings Today</span>
-                <span className="stat-value">1</span>
-                <span className="stat-desc">Review meeting at 3:00 PM</span>
+                <span className="stat-value">{dashboardStats.meetings_today_count}</span>
+                <span className="stat-desc">Review meetings scheduled</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Average Performance</span>
-                <span className="stat-value">83%</span>
+                <span className="stat-value">{dashboardStats.avg_performance}%</span>
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
+            <div className="dashboard-grid-2-1" style={{ marginBottom: "16px" }}>
               <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
-                <ResponsiveContainer width="100%" height={225}>
-                  <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
-                    <Tooltip 
-                      cursor={{fill: '#f3f4f6'}}
-                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
-                      wrapperStyle={{ zIndex: 1000 }}
-                    />
-                    <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                    <Bar dataKey="Submitted" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Evaluated" fill="#10b981" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <h3 style={{ fontSize: "16px", margin: 0 }}>Daily Question Analytics</h3>
+                  <select 
+                    className="form-control" 
+                    style={{ width: "150px", fontSize: "12px", padding: "4px 8px" }}
+                    value={selectedChartInternId}
+                    onChange={(e) => setSelectedChartInternId(e.target.value)}
+                  >
+                    {assignedInterns.map(intern => (
+                      <option key={intern.db_id} value={intern.db_id}>{intern.name}</option>
+                    ))}
+                  </select>
+                </div>
+                {chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={225}>
+                    <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
+                      <Tooltip 
+                        cursor={{fill: '#f3f4f6'}}
+                        contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                        wrapperStyle={{ zIndex: 1000 }}
+                      />
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      <Bar dataKey="mcq_score" name="MCQ Score" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="coding_score" name="Coding Score" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div style={{ height: "225px", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280", fontSize: "14px" }}>
+                    No daily question data available for this intern.
+                  </div>
+                )}
               </div>
 
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
+                  {dashboardStats.at_risk_interns && dashboardStats.at_risk_interns.map((intern, idx) => (
+                    <div key={idx} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                        <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>{intern.name}</span>
+                        <span style={{ fontSize: "11px", color: "#6b7280" }}>{intern.batch}</span>
+                      </div>
+                      <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>{intern.reason}</p>
+                      <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
                     </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Low progress (50%) and struggles with React Hooks.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Missing assignments and attendance dropping.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", flex: 1, minHeight: 0 }}>
+            <div className="dashboard-grid-1-2" style={{ flex: 1, minHeight: 0 }}>
               <div className="card animate-slide-up" style={{ marginBottom: 0, display: 'flex', flexDirection: 'column', minHeight: 0, animationDelay: '0.7s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
                 <div style={{ padding: "12px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", flex: 1 }}>
@@ -684,7 +675,7 @@ export default function MentorDashboard() {
                     <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center" }}><X size={16} /></button>
                   </div>
                   
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+                  <div className="dashboard-grid-half" style={{ marginBottom: "20px" }}>
                     <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Intern:</span> {selectedEvaluation.intern}</div>
                     <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Domain:</span> {selectedEvaluation.domain}</div>
                     <div><span style={{ fontWeight: 600, color: "var(--text-gray)" }}>Curriculum:</span> {selectedEvaluation.curriculum}</div>
@@ -708,7 +699,7 @@ export default function MentorDashboard() {
                     </a>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "20px" }}>
+                  <div className="dashboard-grid-1-2" style={{ marginBottom: "20px" }}>
                     <div>
                       <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#4b5563", marginBottom: "6px" }}>Final Score</label>
                       <input id="modalTempScore" className="form-control" placeholder="e.g. 85%" style={{ margin: 0 }} />
@@ -740,18 +731,43 @@ export default function MentorDashboard() {
         );
 
       case "Programs":
+        const domainTasks = allTasks.filter(t => t.domain_name === selectedDomain);
+        const mcqTasks = domainTasks.filter(t => t.type === "MCQ");
+        const codingTasks = domainTasks.filter(t => t.type === "Coding");
+
+        // Group curriculum by day for a cleaner view
+        const curriculumDays = [...new Set(domainTasks.map(t => t.day_number))].sort((a,b) => a - b);
+
         return (
           <div className="card">
-            <h3 style={{ margin: "0 0 20px 0" }}>Program Details - {mentorDomain}</h3>
+            <h3 style={{ margin: "0 0 20px 0", display: "flex", alignItems: "center", gap: "12px" }}>
+              Program Details
+              <select 
+                className="form-control" 
+                style={{ width: "auto", margin: 0, fontSize: "14px", padding: "4px 8px" }} 
+                value={selectedDomain} 
+                onChange={(e) => setSelectedDomain(e.target.value)}
+              >
+                {availableDomains.length > 0 ? (
+                  availableDomains.map(d => <option key={d} value={d}>{d}</option>)
+                ) : (
+                  <option value="">No Domains Found</option>
+                )}
+              </select>
+            </h3>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               <button
                 className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => setDetailSubTab("Curriculum")}
               >Curriculum</button>
               <button
-                className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => setDetailSubTab("Tasks")}
-              >Tasks</button>
+                className={`btn ${detailSubTab === "MCQ" ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => setDetailSubTab("MCQ")}
+              >MCQ Assessments</button>
+              <button
+                className={`btn ${detailSubTab === "Coding" ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => setDetailSubTab("Coding")}
+              >Code Assessments</button>
             </div>
 
             {detailSubTab === "Curriculum" && (
@@ -761,24 +777,26 @@ export default function MentorDashboard() {
                     <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
                   </thead>
                   <tbody>
-                    {curriculumList.map((cur, i) => (
-                      <tr key={i}>
-                        <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
-                        <td><b>{cur.topic}</b></td>
-                        <td>{cur.resources}</td>
-                        <td>
-                          <span className={`badge ${i < 5 ? "badge-success" : i < 10 ? "badge-primary" : "badge-secondary"}`} style={{ fontSize: "10px" }}>
-                            {i < 5 ? "Completed" : i < 10 ? "Active" : "Upcoming"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {curriculumDays.map((day) => {
+                      const dayTasks = domainTasks.filter(t => t.day_number === day);
+                      const topicTask = dayTasks.find(t => t.type === "MCQ") || dayTasks[0];
+                      return (
+                        <tr key={day}>
+                          <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {day}</td>
+                          <td><b>{topicTask?.title || `Day ${day} Content`}</b></td>
+                          <td>{topicTask?.resources}</td>
+                          <td>
+                            <span className="badge badge-primary" style={{ fontSize: "10px" }}>Active</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             )}
 
-            {detailSubTab === "Tasks" && (
+            {(detailSubTab === "MCQ" || detailSubTab === "Coding") && (
               <div>
                 {editingTask ? (
                   <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
@@ -786,13 +804,17 @@ export default function MentorDashboard() {
                       <h4 style={{ margin: 0 }}>Edit Task TSK-{editingTask.id}</h4>
                       <div style={{ display: "flex", gap: "8px" }}>
                         <button className={`btn ${taskDetailTab === "General" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("General")} style={{ padding: "4px 12px", fontSize: "12px" }}>General</button>
-                        <button className={`btn ${taskDetailTab === "MCQ" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("MCQ")} style={{ padding: "4px 12px", fontSize: "12px" }}>MCQs ({editingTask.mcqs.length})</button>
-                        <button className={`btn ${taskDetailTab === "Coding" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("Coding")} style={{ padding: "4px 12px", fontSize: "12px" }}>Coding</button>
+                        {editingTask.type === "MCQ" && (
+                          <button className={`btn ${taskDetailTab === "MCQ" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("MCQ")} style={{ padding: "4px 12px", fontSize: "12px" }}>MCQs ({editingTask.mcqs.length})</button>
+                        )}
+                        {editingTask.type === "Coding" && (
+                          <button className={`btn ${taskDetailTab === "Coding" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("Coding")} style={{ padding: "4px 12px", fontSize: "12px" }}>Coding</button>
+                        )}
                       </div>
                     </div>
                     <form onSubmit={(e) => {
                       e.preventDefault();
-                      setTasks(tasks.map(t => t.id === editingTask.id ? editingTask : t));
+                      setAllTasks(allTasks.map(t => t.id === editingTask.id ? editingTask : t));
                       setEditingTask(null);
                     }} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       
@@ -804,7 +826,7 @@ export default function MentorDashboard() {
                           </div>
                           <div>
                             <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline</label>
-                            <input className="form-control" type="date" value={editingTask.deadline} onChange={(e) => setEditingTask({...editingTask, deadline: e.target.value})} />
+                            <input className="form-control" type="text" value={editingTask.deadline} onChange={(e) => setEditingTask({...editingTask, deadline: e.target.value})} />
                           </div>
                           <div>
                             <label style={{ fontSize: "12px", fontWeight: 600 }}>Difficulty</label>
@@ -817,35 +839,28 @@ export default function MentorDashboard() {
                         </div>
                       )}
 
-                      {taskDetailTab === "MCQ" && (
+                      {taskDetailTab === "MCQ" && editingTask.type === "MCQ" && (
                         <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "400px", overflowY: "auto", paddingRight: "8px" }}>
-                          {editingTask.mcqs.map((mcq, mi) => (
-                            <div key={mcq.id} style={{ backgroundColor: "#fff", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                          {editingTask.mcqs.length > 0 ? editingTask.mcqs.map((mcq, mi) => (
+                            <div key={mcq.id || mi} style={{ backgroundColor: "#fff", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                               <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "6px" }}>Q{mi + 1}. Question</label>
                               <input className="form-control" style={{ marginBottom: "10px" }} value={mcq.question}
                                 onChange={e => setEditingTask({ ...editingTask, mcqs: editingTask.mcqs.map((q, qi) => qi === mi ? { ...q, question: e.target.value } : q) })} />
                               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                                {mcq.options.map((opt, oi) => (
+                                {mcq.options && mcq.options.map((opt, oi) => (
                                   <div key={oi} style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                                    <span style={{ fontSize: "11px", width: "20px" }}>{["A","B","C","D"][oi]}.</span>
+                                    <span style={{ fontSize: "11px", width: "20px" }}>{["A","B","C","D"][oi] || oi}.</span>
                                     <input className="form-control" style={{ fontSize: "12px", padding: "4px 8px" }} value={opt}
                                       onChange={e => setEditingTask({ ...editingTask, mcqs: editingTask.mcqs.map((q, qi) => qi === mi ? { ...q, options: q.options.map((o, oii) => oii === oi ? e.target.value : o) } : q) })} />
                                   </div>
                                 ))}
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "10px" }}>
-                                <label style={{ fontSize: "11px", fontWeight: 700 }}>Correct Answer:</label>
-                                <select style={{ fontSize: "12px", padding: "3px 6px" }} value={mcq.answer}
-                                  onChange={e => setEditingTask({ ...editingTask, mcqs: editingTask.mcqs.map((q, qi) => qi === mi ? { ...q, answer: parseInt(e.target.value) } : q) })}>
-                                  {mcq.options.map((_, oi) => <option key={oi} value={oi}>{["A","B","C","D"][oi]}</option>)}
-                                </select>
-                              </div>
                             </div>
-                          ))}
+                          )) : <p style={{fontSize:"13px", color:"#666"}}>No MCQs configured for this task.</p>}
                         </div>
                       )}
 
-                      {taskDetailTab === "Coding" && (
+                      {taskDetailTab === "Coding" && editingTask.type === "Coding" && (
                         <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "800px" }}>
                           <div>
                             <label style={{ fontSize: "12px", fontWeight: 600 }}>Title</label>
@@ -861,11 +876,6 @@ export default function MentorDashboard() {
                             <label style={{ fontSize: "12px", fontWeight: 600 }}>Starter Code</label>
                             <textarea className="form-control" rows="5" style={{ fontFamily: "monospace", fontSize: "12px" }} value={editingTask.codingQuestion.starterCode}
                               onChange={e => setEditingTask({ ...editingTask, codingQuestion: { ...editingTask.codingQuestion, starterCode: e.target.value } })} />
-                          </div>
-                          <div>
-                            <label style={{ fontSize: "12px", fontWeight: 600 }}>Expected Output</label>
-                            <input className="form-control" value={editingTask.codingQuestion.expectedOutput}
-                              onChange={e => setEditingTask({ ...editingTask, codingQuestion: { ...editingTask.codingQuestion, expectedOutput: e.target.value } })} />
                           </div>
                         </div>
                       )}
@@ -885,29 +895,33 @@ export default function MentorDashboard() {
                         <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px", marginLeft: "8px" }} onClick={() => { setEditingTask(viewingTask); setViewingTask(null); setTaskDetailTab("General"); }}>Edit Task</button>
                       </div>
                       <div style={{ display: "flex", gap: "8px" }}>
-                        <button className={`btn ${taskDetailTab === "MCQ" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("MCQ")} style={{ padding: "4px 12px", fontSize: "12px" }}>MCQs ({viewingTask.mcqs.length})</button>
-                        <button className={`btn ${taskDetailTab === "Coding" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("Coding")} style={{ padding: "4px 12px", fontSize: "12px" }}>Coding Challenge</button>
+                        {viewingTask.type === "MCQ" && (
+                          <button className={`btn ${taskDetailTab === "MCQ" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("MCQ")} style={{ padding: "4px 12px", fontSize: "12px" }}>MCQs ({viewingTask.mcqs.length})</button>
+                        )}
+                        {viewingTask.type === "Coding" && (
+                          <button className={`btn ${taskDetailTab === "Coding" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("Coding")} style={{ padding: "4px 12px", fontSize: "12px" }}>Coding Challenge</button>
+                        )}
                       </div>
                     </div>
                     
-                    {taskDetailTab === "MCQ" && (
+                    {taskDetailTab === "MCQ" && viewingTask.type === "MCQ" && (
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "500px", overflowY: "auto", paddingRight: "8px" }}>
-                        {viewingTask.mcqs.map((mcq, mi) => (
-                          <div key={mcq.id} style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                        {viewingTask.mcqs.length > 0 ? viewingTask.mcqs.map((mcq, mi) => (
+                          <div key={mcq.id || mi} style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                             <div style={{ fontSize: "14px", fontWeight: 600, marginBottom: "12px" }}>Q{mi + 1}. {mcq.question}</div>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                              {mcq.options.map((opt, oi) => (
+                              {mcq.options && mcq.options.map((opt, oi) => (
                                 <div key={oi} style={{ fontSize: "13px", padding: "8px 12px", borderRadius: "6px", backgroundColor: oi === mcq.answer ? "#dcfce7" : "#f1f5f9", border: `1px solid ${oi === mcq.answer ? "#86efac" : "transparent"}` }}>
-                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi]}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right", color: "#16a34a", display: "flex" }}><CheckCircle2 size={16} /></span>}
+                                  <span style={{ fontWeight: 600, marginRight: "8px" }}>{["A","B","C","D"][oi] || oi}.</span> {opt} {oi === mcq.answer && <span style={{ float: "right", color: "#16a34a", display: "flex" }}><CheckCircle2 size={16} /></span>}
                                 </div>
                               ))}
                             </div>
                           </div>
-                        ))}
+                        )) : <p style={{fontSize:"13px", color:"#666"}}>No MCQs configured for this task.</p>}
                       </div>
                     )}
 
-                    {taskDetailTab === "Coding" && (
+                    {taskDetailTab === "Coding" && viewingTask.type === "Coding" && (
                       <div style={{ padding: "16px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                         <h5 style={{ margin: "0 0 12px", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}><Laptop size={18} /> {viewingTask.codingQuestion.title}</h5>
                         <div style={{ fontSize: "14px", marginBottom: "16px", lineHeight: "1.5" }}>{viewingTask.codingQuestion.description}</div>
@@ -925,12 +939,13 @@ export default function MentorDashboard() {
                   <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
                     <table className="table">
                       <thead>
-                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Status</th></tr>
+                        <tr><th>ID</th><th>Day</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Status</th></tr>
                       </thead>
                       <tbody>
-                        {tasks.map((t) => (
-                          <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => { setViewingTask(t); setTaskDetailTab("MCQ"); }} className="hover-row">
+                        {(detailSubTab === "MCQ" ? mcqTasks : codingTasks).map((t) => (
+                          <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => { setViewingTask(t); setTaskDetailTab(t.type); }} className="hover-row">
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td>Day {t.day_number}</td>
                             <td><b>{t.title}</b></td>
                             <td><span className={`badge ${t.difficulty === "Hard" ? "badge-danger" : t.difficulty === "Medium" ? "badge-warning" : "badge-success"}`}>{t.difficulty}</span></td>
                             <td>{t.deadline}</td>
@@ -939,6 +954,11 @@ export default function MentorDashboard() {
                         ))}
                       </tbody>
                     </table>
+                    {(detailSubTab === "MCQ" ? mcqTasks : codingTasks).length === 0 && (
+                      <div style={{ padding: "20px", textAlign: "center", color: "#6b7280", fontSize: "14px" }}>
+                        No {detailSubTab === "MCQ" ? "MCQ" : "Coding"} Tasks found for this domain.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -1351,7 +1371,7 @@ export default function MentorDashboard() {
                         </div>
 
                         <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                        <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                           {/* Fixed Start Time Option */}
                           <div 
                             style={{ 
@@ -1691,10 +1711,8 @@ export default function MentorDashboard() {
         </div>
       </header>
 
-      {/* Main Workspace Content (Full Width) */}
       <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
-
-        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out", paddingRight: "8px" }}>
           {isMeetingActive && (
             <div style={{ display: activeTab === "Breakout Rooms" ? "flex" : "none", flex: 1, minHeight: 0, width: "100%", borderRadius: "16px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
               <BreakoutRoomsApp 

@@ -52,53 +52,72 @@ export default function AdminDashboard() {
   // State Mock Data
   const [usersList, setUsersList] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [ticketsList, setTicketsList] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const response = await api.get('/users');
-        if (response.data && response.data.length > 0) {
-          setUsersList(response.data.map((user, idx) => ({
+        const [usersRes, tasksRes, statsRes, ticketsRes, domainsRes] = await Promise.all([
+          api.get('/users').catch(err => { console.error('Failed to fetch users:', err); return { data: [] }; }),
+          api.get('/tasks').catch(err => { console.error('Failed to fetch tasks:', err); return { data: [] }; }),
+          api.get('/admin/dashboard').catch(err => { console.error('Failed to fetch stats:', err); return { data: null }; }),
+          api.get('/tickets').catch(err => { console.error('Failed to fetch tickets:', err); return { data: [] }; }),
+          api.get('/domains').catch(err => { console.error('Failed to fetch domains:', err); return { data: [] }; })
+        ]);
+        
+        const domainMap = {};
+        if (domainsRes && domainsRes.data) {
+          domainsRes.data.forEach(d => { domainMap[d.id] = d.name; });
+        }
+
+        if (usersRes.data && usersRes.data.length > 0) {
+          setUsersList(usersRes.data.map((user) => ({
+            ...user,
             mentor: user.mentor_id ? "Assigned" : "Unassigned",
+            domain: user.domain_id ? (domainMap[user.domain_id] || "Unknown") : "Unassigned",
             progress: "0%", 
             attendance: "N/A", 
             status: "Active"
           })));
         } else {
-          // Fallback
-          setUsersList([
-            { id: "MNT101", name: "Dr. Sakthi", role: "Mentor", college: "-", domain: "AI/DS/Cyber", mentor: "-", progress: "-", attendance: "98%", status: "Active" },
-            { id: "INT001", name: "John Doe", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-          ]);
+          setUsersList([]);
         }
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-      } finally {
-        setLoadingUsers(false);
-      }
-    };
-    
-    const fetchTasks = async () => {
-      try {
-        const response = await api.get('/tasks');
-        if (response.data) {
-          const mappedTasks = response.data.map(t => ({
+        
+        if (tasksRes.data) {
+          setTasks(tasksRes.data.map(t => ({
             id: t.id,
             title: t.title,
             difficulty: t.difficulty || "Medium",
             deadline: `${t.deadline_days} Days`,
-            domain: "General", 
-            status: "Active"
-          }));
-          setTasks(mappedTasks);
+            domain: domainMap[t.domain_id] || "Unknown", 
+            status: "Active",
+            task_type: t.task_type || "curriculum",
+            domain_id: t.domain_id
+          })));
         }
-      } catch (err) {
-        console.error("Failed to fetch tasks", err);
+        
+        if (statsRes.data) {
+          setDashboardStats(statsRes.data);
+        }
+        if (ticketsRes.data) {
+          setTicketsList(ticketsRes.data.map(ticket => ({
+            ...ticket,
+            user: ticket.creator_name || `User ID: ${ticket.created_by}`,
+            role: "Intern", // Defaulting as role isn't returned
+            date: new Date(ticket.created_at).toLocaleDateString()
+          })));
+        }
+        
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+      } finally {
+        setLoadingUsers(false);
       }
     };
 
-    fetchUsers();
-    fetchTasks();
+    fetchDashboardData();
   }, []);
 
   const [domainsList, setDomainsList] = useState([
@@ -111,10 +130,7 @@ export default function AdminDashboard() {
     { name: "Data Analytics", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
   ]);
 
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Build a Simple Neural Network", difficulty: "Hard", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Active" },
-    { id: 2, title: "React Component Lifecycle", difficulty: "Medium", deadline: "2026-08-10", domain: "Web Development", status: "Active" },
-  ]);
+  // (tasks are populated from the backend on load)
 
   const [curriculumList, setCurriculumList] = useState([
     { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Web Development" },
@@ -126,20 +142,17 @@ export default function AdminDashboard() {
   ]);
 
   // Chart Data
-  const progressData = [
-    { name: "Week 1", MIT: 25, Stanford: 18, IIT: 30, Harvard: 20, Berkeley: 22 },
-    { name: "Week 2", MIT: 45, Stanford: 38, IIT: 50, Harvard: 42, Berkeley: 40 },
-    { name: "Week 3", MIT: 60, Stanford: 55, IIT: 65, Harvard: 58, Berkeley: 62 },
-    { name: "Week 4", MIT: 85, Stanford: 78, IIT: 80, Harvard: 75, Berkeley: 82 },
-  ];
+  const progressData = dashboardStats?.batch_progress || [];
   
-  const domainData = [
-    { name: "AI", value: 14 },
-    { name: "Data Sci", value: 12 },
-    { name: "Cyber Sec", value: 8 },
-    { name: "Web Dev", value: 10 },
-    { name: "UI/UX", value: 6 },
-  ];
+  const domainData = usersList.reduce((acc, user) => {
+    if (user.role && user.role.toLowerCase() === 'intern') {
+      const d = user.domain || 'Unassigned';
+      const existing = acc.find(item => item.name === d);
+      if (existing) existing.value += 1;
+      else acc.push({ name: d, value: 1 });
+    }
+    return acc;
+  }, []);
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
   // Form inputs
@@ -169,49 +182,73 @@ export default function AdminDashboard() {
 
   // Users sub-tab state
   const [usersSubTab, setUsersSubTab] = useState("Interns"); // Interns, Mentors
-  const [selectedBatch, setSelectedBatch] = useState("MIT");
+  const [selectedBatch, setSelectedBatch] = useState("");
   const [internPage, setInternPage] = useState(1);
   const [selectedIntern, setSelectedIntern] = useState(null);
   const [selectedMentor, setSelectedMentor] = useState(null);
 
   // Tickets state
-  const [ticketsList, setTicketsList] = useState([
-    { id: "TKT-1042", user: "John Doe", role: "Intern", domain: "Artificial Intelligence", branch: "MIT", title: "Environment setup failing on local machine during Docker build.", description: "When I run docker-compose up, it fails with a port conflict error. Details in logs.", status: "Waiting on Support", date: "2 hours ago", comments: [] },
-    { id: "TKT-1045", user: "Raj Patel", role: "Intern", domain: "Data Science", branch: "Stanford", title: "Need clarification on the API structure for Week 4 assignments.", description: "The documentation for the external API endpoints seems outdated. Can someone confirm?", status: "In Progress", date: "5 hours ago", comments: [{ author: "Admin", text: "We are checking this with the curriculum team." }] },
-    { id: "TKT-0985", user: "Sarah Connor", role: "Intern", domain: "Cyber Security", branch: "Berkeley", title: "Missing lecture notes for Day 5", description: "The PDF link for Day 5 lecture is broken.", status: "Resolved", date: "1 week ago", comments: [{ author: "Admin", text: "Fixed the link. Please check again." }] }
-  ]);
+  // (ticketsList is initialized in the hook above)
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
+  const [assignedMentor, setAssignedMentor] = useState("");
 
-  const handleReplyTicket = (e) => {
-    e.preventDefault();
-    if (!ticketReply.trim()) return;
-    
-    const updatedTickets = ticketsList.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = {
-          ...t,
-          comments: [...t.comments, { author: "Super Admin", text: ticketReply }]
-        };
-        setSelectedTicket(updatedT);
-        return updatedT;
+  const refreshTickets = async () => {
+    try {
+      const ticketsRes = await api.get('/tickets');
+      if (ticketsRes.data) {
+        const updatedList = ticketsRes.data.map(ticket => ({
+          ...ticket,
+          user: ticket.creator_name || `User ID: ${ticket.created_by}`,
+          role: "Intern",
+          date: new Date(ticket.created_at).toLocaleDateString()
+        }));
+        setTicketsList(updatedList);
+        if (selectedTicket) {
+          const updated = updatedList.find(t => t.id === selectedTicket.id);
+          if (updated) setSelectedTicket(updated);
+        }
       }
-      return t;
-    });
-    setTicketsList(updatedTickets);
-    setTicketReply("");
+    } catch (err) {
+      console.error("Failed to refresh tickets", err);
+    }
   };
 
-  const handleUpdateTicketStatus = (status) => {
-    const updatedTickets = ticketsList.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = { ...t, status: status };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setTicketsList(updatedTickets);
+  const handleReplyTicket = async (e) => {
+    e.preventDefault();
+    if (!ticketReply.trim()) return;
+    try {
+      await api.patch(`/tickets/${selectedTicket.id}`, { action: "message", message: ticketReply });
+      setTicketReply("");
+      await refreshTickets();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send reply");
+    }
+  };
+
+  const handleUpdateTicketStatus = async (status) => {
+    try {
+      const action = status === "Resolved" ? "resolve" : "close";
+      await api.patch(`/tickets/${selectedTicket.id}`, { action });
+      await refreshTickets();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update status");
+    }
+  };
+
+  const handleAssignMentor = async () => {
+    if (!assignedMentor) return alert("Please select a mentor.");
+    try {
+      await api.patch(`/tickets/${selectedTicket.id}`, { action: "assign", assigned_to: parseInt(assignedMentor) });
+      setAssignedMentor("");
+      alert("Mentor assigned successfully!");
+      await refreshTickets();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to assign mentor");
+    }
   };
 
 
@@ -351,7 +388,10 @@ export default function AdminDashboard() {
     setShowDomainModal(false);
   };
 
-  const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredUsers = usersList.filter(u => 
+    (u.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (u.domain || "").toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderContent = () => {
     switch (activeTab) {
@@ -365,53 +405,60 @@ export default function AdminDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Total Interns</span>
-                <span className="stat-value">50</span>
-                <span className="stat-desc">48 Active / 2 Deactivated</span>
+                <span className="stat-value">{dashboardStats?.total_interns || 0}</span>
+                <span className="stat-desc">{dashboardStats?.active_interns || 0} Active / {dashboardStats ? dashboardStats.total_interns - dashboardStats.active_interns : 0} Inactive</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Total Mentors</span>
-                <span className="stat-value">10</span>
-                <span className="stat-desc">Assigned across 5 domains</span>
+                <span className="stat-value">{dashboardStats?.total_mentors || 0}</span>
+                <span className="stat-desc">Assigned across domains</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Active Domains</span>
-                <span className="stat-value">5</span>
-                <span className="stat-desc">AI, DS, CS, Web Dev, UI/UX</span>
+                <span className="stat-value">{dashboardStats?.active_domains || 0}</span>
+                <span className="stat-desc">In curriculum</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Avg Performance</span>
-                <span className="stat-value">78%</span>
+                <span className="stat-value">{dashboardStats?.avg_performance || 0}%</span>
                 <span className="stat-desc">Based on evaluations</span>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
-              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: "16px", animationDelay: '0.5s' }}>
+            <div className="dashboard-grid-2-1" style={{ marginBottom: "20px", gap: "20px" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: "16px", animationDelay: '0.5s', display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Batch-wise Progress Trend</h3>
-                <ResponsiveContainer width="100%" height={225}>
-                  <BarChart data={progressData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
-                    <Tooltip 
-                      cursor={{fill: '#f3f4f6'}} 
-                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
-                      wrapperStyle={{ zIndex: 1000 }}
-                    />
-                    <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                    <Bar dataKey="MIT" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Stanford" fill="#10b981" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="IIT" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Harvard" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Berkeley" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div style={{ flex: 1, minHeight: "260px" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={progressData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
+                      <Tooltip 
+                        cursor={{fill: '#f3f4f6'}} 
+                        contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                        wrapperStyle={{ zIndex: 1000 }}
+                      />
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      {(() => {
+                        const batches = new Set();
+                        progressData.forEach(d => {
+                          Object.keys(d).filter(k => k !== 'name').forEach(k => batches.add(k));
+                        });
+                        const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
+                        return Array.from(batches).map((b, i) => (
+                          <Bar key={b} dataKey={b} fill={colors[i % colors.length]} radius={[4, 4, 0, 0]} />
+                        ));
+                      })()}
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
 
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Intern Distribution by Domain</h3>
-                <div style={{ flex: 1, padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <ResponsiveContainer width="100%" height={225}>
+                <div style={{ flex: 1, padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: "260px" }}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <RadarChart cx="50%" cy="50%" outerRadius="75%" data={domainData}>
                       <PolarGrid stroke="#e5e7eb" />
                       <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 11, fontWeight: 600 }} />
@@ -430,35 +477,23 @@ export default function AdminDashboard() {
                 <AdminLeaderboard usersList={usersList} isOverview={true} />
               </div>
 
-              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
-                    <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Unable to access GitHub repository for batch MIT-04.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 1 day ago</span>
-                  </div>
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s', minHeight: '300px' }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}><AlertTriangle size={18} /> Active Support Tickets</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto", minHeight: 0, paddingRight: '4px' }}>
+                  {ticketsList.length === 0 ? (
+                    <div style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No support tickets</div>
+                  ) : (
+                    ticketsList.filter(t => t.status !== "resolved" && t.status !== "closed").slice(0, 3).map(ticket => (
+                      <div key={ticket.id} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-{ticket.id}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>{ticket.creator_name || ticket.created_by}</b></span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
+                        <span style={{ fontSize: "11px", color: "#b91c1c", textTransform: "capitalize" }}>{ticket.status} â€¢ {new Date(ticket.created_at).toLocaleDateString()}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -466,8 +501,8 @@ export default function AdminDashboard() {
         );
 
       case "Users":
-        const interns = filteredUsers.filter(u => u.role === "Intern");
-        const mentors = filteredUsers.filter(u => u.role === "Mentor");
+        const interns = filteredUsers.filter(u => u.role && u.role.toLowerCase() === "intern");
+        const mentors = filteredUsers.filter(u => u.role && u.role.toLowerCase() === "mentor");
         
         // Group interns by college (batch)
         const batches = {};
@@ -495,9 +530,9 @@ export default function AdminDashboard() {
                       </h2>
                       <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
                         <span>ID: {selectedIntern.id}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>{selectedIntern.domain}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>{selectedIntern.college}</span>
                       </p>
                     </div>
@@ -594,9 +629,9 @@ export default function AdminDashboard() {
                       </h2>
                       <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
                         <span>ID: {selectedMentor.id}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>{selectedMentor.domain}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>Mentor</span>
                       </p>
                     </div>
@@ -670,8 +705,8 @@ export default function AdminDashboard() {
                 {/* Left Pane - Batches List */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
-                  {["MIT", "Stanford", "IIT", "Harvard", "Berkeley"].map((batch) => {
-                    const batchInterns = filteredUsers.filter(u => u.role === "Intern" && u.college === batch);
+                  {Object.keys(batches).map((batch) => {
+                    const batchInterns = batches[batch];
                     const activeCount = batchInterns.filter(i => i.status === "Active").length;
                     
                     return (
@@ -681,8 +716,8 @@ export default function AdminDashboard() {
                         style={{
                           padding: "16px",
                           borderRadius: "12px",
-                          border: selectedBatch === batch ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
-                          backgroundColor: selectedBatch === batch ? "#f5f3ff" : "var(--card-bg)",
+                          border: (selectedBatch || (Object.keys(batches).length > 0 ? Object.keys(batches)[0] : "")) === batch ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
+                          backgroundColor: (selectedBatch || (Object.keys(batches).length > 0 ? Object.keys(batches)[0] : "")) === batch ? "#f5f3ff" : "var(--card-bg)",
                           cursor: "pointer",
                           boxShadow: "var(--shadow-sm)",
                           transition: "all 0.2s"
@@ -702,7 +737,8 @@ export default function AdminDashboard() {
 
                 {/* Right Pane - Detail Interns List */}
                 {(() => {
-                  const batchInterns = interns.filter(u => u.college === selectedBatch);
+                  const actualSelectedBatch = selectedBatch || (Object.keys(batches).length > 0 ? Object.keys(batches)[0] : "");
+                  const batchInterns = batches[actualSelectedBatch] || [];
                   const itemsPerPage = 10;
                   const totalPages = Math.ceil(batchInterns.length / itemsPerPage) || 1;
                   const paginatedInterns = batchInterns.slice((internPage - 1) * itemsPerPage, internPage * itemsPerPage);
@@ -711,7 +747,7 @@ export default function AdminDashboard() {
                     <div className="card" style={{ margin: 0, padding: "20px", flex: 1, boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
                         <h3 style={{ fontSize: "16px", margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                          <GraduationCap size={20} /> {selectedBatch} Batch Directory
+                          <GraduationCap size={20} /> {actualSelectedBatch} Batch Directory
                         </h3>
                         <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                           Showing {paginatedInterns.length} of {batchInterns.length} Interns
@@ -905,54 +941,23 @@ export default function AdminDashboard() {
                     onClick={() => setDetailSubTab("Curriculum")}
                   >Curriculum</button>
                   <button 
-                    className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
-                    onClick={() => setDetailSubTab("Tasks")}
-                  >Tasks</button>
+                    className={`btn ${detailSubTab === "Code Assessments" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Code Assessments")}
+                  >Code Assessments</button>
+                  <button 
+                    className={`btn ${detailSubTab === "MCQs" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("MCQs")}
+                  >MCQs</button>
                 </div>
 
                 {detailSubTab === "Curriculum" && (
                   <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
                     <table className="table">
-                      <thead>
-                        <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                      <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                        <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
                       </thead>
                       <tbody>
-                        {/* Render custom user-uploaded curriculum first */}
-                        {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
-                          <tr key={`custom-${i}`}>
-                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
-                            <td><b>{cur.topic}</b></td>
-                            <td>{cur.resources}</td>
-                            <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
-                          </tr>
-                        ))}
-                        
-                        {/* Render generated 30 days mock curriculum */}
-                        {[...Array(30)].map((_, i) => {
-                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
-                          
-                          return (
-                          <tr key={i}>
-                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
-                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
-                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
-                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
-                          </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {detailSubTab === "Tasks" && (
-                  <div className="table-container">
-                    <table className="table">
-                      <thead>
-                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                      </thead>
-                      <tbody>
-                        {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'curriculum').map((t) => (
                           <tr key={t.id}>
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
                             <td><b>{t.title}</b></td>
@@ -960,8 +965,54 @@ export default function AdminDashboard() {
                             <td>{t.deadline}</td>
                           </tr>
                         ))}
-                        {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
-                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'curriculum').length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No curriculum tasks assigned to this domain yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {detailSubTab === "Code Assessments" && (
+                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                    <table className="table">
+                      <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                        <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'coding').map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                          </tr>
+                        ))}
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'coding').length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No coding assessments assigned to this domain yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {detailSubTab === "MCQs" && (
+                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                    <table className="table">
+                      <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                        <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'mcq').map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                          </tr>
+                        ))}
+                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'mcq').length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No MCQs assigned to this domain yet.</td></tr>
                         )}
                       </tbody>
                     </table>
@@ -1055,13 +1106,26 @@ export default function AdminDashboard() {
                     {selectedTicket.status}
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
-                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <select className="form-control" value={assignedMentor} onChange={(e) => setAssignedMentor(e.target.value)} style={{ width: "200px", marginBottom: 0 }}>
+                      <option value="">Select Mentor to Assign</option>
+                      {usersList.filter(u => u.role?.toLowerCase() === "mentor").map(m => (
+                        <option key={m.id} value={m.id}>{m.name}</option>
+                      ))}
+                    </select>
+                    <button onClick={handleAssignMentor} className="btn btn-secondary">Assign Mentor</button>
+                  </div>
+                  {selectedTicket.status !== "Resolved" && selectedTicket.status !== "Closed" && (
+                    <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
+                  )}
+                  {selectedTicket.status !== "Closed" && (
+                    <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Closed")}>Close Ticket</button>
+                  )}
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
+              <div className="dashboard-grid-half" style={{ backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
                   <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user} ({selectedTicket.role})</div>
@@ -1078,6 +1142,12 @@ export default function AdminDashboard() {
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
                   <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
                 </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Assigned To</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>
+                    {selectedTicket.assigned_to ? `User ID: ${selectedTicket.assigned_to}` : "Unassigned"}
+                  </div>
+                </div>
               </div>
 
               <div style={{ marginBottom: "24px" }}>
@@ -1090,21 +1160,22 @@ export default function AdminDashboard() {
               <div>
                 <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
-                  {selectedTicket.comments.length === 0 ? (
+                  {!(selectedTicket.messages?.length > 0) ? (
                     <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
                   ) : (
-                    selectedTicket.comments.map((comment, idx) => (
-                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.author === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.author === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.author === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author}</div>
-                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text}</div>
+                    selectedTicket.messages.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.sender_name || comment.sender_role}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.message}</div>
                       </div>
                     ))
                   )}
                 </div>
-                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
+                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
                   <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
                   <button type="submit" className="btn btn-primary">Send Reply</button>
                 </form>
+
               </div>
             </div>
           );
@@ -1377,8 +1448,7 @@ export default function AdminDashboard() {
 
       {/* Main Workspace Content (Full Width) */}
       <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
-
-        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out", paddingRight: "8px" }}>
           {renderContent()}
         </div>
       </main>

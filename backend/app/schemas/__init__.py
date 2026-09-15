@@ -367,6 +367,7 @@ class SimulationScenarioResponse(BaseModel):
     question: str
     choices: List[SimulationChoice]
     completed: Optional[bool] = False
+    completed_days: Optional[List[int]] = []
     decisionResult: Optional[dict] = None
 
 class SimulationDecision(BaseModel):

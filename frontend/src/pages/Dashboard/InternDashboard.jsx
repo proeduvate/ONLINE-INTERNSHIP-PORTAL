@@ -32,89 +32,107 @@ export default function InternDashboard() {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [recentSubmissions, setRecentSubmissions] = useState([]);
   const [domainFact, setDomainFact] = useState(null);
+  const [completedDays, setCompletedDays] = useState([]);
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const [profileRes, leaderboardRes, tasksRes, ticketsRes, factRes] = await Promise.all([
-          api.get('/profile'),
-          api.get('/leaderboard').catch(() => ({ data: [] })),
-          api.get('/tasks').catch(() => ({ data: [] })),
-          api.get('/tickets').catch(() => ({ data: [] })),
-          api.get('/facts').catch(() => ({ data: null }))
-        ]);
-        setDashboardData(profileRes.data);
-        setInternDomain(profileRes.data.domain_name || "Unassigned");
-        setLeaderboardData(leaderboardRes.data || []);
-        setDomainFact(factRes.data || null);
-        let calculatedDay = 1;
-        try {
-          const subsRes = await api.get(`/analytics/daily-questions/intern/${profileRes.data.id}`);
-          const submissions = subsRes.data || [];
-          setRecentSubmissions(submissions);
-          if (submissions.length > 0) {
-            calculatedDay = submissions.length + 1;
-          }
-        } catch (e) {
-          console.warn("Could not fetch recent submissions", e);
+  const fetchDashboard = async () => {
+    try {
+      const [profileRes, leaderboardRes, tasksRes, ticketsRes, factRes, simRes, portfolioRes] = await Promise.all([
+        api.get('/profile'),
+        api.get('/leaderboard').catch(() => ({ data: [] })),
+        api.get('/tasks').catch(() => ({ data: [] })),
+        api.get('/tickets').catch(() => ({ data: [] })),
+        api.get('/facts').catch(() => ({ data: null })),
+        api.get('/simulation/intern/current').catch(() => ({ data: null })),
+        api.get('/portfolio').catch(() => ({ data: { total_score: 0 } }))
+      ]);
+      setDashboardData(profileRes.data);
+      setInternDomain(profileRes.data.domain_name || "Unassigned");
+      setAiScore(portfolioRes?.data?.total_score || 0);
+      setLeaderboardData(leaderboardRes.data || []);
+      setDomainFact(factRes.data || null);
+
+      let doneDaysSet = new Set();
+      if (simRes && simRes.data) {
+        if (simRes.data.completed_days && Array.isArray(simRes.data.completed_days)) {
+          simRes.data.completed_days.forEach(d => doneDaysSet.add(d));
         }
-        
-        setCurrentDay(calculatedDay);
+        if (simRes.data.completed && simRes.data.day) {
+          doneDaysSet.add(simRes.data.day);
+        }
+      }
 
-        try {
-          const mcqRes = await api.get(`/mcq/day/${calculatedDay}/result`);
-          if (mcqRes.data && mcqRes.data.status === "submitted") {
-            setMcqDone(true);
-            setMcqGrade(mcqRes.data.percentage);
-          } else {
-            setMcqDone(false);
-          }
-        } catch (e) {
+      let calculatedDay = 1;
+      try {
+        const subsRes = await api.get(`/analytics/daily-questions/intern/${profileRes.data.id}`);
+        const submissions = subsRes.data || [];
+        setRecentSubmissions(submissions);
+        if (submissions.length > 0) {
+          submissions.forEach((_, i) => doneDaysSet.add(i + 1));
+          calculatedDay = submissions.length + 1;
+        }
+      } catch (e) {
+        console.warn("Could not fetch recent submissions", e);
+      }
+
+      setCompletedDays(Array.from(doneDaysSet));
+      setCurrentDay(calculatedDay);
+
+      try {
+        const mcqRes = await api.get(`/mcq/day/${calculatedDay}/result`);
+        if (mcqRes.data && mcqRes.data.status === "submitted") {
+          setMcqDone(true);
+          setMcqGrade(mcqRes.data.percentage);
+        } else {
           setMcqDone(false);
         }
-        
-        // Transform task data to match curriculumData shape if needed
-        const fetchedTasks = tasksRes.data.map(task => ({
-            id: task.id,
-            day: task.day_number,
-            topic: task.title,
-            desc: task.description,
-            notes: task.document_url || "N/A"
-        }));
-        
-        // Keep a fallback just in case no tasks exist
-        setCurriculumData(fetchedTasks.length ? fetchedTasks : [
-          { day: 1, topic: "Introduction to Domain", desc: "Welcome to your internship. Please wait for mentor to assign tasks.", notes: "" }
-        ]);
-
-        if (ticketsRes.data && ticketsRes.data.length > 0) {
-           const mappedTickets = ticketsRes.data.map(t => {
-             const statusStr = t.status === "resolved" || t.status === "closed" ? "Resolved" : "Pending";
-             return {
-               ...t,
-               id: `TKT-${t.id}`,
-               date: new Date(t.created_at).toLocaleDateString(),
-               status: statusStr,
-               adminReply: t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1].message : (t.status === "resolved" ? t.resolution : "Your ticket is under review.")
-             };
-           });
-           setTicketsData(mappedTickets);
-        }
-
-        if (factRes.data && !factRes.data.completed) {
-           setDomainInsights([factRes.data.fact_text]);
-        }
-        
-        // We will keep notifications mocked for now as there's no endpoint
-        setNotifications([
-          { id: 1, text: "Welcome to ProEduvate!", time: "Just now" }
-        ]);
-      } catch (err) {
-        console.error("Failed to load dashboard data", err);
-      } finally {
-        setLoadingDashboard(false);
+      } catch (e) {
+        setMcqDone(false);
       }
-    };
+
+      // Transform task data to match curriculumData shape if needed
+      const fetchedTasks = tasksRes.data.map(task => ({
+        id: task.id,
+        day: task.day_number,
+        topic: task.title,
+        desc: task.description,
+        notes: task.document_url || "N/A"
+      }));
+
+      // Keep a fallback just in case no tasks exist
+      setCurriculumData(fetchedTasks.length ? fetchedTasks : [
+        { day: 1, topic: "Introduction to Domain", desc: "Welcome to your internship. Please wait for mentor to assign tasks.", notes: "" }
+      ]);
+
+      if (ticketsRes.data && ticketsRes.data.length > 0) {
+        const mappedTickets = ticketsRes.data.map(t => {
+          const statusStr = t.status === "resolved" || t.status === "closed" ? "Resolved" : "Pending";
+          return {
+            ...t,
+            id: `TKT-${t.id}`,
+            date: new Date(t.created_at).toLocaleDateString(),
+            status: statusStr,
+            adminReply: t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1].message : (t.status === "resolved" ? t.resolution : "Your ticket is under review.")
+          };
+        });
+        setTicketsData(mappedTickets);
+      }
+
+      if (factRes.data && !factRes.data.completed) {
+        setDomainInsights([factRes.data.fact_text]);
+      }
+
+      // We will keep notifications mocked for now as there's no endpoint
+      setNotifications([
+        { id: 1, text: "Welcome to ProEduvate!", time: "Just now" }
+      ]);
+    } catch (err) {
+      console.error("Failed to load dashboard data", err);
+    } finally {
+      setLoadingDashboard(false);
+    }
+  };
+
+  useEffect(() => {
     fetchDashboard();
   }, []);
 
@@ -211,12 +229,12 @@ export default function InternDashboard() {
           action: "submit",
           answer: airdropAnswer
         });
-        
-        const updatedAirdrops = bonusAirdrops.map(a => 
+
+        const updatedAirdrops = bonusAirdrops.map(a =>
           a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
         );
         setBonusAirdrops(updatedAirdrops);
-        
+
         if (airdropTimeLeft > 0) {
           alert("Bonus Airdrop submitted successfully!");
         } else {
@@ -260,12 +278,12 @@ export default function InternDashboard() {
 
   // Mock State
   const progress = 40; // 12 of 30 days
-  const [aiScore, setAiScore] = useState(88);
+  const [aiScore, setAiScore] = useState(0);
   const attendancePercent = 90;
 
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
-  
+
   const [curriculumData, setCurriculumData] = useState([]);
 
   // MCQ and Assessment Workflow State
@@ -310,7 +328,7 @@ export default function InternDashboard() {
       alert("Please enter an issue title before submitting.");
       return;
     }
-    
+
     try {
       const res = await api.post('/tickets', {
         title: newTicketTitle,
@@ -377,7 +395,7 @@ export default function InternDashboard() {
       alert("Failed to submit MCQ: " + (err.response?.data?.detail || err.message));
     }
   };
-  
+
   const startMcqTest = async () => {
     try {
       const res = await api.post(`/mcq/day/${currentDay}/start`);
@@ -455,10 +473,10 @@ export default function InternDashboard() {
         code_submission: code,
         language: language
       });
-      
+
       const aiScoreResult = submitRes.data.ai_score || 0;
       setAiScore(aiScoreResult);
-      
+
       let parsedFeedback = "Great job!";
       try {
         if (submitRes.data.ai_feedback) {
@@ -468,7 +486,7 @@ export default function InternDashboard() {
       } catch (e) {
         parsedFeedback = submitRes.data.ai_feedback;
       }
-      
+
       setEvalResult({
         score: aiScoreResult,
         correctness: Math.min(100, aiScoreResult + 10),
@@ -477,7 +495,7 @@ export default function InternDashboard() {
         performance: aiScoreResult,
         suggestions: parsedFeedback
       });
-      
+
       // 2. Lock in analytics result for today's MCQ + Code
       const analyticsRes = await api.post('/daily-questions/results', {
         question_id: currentDay,
@@ -485,10 +503,10 @@ export default function InternDashboard() {
         coding_score: aiScoreResult,
         date: new Date().toISOString().split('T')[0]
       });
-      
+
       setRecentSubmissions(prev => {
         if (!prev.some(s => s.date === analyticsRes.data.date)) {
-           return [...prev, analyticsRes.data];
+          return [...prev, analyticsRes.data];
         }
         return prev;
       });
@@ -535,10 +553,10 @@ export default function InternDashboard() {
       case "Overview":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflowY: "auto", overflowX: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
-            
+
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div style={{ display: "flex", gap: "20px", flexShrink: 0, height: "180px" }}>
-              
+
               {/* Hero Banner ("Learn. Build. Grow.") */}
               <div className="hero-banner-card" style={{
                 flex: "2.5",
@@ -612,33 +630,35 @@ export default function InternDashboard() {
                 </div>
               </div>
 
-              {/* Dark Blue Quote Card on Right */}
+              {/* Quote Card on Right */}
               <div className="hero-quote-card" style={{
                 flex: "1",
                 borderRadius: "16px",
-                padding: "24px",
-                color: "var(--bg-surface, #ffffff)",
+                padding: "20px 24px",
+                background: "#0a1128",
+                border: "1px solid #1e293b",
+                color: "#f8fafc",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 position: "relative",
                 overflow: "hidden",
-                boxShadow: "0 4px 15px rgba(15, 23, 42, 0.2)"
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)"
               }}>
-                <svg style={{ position: "absolute", right: "-20px", bottom: "-20px", width: "160px", opacity: 0.1, pointerEvents: "none" }} viewBox="0 0 24 24" fill="white">
+                <svg style={{ position: "absolute", right: "-20px", bottom: "-20px", width: "160px", opacity: 0.1, pointerEvents: "none" }} viewBox="0 0 24 24" fill="#ffffff">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                 </svg>
 
-                <p style={{ margin: "0 0 12px 0", fontSize: "1.1rem", fontStyle: "italic", lineHeight: "1.5", color: "var(--bg-surface-elevated, #f8fafc)", fontWeight: 500 }}>
-                  "{domainFact && domainFact.fact ? domainFact.fact : 'A skilled tomorrow starts with what you do today.'}"
+                <p style={{ margin: "0 0 12px 0", fontSize: "1rem", fontStyle: "italic", lineHeight: "1.5", color: "#f8fafc", fontWeight: 500, zIndex: 1 }}>
+                  "{domainFact && domainFact.fact ? domainFact.fact : 'Concept security is widely used in Frontend.'}"
                 </p>
-                <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#60a5fa" }}>— ProEduvate</span>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#3b82f6", zIndex: 1 }}>— ProEduvate</span>
               </div>
             </div>
 
             {/* Main Content Row */}
-            <div style={{ display: "flex", gap: "20px", alignItems: "stretch" }}>
-              
+            <div className="dashboard-layout-row" style={{ display: "flex", gap: "20px", alignItems: "stretch" }}>
+
               {/* Left Column: Your 30-Day Journey Timeline */}
               <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -653,7 +673,7 @@ export default function InternDashboard() {
                     const visibleDaysCount = 10;
                     let startDay = Math.max(1, currentDay - 2);
                     if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
-                    
+
                     return Array.from({ length: visibleDaysCount }, (_, i) => {
                       const dayNum = startDay + i;
                       const topics = ["Introduction to HTML", "CSS Styling", "JavaScript Basics", "DOM Manipulation", "React Basics", "Component Composition", "State and Props", "React Hooks Lifecycle", "Context API & Global State", "Routing and Layouts", "Redux Basics", "Testing & Debugging", "REST API Development", "Authentication", "Git & GitHub", "Database Basics", "Node.js Basics", "Express framework", "MongoDB Integration", "Building the Backend", "Frontend/Backend Connect", "Security Best Practices", "Deployment", "CI/CD Pipelines", "Docker Basics", "Cloud Services", "Performance Optimization", "Web Accessibility", "Final Project Setup", "Final Project Delivery"];
@@ -705,13 +725,13 @@ export default function InternDashboard() {
 
               {/* Middle Column: Today's Objective & Daily Scenario Activity */}
               <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px" }}>
-                
+
                 {/* Today's Objective Card */}
                 {(() => {
                   const activeCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[0];
                   return (
                     <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
-                      
+
                       {/* Header */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -776,29 +796,29 @@ export default function InternDashboard() {
                 })()}
 
                 {/* Bonus Airdrop Card - Compact Single Line */}
-                <div className="bonus-airdrop-card" style={{ borderRadius: "12px", padding: "10px 14px", display: "flex", alignItems: "center", gap: "12px" }}>
+                <div className="bonus-airdrop-card" style={{ background: "linear-gradient(to right, #faf5ff, #fdf4ff)", borderRadius: "12px", padding: "12px 16px", display: "flex", alignItems: "center", gap: "12px", border: "1px solid #f3e8ff" }}>
                   {/* Icon */}
-                  <div className="bonus-airdrop-icon" style={{ width: "30px", height: "30px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Gift size={14} />
+                  <div className="bonus-airdrop-icon" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#d946ef", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Gift size={16} />
                   </div>
                   {/* Label */}
-                  <span className="bonus-airdrop-text" style={{ fontSize: "0.8rem", fontWeight: 800, flexShrink: 0 }}>Bonus Airdrops</span>
-                  <span className="bonus-airdrop-badge" style={{ padding: "2px 8px", borderRadius: "20px", fontSize: "0.65rem", fontWeight: 700, flexShrink: 0 }}>
+                  <span className="bonus-airdrop-text" style={{ fontSize: "0.85rem", fontWeight: 800, color: "#701a75", flexShrink: 0 }}>Bonus Airdrops</span>
+                  <span className="bonus-airdrop-badge" style={{ padding: "4px 10px", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 700, color: "#d946ef", background: "#fae8ff", flexShrink: 0 }}>
                     {bonusAirdrops.filter(a => a.status === "Active").length} Active
                   </span>
                   {/* First airdrop question - truncated */}
-                  <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.75rem", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", opacity: 0.8 }}>
+                  <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, color: "#86198f", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {bonusAirdrops.filter(a => a.status === "Active")[0]?.question ?? "No active airdrops right now"}
                   </span>
                   {/* Attempt button */}
                   {bonusAirdrops.filter(a => a.status === "Active")[0] && (
-                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "Active")[0])} style={{ flexShrink: 0, padding: "5px 12px", border: "none", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
+                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "Active")[0])} style={{ flexShrink: 0, padding: "6px 14px", background: "#d946ef", color: "#fff", border: "none", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
                       Attempt
                     </button>
                   )}
                   {/* View All */}
-                  <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
-                    View All →
+                  <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "6px 14px", background: "transparent", color: "#a21caf", border: "1px solid #f0abfc", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
+                    View All &rarr;
                   </button>
                 </div>
 
@@ -834,12 +854,12 @@ export default function InternDashboard() {
 
               {/* Right Column: Calendar & Leaderboard */}
               <div style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "20px", overflow: "hidden" }}>
-                
+
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
-                  <DailyScenarioCalendar 
-                    currentDay={currentDay} 
-                    attendedDays={recentSubmissions.map((_, i) => i + 1)} 
+                  <DailyScenarioCalendar
+                    currentDay={currentDay}
+                    completedDays={completedDays}
                     onStartScenario={(day) => setActiveTab("Daily Scenario")}
                   />
                 </div>
@@ -861,7 +881,7 @@ export default function InternDashboard() {
                     <span>Name</span>
                     <span style={{ textAlign: "right", paddingRight: "40px" }}>Points</span>
                   </div>
-                  
+
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
                     {(leaderboardData.length > 0 ? leaderboardData : [
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
@@ -871,7 +891,7 @@ export default function InternDashboard() {
                       { rank: 5, name: "David Lee", points: 890, isMe: false }
                     ]).map((user, idx) => (
                       <div key={user.rank || idx} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: (user.rank || idx+1) === 1 ? "#fbbf24" : ((user.rank || idx+1) === 2 ? "#94a3b8" : ((user.rank || idx+1) === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank || idx+1}</span>
+                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: (user.rank || idx + 1) === 1 ? "#fbbf24" : ((user.rank || idx + 1) === 2 ? "#94a3b8" : ((user.rank || idx + 1) === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank || idx + 1}</span>
                         <span style={{ fontSize: "0.9rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{(user.user_name || user.name)} {user.isMe && "(You)"}</span>
                         <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "48px" : "40px" }}>{user.points || user.total_points}</span>
                       </div>
@@ -885,7 +905,7 @@ export default function InternDashboard() {
 
       case "Learning":
         const currentCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[curriculumData.length - 1];
-        
+
         if (isDayLockedUntilMidnight) {
           return (
             <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
@@ -905,12 +925,12 @@ export default function InternDashboard() {
               {assessmentView === "selection" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   {/* Hero Banner */}
-                  <div style={{ 
-                    background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)", 
-                    borderRadius: "12px", 
-                    padding: "16px 24px", 
-                    display: "flex", 
-                    justifyContent: "space-between", 
+                  <div style={{
+                    background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
+                    borderRadius: "12px",
+                    padding: "16px 24px",
+                    display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
                     border: "1px solid #bae6fd"
@@ -924,14 +944,14 @@ export default function InternDashboard() {
                     </div>
                     <div>
                       <button className="btn btn-secondary" onClick={() => setShowAssessment(false)} style={{ background: "white", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-color, #cbd5e1)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}>
-                        <ArrowLeft size={14} style={{ marginRight: "4px", verticalAlign: "middle" }}/> Back
+                        <ArrowLeft size={14} style={{ marginRight: "4px", verticalAlign: "middle" }} /> Back
                       </button>
                     </div>
                   </div>
 
                   {/* Main Content Grid */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 350px", gap: "24px" }}>
-                    
+
                     {/* Left Column: Assessments List */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       <div>
@@ -989,7 +1009,7 @@ export default function InternDashboard() {
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Completion Banner */}
                       {mcqDone && codingDone && (
                         <div style={{ background: "linear-gradient(to right, #4f46e5, #3b82f6)", borderRadius: "12px", padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "white", marginTop: "8px", boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)" }}>
@@ -1007,7 +1027,7 @@ export default function InternDashboard() {
 
                     {/* Right Column: Progress & Rules */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                      
+
                       <div className="card" style={{ padding: "24px" }}>
                         <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 20px 0" }}>Your Assessment Progress</h4>
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
@@ -1074,17 +1094,17 @@ export default function InternDashboard() {
                         {/* Left Sidebar: Question Numbers Grid */}
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid var(--border-gray)", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
                           {mcqQuestions.map((q, idx) => (
-                            <button 
+                            <button
                               key={q.id}
                               onClick={() => setCurrentQuestionIndex(idx)}
                               style={{
                                 aspectRatio: "1/1",
                                 padding: 0,
                                 borderRadius: "6px",
-                                  border: currentQuestionIndex === idx ? "2px solid var(--primary-color)" : (answers[q.id] ? "1px solid var(--success-color)" : "1px solid var(--border-gray)"),
-                                  backgroundColor: answers[q.id] ? "var(--success-color)" : (currentQuestionIndex === idx ? "var(--bg-blue-light)" : "var(--card-bg)"),
-                                  color: answers[q.id] ? "var(--card-bg)" : (currentQuestionIndex === idx ? "var(--primary-darker)" : "var(--text-gray)"),
-                                  fontWeight: currentQuestionIndex === idx ? 700 : 500,
+                                border: currentQuestionIndex === idx ? "2px solid var(--primary-color)" : (answers[q.id] ? "1px solid var(--success-color)" : "1px solid var(--border-gray)"),
+                                backgroundColor: answers[q.id] ? "var(--success-color)" : (currentQuestionIndex === idx ? "var(--bg-blue-light)" : "var(--card-bg)"),
+                                color: answers[q.id] ? "var(--card-bg)" : (currentQuestionIndex === idx ? "var(--primary-darker)" : "var(--text-gray)"),
+                                fontWeight: currentQuestionIndex === idx ? 700 : 500,
                                 cursor: "pointer",
                                 display: "flex",
                                 justifyContent: "center",
@@ -1102,13 +1122,13 @@ export default function InternDashboard() {
                           <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
                             <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestions[currentQuestionIndex]?.text}
                           </h4>
-                          
+
                           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                             {mcqQuestions[currentQuestionIndex]?.options.map(opt => (
-                              <button 
+                              <button
                                 key={opt.val}
-                                className={`btn ${answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                onClick={() => setAnswers({...answers, [mcqQuestions[currentQuestionIndex].id]: opt.val})}
+                                className={`btn ${answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`}
+                                onClick={() => setAnswers({ ...answers, [mcqQuestions[currentQuestionIndex].id]: opt.val })}
                                 style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
                               >
                                 {opt.label}
@@ -1118,17 +1138,17 @@ export default function InternDashboard() {
 
                           {/* Navigation Buttons */}
                           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === 0} 
+                            <button
+                              className="btn btn-secondary"
+                              disabled={currentQuestionIndex === 0}
                               onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
                               style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
                             >
                               Previous
                             </button>
-                            <button 
-                              className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === mcqQuestions.length - 1} 
+                            <button
+                              className="btn btn-secondary"
+                              disabled={currentQuestionIndex === mcqQuestions.length - 1}
                               onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
                               style={{ opacity: currentQuestionIndex === mcqQuestions.length - 1 ? 0.5 : 1 }}
                             >
@@ -1154,7 +1174,7 @@ export default function InternDashboard() {
                     <h3 style={{ margin: 0 }}>Part B: {false ? "UI/UX Assessment" : "Coding Assessment"}</h3>
                     <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                   </div>
-                  
+
                   {false ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "12px" }}>
                       <div>
@@ -1192,9 +1212,9 @@ export default function InternDashboard() {
                         </select>
                       </div>
 
-                      <WebIDE 
-                        language={language} 
-                        onChange={(files) => setFilesData(files)} 
+                      <WebIDE
+                        language={language}
+                        onChange={(files) => setFilesData(files)}
                       />
 
                       <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
@@ -1261,7 +1281,7 @@ export default function InternDashboard() {
               <div style={{ position: "relative", zIndex: 2, background: "var(--bg-surface, #ffffff)", width: "56px", height: "56px", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", color: "#2563eb", flexShrink: 0 }}>
                 <Code size={28} />
               </div>
-              
+
               <div style={{ position: "relative", zIndex: 2, flex: 1 }}>
                 <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1e40af", display: "block", marginBottom: "4px" }}>
                   DAY {currentDay} OF 30
@@ -1276,16 +1296,16 @@ export default function InternDashboard() {
 
               <div style={{ position: "absolute", right: "24px", bottom: "-10px", opacity: 0.1, transform: "rotate(-10deg)", pointerEvents: "none", zIndex: 1 }}>
                 <h2 style={{ fontSize: "2.5rem", fontWeight: 900, lineHeight: 0.9, margin: 0, textAlign: "right" }}>
-                  Learn<br/>Build<br/>Grow
+                  Learn<br />Build<br />Grow
                 </h2>
               </div>
             </div>
             {/* Two Column Layout for Main Content */}
             <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
-              
+
               {/* Left Column: Main Learning Interface */}
               <div style={{ flex: activeLearningTab === "AI Client" ? "1" : "2.2", width: activeLearningTab === "AI Client" ? "100%" : "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
-                
+
                 {/* Navigation Tabs */}
                 <div style={{ display: "flex", gap: "16px", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px", marginBottom: "8px", flexShrink: 0 }}>
                   <button onClick={() => setActiveLearningTab("Reading Materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
@@ -1305,175 +1325,175 @@ export default function InternDashboard() {
                 {activeLearningTab === "Reading Materials" && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 
-                {/* Document Viewer Mockup */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", overflow: "hidden", position: "relative", boxShadow: "0 8px 30px rgba(0,0,0,0.05)", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                  
-                  {/* Top Bar */}
-                  <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "16px 24px", borderBottom: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "32px", height: "32px", background: "#eff6ff", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <BookOpen size={16} color="#2563eb" />
-                      </div>
-                      <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Module Notes: {currentCurriculum.topic}</span>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <button style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
-                        <Download size={14} /> Download PDF
-                      </button>
-                    </div>
-                  </div>
+                    {/* Document Viewer Mockup */}
+                    <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", overflow: "hidden", position: "relative", boxShadow: "0 8px 30px rgba(0,0,0,0.05)", border: "1px solid var(--border-color, #e2e8f0)" }}>
 
-                  {/* Main Content Area */}
-                  <div style={{ padding: "32px 40px", minHeight: "260px", display: "flex", flexDirection: "column" }}>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      {/* PDF Card */}
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <div style={{ width: "40px", height: "40px", background: "#fee2e2", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <FileText size={20} color="#ef4444" />
+                      {/* Top Bar */}
+                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "16px 24px", borderBottom: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "32px", height: "32px", background: "#eff6ff", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <BookOpen size={16} color="#2563eb" />
                           </div>
-                          <div>
-                            <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Official Lecture Notes</span>
-                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>PDF Document • 2.4 MB</span>
+                          <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Module Notes: {currentCurriculum.topic}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <button style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
+                            <Download size={14} /> Download PDF
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Main Content Area */}
+                      <div style={{ padding: "32px 40px", minHeight: "260px", display: "flex", flexDirection: "column" }}>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          {/* PDF Card */}
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                              <div style={{ width: "40px", height: "40px", background: "#fee2e2", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <FileText size={20} color="#ef4444" />
+                              </div>
+                              <div>
+                                <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Official Lecture Notes</span>
+                                <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>PDF Document • 2.4 MB</span>
+                              </div>
+                            </div>
+                            <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                              <Download size={16} /> Download
+                            </button>
+                          </div>
+
+                          {/* DOC Card */}
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                              <div style={{ width: "40px", height: "40px", background: "#e0e7ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <ClipboardList size={20} color="#4f46e5" />
+                              </div>
+                              <div>
+                                <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Practice Exercises</span>
+                                <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Word Document • 1.1 MB</span>
+                              </div>
+                            </div>
+                            <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                              <Download size={16} /> Download
+                            </button>
                           </div>
                         </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
-                          <Download size={16} /> Download
-                        </button>
-                      </div>
-
-                      {/* DOC Card */}
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <div style={{ width: "40px", height: "40px", background: "#e0e7ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <ClipboardList size={20} color="#4f46e5" />
-                          </div>
-                          <div>
-                            <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Practice Exercises</span>
-                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Word Document • 1.1 MB</span>
-                          </div>
-                        </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
-                          <Download size={16} /> Download
-                        </button>
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* What you'll learn */}
-                <div style={{ marginTop: "8px" }}>
-                  <h4 style={{ margin: "0 0 16px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>What you'll learn today</h4>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    {["Understanding component rendering", "Setting up standard project", "Creating first components", "Next steps in the module"].map((item, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <CheckCircle size={16} color="#16a34a" />
-                        <span style={{ fontSize: "13px", color: "#334155" }}>{item}</span>
+                    {/* What you'll learn */}
+                    <div style={{ marginTop: "8px" }}>
+                      <h4 style={{ margin: "0 0 16px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>What you'll learn today</h4>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                        {["Understanding component rendering", "Setting up standard project", "Creating first components", "Next steps in the module"].map((item, i) => (
+                          <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <CheckCircle size={16} color="#16a34a" />
+                            <span style={{ fontSize: "13px", color: "#334155" }}>{item}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                {/* Personal Notes Area */}
-                <div style={{ marginTop: "24px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                    <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
-                      <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
-                    </h4>
-                    <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>Auto-saved</span>
-                  </div>
-                  <textarea 
-                    placeholder="Jot down important takeaways, questions, or ideas from this module..."
-                    style={{
-                      width: "100%",
-                      minHeight: "120px",
-                      padding: "16px",
-                      borderRadius: "12px",
-                      border: "1px solid var(--border-color, #e2e8f0)",
-                      backgroundColor: "var(--bg-surface-elevated, #f8fafc)",
-                      fontSize: "14px",
-                      color: "#334155",
-                      resize: "vertical",
-                      fontFamily: "inherit",
-                      outline: "none",
-                      transition: "all 0.2s",
-                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#93c5fd";
-                      e.target.style.backgroundColor = "var(--bg-surface, #ffffff)";
-                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "var(--border-color, #e2e8f0)";
-                      e.target.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)";
-                      e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)";
-                    }}
-                  />
-                </div>
+                    {/* Personal Notes Area */}
+                    <div style={{ marginTop: "24px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                        <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
+                          <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
+                        </h4>
+                        <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>Auto-saved</span>
+                      </div>
+                      <textarea
+                        placeholder="Jot down important takeaways, questions, or ideas from this module..."
+                        style={{
+                          width: "100%",
+                          minHeight: "120px",
+                          padding: "16px",
+                          borderRadius: "12px",
+                          border: "1px solid var(--border-color, #e2e8f0)",
+                          backgroundColor: "var(--bg-surface-elevated, #f8fafc)",
+                          fontSize: "14px",
+                          color: "#334155",
+                          resize: "vertical",
+                          fontFamily: "inherit",
+                          outline: "none",
+                          transition: "all 0.2s",
+                          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = "#93c5fd";
+                          e.target.style.backgroundColor = "var(--bg-surface, #ffffff)";
+                          e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = "var(--border-color, #e2e8f0)";
+                          e.target.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)";
+                          e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)";
+                        }}
+                      />
+                    </div>
 
                   </div>
                 )}
 
                 {activeLearningTab === "Live Meetings" && (
                   <div style={{ marginTop: "8px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: 0 }}>Upcoming Meetings</h3>
-                    <Badge variant="outline" style={{ color: "#3b82f6", borderColor: "var(--border-blue-light, #bfdbfe)", background: "#eff6ff" }}>2 Upcoming</Badge>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {/* Event 1 */}
-                    <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>Today</span>
-                          <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>4:00</span>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>PM</span>
-                        </div>
-                        <div>
-                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>React Core Concepts Q&A</h4>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                              <User size={14} color="var(--text-muted, #64748b)" />
-                              <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Sarah Jenkins</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                      <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: 0 }}>Upcoming Meetings</h3>
+                      <Badge variant="outline" style={{ color: "#3b82f6", borderColor: "var(--border-blue-light, #bfdbfe)", background: "#eff6ff" }}>2 Upcoming</Badge>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {/* Event 1 */}
+                      <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                          <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                            <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>Today</span>
+                            <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>4:00</span>
+                            <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>PM</span>
+                          </div>
+                          <div>
+                            <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>React Core Concepts Q&A</h4>
+                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                <User size={14} color="var(--text-muted, #64748b)" />
+                                <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Sarah Jenkins</span>
+                              </div>
+                              <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
+                              <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>1 hr session</span>
                             </div>
-                            <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>1 hr session</span>
                           </div>
                         </div>
+                        <button onClick={handleJoinMeeting} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
+                          Join Zoom
+                        </button>
                       </div>
-                      <button onClick={handleJoinMeeting} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                        Join Zoom
-                      </button>
-                    </div>
 
-                    {/* Event 2 */}
-                    <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)", opacity: 0.7 }}>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" }}>Tomorrow</span>
-                          <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-muted, #64748b)" }}>2:00</span>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8" }}>PM</span>
-                        </div>
-                        <div>
-                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "#334155" }}>Weekly Architecture Review</h4>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                              <User size={14} color="#94a3b8" />
-                              <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>David Chen</span>
+                      {/* Event 2 */}
+                      <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                          <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)", opacity: 0.7 }}>
+                            <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" }}>Tomorrow</span>
+                            <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-muted, #64748b)" }}>2:00</span>
+                            <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8" }}>PM</span>
+                          </div>
+                          <div>
+                            <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "#334155" }}>Weekly Architecture Review</h4>
+                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                <User size={14} color="#94a3b8" />
+                                <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>David Chen</span>
+                              </div>
+                              <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
+                              <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>45 min session</span>
                             </div>
-                            <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                            <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>45 min session</span>
                           </div>
                         </div>
+                        <button style={{ background: "#f1f5f9", color: "var(--text-muted, #64748b)", border: "1px solid var(--border-color, #e2e8f0)", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "not-allowed" }}>
+                          Starts Tomorrow
+                        </button>
                       </div>
-                      <button style={{ background: "#f1f5f9", color: "var(--text-muted, #64748b)", border: "1px solid var(--border-color, #e2e8f0)", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "not-allowed" }}>
-                        Starts Tomorrow
-                      </button>
                     </div>
                   </div>
-                </div>
 
                 )}
 
@@ -1489,92 +1509,92 @@ export default function InternDashboard() {
               {/* Right Column: Sidebar */}
               {activeLearningTab !== "AI Client" && (
                 <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
-                
-                {/* Assessment Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", background: "#eff6ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Target size={20} color="#2563eb" />
+
+                  {/* Assessment Card */}
+                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "40px", height: "40px", background: "#eff6ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Target size={20} color="#2563eb" />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
+                          <span style={{ fontSize: "12px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Test your knowledge</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ margin: 0, fontSize: "13px", color: "#475569", lineHeight: 1.5 }}>
+                      Ready to complete today's module? Take the MCQ and Coding test now.
+                    </p>
+                    <button
+                      onClick={() => setShowAssessment(true)}
+                      style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px", borderRadius: "8px", fontSize: "14px", fontWeight: 800, cursor: "pointer", transition: "all 0.2s", textAlign: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}
+                    >
+                      Start Assessment &rarr;
+                    </button>
+                  </div>
+
+                  {/* Mentor Feedback Card */}
+                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
+                    <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "80px", background: "radial-gradient(circle at top right, #dbeafe, transparent)", opacity: 0.6 }}></div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
+                      <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border-blue-light, #bfdbfe)" }}>
+                        <User size={14} color="#2563eb" />
+                      </div>
+                      <h4 style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Mentor Tip</h4>
+                    </div>
+                    <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "10px", borderLeft: "3px solid #2563eb", position: "relative", zIndex: 1 }}>
+                      <p style={{ margin: 0, fontSize: "13px", color: "#334155", fontStyle: "italic", lineHeight: 1.5 }}>
+                        "Focus on understanding how state affects rendering before moving to complex hooks."
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", position: "relative", zIndex: 1 }}>
+                      <span style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px" }}>
+                        <span style={{ width: "16px", height: "16px", borderRadius: "50%", background: "var(--border-color, #e2e8f0)", display: "inline-block" }}></span>
+                        Sarah (Lead Mentor)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Upcoming Milestone Card */}
+                  <div style={{ background: "var(--warning-bg, #fffbeb)", padding: "16px", borderRadius: "12px", border: "1px solid #fde68a", boxShadow: "0 2px 8px rgba(217, 119, 6, 0.03)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
+                    <div style={{ position: "absolute", right: "-10px", top: "-10px", opacity: 0.1 }}>
+                      <Calendar size={60} color="#d97706" />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
+                      <div style={{ background: "#fef08a", padding: "4px", borderRadius: "6px" }}>
+                        <Calendar size={14} color="#d97706" />
+                      </div>
+                      <h4 style={{ margin: 0, fontSize: "14px", color: "#92400e", fontWeight: 800 }}>Upcoming Milestone</h4>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", position: "relative", zIndex: 1 }}>
+                      <span style={{ fontSize: "13px", color: "#92400e", fontWeight: 800 }}>Midterm Assessment</span>
+                      <span style={{ fontSize: "11px", color: "#b45309", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+                        <Clock size={12} /> Due in 5 days (Day 15)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Need Help Card */}
+                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px", position: "relative", overflow: "hidden" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <MessageCircle size={16} color="#475569" />
                       </div>
                       <div>
-                        <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
-                        <span style={{ fontSize: "12px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Test your knowledge</span>
+                        <h4 style={{ margin: "0 0 2px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Need Help?</h4>
+                        <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Stuck somewhere?</p>
                       </div>
                     </div>
+                    <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "#334155", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "#eff6ff"; e.currentTarget.style.color = "#2563eb"; e.currentTarget.style.borderColor = "var(--border-blue-light, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "#334155"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
+                      Message Mentor &rarr;
+                    </button>
                   </div>
-                  <p style={{ margin: 0, fontSize: "13px", color: "#475569", lineHeight: 1.5 }}>
-                    Ready to complete today's module? Take the MCQ and Coding test now.
-                  </p>
-                  <button 
-                    onClick={() => setShowAssessment(true)} 
-                    style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px", borderRadius: "8px", fontSize: "14px", fontWeight: 800, cursor: "pointer", transition: "all 0.2s", textAlign: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}
-                  >
-                    Start Assessment &rarr;
-                  </button>
+
+                  {/* Motivational Quote Card */}
+
+
                 </div>
-
-                {/* Mentor Feedback Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "80px", background: "radial-gradient(circle at top right, #dbeafe, transparent)", opacity: 0.6 }}></div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
-                    <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border-blue-light, #bfdbfe)" }}>
-                      <User size={14} color="#2563eb" />
-                    </div>
-                    <h4 style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Mentor Tip</h4>
-                  </div>
-                  <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "10px", borderLeft: "3px solid #2563eb", position: "relative", zIndex: 1 }}>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#334155", fontStyle: "italic", lineHeight: 1.5 }}>
-                      "Focus on understanding how state affects rendering before moving to complex hooks."
-                    </p>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", position: "relative", zIndex: 1 }}>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px" }}>
-                      <span style={{ width: "16px", height: "16px", borderRadius: "50%", background: "var(--border-color, #e2e8f0)", display: "inline-block" }}></span>
-                      Sarah (Lead Mentor)
-                    </span>
-                  </div>
-                </div>
-
-                {/* Upcoming Milestone Card */}
-                <div style={{ background: "var(--warning-bg, #fffbeb)", padding: "16px", borderRadius: "12px", border: "1px solid #fde68a", boxShadow: "0 2px 8px rgba(217, 119, 6, 0.03)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", right: "-10px", top: "-10px", opacity: 0.1 }}>
-                    <Calendar size={60} color="#d97706" />
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
-                    <div style={{ background: "#fef08a", padding: "4px", borderRadius: "6px" }}>
-                      <Calendar size={14} color="#d97706" />
-                    </div>
-                    <h4 style={{ margin: 0, fontSize: "14px", color: "#92400e", fontWeight: 800 }}>Upcoming Milestone</h4>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", position: "relative", zIndex: 1 }}>
-                    <span style={{ fontSize: "13px", color: "#92400e", fontWeight: 800 }}>Midterm Assessment</span>
-                    <span style={{ fontSize: "11px", color: "#b45309", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-                      <Clock size={12} /> Due in 5 days (Day 15)
-                    </span>
-                  </div>
-                </div>
-
-                {/* Need Help Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px", position: "relative", overflow: "hidden" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <MessageCircle size={16} color="#475569" />
-                    </div>
-                    <div>
-                      <h4 style={{ margin: "0 0 2px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Need Help?</h4>
-                      <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Stuck somewhere?</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "#334155", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "#eff6ff"; e.currentTarget.style.color = "#2563eb"; e.currentTarget.style.borderColor = "var(--border-blue-light, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "#334155"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
-                    Message Mentor &rarr;
-                  </button>
-                </div>
-
-                {/* Motivational Quote Card */}
-
-
-              </div>
               )}
             </div>
           </div>
@@ -1592,7 +1612,7 @@ export default function InternDashboard() {
                   Back
                 </button>
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                   <div>
@@ -1616,28 +1636,28 @@ export default function InternDashboard() {
 
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Issue Subject / Short Title</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="e.g. Docker container fails to start on local machine" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Docker container fails to start on local machine"
                     value={newTicketTitle}
                     onChange={(e) => setNewTicketTitle(e.target.value)}
-                    style={{ padding: "10px 14px", borderRadius: "8px" }} 
+                    style={{ padding: "10px 14px", borderRadius: "8px" }}
                   />
                 </div>
-                
+
                 <div>
                   <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Detailed Description & Error Logs</label>
-                  <textarea 
-                    className="form-control" 
-                    rows="5" 
-                    placeholder="Please describe step-by-step what issue you are facing..." 
+                  <textarea
+                    className="form-control"
+                    rows="5"
+                    placeholder="Please describe step-by-step what issue you are facing..."
                     value={newTicketDesc}
                     onChange={(e) => setNewTicketDesc(e.target.value)}
                     style={{ padding: "12px 14px", borderRadius: "8px" }}
                   ></textarea>
                 </div>
-                
+
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
                   <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Cancel</button>
                   <button className="btn btn-primary" style={{ padding: "10px 24px" }} onClick={handleCreateTicket}>Submit Ticket &rarr;</button>
@@ -1674,7 +1694,7 @@ export default function InternDashboard() {
                 <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
                 <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
               </svg>
-              
+
               {/* "Learn Build Grow" Watermark */}
               <div style={{ position: "absolute", right: "160px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
                 <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
@@ -1750,14 +1770,14 @@ export default function InternDashboard() {
                   </div>
                 ) : (
                   filteredTickets.map(ticket => (
-                    <div 
+                    <div
                       key={ticket.id}
                       onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
-                      style={{ 
-                        padding: "16px 20px", 
-                        cursor: "pointer", 
+                      style={{
+                        padding: "16px 20px",
+                        cursor: "pointer",
                         borderRadius: "10px",
-                        border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)", 
+                        border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)",
                         transition: "all 0.2s ease",
                         backgroundColor: selectedTicket?.id === ticket.id ? "#eff6ff" : "var(--card-bg)"
                       }}
@@ -1771,8 +1791,8 @@ export default function InternDashboard() {
                           <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
                             <Clock size={14} /> {ticket.date}
                           </span>
-                          <span className="badge" style={{ 
-                            backgroundColor: ticket.status === "Resolved" ? "#dcfce7" : ticket.status === "Pending" ? "#eff6ff" : "#fef3c7", 
+                          <span className="badge" style={{
+                            backgroundColor: ticket.status === "Resolved" ? "#dcfce7" : ticket.status === "Pending" ? "#eff6ff" : "#fef3c7",
                             color: ticket.status === "Resolved" ? "#15803d" : ticket.status === "Pending" ? "#1d4ed8" : "#b45309",
                             padding: "4px 12px",
                             borderRadius: "20px",
@@ -1783,7 +1803,7 @@ export default function InternDashboard() {
                           </span>
                         </div>
                       </div>
-                      
+
                       {selectedTicket?.id === ticket.id && (
                         <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
                           <div>
@@ -1818,10 +1838,10 @@ export default function InternDashboard() {
 
             {/* Chat Body */}
             <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", position: "relative" }}>
-              
+
               {/* Generative Background Image Overlay */}
-              <div style={{ 
-                position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+              <div style={{
+                position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
                 pointerEvents: "none", zIndex: 1, opacity: 0.6,
                 backgroundImage: (() => {
                   const domain = (internDomain || "").toLowerCase();
@@ -1835,15 +1855,15 @@ export default function InternDashboard() {
 
               {chatMessages.map((msg, i) => (
                 <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px", zIndex: 2 }}>
-                  <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
-                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
-                    padding: "10px 14px 22px 14px", 
-                    borderRadius: "12px", 
+                  <div style={{
+                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)",
+                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)",
+                    padding: "10px 14px 22px 14px",
+                    borderRadius: "12px",
                     borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
                     borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
-                    fontSize: "14px", 
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
+                    fontSize: "14px",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                     wordBreak: "break-word",
                     border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
@@ -1858,12 +1878,12 @@ export default function InternDashboard() {
 
             {/* Input Area */}
             <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--card-bg)", margin: 0, borderTop: "1px solid var(--border-color)" }}>
-              <input 
-                type="text" 
-                placeholder="Type your message..." 
-                value={inputMsg} 
-                onChange={(e) => setInputMsg(e.target.value)} 
-                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
+              <input
+                type="text"
+                placeholder="Type your message..."
+                value={inputMsg}
+                onChange={(e) => setInputMsg(e.target.value)}
+                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }}
               />
               <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--primary-darker)"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "var(--primary-dark)"}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -1875,12 +1895,12 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} domainName={dashboardData?.domain?.name || 'Frontend'} />;
+        return <DailyScenario onBackToDashboard={() => { setActiveTab("Overview"); fetchDashboard(); }} domainName={dashboardData?.domain?.name || 'Frontend'} />;
 
       case "Bonus Airdrops":
         const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
         const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
-        
+
         // Motivational quotes for Airdrops
         const quotes = [
           "Success is where preparation and opportunity meet.",
@@ -1914,15 +1934,15 @@ export default function InternDashboard() {
                   Expect the <span style={{ color: "#1e3a8a" }}>Unexpected.</span>
                 </h2>
               </div>
-              
+
               <p style={{ margin: 0, fontSize: "13px", color: "var(--text-primary, #1e293b)", lineHeight: "1.4", flex: 1, fontWeight: 500, borderLeft: "1px solid rgba(255,255,255,0.4)", paddingLeft: "20px" }}>
                 Airdrops are spontaneous challenges. Showcase your mastery and skyrocket your score!
               </p>
 
-              <div style={{ 
-                background: "rgba(255,255,255,0.3)", 
-                padding: "6px 12px", 
-                borderRadius: "8px", 
+              <div style={{
+                background: "rgba(255,255,255,0.3)",
+                padding: "6px 12px",
+                borderRadius: "8px",
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
@@ -1937,15 +1957,15 @@ export default function InternDashboard() {
             </div>
 
             <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-              <button 
-                className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`} 
+              <button
+                className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => setAirdropTab("Active")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Active Airdrops ({activeDrops.length})
               </button>
-              <button 
-                className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`} 
+              <button
+                className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => setAirdropTab("Completed")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
@@ -1962,10 +1982,10 @@ export default function InternDashboard() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {activeDrops.map(drop => (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--card-bg)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
+                      <div key={drop.id} style={{
+                        backgroundColor: "var(--card-bg)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "8px",
                         padding: "16px",
                         display: "flex",
                         justifyContent: "space-between",
@@ -1983,17 +2003,17 @@ export default function InternDashboard() {
                           </div>
                           <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
                         </div>
-                        
+
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <button 
+                          <button
                             onClick={() => handleStartAirdrop(drop)}
-                            style={{ 
-                              backgroundColor: "#ec4899", 
-                              color: "#fff", 
-                              border: "none", 
-                              padding: "8px 16px", 
-                              borderRadius: "6px", 
-                              fontWeight: 600, 
+                            style={{
+                              backgroundColor: "#ec4899",
+                              color: "#fff",
+                              border: "none",
+                              padding: "8px 16px",
+                              borderRadius: "6px",
+                              fontWeight: 600,
                               fontSize: "13px",
                               cursor: "pointer",
                               boxShadow: "0 2px 4px rgba(236, 72, 153, 0.2)"
@@ -2018,10 +2038,10 @@ export default function InternDashboard() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {completedDrops.map(drop => (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--bg-gray-lighter)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
+                      <div key={drop.id} style={{
+                        backgroundColor: "var(--bg-gray-lighter)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "8px",
                         padding: "16px",
                         display: "flex",
                         justifyContent: "space-between",
@@ -2035,7 +2055,7 @@ export default function InternDashboard() {
                           </div>
                           <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
                         </div>
-                        
+
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
                           <div style={{ backgroundColor: "var(--border-color, #e2e8f0)", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
                             <Check size={14} /> Challenge Ended
@@ -2097,7 +2117,7 @@ export default function InternDashboard() {
 
               {/* Main Grid: Certificate & Actions */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "24px", flexGrow: 1, minHeight: 0 }}>
-                
+
                 {/* Certificate Render */}
                 <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "20px", padding: "20px 24px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
@@ -2172,7 +2192,7 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "20px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)" }}>
                     <h4 style={{ margin: "0 0 16px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Share & Download</h4>
-                    
+
                     <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={() => alert("Downloading Official Certificate PDF...")}>
                       <Download size={16} /> Download PDF
                     </button>
@@ -2193,7 +2213,7 @@ export default function InternDashboard() {
 
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "hidden", paddingRight: "8px" }}>
-            
+
 
             {/* Top 4 Metrics Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
@@ -2256,7 +2276,7 @@ export default function InternDashboard() {
 
             {/* Middle Grid (3-Column) */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
-              
+
               {/* Column 1: Learning Progress Curve */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
@@ -2272,7 +2292,7 @@ export default function InternDashboard() {
                     const maxDays = 30;
                     const sortedSubs = [...recentSubmissions].sort((a, b) => a.question_id - b.question_id);
                     let points = [];
-                    
+
                     if (sortedSubs.length === 0) {
                       points = [{ x: 0, y: 180, label: "Day 1", value: 0 }];
                     } else {
@@ -2288,9 +2308,9 @@ export default function InternDashboard() {
                     }
 
                     const pointsString = points.map(p => `${p.x},${p.y}`).join(" ");
-                    const polygonPoints = `0,200 ${pointsString} ${points[points.length-1].x},200 0,200`;
+                    const polygonPoints = `0,200 ${pointsString} ${points[points.length - 1].x},200 0,200`;
                     const pathString = `M${points.map(p => `${p.x},${p.y}`).join(" L")}`;
-                    
+
                     return (
                       <>
                         <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
@@ -2308,22 +2328,22 @@ export default function InternDashboard() {
 
                           {points.length > 0 && <polygon points={polygonPoints} fill="url(#progressGradFull)" />}
                           {points.length > 0 && <path d={pathString} stroke="#2563eb" strokeWidth="3" fill="none" />}
-                          
+
                           {points.map((p, i) => (
                             <circle key={i} cx={p.x} cy={p.y} r={i === points.length - 1 ? 8 : 5} fill="#2563eb" stroke={i === points.length - 1 ? "var(--bg-surface, #ffffff)" : "none"} strokeWidth={i === points.length - 1 ? 3 : 0} />
                           ))}
                         </svg>
-                        
+
                         {points.length > 0 && (
-                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length-1].y - 50)}px`, left: `calc(${(points[points.length-1].x / 600) * 100}% - 40px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
-                            <div style={{ marginBottom: "2px" }}>{points[points.length-1].label}</div>
-                            <div style={{ fontSize: "1rem" }}>{points[points.length-1].value}% Score</div>
+                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length - 1].y - 50)}px`, left: `calc(${(points[points.length - 1].x / 600) * 100}% - 40px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
+                            <div style={{ marginBottom: "2px" }}>{points[points.length - 1].label}</div>
+                            <div style={{ fontSize: "1rem" }}>{points[points.length - 1].value}% Score</div>
                           </div>
                         )}
                       </>
                     );
                   })()}
-                  
+
                   {/* Y-axis labels */}
                   <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
                     <span>100%</span>
@@ -2376,7 +2396,7 @@ export default function InternDashboard() {
               {/* Column 3: Performance Overview Donut */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <h3 style={{ margin: "0 0 16px 0", fontSize: "1.1rem", color: "var(--text-dark, #0f172a)" }}>Performance Overview</h3>
-                
+
                 <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
                     <circle cx="80" cy="80" r="70" fill="none" stroke="#f1f5f9" strokeWidth="16" />
@@ -2402,7 +2422,7 @@ export default function InternDashboard() {
                     <strong style={{ fontSize: "1rem" }}>90</strong>
                   </div>
                 </div>
-                
+
                 <div style={{ marginTop: "24px", padding: "12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
                   <TrendingUp size={20} color="#16a34a" />
                   <p style={{ margin: 0, fontSize: "0.85rem", color: "#166534", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
@@ -2412,7 +2432,7 @@ export default function InternDashboard() {
 
             {/* Bottom Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr 1fr", gap: "12px", minHeight: 0, flex: 1 }}>
-              
+
               {/* Day-wise Progress */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
@@ -2432,8 +2452,8 @@ export default function InternDashboard() {
                     { day: 14, title: "Deployment", locked: true },
                     { day: 15, title: "Testing", locked: true },
                   ].map(d => (
-                    <div key={d.day} style={{ 
-                      flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
+                    <div key={d.day} style={{
+                      flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px",
                       border: d.active ? "2px solid #2563eb" : (d.complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
                       background: d.locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
                       position: "relative"
@@ -2441,7 +2461,7 @@ export default function InternDashboard() {
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
                         <span style={{ fontSize: "0.9rem", fontWeight: 700, color: d.locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {d.day}</span>
                         <span style={{ fontSize: "0.85rem", color: d.locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{d.title}</span>
-                        
+
                         {d.complete && (
                           <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
                             <CheckCircle size={18} /> 100%
@@ -2458,7 +2478,7 @@ export default function InternDashboard() {
                           </div>
                         )}
                       </div>
-                      
+
                       {/* Timeline Line */}
                       <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
                       <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
@@ -2478,7 +2498,7 @@ export default function InternDashboard() {
                   <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Achievements</h3>
                   <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All →</span>
                 </div>
-                
+
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                     <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
@@ -2524,11 +2544,11 @@ export default function InternDashboard() {
                     {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
                   </h3>
                   <p style={{ margin: "0 0 20px 0", fontSize: "0.85rem", lineHeight: "1.5", opacity: isInternshipCompleted ? 0.9 : 1 }}>
-                    {isInternshipCompleted 
-                      ? "Your official verified certificate is now available." 
+                    {isInternshipCompleted
+                      ? "Your official verified certificate is now available."
                       : "Complete all 30 days of your internship to unlock."}
                   </p>
-                  <button 
+                  <button
                     disabled={!isInternshipCompleted}
                     onClick={() => setShowCertificateView(true)}
                     style={{
@@ -2561,7 +2581,7 @@ export default function InternDashboard() {
     return (
       <div style={{ height: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", alignItems: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-          <button 
+          <button
             onClick={() => setActiveLearningTab("Reading Materials")}
             style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "#334155", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
             onMouseOver={(e) => e.currentTarget.style.color = "#2563eb"}
@@ -2571,7 +2591,7 @@ export default function InternDashboard() {
           </button>
         </div>
         <div style={{ padding: "16px 24px", flex: 1, overflow: "hidden" }}>
-           <AIClientReview />
+          <AIClientReview />
         </div>
       </div>
     );
@@ -2587,13 +2607,13 @@ export default function InternDashboard() {
   return (
     <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
-      <header style={{ 
-        height: "72px", 
-        backgroundColor: "var(--card-bg, #ffffff)", 
-        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "space-between", 
+      <header style={{
+        height: "72px",
+        backgroundColor: "var(--card-bg, #ffffff)",
+        borderBottom: "1px solid var(--border-color, #e2e8f0)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
         padding: "0 28px",
         position: "sticky",
         top: 0,
@@ -2604,10 +2624,10 @@ export default function InternDashboard() {
         <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => setActiveTab("Overview")}>
           <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 10px rgba(37, 99, 235, 0.25)" }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"/>
-              <path d="M9 12H4.5s.55-3.03 2-4.5c.78-.78 2.07-.79 2.91-.09"/>
-              <path d="M15 15v4.5s-3.03-.55-4.5-2c-.78-.78-.79-2.07-.09-2.91"/>
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z" />
+              <path d="M9 12H4.5s.55-3.03 2-4.5c.78-.78 2.07-.79 2.91-.09" />
+              <path d="M15 15v4.5s-3.03-.55-4.5-2c-.78-.78-.79-2.07-.09-2.91" />
             </svg>
           </div>
           <div>
@@ -2675,17 +2695,17 @@ export default function InternDashboard() {
               <Bell size={18} color="var(--text-muted, #64748b)" />
               <div style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%', border: "2px solid #ffffff" }}></div>
             </div>
-            
+
             {showNotifications && (
-              <div style={{ 
-                position: 'absolute', 
-                top: '100%', 
-                right: 0, 
-                marginTop: '12px', 
-                width: '300px', 
-                backgroundColor: 'var(--card-bg, #ffffff)', 
-                borderRadius: '14px', 
-                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '12px',
+                width: '300px',
+                backgroundColor: 'var(--card-bg, #ffffff)',
+                borderRadius: '14px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
                 border: '1px solid var(--border-color, #e2e8f0)',
                 zIndex: 50,
                 overflow: 'hidden'
@@ -2710,16 +2730,16 @@ export default function InternDashboard() {
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
               <img src="/assets/sadie-pfp.jpg" alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
             </div>
-            
+
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
-                <button 
+                <button
                   onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #0f172a)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
                   <User size={16} /> Profile
                 </button>
-                <button 
+                <button
                   onClick={handleLogout}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
@@ -2736,14 +2756,14 @@ export default function InternDashboard() {
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
-          <BreakoutRoomsApp 
-            isIntern={true} 
-            onLeaveMeeting={handleEndMeeting} 
+          <BreakoutRoomsApp
+            isIntern={true}
+            onLeaveMeeting={handleEndMeeting}
             onMinimize={() => setIsMeetingMinimized(true)}
             onRoomChange={(roomName) => setActiveMeetingRoom(roomName)}
           />
         </div>
-        
+
         {(!isMeetingActive || isMeetingMinimized) && (
           <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
             {renderContent()}
@@ -2753,7 +2773,7 @@ export default function InternDashboard() {
 
       {/* Floating Minimized Call Widget (Bottom Right) */}
       {isMeetingActive && isMeetingMinimized && (
-        <div 
+        <div
           style={{
             position: "fixed",
             bottom: "24px",
@@ -2775,14 +2795,14 @@ export default function InternDashboard() {
               <span style={{ fontSize: "12px", fontWeight: 700, color: "#f2f3f5" }}>LIVE • {activeMeetingRoom}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <button 
+              <button
                 onClick={() => setIsMeetingMinimized(false)}
                 style={{ background: "none", border: "none", color: "#b5bac1", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Maximize"
               >
                 ⛶
               </button>
-              <button 
+              <button
                 onClick={handleEndMeeting}
                 style={{ background: "none", border: "none", color: "#fa5252", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Leave Meeting"
@@ -2792,7 +2812,7 @@ export default function InternDashboard() {
             </div>
           </div>
 
-          <div 
+          <div
             onClick={() => setIsMeetingMinimized(false)}
             style={{ padding: "20px 16px", textAlign: "center", backgroundColor: "#111214", cursor: "pointer" }}
           >
@@ -2884,7 +2904,7 @@ export default function InternDashboard() {
               boxShadow: "0 10px 22px rgba(99, 102, 241, 0.35)"
             }}>
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L14.85 8.65L22 9.24L16.5 13.97L18.18 21L12 17.27L5.82 21L7.5 13.97L2 9.24L9.15 8.65L12 2Z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 2L14.85 8.65L22 9.24L16.5 13.97L18.18 21L12 17.27L5.82 21L7.5 13.97L2 9.24L9.15 8.65L12 2Z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <h2 style={{ fontSize: "22px", fontWeight: 800, margin: "0 0 4px 0", color: "var(--text-dark)" }}>
@@ -2958,7 +2978,7 @@ export default function InternDashboard() {
                 <Clock size={16} /> {airdropTimeLeft}s
               </div>
             </div>
-            
+
             <div style={{ padding: "20px", backgroundColor: "var(--bg-light)", borderRadius: "12px", border: "1px solid var(--border-color)", marginBottom: "24px" }}>
               <p style={{ margin: 0, fontSize: "16px", fontWeight: 500, color: "var(--text-dark)", lineHeight: 1.5 }}>
                 {activeAirdrop.question}
@@ -2967,8 +2987,8 @@ export default function InternDashboard() {
 
             <div>
               <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)", marginBottom: "8px" }}>Your Answer (Run fast!)</label>
-              <textarea 
-                rows="4" 
+              <textarea
+                rows="4"
                 value={airdropAnswer}
                 onChange={(e) => setAirdropAnswer(e.target.value)}
                 style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "2px solid var(--border-color)", backgroundColor: "var(--card-bg)", fontSize: "14px", outline: "none", resize: "none", color: "var(--text-dark)", transition: "border-color 0.2s" }}
@@ -2979,7 +2999,7 @@ export default function InternDashboard() {
               />
             </div>
 
-            <Button 
+            <Button
               variant="primary"
               onClick={handleSubmitAirdrop}
               style={{ width: "100%", marginTop: "24px", padding: "16px", borderRadius: "12px", fontSize: "16px" }}

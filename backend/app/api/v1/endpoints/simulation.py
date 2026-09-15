@@ -199,6 +199,7 @@ def get_current_simulation(
                 "question": scenario.question_text if scenario else "",
                 "choices": [],
                 "completed": True,
+                "completed_days": sorted(list(completed_sim_days)),
                 "decisionResult": {
                     "score": last_action.get("score", 0),
                     "consequence": last_action.get("consequence", ""),
@@ -253,7 +254,8 @@ def get_current_simulation(
         "situation": scenario.scenario_text,
         "question": scenario.question_text or "What is your decision?",
         "choices": choices,
-        "completed": state.get("day_completed", False)
+        "completed": state.get("day_completed", False),
+        "completed_days": sorted(list(completed_sim_days))
     }
 
 

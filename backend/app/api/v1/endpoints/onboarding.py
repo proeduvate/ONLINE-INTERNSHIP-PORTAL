@@ -12,15 +12,113 @@ router = APIRouter(
 
 @router.post("/apply", status_code=status.HTTP_201_CREATED)
 def apply_for_onboarding(application: dict, db: Session = Depends(get_db)):
-    # Mock implementation
-    return {"message": "Application submitted successfully", "application_id": "APP-99999"}
+    # Basic real implementation for apply if it wasn't already connected
+    new_app = models.OnboardingApplication(
+        name=application.get("name", "Unknown"),
+        email=application.get("email", ""),
+        phone=application.get("phone", ""),
+        college=application.get("college", ""),
+        department=application.get("department", ""),
+        domain=application.get("domain", ""),
+        resume_url=application.get("resume_url", ""),
+        github_repo_url=application.get("github_repo_url", ""),
+        status="PENDING_REVIEW"
+    )
+    db.add(new_app)
+    db.commit()
+    db.refresh(new_app)
+    return {"message": "Application submitted successfully", "application_id": str(new_app.id)}
 
 @router.get("/status")
 def get_application_status(db: Session = Depends(get_db)):
-    # Mock status
+    # Ideally should use current user, for now returning pending
     return {"status": "PENDING_REVIEW"}
 
 @router.get("/domains")
 def get_domains(db: Session = Depends(get_db)):
     domains = db.query(models.Domain).all()
     return domains
+
+@router.get("/applications")
+def get_applications(db: Session = Depends(get_db)):
+    apps = db.query(models.OnboardingApplication).all()
+    return apps
+
+@router.get("/applications/{id}")
+def get_application_by_id(id: int, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    return app
+
+@router.post("/applications/{id}/status")
+def update_application_status(id: int, payload: dict, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    new_status = payload.get("status")
+    if new_status:
+        app.status = new_status
+        db.commit()
+        db.refresh(app)
+    return app
+
+@router.post("/{id}/interview")
+def schedule_interview(id: int, payload: dict, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "INTERVIEW_SCHEDULED"
+    db.commit()
+    db.refresh(app)
+    return app
+
+@router.post("/{id}/interview/result")
+def submit_interview_result(id: int, payload: dict, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "INTERVIEW_PASSED" if payload.get("passed", True) else "INTERVIEW_FAILED"
+    db.commit()
+    db.refresh(app)
+    return app
+
+@router.post("/{id}/payment/verify")
+def verify_payment(id: int, payload: dict, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "PAYMENT_VERIFIED" if payload.get("verified", True) else "PAYMENT_REJECTED"
+    db.commit()
+    db.refresh(app)
+    return app
+
+@router.post("/{id}/generate-documents")
+def generate_documents(id: int, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "DOCUMENTS_GENERATED"
+    db.commit()
+    db.refresh(app)
+    return app
+
+@router.post("/{id}/assign-mentor")
+def assign_mentor(id: int, payload: dict, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "MENTOR_ASSIGNED"
+    db.commit()
+    db.refresh(app)
+    return app
+
+@router.post("/{id}/create-account")
+def create_account(id: int, db: Session = Depends(get_db)):
+    app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = "ACCOUNT_CREATED"
+    db.commit()
+    db.refresh(app)
+    return app

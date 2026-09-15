@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import api from '../../api/axios';
 import { Trophy, Medal, Award } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -9,43 +10,52 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
   const [timeFilter, setTimeFilter] = useState('All-Time');
   const [batchFilter, setBatchFilter] = useState('All Batches');
   const [currentPage, setCurrentPage] = useState(1);
+  const [rawLeaderboard, setRawLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [timeFilter, batchFilter]);
 
-  const interns = usersList.filter(user => user.role === 'Intern');
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/leaderboard').catch(err => { console.error('Failed to fetch leaderboard:', err); return { data: [] }; });
+        setRawLeaderboard(res.data);
+      } catch (err) {
+        console.error("Failed to fetch leaderboard", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLeaderboard();
+  }, []);
+
+  const interns = usersList.filter(user => user.role && user.role.toLowerCase() === 'intern');
 
   const batches = useMemo(() => {
     const uniqueBatches = new Set(interns.map(i => i.batch || i.college).filter(Boolean));
     return ['All Batches', ...Array.from(uniqueBatches)];
   }, [interns]);
 
-  // Generate mock leaderboard data
   const leaderboardData = useMemo(() => {
-    let filteredInterns = interns;
-    if (batchFilter !== 'All Batches') {
-      filteredInterns = filteredInterns.filter(i => (i.batch || i.college) === batchFilter);
-    }
-
-    let data = filteredInterns.map(intern => {
-      // Generate some dummy points based on ID
-      let seed = 0;
-      for (let i = 0; i < intern.id.length; i++) {
-        seed += intern.id.charCodeAt(i);
-      }
-      
-      let basePoints = (seed % 100) * 10; 
-      
-      // Adjust based on time
-      if (timeFilter === 'Weekly') basePoints = Math.floor(basePoints / 4);
-      if (timeFilter === 'Monthly') basePoints = Math.floor(basePoints / 2);
-      
+    let data = rawLeaderboard.map(item => {
+      const userId = item.intern_id || item.user_id || item.id;
+      const trueUser = usersList.find(u => String(u.id) === String(userId)) || {};
       return {
-        ...intern,
-        totalPoints: basePoints + (seed % 50)
+        ...item,
+        id: item.intern_str_id || userId,
+        name: trueUser.full_name || trueUser.name || item.user_name || item.name || "Unknown Intern",
+        college: trueUser.college || item.batch_name || item.batch || item.college || "N/A",
+        domain: trueUser.domain || item.domain || "N/A",
+        totalPoints: item.total_points !== undefined ? item.total_points : (item.totalPoints || 0)
       };
     });
+
+    if (batchFilter !== 'All Batches') {
+      data = data.filter(i => (i.batch || i.college) === batchFilter);
+    }
 
     // Sort by points descending
     data.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -55,7 +65,7 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
       ...item,
       rank: index + 1
     }));
-  }, [interns, timeFilter, batchFilter]);
+  }, [rawLeaderboard, batchFilter]);
 
   const itemsPerPage = isOverview ? 5 : 15;
   const totalPages = Math.ceil(leaderboardData.length / itemsPerPage);
@@ -70,7 +80,7 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
   };
 
   return (
-    <div style={isOverview ? { height: '100%', boxSizing: 'border-box' } : { padding: '0px 20px 20px 20px', height: 'calc(100vh - 80px)', boxSizing: 'border-box' }}>
+    <div style={isOverview ? { height: '100%', boxSizing: 'border-box', minHeight: '300px' } : { padding: '0px 20px 20px 20px', height: 'calc(100vh - 80px)', boxSizing: 'border-box' }}>
       <div style={isOverview ? { display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' } : { backgroundColor: '#fff', borderRadius: '8px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', height: '100%' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '16px', flexShrink: 0 }}>

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ArrowLeft, Clock, Calendar, Award, CheckCircle, Target, Users, Zap, Gift, ListOrdered, CheckCircle2, Trophy, Medal } from 'lucide-react';
 
 export default function AdminAirdropDetails({ airdrop, onBack }) {
