@@ -1,25 +1,20 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { API_BASE } from '../api';
+import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
+    const [authToken, setAuthToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    const response = await fetch(`${API_BASE}/profile`, {
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`
-                        }
-                    });
-                    if (response.ok) {
-                        const userData = await response.json();
-                        setUser(userData);
+                    const response = await api.get('/profile');
+                    if (response.status === 200) {
+                        setUser(response.data);
                     } else {
                         console.error('Failed to fetch user data with token, logging out.');
                         logout();
@@ -38,36 +33,28 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Login failed');
-            }
-
-            const data = await response.json();
-            localStorage.setItem('authToken', data.access_token);
+            const response = await api.post('/login', { email, password });
+            const data = response.data;
+            
+            localStorage.setItem('token', data.access_token);
             localStorage.setItem('role', data.role);
             setAuthToken(data.access_token);
+            
             const userData = { role: data.role, name: data.name, email: data.email };
             setUser(userData);
             return userData;
+        } catch (error) {
+            throw new Error(error.response?.data?.detail || 'Login failed');
         } finally {
             setLoading(false);
         }
     };
 
     const logout = () => {
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
         setAuthToken(null);
         setUser(null);
-        // Optionally redirect to login page or home
     };
 
     return (

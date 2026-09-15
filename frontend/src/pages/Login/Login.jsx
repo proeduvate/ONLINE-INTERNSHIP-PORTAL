@@ -3,56 +3,32 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent } from "../../components/ui/Card";
-import "./Login.css";export default function Login() {
+import { useAuth } from "../../services/AuthContext";
+import "./Login.css";
+
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!email) {
-      setErrorMessage("Please enter your email address.");
-      return;
-    }
-    if (!password) {
-      setErrorMessage("Please enter your password.");
+    if (!email || !password) {
+      setErrorMessage("Please enter your email and password.");
       return;
     }
 
-    // Basic email format check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorMessage("Please enter a valid email address.");
-      return;
-    }
-
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
-      }
-    }
-
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+    try {
+      const userData = await login(email, password);
+      navigate(`/${userData.role}`);
+    } catch (error) {
+      setErrorMessage(error.message || "Invalid email or password.");
     }
   };
 

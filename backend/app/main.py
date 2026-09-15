@@ -122,6 +122,7 @@ from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
 from app.api.v1.endpoints.mcq import router as mcq_router
 from app.api.v1.endpoints.questions import router as questions_router
+from app.api.v1.endpoints.tasks import router as tasks_router
 
 # Initialize analytics DB
 from app.db.analytics_session import engine as analytics_engine
@@ -136,6 +137,7 @@ app.include_router(facts_router)
 app.include_router(simulation_router)
 app.include_router(mcq_router)
 app.include_router(questions_router, tags=["questions"])
+app.include_router(tasks_router)
 
 
 # ==========================================

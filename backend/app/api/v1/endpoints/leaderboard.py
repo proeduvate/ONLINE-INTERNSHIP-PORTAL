@@ -78,18 +78,17 @@ def get_leaderboard(
     # Format response with ranks
     response = []
     for rank, row in enumerate(results, start=1):
-        # We can optimize to not return 0 point users, or return all. The original returned joined ones.
-        # If we only want to show users with points:
-        if row["total_points"] > 0:
-            response.append(
-                schemas_leaderboard.LeaderboardEntry(
-                    rank=len(response) + 1,
-                    user_id=row["user_id"],
-                    user_name=row["user_name"],
-                    batch=row["batch_name"],
-                    domain=row["domain"],
-                    total_points=row["total_points"]
-                )
+        if len(response) >= 50:
+            break
+        response.append(
+            schemas_leaderboard.LeaderboardEntry(
+                rank=len(response) + 1,
+                user_id=row["user_id"],
+                user_name=row["user_name"],
+                batch=row["batch_name"],
+                domain=row["domain"],
+                total_points=row["total_points"]
             )
+        )
 
     return response

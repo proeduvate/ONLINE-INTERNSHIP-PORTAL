@@ -3,13 +3,10 @@ import { Check, CircleDot, Circle } from 'lucide-react';
 import '../../styles/Dashboard.css';
 import { scenarioData } from './DailyScenario';
 
-const DailyScenarioCalendar = ({ onStartScenario }) => {
+const DailyScenarioCalendar = ({ onStartScenario, currentDay = 5, attendedDays = [1, 4, 6, 8, 9] }) => {
   const [selectedDay, setSelectedDay] = useState(null);
 
-  // Explicit mock data to keep the scenario fixed and consistent
-  const currentDay = 5;
-  const attendedDays = [1, 4, 6, 8, 9];
-  const missedDays = [2, 3, 7, 10]; // Day 3 added explicitly
+  const missedDays = Array.from({ length: currentDay - 1 }, (_, i) => i + 1).filter(d => !attendedDays.includes(d));
 
   const getDayStatus = (day) => {
     if (day === currentDay) return 'current';
@@ -35,7 +32,11 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
           const iconColor = status === "completed" ? "#16a34a" : (status === "missed" ? "#94a3b8" : (status === "current" ? "#d97706" : "#cbd5e1"));
           
           return (
-            <div key={day} style={{ background: bg, border: `1px solid ${borderColor}`, borderRadius: "4px", padding: "14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px" }}>
+            <div 
+              key={day} 
+              style={{ background: bg, border: `1px solid ${borderColor}`, borderRadius: "4px", padding: "14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px", cursor: "pointer", transition: "transform 0.1s" }}
+              onClick={() => onStartScenario && onStartScenario(day)}
+            >
               <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{day}</span>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor }}>
                 {status === "completed" && <Check size={8} strokeWidth={4} />}

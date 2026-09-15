@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./services/AuthContext";
 import LandingPage from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import InternDashboard from "./pages/Dashboard/InternDashboard";
@@ -17,8 +18,9 @@ import { GlobalHeader } from "./components/layout/GlobalHeader";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app-monolithic-wrapper">
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="app-monolithic-wrapper">
         <GlobalHeader />
         <main className="app-main-content">
           <Routes>
@@ -87,7 +89,8 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

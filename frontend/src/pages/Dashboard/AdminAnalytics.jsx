@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import api from '../../api/axios';
 
 export default function AdminAnalytics({ usersList }) {
   const interns = usersList.filter(user => user.role === 'Intern');
@@ -25,35 +26,28 @@ export default function AdminAnalytics({ usersList }) {
     }
   }, [filteredInterns, selectedInternId]);
 
-  // Generate some dummy timeseries data based on the intern ID
-  const chartData = useMemo(() => {
-    if (!selectedInternId) return [];
-    
-    // Seed for pseudo-random data based on ID to keep it consistent
-    let seed = 0;
-    for (let i = 0; i < selectedInternId.length; i++) {
-      seed += selectedInternId.charCodeAt(i);
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    if (!selectedInternId) {
+      setChartData([]);
+      return;
     }
-    
-    const data = [];
-    const startDate = new Date('2026-08-20');
-    for (let i = 0; i < 10; i++) {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-      const dateString = date.toISOString().split('T')[0];
-      
-      const codingScore = 60 + Math.sin(seed + i) * 20;
-      const finalScore = 65 + Math.cos(seed + i * 1.5) * 25;
-      const mcqScore = 70 + Math.sin(seed + i * 0.8) * 15;
-      
-      data.push({
-        date: dateString,
-        CodingScore: Math.round(codingScore),
-        FinalScore: Math.round(finalScore),
-        MCQScore: Math.round(mcqScore)
+    api.get(`/analytics/daily-questions/intern/${selectedInternId}`)
+      .then(res => {
+        // Map the backend data to match what the chart expects (date, CodingScore, FinalScore, MCQScore)
+        const mappedData = res.data.map(item => ({
+          date: item.date,
+          CodingScore: item.coding_score,
+          MCQScore: item.mcq_score,
+          FinalScore: item.final_score
+        }));
+        setChartData(mappedData);
+      })
+      .catch(err => {
+        console.error("Failed to fetch analytics data", err);
+        setChartData([]);
       });
-    }
-    return data;
   }, [selectedInternId]);
 
   return (

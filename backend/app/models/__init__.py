@@ -52,6 +52,10 @@ class User(Base):
     last_task_completion_date = Column(DateTime, nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
 
+    @property
+    def domain_name(self):
+        return self.domain.name if self.domain else None
+
     # Relationships
     applications = relationship("Application", back_populates="applicant")
     domain = relationship("Domain", back_populates="users")

@@ -52,6 +52,7 @@ class UserResponse(BaseModel):
     github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
+    domain_name: Optional[str] = None
     mentor_id: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight } from "lucide-react";
@@ -150,13 +151,39 @@ export default function MentorDashboard() {
   };
 
   // State Mock Data
-  const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
-  ]);
+  const [assignedInterns, setAssignedInterns] = useState([]);
+  const [loadingInterns, setLoadingInterns] = useState(true);
+
+  useEffect(() => {
+    const fetchInterns = async () => {
+      try {
+        const response = await api.get('/users?role=intern');
+        if (response.data && response.data.length > 0) {
+          setAssignedInterns(response.data.map((user, idx) => ({
+            id: `INT00${idx+1}`,
+            db_id: user.id,
+            name: user.name || user.email.split('@')[0],
+            progress: "0%", 
+            attendance: "N/A", 
+            score: "N/A", 
+            weakAreas: "N/A", 
+            batch: "N/A"
+          })));
+        } else {
+          // Fallback to mock data if no interns assigned
+          setAssignedInterns([
+            { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
+            { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" }
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch interns:", error);
+      } finally {
+        setLoadingInterns(false);
+      }
+    };
+    fetchInterns();
+  }, []);
 
   const [selectedBatch, setSelectedBatch] = useState("Harvard");
 

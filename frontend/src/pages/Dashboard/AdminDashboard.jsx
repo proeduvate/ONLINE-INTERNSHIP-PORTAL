@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User } from "lucide-react";
@@ -49,80 +50,56 @@ export default function AdminDashboard() {
   };
 
   // State Mock Data
-  // State Mock Data
-  const [usersList, setUsersList] = useState([
-    // Mentors
-    { id: "MNT101", name: "Dr. Sakthi", role: "Mentor", college: "-", domain: "AI/DS/Cyber", mentor: "-", progress: "-", attendance: "98%", status: "Active" },
-    { id: "MNT102", name: "Dr. Alice", role: "Mentor", college: "-", domain: "Web Development", mentor: "-", progress: "-", attendance: "95%", status: "Active" },
+  const [usersList, setUsersList] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get('/users');
+        if (response.data && response.data.length > 0) {
+          setUsersList(response.data.map((user, idx) => ({
+            mentor: user.mentor_id ? "Assigned" : "Unassigned",
+            progress: "0%", 
+            attendance: "N/A", 
+            status: "Active"
+          })));
+        } else {
+          // Fallback
+          setUsersList([
+            { id: "MNT101", name: "Dr. Sakthi", role: "Mentor", college: "-", domain: "AI/DS/Cyber", mentor: "-", progress: "-", attendance: "98%", status: "Active" },
+            { id: "INT001", name: "John Doe", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
     
-    // Batch MIT (12 interns)
-    { id: "INT001", name: "John Doe", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT004", name: "Emily Watson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "45%", attendance: "92%", status: "Active" },
-    { id: "INT005", name: "Michael Chang", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "88%", status: "Active" },
-    { id: "INT006", name: "Sarah Connor", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT007", name: "David Miller", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT008", name: "Jessica Taylor", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "91%", status: "Active" },
-    { id: "INT009", name: "Daniel Anderson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "30%", attendance: "85%", status: "Active" },
-    { id: "INT010", name: "Sophia Martinez", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT011", name: "James Wilson", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "87%", status: "Active" },
-    { id: "INT012", name: "Isabella Thomas", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT013", name: "Robert Jackson", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT014", name: "Mia White", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
+    const fetchTasks = async () => {
+      try {
+        const response = await api.get('/tasks');
+        if (response.data) {
+          const mappedTasks = response.data.map(t => ({
+            id: t.id,
+            title: t.title,
+            difficulty: t.difficulty || "Medium",
+            deadline: `${t.deadline_days} Days`,
+            domain: "General", 
+            status: "Active"
+          }));
+          setTasks(mappedTasks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch tasks", err);
+      }
+    };
 
-    // Batch Stanford (11 interns)
-    { id: "INT002", name: "Raj Patel", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "90%", status: "Active" },
-    { id: "INT015", name: "William Davies", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT016", name: "Olivia Johnson", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "91%", status: "Active" },
-    { id: "INT017", name: "Liam Smith", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "50%", attendance: "89%", status: "Active" },
-    { id: "INT018", name: "Emma Jones", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "97%", status: "Active" },
-    { id: "INT019", name: "Noah Brown", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "86%", status: "Active" },
-    { id: "INT020", name: "Ava Miller", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT021", name: "Lucas Garcia", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "92%", status: "Active" },
-    { id: "INT022", name: "Sophia Rodriguez", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT023", name: "Mason Martinez", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT024", name: "Charlotte Hernandez", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "80%", attendance: "96%", status: "Active" },
-
-    // Batch IIT (11 interns)
-    { id: "INT003", name: "Anu Sharma", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "88%", status: "Active" },
-    { id: "INT025", name: "Rahul Verma", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "50%", attendance: "92%", status: "Active" },
-    { id: "INT026", name: "Priya Patel", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT027", name: "Amit Singh", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "60%", attendance: "90%", status: "Active" },
-    { id: "INT028", name: "Neha Gupta", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "70%", attendance: "93%", status: "Active" },
-    { id: "INT029", name: "Vikram Reddy", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "45%", attendance: "87%", status: "Active" },
-    { id: "INT030", name: "Anjali Das", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT031", name: "Rohan Bose", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "35%", attendance: "85%", status: "Active" },
-    { id: "INT032", name: "Shreya Ghoshal", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT033", name: "Aditya Roy", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "65%", attendance: "91%", status: "Active" },
-    { id: "INT034", name: "Riya Sen", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "94%", status: "Active" },
-
-    // Batch Harvard (12 interns)
-    { id: "INT035", name: "Ethan Hunt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT036", name: "Grace Kelly", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT037", name: "Jack Reacher", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT038", name: "Julia Roberts", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "98%", status: "Active" },
-    { id: "INT039", name: "Tom Cruise", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT040", name: "Brad Pitt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT041", name: "Angelina Jolie", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT042", name: "Leonardo DiCaprio", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT043", name: "Kate Winslet", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT044", name: "Johnny Depp", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "88%", status: "Active" },
-    { id: "INT045", name: "Natalie Portman", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "97%", status: "Active" },
-    { id: "INT046", name: "Matt Damon", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "45%", attendance: "89%", status: "Active" },
-
-    // Batch Berkeley (12 interns)
-    { id: "INT047", name: "Harry Potter", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT048", name: "Hermione Granger", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "100%", attendance: "100%", status: "Active" },
-    { id: "INT049", name: "Ron Weasley", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT050", name: "Albus Dumbledore", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT051", name: "Severus Snape", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "85%", attendance: "95%", status: "Active" },
-    { id: "INT052", name: "Draco Malfoy", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT053", name: "Luna Lovegood", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "75%", attendance: "94%", status: "Active" },
-    { id: "INT054", name: "Neville Longbottom", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "89%", status: "Active" },
-    { id: "INT055", name: "Rubeus Hagrid", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "50%", attendance: "87%", status: "Active" },
-    { id: "INT056", name: "Ginny Weasley", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT057", name: "Sirius Black", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT058", name: "Remus Lupin", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "90%", status: "Active" },
-  ]);
+    fetchUsers();
+    fetchTasks();
+  }, []);
 
   const [domainsList, setDomainsList] = useState([
     { name: "Frontend", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
@@ -279,20 +256,33 @@ export default function AdminDashboard() {
     setShowMentorModal(false);
   };
 
-  const handleCreateTask = (e) => {
+  const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTask.title) return alert("Please specify task title.");
-    const created = {
-      id: tasks.length + 1,
-      title: newTask.title,
-      difficulty: newTask.difficulty,
-      deadline: newTask.deadline || "TBD",
-      domain: selectedProgramDomain || newTask.domain || "General",
-      status: "Active"
-    };
-    setTasks([...tasks, created]);
-    alert("New task created and assigned successfully!");
-    setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+    try {
+      const res = await api.post('/tasks', {
+        title: newTask.title,
+        description: newTask.description || "Task description",
+        difficulty: newTask.difficulty,
+        deadline_days: 7, // using a default
+        domain_name: selectedProgramDomain || newTask.domain || "Web Development",
+        day_number: tasks.length + 1
+      });
+      const created = {
+        id: res.data.id,
+        title: res.data.title,
+        difficulty: res.data.difficulty || "Medium",
+        deadline: `${res.data.deadline_days} Days`,
+        domain: selectedProgramDomain || newTask.domain || "Web Development",
+        status: "Active"
+      };
+      setTasks([...tasks, created]);
+      alert("New task created and assigned successfully!");
+      setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create task: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   const handleUploadCurriculum = (e) => {

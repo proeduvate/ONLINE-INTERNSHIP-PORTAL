@@ -5,13 +5,16 @@ import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
+import AIClientReview from "./AIClientReview";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
-import AIClientReview from "./AIClientReview";
+import api from "../../api/axios";
+import { useAuth } from "../../services/AuthContext";
 export default function InternDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
@@ -19,15 +22,115 @@ export default function InternDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isInternshipCompleted, setIsInternshipCompleted] = useState(false);
+  const [internDomain, setInternDomain] = useState("Loading...");
   const [showCertificateView, setShowCertificateView] = useState(false);
-  const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("UI/UX");
+  // Real Data States
+  const [dashboardData, setDashboardData] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [recentSubmissions, setRecentSubmissions] = useState([]);
+  const [domainFact, setDomainFact] = useState(null);
 
-  const mockNotifications = [
-    { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
-    { id: 2, text: "Mentor replied to your ticket", time: "5 hours ago" },
-    { id: 3, text: "New bonus airdrop available", time: "1 day ago" }
-  ];
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const [profileRes, leaderboardRes, tasksRes, ticketsRes, factRes] = await Promise.all([
+          api.get('/profile'),
+          api.get('/leaderboard').catch(() => ({ data: [] })),
+          api.get('/tasks').catch(() => ({ data: [] })),
+          api.get('/tickets').catch(() => ({ data: [] })),
+          api.get('/facts').catch(() => ({ data: null }))
+        ]);
+        setDashboardData(profileRes.data);
+        setInternDomain(profileRes.data.domain_name || "Unassigned");
+        setLeaderboardData(leaderboardRes.data || []);
+        setDomainFact(factRes.data || null);
+        let calculatedDay = 1;
+        try {
+          const subsRes = await api.get(`/analytics/daily-questions/intern/${profileRes.data.id}`);
+          const submissions = subsRes.data || [];
+          setRecentSubmissions(submissions);
+          if (submissions.length > 0) {
+            calculatedDay = submissions.length + 1;
+          }
+        } catch (e) {
+          console.warn("Could not fetch recent submissions", e);
+        }
+        
+        setCurrentDay(calculatedDay);
+
+        try {
+          const mcqRes = await api.get(`/mcq/day/${calculatedDay}/result`);
+          if (mcqRes.data && mcqRes.data.status === "submitted") {
+            setMcqDone(true);
+            setMcqGrade(mcqRes.data.percentage);
+          } else {
+            setMcqDone(false);
+          }
+        } catch (e) {
+          setMcqDone(false);
+        }
+        
+        // Transform task data to match curriculumData shape if needed
+        const fetchedTasks = tasksRes.data.map(task => ({
+            id: task.id,
+            day: task.day_number,
+            topic: task.title,
+            desc: task.description,
+            notes: task.document_url || "N/A"
+        }));
+        
+        // Keep a fallback just in case no tasks exist
+        setCurriculumData(fetchedTasks.length ? fetchedTasks : [
+          { day: 1, topic: "Introduction to Domain", desc: "Welcome to your internship. Please wait for mentor to assign tasks.", notes: "" }
+        ]);
+
+        if (ticketsRes.data && ticketsRes.data.length > 0) {
+           const mappedTickets = ticketsRes.data.map(t => {
+             const statusStr = t.status === "resolved" || t.status === "closed" ? "Resolved" : "Pending";
+             return {
+               ...t,
+               id: `TKT-${t.id}`,
+               date: new Date(t.created_at).toLocaleDateString(),
+               status: statusStr,
+               adminReply: t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1].message : (t.status === "resolved" ? t.resolution : "Your ticket is under review.")
+             };
+           });
+           setTicketsData(mappedTickets);
+        }
+
+        if (factRes.data && !factRes.data.completed) {
+           setDomainInsights([factRes.data.fact_text]);
+        }
+        
+        // We will keep notifications mocked for now as there's no endpoint
+        setNotifications([
+          { id: 1, text: "Welcome to ProEduvate!", time: "Just now" }
+        ]);
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setLoadingDashboard(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      api.get('/facts?t=' + new Date().getTime()).then(res => {
+        if (res.data && !res.data.completed) {
+          setDomainFact(res.data);
+        }
+      }).catch(e => console.warn(e));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Notifications will be fetched from API
+  // previously mockNotifications...
 
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
@@ -71,51 +174,15 @@ export default function InternDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
 
   useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    let parsed = [];
-    if (storedAirdrops) {
-      parsed = JSON.parse(storedAirdrops);
-    }
-    
-    const mockData = [
-      {
-        id: 101,
-        question: "What is the primary purpose of React's Virtual DOM?",
-        timeLimit: "60",
-        points: [20, 15, 10],
-        status: "Active"
-      },
-      {
-        id: 102,
-        question: "Explain the difference between useState and useReducer.",
-        timeLimit: "45",
-        points: [15, 10],
-        status: "Active"
-      },
-      {
-        id: 103,
-        question: "What are the core web vitals and why do they matter?",
-        timeLimit: "90",
-        points: [30, 20, 10],
-        status: "Completed"
-      },
-      {
-        id: 104,
-        question: "How does the Event Loop work in Node.js?",
-        timeLimit: "120",
-        points: [50, 25],
-        status: "Completed"
+    const fetchAirdrops = async () => {
+      try {
+        const res = await api.get('/bonus-airdrops');
+        setBonusAirdrops(res.data);
+      } catch (err) {
+        console.error("Failed to fetch airdrops", err);
       }
-    ];
-    
-    // Merge real airdrops with mock data so there is always something to see
-    const merged = [...parsed];
-    mockData.forEach(mockItem => {
-      if (!merged.find(item => item.id === mockItem.id)) {
-        merged.push(mockItem);
-      }
-    });
-    setBonusAirdrops(merged);
+    };
+    fetchAirdrops();
   }, []);
 
   useEffect(() => {
@@ -137,35 +204,38 @@ export default function InternDashboard() {
     setAirdropAnswer("");
   };
 
-  const handleSubmitAirdrop = () => {
+  const handleSubmitAirdrop = async () => {
     if (activeAirdrop) {
-      const updatedAirdrops = bonusAirdrops.map(a => 
-        a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
-      );
-      setBonusAirdrops(updatedAirdrops);
-      localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
-      if (airdropTimeLeft > 0) {
-        alert("Bonus Airdrop submitted successfully!");
-      } else {
-        alert("Time is up! Your answer was automatically submitted.");
+      try {
+        await api.patch(`/bonus-airdrops/${activeAirdrop.id}`, {
+          action: "submit",
+          answer: airdropAnswer
+        });
+        
+        const updatedAirdrops = bonusAirdrops.map(a => 
+          a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
+        );
+        setBonusAirdrops(updatedAirdrops);
+        
+        if (airdropTimeLeft > 0) {
+          alert("Bonus Airdrop submitted successfully!");
+        } else {
+          alert("Time is up! Your answer was automatically submitted.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to submit Airdrop: " + (err.response?.data?.detail || err.message));
       }
     }
     setShowAirdropModal(false);
     setActiveAirdrop(null);
   };
 
-  const domainInsights = [
-    "A key principle of Frontend involves understanding performance.",
+  const [domainInsights, setDomainInsights] = useState([
     "React's Virtual DOM minimizes direct DOM manipulations to improve application rendering speed.",
     "Debouncing and throttling are essential techniques for optimizing event-heavy operations like scrolling or typing.",
-    "State immutability in React ensures predictable data flow and enables effective re-rendering optimizations.",
-    "Core Web Vitals measure key user experience metrics: LCP (Largest Contentful Paint), FID, and CLS.",
-    "Code splitting with React.lazy and Suspense helps load components on-demand, reducing initial bundle size.",
-    "Accessibility (a11y) standards ensure web interfaces are usable by everyone, including assistive technologies.",
-    "Browser caching and Service Workers enable Progressive Web Apps (PWAs) to load quickly and offline.",
-    "Semantic HTML improves SEO, readability, and screen reader navigation by providing structural meaning.",
-    "CSS Grid and Flexbox combined provide modern responsive layout capabilities without heavy framework dependencies."
-  ];
+    "State immutability in React ensures predictable data flow and enables effective re-rendering optimizations."
+  ]);
 
   useEffect(() => {
     // 1. Auto-show modal once per day upon login / first visit
@@ -196,13 +266,7 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
-  const curriculumData = [
-    { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
-    { day: 2, topic: "State and Props", desc: "Learn to handle component data flow using props and local state.", notes: "Lecture_Notes_Day2.pdf" },
-    { day: 3, topic: "React Hooks Lifecycle", desc: "Implement useEffect and customize functional hooks.", notes: "Lecture_Notes_Day3.pdf" },
-    { day: 4, topic: "Context API & Global State", desc: "Avoid prop drilling by introducing context providers.", notes: "Lecture_Notes_Day4.pdf" },
-    { day: 5, topic: "Routing and Layouts", desc: "Route single page interfaces cleanly using react-router.", notes: "Lecture_Notes_Day5.pdf" }
-  ];
+  const [curriculumData, setCurriculumData] = useState([]);
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
@@ -241,29 +305,34 @@ export default function InternDashboard() {
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
 
-  const handleCreateTicket = () => {
+  const handleCreateTicket = async () => {
     if (!newTicketTitle.trim()) {
       alert("Please enter an issue title before submitting.");
       return;
     }
-    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newTicket = {
-      id: newId,
-      title: newTicketTitle,
-      date: "Just now",
-      status: "Pending",
-      statusBg: "#eff6ff",
-      statusColor: "#1d4ed8",
-      tagBg: "#dbeafe",
-      tagColor: "#1e40af",
-      adminReply: newTicketDesc 
-        ? `Submitted Description: "${newTicketDesc}".\n\nYour ticket has been assigned to Dr. Sakthi. Review is in progress.` 
-        : "Your ticket has been assigned to Dr. Sakthi. Review is in progress."
-    };
-    setTicketsData([newTicket, ...ticketsData]);
-    setNewTicketTitle("");
-    setNewTicketDesc("");
-    setShowTicketForm(false);
+    
+    try {
+      const res = await api.post('/tickets', {
+        title: newTicketTitle,
+        description: newTicketDesc || "",
+        domain: "General"
+      });
+      const t = res.data;
+      const newTicket = {
+        ...t,
+        id: `TKT-${t.id}`,
+        date: new Date(t.created_at).toLocaleDateString(),
+        status: "Pending",
+        adminReply: "Your ticket is under review."
+      };
+      setTicketsData([newTicket, ...ticketsData]);
+      setNewTicketTitle("");
+      setNewTicketDesc("");
+      setShowTicketForm(false);
+    } catch (err) {
+      console.error("Failed to create ticket", err);
+      alert("Failed to create ticket.");
+    }
   };
 
   const [mcqStarted, setMcqStarted] = useState(false);
@@ -273,18 +342,10 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const mcqQuestionsList = [
-    { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
-    { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
-    { id: 4, text: "Virtual DOM updates are slower than Real DOM updates.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 5, text: "Which function is used to update state in useState hook?", options: [{ label: "setState()", val: "setState" }, { label: "The second returned element", val: "updater" }] },
-    { id: 6, text: "React components must start with a capital letter.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
-    { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
-    { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] }
-  ];
+  const [mcqQuestions, setMcqQuestions] = useState([]);
+  const [mcqAttemptId, setMcqAttemptId] = useState(null);
+
+  const [codeAssessment, setCodeAssessment] = useState(null);
 
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
@@ -300,13 +361,43 @@ export default function InternDashboard() {
   ]);
   const [inputMsg, setInputMsg] = useState("");
 
-  const handleMcqSubmit = () => {
+  const handleMcqSubmit = async () => {
     setMcqSubmitted(true);
-    const score = Object.keys(answers).length * 50; // simple score
-    setMcqGrade(score);
-    setMcqDone(true);
-    alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
-    setAssessmentView("selection");
+    try {
+      const res = await api.post(`/mcq/day/${currentDay}/submit`, {
+        attempt_id: mcqAttemptId,
+        answers: answers
+      });
+      setMcqGrade(res.data.percentage);
+      setMcqDone(true);
+      alert(`MCQ Test submitted! Score: ${res.data.percentage}%. Part A completed.`);
+      setAssessmentView("selection");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to submit MCQ: " + (err.response?.data?.detail || err.message));
+    }
+  };
+  
+  const startMcqTest = async () => {
+    try {
+      const res = await api.post(`/mcq/day/${currentDay}/start`);
+      const mapped = res.data.questions.map(q => ({
+        id: q.id,
+        text: q.question,
+        options: Object.entries(q.options).map(([k, v]) => ({ label: v, val: k }))
+      }));
+      setMcqQuestions(mapped);
+      setMcqAttemptId(res.data.attempt_id);
+      setAssessmentView("mcq");
+      setMcqStarted(true);
+      setMcqSubmitted(false);
+      setAnswers({});
+      setTimer(180);
+      setCurrentQuestionIndex(0);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start MCQ: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   // Timer effect for MCQ
@@ -323,6 +414,21 @@ export default function InternDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mcqStarted, timer, mcqSubmitted]);
 
+  const startCodeTest = async () => {
+    try {
+      const res = await api.get(`/questions/code/day/${currentDay}`);
+      if (res.data && res.data.questions && res.data.questions.length > 0) {
+        setCodeAssessment(res.data.questions[0]);
+      }
+      setAssessmentView("coding");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load coding assessment: " + (err.response?.data?.detail || err.message));
+      // Fallback
+      setAssessmentView("coding");
+    }
+  };
+
   const handleLogout = () => {
     alert("Logged out successfully.");
     window.location.href = "/login";
@@ -332,26 +438,70 @@ export default function InternDashboard() {
     alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
   };
 
-  const handleSubmitCode = () => {
+  const handleSubmitCode = async () => {
     setEvaluating(true);
 
-    // Simulate AI compilation & scoring
-    setTimeout(() => {
+    const currentTask = curriculumData.find(t => t.day === currentDay);
+    if (!currentTask || !currentTask.id) {
       setEvaluating(false);
-      const randomScore = Math.floor(80 + Math.random() * 20);
-      setAiScore(randomScore);
-      setEvalResult({
-        score: randomScore,
-        correctness: 100,
-        logic: 90,
-        quality: 85,
-        performance: 95,
-        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
+      alert("Could not find the current task ID for submission.");
+      return;
+    }
+
+    try {
+      // 1. Submit actual code to backend
+      const submitRes = await api.post('/submissions', {
+        task_id: currentTask.id,
+        code_submission: code,
+        language: language
       });
-      alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
+      
+      const aiScoreResult = submitRes.data.ai_score || 0;
+      setAiScore(aiScoreResult);
+      
+      let parsedFeedback = "Great job!";
+      try {
+        if (submitRes.data.ai_feedback) {
+          const fb = JSON.parse(submitRes.data.ai_feedback);
+          parsedFeedback = fb.suggestions || fb.feedback || submitRes.data.ai_feedback;
+        }
+      } catch (e) {
+        parsedFeedback = submitRes.data.ai_feedback;
+      }
+      
+      setEvalResult({
+        score: aiScoreResult,
+        correctness: Math.min(100, aiScoreResult + 10),
+        logic: aiScoreResult,
+        quality: Math.min(100, aiScoreResult + 5),
+        performance: aiScoreResult,
+        suggestions: parsedFeedback
+      });
+      
+      // 2. Lock in analytics result for today's MCQ + Code
+      const analyticsRes = await api.post('/daily-questions/results', {
+        question_id: currentDay,
+        mcq_score: mcqGrade || 0,
+        coding_score: aiScoreResult,
+        date: new Date().toISOString().split('T')[0]
+      });
+      
+      setRecentSubmissions(prev => {
+        if (!prev.some(s => s.date === analyticsRes.data.date)) {
+           return [...prev, analyticsRes.data];
+        }
+        return prev;
+      });
+
+      alert(`Coding assessment submitted! Score: ${aiScoreResult}%. Part B completed.`);
       setCodingDone(true);
       setAssessmentView("selection");
-    }, 2000);
+    } catch (err) {
+      console.error("Failed to submit code", err);
+      alert("Failed to submit code: " + (err.response?.data?.detail || err.message));
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const handleCompleteDay = () => {
@@ -384,7 +534,7 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflow: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflowY: "auto", overflowX: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div style={{ display: "flex", gap: "20px", flexShrink: 0, height: "180px" }}>
@@ -425,7 +575,7 @@ export default function InternDashboard() {
                       <BookOpen size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>12 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{dashboardData?.progress_pct ? Math.round((dashboardData.progress_pct / 100) * 30) : 0} / 30</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Tasks Completed</span>
                     </div>
                   </div>
@@ -435,7 +585,7 @@ export default function InternDashboard() {
                       <CheckCircle size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>10 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{recentSubmissions?.length || 0} / 30</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Assessments</span>
                     </div>
                   </div>
@@ -445,7 +595,7 @@ export default function InternDashboard() {
                       <Clock size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{attendancePercent}%</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{dashboardData?.attendance_pct || 0}%</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Attendance</span>
                     </div>
                   </div>
@@ -480,7 +630,7 @@ export default function InternDashboard() {
                 </svg>
 
                 <p style={{ margin: "0 0 12px 0", fontSize: "1.1rem", fontStyle: "italic", lineHeight: "1.5", color: "var(--bg-surface-elevated, #f8fafc)", fontWeight: 500 }}>
-                  "A skilled tomorrow starts with what you do today."
+                  "{domainFact && domainFact.fact ? domainFact.fact : 'A skilled tomorrow starts with what you do today.'}"
                 </p>
                 <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#60a5fa" }}>— ProEduvate</span>
               </div>
@@ -587,26 +737,20 @@ export default function InternDashboard() {
                       <div style={{ marginBottom: "16px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                           <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#334155" }}>Module Progress</span>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#2563eb" }}>65%</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#2563eb" }}>{Math.round((recentSubmissions.length / 30) * 100)}%</span>
                         </div>
                         <div style={{ height: "6px", background: "#f1f5f9", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: "65%", height: "100%", background: "#2563eb", borderRadius: "3px" }}></div>
+                          <div style={{ width: `${Math.round((recentSubmissions.length / 30) * 100)}%`, height: "100%", background: "#2563eb", borderRadius: "3px" }}></div>
                         </div>
                       </div>
 
                       {/* Tasks Checklist */}
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "16px", height: "16px", borderRadius: "4px", background: "#16a34a", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Check size={10} />
-                          </div>
-                          <span style={{ fontSize: "0.85rem", color: "#334155", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <div style={{ width: "16px", height: "16px", borderRadius: "4px", background: "#f1f5f9", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Play size={8} fill="currentColor" />
                           </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>JSX Syntax & Rules</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>{curriculumData.find(c => c.day === currentDay)?.topic || "Daily Task"}</span>
                         </div>
                       </div>
 
@@ -618,7 +762,9 @@ export default function InternDashboard() {
                           </div>
                           <div>
                             <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>Upcoming</span>
-                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>React Hook Refactor</span>
+                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>
+                              {curriculumData.find(c => c.day === currentDay + 1)?.topic || "Project Review"}
+                            </span>
                           </div>
                         </div>
                         <button style={{ padding: "6px 16px", background: "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }} onClick={() => setIsMeetingActive(true)}>
@@ -663,44 +809,24 @@ export default function InternDashboard() {
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
+                    {recentSubmissions.length === 0 ? (
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>No recent submissions</span>
+                    ) : (
+                      recentSubmissions.slice(0, 3).map((sub, idx) => (
+                        <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <CheckCircle size={14} />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>Day Score: {sub.date}</span>
+                              <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                            </div>
+                          </div>
+                          <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>{sub.final_score}/100</span>
                         </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
-                    </div>
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -711,7 +837,11 @@ export default function InternDashboard() {
                 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
-                  <DailyScenarioCalendar />
+                  <DailyScenarioCalendar 
+                    currentDay={currentDay} 
+                    attendedDays={recentSubmissions.map((_, i) => i + 1)} 
+                    onStartScenario={(day) => setActiveTab("Daily Scenario")}
+                  />
                 </div>
 
                 {/* Leaderboard Card */}
@@ -733,17 +863,17 @@ export default function InternDashboard() {
                   </div>
                   
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
-                    {[
+                    {(leaderboardData.length > 0 ? leaderboardData : [
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
                       { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
                       { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
                       { rank: 5, name: "David Lee", points: 890, isMe: false }
-                    ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "48px" : "40px" }}>{user.points}</span>
+                    ]).map((user, idx) => (
+                      <div key={user.rank || idx} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
+                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: (user.rank || idx+1) === 1 ? "#fbbf24" : ((user.rank || idx+1) === 2 ? "#94a3b8" : ((user.rank || idx+1) === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank || idx+1}</span>
+                        <span style={{ fontSize: "0.9rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{(user.user_name || user.name)} {user.isMe && "(You)"}</span>
+                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "48px" : "40px" }}>{user.points || user.total_points}</span>
                       </div>
                     ))}
                   </div>
@@ -829,7 +959,7 @@ export default function InternDashboard() {
                               <span style={{ color: "var(--text-muted)", fontSize: "13px", fontWeight: "600" }}>Score: {mcqGrade}%</span>
                             </div>
                           ) : (
-                            <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600" }}>Start MCQ &rarr;</button>
+                            <button className="btn btn-primary" onClick={startMcqTest} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600" }}>Start MCQ &rarr;</button>
                           )}
                         </div>
                       </div>
@@ -853,7 +983,9 @@ export default function InternDashboard() {
                               <span style={{ color: "#16a34a", fontWeight: "bold", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><CheckCircle size={18} /> Completed</span>
                             </div>
                           ) : (
-                            <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600", background: "#9333ea", borderColor: "#9333ea" }}>Continue Coding &rarr;</button>
+                            <button className="btn btn-primary" onClick={startCodeTest} disabled={codingDone || !mcqDone} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600", background: "#9333ea", borderColor: "#9333ea" }}>
+                              {codingDone ? "Completed" : "Continue Coding \u2192"}
+                            </button>
                           )}
                         </div>
                       </div>
@@ -894,7 +1026,9 @@ export default function InternDashboard() {
                         <div style={{ marginTop: "24px", padding: "12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px dashed var(--border-color, #cbd5e1)", display: "flex", alignItems: "center", gap: "12px" }}>
                           <TrendingUp size={20} color="#10b981" />
                           <div>
-                            <div style={{ fontSize: "13px", fontWeight: "bold", color: "var(--text-primary, #0f172a)" }}>Keep going!</div>
+                            <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)" }}>{user?.name || "Intern User"}</div>
+                            <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{user?.email || "intern@proeduvate.com"}</div>
+                            <div style={{ fontSize: "13px", fontWeight: "bold", color: "var(--text-primary, #0f172a)", marginTop: "4px" }}>Keep going!</div>
                             <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>You're {((mcqDone ? 50 : 0) + (codingDone ? 50 : 0))}% through today's assessments.</div>
                           </div>
                         </div>
@@ -939,7 +1073,7 @@ export default function InternDashboard() {
                       <div style={{ display: "flex", gap: "24px" }}>
                         {/* Left Sidebar: Question Numbers Grid */}
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", width: "180px", alignContent: "start", borderRight: "1px solid var(--border-gray)", paddingRight: "16px", maxHeight: "400px", overflowY: "auto" }}>
-                          {mcqQuestionsList.map((q, idx) => (
+                          {mcqQuestions.map((q, idx) => (
                             <button 
                               key={q.id}
                               onClick={() => setCurrentQuestionIndex(idx)}
@@ -966,16 +1100,16 @@ export default function InternDashboard() {
                         {/* Right Content: Current Question */}
                         <div style={{ flex: 1 }}>
                           <h4 style={{ fontSize: "16px", marginBottom: "20px", color: "var(--text-darker)", lineHeight: "1.5" }}>
-                            <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestionsList[currentQuestionIndex].text}
+                            <b>Q{currentQuestionIndex + 1}.</b> {mcqQuestions[currentQuestionIndex]?.text}
                           </h4>
                           
                           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
+                            {mcqQuestions[currentQuestionIndex]?.options.map(opt => (
                               <button 
                                 key={opt.val}
-                                className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
-                                onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
-                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
+                                className={`btn ${answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
+                                onClick={() => setAnswers({...answers, [mcqQuestions[currentQuestionIndex].id]: opt.val})}
+                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
                               >
                                 {opt.label}
                               </button>
@@ -994,9 +1128,9 @@ export default function InternDashboard() {
                             </button>
                             <button 
                               className="btn btn-secondary" 
-                              disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
+                              disabled={currentQuestionIndex === mcqQuestions.length - 1} 
                               onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                              style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
+                              style={{ opacity: currentQuestionIndex === mcqQuestions.length - 1 ? 0.5 : 1 }}
                             >
                               Next
                             </button>
@@ -1037,6 +1171,19 @@ export default function InternDashboard() {
                     </div>
                   ) : (
                     <>
+                      {codeAssessment && (
+                        <div style={{ marginBottom: "16px", padding: "16px", backgroundColor: "var(--bg-blue-light)", borderRadius: "8px", border: "1px solid var(--border-blue-light)" }}>
+                          <h4 style={{ marginTop: 0, color: "var(--primary-dark)" }}>{codeAssessment.title}</h4>
+                          <p style={{ fontSize: "14px", margin: "8px 0" }}>{codeAssessment.description}</p>
+                          {codeAssessment.requirements && codeAssessment.requirements.length > 0 && (
+                            <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "13px" }}>
+                              {codeAssessment.requirements.map((req, idx) => (
+                                <li key={idx}>{req}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
                       <div style={{ marginBottom: "12px" }}>
                         <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
                         <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
@@ -1450,7 +1597,8 @@ export default function InternDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>John Doe</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{user?.name || "Intern"}</div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{user?.email || "intern@proeduvate.com"}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
@@ -1727,7 +1875,7 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
+        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} domainName={dashboardData?.domain?.name || 'Frontend'} />;
 
       case "Bonus Airdrops":
         const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
@@ -2055,11 +2203,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>12 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>40%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{Math.max(0, currentDay - 1)} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>{Math.round((Math.max(0, currentDay - 1) / 30) * 100)}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Days Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "40%", background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.round((Math.max(0, currentDay - 1) / 30) * 100)}%`, background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2069,11 +2217,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>28 / 45</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>62%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{dashboardData?.progress_pct ? Math.round((dashboardData.progress_pct / 100) * 45) : 0} / 45</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{dashboardData?.progress_pct || 0}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "62%", background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${dashboardData?.progress_pct || 0}%`, background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2083,11 +2231,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>10 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>33%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{recentSubmissions?.length || 0} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>{Math.round(((recentSubmissions?.length || 0) / 30) * 100)}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Assessments Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "33%", background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.round(((recentSubmissions?.length || 0) / 30) * 100)}%`, background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2097,11 +2245,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>92%</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>Excellent</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{dashboardData?.attendance_pct || 0}%</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>{(dashboardData?.attendance_pct || 0) >= 90 ? "Excellent" : (dashboardData?.attendance_pct || 0) >= 75 ? "Good" : "Needs Improvement"}</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Attendance</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "92%", background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${dashboardData?.attendance_pct || 0}%`, background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
             </div>
@@ -2114,40 +2262,67 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
+                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your performance from Day 1 to Day 30</p>
                   </div>
-                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "#334155", fontWeight: 600 }}>Overall Progress ▾</div>
+                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "#334155", fontWeight: 600 }}>Performance ▾</div>
                 </div>
 
                 <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
-                  <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    <line x1="0" y1="160" x2="600" y2="160" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="120" x2="600" y2="120" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="80" x2="600" y2="80" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="40" x2="600" y2="40" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="#f1f5f9" strokeWidth="1" />
-
-                    <polygon points="0,180 100,150 200,120 300,100 400,80 500,50 600,20 600,200 0,200" fill="url(#progressGradFull)" />
-                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="#2563eb" strokeWidth="3" fill="none" />
+                  {(() => {
+                    const maxDays = 30;
+                    const sortedSubs = [...recentSubmissions].sort((a, b) => a.question_id - b.question_id);
+                    let points = [];
                     
-                    <circle cx="0" cy="180" r="5" fill="#2563eb" />
-                    <circle cx="100" cy="150" r="5" fill="#2563eb" />
-                    <circle cx="200" cy="120" r="8" fill="#2563eb" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
-                    <circle cx="300" cy="100" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="400" cy="80" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
-                  </svg>
-                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
-                    <div style={{ marginBottom: "2px" }}>Day 12</div>
-                    <div style={{ fontSize: "1rem" }}>40% Complete</div>
-                  </div>
+                    if (sortedSubs.length === 0) {
+                      points = [{ x: 0, y: 180, label: "Day 1", value: 0 }];
+                    } else {
+                      points = sortedSubs.map(sub => {
+                        const x = ((sub.question_id - 1) / (maxDays - 1)) * 600;
+                        const score = sub.final_score || 0;
+                        const y = 180 - (score / 100) * 160;
+                        return { x, y, label: `Day ${sub.question_id}`, value: score };
+                      });
+                      if (points[0].x !== 0) {
+                        points.unshift({ x: 0, y: 180, label: "Day 1", value: 0 });
+                      }
+                    }
+
+                    const pointsString = points.map(p => `${p.x},${p.y}`).join(" ");
+                    const polygonPoints = `0,200 ${pointsString} ${points[points.length-1].x},200 0,200`;
+                    const pathString = `M${points.map(p => `${p.x},${p.y}`).join(" L")}`;
+                    
+                    return (
+                      <>
+                        <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+                          <defs>
+                            <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                              <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <line x1="0" y1="160" x2="600" y2="160" stroke="#f1f5f9" strokeWidth="1" />
+                          <line x1="0" y1="120" x2="600" y2="120" stroke="#f1f5f9" strokeWidth="1" />
+                          <line x1="0" y1="80" x2="600" y2="80" stroke="#f1f5f9" strokeWidth="1" />
+                          <line x1="0" y1="40" x2="600" y2="40" stroke="#f1f5f9" strokeWidth="1" />
+                          <line x1="0" y1="0" x2="600" y2="0" stroke="#f1f5f9" strokeWidth="1" />
+
+                          {points.length > 0 && <polygon points={polygonPoints} fill="url(#progressGradFull)" />}
+                          {points.length > 0 && <path d={pathString} stroke="#2563eb" strokeWidth="3" fill="none" />}
+                          
+                          {points.map((p, i) => (
+                            <circle key={i} cx={p.x} cy={p.y} r={i === points.length - 1 ? 8 : 5} fill="#2563eb" stroke={i === points.length - 1 ? "var(--bg-surface, #ffffff)" : "none"} strokeWidth={i === points.length - 1 ? 3 : 0} />
+                          ))}
+                        </svg>
+                        
+                        {points.length > 0 && (
+                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length-1].y - 50)}px`, left: `calc(${(points[points.length-1].x / 600) * 100}% - 40px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
+                            <div style={{ marginBottom: "2px" }}>{points[points.length-1].label}</div>
+                            <div style={{ fontSize: "1rem" }}>{points[points.length-1].value}% Score</div>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
                   
                   {/* Y-axis labels */}
                   <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
@@ -2160,13 +2335,9 @@ export default function InternDashboard() {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
-                  <span>Day 1</span>
-                  <span>Day 5</span>
-                  <span style={{ color: "#2563eb", fontWeight: 700 }}>Day 12</span>
-                  <span>Day 15</span>
-                  <span>Day 20</span>
-                  <span>Day 25</span>
-                  <span>Day 30</span>
+                  {[1, 5, 10, 15, 20, 25, 30].map(day => (
+                    <span key={day} style={{ color: currentDay === day ? "#2563eb" : "inherit", fontWeight: currentDay === day ? 700 : 400 }}>Day {day}</span>
+                  ))}
                 </div>
               </div>
 
@@ -2406,6 +2577,13 @@ export default function InternDashboard() {
     );
   }
 
+  if (loadingDashboard) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <p>Loading Dashboard...</p>
+      </div>
+    );
+  }
   return (
     <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
@@ -2516,7 +2694,7 @@ export default function InternDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
+                  {notifications.map(notif => (
                     <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
                       <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
                       <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
