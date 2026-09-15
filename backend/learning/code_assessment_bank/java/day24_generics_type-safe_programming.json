@@ -1,0 +1,67 @@
+{
+    "day": 24,
+    "topic": "Generics & Type-Safe Programming",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D24-Q001",
+            "title": "Generic Value Store",
+            "description": "Create a generic class that stores any type of value.",
+            "requirements": [
+                "Define class Pair<T, U>",
+                "Store two values of different types",
+                "Add getFirst() and getSecond() methods",
+                "Test with String-Integer pair",
+                "Test with Double-Boolean pair"
+            ]
+        },
+        {
+            "id": "CODE-PY-D24-Q002",
+            "title": "Generic Array Printer",
+            "description": "Create a generic method to print elements from an array.",
+            "requirements": [
+                "Define static <T> void printArray(T[] arr)",
+                "Accept any type of array",
+                "Print each element",
+                "Test with Integer array",
+                "Test with String array"
+            ]
+        },
+        {
+            "id": "CODE-PY-D24-Q003",
+            "title": "Generic Box Class",
+            "description": "Build a generic Box<T> class.",
+            "requirements": [
+                "Generic class Box<T>",
+                "Method setValue(T value)",
+                "Method getValue()",
+                "Method isEmpty()",
+                "Test with String, Integer, and custom class"
+            ]
+        },
+        {
+            "id": "CODE-PY-D24-Q004",
+            "title": "Largest Comparable Value",
+            "description": "Create a generic utility to find the largest comparable value.",
+            "requirements": [
+                "Define <T extends Comparable<T>> T findMax(T a, T b)",
+                "Return larger of two values",
+                "Test with integers",
+                "Test with strings",
+                "Test with doubles"
+            ]
+        },
+        {
+            "id": "CODE-PY-D24-Q005",
+            "title": "Type-Safe Data Storage",
+            "description": "Build a type-safe generic data storage system.",
+            "requirements": [
+                "Generic class Storage<T>",
+                "Internal ArrayList<T>",
+                "Methods: add(T item), get(int index), size()",
+                "Test with Student objects",
+                "Test with String data"
+            ]
+        }
+    ]
+}

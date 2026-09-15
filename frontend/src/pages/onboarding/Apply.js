@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { mockOnboardingService } from '../../services/mockOnboardingService';
+import api from '../../api/axios';
 import './Onboarding.css';
 
 export default function Apply() {
@@ -67,11 +67,35 @@ export default function Apply() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const result = await mockOnboardingService.submitApplication(formData);
-            setApplicationId(result.applicationId);
+            const formPayload = new FormData();
+            formPayload.append("name", formData.name);
+            formPayload.append("email", formData.email);
+            formPayload.append("phone", formData.phone);
+            formPayload.append("college", formData.college);
+            formPayload.append("department", formData.department);
+            formPayload.append("degree", formData.degree || "Bachelors"); 
+            formPayload.append("graduation_year", parseInt(formData.currentYear) + 2024); // roughly
+            formPayload.append("domain", formData.domain);
+            if (formData.resume) {
+                formPayload.append("resume", formData.resume);
+            }
+
+            const response = await fetch("http://127.0.0.1:8000/api/v1/onboarding/apply", {
+                method: "POST",
+                body: formPayload,
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.detail || "Failed to submit application");
+            }
+            
+            const data = await response.json();
+            setApplicationId(data.application_id);
             setSubmitted(true);
         } catch (error) {
             console.error("Error submitting application", error);
+            alert("Error submitting application: " + (error.response?.data?.detail || error.message));
         } finally {
             setIsSubmitting(false);
         }

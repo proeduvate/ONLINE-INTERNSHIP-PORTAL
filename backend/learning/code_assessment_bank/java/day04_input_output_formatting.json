@@ -1,0 +1,67 @@
+{
+    "day": 4,
+    "topic": "Input, Output & Formatting",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D4-Q001",
+            "title": "Formatted Greeting",
+            "description": "Accept a user's name and age and display a formatted greeting.",
+            "requirements": [
+                "Use Scanner for input",
+                "Accept name (String)",
+                "Accept age (int)",
+                "Display formatted greeting",
+                "Use printf or String.format"
+            ]
+        },
+        {
+            "id": "CODE-PY-D4-Q002",
+            "title": "Formatted Mark Sheet",
+            "description": "Accept five subject marks and generate a formatted mark sheet.",
+            "requirements": [
+                "Accept five marks",
+                "Display subject-wise table",
+                "Show total and average",
+                "Align columns properly",
+                "Use printf for formatting"
+            ]
+        },
+        {
+            "id": "CODE-PY-D4-Q003",
+            "title": "Billing Program",
+            "description": "Create a billing program that accepts product, quantity and price.",
+            "requirements": [
+                "Accept product name",
+                "Accept quantity",
+                "Accept unit price",
+                "Calculate total amount",
+                "Print formatted bill with GST"
+            ]
+        },
+        {
+            "id": "CODE-PY-D4-Q004",
+            "title": "Temperature Converter",
+            "description": "Build a Celsius-to-Fahrenheit temperature converter.",
+            "requirements": [
+                "Accept Celsius value",
+                "Apply conversion formula",
+                "Display Fahrenheit result",
+                "Format to two decimal places",
+                "Also support Fahrenheit to Celsius"
+            ]
+        },
+        {
+            "id": "CODE-PY-D4-Q005",
+            "title": "Employee Salary Slip",
+            "description": "Create an employee salary slip using formatted console output.",
+            "requirements": [
+                "Accept employee name and ID",
+                "Accept basic salary",
+                "Calculate HRA, DA and deductions",
+                "Print formatted salary slip",
+                "Show net pay clearly"
+            ]
+        }
+    ]
+}

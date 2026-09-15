@@ -1,0 +1,38 @@
+﻿{
+    "title": "Python Day 1 Code Assessment",
+    "day": 1,
+    "topic": "Python Introduction & Environment",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "DAY01-Q01",
+            "day": 1,
+            "topic": "Python Introduction & Environment",
+            "question": "Write a Python program to print your name, college, department, and internship domain."
+        },
+        {
+            "id": "DAY01-Q02",
+            "day": 1,
+            "topic": "Python Introduction & Environment",
+            "question": "Write a program that prints a formatted student introduction using multiple print() statements."
+        },
+        {
+            "id": "DAY01-Q03",
+            "day": 1,
+            "topic": "Python Introduction & Environment",
+            "question": "Write a program to display the multiplication table of a given number."
+        },
+        {
+            "id": "DAY01-Q04",
+            "day": 1,
+            "topic": "Python Introduction & Environment",
+            "question": "Write a program that prints a simple ASCII-based student report card."
+        },
+        {
+            "id": "DAY01-Q05",
+            "day": 1,
+            "topic": "Python Introduction & Environment",
+            "question": "Create a Python program that displays a menu for a student management system."
+        }
+    ]
+}

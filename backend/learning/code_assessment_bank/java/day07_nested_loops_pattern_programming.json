@@ -1,0 +1,67 @@
+{
+    "day": 7,
+    "topic": "Nested Loops & Pattern Programming",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D7-Q001",
+            "title": "Right-Angled Star Pattern",
+            "description": "Print a right-angled star pattern.",
+            "requirements": [
+                "Accept number of rows",
+                "Use nested loops",
+                "Print stars in increasing order",
+                "Align left-justified",
+                "Display N rows"
+            ]
+        },
+        {
+            "id": "CODE-PY-D7-Q002",
+            "title": "Inverted Triangle Pattern",
+            "description": "Print an inverted triangle pattern.",
+            "requirements": [
+                "Accept number of rows",
+                "Use nested loops",
+                "Start with full row and decrease",
+                "Print stars",
+                "Align left-justified"
+            ]
+        },
+        {
+            "id": "CODE-PY-D7-Q003",
+            "title": "Number Pyramid",
+            "description": "Print a number pyramid.",
+            "requirements": [
+                "Accept number of rows",
+                "Print row number repeated per row",
+                "Center-align the pyramid",
+                "Use nested loops",
+                "Format spaces correctly"
+            ]
+        },
+        {
+            "id": "CODE-PY-D7-Q004",
+            "title": "Floyd's Triangle",
+            "description": "Print Floyd's triangle.",
+            "requirements": [
+                "Accept number of rows",
+                "Print consecutive numbers",
+                "Each row has increasing count",
+                "Format output",
+                "Start from 1"
+            ]
+        },
+        {
+            "id": "CODE-PY-D7-Q005",
+            "title": "Diamond Pattern",
+            "description": "Create a diamond pattern using nested loops.",
+            "requirements": [
+                "Accept odd number of rows",
+                "Print upper triangle",
+                "Print lower triangle",
+                "Center-align with spaces",
+                "Use nested loops"
+            ]
+        }
+    ]
+}

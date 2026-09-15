@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 5 Code Assessment",
+  "day": 5,
+  "topic": "Conditional Statements",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY05-Q01",
+      "day": 5,
+      "topic": "Conditional Statements",
+      "question": "Write a program to determine whether a number is positive, negative, or zero."
+    },
+    {
+      "id": "DAY05-Q02",
+      "day": 5,
+      "topic": "Conditional Statements",
+      "question": "Create a grading system based on marks."
+    },
+    {
+      "id": "DAY05-Q03",
+      "day": 5,
+      "topic": "Conditional Statements",
+      "question": "Write a program to find the largest of three numbers."
+    },
+    {
+      "id": "DAY05-Q04",
+      "day": 5,
+      "topic": "Conditional Statements",
+      "question": "Create an electricity bill calculator using different consumption slabs."
+    },
+    {
+      "id": "DAY05-Q05",
+      "day": 5,
+      "topic": "Conditional Statements",
+      "question": "Build an internship eligibility checker based on age, academic percentage, and interview status."
+    }
+  ]
+}

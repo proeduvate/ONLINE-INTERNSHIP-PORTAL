@@ -970,43 +970,114 @@ export default function InternDashboard() {
                           </h4>
                           
                           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {meetings.length === 0 ? (
-                      <p style={{textAlign:"center", padding:"20px", color:"#94a3b8"}}>No upcoming meetings.</p>
-                    ) : (
-                      meetings.map(m => {
-                        const dateObj = m.scheduled_time ? new Date(m.scheduled_time) : new Date();
-                        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const dateStr = dateObj.toLocaleDateString();
-                        const ampm = timeStr.slice(-2);
-                        const justTime = timeStr.slice(0, -3);
+                            {mcqQuestionsList[currentQuestionIndex].options.map(opt => (
+                              <button 
+                                key={opt.val}
+                                className={`btn ${answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`} 
+                                onClick={() => setAnswers({...answers, [mcqQuestionsList[currentQuestionIndex].id]: opt.val})}
+                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestionsList[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
 
-                        return (
-                          <div key={m.id} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                              <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>{dateStr}</span>
-                                <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>{justTime}</span>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>{ampm}</span>
-                              </div>
-                              <div>
-                                <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{m.title}</h4>
-                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <User size={14} color="var(--text-muted, #64748b)" />
-                                    <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Mentor ID: {m.mentor_id}</span>
-                                  </div>
-                                  <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                                  <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{m.duration_minutes || 60} mins</span>
-                                </div>
-                              </div>
-                            </div>
-                            <button onClick={() => window.open(`/meeting/${m.room_code}`, '_blank')} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                              Join Zoom
+                          {/* Navigation Buttons */}
+                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "32px", borderTop: "1px solid var(--border-gray)", paddingTop: "16px" }}>
+                            <button 
+                              className="btn btn-secondary" 
+                              disabled={currentQuestionIndex === 0} 
+                              onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                              style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }}
+                            >
+                              Previous
+                            </button>
+                            <button 
+                              className="btn btn-secondary" 
+                              disabled={currentQuestionIndex === mcqQuestionsList.length - 1} 
+                              onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                              style={{ opacity: currentQuestionIndex === mcqQuestionsList.length - 1 ? 0.5 : 1 }}
+                            >
+                              Next
                             </button>
                           </div>
-                        );
-                      })
-                    )}                  </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>
+                      <button className="btn btn-primary" onClick={() => setAssessmentView("selection")}>Continue</button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Coding assignment compiler terminal */}
+              {assessmentView === "coding" && (
+                <div className="card">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <h3 style={{ margin: 0 }}>Part B: {false ? "UI/UX Assessment" : "Coding Assessment"}</h3>
+                    <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                  </div>
+                  
+                  {false ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "12px" }}>
+                      <div>
+                        <label style={{ fontWeight: 600, fontSize: "13px", display: "block", marginBottom: "8px" }}>Upload Design Photos: </label>
+                        <input type="file" multiple className="form-control" style={{ fontSize: "13px", width: "100%", boxSizing: "border-box" }} />
+                      </div>
+                      <div>
+                        <label style={{ fontWeight: 600, fontSize: "13px", display: "block", marginBottom: "8px" }}>Figma Project Link: </label>
+                        <input type="url" placeholder="https://www.figma.com/file/..." className="form-control" style={{ fontSize: "13px", width: "100%", boxSizing: "border-box" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                        <button className="btn btn-primary" onClick={handleSubmitCode}>Submit Design Work</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ marginBottom: "12px" }}>
+                        <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
+                        <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
+                          <option value="javascript">JavaScript</option>
+                          <option value="python">Python</option>
+                        </select>
+                      </div>
+
+                      <WebIDE 
+                        language={language} 
+                        onChange={(files) => setFilesData(files)} 
+                      />
+
+                      <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                        <button className="btn btn-secondary" onClick={handleRunCode}>Run Test Cases</button>
+                        <button className="btn btn-primary" onClick={handleSubmitCode}>Submit to AI Evaluator</button>
+                      </div>
+                    </>
+                  )}
+
+                  {evaluating || evalResult ? (
+                    <div style={{ marginTop: "24px" }}>
+                      <h3>AI evaluation results</h3>
+                      {evaluating ? (
+                        <p>Analyzing code structure complexity and performance time...</p>
+                      ) : (
+                        <div>
+                          <div style={{ display: "flex", gap: "20px", alignItems: "center", marginBottom: "16px" }}>
+                            <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "6px solid var(--primary-dark)", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                              <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary-dark)" }}>{evalResult.score}%</span>
+                              <span style={{ fontSize: "8px", color: "var(--text-muted)" }}>Grade</span>
+                            </div>
+                            <p style={{ fontSize: "13px" }}>Code complies with structural specifications. Recommended adjustments logged below.</p>
+                          </div>
+                          <div className="grid">
+                            <div className="card" style={{ margin: 0, padding: "12px" }}>
+                              <span>Correctness: <b>{evalResult.correctness}%</b></span>
+                            </div>
+                            <div className="card" style={{ margin: 0, padding: "12px" }}>
+                              <span>Code Quality: <b>{evalResult.quality}%</b></span>
+                            </div>
                           </div>
                           <div style={{ background: "var(--bg-blue-light)", border: "1px solid var(--border-blue-light)", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "var(--primary-darkest)", marginTop: "16px" }}>
                             <b>AI Suggestions:</b> {evalResult.suggestions}
@@ -1109,43 +1180,152 @@ export default function InternDashboard() {
                   <div style={{ padding: "32px 40px", minHeight: "260px", display: "flex", flexDirection: "column" }}>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {meetings.length === 0 ? (
-                      <p style={{textAlign:"center", padding:"20px", color:"#94a3b8"}}>No upcoming meetings.</p>
-                    ) : (
-                      meetings.map(m => {
-                        const dateObj = m.scheduled_time ? new Date(m.scheduled_time) : new Date();
-                        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const dateStr = dateObj.toLocaleDateString();
-                        const ampm = timeStr.slice(-2);
-                        const justTime = timeStr.slice(0, -3);
-
-                        return (
-                          <div key={m.id} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                              <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>{dateStr}</span>
-                                <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>{justTime}</span>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>{ampm}</span>
-                              </div>
-                              <div>
-                                <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{m.title}</h4>
-                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <User size={14} color="var(--text-muted, #64748b)" />
-                                    <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Mentor ID: {m.mentor_id}</span>
-                                  </div>
-                                  <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                                  <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{m.duration_minutes || 60} mins</span>
-                                </div>
-                              </div>
-                            </div>
-                            <button onClick={() => window.open(`/meeting/${m.room_code}`, '_blank')} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                              Join Zoom
-                            </button>
+                      {/* PDF Card */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                          <div style={{ width: "40px", height: "40px", background: "#fee2e2", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <FileText size={20} color="#ef4444" />
                           </div>
-                        );
-                      })
-                    )}                  </div>
+                          <div>
+                            <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Official Lecture Notes</span>
+                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>PDF Document • 2.4 MB</span>
+                          </div>
+                        </div>
+                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                          <Download size={16} /> Download
+                        </button>
+                      </div>
+
+                      {/* DOC Card */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #cbd5e1)"; e.currentTarget.style.background = "var(--bg-surface, #ffffff)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.03)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.boxShadow = "none"; }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                          <div style={{ width: "40px", height: "40px", background: "#e0e7ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <ClipboardList size={20} color="#4f46e5" />
+                          </div>
+                          <div>
+                            <span style={{ display: "block", fontSize: "15px", fontWeight: 700, color: "var(--text-primary, #0f172a)", marginBottom: "4px" }}>Practice Exercises</span>
+                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Word Document • 1.1 MB</span>
+                          </div>
+                        </div>
+                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                          <Download size={16} /> Download
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* What you'll learn */}
+                <div style={{ marginTop: "8px" }}>
+                  <h4 style={{ margin: "0 0 16px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>What you'll learn today</h4>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    {["Understanding component rendering", "Setting up standard project", "Creating first components", "Next steps in the module"].map((item, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <CheckCircle size={16} color="#16a34a" />
+                        <span style={{ fontSize: "13px", color: "#334155" }}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Personal Notes Area */}
+                <div style={{ marginTop: "24px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
+                      <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
+                    </h4>
+                    <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>Auto-saved</span>
+                  </div>
+                  <textarea 
+                    placeholder="Jot down important takeaways, questions, or ideas from this module..."
+                    style={{
+                      width: "100%",
+                      minHeight: "120px",
+                      padding: "16px",
+                      borderRadius: "12px",
+                      border: "1px solid var(--border-color, #e2e8f0)",
+                      backgroundColor: "var(--bg-surface-elevated, #f8fafc)",
+                      fontSize: "14px",
+                      color: "#334155",
+                      resize: "vertical",
+                      fontFamily: "inherit",
+                      outline: "none",
+                      transition: "all 0.2s",
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#93c5fd";
+                      e.target.style.backgroundColor = "var(--bg-surface, #ffffff)";
+                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "var(--border-color, #e2e8f0)";
+                      e.target.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)";
+                      e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)";
+                    }}
+                  />
+                </div>
+
+                  </div>
+                )}
+
+                {activeLearningTab === "Live Meetings" && (
+                  <div style={{ marginTop: "8px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: 0 }}>Upcoming Meetings</h3>
+                    <Badge variant="outline" style={{ color: "#3b82f6", borderColor: "var(--border-blue-light, #bfdbfe)", background: "#eff6ff" }}>2 Upcoming</Badge>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {/* Event 1 */}
+                    <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>Today</span>
+                          <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>4:00</span>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>PM</span>
+                        </div>
+                        <div>
+                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>React Core Concepts Q&A</h4>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                              <User size={14} color="var(--text-muted, #64748b)" />
+                              <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Sarah Jenkins</span>
+                            </div>
+                            <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
+                            <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>1 hr session</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button onClick={handleJoinMeeting} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
+                        Join Zoom
+                      </button>
+                    </div>
+
+                    {/* Event 2 */}
+                    <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)", opacity: 0.7 }}>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" }}>Tomorrow</span>
+                          <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-muted, #64748b)" }}>2:00</span>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8" }}>PM</span>
+                        </div>
+                        <div>
+                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "#334155" }}>Weekly Architecture Review</h4>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                              <User size={14} color="#94a3b8" />
+                              <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>David Chen</span>
+                            </div>
+                            <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
+                            <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>45 min session</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button style={{ background: "#f1f5f9", color: "var(--text-muted, #64748b)", border: "1px solid var(--border-color, #e2e8f0)", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "not-allowed" }}>
+                        Starts Tomorrow
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 )}
@@ -1250,6 +1430,7 @@ export default function InternDashboard() {
               </div>
               )}
             </div>
+          </div>
         );
 
       case "Tickets":
@@ -1415,43 +1596,54 @@ export default function InternDashboard() {
 
               {/* Tickets List */}
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {meetings.length === 0 ? (
-                      <p style={{textAlign:"center", padding:"20px", color:"#94a3b8"}}>No upcoming meetings.</p>
-                    ) : (
-                      meetings.map(m => {
-                        const dateObj = m.scheduled_time ? new Date(m.scheduled_time) : new Date();
-                        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const dateStr = dateObj.toLocaleDateString();
-                        const ampm = timeStr.slice(-2);
-                        const justTime = timeStr.slice(0, -3);
-
-                        return (
-                          <div key={m.id} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                              <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>{dateStr}</span>
-                                <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>{justTime}</span>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>{ampm}</span>
-                              </div>
-                              <div>
-                                <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{m.title}</h4>
-                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <User size={14} color="var(--text-muted, #64748b)" />
-                                    <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Mentor ID: {m.mentor_id}</span>
-                                  </div>
-                                  <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                                  <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{m.duration_minutes || 60} mins</span>
-                                </div>
-                              </div>
+                {filteredTickets.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-muted)" }}>
+                    No tickets found for this filter.
+                  </div>
+                ) : (
+                  filteredTickets.map(ticket => (
+                    <div 
+                      key={ticket.id}
+                      onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
+                      style={{ 
+                        padding: "16px 20px", 
+                        cursor: "pointer", 
+                        borderRadius: "10px",
+                        border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)", 
+                        transition: "all 0.2s ease",
+                        backgroundColor: selectedTicket?.id === ticket.id ? "#eff6ff" : "var(--card-bg)"
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <span style={{ fontSize: "11px", color: "#1e40af", fontWeight: 700, backgroundColor: "#dbeafe", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                          <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+                            <Clock size={14} /> {ticket.date}
+                          </span>
+                          <span className="badge" style={{ 
+                            backgroundColor: ticket.status === "Resolved" ? "#dcfce7" : ticket.status === "Pending" ? "#eff6ff" : "#fef3c7", 
+                            color: ticket.status === "Resolved" ? "#15803d" : ticket.status === "Pending" ? "#1d4ed8" : "#b45309",
+                            padding: "4px 12px",
+                            borderRadius: "20px",
+                            fontWeight: "700",
+                            fontSize: "12px"
+                          }}>
+                            {ticket.status}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {selectedTicket?.id === ticket.id && (
+                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <div>
+                            <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>Mentor & Admin Response</div>
+                            <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid #3b82f6", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                              <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: "1.6", whiteSpace: "pre-line" }}>{ticket.adminReply}</p>
                             </div>
-                            <button onClick={() => window.open(`/meeting/${m.room_code}`, '_blank')} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                              Join Zoom
-                            </button>
                           </div>
-                        );
-                      })
-                    )}                  </div>
                         </div>
                       )}
                     </div>
@@ -1621,43 +1813,350 @@ export default function InternDashboard() {
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {meetings.length === 0 ? (
-                      <p style={{textAlign:"center", padding:"20px", color:"#94a3b8"}}>No upcoming meetings.</p>
-                    ) : (
-                      meetings.map(m => {
-                        const dateObj = m.scheduled_time ? new Date(m.scheduled_time) : new Date();
-                        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const dateStr = dateObj.toLocaleDateString();
-                        const ampm = timeStr.slice(-2);
-                        const justTime = timeStr.slice(0, -3);
-
-                        return (
-                          <div key={m.id} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                              <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)", textTransform: "uppercase" }}>{dateStr}</span>
-                                <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-primary, #0f172a)" }}>{justTime}</span>
-                                <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>{ampm}</span>
-                              </div>
-                              <div>
-                                <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{m.title}</h4>
-                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <User size={14} color="var(--text-muted, #64748b)" />
-                                    <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Mentor ID: {m.mentor_id}</span>
-                                  </div>
-                                  <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                                  <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{m.duration_minutes || 60} mins</span>
-                                </div>
-                              </div>
-                            </div>
-                            <button onClick={() => window.open(`/meeting/${m.room_code}`, '_blank')} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                              Join Zoom
-                            </button>
+                    {activeDrops.map(drop => (
+                      <div key={drop.id} style={{ 
+                        backgroundColor: "var(--card-bg)", 
+                        border: "1px solid var(--border-color)", 
+                        borderRadius: "8px", 
+                        padding: "16px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        boxShadow: "var(--shadow-sm)"
+                      }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8", display: "inline-flex", alignItems: "center" }}>
+                              <Gift size={12} style={{ marginRight: "4px" }} /> POP QUIZ
+                            </span>
+                            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
+                              {drop.timeLimit}s time limit
+                            </span>
                           </div>
-                        );
-                      })
-                    )}                  </div>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
+                        </div>
+                        
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                          <button 
+                            onClick={() => handleStartAirdrop(drop)}
+                            style={{ 
+                              backgroundColor: "#ec4899", 
+                              color: "#fff", 
+                              border: "none", 
+                              padding: "8px 16px", 
+                              borderRadius: "6px", 
+                              fontWeight: 600, 
+                              fontSize: "13px",
+                              cursor: "pointer",
+                              boxShadow: "0 2px 4px rgba(236, 72, 153, 0.2)"
+                            }}
+                          >
+                            Participate
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {airdropTab === "Completed" && (
+              <div>
+                {completedDrops.length === 0 ? (
+                  <div style={{ padding: "40px", textAlign: "center", backgroundColor: "var(--card-bg)", borderRadius: "8px", border: "1px dashed var(--border-color)" }}>
+                    <p style={{ color: "var(--text-muted)", fontSize: "15px", margin: 0 }}>No completed airdrops yet.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {completedDrops.map(drop => (
+                      <div key={drop.id} style={{ 
+                        backgroundColor: "var(--bg-gray-lighter)", 
+                        border: "1px solid var(--border-color)", 
+                        borderRadius: "8px", 
+                        padding: "16px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 700, backgroundColor: "var(--border-color, #e2e8f0)", padding: "2px 8px", borderRadius: "4px", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <Flag size={12} /> FINISHED
+                            </span>
+                          </div>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
+                        </div>
+                        
+                        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                          <div style={{ backgroundColor: "var(--border-color, #e2e8f0)", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                            <Check size={14} /> Challenge Ended
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+
+      case "Progress & Certificate":
+        if (showCertificateView) {
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "hidden", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
+              {/* Back Button */}
+              <div style={{ marginBottom: "-8px" }}>
+                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
+                  <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
+                </button>
+              </div>
+
+              {/* Premium Completion Banner - Theme Aligned */}
+              <div style={{
+                background: "var(--gradient-primary, linear-gradient(135deg, #0875E1, #0B82F6))",
+                borderRadius: "20px",
+                padding: "24px 32px",
+                color: "var(--bg-surface, #ffffff)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                boxShadow: "var(--shadow-lg, 0 10px 15px -3px rgba(8, 27, 53, 0.1))",
+                position: "relative",
+                overflow: "hidden",
+                flexShrink: 0
+              }}>
+                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "rgba(255,255,255,0.9)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "rgba(255,255,255,0.2)", padding: "4px 10px", borderRadius: "10px" }}>
+                    Mission Accomplished <Rocket size={12} />
+                  </span>
+                  <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--bg-surface, #ffffff)" }}>
+                    Boom! You did it, Dhanush!
+                  </h2>
+                  <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255,255,255,0.9)", lineHeight: "1.4", maxWidth: "600px" }}>
+                    Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
+                  </p>
+                </div>
+
+                <div style={{ background: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid rgba(255, 255, 255, 0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.8)", display: "block" }}>Performance</span>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--bg-surface, #ffffff)" }}>91%</span>
+                  <span style={{ fontSize: "0.75rem", background: "#dcfce7", color: "#166534", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid #bbf7d0" }}>Excellent</span>
+                </div>
+              </div>
+
+              {/* Main Grid: Certificate & Actions */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "24px", flexGrow: 1, minHeight: 0 }}>
+                
+                {/* Certificate Render */}
+                <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "20px", padding: "20px 24px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Official Certificate</h3>
+                    <span style={{ fontSize: "0.75rem", color: "var(--success-dark, #059669)", fontWeight: 600, background: "var(--success-bg, #ECFDF5)", padding: "4px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid var(--success-border, #A7F3D0)" }}>
+                      <CheckCircle size={12} /> Verified
+                    </span>
+                  </div>
+
+                  <div style={{
+                    flexGrow: 1,
+                    border: "1px solid var(--border-color, #e2e8f0)",
+                    borderRadius: "12px",
+                    padding: "24px 32px",
+                    background: "linear-gradient(180deg, #ffffff 0%, var(--surface-soft, #F8FBFF) 100%)",
+                    textAlign: "center",
+                    position: "relative",
+                    boxShadow: "0 20px 25px -5px rgba(8, 27, 53, 0.05), 0 8px 10px -6px rgba(8, 27, 53, 0.01)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between"
+                  }}>
+                    {/* Corner accents */}
+                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+
+                    {/* Logo Area */}
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
+                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #081B35)", letterSpacing: "-0.5px" }}>ProEduvate</span>
+                    </div>
+
+                    <div>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
+                        Certificate of Internship
+                      </span>
+
+                      <p style={{ fontSize: "0.9rem", color: "var(--text-secondary, #45617F)", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
+
+                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "var(--brand-primary, #0B82F6)", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
+                        Sadie Sink
+                      </h1>
+
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #45617F)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
+                        has successfully completed the 30-day Internship Program in <strong style={{ color: "var(--text-primary, #081B35)" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
+                      </p>
+                    </div>
+
+                    {/* Dates & Signatures Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
+                      <div style={{ textAlign: "left" }}>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary, #081B35)", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
+                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
+                      </div>
+
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ borderBottom: "1px solid var(--border-strong, #C7D8EA)", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "var(--text-primary, #081B35)" }}>Arun Prakash</div>
+                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
+                      </div>
+
+                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                        <div style={{ width: "40px", height: "40px", background: "var(--bg-surface, #ffffff)", border: "1px dashed var(--border-strong, #C7D8EA)", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "var(--text-placeholder, #9DB0C5)" }}>QR</div>
+                        <span style={{ fontSize: "0.55rem", color: "var(--text-muted, #7890AA)", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions Column */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "20px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                    <h4 style={{ margin: "0 0 16px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Share & Download</h4>
+                    
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={() => alert("Downloading Official Certificate PDF...")}>
+                      <Download size={16} /> Download PDF
+                    </button>
+
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--surface-blue, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-default, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--border-default, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--surface-blue, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
+                      <Share2 size={16} /> Share on LinkedIn
+                    </button>
+
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface, #ffffff)", color: "var(--text-secondary, #45617F)", border: "1px solid var(--border-color, #e2e8f0)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.color = "var(--text-primary, #081B35)"; e.currentTarget.style.borderColor = "var(--border-strong, #C7D8EA)"; }} onMouseOut={(e) => { e.currentTarget.style.color = "var(--text-secondary, #45617F)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }} onClick={() => alert("Shareable link copied to clipboard!")}>
+                      <ExternalLink size={16} /> Copy Link
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "hidden", paddingRight: "8px" }}>
+            
+
+            {/* Top 4 Metrics Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Calendar size={24} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>12 / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>40%</span>
+                  </div>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Days Completed</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "40%", background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
+                </div>
+              </div>
+
+              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <CheckCircle size={24} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>28 / 45</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>62%</span>
+                  </div>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "62%", background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
+                </div>
+              </div>
+
+              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#faf5ff", color: "#9333ea", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Star size={24} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>10 / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>33%</span>
+                  </div>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Assessments Completed</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "33%", background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
+                </div>
+              </div>
+
+              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#fff7ed", color: "#ea580c", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Clock size={24} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>92%</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>Excellent</span>
+                  </div>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Attendance</span>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "92%", background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Grid (3-Column) */}
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
+              
+              {/* Column 1: Learning Progress Curve */}
+              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
+                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
+                  </div>
+                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "#334155", fontWeight: 600 }}>Overall Progress ▾</div>
+                </div>
+
+                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
+                  <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="160" x2="600" y2="160" stroke="#f1f5f9" strokeWidth="1" />
+                    <line x1="0" y1="120" x2="600" y2="120" stroke="#f1f5f9" strokeWidth="1" />
+                    <line x1="0" y1="80" x2="600" y2="80" stroke="#f1f5f9" strokeWidth="1" />
+                    <line x1="0" y1="40" x2="600" y2="40" stroke="#f1f5f9" strokeWidth="1" />
+                    <line x1="0" y1="0" x2="600" y2="0" stroke="#f1f5f9" strokeWidth="1" />
+
+                    <polygon points="0,180 100,150 200,120 300,100 400,80 500,50 600,20 600,200 0,200" fill="url(#progressGradFull)" />
+                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="#2563eb" strokeWidth="3" fill="none" />
+                    
+                    <circle cx="0" cy="180" r="5" fill="#2563eb" />
+                    <circle cx="100" cy="150" r="5" fill="#2563eb" />
+                    <circle cx="200" cy="120" r="8" fill="#2563eb" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
+                    <circle cx="300" cy="100" r="4" fill="var(--border-color, #cbd5e1)" />
+                    <circle cx="400" cy="80" r="4" fill="var(--border-color, #cbd5e1)" />
+                    <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
+                    <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
+                  </svg>
+                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
+                    <div style={{ marginBottom: "2px" }}>Day 12</div>
+                    <div style={{ fontSize: "1rem" }}>40% Complete</div>
+                  </div>
+                  
+                  {/* Y-axis labels */}
+                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
+                    <span>100%</span>
+                    <span>75%</span>
+                    <span>50%</span>
+                    <span>25%</span>
+                    <span>0%</span>
+                  </div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
@@ -1986,10 +2485,11 @@ export default function InternDashboard() {
 
         {/* Right User Actions & Profile */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Theme Toggle */}
+          {/* Theme Toggle 
           <div onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s ease" }} title="Toggle Theme">
             {theme === 'light' ? <Moon size={18} color="var(--text-gray, #64748b)" /> : <Sun size={18} color="var(--text-gray, #94a3b8)" />}
           </div>
+          */}
 
           {/* Bell Notifications */}
           <div style={{ position: 'relative', cursor: 'pointer' }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mockOnboardingService } from '../../../services/mockOnboardingService';
+import axios from 'axios';
 import '../../onboarding/Onboarding.css';
 
 export default function AdminOnboardingList() {
@@ -10,8 +10,8 @@ export default function AdminOnboardingList() {
         const fetchApps = async () => {
             setLoading(true);
             try {
-                const data = await mockOnboardingService.adminGetApplications();
-                setApplications(data);
+                const response = await axios.get("http://127.0.0.1:8000/api/v1/onboarding/applications");
+                setApplications(response.data);
             } catch (error) {
                 console.error("Error fetching applications", error);
             } finally {
@@ -52,8 +52,8 @@ export default function AdminOnboardingList() {
                         </thead>
                         <tbody>
                             {applications.map(app => (
-                                <tr key={app.applicationId}>
-                                    <td>{app.applicationId}</td>
+                                <tr key={app.id}>
+                                    <td>{app.id}</td>
                                     <td><strong style={{ color: 'var(--text-color)' }}>{app.name}</strong></td>
                                     <td>{app.domain}</td>
                                     <td>
@@ -64,7 +64,7 @@ export default function AdminOnboardingList() {
                                         </span>
                                     </td>
                                     <td>
-                                        <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${app.applicationId}`}>
+                                        <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${app.id}`}>
                                             View Details
                                         </button>
                                     </td>
