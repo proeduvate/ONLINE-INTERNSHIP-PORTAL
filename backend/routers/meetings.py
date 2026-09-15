@@ -7,14 +7,19 @@ import asyncio
 # Adjust import path relative to backend root
 from database import get_db 
 import models, schemas
-from pydantic import BaseModel
-from typing import Optional
-from fastapi import Header
-import jwt
 
-router = APIRouter(prefix="/meetings", tags=["meetings"])
+router = APIRouter(tags=["meetings"])
 
 # --- WebSocket Connection Manager ---
+
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
+from sqlalchemy.orm import Session
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+import models
+from database import get_db
+
 
 class MeetingCreate(BaseModel):
     title: str
@@ -32,9 +37,14 @@ class MeetingResponse(BaseModel):
     mentor_id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-SECRET_KEY = "supersecretkey_change_in_production"
+
+import os
+from fastapi import Header
+import jwt
+
+SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 
 def get_user_id_from_token(authorization: str = Header(None)):
@@ -49,29 +59,65 @@ def get_user_id_from_token(authorization: str = Header(None)):
             pass
     return 1 # Fallback mentor ID
 
+@router.post("", response_model=MeetingResponse)
 @router.post("/", response_model=MeetingResponse)
 def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), authorization: str = Header(None)):
     mentor_id = get_user_id_from_token(authorization)
+    if not mentor_id:
+        mentor_id = 1 # Fallback for demo
+
 
     # We save the meeting fields that exist in the database model
+    # (If scheduled_time/domain exist in the model, they should be assigned. Assuming they might be missing from schema, we'll try to map what we can safely)
     db_meeting = models.Meeting(
         mentor_id=mentor_id,
         title=meeting.title,
         room_code=meeting.room_code,
-        status=meeting.status
+        status=meeting.status,
+        scheduled_time=meeting.scheduled_time
     )
     db.add(db_meeting)
     db.commit()
     db.refresh(db_meeting)
     return db_meeting
 
+
+@router.get("/verify-intern/{intern_id}")
+def verify_intern(intern_id: int, db: Session = Depends(get_db)):
+    # Verify if intern exists and is an intern
+    user = db.query(models.User).filter(models.User.id == intern_id, models.User.role == "intern").first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Intern not found or invalid role")
+    return {"status": "success", "intern_id": user.id, "name": user.name}
+
+@router.get("", response_model=List[MeetingResponse])
 @router.get("/", response_model=List[MeetingResponse])
 def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None)):
-    # Return active or scheduled meetings.
+
+    # Return active or scheduled meetings. If intern, return all platform meetings for simplicity (or could filter by domain if added to model)
     meetings = db.query(models.Meeting).filter(models.Meeting.status.in_(["active", "scheduled"])).all()
     return meetings
 
+
+# (Removed duplicated APIRouter definition)
+
+# --- WebSocket Connection Manager ---
+
+global_meeting_active = False
+
+@router.get("/global-status")
+def get_global_status():
+    global global_meeting_active
+    return {"active": global_meeting_active}
+
+@router.post("/global-status")
+def set_global_status(active: bool):
+    global global_meeting_active
+    global_meeting_active = active
+    return {"active": global_meeting_active}
+
 class ConnectionManager:
+
     def __init__(self):
         # Maps room_id -> list of active WebSockets
         self.active_rooms: Dict[str, List[WebSocket]] = {}
@@ -91,12 +137,57 @@ class ConnectionManager:
 
     async def broadcast_to_room(self, room_id: str, message: dict):
         if room_id in self.active_rooms:
+            stale_connections = []
             for connection in self.active_rooms[room_id]:
-                await connection.send_json(message)
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    stale_connections.append(connection)
+            for stale in stale_connections:
+                self.disconnect(room_id, stale)
 
 manager = ConnectionManager()
 
 # --- Endpoints ---
+
+waiting_rooms: Dict[str, Dict[str, dict]] = {} # room_id -> { intern_id -> { "name": ..., "status": "waiting" } }
+
+class JoinRequest(BaseModel):
+    intern_id: str
+    name: str
+
+@router.post("/{room_id}/join-request")
+async def request_join(room_id: str, req: JoinRequest):
+    if room_id not in waiting_rooms:
+        waiting_rooms[room_id] = {}
+    waiting_rooms[room_id][req.intern_id] = {"name": req.name, "status": "waiting"}
+    
+    await manager.broadcast_to_room(room_id, {
+        "type": "join-request",
+        "payload": {"internId": req.intern_id, "name": req.name}
+    })
+    return {"status": "success"}
+
+@router.get("/{room_id}/waiting-list")
+def get_waiting_list(room_id: str):
+    return {"waiting": waiting_rooms.get(room_id, {})}
+
+class ApproveRequest(BaseModel):
+    intern_id: str
+    status: str
+
+@router.post("/{room_id}/approve")
+def approve_join(room_id: str, req: ApproveRequest):
+    if room_id in waiting_rooms and req.intern_id in waiting_rooms[room_id]:
+        waiting_rooms[room_id][req.intern_id]["status"] = req.status
+    return {"status": "success"}
+
+@router.get("/{room_id}/join-status/{intern_id}")
+def check_join_status(room_id: str, intern_id: str):
+    status = "prompt"
+    if room_id in waiting_rooms and intern_id in waiting_rooms[room_id]:
+        status = waiting_rooms[room_id][intern_id]["status"]
+    return {"status": status}
 
 @router.post("/switch-room")
 def switch_room(participant_id: int, target_room_id: str, db: Session = Depends(get_db)):
@@ -150,3 +241,4 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
     except WebSocketDisconnect:
         manager.disconnect(room_id, websocket)
         await manager.broadcast_to_room(room_id, {"sender": client_id, "type": "user-leave", "payload": {}})
+

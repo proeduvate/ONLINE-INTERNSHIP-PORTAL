@@ -1,9 +1,8 @@
 import enum
-from datetime import datetime, timezone
-from sqlalchemy import (
-    Column, Integer, String, Text, ForeignKey, 
-    DateTime, Enum, Boolean, func
-)
+from datetime import datetime
+import enum
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Float, Text, JSON, func, Date
 from sqlalchemy.orm import relationship
 
 try:
@@ -36,12 +35,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column("full_name", String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
-    phone = Column(String(20), nullable=True)
-    hashed_password = Column(String(255), nullable=True)
-    # Link to Supabase auth user id (uuid)
-    supabase_id = Column(String(100), nullable=True, unique=True)
-    role = Column(Enum(UserRole), default=UserRole.INTERN, nullable=False)
-    onboarding_status = Column(String(50), default="PENDING_REVIEW") # for onboarding flow
     hashed_password = Column(String(255), nullable=False)
     role = Column(Enum(UserRole), default=UserRole.INTERN, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -57,15 +50,7 @@ class User(Base):
     progress_pct = Column(Integer, default=0)
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime(timezone=True), nullable=True)
-    resume_url = Column(String(255), nullable=True)
-
-    # Onboarding Fields
-    interview_scheduled_time = Column(DateTime(timezone=True), nullable=True)
-    interview_meet_link = Column(String(255), nullable=True)
-    offer_letter_url = Column(String(255), nullable=True)
-    tc_url = Column(String(255), nullable=True)
-    signed_offer_letter_url = Column(String(255), nullable=True)
-    signed_tc_url = Column(String(255), nullable=True)
+    batch_id = Column(Integer, ForeignKey("batches.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
@@ -76,6 +61,7 @@ class User(Base):
     
     submissions = relationship("Submission", back_populates="intern", cascade="all, delete-orphan")
     certificates = relationship("Certificate", back_populates="intern", cascade="all, delete-orphan")
+    batch = relationship("Batch", back_populates="users")
 
 
 class Domain(Base):
@@ -199,6 +185,7 @@ class Meeting(Base):
     title = Column(String(200), nullable=False)
     room_code = Column(String(100), nullable=False, unique=True)
     status = Column(String(50), default="active") # "active", "completed"
+    scheduled_time = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationship to Breakout Rooms
@@ -225,10 +212,6 @@ class Certificate(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     intern_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    certificate_id = Column(String(100), nullable=False, unique=True)
-    grade = Column(String(5), nullable=False) # e.g. "A+", "A", "B", "C"
-    final_score = Column(Integer, nullable=False)
-    generated_at = Column(DateTime(timezone=True), server_default=func.now())
     intern_name = Column(String(150), nullable=False)
     certificate_id = Column(String(100), nullable=False, unique=True)
     domain = Column(String(100), nullable=False)
@@ -293,17 +276,303 @@ class OnboardingApplication(Base):
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING_REVIEW)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+
+
 class BonusAirdrop(Base):
-    __tablename__ = 'bonus_airdrops'
+    __tablename__ = "bonus_airdrops"
+    
     id = Column(Integer, primary_key=True, index=True)
-    question = Column(String(500), nullable=False)
-    time_limit_seconds = Column(Integer, default=60)
-    reward_points = Column(Integer, default=10)
-    is_active = Column(Boolean, default=True)
+    title = Column(String(200), nullable=False, default="Untitled Airdrop")
+    description = Column(Text, nullable=True)
+    
+    # Task specific details
+    task_type = Column(String(50), nullable=False) # mcq, pattern, true_false, fill_blank, match, arrange, code_output_mcq
+    task_config = Column(Text, nullable=False) # JSON text containing question, options, correct_answer
+    
+    domain = Column(String(100), nullable=True)
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
+    
+    # Timing and mode
+    start_mode = Column(String(50), nullable=False, default="fixed") # fixed, flexible
+    time_limit = Column(Integer, nullable=False) # in seconds
+    start_time = Column(DateTime, nullable=True) # Optional for flexible, mandatory for fixed
+    
+    # Rewards and Winners
+    points_distribution = Column(String(200), nullable=False)
+    winner_count = Column(Integer, nullable=False)
+    
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(50), default="DRAFT") # DRAFT, PENDING_APPROVAL, APPROVED, PUBLISHED, FINALIZED
+    
+    # Audit logic
+    rejection_reason = Column(Text, nullable=True)
+    published_at = Column(DateTime, nullable=True)
+    finalized_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class DailyScenario(Base):
-    __tablename__ = 'daily_scenarios'
+    __tablename__ = "daily_scenarios"
+
     id = Column(Integer, primary_key=True, index=True)
+    domain = Column(String(100), nullable=False, index=True)
+    day_number = Column(Integer, nullable=False, index=True)
+    step_number = Column(Integer, nullable=False, index=True)
+    scenario_text = Column(Text, nullable=False)
+    question_text = Column(Text, nullable=True) # Adding question text explicitly
+    
+    choice_a_text = Column(Text, nullable=False)
+    choice_a_feedback_type = Column(String(50), nullable=True) # Excellent, Good, Needs Improvement
+    choice_a_reason = Column(Text, nullable=True)
+    choice_a_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
+    
+    choice_b_text = Column(Text, nullable=False)
+    choice_b_feedback_type = Column(String(50), nullable=True)
+    choice_b_reason = Column(Text, nullable=True)
+    choice_b_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
+    
+    choice_c_text = Column(Text, nullable=True)
+    choice_c_feedback_type = Column(String(50), nullable=True)
+    choice_c_reason = Column(Text, nullable=True)
+    choice_c_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
+    
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships for DAG structure
+    next_scenario_a = relationship("DailyScenario", foreign_keys=[choice_a_next_scenario_id])
+    next_scenario_b = relationship("DailyScenario", foreign_keys=[choice_b_next_scenario_id])
+    next_scenario_c = relationship("DailyScenario", foreign_keys=[choice_c_next_scenario_id])
+
+class Batch(Base):
+    __tablename__ = "batches"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    users = relationship("User", back_populates="batch")
+
+class DailyQuestionResult(Base):
+    __tablename__ = "daily_question_results"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    question_id = Column(Integer, nullable=False)
+    marks_obtained = Column(Integer, nullable=False, default=0)
+    max_marks = Column(Integer, nullable=False, default=10)
+    mcq_score = Column(Float, nullable=False, default=0.0)
+    coding_score = Column(Float, nullable=False, default=0.0)
+    final_score = Column(Float, nullable=False, default=0.0)
+    attempted_at = Column(DateTime, default=datetime.utcnow)
+    date = Column(Date, nullable=False)
+
+    # Relationship (backref adds 'daily_question_results' to User automatically)
+    intern = relationship("User", backref="daily_question_results")
+
+
+# ==========================================
+#    TICKET MODEL
+# ==========================================
+
+
+class TicketStatus(str, enum.Enum):
+    OPEN = "open"
+    ASSIGNED = "assigned"
+    IN_PROGRESS = "in_progress"
+    RESOLVED = "resolved"
+    CLOSED = "closed"
+
+class Ticket(Base):
+    __tablename__ = "tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
-    date_added = Column(DateTime(timezone=True), server_default=func.now())
+    domain = Column(String(100), nullable=False)
+    status = Column(Enum(TicketStatus), default=TicketStatus.OPEN)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    resolved_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    resolved_at = Column(DateTime, nullable=True)
+    resolution = Column(Text, nullable=True)
+
+    closed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    closed_at = Column(DateTime, nullable=True)
+    closure_reason = Column(Text, nullable=True)
+
+    # Relationships (backrefs add 'tickets_created' and 'tickets_assigned' to User)
+    creator = relationship("User", foreign_keys=[created_by], backref="tickets_created")
+    assignee = relationship("User", foreign_keys=[assigned_to], backref="tickets_assigned")
+    resolver = relationship("User", foreign_keys=[resolved_by], backref="tickets_resolved")
+    closer = relationship("User", foreign_keys=[closed_by], backref="tickets_closed")
+    messages = relationship("TicketMessage", back_populates="ticket", order_by="TicketMessage.created_at")
+
+
+# ==========================================
+#    TICKET MESSAGE MODEL
+# ==========================================
+
+class TicketMessage(Base):
+    __tablename__ = "ticket_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    message = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    ticket = relationship("Ticket", back_populates="messages")
+    sender = relationship("User", backref="ticket_messages")
+
+# ==========================================
+#    TICKET HISTORY MODEL
+# ==========================================
+
+class TicketHistory(Base):
+    __tablename__ = "ticket_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    actor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    action = Column(String(100), nullable=False)
+    old_status = Column(Enum(TicketStatus), nullable=True)
+    new_status = Column(Enum(TicketStatus), nullable=True)
+    metadata_json = Column(Text, nullable=True) # JSON string
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    ticket = relationship("Ticket", backref="history")
+    actor = relationship("User", backref="ticket_actions")
+
+    @property
+    def parsed_metadata(self):
+        if not self.metadata_json:
+            return None
+        import json
+        try:
+            return json.loads(self.metadata_json)
+        except:
+            return {}
+
+
+# ==========================================
+#    AIRDROP / BONUS SYSTEM MODELS
+# ==========================================
+
+class AirdropAttempt(Base):
+    __tablename__ = "airdrop_attempts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    started_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+    
+    submitted_answer = Column(Text, nullable=True) # JSON representation of what they submitted
+    is_correct = Column(Boolean, nullable=True)
+    
+    status = Column(String(50), default="started") # started, submitted, disqualified
+
+class AirdropResult(Base):
+    __tablename__ = "airdrop_results"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    rank = Column(Integer, nullable=True)
+    completion_time = Column(Integer, nullable=True) # in seconds
+    bonus_points = Column(Integer, default=0)
+    is_winner = Column(Boolean, default=False)
+
+
+# ==========================================
+#    POINT TRANSACTION MODEL
+# ==========================================
+
+class PointTransaction(Base):
+    __tablename__ = "point_transactions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    points = Column(Integer, nullable=False)
+    source_type = Column(String(50), nullable=False) # e.g. "BONUS_AIRDROP"
+    source_id = Column(Integer, nullable=True) # e.g. airdrop_id
+    reason = Column(String(255), nullable=True)
+    awarded_by = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+#    DOMAIN FACTS MODEL
+# ==========================================
+
+class DomainFact(Base):
+    __tablename__ = "domain_facts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain = Column(String(100), nullable=False, index=True)
+    fact = Column(Text, nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class InternFactHistory(Base):
+    __tablename__ = "intern_fact_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    fact_id = Column(Integer, ForeignKey("domain_facts.id"), nullable=False)
+    fact_text = Column(Text, nullable=True) # Denormalized fact text for easy viewing
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class ScenarioHistory(Base):
+    __tablename__ = "scenario_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    domain = Column(String(100), nullable=True)
+    day_number = Column(Integer, nullable=True)
+    scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
+    choice_id = Column(String(10), nullable=False)
+    feedback_type = Column(String(50), nullable=True)
+    consequence = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    intern = relationship("User", foreign_keys=[intern_id])
+    scenario = relationship("DailyScenario", foreign_keys=[scenario_id])
+
+# ==========================================
+#    GITHUB REPOSITORY WORKFLOW MODEL
+# ==========================================
+
+class GitHubRepositoryRequest(Base):
+    __tablename__ = "github_repository_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    domain = Column(String(100), nullable=False)
+    request_status = Column(String(50), default="requested") # requested, assigned
+    requested_at = Column(DateTime, default=datetime.utcnow)
+    assigned_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    assigned_at = Column(DateTime, nullable=True)
+    repository_id = Column(String(100), nullable=True)
+    repository_url = Column(String(255), nullable=True)
+
+    # Relationships
+    intern = relationship("User", foreign_keys=[intern_id])
+    task = relationship("Task", foreign_keys=[task_id])
+    assigner = relationship("User", foreign_keys=[assigned_by])
+
+    @property
+    def intern_name(self):
+        return self.intern.name if self.intern else f"User {self.intern_id}"
+
+    @property
+    def task_title(self):
+        return self.task.title if self.task else f"Task {self.task_id}"
