@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from typing import List, Dict, Any
 from collections import defaultdict
@@ -42,7 +42,7 @@ def get_admin_dashboard_stats(
     avg_performance = int(avg_performance_query) if avg_performance_query else 0
     
     # Batch-wise Progress Trend (We'll calculate submissions over 7-day intervals by college/batch)
-    submissions = db.query(models.Submission).filter(models.Submission.submitted_at.isnot(None)).all()
+    submissions = db.query(models.Submission).options(joinedload(models.Submission.intern)).filter(models.Submission.submitted_at.isnot(None)).all()
     
     batch_progress = []
     

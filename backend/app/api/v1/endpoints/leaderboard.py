@@ -13,13 +13,15 @@ router = APIRouter(
     tags=["Leaderboard"]
 )
 
+from sqlalchemy.orm import Session, joinedload
+
 @router.get("", response_model=List[schemas_leaderboard.LeaderboardEntry])
 def get_leaderboard(
     batch_id: Optional[int] = Query(None, description="Filter by Batch ID"),
     period: str = Query("all", description="Filter by period: 'weekly', 'monthly', or 'all'"),
     db: Session = Depends(get_db)
 ):
-    users_query = db.query(models.User).filter(models.User.role == models.UserRole.INTERN)
+    users_query = db.query(models.User).options(joinedload(models.User.batch), joinedload(models.User.domain)).filter(models.User.role == models.UserRole.INTERN)
     if batch_id is not None:
         users_query = users_query.filter(models.User.batch_id == batch_id)
     

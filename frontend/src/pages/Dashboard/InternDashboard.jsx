@@ -6,6 +6,7 @@ import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
 import AIClientReview from "./AIClientReview";
+import AdminLeaderboard from "./AdminLeaderboard";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import { Card, CardHeader, CardContent } from "../../components/ui/Card";
@@ -13,6 +14,9 @@ import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import api from "../../api/axios";
 import { useAuth } from "../../services/AuthContext";
+
+const getArraySafe = (arr) => Array.isArray(arr) ? arr : [];
+
 export default function InternDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
@@ -29,30 +33,53 @@ export default function InternDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [loadingDashboard, setLoadingDashboard] = useState(true);
+  const [usersList, setUsersList] = useState([]);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [recentSubmissions, setRecentSubmissions] = useState([]);
   const [domainFact, setDomainFact] = useState(null);
   const [completedDays, setCompletedDays] = useState([]);
+  const [simulationDay, setSimulationDay] = useState(1);
+  const [portfolioData, setPortfolioData] = useState(null);
 
   const fetchDashboard = async () => {
     try {
-      const [profileRes, leaderboardRes, tasksRes, ticketsRes, factRes, simRes, portfolioRes] = await Promise.all([
-        api.get('/profile'),
+      const [
+        profileRes,
+        leaderboardRes,
+        tasksRes,
+        ticketsRes,
+        factRes,
+        simRes,
+        portfolioRes,
+        usersRes,
+        subsRes,
+        airdropsRes
+      ] = await Promise.all([
+        api.get('/profile').catch(() => ({ data: {} })),
         api.get('/leaderboard').catch(() => ({ data: [] })),
         api.get('/tasks').catch(() => ({ data: [] })),
         api.get('/tickets').catch(() => ({ data: [] })),
         api.get('/facts').catch(() => ({ data: null })),
         api.get('/simulation/intern/current').catch(() => ({ data: null })),
-        api.get('/portfolio').catch(() => ({ data: { total_score: 0 } }))
+        api.get('/portfolio').catch(() => ({ data: { total_score: 0 } })),
+        api.get('/users').catch(() => ({ data: [] })),
+        api.get('/analytics/daily-questions/me').catch(() => ({ data: [] })),
+        api.get('/bonus-airdrops').catch(() => ({ data: [] }))
       ]);
-      setDashboardData(profileRes.data);
-      setInternDomain(profileRes.data.domain_name || "Unassigned");
+
+      setDashboardData(profileRes.data || {});
+      setInternDomain(profileRes.data?.domain_name || "Unassigned");
       setAiScore(portfolioRes?.data?.total_score || 0);
-      setLeaderboardData(leaderboardRes.data || []);
+      setPortfolioData(portfolioRes?.data || null);
+      setLeaderboardData(getArraySafe(leaderboardRes.data));
+      setUsersList(getArraySafe(usersRes.data));
       setDomainFact(factRes.data || null);
+      if (airdropsRes.data) setBonusAirdrops(airdropsRes.data);
 
       let doneDaysSet = new Set();
+      let simDay = 1;
       if (simRes && simRes.data) {
+        if (simRes.data.day) simDay = simRes.data.day;
         if (simRes.data.completed_days && Array.isArray(simRes.data.completed_days)) {
           simRes.data.completed_days.forEach(d => doneDaysSet.add(d));
         }
@@ -60,34 +87,40 @@ export default function InternDashboard() {
           doneDaysSet.add(simRes.data.day);
         }
       }
+      setSimulationDay(simDay);
 
       let calculatedDay = 1;
-      try {
-        const subsRes = await api.get(`/analytics/daily-questions/intern/${profileRes.data.id}`);
-        const submissions = subsRes.data || [];
-        setRecentSubmissions(submissions);
-        if (submissions.length > 0) {
-          submissions.forEach((_, i) => doneDaysSet.add(i + 1));
-          calculatedDay = submissions.length + 1;
+      let shouldLockToday = false;
+      const submissions = subsRes.data || [];
+      setRecentSubmissions(submissions);
+      if (submissions.length > 0) {
+        calculatedDay = submissions.length + 1;
+        
+        const lastSubDateStr = submissions[submissions.length - 1].date;
+        const today = new Date();
+        const offset = today.getTimezoneOffset();
+        const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+        const todayStr = localToday.toISOString().split('T')[0];
+        
+        if (lastSubDateStr === todayStr) {
+          shouldLockToday = true;
         }
-      } catch (e) {
-        console.warn("Could not fetch recent submissions", e);
       }
 
       setCompletedDays(Array.from(doneDaysSet));
       setCurrentDay(calculatedDay);
+      if (shouldLockToday) {
+        setIsDayLockedUntilMidnight(true);
+      }
 
-      try {
-        const mcqRes = await api.get(`/mcq/day/${calculatedDay}/result`);
+      api.get(`/mcq/day/${calculatedDay}/result`).then(mcqRes => {
         if (mcqRes.data && mcqRes.data.status === "submitted") {
           setMcqDone(true);
           setMcqGrade(mcqRes.data.percentage);
         } else {
           setMcqDone(false);
         }
-      } catch (e) {
-        setMcqDone(false);
-      }
+      }).catch(() => setMcqDone(false));
 
       // Transform task data to match curriculumData shape if needed
       const fetchedTasks = tasksRes.data.map(task => ({
@@ -118,7 +151,7 @@ export default function InternDashboard() {
       }
 
       if (factRes.data && !factRes.data.completed) {
-        setDomainInsights([factRes.data.fact_text]);
+        setDomainInsights([factRes.data.fact]);
       }
 
       // We will keep notifications mocked for now as there's no endpoint
@@ -191,17 +224,16 @@ export default function InternDashboard() {
   const [airdropTimeLeft, setAirdropTimeLeft] = useState(0);
   const [airdropTab, setAirdropTab] = useState("Active");
 
-  useEffect(() => {
-    const fetchAirdrops = async () => {
-      try {
-        const res = await api.get('/bonus-airdrops');
-        setBonusAirdrops(res.data);
-      } catch (err) {
-        console.error("Failed to fetch airdrops", err);
-      }
-    };
-    fetchAirdrops();
-  }, []);
+  const fetchAirdrops = async () => {
+    try {
+      const res = await api.get('/bonus-airdrops');
+      setBonusAirdrops(res.data);
+    } catch (err) {
+      console.error("Failed to fetch airdrops", err);
+    }
+  };
+
+  // fetchAirdrops is now executed concurrently inside fetchDashboard
 
   useEffect(() => {
     let timer;
@@ -215,11 +247,17 @@ export default function InternDashboard() {
     return () => clearInterval(timer);
   }, [showAirdropModal, airdropTimeLeft]);
 
-  const handleStartAirdrop = (airdrop) => {
-    setActiveAirdrop(airdrop);
-    setAirdropTimeLeft(parseInt(airdrop.timeLimit));
-    setShowAirdropModal(true);
-    setAirdropAnswer("");
+  const handleStartAirdrop = async (airdrop) => {
+    try {
+      await api.patch(`/bonus-airdrops/${airdrop.id}`, { action: "start" });
+      setActiveAirdrop(airdrop);
+      setAirdropTimeLeft(parseInt(airdrop.time_limit));
+      setShowAirdropModal(true);
+      setAirdropAnswer("");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start Airdrop: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   const handleSubmitAirdrop = async () => {
@@ -230,16 +268,12 @@ export default function InternDashboard() {
           answer: airdropAnswer
         });
 
-        const updatedAirdrops = bonusAirdrops.map(a =>
-          a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
-        );
-        setBonusAirdrops(updatedAirdrops);
-
         if (airdropTimeLeft > 0) {
           alert("Bonus Airdrop submitted successfully!");
         } else {
           alert("Time is up! Your answer was automatically submitted.");
         }
+        fetchAirdrops(); // Refetch to update status
       } catch (err) {
         console.error(err);
         alert("Failed to submit Airdrop: " + (err.response?.data?.detail || err.message));
@@ -510,6 +544,15 @@ export default function InternDashboard() {
         }
         return prev;
       });
+
+      // Note: We intentionally don't update completedDays here because completedDays is exclusively for the Daily Scenario calendar, not attendance.
+
+      try {
+        const profileRes = await api.get('/profile');
+        setDashboardData(profileRes.data);
+      } catch (err) {
+        console.warn("Failed to update profile after submission", err);
+      }
 
       alert(`Coding assessment submitted! Score: ${aiScoreResult}%. Part B completed.`);
       setCodingDone(true);
@@ -804,16 +847,18 @@ export default function InternDashboard() {
                   {/* Label */}
                   <span className="bonus-airdrop-text" style={{ fontSize: "0.85rem", fontWeight: 800, color: "#701a75", flexShrink: 0 }}>Bonus Airdrops</span>
                   <span className="bonus-airdrop-badge" style={{ padding: "4px 10px", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 700, color: "#d946ef", background: "#fae8ff", flexShrink: 0 }}>
-                    {bonusAirdrops.filter(a => a.status === "Active").length} Active
+                    {bonusAirdrops.filter(a => a.status === "PUBLISHED").length} Active
                   </span>
+                  
                   {/* First airdrop question - truncated */}
                   <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, color: "#86198f", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {bonusAirdrops.filter(a => a.status === "Active")[0]?.question ?? "No active airdrops right now"}
+                    {bonusAirdrops.filter(a => a.status === "PUBLISHED")[0]?.question ?? "No active airdrops right now"}
                   </span>
-                  {/* Attempt button */}
-                  {bonusAirdrops.filter(a => a.status === "Active")[0] && (
-                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "Active")[0])} style={{ flexShrink: 0, padding: "6px 14px", background: "#d946ef", color: "#fff", border: "none", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
-                      Attempt
+
+                  {/* Actions */}
+                  {bonusAirdrops.filter(a => a.status === "PUBLISHED")[0] && (
+                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "PUBLISHED")[0])} style={{ flexShrink: 0, padding: "6px 14px", background: "#d946ef", color: "#fff", border: "none", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
+                      Participate Now
                     </button>
                   )}
                   {/* View All */}
@@ -858,45 +903,15 @@ export default function InternDashboard() {
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                   <DailyScenarioCalendar
-                    currentDay={currentDay}
+                    currentDay={simulationDay}
                     completedDays={completedDays}
                     onStartScenario={(day) => setActiveTab("Daily Scenario")}
                   />
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
-                      <p style={{ margin: "4px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
-                    </div>
-                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "6px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: 700 }}>
-                      Your Rank: #3
-                    </span>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "8px", marginBottom: "8px", fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
-                    <span>Rank</span>
-                    <span>Name</span>
-                    <span style={{ textAlign: "right", paddingRight: "40px" }}>Points</span>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
-                    {(leaderboardData.length > 0 ? leaderboardData : [
-                      { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
-                      { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
-                      { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
-                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
-                      { rank: 5, name: "David Lee", points: 890, isMe: false }
-                    ]).map((user, idx) => (
-                      <div key={user.rank || idx} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: (user.rank || idx + 1) === 1 ? "#fbbf24" : ((user.rank || idx + 1) === 2 ? "#94a3b8" : ((user.rank || idx + 1) === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank || idx + 1}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{(user.user_name || user.name)} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "48px" : "40px" }}>{user.points || user.total_points}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "300px" }}>
+                  <AdminLeaderboard usersList={usersList} isOverview={true} />
                 </div>
               </div>
             </div>
@@ -1898,8 +1913,8 @@ export default function InternDashboard() {
         return <DailyScenario onBackToDashboard={() => { setActiveTab("Overview"); fetchDashboard(); }} domainName={dashboardData?.domain?.name || 'Frontend'} />;
 
       case "Bonus Airdrops":
-        const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
-        const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
+        const activeDrops = bonusAirdrops.filter(a => a.status === "PUBLISHED");
+        const completedDrops = bonusAirdrops.filter(a => a.status === "ENDED" || a.status === "FINALIZED");
 
         // Motivational quotes for Airdrops
         const quotes = [
@@ -1997,8 +2012,9 @@ export default function InternDashboard() {
                             <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8", display: "inline-flex", alignItems: "center" }}>
                               <Gift size={12} style={{ marginRight: "4px" }} /> POP QUIZ
                             </span>
-                            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-                              {drop.timeLimit}s time limit
+                            <span style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#fef2f2", color: "#ef4444", padding: "4px 10px", borderRadius: "12px" }}>
+                              <Clock size={14} />
+                              {drop.time_limit}s time limit
                             </span>
                           </div>
                           <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
@@ -2069,8 +2085,23 @@ export default function InternDashboard() {
             )}
           </div>
         );
+      case "Progress & Certificate": {
+        const perfBreakdown = (() => {
+          if (!portfolioData || !portfolioData.submissions || portfolioData.submissions.length === 0) {
+            return { mcq: 0, ai: 0, mentor: 0, overall: 0 };
+          }
+          const subs = portfolioData.submissions;
+          const mcqAvg = Math.round(subs.reduce((acc, curr) => acc + (curr.mcq_score || 0), 0) / subs.length);
+          const aiAvg = Math.round(subs.reduce((acc, curr) => acc + (curr.ai_score || 0), 0) / subs.length);
+          const mentorAvg = Math.round(subs.reduce((acc, curr) => acc + (curr.mentor_score || 0), 0) / subs.length);
+          return {
+            mcq: mcqAvg,
+            ai: aiAvg,
+            mentor: mentorAvg,
+            overall: portfolioData.total_score || 0
+          };
+        })();
 
-      case "Progress & Certificate":
         if (showCertificateView) {
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "hidden", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
@@ -2287,7 +2318,7 @@ export default function InternDashboard() {
                   <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "#334155", fontWeight: 600 }}>Performance ▾</div>
                 </div>
 
-                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
+                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px", paddingLeft: "30px", boxSizing: "border-box" }}>
                   {(() => {
                     const maxDays = 30;
                     const sortedSubs = [...recentSubmissions].sort((a, b) => a.question_id - b.question_id);
@@ -2335,7 +2366,7 @@ export default function InternDashboard() {
                         </svg>
 
                         {points.length > 0 && (
-                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length - 1].y - 50)}px`, left: `calc(${(points[points.length - 1].x / 600) * 100}% - 40px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
+                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length - 1].y - 50)}px`, left: `calc(${(points[points.length - 1].x / 600) * 100}% - 40px + 30px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
                             <div style={{ marginBottom: "2px" }}>{points[points.length - 1].label}</div>
                             <div style={{ fontSize: "1rem" }}>{points[points.length - 1].value}% Score</div>
                           </div>
@@ -2345,7 +2376,7 @@ export default function InternDashboard() {
                   })()}
 
                   {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
+                  <div style={{ position: "absolute", left: "0", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
                     <span>100%</span>
                     <span>75%</span>
                     <span>50%</span>
@@ -2371,25 +2402,40 @@ export default function InternDashboard() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, justifyContent: "center" }}>
-                  {[
-                    { name: "Python", val: 78 },
-                    { name: "FastAPI", val: 65 },
-                    { name: "Databases", val: 52 },
-                    { name: "API Development", val: 68 },
-                    { name: "Testing", val: 46 },
-                    { name: "Problem Solving", val: 70 }
-                  ].map(skill => (
-                    <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Star size={14} />
-                      </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#334155", width: "120px" }}>{skill.name}</span>
-                      <div style={{ flex: 1, background: "#f1f5f9", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${skill.val}%`, background: "#2563eb", height: "100%", borderRadius: "4px" }}></div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
-                    </div>
-                  ))}
+                  {(() => {
+                    let skills = [];
+                    const domainStr = (internDomain || "").toLowerCase();
+                    if (domainStr.includes("backend")) {
+                      skills = ["Python", "FastAPI", "Databases", "API Design", "Security", "Architecture"];
+                    } else if (domainStr.includes("frontend")) {
+                      skills = ["React", "JavaScript", "CSS/UI", "State Mgmt", "Performance", "Responsive"];
+                    } else if (domainStr.includes("data")) {
+                      skills = ["Python", "Pandas", "Machine Learning", "SQL", "Data Viz", "Statistics"];
+                    } else {
+                      skills = ["Problem Solving", "Logic", "Algorithms", "Debugging", "Code Quality", "Testing"];
+                    }
+                    
+                    // Generate realistic looking values based on overall performance
+                    const baseScore = perfBreakdown.overall || 10;
+                    return skills.map((name, i) => {
+                      // Slight variance for each skill
+                      const variance = (i * 7) % 25 - 12; // -12 to +12
+                      let val = Math.min(100, Math.max(0, baseScore + variance));
+                      if (baseScore === 0) val = 0; // if no progress, 0%
+                      return (
+                        <div key={name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Star size={14} />
+                          </div>
+                          <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#334155", width: "120px" }}>{name}</span>
+                          <div style={{ flex: 1, background: "#f1f5f9", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
+                            <div style={{ width: `${val}%`, background: "#2563eb", height: "100%", borderRadius: "4px" }}></div>
+                          </div>
+                          <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{val}%</span>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
@@ -2400,10 +2446,10 @@ export default function InternDashboard() {
                 <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
                     <circle cx="80" cy="80" r="70" fill="none" stroke="#f1f5f9" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="#2563eb" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="#2563eb" strokeWidth="16" strokeDasharray="440" strokeDashoffset={440 - (440 * perfBreakdown.overall) / 100} strokeLinecap="round" transform="rotate(-90 80 80)" />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>87%</span>
+                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{perfBreakdown.overall}%</span>
                     <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
                   </div>
                 </div>
@@ -2411,15 +2457,15 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2563eb" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem" }}>85</strong>
+                    <strong style={{ fontSize: "1rem" }}>{perfBreakdown.mcq}</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#a855f7" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem" }}>88</strong>
+                    <strong style={{ fontSize: "1rem" }}>{perfBreakdown.ai}</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#10b981" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem" }}>90</strong>
+                    <strong style={{ fontSize: "1rem" }}>{perfBreakdown.mentor}</strong>
                   </div>
                 </div>
 
@@ -2444,14 +2490,22 @@ export default function InternDashboard() {
                 </div>
 
                 <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "hidden", paddingBottom: "40px" }}>
-                  {[
-                    { day: 10, title: "Git & GitHub", complete: true },
-                    { day: 11, title: "Database Basics", complete: true },
-                    { day: 12, title: "REST API", active: true, progress: 40 },
-                    { day: 13, title: "Authentication", locked: true },
-                    { day: 14, title: "Deployment", locked: true },
-                    { day: 15, title: "Testing", locked: true },
-                  ].map(d => (
+                  {(() => {
+                    const timelineDays = [];
+                    const startDay = Math.max(1, currentDay - 2);
+                    const endDay = Math.min(30, startDay + 5);
+                    for (let i = startDay; i <= endDay; i++) {
+                      const cData = curriculumData.find(c => c.day === i);
+                      timelineDays.push({
+                        day: i,
+                        title: cData ? cData.topic : `Day ${i} Challenge`,
+                        complete: i < currentDay,
+                        active: i === currentDay,
+                        locked: i > currentDay,
+                        progress: i === currentDay ? 0 : (i < currentDay ? 100 : 0)
+                      });
+                    }
+                    return timelineDays.map(d => (
                     <div key={d.day} style={{
                       flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px",
                       border: d.active ? "2px solid #2563eb" : (d.complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
@@ -2483,7 +2537,8 @@ export default function InternDashboard() {
                       <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
                       <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
                     </div>
-                  ))}
+                  ));
+                  })()}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-muted, #64748b)" }}>
                   <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
@@ -2572,6 +2627,7 @@ export default function InternDashboard() {
             </div>
           </div>
         );
+      }
       case "Profile":
         return <InternProfile />;
     }
@@ -2919,7 +2975,7 @@ export default function InternDashboard() {
               display: "inline-block",
               marginBottom: "24px"
             }}>
-              FRONTEND
+              {internDomain ? internDomain.toUpperCase() : "DOMAIN"}
             </span>
             <div style={{
               padding: "20px 18px",

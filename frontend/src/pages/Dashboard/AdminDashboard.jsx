@@ -33,20 +33,86 @@ export default function AdminDashboard() {
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
   const [selectedAirdrop, setSelectedAirdrop] = useState(null);
+  const [refixAirdropModal, setRefixAirdropModal] = useState(null);
+  const [refixStartDate, setRefixStartDate] = useState("");
+  const [refixStartTime, setRefixStartTime] = useState("");
+  const [refixEndDate, setRefixEndDate] = useState("");
+  const [refixEndTime, setRefixEndTime] = useState("");
 
-  useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    if (storedAirdrops) {
-      setBonusAirdrops(JSON.parse(storedAirdrops));
+  const transformAirdrops = (data) => {
+    return data.map(a => {
+      const startDate = a.start_time ? new Date(a.start_time).toLocaleDateString() : "";
+      const startTime = a.start_time ? new Date(a.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const endDate = a.end_time ? new Date(a.end_time).toLocaleDateString() : "";
+      const endTime = a.end_time ? new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      
+      let frontendTaskType = a.task_type;
+      let questionText = a.title || "No Title";
+      if (a.task_type === 'mcq') {
+        frontendTaskType = 'Multiple Choice';
+        questionText = a.task_config?.question || questionText;
+      } else if (a.task_type === 'pattern') {
+        frontendTaskType = 'Pattern / Sequence';
+        questionText = a.task_config?.question || questionText;
+      } else if (a.task_type === 'true_false') {
+        frontendTaskType = 'True / False';
+        questionText = a.task_config?.statement || questionText;
+      } else if (a.task_type === 'fill_blank') {
+        frontendTaskType = 'Fill in the Blank';
+        questionText = a.task_config?.sentence || questionText;
+      } else if (a.task_type === 'match') {
+        frontendTaskType = 'Match the Following';
+        questionText = "Match the following pairs correctly.";
+      } else if (a.task_type === 'arrange') {
+        frontendTaskType = 'Arrange in Order';
+        questionText = "Arrange the items in the correct sequence.";
+      }
+
+      return {
+        ...a,
+        id: a.id,
+        question: questionText,
+        points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
+        status: a.status,
+        timeLimit: a.time_limit,
+        taskType: frontendTaskType,
+        startMode: a.start_mode === 'fixed' ? 'Fixed Start Time' : 'Flexible Start',
+        startDate,
+        startTime,
+        endDate,
+        endTime,
+        rawEndTime: a.end_time,
+        mcqOptions: a.task_config?.options,
+        correctAnswer: a.task_config?.correct_answer,
+        matchPairs: a.task_config?.pairs ? Object.entries(a.task_config.pairs).map(([k, v]) => ({ key: k, value: v })) : [],
+        arrangeItems: a.task_config?.correct_sequence || []
+      };
+    });
+  };
+
+  const fetchAirdrops = async () => {
+    try {
+      const res = await api.get('/bonus-airdrops');
+      setBonusAirdrops(transformAirdrops(res.data));
+    } catch (err) {
+      console.error("Failed to fetch airdrops:", err);
     }
-  }, []);
+  };
 
-  const handleApproveAirdrop = (id) => {
-    const updatedAirdrops = bonusAirdrops.map(a => 
-      a.id === id ? { ...a, status: "APPROVED" } : a
-    );
-    setBonusAirdrops(updatedAirdrops);
-    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+  const handleApproveAirdrop = async (id, newStartTime = null, newEndTime = null) => {
+    try {
+      const payload = {};
+      if (newStartTime) payload.new_start_time = newStartTime;
+      if (newEndTime) payload.new_end_time = newEndTime;
+      
+      await api.post(`/bonus-airdrops/admin/${id}/approve`, payload);
+      alert("Airdrop published successfully!");
+      fetchAirdrops();
+      setSelectedAirdrop(null);
+    } catch (error) {
+      console.error("Failed to approve airdrop:", error);
+      alert("Failed to approve airdrop: " + (error.response?.data?.detail || error.message));
+    }
   };
 
   // State Mock Data
@@ -59,14 +125,19 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [usersRes, tasksRes, statsRes, ticketsRes, domainsRes] = await Promise.all([
+        const [usersRes, tasksRes, statsRes, ticketsRes, domainsRes, airdropsRes] = await Promise.all([
           api.get('/users').catch(err => { console.error('Failed to fetch users:', err); return { data: [] }; }),
           api.get('/tasks').catch(err => { console.error('Failed to fetch tasks:', err); return { data: [] }; }),
           api.get('/admin/dashboard').catch(err => { console.error('Failed to fetch stats:', err); return { data: null }; }),
           api.get('/tickets').catch(err => { console.error('Failed to fetch tickets:', err); return { data: [] }; }),
-          api.get('/domains').catch(err => { console.error('Failed to fetch domains:', err); return { data: [] }; })
+          api.get('/domains').catch(err => { console.error('Failed to fetch domains:', err); return { data: [] }; }),
+          api.get('/bonus-airdrops').catch(err => { console.error('Failed to fetch airdrops:', err); return { data: [] }; })
         ]);
         
+        if (airdropsRes.data) {
+          setBonusAirdrops(transformAirdrops(airdropsRes.data));
+        }
+
         const domainMap = {};
         if (domainsRes && domainsRes.data) {
           domainsRes.data.forEach(d => { domainMap[d.id] = d.name; });
@@ -91,7 +162,7 @@ export default function AdminDashboard() {
             title: t.title,
             difficulty: t.difficulty || "Medium",
             deadline: `${t.deadline_days} Days`,
-            domain: domainMap[t.domain_id] || "Unknown", 
+            domain: domainMap[t.domain_id] || "Unknown",  
             status: "Active",
             task_type: t.task_type || "curriculum",
             domain_id: t.domain_id
@@ -230,7 +301,17 @@ export default function AdminDashboard() {
   const handleUpdateTicketStatus = async (status) => {
     try {
       const action = status === "Resolved" ? "resolve" : "close";
-      await api.patch(`/tickets/${selectedTicket.id}`, { action });
+      const payload = { action };
+      
+      if (action === "resolve") {
+        const resolution = window.prompt("Enter resolution details (optional):") || "Resolved by admin";
+        payload.resolution = resolution;
+      } else if (action === "close") {
+        const reason = window.prompt("Enter closure reason (optional):") || "Closed by admin";
+        payload.closure_reason = reason;
+      }
+
+      await api.patch(`/tickets/${selectedTicket.id}`, payload);
       await refreshTickets();
     } catch (err) {
       console.error(err);
@@ -425,7 +506,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="dashboard-grid-2-1" style={{ marginBottom: "20px", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px", marginBottom: "20px" }}>
               <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: "16px", animationDelay: '0.5s', display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Batch-wise Progress Trend</h3>
                 <div style={{ flex: 1, minHeight: "260px" }}>
@@ -490,7 +571,7 @@ export default function AdminDashboard() {
                           <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>{ticket.creator_name || ticket.created_by}</b></span>
                         </div>
                         <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
-                        <span style={{ fontSize: "11px", color: "#b91c1c", textTransform: "capitalize" }}>{ticket.status} â€¢ {new Date(ticket.created_at).toLocaleDateString()}</span>
+                        <span style={{ fontSize: "11px", color: "#b91c1c", textTransform: "capitalize" }}>{ticket.status} • {new Date(ticket.created_at).toLocaleDateString()}</span>
                       </div>
                     ))
                   )}
@@ -530,9 +611,9 @@ export default function AdminDashboard() {
                       </h2>
                       <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
                         <span>ID: {selectedIntern.id}</span>
-                        <span>â€¢</span>
+                        <span>•</span>
                         <span>{selectedIntern.domain}</span>
-                        <span>â€¢</span>
+                        <span>•</span>
                         <span>{selectedIntern.college}</span>
                       </p>
                     </div>
@@ -629,9 +710,9 @@ export default function AdminDashboard() {
                       </h2>
                       <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
                         <span>ID: {selectedMentor.id}</span>
-                        <span>â€¢</span>
+                        <span>•</span>
                         <span>{selectedMentor.domain}</span>
-                        <span>â€¢</span>
+                        <span>•</span>
                         <span>Mentor</span>
                       </p>
                     </div>
@@ -1236,7 +1317,8 @@ export default function AdminDashboard() {
                   <thead>
                     <tr>
                       <th style={{ padding: "12px 16px" }}>ID</th>
-                      <th style={{ padding: "12px 16px" }}>Question</th>
+                      <th style={{ padding: "12px 16px" }}>Title</th>
+                      <th style={{ padding: "12px 16px" }}>Task Type</th>
                       <th style={{ padding: "12px 16px" }}>Points</th>
                       <th style={{ padding: "12px 16px" }}>Status</th>
                       <th style={{ padding: "12px 16px" }}>Time Limit</th>
@@ -1246,7 +1328,7 @@ export default function AdminDashboard() {
                   <tbody>
                     {bonusAirdrops.length === 0 ? (
                       <tr>
-                        <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
+                        <td colSpan="7" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
                       </tr>
                     ) : (
                       [...bonusAirdrops].reverse().map(airdrop => (
@@ -1258,13 +1340,16 @@ export default function AdminDashboard() {
                           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
-                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
+                          <td style={{ padding: "12px 16px", fontWeight: "500", color: "#1e293b" }}>{airdrop.title || "-"}</td>
+                          <td style={{ padding: "12px 16px", color: "#64748b" }}>{airdrop.taskType || "-"}</td>
+                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...(Array.isArray(airdrop.points) ? airdrop.points : [airdrop.points]).map(Number))} pts</td>
                           <td style={{ padding: "12px 16px" }}>
                             {airdrop.status === "PENDING_APPROVAL" ? (
                               <span className="badge badge-warning">PENDING_APPROVAL</span>
+                            ) : airdrop.status === "ENDED" ? (
+                              <span className="badge badge-error" style={{ backgroundColor: "#fee2e2", color: "#b91c1c" }}>ENDED</span>
                             ) : (
-                              <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
+                              <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'PUBLISHED' ? 'badge-success' : 'badge-primary'}`} style={airdrop.status === 'PUBLISHED' ? { backgroundColor: "#dcfce7", color: "#166534" } : {}}>
                                 {airdrop.status}
                               </span>
                             )}
@@ -1277,7 +1362,22 @@ export default function AdminDashboard() {
                                 style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleApproveAirdrop(airdrop.id);
+                                  let isExpired = false;
+                                  if (airdrop.rawEndTime) {
+                                    const endDateTime = new Date(airdrop.rawEndTime);
+                                    if (new Date() > endDateTime) {
+                                      isExpired = true;
+                                    }
+                                  }
+                                  if (isExpired) {
+                                    setRefixStartDate(airdrop.startDate || "");
+                                    setRefixStartTime(airdrop.startTime || "");
+                                    setRefixEndDate(airdrop.endDate || "");
+                                    setRefixEndTime(airdrop.endTime || "");
+                                    setRefixAirdropModal(airdrop);
+                                  } else {
+                                    handleApproveAirdrop(airdrop.id);
+                                  }
                                 }}
                               >
                                 Approve
@@ -1452,6 +1552,50 @@ export default function AdminDashboard() {
           {renderContent()}
         </div>
       </main>
+
+      {refixAirdropModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1050 }}>
+          <div className="card" style={{ width: "100%", maxWidth: "400px", padding: "24px", backgroundColor: "white", borderRadius: "12px" }}>
+            <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Refix Airdrop Time</h3>
+            <p style={{ fontSize: "14px", color: "#64748b", marginBottom: "20px" }}>The original time for this Airdrop has passed. Please set a new start and end time before publishing.</p>
+            
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600" }}>New Start Time</label>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <input type="date" className="form-control" value={refixStartDate} onChange={e => setRefixStartDate(e.target.value)} />
+                <input type="time" className="form-control" value={refixStartTime} onChange={e => setRefixStartTime(e.target.value)} />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600" }}>New End Time</label>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <input type="date" className="form-control" value={refixEndDate} onChange={e => setRefixEndDate(e.target.value)} />
+                <input type="time" className="form-control" value={refixEndTime} onChange={e => setRefixEndTime(e.target.value)} />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button className="btn btn-secondary" onClick={() => setRefixAirdropModal(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={() => {
+                if (!refixStartDate || !refixStartTime || !refixEndDate || !refixEndTime) {
+                  alert("Please fill all date and time fields.");
+                  return;
+                }
+                const newStart = new Date(`${refixStartDate}T${refixStartTime}:00`);
+                const newEnd = new Date(`${refixEndDate}T${refixEndTime}:00`);
+                if (newEnd <= newStart) {
+                  alert("End time must be after start time.");
+                  return;
+                }
+                handleApproveAirdrop(refixAirdropModal.id, newStart.toISOString(), newEnd.toISOString());
+                setRefixAirdropModal(null);
+              }}>Approve & Publish</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -146,3 +146,7 @@ class AirdropResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+class AirdropApproveRequest(BaseModel):
+    new_start_time: Optional[datetime] = None
+    new_end_time: Optional[datetime] = None

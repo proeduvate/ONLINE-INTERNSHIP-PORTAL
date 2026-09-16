@@ -1,17 +1,67 @@
-﻿import React from 'react';
+import React from 'react';
 import { ArrowLeft, Clock, Calendar, Award, CheckCircle, Target, Users, Zap, Gift, ListOrdered, CheckCircle2, Trophy, Medal } from 'lucide-react';
 
 export default function AdminAirdropDetails({ airdrop, onBack }) {
   if (!airdrop) return null;
 
   const getStatusColor = (status) => {
-    if (status === 'APPROVED') return { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' };
+    if (status === 'PUBLISHED' || status === 'APPROVED') return { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' };
     if (status === 'PENDING_APPROVAL') return { bg: '#fef08a', text: '#854d0e', border: '#fde047' };
+    if (status === 'ENDED') return { bg: '#fee2e2', text: '#b91c1c', border: '#fecaca' };
     return { bg: '#e0e7ff', text: '#3730a3', border: '#c7d2fe' };
   };
 
   const statusStyle = getStatusColor(airdrop.status);
 
+  const getArraySafe = (data) => {
+    if (!data) return [];
+    
+    // Check if it's already an array
+    if (Array.isArray(data)) {
+      // If it's a single object with A, B, C, D keys (like for MCQ options)
+      if (data.length === 1 && typeof data[0] === 'object' && data[0] !== null) {
+        const keys = Object.keys(data[0]);
+        if (keys.includes('A') || keys.includes('a') || keys.includes('1') || (keys.length > 1 && !keys.includes('left') && !keys.includes('text'))) {
+          return Object.values(data[0]);
+        }
+      }
+      return data;
+    }
+
+    // If it's an object with A, B, C, D keys
+    if (typeof data === 'object' && data !== null) {
+       const keys = Object.keys(data);
+       if (keys.length > 1 && !keys.includes('left') && !keys.includes('text')) {
+           return Object.values(data);
+       }
+       return [data];
+    }
+
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) {
+          if (parsed.length === 1 && typeof parsed[0] === 'object' && parsed[0] !== null) {
+            const keys = Object.keys(parsed[0]);
+            if (keys.length > 1 && !keys.includes('left') && !keys.includes('text')) {
+              return Object.values(parsed[0]);
+            }
+          }
+          return parsed;
+        }
+        if (typeof parsed === 'object' && parsed !== null) {
+           const keys = Object.keys(parsed);
+           if (keys.length > 1 && !keys.includes('left') && !keys.includes('text')) {
+               return Object.values(parsed);
+           }
+           return [parsed];
+        }
+      } catch (e) {
+        if (data.includes(',')) return data.split(',').map(s => s.trim());
+      }
+    }
+    return [data];
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', animation: "fadeIn 0.3s ease-out", width: '100%' }}>
@@ -120,7 +170,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <Award size={20} /> Point Distribution
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {airdrop.points.map((pts, idx) => (
+              {(Array.isArray(airdrop.points) ? airdrop.points : [airdrop.points]).map((pts, idx) => (
                 <div key={idx} style={{ 
                   display: "flex", justifyContent: "space-between", alignItems: "center",
                   padding: '12px 16px', 
@@ -158,33 +208,36 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <div>
                 <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Options</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
-                  {airdrop.mcqOptions.map((opt, idx) => (
+                  {getArraySafe(airdrop.mcqOptions).map((opt, idx) => {
+                    const letter = String.fromCharCode(65 + idx);
+                    const isCorrect = airdrop.correctAnswer === opt || String(airdrop.correctAnswer).toUpperCase() === letter;
+                    return (
                     <div key={idx} style={{ 
                       padding: '16px 20px', 
-                      backgroundColor: airdrop.correctAnswer === opt ? '#f0fdf4' : 'var(--bg-surface, #ffffff)',
-                      border: `2px solid ${airdrop.correctAnswer === opt ? '#22c55e' : 'var(--border-color, #e2e8f0)'}`,
+                      backgroundColor: isCorrect ? '#f0fdf4' : 'var(--bg-surface, #ffffff)',
+                      border: `2px solid ${isCorrect ? '#22c55e' : 'var(--border-color, #e2e8f0)'}`,
                       borderRadius: '12px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '16px',
-                      color: airdrop.correctAnswer === opt ? '#166534' : '#334155',
-                      fontWeight: airdrop.correctAnswer === opt ? "600" : "500",
-                      boxShadow: airdrop.correctAnswer === opt ? "0 4px 6px -1px rgba(34, 197, 94, 0.1)" : "none",
+                      color: isCorrect ? '#166534' : '#334155',
+                      fontWeight: isCorrect ? "600" : "500",
+                      boxShadow: isCorrect ? "0 4px 6px -1px rgba(34, 197, 94, 0.1)" : "none",
                       transition: "all 0.2s ease"
                     }}>
                       <div style={{ 
                         width: '32px', height: '32px', borderRadius: '8px', 
-                        backgroundColor: airdrop.correctAnswer === opt ? '#22c55e' : '#f1f5f9', 
-                        color: airdrop.correctAnswer === opt ? '#fff' : 'var(--text-muted, #64748b)', 
+                        backgroundColor: isCorrect ? '#22c55e' : '#f1f5f9', 
+                        color: isCorrect ? '#fff' : 'var(--text-muted, #64748b)', 
                         display: 'flex', alignItems: 'center', justifyContent: 'center', 
                         fontSize: '14px', fontWeight: 'bold' 
                       }}>
-                        {String.fromCharCode(65 + idx)}
+                        {letter}
                       </div>
                       <span style={{ flex: 1, fontSize: "16px" }}>{opt}</span>
-                      {airdrop.correctAnswer === opt && <CheckCircle2 size={24} color="#22c55e" />}
+                      {isCorrect && <CheckCircle2 size={24} color="#22c55e" />}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -194,7 +247,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <div>
                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Match Pairs</h4>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                   {airdrop.matchPairs.map((pair, idx) => (
+                   {getArraySafe(airdrop.matchPairs).map((pair, idx) => (
                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', backgroundColor: 'var(--bg-surface-elevated, #f8fafc)', padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
                        <div style={{ flex: 1, padding: '16px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #cbd5e1', borderRadius: '8px', textAlign: 'center', fontWeight: "500", color: "#334155", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.left}</div>
                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", flexShrink: 0 }}>
@@ -212,7 +265,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <div>
                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Order</h4>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                   {airdrop.arrangeItems.map((item, idx) => (
+                   {getArraySafe(airdrop.arrangeItems).map((item, idx) => (
                      <div key={idx} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #e2e8f0', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                         <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#3b82f6', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold' }}>
                           {idx + 1}

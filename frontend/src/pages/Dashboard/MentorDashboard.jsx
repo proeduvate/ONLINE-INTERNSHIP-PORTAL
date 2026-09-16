@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight } from "lucide-react";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, LineChart, Line } from "recharts";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, TrendingUp, CheckCircle } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
+import InternProfile from "./InternProfile";
 import AdminLeaderboard from "./AdminLeaderboard";
 import MentorProfile from "./MentorProfile";
+import AdminAirdropDetails from "./AdminAirdropDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
@@ -68,81 +70,162 @@ export default function MentorDashboard() {
   const [airdropPage, setAirdropPage] = useState(1);
   const [airdropFilter, setAirdropFilter] = useState("All");
   const airdropsPerPage = 13;
+  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
 
   // Bonus Airdrops now fetched via API in fetchMentorData
 
-  const handleCreateAirdrop = (e) => {
+  const handleCreateAirdrop = async (e) => {
     e.preventDefault();
     if (!newAirdrop.title.trim()) return alert("Please enter an airdrop title.");
     
     // Validate based on taskType
+    let mappedTaskType = "mcq";
+    let taskConfig = {};
+
     if (newAirdrop.taskType === "Multiple Choice") {
       if (!newAirdrop.question.trim()) return alert("Please enter the question.");
       if (!newAirdrop.mcqOptions.A.trim() || !newAirdrop.mcqOptions.B.trim() || !newAirdrop.mcqOptions.C.trim() || !newAirdrop.mcqOptions.D.trim()) {
         return alert("Please fill all MCQ options A, B, C, and D.");
       }
       if (!newAirdrop.correctAnswer) return alert("Please select the correct option.");
+      
+      mappedTaskType = "mcq";
+      taskConfig = {
+        question: newAirdrop.question,
+        options: [newAirdrop.mcqOptions.A, newAirdrop.mcqOptions.B, newAirdrop.mcqOptions.C, newAirdrop.mcqOptions.D],
+        correct_answer: newAirdrop.correctAnswer
+      };
     } else if (newAirdrop.taskType === "Pattern / Sequence") {
       if (!newAirdrop.question.trim()) return alert("Please enter the pattern series.");
       if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+      mappedTaskType = "pattern";
+      taskConfig = {
+        question: newAirdrop.question,
+        correct_answer: newAirdrop.correctAnswer
+      };
     } else if (newAirdrop.taskType === "True / False") {
       if (!newAirdrop.question.trim()) return alert("Please enter the statement.");
       if (!newAirdrop.correctAnswer) return alert("Please select the correct answer (True or False).");
+      mappedTaskType = "true_false";
+      taskConfig = {
+        statement: newAirdrop.question,
+        correct_answer: newAirdrop.correctAnswer === "True"
+      };
     } else if (newAirdrop.taskType === "Fill in the Blank") {
       if (!newAirdrop.question.trim()) return alert("Please enter the sentence with blank.");
       if (!newAirdrop.correctAnswer.trim()) return alert("Please enter the correct answer.");
+      mappedTaskType = "fill_blank";
+      taskConfig = {
+        sentence: newAirdrop.question,
+        correct_answer: newAirdrop.correctAnswer
+      };
     } else if (newAirdrop.taskType === "Match the Following") {
       const invalidPair = newAirdrop.matchPairs.some(p => !p.key.trim() || !p.value.trim());
       if (invalidPair || newAirdrop.matchPairs.length === 0) {
         return alert("Please fill all Match pairs keys and values.");
       }
+      mappedTaskType = "match";
+      taskConfig = {
+        pairs: newAirdrop.matchPairs.reduce((acc, pair) => { acc[pair.key] = pair.value; return acc; }, {})
+      };
     } else if (newAirdrop.taskType === "Arrange in Order") {
       const invalidItem = newAirdrop.arrangeItems.some(item => !item.trim());
       if (invalidItem || newAirdrop.arrangeItems.length < 2) {
         return alert("Please fill all items in correct order. At least 2 items are required.");
       }
+      mappedTaskType = "arrange";
+      taskConfig = {
+        correct_sequence: newAirdrop.arrangeItems
+      };
     }
 
     if (!newAirdrop.startDate || !newAirdrop.endDate) {
       return alert("Please select start and end dates.");
     }
 
-    const newAirdropObj = {
-      id: bonusAirdrops.length > 0 ? Math.max(...bonusAirdrops.map(a => a.id)) + 1 : 1,
+    // Convert times to UTC ISO strings
+    const startDateTimeStr = `${newAirdrop.startDate} ${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`;
+    const endDateTimeStr = `${newAirdrop.endDate} ${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`;
+    
+    // Parse using local time and convert to ISO string
+    const startIso = new Date(startDateTimeStr).toISOString();
+    const endIso = new Date(endDateTimeStr).toISOString();
+
+    const payload = {
       title: newAirdrop.title,
-      taskType: newAirdrop.taskType,
-      question: newAirdrop.taskType === "Match the Following"
-        ? "Match the following pairs correctly."
-        : newAirdrop.taskType === "Arrange in Order"
-        ? "Arrange the items in the correct sequence."
-        : newAirdrop.question,
-      correctAnswer: newAirdrop.taskType === "Match the Following"
-        ? JSON.stringify(newAirdrop.matchPairs)
-        : newAirdrop.taskType === "Arrange in Order"
-        ? JSON.stringify(newAirdrop.arrangeItems)
-        : newAirdrop.correctAnswer,
-      mcqOptions: newAirdrop.taskType === "Multiple Choice" ? newAirdrop.mcqOptions : null,
-      matchPairs: newAirdrop.taskType === "Match the Following" ? newAirdrop.matchPairs : null,
-      arrangeItems: newAirdrop.taskType === "Arrange in Order" ? newAirdrop.arrangeItems : null,
-      startMode: newAirdrop.startMode,
-      startDate: newAirdrop.startDate,
-      startTime: `${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`,
-      endDate: newAirdrop.endDate,
-      endTime: `${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`,
-      winners: newAirdrop.winners,
-      points: newAirdrop.points.map(p => p || "0"),
-      timeLimit: newAirdrop.timeLimit || "60",
-      status: "PENDING_APPROVAL",
-      createdAt: new Date().toISOString()
+      description: "Bonus Airdrop created by mentor",
+      task_type: mappedTaskType,
+      task_config: taskConfig,
+      domain: selectedDomain || null,
+      batch_id: null,
+      start_mode: "fixed",
+      time_limit: parseInt(newAirdrop.timeLimit) || 60,
+      start_time: startIso,
+      end_time: endIso,
+      points_distribution: newAirdrop.points.filter(p => p.trim() !== "").join(","),
+      winner_count: parseInt(newAirdrop.winners) || 3
     };
 
-    const updatedAirdrops = [...bonusAirdrops, newAirdropObj];
-    setBonusAirdrops(updatedAirdrops);
-    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+    try {
+      await api.post('/bonus-airdrops', payload);
+      
+      // Refresh airdrops list
+      const res = await api.get('/bonus-airdrops');
+      setBonusAirdrops(res.data.map(a => {
+        const startDate = a.start_time ? new Date(a.start_time).toLocaleDateString() : "";
+        const startTime = a.start_time ? new Date(a.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        const endDate = a.end_time ? new Date(a.end_time).toLocaleDateString() : "";
+        const endTime = a.end_time ? new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        
+        let frontendTaskType = a.task_type;
+        let questionText = a.title || "No Title";
+        if (a.task_type === 'mcq') {
+          frontendTaskType = 'Multiple Choice';
+          questionText = a.task_config?.question || questionText;
+        } else if (a.task_type === 'pattern') {
+          frontendTaskType = 'Pattern / Sequence';
+          questionText = a.task_config?.question || questionText;
+        } else if (a.task_type === 'true_false') {
+          frontendTaskType = 'True / False';
+          questionText = a.task_config?.statement || questionText;
+        } else if (a.task_type === 'fill_blank') {
+          frontendTaskType = 'Fill in the Blank';
+          questionText = a.task_config?.sentence || questionText;
+        } else if (a.task_type === 'match') {
+          frontendTaskType = 'Match the Following';
+          questionText = "Match the following pairs correctly.";
+        } else if (a.task_type === 'arrange') {
+          frontendTaskType = 'Arrange in Order';
+          questionText = "Arrange the items in the correct sequence.";
+        }
 
-    setShowAirdropModal(false);
-    setNewAirdrop(defaultAirdropState);
-    alert("Bonus Airdrop created and sent to Admin for approval!");
+        return {
+          ...a,
+          id: a.id,
+          question: questionText,
+          points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
+          status: a.status,
+          timeLimit: a.time_limit,
+          taskType: frontendTaskType,
+          startMode: a.start_mode === 'fixed' ? 'Fixed Start Time' : 'Flexible Start',
+          startDate,
+          startTime,
+          endDate,
+          endTime,
+          mcqOptions: a.task_config?.options,
+          correctAnswer: a.task_config?.correct_answer,
+          matchPairs: a.task_config?.pairs ? Object.entries(a.task_config.pairs).map(([k, v]) => ({ key: k, value: v })) : [],
+          arrangeItems: a.task_config?.correct_sequence || []
+        };
+      }));
+
+      setShowAirdropModal(false);
+      setNewAirdrop(defaultAirdropState);
+      alert("Bonus Airdrop created and sent to Admin for approval!");
+    } catch (err) {
+      console.error("Failed to create airdrop:", err);
+      alert("Failed to create airdrop. Check console for details.");
+    }
   };
 
   // State from DB
@@ -163,22 +246,25 @@ export default function MentorDashboard() {
   const [availableDomains, setAvailableDomains] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [chartData, setChartData] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [selectedChartInternId, setSelectedChartInternId] = useState("");
 
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const [statsRes, internsRes, subsRes, meetRes, tasksRes, airdropsRes] = await Promise.all([
+        const [statsRes, internsRes, subsRes, meetRes, tasksRes, airdropsRes, usersRes] = await Promise.all([
           api.get('/mentor/dashboard'),
           api.get('/mentor/interns'),
           api.get('/mentor/submissions'),
           api.get('/mentor/meetings'),
           api.get('/tasks'),
-          api.get('/bonus-airdrops')
+          api.get('/bonus-airdrops'),
+          api.get('/users').catch(() => ({ data: [] }))
         ]);
         
         setDashboardStats(statsRes.data);
         setAssignedInterns(internsRes.data);
+        setAllUsers(usersRes.data || []);
         if (internsRes.data && internsRes.data.length > 0) {
           setSelectedChartInternId(internsRes.data[0].db_id);
         }
@@ -199,7 +285,7 @@ export default function MentorDashboard() {
           difficulty: "Medium",
           deadline: t.deadline_days ? `${t.deadline_days} days` : "Flexible",
           status: "Active",
-          type: t.title.includes("Scenario:") ? "Coding" : "MCQ",
+          type: t.task_type === 'coding' ? 'Coding' : t.task_type === 'mcq' ? 'MCQ' : 'Curriculum',
           resources: t.resources || "No resources",
           mcqs: t.mcq_questions ? (typeof t.mcq_questions === "string" ? JSON.parse(t.mcq_questions) : t.mcq_questions) : [],
           codingQuestion: {
@@ -211,13 +297,53 @@ export default function MentorDashboard() {
         })));
 
         const fetchedAirdrops = airdropsRes.data;
-        setBonusAirdrops(fetchedAirdrops.map(a => ({
-          id: a.id,
-          question: a.title || "No Title",
-          points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
-          status: a.status,
-          timeLimit: a.time_limit
-        })));
+        setBonusAirdrops(fetchedAirdrops.map(a => {
+          const startDate = a.start_time ? new Date(a.start_time).toLocaleDateString() : "";
+          const startTime = a.start_time ? new Date(a.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+          const endDate = a.end_time ? new Date(a.end_time).toLocaleDateString() : "";
+          const endTime = a.end_time ? new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+          
+          let frontendTaskType = a.task_type;
+          let questionText = a.title || "No Title";
+          if (a.task_type === 'mcq') {
+            frontendTaskType = 'Multiple Choice';
+            questionText = a.task_config?.question || questionText;
+          } else if (a.task_type === 'pattern') {
+            frontendTaskType = 'Pattern / Sequence';
+            questionText = a.task_config?.question || questionText;
+          } else if (a.task_type === 'true_false') {
+            frontendTaskType = 'True / False';
+            questionText = a.task_config?.statement || questionText;
+          } else if (a.task_type === 'fill_blank') {
+            frontendTaskType = 'Fill in the Blank';
+            questionText = a.task_config?.sentence || questionText;
+          } else if (a.task_type === 'match') {
+            frontendTaskType = 'Match the Following';
+            questionText = "Match the following pairs correctly.";
+          } else if (a.task_type === 'arrange') {
+            frontendTaskType = 'Arrange in Order';
+            questionText = "Arrange the items in the correct sequence.";
+          }
+
+          return {
+            ...a,
+            id: a.id,
+            question: questionText,
+            points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
+            status: a.status,
+            timeLimit: a.time_limit,
+            taskType: frontendTaskType,
+            startMode: a.start_mode === 'fixed' ? 'Fixed Start Time' : 'Flexible Start',
+            startDate,
+            startTime,
+            endDate,
+            endTime,
+            mcqOptions: a.task_config?.options,
+            correctAnswer: a.task_config?.correct_answer,
+            matchPairs: a.task_config?.pairs ? Object.entries(a.task_config.pairs).map(([k, v]) => ({ key: k, value: v })) : [],
+            arrangeItems: a.task_config?.correct_sequence || []
+          };
+        }));
 
       } catch (error) {
         console.error("Failed to fetch mentor data:", error);
@@ -231,7 +357,15 @@ export default function MentorDashboard() {
   useEffect(() => {
     if (selectedChartInternId) {
       api.get(`/analytics/daily-questions/intern/${selectedChartInternId}`)
-        .then(res => setChartData(res.data))
+        .then(res => {
+          const mappedData = res.data.map(item => ({
+            date: item.date,
+            CodingScore: item.coding_score,
+            MCQScore: item.mcq_score,
+            FinalScore: item.final_score
+          }));
+          setChartData(mappedData);
+        })
         .catch(err => console.error("Failed to fetch daily analytics", err));
     }
   }, [selectedChartInternId]);
@@ -458,7 +592,7 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div className="dashboard-grid-2-1" style={{ marginBottom: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", marginBottom: "16px" }}>
               <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                   <h3 style={{ fontSize: "16px", margin: 0 }}>Daily Question Analytics</h3>
@@ -475,19 +609,59 @@ export default function MentorDashboard() {
                 </div>
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={225}>
-                    <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
-                      <Tooltip 
-                        cursor={{fill: '#f3f4f6'}}
-                        contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
-                        wrapperStyle={{ zIndex: 1000 }}
+                    <LineChart data={chartData} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                      <XAxis 
+                        dataKey="date" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{ fill: '#9ca3af', fontSize: 11 }} 
+                        dy={10}
                       />
-                      <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                      <Bar dataKey="mcq_score" name="MCQ Score" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="coding_score" name="Coding Score" fill="#10b981" radius={[4, 4, 0, 0]} />
-                    </BarChart>
+                      <YAxis 
+                        domain={[0, 100]} 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{ fill: '#9ca3af', fontSize: 11 }}
+                        dx={-10}
+                      />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+                      />
+                      <Legend 
+                        wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
+                        iconType="circle"
+                      />
+                      <Line 
+                        type="monotone" 
+                        name="Coding Score"
+                        dataKey="CodingScore" 
+                        stroke="#f59e0b" 
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={{ r: 4, fill: '#fff', stroke: '#f59e0b', strokeWidth: 2 }}
+                        activeDot={{ r: 6 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        name="Final Score"
+                        dataKey="FinalScore" 
+                        stroke="#3b82f6" 
+                        strokeWidth={2}
+                        dot={{ r: 4, fill: '#fff', stroke: '#3b82f6', strokeWidth: 2 }}
+                        activeDot={{ r: 6 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        name="MCQ Score"
+                        dataKey="MCQScore" 
+                        stroke="#10b981" 
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={{ r: 4, fill: '#fff', stroke: '#10b981', strokeWidth: 2 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 ) : (
                   <div style={{ height: "225px", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280", fontSize: "14px" }}>
@@ -513,7 +687,7 @@ export default function MentorDashboard() {
               </div>
             </div>
 
-            <div className="dashboard-grid-1-2" style={{ flex: 1, minHeight: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", flex: 1, minHeight: 0 }}>
               <div className="card animate-slide-up" style={{ marginBottom: 0, display: 'flex', flexDirection: 'column', minHeight: 0, animationDelay: '0.7s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "16px" }}>Upcoming Schedule</h3>
                 <div style={{ padding: "12px", background: "#f9fafb", borderRadius: "6px", border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", flex: 1 }}>
@@ -548,7 +722,7 @@ export default function MentorDashboard() {
               </div>
 
               <div className="animate-slide-up" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.8s' }}>
-                <AdminLeaderboard usersList={assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
+                <AdminLeaderboard usersList={allUsers.length > 0 ? allUsers : assignedInterns.map(i => ({...i, role: 'Intern'}))} isOverview={true} />
               </div>
             </div>
           </>
@@ -732,8 +906,8 @@ export default function MentorDashboard() {
 
       case "Programs":
         const domainTasks = allTasks.filter(t => t.domain_name === selectedDomain);
-        const mcqTasks = domainTasks.filter(t => t.type === "MCQ");
-        const codingTasks = domainTasks.filter(t => t.type === "Coding");
+        const mcqTasks = domainTasks.filter(t => t.type === "MCQ").sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
+        const codingTasks = domainTasks.filter(t => t.type === "Coding").sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
 
         // Group curriculum by day for a cleaner view
         const curriculumDays = [...new Set(domainTasks.map(t => t.day_number))].sort((a,b) => a - b);
@@ -966,6 +1140,10 @@ export default function MentorDashboard() {
           </div>
         );
       case "Bonus Airdrops": {
+        if (selectedAirdrop) {
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
+        }
+
         const filteredAirdrops = bonusAirdrops.filter(a => {
           if (airdropFilter === "All") return true;
           if (airdropFilter === "Active") return a.status === "Active" || a.status === "ACTIVE" || a.status === "APPROVED";
@@ -998,7 +1176,7 @@ export default function MentorDashboard() {
                   <thead>
                     <tr>
                       <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>ID</th>
-                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Question</th>
+                      <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Title</th>
                       <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Points</th>
                       <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Status</th>
                       <th style={{ padding: "12px 16px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)" }}>Time Limit</th>
@@ -1011,9 +1189,9 @@ export default function MentorDashboard() {
                       </tr>
                     ) : (
                       currentAirdrops.map(airdrop => (
-                        <tr key={airdrop.id}>
+                        <tr key={airdrop.id} onClick={() => setSelectedAirdrop(airdrop)} style={{ cursor: "pointer" }} className="hover-row">
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 60 ? airdrop.question.substring(0, 60) + "..." : airdrop.question}</td>
+                          <td style={{ padding: "12px 16px", fontWeight: "500", color: "#1e293b" }}>{airdrop.title ? (airdrop.title.length > 60 ? airdrop.title.substring(0, 60) + "..." : airdrop.title) : "No Title"}</td>
                           <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
                           <td style={{ padding: "12px 16px" }}>
                             <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'Active' || airdrop.status === 'ACTIVE' ? 'badge-primary' : airdrop.status === 'FINALIZED' || airdrop.status === 'Completed' || airdrop.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`}>
@@ -1370,61 +1548,18 @@ export default function MentorDashboard() {
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Timing & Start Mode</h4>
                         </div>
 
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
-                        <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
-                          {/* Fixed Start Time Option */}
-                          <div 
-                            style={{ 
-                              border: newAirdrop.startMode === "Fixed Start Time" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                              borderRadius: "10px",
-                              padding: "12px 16px",
-                              cursor: "pointer",
-                              display: "flex",
-                              gap: "12px",
-                              alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
-                              transition: "all 0.2s"
-                            }}
-                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Fixed Start Time"})}
-                          >
-                            <input 
-                              type="radio" 
-                              checked={newAirdrop.startMode === "Fixed Start Time"} 
-                              readOnly 
-                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Fixed Start Time</div>
-                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>All eligible interns start at the same time</div>
-                            </div>
-                          </div>
-
-                          {/* Flexible Start Option */}
-                          <div 
-                            style={{ 
-                              border: newAirdrop.startMode === "Flexible Start" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                              borderRadius: "10px",
-                              padding: "12px 16px",
-                              cursor: "pointer",
-                              display: "flex",
-                              gap: "12px",
-                              alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
-                              transition: "all 0.2s"
-                            }}
-                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
-                          >
-                            <input 
-                              type="radio" 
-                              checked={newAirdrop.startMode === "Flexible Start"} 
-                              readOnly 
-                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Flexible Start</div>
-                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>Interns can start anytime in the window</div>
-                            </div>
-                          </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (Seconds) <span style={{ color: "#ef4444" }}>*</span></label>
+                          <input 
+                            type="number" 
+                            required 
+                            min="10"
+                            placeholder="e.g. 60" 
+                            className="form-control" 
+                            style={{ width: "100%", margin: 0, maxWidth: "200px" }} 
+                            value={newAirdrop.timeLimit} 
+                            onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} 
+                          />
                         </div>
 
                         {/* Dates and Dropdowns */}
@@ -1594,12 +1729,13 @@ export default function MentorDashboard() {
         {/* Module Access Navigation Hub (Monolithic Pill Bar) */}
         <nav style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px", borderRadius: "28px" }}>
           {[
-            { id: "Overview", icon: <LayoutDashboard size={16} /> },
-            { id: "Cohort", icon: <Users size={16} /> },
-            { id: "Evaluations", icon: <ClipboardList size={16} /> },
-            { id: "Programs", icon: <Layers size={16} /> },
-            { id: "Bonus Airdrops", icon: <Coins size={16} /> },
-            { id: "Breakout Rooms", icon: <Video size={16} /> }
+            { id: "Overview", icon: <LayoutDashboard size={18} /> },
+            { id: "Cohort", icon: <Users size={18} /> },
+            { id: "Evaluations", icon: <CheckCircle size={18} /> },
+            { id: "Programs", icon: <BookOpen size={18} /> },
+            { id: "Bonus Airdrops", icon: <Coins size={18} /> },
+            { id: "Breakout Rooms", icon: <Video size={18} /> },
+            { id: "My Profile", icon: <User size={18} /> }
           ].map((tab) => {
             const isActive = activeTab === tab.id;
             return (

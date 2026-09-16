@@ -22,8 +22,8 @@ export default function AdminAnalytics({ usersList }) {
 
   React.useEffect(() => {
     if (filteredInterns.length > 0) {
-      if (!selectedInternId || !filteredInterns.find(i => String(i.id) === String(selectedInternId))) {
-        setSelectedInternId(filteredInterns[0].id);
+      if (selectedInternId && !filteredInterns.find(i => String(i.id) === String(selectedInternId))) {
+        setSelectedInternId('');
       }
     } else {
       setSelectedInternId('');

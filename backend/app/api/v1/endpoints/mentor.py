@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from collections import defaultdict
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, date
@@ -26,10 +27,10 @@ def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User
         raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
 
     # Assigned Interns count
-    interns = db.query(models.User).filter(models.User.mentor_id == current_user.id).all()
+    interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
     # Fallback for testing if no interns assigned
     if not interns:
-         interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+         interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
          
     intern_ids = [i.id for i in interns]
 
@@ -82,13 +83,20 @@ def get_mentor_interns(db: Session = Depends(get_db), current_user: models.User 
     if current_user.role != models.UserRole.MENTOR:
         raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
 
-    interns = db.query(models.User).filter(models.User.mentor_id == current_user.id).all()
+    interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
     if not interns:
-         interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+         interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
+
+    intern_ids = [i.id for i in interns]
+    subs_by_intern = defaultdict(list)
+    if intern_ids:
+        all_subs = db.query(models.Submission).options(joinedload(models.Submission.task)).filter(models.Submission.intern_id.in_(intern_ids)).all()
+        for sub in all_subs:
+            subs_by_intern[sub.intern_id].append(sub)
 
     result = []
     for i in interns:
-        subs = db.query(models.Submission).filter(models.Submission.intern_id == i.id).all()
+        subs = subs_by_intern[i.id]
         avg_score = 0
         weak_areas = "None identified"
         if subs:
@@ -126,7 +134,10 @@ def get_mentor_submissions(db: Session = Depends(get_db), current_user: models.U
          
     intern_ids = [i.id for i in interns]
 
-    submissions = db.query(models.Submission).filter(
+    submissions = db.query(models.Submission).options(
+        joinedload(models.Submission.task).joinedload(models.Task.domain),
+        joinedload(models.Submission.intern)
+    ).filter(
         models.Submission.intern_id.in_(intern_ids)
     ).all()
 
