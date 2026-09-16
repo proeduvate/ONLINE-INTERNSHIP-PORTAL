@@ -1,0 +1,31 @@
+{
+  "activitySchema": {
+    "id": "string",
+    "type": "string",
+    "title": "string",
+    "instruction": "string",
+    "content": {
+      "concept": "string",
+      "tip": "string"
+    },
+    "interaction": {
+      "mode": "string"
+    }
+  },
+  "supportedInteractionFamilies": [
+    "click-map",
+    "anatomy",
+    "compare",
+    "reorder",
+    "builder",
+    "slider",
+    "live-preview",
+    "simulator",
+    "timeline",
+    "debug",
+    "flow",
+    "tree",
+    "form",
+    "lab"
+  ]
+}

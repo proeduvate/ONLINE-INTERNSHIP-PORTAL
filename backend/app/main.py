@@ -119,6 +119,8 @@ from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
 from app.api.v1.endpoints.batch_analytics import router as batch_analytics_router
 from routers import meetings
+from routers import normal_learning
+from routers import interactive_learning
 
 # Initialize analytics DB
 from app.db.analytics_session import engine as analytics_engine
@@ -133,6 +135,8 @@ app.include_router(facts_router)
 app.include_router(simulation_router)
 app.include_router(batch_analytics_router)
 app.include_router(meetings.router, prefix="/api/v1/meetings")
+app.include_router(normal_learning.router, prefix="/api/normal-learning", tags=["Normal Learning"])
+app.include_router(interactive_learning.router, prefix="/api/interactive-learning", tags=["Interactive Learning"])
 
 from routers import onboarding
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])

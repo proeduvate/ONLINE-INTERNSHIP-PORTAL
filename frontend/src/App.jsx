@@ -14,6 +14,8 @@ import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDeta
 import InternDetails from "./pages/Dashboard/InternDetails";
 import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
+import NormalLearningDashboard from "./features/learning/normal/NormalLearningDashboard";
+import InteractiveLearningDashboard from "./features/learning/interactive/InteractiveLearningDashboard";
 
 function App() {
   return (
@@ -33,6 +35,22 @@ function App() {
               element={
                 <ProtectedRoute roles={["intern"]}>
                   <InternDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/intern/learning/normal"
+              element={
+                <ProtectedRoute roles={["intern"]}>
+                  <NormalLearningDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/intern/learning/interactive"
+              element={
+                <ProtectedRoute roles={["intern"]}>
+                  <InteractiveLearningDashboard />
                 </ProtectedRoute>
               }
             />

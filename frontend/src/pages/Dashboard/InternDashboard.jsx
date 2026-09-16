@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../services/AuthContext";
 import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
@@ -13,6 +14,7 @@ import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 import api from "../../api/axios";
 export default function InternDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
@@ -22,7 +24,9 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("UI/UX");
+  
+  const internDomain = user?.domain || "Pending Assignment";
+  const mentorAssigned = user?.mentor || null;
 
   const [notifications, setNotifications] = useState([]);
   
@@ -176,10 +180,18 @@ export default function InternDashboard() {
     const fetchTasks = async () => {
       try {
         const res = await api.get('/tasks/intern');
+        let tasks = [];
         if (Array.isArray(res.data)) {
-           setCurriculumData(res.data);
+           tasks = res.data;
         } else if (res.data && res.data.tasks) {
-           setCurriculumData(res.data.tasks);
+           tasks = res.data.tasks;
+        }
+        setCurriculumData(tasks);
+
+        const unlockedTasks = tasks.filter(t => t.unlocked);
+        if (unlockedTasks.length > 0) {
+            const maxDay = Math.max(...unlockedTasks.map(t => t.day_number || t.day));
+            setCurrentDay(maxDay);
         }
       } catch (err) {
         console.error("Failed to fetch curriculum tasks", err);
@@ -477,6 +489,12 @@ export default function InternDashboard() {
               
               {/* Left Column: Your 30-Day Journey Timeline */}
               <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
+                {!mentorAssigned && (
+                  <div style={{ background: "#fffbeb", border: "1px solid #fde68a", padding: "12px", borderRadius: "8px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <AlertTriangle size={16} color="#d97706" />
+                    <span style={{ fontSize: "13px", color: "#92400e", fontWeight: "bold" }}>Mentor Assignment Pending - You will be assigned a mentor shortly.</span>
+                  </div>
+                )}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
@@ -544,7 +562,8 @@ export default function InternDashboard() {
                 
                 {/* Today's Objective Card */}
                 {(() => {
-                  const activeCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[0];
+                  const activeCurriculum = curriculumData.find(c => (c.day_number || c.day) === currentDay) || curriculumData[0] || { day_number: currentDay, topic: "Awaiting Domain/Tasks" };
+                  const dayDisplay = activeCurriculum.day_number || activeCurriculum.day;
                   return (
                     <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
                       
@@ -556,7 +575,7 @@ export default function InternDashboard() {
                           </div>
                           <div>
                             <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
-                            <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
+                            <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {dayDisplay}: {activeCurriculum.topic || activeCurriculum.title}</span>
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1106,10 +1125,10 @@ export default function InternDashboard() {
                   DAY {currentDay} OF 30
                 </span>
                 <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 6px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
-                  {curriculumData.find(c => c.day === currentDay)?.topic || curriculumData[0].topic}
+                  {(curriculumData.find(c => (c.day_number || c.day) === currentDay) || curriculumData[0] || { topic: "Awaiting Domain" }).topic || (curriculumData.find(c => (c.day_number || c.day) === currentDay) || curriculumData[0] || { title: "Awaiting Domain" }).title}
                 </h1>
                 <p style={{ margin: 0, fontSize: "0.85rem", color: "#334155" }}>
-                  {curriculumData.find(c => c.day === currentDay)?.desc || curriculumData[0].desc}
+                  {(curriculumData.find(c => (c.day_number || c.day) === currentDay) || curriculumData[0] || { desc: "Tasks will be generated soon" }).desc || (curriculumData.find(c => (c.day_number || c.day) === currentDay) || curriculumData[0] || { description: "Tasks will be generated soon" }).description}
                 </p>
               </div>
 
@@ -1143,6 +1162,35 @@ export default function InternDashboard() {
 
                 {activeLearningTab === "Reading Materials" && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+                    {/* Learning Portals */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px", border: "1px solid var(--border-color)", background: "var(--bg-surface)", borderRadius: "16px", cursor: "pointer", transition: "all 0.2s ease" }} onClick={() => window.location.href = "/intern/learning/normal"}>
+                        <div style={{ width: "48px", height: "48px", background: "#eff6ff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb" }}>
+                          <BookOpen size={24} />
+                        </div>
+                        <div>
+                          <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "bold" }}>Normal Learning Portal</h3>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)" }}>Access standard reading materials and curriculum.</p>
+                        </div>
+                        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", color: "#2563eb", fontWeight: "bold", fontSize: "14px" }}>
+                          Launch Portal &rarr;
+                        </div>
+                      </div>
+
+                      <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px", border: "1px solid var(--border-color)", background: "var(--bg-surface)", borderRadius: "16px", cursor: "pointer", transition: "all 0.2s ease" }} onClick={() => window.location.href = "/intern/learning/interactive"}>
+                        <div style={{ width: "48px", height: "48px", background: "#fdf4ff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c026d3" }}>
+                          <Sparkles size={24} />
+                        </div>
+                        <div>
+                          <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "bold" }}>Interactive Learning Portal</h3>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)" }}>Learn through interactive modules and exercises.</p>
+                        </div>
+                        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", color: "#c026d3", fontWeight: "bold", fontSize: "14px" }}>
+                          Launch Portal &rarr;
+                        </div>
+                      </div>
+                    </div>
 
                 {/* Document Viewer Mockup */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", overflow: "hidden", position: "relative", boxShadow: "0 8px 30px rgba(0,0,0,0.05)", border: "1px solid var(--border-color, #e2e8f0)" }}>
