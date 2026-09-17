@@ -68,6 +68,26 @@ export default function MentorDashboard() {
   const [airdropFilter, setAirdropFilter] = useState("All");
   const airdropsPerPage = 13;
 
+  const [credentialInterns, setCredentialInterns] = useState([
+    { id: 1, name: "Alice Smith", batch: "Batch A", domain: "Frontend", grade: "92%", status: "Eligible", attendance: "95%", tasksCompleted: "15/15" },
+    { id: 2, name: "Bob Jones", batch: "Batch B", domain: "Backend", grade: "88%", status: "Eligible", attendance: "90%", tasksCompleted: "14/15" }
+  ]);
+  const [selectedCredentialIntern, setSelectedCredentialIntern] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("app_certificate_requests");
+    if (stored) {
+      setCredentialInterns(JSON.parse(stored));
+    }
+  }, []);
+
+  const handleRequestCertificate = (internId) => {
+    const updated = credentialInterns.map(i => i.id === internId ? { ...i, status: "Requested" } : i);
+    setCredentialInterns(updated);
+    localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
+    setSelectedCredentialIntern(null);
+  };
+
   useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
     if (storedAirdrops) {
@@ -1323,62 +1343,7 @@ export default function MentorDashboard() {
                           <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase" }}>Timing & Start Mode</h4>
                         </div>
 
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>Start Mode <span style={{ color: "#ef4444" }}>*</span></label>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                          {/* Fixed Start Time Option */}
-                          <div 
-                            style={{ 
-                              border: newAirdrop.startMode === "Fixed Start Time" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                              borderRadius: "10px",
-                              padding: "12px 16px",
-                              cursor: "pointer",
-                              display: "flex",
-                              gap: "12px",
-                              alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Fixed Start Time" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
-                              transition: "all 0.2s"
-                            }}
-                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Fixed Start Time"})}
-                          >
-                            <input 
-                              type="radio" 
-                              checked={newAirdrop.startMode === "Fixed Start Time"} 
-                              readOnly 
-                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Fixed Start Time</div>
-                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>All eligible interns start at the same time</div>
-                            </div>
-                          </div>
 
-                          {/* Flexible Start Option */}
-                          <div 
-                            style={{ 
-                              border: newAirdrop.startMode === "Flexible Start" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                              borderRadius: "10px",
-                              padding: "12px 16px",
-                              cursor: "pointer",
-                              display: "flex",
-                              gap: "12px",
-                              alignItems: "flex-start",
-                              backgroundColor: newAirdrop.startMode === "Flexible Start" ? "#f5f3ff" : "var(--bg-surface, #ffffff)",
-                              transition: "all 0.2s"
-                            }}
-                            onClick={() => setNewAirdrop({...newAirdrop, startMode: "Flexible Start"})}
-                          >
-                            <input 
-                              type="radio" 
-                              checked={newAirdrop.startMode === "Flexible Start"} 
-                              readOnly 
-                              style={{ marginTop: "4px", accentColor: "#4f46e5" }}
-                            />
-                            <div>
-                              <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary, #1e293b)" }}>Flexible Start</div>
-                              <div style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", marginTop: "2px" }}>Interns can start anytime in the window</div>
-                            </div>
-                          </div>
-                        </div>
 
                         {/* Dates and Dropdowns */}
                         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "16px", marginBottom: "12px" }}>
@@ -1439,6 +1404,19 @@ export default function MentorDashboard() {
                               </select>
                             </div>
                           </div>
+                        </div>
+
+                        <div style={{ marginTop: "16px" }}>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "6px" }}>Time Limit (minutes) <span style={{ color: "#ef4444" }}>*</span></label>
+                          <input 
+                            type="number" 
+                            required
+                            min="1"
+                            className="form-control" 
+                            style={{ width: "100%", margin: 0 }} 
+                            value={newAirdrop.timeLimit} 
+                            onChange={(e) => setNewAirdrop({...newAirdrop, timeLimit: e.target.value})} 
+                          />
                         </div>
                       </div>
 
@@ -1511,6 +1489,95 @@ export default function MentorDashboard() {
           </div>
         );
       }
+      case "Credentials":
+        return (
+          <div className="card">
+            <h3 style={{ marginBottom: "16px" }}>Certificate Credentials Panel</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Manage 30-day completion certificates for your interns.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Intern Name</th>
+                    <th>Batch</th>
+                    <th>Domain</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {credentialInterns.map(intern => (
+                    <tr key={intern.id}>
+                      <td style={{ fontWeight: 600 }}>{intern.name}</td>
+                      <td>{intern.batch}</td>
+                      <td>{intern.domain}</td>
+                      <td><span style={{ fontWeight: 700, color: "var(--primary-color)" }}>{intern.grade}</span></td>
+                      <td>
+                        <span className={`badge ${intern.status === 'Approved' ? 'badge-success' : intern.status === 'Requested' ? 'badge-primary' : 'badge-warning'}`}>
+                          {intern.status}
+                        </span>
+                      </td>
+                      <td>
+                        <button 
+                          className="btn btn-secondary" 
+                          style={{ padding: "4px 12px", fontSize: "12px" }}
+                          onClick={() => setSelectedCredentialIntern(intern)}
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {selectedCredentialIntern && (
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+                <div style={{ backgroundColor: "#fff", width: "500px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>30-Day Summary Report</h2>
+                    <button onClick={() => setSelectedCredentialIntern(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
+                  </div>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Intern Name:</span>
+                      <span style={{ fontWeight: 700 }}>{selectedCredentialIntern.name}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Domain:</span>
+                      <span>{selectedCredentialIntern.domain}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Attendance:</span>
+                      <span>{selectedCredentialIntern.attendance}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Tasks Completed:</span>
+                      <span>{selectedCredentialIntern.tasksCompleted}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Overall Grade:</span>
+                      <span style={{ fontWeight: 800, color: "var(--primary-color)" }}>{selectedCredentialIntern.grade}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                    <button onClick={() => setSelectedCredentialIntern(null)} className="btn btn-secondary">Cancel</button>
+                    {selectedCredentialIntern.status === "Eligible" && (
+                      <button onClick={() => handleRequestCertificate(selectedCredentialIntern.id)} className="btn btn-primary">Request Certificate</button>
+                    )}
+                    {selectedCredentialIntern.status !== "Eligible" && (
+                      <button disabled className="btn btn-secondary" style={{ opacity: 0.7 }}>Already Requested</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
       case "My Profile":
         return <MentorProfile />;
       default:
@@ -1552,6 +1619,7 @@ export default function MentorDashboard() {
             { id: "Evaluations", icon: <ClipboardList size={16} /> },
             { id: "Programs", icon: <Layers size={16} /> },
             { id: "Bonus Airdrops", icon: <Coins size={16} /> },
+            { id: "Credentials", icon: <Award size={16} /> },
             { id: "Breakout Rooms", icon: <Video size={16} /> }
           ].map((tab) => {
             const isActive = activeTab === tab.id;

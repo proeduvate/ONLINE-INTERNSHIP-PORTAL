@@ -554,7 +554,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Middle Column: Today's Objective & Daily Scenario Activity */}
-              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0 }}>
                 
                 {/* Today's Objective Card */}
                 {(() => {
@@ -657,12 +657,12 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -707,16 +707,16 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "20px", overflow: "hidden" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0, overflow: "hidden" }}>
                 
                 {/* Daily Scenario Calendar Widget */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", flexShrink: 0 }}>
                   <DailyScenarioCalendar />
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
                       <p style={{ margin: "4px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
@@ -726,13 +726,13 @@ export default function InternDashboard() {
                     </span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "8px", marginBottom: "8px", fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "8px", marginBottom: "8px", fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
                     <span>Rank</span>
                     <span>Name</span>
                     <span style={{ textAlign: "right", paddingRight: "40px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px" }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -2407,7 +2407,7 @@ export default function InternDashboard() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 
@@ -2554,7 +2554,7 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box", overflow: "hidden" }}>
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
