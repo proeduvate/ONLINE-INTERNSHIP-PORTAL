@@ -199,7 +199,8 @@ class Meeting(Base):
     mentor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String(200), nullable=False)
     room_code = Column(String(100), nullable=False, unique=True)
-    status = Column(String(50), default="active") # "active", "completed"
+    status = Column(String(50), default="active") # "active", "completed", "scheduled"
+    scheduled_time = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
@@ -209,10 +210,21 @@ class Certificate(Base):
     id = Column(Integer, primary_key=True, index=True)
     intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     certificate_id = Column(String(100), nullable=False, unique=True)
-    grade = Column(String(5), nullable=False) # e.g. "A+", "A", "B", "C"
-    final_score = Column(Integer, nullable=False)
-    generated_at = Column(DateTime, default=datetime.utcnow)
+    grade = Column(String(5), nullable=True) # e.g. "A+", "A", "B", "C"
+    final_score = Column(Integer, nullable=True)
+    pdf_path = Column(String(500), nullable=True)
+    domain = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    issued_date = Column(DateTime, nullable=True)
     
+    @property
+    def pdf_url(self):
+        return self.pdf_path
+
+    @property
+    def generated_at(self):
+        return self.created_at or self.issued_date
+        
     # Relationships
     intern = relationship("User", back_populates="certificates")
 

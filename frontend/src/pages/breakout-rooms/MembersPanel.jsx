@@ -245,61 +245,67 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
 
         {/* ── Interns ── */}
         <div className="br-section-title">INTERNS — {filteredInterns.length}</div>
-        {filteredInterns.map(intern => (
-          <div
-            key={intern.id}
-            className="br-member-item"
-            style={{ cursor: 'pointer', position: 'relative' }}
-            title="Click to private message"
-          >
-            {/* Avatar + name — clicking opens DM */}
-            <div
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}
-              onClick={() => setDmTarget(intern)}
-            >
-              <div className="br-avatar-small" style={{ position: 'relative' }}>
-                {intern.avatar}
-                <div className={`br-status-dot ${intern.online ? 'online' : 'idle'}`} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '14px', fontWeight: '500', color: '#313338' }}>{intern.name}</span>
-                <span style={{ fontSize: '11px', color: '#5c5e66' }}>{intern.room}</span>
-              </div>
-            </div>
-
-            {/* Action buttons — only shown on hover via CSS group, shown inline here */}
-            {!isIntern && (
-              <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
-                <button
-                  title={`Message ${intern.name}`}
-                  onClick={(e) => { e.stopPropagation(); setDmTarget(intern); }}
-                  style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    padding: '4px 6px', borderRadius: '6px', color: '#5865f2',
-                    display: 'flex', alignItems: 'center',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#ededf0'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <MessageSquare size={15} />
-                </button>
-                <button
-                  title={`Kick ${intern.name}`}
-                  onClick={(e) => { e.stopPropagation(); setKickTarget(intern); }}
-                  style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    padding: '4px 6px', borderRadius: '6px', color: '#da373c',
-                    display: 'flex', alignItems: 'center',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#fde8e8'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <UserX size={15} />
-                </button>
-              </div>
-            )}
+        {filteredInterns.length === 0 ? (
+          <div style={{ padding: '24px 12px', textAlign: 'center', color: '#80848e', fontSize: '12px' }}>
+            No interns have joined this meeting yet.
           </div>
-        ))}
+        ) : (
+          filteredInterns.map(intern => (
+            <div
+              key={intern.id}
+              className="br-member-item"
+              style={{ cursor: 'pointer', position: 'relative' }}
+              title="Click to private message"
+            >
+              {/* Avatar + name — clicking opens DM */}
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}
+                onClick={() => setDmTarget(intern)}
+              >
+                <div className="br-avatar-small" style={{ position: 'relative' }}>
+                  {intern.avatar}
+                  <div className={`br-status-dot ${intern.online ? 'online' : 'idle'}`} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '14px', fontWeight: '500', color: '#313338' }}>{intern.name}</span>
+                  <span style={{ fontSize: '11px', color: '#5c5e66' }}>{intern.room}</span>
+                </div>
+              </div>
+
+              {/* Action buttons — only shown on hover via CSS group, shown inline here */}
+              {!isIntern && (
+                <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+                  <button
+                    title={`Message ${intern.name}`}
+                    onClick={(e) => { e.stopPropagation(); setDmTarget(intern); }}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      padding: '4px 6px', borderRadius: '6px', color: '#5865f2',
+                      display: 'flex', alignItems: 'center',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#ededf0'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
+                    <MessageSquare size={15} />
+                  </button>
+                  <button
+                    title={`Kick ${intern.name}`}
+                    onClick={(e) => { e.stopPropagation(); setKickTarget(intern); }}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      padding: '4px 6px', borderRadius: '6px', color: '#da373c',
+                      display: 'flex', alignItems: 'center',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#fde8e8'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
+                    <UserX size={15} />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

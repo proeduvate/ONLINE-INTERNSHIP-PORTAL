@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 import models
 from database import get_db
+from typing import Any
 
 
 class MeetingCreate(BaseModel):
@@ -35,6 +36,8 @@ class MeetingResponse(BaseModel):
     room_code: str
     status: str
     mentor_id: int
+    scheduled_time: Optional[Any] = None
+    created_at: Optional[Any] = None
     
     class Config:
         from_attributes = True
@@ -66,15 +69,25 @@ def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), author
     if not mentor_id:
         mentor_id = 1 # Fallback for demo
 
+    parsed_time = None
+    if meeting.scheduled_time:
+        if isinstance(meeting.scheduled_time, datetime):
+            parsed_time = meeting.scheduled_time
+        elif isinstance(meeting.scheduled_time, str):
+            try:
+                parsed_time = datetime.fromisoformat(meeting.scheduled_time.replace("Z", "+00:00"))
+            except Exception:
+                try:
+                    parsed_time = datetime.strptime(meeting.scheduled_time, "%Y-%m-%dT%H:%M")
+                except Exception:
+                    parsed_time = None
 
-    # We save the meeting fields that exist in the database model
-    # (If scheduled_time/domain exist in the model, they should be assigned. Assuming they might be missing from schema, we'll try to map what we can safely)
     db_meeting = models.Meeting(
         mentor_id=mentor_id,
         title=meeting.title,
         room_code=meeting.room_code,
-        status=meeting.status,
-        scheduled_time=meeting.scheduled_time
+        status=meeting.status or "scheduled",
+        scheduled_time=parsed_time
     )
     db.add(db_meeting)
     db.commit()
@@ -93,9 +106,7 @@ def verify_intern(intern_id: int, db: Session = Depends(get_db)):
 @router.get("", response_model=List[MeetingResponse])
 @router.get("/", response_model=List[MeetingResponse])
 def get_meetings(db: Session = Depends(get_db), authorization: str = Header(None)):
-
-    # Return active or scheduled meetings. If intern, return all platform meetings for simplicity (or could filter by domain if added to model)
-    meetings = db.query(models.Meeting).filter(models.Meeting.status.in_(["active", "scheduled"])).all()
+    meetings = db.query(models.Meeting).filter(models.Meeting.status.in_(["active", "scheduled"])).order_by(models.Meeting.id.desc()).all()
     return meetings
 
 

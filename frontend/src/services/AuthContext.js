@@ -5,18 +5,25 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
+    const [authToken, setAuthToken] = useState(localStorage.getItem('token') || localStorage.getItem('access_token'));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    const response = await fetch(`${API_BASE}/profile`, {
+                    let response = await fetch(`${API_BASE}/users/profile`, {
                         headers: {
                             'Authorization': `Bearer ${authToken}`
                         }
                     });
+                    if (!response.ok) {
+                        response = await fetch(`${API_BASE}/profile`, {
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                    }
                     if (response.ok) {
                         const userData = await response.json();
                         setUser(userData);
@@ -38,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE}/login`, {
+            let response = await fetch(`${API_BASE}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,31 +54,44 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
+                response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+            }
+
+            if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail || 'Login failed');
             }
 
             const data = await response.json();
-            localStorage.setItem('authToken', data.access_token);
+            const token = data.access_token || data.token;
+            localStorage.setItem('token', token);
+            localStorage.setItem('access_token', token);
             localStorage.setItem('role', data.role);
-            setAuthToken(data.access_token);
-            const userData = { role: data.role, name: data.name, email: data.email };
+            setAuthToken(token);
+            const userData = { role: data.role, name: data.name, email: data.email, id: data.user_id };
             setUser(userData);
-            return userData;
+            return { ...data, ...userData };
         } finally {
             setLoading(false);
         }
     };
 
     const logout = () => {
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('role');
         setAuthToken(null);
         setUser(null);
-        // Optionally redirect to login page or home
     };
 
     return (
-        <AuthContext.Provider value={{ user, authToken, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, setUser, authToken, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

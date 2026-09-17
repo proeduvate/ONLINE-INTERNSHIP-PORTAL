@@ -19,7 +19,7 @@ import "./Login.css";export default function Login() {
     intern: { email: "intern@gmail.com", password: "intern123" },
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -39,20 +39,39 @@ import "./Login.css";export default function Login() {
       return;
     }
 
-    let foundRole = null;
-    for (const [key, u] of Object.entries(users)) {
-      if (u.email === email && u.password === password) {
-        foundRole = key;
-        break;
-      }
-    }
+    try {
+      // Import the centralized api
+      const api = (await import("../../api/axios")).default;
+      
+      const response = await api.post("/auth/login", {
+        email: email,
+        password: password
+      });
 
-    if (foundRole) {
-      localStorage.setItem("token", "dummy-token-123");
-      localStorage.setItem("role", foundRole);
-      navigate(`/${foundRole}`);
-    } else {
-      setErrorMessage("Invalid email or password.");
+      const { access_token, role } = response.data;
+      if (access_token) {
+        localStorage.setItem("token", access_token);
+        localStorage.setItem("access_token", access_token);
+        
+        // Ensure role redirects correctly
+        const userRole = role?.toLowerCase() || 'intern'; // fallback
+        localStorage.setItem("role", userRole);
+        
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else if (userRole === "mentor" || userRole === "vendor") {
+          navigate("/mentor");
+        } else {
+          navigate("/intern");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data && err.response.data.detail) {
+        setErrorMessage(err.response.data.detail);
+      } else {
+        setErrorMessage("Invalid credentials or server error. Please try again.");
+      }
     }
   };
 

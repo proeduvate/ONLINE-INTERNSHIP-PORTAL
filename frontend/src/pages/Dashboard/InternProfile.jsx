@@ -4,19 +4,30 @@ import { User, Shield, Bell, Camera, Key, Lock, Save, Trash2, Mail, MapPin, Brie
 export default function InternProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=John&backgroundColor=f8fafc");
   const fileInputRef = useRef(null);
+
+  const [profileData, setProfileData] = useState({
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    avatarUrl: ''
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
       setProfileImage(url);
+      setProfileData({ ...profileData, avatarUrl: file });
     }
   };
 
   const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=John&backgroundColor=f8fafc");
+    setProfileData({ ...profileData, avatarUrl: '' });
   };
 
   const handleForgotPassword = (e) => {
@@ -24,6 +35,47 @@ export default function InternProfile() {
     // Simulate sending reset email
     setResetEmailSent(true);
     setTimeout(() => setResetEmailSent(false), 5000);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setMessage(null);
+    
+    try {
+      const token = localStorage.getItem("token") || "";
+      // In a real app, you might use FormData to upload the avatar image
+      // const formData = new FormData();
+      // formData.append("firstName", profileData.firstName);
+      // formData.append("lastName", profileData.lastName);
+      // formData.append("email", profileData.email);
+      // if (profileData.avatarUrl instanceof File) formData.append("avatar", profileData.avatarUrl);
+
+      const response = await fetch("/api/v1/users/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          email: profileData.email
+        })
+      });
+
+      if (response.ok) {
+        setMessage({ type: "success", text: "Profile updated successfully!" });
+      } else {
+        setMessage({ type: "error", text: "Failed to update profile." });
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setMessage({ type: "error", text: "An error occurred while updating the profile." });
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setMessage(null), 3000);
+    }
   };
 
   return (
@@ -103,16 +155,21 @@ export default function InternProfile() {
                 </div>
               </div>
 
+              {message && (
+                <div style={{ marginBottom: "16px", padding: "10px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 500, backgroundColor: message.type === 'success' ? '#dcfce7' : '#fee2e2', color: message.type === 'success' ? '#166534' : '#991b1b' }}>
+                  {message.text}
+                </div>
+              )}
               {/* Form Grid */}
-              <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
+              <form onSubmit={handleUpdateProfile}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" name="firstName" value={profileData.firstName} onChange={(e) => setProfileData({ ...profileData, [e.target.name]: e.target.value })} style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "#ffffff", boxSizing: "border-box" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" name="lastName" value={profileData.lastName} onChange={(e) => setProfileData({ ...profileData, [e.target.name]: e.target.value })} style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "#ffffff", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
@@ -120,7 +177,7 @@ export default function InternProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="email" name="email" value={profileData.email} onChange={(e) => setProfileData({ ...profileData, [e.target.name]: e.target.value })} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "#ffffff", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
@@ -129,14 +186,14 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>GitHub ID</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" defaultValue="john-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                 </div>
@@ -146,27 +203,27 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
                     <div style={{ position: "relative" }}>
                       <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "20px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }}></textarea>
+                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none", boxSizing: "border-box" }}></textarea>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
                   <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Save size={16} /> Save Changes
+                  <button type="submit" disabled={isSaving} style={{ background: isSaving ? "#93c5fd" : "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: isSaving ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Save size={16} /> {isSaving ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>

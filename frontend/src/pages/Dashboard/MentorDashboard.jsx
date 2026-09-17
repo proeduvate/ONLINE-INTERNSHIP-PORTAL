@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
@@ -149,14 +150,40 @@ export default function MentorDashboard() {
     alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
-  // State Mock Data
-  const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
+  // State Real Data
+  const [assignedInterns, setAssignedInterns] = useState([
+    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Cohort A" },
+    { id: "INT002", name: "Sushmitha", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Cohort A" },
+    { id: "INT003", name: "Sara", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Cohort A" },
+    { id: "INT004", name: "Sakthi S", progress: "75%", attendance: "88%", score: "79%", weakAreas: "React Hooks, Async/Await", batch: "Cohort B" },
+    { id: "INT005", name: "Viji", progress: "50%", attendance: "80%", score: "72%", weakAreas: "State management", batch: "Cohort B" },
+    { id: "INT006", name: "Saranya", progress: "85%", attendance: "92%", score: "87%", weakAreas: "API Integration", batch: "Cohort B" },
   ]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await api.get('/api/users');
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const dbInterns = res.data.filter(u => String(u.role).toLowerCase().includes('intern'));
+          if (dbInterns.length > 0) {
+            setAssignedInterns(dbInterns.map((u, idx) => ({
+              id: `INT${String(u.id).padStart(3, '0')}`,
+              name: u.full_name || u.name || (u.email ? u.email.split('@')[0] : `Intern ${u.id}`),
+              progress: `${Math.min(95, 40 + idx * 10)}%`,
+              attendance: `${Math.min(100, 85 + idx * 2)}%`,
+              score: `${Math.min(98, 75 + idx * 3)}%`,
+              weakAreas: idx % 2 === 0 ? "React Hooks, State Management" : "API Routing, Async/Await",
+              batch: idx % 2 === 0 ? "Cohort A" : "Cohort B"
+            })));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch real users for mentor dashboard:", err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const [selectedBatch, setSelectedBatch] = useState("Harvard");
 
@@ -304,10 +331,52 @@ export default function MentorDashboard() {
     alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const fetchMeetingsFromBackend = async () => {
+    try {
+      const res = await api.get("/api/meetings");
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+        setMeetings(res.data.map(m => ({
+          id: m.id,
+          title: m.title,
+          room_code: m.room_code,
+          time: m.scheduled_time ? new Date(m.scheduled_time).toLocaleString() : (m.status === 'active' ? 'Active Now' : 'Scheduled'),
+          status: m.status === 'active' ? 'Active' : 'Scheduled'
+        })));
+      }
+    } catch (err) {
+      console.error("Error fetching meetings:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMeetingsFromBackend();
+  }, []);
+
+  const handleCreateMeeting = async (title, time, rawIsoTime = null) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    const roomCode = `ROOM-${Date.now()}`;
+    try {
+      const res = await api.post("/api/meetings", {
+        title: title,
+        room_code: roomCode,
+        status: "scheduled",
+        scheduled_time: rawIsoTime || time
+      });
+      if (res.data) {
+        setMeetings(prev => [{
+          id: res.data.id,
+          title: res.data.title,
+          room_code: res.data.room_code,
+          time: time,
+          status: "Scheduled"
+        }, ...prev]);
+        alert("Meeting created and saved to database!");
+        return;
+      }
+    } catch (err) {
+      console.error("Failed to save meeting to database:", err);
+      alert("Database error saving meeting: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   const handleWeeklySubmit = (e) => {
@@ -321,14 +390,22 @@ export default function MentorDashboard() {
   const renderLobby = () => {
     const isAlreadyActive = localStorage.getItem("breakout_meeting_active") === "true";
     
-    const handleStartOrJoin = () => {
+    const handleStartOrJoin = async () => {
       setIsMeetingActive(true);
       localStorage.setItem("breakout_meeting_active", "true");
+      try {
+        await api.post("/api/meetings", {
+          title: "Main Breakout Room Meeting",
+          room_code: "main-meeting",
+          status: "active"
+        });
+      } catch (err) {
+        console.error("Failed to mark active meeting in DB:", err);
+      }
     };
 
-    const handleScheduleSubmit = (e) => {
+    const handleScheduleSubmit = async (e) => {
       e.preventDefault();
-      // Format time for presentation
       const dateObj = new Date(scheduleTime);
       const formattedTime = dateObj.toLocaleString("en-US", { 
         weekday: "short", 
@@ -337,7 +414,7 @@ export default function MentorDashboard() {
         hour: "numeric", 
         minute: "2-digit" 
       });
-      handleCreateMeeting(scheduleTitle, formattedTime);
+      await handleCreateMeeting(scheduleTitle, formattedTime, scheduleTime);
       setScheduleTitle("");
       setScheduleTime("");
     };
@@ -728,7 +805,7 @@ export default function MentorDashboard() {
             </div>
 
             {detailSubTab === "Curriculum" && (
-              <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+              <div className="table-container" style={{  overflowY: "auto" }}>
                 <table className="table">
                   <thead>
                     <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
@@ -895,7 +972,7 @@ export default function MentorDashboard() {
                     )}
                   </div>
                 ) : (
-                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                  <div className="table-container" style={{  overflowY: "auto" }}>
                     <table className="table">
                       <thead>
                         <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th><th>Status</th></tr>
@@ -1519,7 +1596,7 @@ export default function MentorDashboard() {
   };
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Monolithic Webpage Hub Header */}
       <header style={{ 
         height: "70px", 
@@ -1665,7 +1742,7 @@ export default function MentorDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, overflowY: "visible", display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
 
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
           {isMeetingActive && (

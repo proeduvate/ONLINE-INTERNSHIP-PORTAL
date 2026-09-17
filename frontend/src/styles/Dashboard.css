@@ -1,8 +1,7 @@
 /* Layout Container */
 .container {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   background-color: var(--background-color, #f3f4f6);
 }
 
@@ -12,7 +11,8 @@
   background-color: var(--secondary-color, #ffffff);
   border-right: 1px solid var(--border-color, #e2e8f0);
   padding: 24px;
-  position: relative;
+  position: sticky;
+  top: 0;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -95,10 +95,10 @@
 .main {
   padding: 16px 24px;
   flex: 1;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: var(--background-color, #f3f4f6);
 }
 

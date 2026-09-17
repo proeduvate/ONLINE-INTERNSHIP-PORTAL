@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
+import api from "../../api/axios";
+import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot, Video } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
@@ -21,7 +22,46 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("UI/UX");
+  const [internDomain, setInternDomain] = useState("Social Media");
+  const [certViewMode, setCertViewMode] = useState("pdf");
+
+  const [certData, setCertData] = useState({
+    internName: "MAGHALAKSHMI. P",
+    domain: "Social Media",
+    startDate: "March 14, 2026",
+    endDate: "June 14, 2026",
+    duration: "3 MONTHS",
+    mode: "ONLINE",
+    certId: "PRO-INT-26-839",
+    grade: "A+",
+    score: 95,
+    pdf_url: null,
+    issueDate: "13 SEPTEMBER 2026"
+  });
+
+  useEffect(() => {
+    const fetchCertificate = async () => {
+      try {
+        const currentUserId = localStorage.getItem("user_id") || "3";
+        const res = await api.get(`/certificates/intern/${currentUserId}`);
+        if (res.data && res.data.status === "success") {
+          setCertData(prev => ({
+            ...prev,
+            internName: res.data.intern_name || prev.internName,
+            domain: res.data.domain || prev.domain,
+            grade: res.data.grade || "A+",
+            score: res.data.score || 95,
+            certId: res.data.certificate_id || prev.certId,
+            pdf_url: res.data.pdf_url || res.data.public_url,
+            issueDate: res.data.issue_date || prev.issueDate
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch intern certificate:", err);
+      }
+    };
+    fetchCertificate();
+  }, []);
 
   const mockNotifications = [
     { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
@@ -34,9 +74,28 @@ export default function InternDashboard() {
   const [isMeetingMinimized, setIsMeetingMinimized] = useState(false);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting"); // force recompile
   const [showThankYouModal, setShowThankYouModal] = useState(false);
+  const [scheduledMeetings, setScheduledMeetings] = useState([]);
 
-  const handleJoinMeeting = () => {
-    // Bypassing mentor restriction for trial/demo purposes
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const res = await api.get("/api/meetings");
+        if (res.data && Array.isArray(res.data)) {
+          setScheduledMeetings(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch meetings for intern:", err);
+      }
+    };
+    fetchMeetings();
+    const interval = setInterval(fetchMeetings, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleJoinMeeting = (roomCode = "Main Meeting") => {
+    if (roomCode) {
+      setActiveMeetingRoom(roomCode);
+    }
     setIsMeetingActive(true);
     setIsMeetingMinimized(false);
   };
@@ -380,11 +439,47 @@ export default function InternDashboard() {
     setInputMsg("");
   };
 
+  
+  const handleDownloadPDF = async () => {
+    try {
+      const certId = certData.certId || certData.certificate_id || "PRO-INT-26-839";
+      const downloadUrl = `http://127.0.0.1:8000/api/v1/certificates/download/${certId}`;
+      const res = await fetch(downloadUrl);
+      if (!res.ok) throw new Error("Failed to download PDF");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `certificate_${certId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Error downloading certificate");
+    }
+  };
+
+  const handleShareLinkedIn = () => {
+    const certName = "Certificate of Completion - Internship";
+    const certId = certData.certId || "PRO-INT-26-839";
+    const certUrl = `http://127.0.0.1:3000/verify/${certId}`;
+    const linkedinUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(certName)}&certUrl=${encodeURIComponent(certUrl)}`;
+    window.open(linkedinUrl, "_blank");
+  };
+
+  const handleCopyLink = () => {
+    const certUrl = `http://127.0.0.1:3000/verify/cert_123`;
+    navigator.clipboard.writeText(certUrl)
+      .then(() => alert("Shareable link copied to clipboard!"))
+      .catch(() => alert("Failed to copy link"));
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", height: "calc(100vh - 96px)", overflow: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, overflow: "hidden", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div style={{ display: "flex", gap: "20px", flexShrink: 0, height: "180px" }}>
@@ -611,19 +706,46 @@ export default function InternDashboard() {
                       </div>
 
                       {/* Upcoming / Join Meeting Box */}
-                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--border-color, #e2e8f0)", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Calendar size={16} />
-                          </div>
-                          <div>
-                            <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>Upcoming</span>
-                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>React Hook Refactor</span>
-                          </div>
+                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", gap: "10px", marginBottom: 0 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 800, letterSpacing: "0.5px", textTransform: "uppercase" }}>Scheduled & Live Meetings</span>
+                          {scheduledMeetings.length > 0 && <span style={{ fontSize: "0.7rem", color: "#16a34a", fontWeight: 700 }}>● {scheduledMeetings.length} Available</span>}
                         </div>
-                        <button style={{ padding: "6px 16px", background: "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }} onClick={() => setIsMeetingActive(true)}>
-                          Join
-                        </button>
+                        {scheduledMeetings.length > 0 ? (
+                          scheduledMeetings.slice(0, 3).map((m) => (
+                            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface, #ffffff)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: m.status === 'active' ? '#dcfce7' : '#eff6ff', color: m.status === 'active' ? '#16a34a' : '#2563eb', display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                  <Video size={16} />
+                                </div>
+                                <div>
+                                  <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{m.title}</span>
+                                  <span style={{ fontSize: "0.65rem", color: m.status === 'active' ? '#16a34a' : '#64748b', fontWeight: 600 }}>
+                                    {m.status === 'active' ? 'LIVE NOW' : (m.scheduled_time ? new Date(m.scheduled_time).toLocaleString() : 'Scheduled')}
+                                  </span>
+                                </div>
+                              </div>
+                              <button style={{ padding: "6px 14px", background: m.status === 'active' ? "#16a34a" : "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }} onClick={() => handleJoinMeeting(m.room_code)}>
+                                {m.status === 'active' ? 'Join Live' : 'Join'}
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface, #ffffff)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                              <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--border-color, #e2e8f0)", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Calendar size={16} />
+                              </div>
+                              <div>
+                                <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>Breakout Room</span>
+                                <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>Main Meeting Lobby</span>
+                              </div>
+                            </div>
+                            <button style={{ padding: "6px 16px", background: "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }} onClick={() => handleJoinMeeting("Main Meeting")}>
+                              Join Room
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -734,11 +856,11 @@ export default function InternDashboard() {
                   
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
                     {[
-                      { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
-                      { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
-                      { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
-                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
-                      { rank: 5, name: "David Lee", points: 890, isMe: false }
+                      { rank: 1, name: "Sushmitha", points: 1250, isMe: false },
+                      { rank: 2, name: "Sara", points: 1120, isMe: false },
+                      { rank: 3, name: "John Doe", points: 1100, isMe: true },
+                      { rank: 4, name: "Sakthi S", points: 950, isMe: false },
+                      { rank: 5, name: "Viji", points: 890, isMe: false }
                     ].map((user) => (
                       <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
                         <span style={{ fontSize: "0.9rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
@@ -1656,7 +1778,7 @@ export default function InternDashboard() {
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+          <div className="card" style={{ margin: 0, padding: 0, flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
             <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
               <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
@@ -1905,7 +2027,7 @@ export default function InternDashboard() {
       case "Progress & Certificate":
         if (showCertificateView) {
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "hidden", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "visible", paddingBottom: "10px", flex: 1, paddingRight: "10px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
                 <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
@@ -1933,7 +2055,7 @@ export default function InternDashboard() {
                     Mission Accomplished <Rocket size={12} />
                   </span>
                   <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--bg-surface, #ffffff)" }}>
-                    Boom! You did it, Dhanush!
+                    Boom! You did it, {certData.internName.split(' ')[0]}!
                   </h2>
                   <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255,255,255,0.9)", lineHeight: "1.4", maxWidth: "600px" }}>
                     Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
@@ -1950,74 +2072,32 @@ export default function InternDashboard() {
               {/* Main Grid: Certificate & Actions */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "24px", flexGrow: 1, minHeight: 0 }}>
                 
-                {/* Certificate Render */}
+                {/* Certificate Render: Direct PDF Preview */}
                 <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "20px", padding: "20px 24px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
                     <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Official Certificate</h3>
-                    <span style={{ fontSize: "0.75rem", color: "var(--success-dark, #059669)", fontWeight: 600, background: "var(--success-bg, #ECFDF5)", padding: "4px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid var(--success-border, #A7F3D0)" }}>
-                      <CheckCircle size={12} /> Verified
-                    </span>
-                  </div>
-
-                  <div style={{
-                    flexGrow: 1,
-                    border: "1px solid var(--border-color, #e2e8f0)",
-                    borderRadius: "12px",
-                    padding: "24px 32px",
-                    background: "linear-gradient(180deg, #ffffff 0%, var(--surface-soft, #F8FBFF) 100%)",
-                    textAlign: "center",
-                    position: "relative",
-                    boxShadow: "0 20px 25px -5px rgba(8, 27, 53, 0.05), 0 8px 10px -6px rgba(8, 27, 53, 0.01)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between"
-                  }}>
-                    {/* Corner accents */}
-                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-
-                    {/* Logo Area */}
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
-                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #081B35)", letterSpacing: "-0.5px" }}>ProEduvate</span>
-                    </div>
-
-                    <div>
-                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
-                        Certificate of Internship
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <span className="grade-badge" style={{ fontSize: "0.75rem", color: "#1e40af", fontWeight: 700, background: "#dbeafe", padding: "4px 12px", borderRadius: "20px", border: "1px solid #bfdbfe" }}>
+                        Grade: {certData.grade || "A+"}
                       </span>
-
-                      <p style={{ fontSize: "0.9rem", color: "var(--text-secondary, #45617F)", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
-
-                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "var(--brand-primary, #0B82F6)", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
-                        Sadie Sink
-                      </h1>
-
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #45617F)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                        has successfully completed the 30-day Internship Program in <strong style={{ color: "var(--text-primary, #081B35)" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
-                      </p>
-                    </div>
-
-                    {/* Dates & Signatures Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
-                      <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary, #081B35)", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
-                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
-                      </div>
-
-                      <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: "1px solid var(--border-strong, #C7D8EA)", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "var(--text-primary, #081B35)" }}>Arun Prakash</div>
-                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
-                      </div>
-
-                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                        <div style={{ width: "40px", height: "40px", background: "var(--bg-surface, #ffffff)", border: "1px dashed var(--border-strong, #C7D8EA)", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "var(--text-placeholder, #9DB0C5)" }}>QR</div>
-                        <span style={{ fontSize: "0.55rem", color: "var(--text-muted, #7890AA)", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
-                      </div>
+                      <span style={{ fontSize: "0.75rem", color: "var(--success-dark, #059669)", fontWeight: 600, background: "var(--success-bg, #ECFDF5)", padding: "4px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid var(--success-border, #A7F3D0)" }}>
+                        <CheckCircle size={12} /> Verified
+                      </span>
                     </div>
                   </div>
+
+                  <iframe
+                    src={`http://127.0.0.1:8000/api/v1/certificates/download/${certData.certId || certData.certificate_id || 'PRO-INT-26-839'}#toolbar=0&navpanes=0`}
+                    title="Official Grade Certificate PDF"
+                    style={{
+                      width: "100%",
+                      minHeight: "580px",
+                      border: "1px solid var(--border-color, #e2e8f0)",
+                      borderRadius: "12px",
+                      background: "#ffffff",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.06)"
+                    }}
+                  />
                 </div>
 
                 {/* Actions Column */}
@@ -2025,15 +2105,15 @@ export default function InternDashboard() {
                   <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "20px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)" }}>
                     <h4 style={{ margin: "0 0 16px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Share & Download</h4>
                     
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={() => alert("Downloading Official Certificate PDF...")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={handleDownloadPDF}>
                       <Download size={16} /> Download PDF
                     </button>
 
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--surface-blue, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-default, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--border-default, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--surface-blue, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--surface-blue, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-default, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--border-default, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--surface-blue, #EFF7FF)"; }} onClick={handleShareLinkedIn}>
                       <Share2 size={16} /> Share on LinkedIn
                     </button>
 
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface, #ffffff)", color: "var(--text-secondary, #45617F)", border: "1px solid var(--border-color, #e2e8f0)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.color = "var(--text-primary, #081B35)"; e.currentTarget.style.borderColor = "var(--border-strong, #C7D8EA)"; }} onMouseOut={(e) => { e.currentTarget.style.color = "var(--text-secondary, #45617F)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }} onClick={() => alert("Shareable link copied to clipboard!")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface, #ffffff)", color: "var(--text-secondary, #45617F)", border: "1px solid var(--border-color, #e2e8f0)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.color = "var(--text-primary, #081B35)"; e.currentTarget.style.borderColor = "var(--border-strong, #C7D8EA)"; }} onMouseOut={(e) => { e.currentTarget.style.color = "var(--text-secondary, #45617F)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }} onClick={handleCopyLink}>
                       <ExternalLink size={16} /> Copy Link
                     </button>
                   </div>
@@ -2044,7 +2124,7 @@ export default function InternDashboard() {
         }
 
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "hidden", paddingRight: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", flex: 1, overflowY: "visible", paddingRight: "8px" }}>
             
 
             {/* Top 4 Metrics Cards */}
@@ -2252,7 +2332,7 @@ export default function InternDashboard() {
                   <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All Days →</span>
                 </div>
 
-                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "hidden", paddingBottom: "40px" }}>
+                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "visible", paddingBottom: "40px" }}>
                   {[
                     { day: 10, title: "Git & GitHub", complete: true },
                     { day: 11, title: "Database Basics", complete: true },
@@ -2388,7 +2468,7 @@ export default function InternDashboard() {
 
   if (activeTab === "Learning" && activeLearningTab === "AI Client") {
     return (
-      <div style={{ height: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
+      <div style={{ minHeight: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", alignItems: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
           <button 
             onClick={() => setActiveLearningTab("Reading Materials")}
@@ -2407,7 +2487,7 @@ export default function InternDashboard() {
   }
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 
@@ -2530,7 +2610,7 @@ export default function InternDashboard() {
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              <img src="/assets/sadie-pfp.jpg" alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
+              <img src="/assets/sadie-pfp.jpg" alt="John Doe Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
             </div>
             
             {isProfileDropdownOpen && (
@@ -2554,7 +2634,7 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, overflowY: "visible", display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
