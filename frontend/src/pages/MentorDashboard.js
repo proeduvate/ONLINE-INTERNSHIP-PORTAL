@@ -89,6 +89,7 @@ export default function MentorDashboard() {
     mcqs: [],
     codingQuestion: null,
     testCases: [],
+    interactiveJson: "",
   });
   const [detailSubTab, setDetailSubTab] = useState("Curriculum");
 
@@ -140,6 +141,7 @@ export default function MentorDashboard() {
         domainId: 1, dayNumber: 1, title: "", description: "",
         notes: "", resources: "", deadlineDays: 1,
         mcqs: [], codingQuestion: null, testCases: [],
+        interactiveJson: "",
       });
       alert("Task created successfully!");
     } catch (err) {
@@ -721,6 +723,12 @@ export default function MentorDashboard() {
                         <textarea className="form-control" rows="2" placeholder="e.g. Write a function that returns..."
                           value={newTask.codingQuestion?.prompt || ""}
                           onChange={(e) => setNewTask({ ...newTask, codingQuestion: { prompt: e.target.value } })} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "12px", fontWeight: 600 }}>Interactive Learning Syllabus (JSON, optional)</label>
+                        <textarea className="form-control" rows="4" placeholder='{"topic": "HTML...", "activities": [...]}'
+                          value={newTask.interactiveJson}
+                          onChange={(e) => setNewTask({ ...newTask, interactiveJson: e.target.value })} />
                       </div>
                       <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
                         <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}>

@@ -101,6 +101,7 @@ class Task(Base):
     deadline_days = Column(Integer, default=1) # deadline in days from start date or unlock
     
     # New Fields
+    interactive_json = Column(Text, nullable=True) # JSON String for Interactive Learning payload
     batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
     difficulty = Column(String(50), default="medium")
     task_type = Column(String(50), default="coding")

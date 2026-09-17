@@ -73,6 +73,7 @@ export function adaptTaskFromApi(task) {
         }
       : null,
     testCases,
+    interactiveJson: task.interactive_json ? safeJsonParse(task.interactive_json, null) : null,
   };
 }
 
@@ -101,5 +102,6 @@ export function adaptTaskToApi(task) {
     test_cases: task.testCases && task.testCases.length > 0
       ? JSON.stringify(task.testCases)
       : null,
+    interactive_json: task.interactiveJson ? (typeof task.interactiveJson === 'string' ? task.interactiveJson : JSON.stringify(task.interactiveJson)) : null,
   };
 }

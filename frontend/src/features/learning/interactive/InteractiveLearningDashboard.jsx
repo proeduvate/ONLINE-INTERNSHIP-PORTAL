@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../../api/axios';
 import { createRoot } from 'react-dom/client';
 import { curriculum } from './data/curriculum';
 import './styles.css';
@@ -241,16 +242,135 @@ function Activity({ activity, done, locked, onComplete }) {
 
 export default function InteractiveLearningDashboard() {
   const [day, setDay] = useState(1);
-  const [progress, setProgress] = useState(() => { try { return JSON.parse(sessionStorage.getItem('proeduvate-progress') || '{}'); } catch { return {}; } });
-  const current = curriculum[day - 1];
+  const [maxUnlockedDay, setMaxUnlockedDay] = useState(1);
+  const [dynamicCurriculum, setDynamicCurriculum] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [progress, setProgress] = useState(() => { 
+    try { return JSON.parse(sessionStorage.getItem('proeduvate-progress') || '{}'); } catch { return {}; } 
+  });
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await api.get('/tasks/intern');
+        const fetchedTasks = res.data;
+        
+        let curriculumList = [];
+        let highestDay = 1;
+        
+        fetchedTasks.forEach(task => {
+          if (task.day_number > highestDay) highestDay = task.day_number;
+          if (task.interactive_json) {
+            try {
+              const parsed = JSON.parse(task.interactive_json);
+              curriculumList.push({ day: task.day_number, ...parsed });
+            } catch (e) {
+              console.error("Invalid interactive_json on task:", task.id);
+            }
+          }
+        });
+        
+        // Sort by day
+        curriculumList.sort((a, b) => a.day - b.day);
+        
+        // Fallback to static if empty for demo purposes
+        if (curriculumList.length === 0) {
+           curriculumList = curriculum; 
+           highestDay = 30; // Unlock all if fallback
+        }
+        
+        setDynamicCurriculum(curriculumList);
+        setMaxUnlockedDay(highestDay);
+      } catch (err) {
+        console.error("Failed to fetch tasks for interactive learning", err);
+        setDynamicCurriculum(curriculum);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  if (loading) return <div style={{ padding: '24px' }}>Loading Interactive Modules...</div>;
+  if (!dynamicCurriculum.length) return <div style={{ padding: '24px' }}>No interactive modules assigned for your domain.</div>;
+
+  const current = dynamicCurriculum.find(c => c.day === day) || dynamicCurriculum[0];
   const key = `day-${day}`;
   const done = progress[key] || [];
-  const complete = (id) => setProgress(p => { const n = { ...p, [key]: [...new Set([...(p[key] || []), id])] }; sessionStorage.setItem('proeduvate-progress', JSON.stringify(n)); return n; });
-  const completed = done.length === current.activities.length;
-  const pct = Math.round(done.length / current.activities.length * 100);
-  const dayUnlocked = d => d === 1 || ((progress[`day-${d - 1}`] || []).length === curriculum[d - 2].activities.length);
+  const complete = (id) => setProgress(p => { 
+    const n = { ...p, [key]: [...new Set([...(p[key] || []), id])] }; 
+    sessionStorage.setItem('proeduvate-progress', JSON.stringify(n)); 
+    return n; 
+  });
+  
+  const completed = current?.activities ? done.length === current.activities.length : false;
+  const pct = current?.activities ? Math.round(done.length / current.activities.length * 100) : 0;
+  const dayUnlocked = d => d <= maxUnlockedDay;
 
-  return <div className="app"><aside><div className="brand"><div className="logo">PRO<span>EDUVATE</span></div><div className="role">INTERN MODE</div></div><div className="path-title">30-Day Frontend Path</div><div className="days">{curriculum.map(d => <button key={d.day} disabled={!dayUnlocked(d.day)} className={day === d.day ? 'active' : ''} onClick={() => setDay(d.day)}><span>{String(d.day).padStart(2, '0')}</span><em>{d.topic}</em>{!dayUnlocked(d.day) ? <b>🔒</b> : progress[`day-${d.day}`]?.length === d.activities.length && <b>✓</b>}</button>)}</div></aside><main><header><div><p className="eyebrow">DAY {String(day).padStart(2, '0')} / 30</p><h1>{current.topic}</h1><p className="muted">Interactive Learning <span>→</span> Assessment <span>→</span> Practical Task</p></div><div className="progress"><div><strong>{pct}%</strong><span>learning complete</span></div><div className="bar"><i style={{ width: `${pct}%` }} /></div></div></header><div className="objectives"><strong>Today you will</strong>{current.learningObjectives.map(x => <span key={x}>✓ {x}</span>)}</div><div className="deck">{current.activities.map((a, i) => <Activity key={a.id} activity={a} done={done.includes(a.id)} locked={i > 0 && !done.includes(current.activities[i - 1].id)} onComplete={() => complete(a.id)} />)}</div><footer><button className="secondary" onClick={() => setDay(d => Math.max(1, d - 1))}>← Previous</button><div>{completed ? <span className="ready">✓ Learning complete — assessment unlocked</span> : <span className="locked">Complete the interactive experiences in order</span>}</div><button className="primary" disabled={!completed} onClick={() => window.location.href = '/intern?assessment=true'}>
-        Start Assessment &rarr;
-      </button></footer></main></div>;
+  return (
+    <div className="app">
+      <aside>
+        <div className="brand">
+          <div className="logo">PRO<span>EDUVATE</span></div>
+          <div className="role">INTERN MODE</div>
+        </div>
+        <div className="path-title">Interactive Path</div>
+        <div className="days" style={{ marginTop: '12px' }}>
+          <button className="btn btn-secondary" style={{ width: '100%', marginBottom: '16px' }} onClick={() => window.location.href = '/intern'}>
+            &larr; Back to Dashboard
+          </button>
+          {dynamicCurriculum.map(d => (
+            <button 
+              key={d.day} 
+              disabled={!dayUnlocked(d.day)} 
+              className={day === d.day ? 'active' : ''} 
+              onClick={() => setDay(d.day)}
+            >
+              <span>{String(d.day).padStart(2, '0')}</span>
+              <em>{d.topic}</em>
+              {!dayUnlocked(d.day) ? <b>🔒</b> : progress[`day-${d.day}`]?.length === d.activities?.length && <b>✓</b>}
+            </button>
+          ))}
+        </div>
+      </aside>
+      <main>
+        <header>
+          <div>
+            <p className="eyebrow">DAY {String(day).padStart(2, '0')}</p>
+            <h1>{current?.topic}</h1>
+            <p className="muted">Interactive Learning <span>→</span> Assessment <span>→</span> Practical Task</p>
+          </div>
+          <div className="progress">
+            <div><strong>{pct}%</strong><span>learning complete</span></div>
+            <div className="bar"><i style={{ width: `${pct}%` }} /></div>
+          </div>
+        </header>
+        <div className="objectives">
+          <strong>Today you will</strong>
+          {current?.learningObjectives?.map(x => <span key={x}>✓ {x}</span>)}
+        </div>
+        <div className="deck">
+          {current?.activities?.map((a, i) => (
+            <Activity 
+              key={a.id} 
+              activity={a} 
+              done={done.includes(a.id)} 
+              locked={i > 0 && !done.includes(current.activities[i - 1].id)} 
+              onComplete={() => complete(a.id)} 
+            />
+          ))}
+        </div>
+        <footer>
+          <button className="secondary" onClick={() => setDay(d => Math.max(1, d - 1))}>← Previous</button>
+          <div>
+            {completed ? <span className="ready">✓ Learning complete — assessment unlocked</span> : <span className="locked">Complete the interactive experiences in order</span>}
+          </div>
+          <button className="primary" disabled={!completed} onClick={() => window.location.href = '/intern?assessment=true'}>
+            Start Assessment &rarr;
+          </button>
+        </footer>
+      </main>
+    </div>
+  );
 }

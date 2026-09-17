@@ -93,6 +93,7 @@ class TaskCreate(BaseModel):
     coding_prompt: Optional[str] = None
     coding_solution: Optional[str] = None
     test_cases: Optional[str] = None      # JSON string
+    interactive_json: Optional[str] = None # JSON string for interactive learning
     deadline_days: Optional[int] = 1
     batch_id: Optional[int] = None
     difficulty: Optional[str] = "medium"
@@ -113,7 +114,9 @@ class TaskResponse(BaseModel):
     resources: Optional[str] = None
     mcq_questions: Optional[str] = None
     coding_prompt: Optional[str] = None
+    coding_solution: Optional[str] = None
     test_cases: Optional[str] = None
+    interactive_json: Optional[str] = None
     deadline_days: int
     batch_id: Optional[int] = None
     difficulty: str
