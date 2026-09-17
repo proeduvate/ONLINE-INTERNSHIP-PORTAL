@@ -1,0 +1,557 @@
+{
+    "day": 9,
+    "topic": "CSS Grid",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D9-001",
+            "question": "What is the primary purpose of CSS Grid feature 1 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-002",
+            "question": "How do you correctly use CSS Grid feature 2?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-003",
+            "question": "Which of the following best describes CSS Grid feature 3?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-004",
+            "question": "Why is CSS Grid feature 4 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-005",
+            "question": "When should you avoid using CSS Grid feature 5?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-006",
+            "question": "What is the primary purpose of CSS Grid feature 6 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-007",
+            "question": "How do you correctly use CSS Grid feature 7?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-008",
+            "question": "Which of the following best describes CSS Grid feature 8?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-009",
+            "question": "Why is CSS Grid feature 9 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-010",
+            "question": "When should you avoid using CSS Grid feature 10?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-011",
+            "question": "What is the primary purpose of CSS Grid feature 11 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-012",
+            "question": "How do you correctly use CSS Grid feature 12?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-013",
+            "question": "Which of the following best describes CSS Grid feature 13?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-014",
+            "question": "Why is CSS Grid feature 14 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-015",
+            "question": "When should you avoid using CSS Grid feature 15?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-016",
+            "question": "What is the primary purpose of CSS Grid feature 16 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-017",
+            "question": "How do you correctly use CSS Grid feature 17?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-018",
+            "question": "Which of the following best describes CSS Grid feature 18?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-019",
+            "question": "Why is CSS Grid feature 19 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-020",
+            "question": "When should you avoid using CSS Grid feature 20?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-021",
+            "question": "What is the primary purpose of CSS Grid feature 21 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-022",
+            "question": "How do you correctly use CSS Grid feature 22?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-023",
+            "question": "Which of the following best describes CSS Grid feature 23?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-024",
+            "question": "Why is CSS Grid feature 24 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-025",
+            "question": "When should you avoid using CSS Grid feature 25?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-026",
+            "question": "What is the primary purpose of CSS Grid feature 26 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-027",
+            "question": "How do you correctly use CSS Grid feature 27?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-028",
+            "question": "Which of the following best describes CSS Grid feature 28?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-029",
+            "question": "Why is CSS Grid feature 29 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-030",
+            "question": "When should you avoid using CSS Grid feature 30?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-031",
+            "question": "What is the primary purpose of CSS Grid feature 31 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-032",
+            "question": "How do you correctly use CSS Grid feature 32?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-033",
+            "question": "Which of the following best describes CSS Grid feature 33?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-034",
+            "question": "Why is CSS Grid feature 34 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-035",
+            "question": "When should you avoid using CSS Grid feature 35?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-036",
+            "question": "What is the primary purpose of CSS Grid feature 36 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-037",
+            "question": "How do you correctly use CSS Grid feature 37?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-038",
+            "question": "Which of the following best describes CSS Grid feature 38?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-039",
+            "question": "Why is CSS Grid feature 39 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-040",
+            "question": "When should you avoid using CSS Grid feature 40?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-041",
+            "question": "What is the primary purpose of CSS Grid feature 41 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-042",
+            "question": "How do you correctly use CSS Grid feature 42?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-043",
+            "question": "Which of the following best describes CSS Grid feature 43?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-044",
+            "question": "Why is CSS Grid feature 44 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-045",
+            "question": "When should you avoid using CSS Grid feature 45?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-046",
+            "question": "What is the primary purpose of CSS Grid feature 46 in CSS Grid?",
+            "options": {
+                "A": "To implement CSS Grid feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-047",
+            "question": "How do you correctly use CSS Grid feature 47?",
+            "options": {
+                "A": "By following standard CSS Grid guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-048",
+            "question": "Which of the following best describes CSS Grid feature 48?",
+            "options": {
+                "A": "A key concept in CSS Grid",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-049",
+            "question": "Why is CSS Grid feature 49 important for CSS Grid?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D9-050",
+            "question": "When should you avoid using CSS Grid feature 50?",
+            "options": {
+                "A": "When it violates CSS Grid best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "day": 5,
+    "topic": "Conditional Statements",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D5-Q001",
+            "title": "Number Sign Checker",
+            "description": "Determine whether a number is positive, negative or zero.",
+            "requirements": [
+                "Accept a number from user",
+                "Use if-else-if chain",
+                "Print Positive/Negative/Zero",
+                "Handle decimal numbers",
+                "Show clear output message"
+            ]
+        },
+        {
+            "id": "CODE-PY-D5-Q002",
+            "title": "Student Grading System",
+            "description": "Create a student grading system based on marks.",
+            "requirements": [
+                "Accept marks out of 100",
+                "Assign grade A/B/C/D/F",
+                "Use if-else ladder",
+                "Display grade and remarks",
+                "Handle invalid marks"
+            ]
+        },
+        {
+            "id": "CODE-PY-D5-Q003",
+            "title": "Largest Among Three",
+            "description": "Find the largest among three numbers.",
+            "requirements": [
+                "Accept three numbers",
+                "Compare using if-else",
+                "Find and print the largest",
+                "Handle equal numbers",
+                "Display comparison result"
+            ]
+        },
+        {
+            "id": "CODE-PY-D5-Q004",
+            "title": "Electricity Bill Calculator",
+            "description": "Create an electricity bill calculator using consumption slabs.",
+            "requirements": [
+                "Accept units consumed",
+                "Apply slab-based rates",
+                "Calculate total bill",
+                "Add fixed charges",
+                "Print formatted bill"
+            ]
+        },
+        {
+            "id": "CODE-PY-D5-Q005",
+            "title": "Internship Eligibility System",
+            "description": "Build an internship eligibility system based on percentage and interview status.",
+            "requirements": [
+                "Check academic percentage",
+                "Check interview result (pass/fail)",
+                "Check required documents",
+                "Use nested if-else",
+                "Print eligibility status with reason"
+            ]
+        }
+    ]
+}

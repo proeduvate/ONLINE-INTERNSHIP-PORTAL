@@ -1,0 +1,67 @@
+{
+    "day": 15,
+    "topic": "Classes, Objects & Constructors",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D15-Q001",
+            "title": "Student Class",
+            "description": "Create a Student class with name, age, department and marks.",
+            "requirements": [
+                "Define Student class",
+                "Add fields: name, age, department, marks",
+                "Add parameterized constructor",
+                "Add display() method",
+                "Create objects and display in main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D15-Q002",
+            "title": "Employee Class",
+            "description": "Create an Employee class with salary calculation functionality.",
+            "requirements": [
+                "Fields: name, designation, baseSalary",
+                "Method: calculateNetSalary()",
+                "Include allowances and deductions",
+                "Add display() method",
+                "Create and display multiple employees"
+            ]
+        },
+        {
+            "id": "CODE-PY-D15-Q003",
+            "title": "BankAccount Class",
+            "description": "Create a BankAccount class with deposit and withdrawal methods.",
+            "requirements": [
+                "Fields: accountNumber, holderName, balance",
+                "Method: deposit(double amount)",
+                "Method: withdraw(double amount)",
+                "Prevent overdraft",
+                "Display account summary"
+            ]
+        },
+        {
+            "id": "CODE-PY-D15-Q004",
+            "title": "Book Class",
+            "description": "Create a Book class with borrowing functionality.",
+            "requirements": [
+                "Fields: title, author, isAvailable",
+                "Method: borrowBook()",
+                "Method: returnBook()",
+                "Update availability status",
+                "Display book status"
+            ]
+        },
+        {
+            "id": "CODE-PY-D15-Q005",
+            "title": "Student Management Program",
+            "description": "Build a simple student management program using classes and objects.",
+            "requirements": [
+                "Create multiple Student objects",
+                "Store in an array",
+                "Display all students",
+                "Find highest scorer",
+                "Calculate class average"
+            ]
+        }
+    ]
+}

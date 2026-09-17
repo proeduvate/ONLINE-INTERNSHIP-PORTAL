@@ -1,0 +1,67 @@
+{
+    "day": 13,
+    "topic": "Method Overloading & Varargs",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D13-Q001",
+            "title": "Overloaded Area Calculator",
+            "description": "Overload a method to calculate the area of different shapes.",
+            "requirements": [
+                "Overload area() for circle",
+                "Overload area() for rectangle",
+                "Overload area() for triangle",
+                "Accept appropriate parameters",
+                "Call all three from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D13-Q002",
+            "title": "Overloaded Student Display",
+            "description": "Create overloaded methods for displaying student information.",
+            "requirements": [
+                "display(String name)",
+                "display(String name, int age)",
+                "display(String name, int age, String dept)",
+                "Each adds more detail",
+                "Call all versions from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D13-Q003",
+            "title": "Varargs Sum Calculator",
+            "description": "Create a method using varargs to calculate the sum of any number of integers.",
+            "requirements": [
+                "Define sum(int... numbers) method",
+                "Iterate through varargs",
+                "Return total sum",
+                "Test with 2, 3, and 5 arguments",
+                "Print results for each call"
+            ]
+        },
+        {
+            "id": "CODE-PY-D13-Q004",
+            "title": "Highest Mark Finder",
+            "description": "Create a varargs method to find the highest mark.",
+            "requirements": [
+                "Define highestMark(int... marks) method",
+                "Find maximum value",
+                "Return highest mark",
+                "Test with different numbers of arguments",
+                "Print results clearly"
+            ]
+        },
+        {
+            "id": "CODE-PY-D13-Q005",
+            "title": "Report Generator",
+            "description": "Build a report generator using overloaded methods and varargs.",
+            "requirements": [
+                "Overload report() for different detail levels",
+                "Use varargs for subject marks",
+                "Generate basic and detailed reports",
+                "Calculate statistics in detailed version",
+                "Display formatted output"
+            ]
+        }
+    ]
+}

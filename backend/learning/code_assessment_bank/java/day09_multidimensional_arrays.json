@@ -1,0 +1,67 @@
+{
+    "day": 9,
+    "topic": "Multidimensional Arrays",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D9-Q001",
+            "title": "3x3 Matrix Display",
+            "description": "Create and display a 3x3 matrix.",
+            "requirements": [
+                "Declare a 3x3 integer array",
+                "Initialize with values",
+                "Display in matrix format",
+                "Use nested loops",
+                "Format rows and columns"
+            ]
+        },
+        {
+            "id": "CODE-PY-D9-Q002",
+            "title": "Matrix Element Sum",
+            "description": "Calculate the sum of all elements in a matrix.",
+            "requirements": [
+                "Accept matrix dimensions",
+                "Accept all elements",
+                "Sum all elements using loops",
+                "Print total sum",
+                "Display the matrix first"
+            ]
+        },
+        {
+            "id": "CODE-PY-D9-Q003",
+            "title": "Matrix Addition",
+            "description": "Add two matrices.",
+            "requirements": [
+                "Accept two matrices of same size",
+                "Add corresponding elements",
+                "Store result in third matrix",
+                "Display both input matrices",
+                "Display result matrix"
+            ]
+        },
+        {
+            "id": "CODE-PY-D9-Q004",
+            "title": "Matrix Transpose",
+            "description": "Find the transpose of a matrix.",
+            "requirements": [
+                "Accept a matrix",
+                "Swap rows and columns",
+                "Store transposed matrix",
+                "Display original matrix",
+                "Display transposed matrix"
+            ]
+        },
+        {
+            "id": "CODE-PY-D9-Q005",
+            "title": "Matrix Multiplication",
+            "description": "Multiply two matrices.",
+            "requirements": [
+                "Accept two compatible matrices",
+                "Apply multiplication formula",
+                "Store result",
+                "Validate dimension compatibility",
+                "Display all three matrices"
+            ]
+        }
+    ]
+}

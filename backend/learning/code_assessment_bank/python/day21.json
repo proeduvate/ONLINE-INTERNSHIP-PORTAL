@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 21 Code Assessment",
+  "day": 21,
+  "topic": "Modules & Packages",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY21-Q01",
+      "day": 21,
+      "topic": "Modules & Packages",
+      "question": "Create a custom calculator module and import it into another Python file."
+    },
+    {
+      "id": "DAY21-Q02",
+      "day": 21,
+      "topic": "Modules & Packages",
+      "question": "Create a module containing mathematical utility functions."
+    },
+    {
+      "id": "DAY21-Q03",
+      "day": 21,
+      "topic": "Modules & Packages",
+      "question": "Create a student utility module for calculating grades and averages."
+    },
+    {
+      "id": "DAY21-Q04",
+      "day": 21,
+      "topic": "Modules & Packages",
+      "question": "Build a package containing separate modules for students, marks, and reports."
+    },
+    {
+      "id": "DAY21-Q05",
+      "day": 21,
+      "topic": "Modules & Packages",
+      "question": "Create a reusable Python utility package and demonstrate importing its functions."
+    }
+  ]
+}

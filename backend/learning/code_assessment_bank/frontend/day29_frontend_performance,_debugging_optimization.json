@@ -1,0 +1,37 @@
+{
+    "day": 29,
+    "topic": "Frontend Performance, Debugging & Optimization",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D29-Q001",
+            "title": "Debug Broken Application",
+            "description": "Given an application containing multiple JavaScript/React bugs, identify and fix them.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D29-Q002",
+            "title": "Performance Optimization",
+            "description": "Optimize a React application that unnecessarily re-renders components.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D29-Q003",
+            "title": "Lazy Loading",
+            "description": "Implement lazy loading for application pages using React lazy loading.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D29-Q004",
+            "title": "Large List Optimization",
+            "description": "Build and optimize a component rendering a large list of records.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D29-Q005",
+            "title": "Performance Audit",
+            "description": "Analyze an existing frontend and identify at least five performance problems, then implement fixes for them.",
+            "requirements": []
+        }
+    ]
+}
