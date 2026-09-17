@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../services/AuthContext";
-import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
+import { LayoutDashboard, BookOpen, Ticket, Gift, LogOut, Bell, Sparkles, Clock, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, PartyPopper, ShieldAlert, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
-import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
-import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
@@ -17,13 +15,11 @@ export default function InternDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
-  const [theme, setTheme] = useState("light");
-  const [trackerOpen, setTrackerOpen] = useState(true);
+  const [theme] = useState("light");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
-  const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
+  const [isInternshipCompleted] = useState(true);
   
   const internDomain = user?.domain || "Pending Assignment";
   const mentorAssigned = user?.mentor || null;
@@ -105,6 +101,7 @@ export default function InternDashboard() {
       handleSubmitAirdrop();
     }
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showAirdropModal, airdropTimeLeft]);
 
   const handleStartAirdrop = (airdrop) => {
@@ -163,10 +160,10 @@ export default function InternDashboard() {
     const interval = setInterval(updateInsightIndex, 10000); // Check timestamp index every 10 seconds
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Mock State
-  const progress = 40; // 12 of 30 days
   const [aiScore, setAiScore] = useState(88);
   const attendancePercent = 90;
 
@@ -205,6 +202,16 @@ export default function InternDashboard() {
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);
   const [assessmentView, setAssessmentView] = useState("selection"); // selection, mcq, coding
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("assessment") === "true") {
+      setActiveTab("Learning");
+      setShowAssessment(true);
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({path: newUrl}, '', newUrl);
+    }
+  }, []);
   const [mcqDone, setMcqDone] = useState(false);
   const [codingDone, setCodingDone] = useState(false);
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
@@ -285,8 +292,8 @@ export default function InternDashboard() {
   ];
 
   // Coding task state
-  const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
-  const [filesData, setFilesData] = useState(null);
+  const [, setCode] = useState("function sum(a, b) {\n  // write code\n}");
+  const [, setFilesData] = useState(null);
   const [language, setLanguage] = useState("javascript");
 
   const [evaluating, setEvaluating] = useState(false);
@@ -1164,31 +1171,17 @@ export default function InternDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 
                     {/* Learning Portals */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                      <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px", border: "1px solid var(--border-color)", background: "var(--bg-surface)", borderRadius: "16px", cursor: "pointer", transition: "all 0.2s ease" }} onClick={() => window.location.href = "/intern/learning/normal"}>
-                        <div style={{ width: "48px", height: "48px", background: "#eff6ff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb" }}>
-                          <BookOpen size={24} />
-                        </div>
-                        <div>
-                          <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "bold" }}>Normal Learning Portal</h3>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)" }}>Access standard reading materials and curriculum.</p>
-                        </div>
-                        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", color: "#2563eb", fontWeight: "bold", fontSize: "14px" }}>
-                          Launch Portal &rarr;
-                        </div>
+                    {/* Learning Portal */}
+                    <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px", border: "1px solid var(--border-color)", background: "var(--bg-surface)", borderRadius: "16px", cursor: "pointer", transition: "all 0.2s ease" }} onClick={() => window.location.href = "/intern/learning/interactive"}>
+                      <div style={{ width: "48px", height: "48px", background: "#fdf4ff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c026d3" }}>
+                        <Sparkles size={24} />
                       </div>
-
-                      <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px", border: "1px solid var(--border-color)", background: "var(--bg-surface)", borderRadius: "16px", cursor: "pointer", transition: "all 0.2s ease" }} onClick={() => window.location.href = "/intern/learning/interactive"}>
-                        <div style={{ width: "48px", height: "48px", background: "#fdf4ff", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c026d3" }}>
-                          <Sparkles size={24} />
-                        </div>
-                        <div>
-                          <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "bold" }}>Interactive Learning Portal</h3>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)" }}>Learn through interactive modules and exercises.</p>
-                        </div>
-                        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", color: "#c026d3", fontWeight: "bold", fontSize: "14px" }}>
-                          Launch Portal &rarr;
-                        </div>
+                      <div>
+                        <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "bold" }}>Learning Portal</h3>
+                        <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)" }}>Access your curriculum and interactive modules.</p>
+                      </div>
+                      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", color: "#c026d3", fontWeight: "bold", fontSize: "14px" }}>
+                        Launch Portal &rarr;
                       </div>
                     </div>
 
@@ -2417,6 +2410,8 @@ export default function InternDashboard() {
         );
       case "Profile":
         return <InternProfile />;
+      default:
+        return null;
     }
   };
 
