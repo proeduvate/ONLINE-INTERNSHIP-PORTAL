@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 import json
 
@@ -41,6 +41,7 @@ def create_airdrop(
         start_mode=data.start_mode.value,
         time_limit=data.time_limit,
         start_time=data.start_time,
+        end_time=data.end_time,
         points_distribution=data.points_distribution,
         winner_count=data.winner_count,
         created_by=current_user.id,
@@ -110,6 +111,7 @@ def submit_for_approval(
 @router.post("/admin/{airdrop_id}/approve", response_model=schemas_airdrops.AirdropResponse)
 def approve_airdrop(
     airdrop_id: int,
+    data: Optional[schemas_airdrops.AirdropApproveRequest] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -123,6 +125,16 @@ def approve_airdrop(
     if airdrop.status != schemas_airdrops.AirdropStatus.PENDING_APPROVAL.value:
         raise HTTPException(status_code=400, detail="Airdrop is not pending approval")
         
+    if data:
+        if data.new_start_time:
+            airdrop.start_time = data.new_start_time
+        if data.new_end_time:
+            if data.new_start_time and data.new_end_time <= data.new_start_time:
+                raise HTTPException(status_code=400, detail="End time must be after start time")
+            elif not data.new_start_time and airdrop.start_time and data.new_end_time <= airdrop.start_time:
+                raise HTTPException(status_code=400, detail="End time must be after start time")
+            airdrop.end_time = data.new_end_time
+
     airdrop.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
     
     # Check if we should auto-finalize immediately (if all interns have already completed it)
@@ -205,6 +217,8 @@ def handle_airdrop_action(
         if airdrop.start_mode == schemas_airdrops.StartMode.FIXED.value:
             if not airdrop.start_time or now < airdrop.start_time:
                 raise HTTPException(status_code=400, detail="Fixed start time has not been reached yet")
+            if airdrop.end_time and now > airdrop.end_time:
+                raise HTTPException(status_code=400, detail="Fixed end time has passed")
             
         existing = db.query(models.AirdropAttempt).filter(
             models.AirdropAttempt.airdrop_id == airdrop.id,
@@ -235,15 +249,11 @@ def handle_airdrop_action(
         if not attempt or attempt.status != "started":
             raise HTTPException(status_code=400, detail="Invalid or non-existent attempt")
             
-        # For Flexible, strict enforcement. For Fixed, use a small grace period just in case.
+        # For both Flexible and Fixed, time allowed is time_limit seconds after started_at
         time_diff = (now - attempt.started_at).total_seconds()
         is_late = False
-        if airdrop.start_mode == schemas_airdrops.StartMode.FLEXIBLE.value:
-            if time_diff > (airdrop.time_limit + 5):
-                is_late = True
-        else:
-            if airdrop.start_time and (now - airdrop.start_time).total_seconds() > (airdrop.time_limit + 5):
-                is_late = True
+        if time_diff > (airdrop.time_limit + 5):
+            is_late = True
                 
         attempt.completed_at = now
         attempt.submitted_answer = json.dumps(data.answer) if data.answer is not None else None
@@ -375,6 +385,7 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
         "start_mode": airdrop.start_mode,
         "time_limit": airdrop.time_limit,
         "start_time": airdrop.start_time,
+        "end_time": airdrop.end_time,
         "start_time_ist": _format_ist(airdrop.start_time),
         "points_distribution": airdrop.points_distribution,
         "winner_count": airdrop.winner_count,
@@ -400,10 +411,15 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
     resp.attempts = attempt_responses
     
     result_responses = []
+    user_ids = list({res.intern_id for res in results if res.intern_id})
+    user_map = {}
+    if user_ids:
+        users = db.query(models.User).filter(models.User.id.in_(user_ids)).all()
+        user_map = {u.id: u.name for u in users}
+
     for res in results:
         res_resp = schemas_airdrops.AirdropResultResponse.model_validate(res)
-        user = db.query(models.User).filter(models.User.id == res.intern_id).first()
-        res_resp.intern_name = user.name if user else "Unknown"
+        res_resp.intern_name = user_map.get(res.intern_id, "Unknown")
         result_responses.append(res_resp)
         
     resp.results = result_responses

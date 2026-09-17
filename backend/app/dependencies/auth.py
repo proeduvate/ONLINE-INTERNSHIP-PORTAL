@@ -43,7 +43,7 @@ def get_current_user(
 
 def check_admin(current_user: models.User = Depends(get_current_user)) -> models.User:
     """Dependency to check if user is admin"""
-    if current_user.role != models.UserRole.ADMIN:
+    if current_user.role != models.UserRole.ADMIN and getattr(current_user.role, "value", current_user.role) != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access Denied: Admin role required"
@@ -53,7 +53,7 @@ def check_admin(current_user: models.User = Depends(get_current_user)) -> models
 
 def check_mentor(current_user: models.User = Depends(get_current_user)) -> models.User:
     """Dependency to check if user is mentor"""
-    if current_user.role != models.UserRole.MENTOR:
+    if current_user.role != models.UserRole.MENTOR and getattr(current_user.role, "value", current_user.role) != "mentor":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access Denied: Mentor role required"
@@ -63,7 +63,7 @@ def check_mentor(current_user: models.User = Depends(get_current_user)) -> model
 
 def check_intern(current_user: models.User = Depends(get_current_user)) -> models.User:
     """Dependency to check if user is intern"""
-    if current_user.role != models.UserRole.INTERN:
+    if current_user.role != models.UserRole.INTERN and getattr(current_user.role, "value", current_user.role) != "intern":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access Denied: Intern role required"

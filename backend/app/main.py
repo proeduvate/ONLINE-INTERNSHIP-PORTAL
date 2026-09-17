@@ -1,4 +1,3 @@
-from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +21,8 @@ from fpdf import FPDF
 import random
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
+import requests
+import base64
 
 try:
     from app import models, schemas
@@ -29,7 +30,6 @@ try:
 except ImportError:
     from app import models, schemas
     from app.db import session as database
-
 
 try:
     from app.utils.sandbox_runner import run_submission as sandbox_run_submission
@@ -79,7 +79,7 @@ app = FastAPI(
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -107,8 +107,11 @@ finally:
 
 if needs_seed:
     print("Database is empty! Auto-seeding to ensure seamless network fallback...")
-    import seed
-    seed.seed()
+    try:
+        from scripts.utils import seed
+        seed.seed()
+    except Exception as e:
+        print("Failed to auto-seed:", e)
 
 # Include modular routers for new features
 from app.api.v1.endpoints.analytics import router as analytics_router
@@ -117,10 +120,11 @@ from app.api.v1.endpoints.airdrops import router as airdrops_router
 from app.api.v1.endpoints.leaderboard import router as leaderboard_router
 from app.api.v1.endpoints.facts import router as facts_router
 from app.api.v1.endpoints.simulation import router as simulation_router
-from app.api.v1.endpoints.batch_analytics import router as batch_analytics_router
-from routers import meetings
-from routers import normal_learning
-from routers import interactive_learning
+from app.api.v1.endpoints.mcq import router as mcq_router
+from app.api.v1.endpoints.questions import router as questions_router
+from app.api.v1.endpoints.tasks import router as tasks_router
+from app.api.v1.endpoints.mentor import router as mentor_router
+from app.api.v1.endpoints.admin import router as admin_router
 
 # Initialize analytics DB
 from app.db.analytics_session import engine as analytics_engine
@@ -133,13 +137,11 @@ app.include_router(airdrops_router)
 app.include_router(leaderboard_router)
 app.include_router(facts_router)
 app.include_router(simulation_router)
-app.include_router(batch_analytics_router)
-app.include_router(meetings.router, prefix="/api/v1/meetings")
-app.include_router(normal_learning.router, prefix="/api/normal-learning", tags=["Normal Learning"])
-app.include_router(interactive_learning.router, prefix="/api/interactive-learning", tags=["Interactive Learning"])
-
-from routers import onboarding
-app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+app.include_router(mcq_router)
+app.include_router(questions_router, tags=["questions"])
+app.include_router(tasks_router)
+app.include_router(mentor_router)
+app.include_router(admin_router)
 
 
 # ==========================================
@@ -177,7 +179,7 @@ def root():
 # ==========================================
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
-def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
+def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.get_db)):
     existing_user = db.query(models.User).filter(models.User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(
@@ -196,7 +198,6 @@ def register_user(user_data: schemas.UserCreate, background_tasks: BackgroundTas
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    # N8N webhook trigger removed
     
     return {"message": "User registered successfully", "user_id": new_user.id}
 
@@ -210,8 +211,16 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
             detail="Invalid Credentials"
         )
     
+    import bcrypt
+    from passlib.exc import UnknownHashError
     try:
-        is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+        is_valid = bcrypt.checkpw(user_credentials.password.encode('utf-8'), user.hashed_password.encode('utf-8'))
+    except ValueError:
+        try:
+            is_valid = pwd_context.verify(user_credentials.password, user.hashed_password)
+        except UnknownHashError:
+            # Fallback for plain text passwords in seeded DB
+            is_valid = (user_credentials.password == user.hashed_password)
     except Exception:
         is_valid = False
 
@@ -237,12 +246,7 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
 @app.post("/token")
 def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
-    try:
-        is_valid = user and pwd_context.verify(form_data.password, user.hashed_password)
-    except Exception:
-        is_valid = False
-
-    if not is_valid:
+    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -261,7 +265,6 @@ def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
 @app.post("/admin/onboard", status_code=status.HTTP_201_CREATED)
 def onboard_user(
     data: schemas.UserOnboard, 
-    background_tasks: BackgroundTasks,
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -294,6 +297,7 @@ def onboard_user(
         email=data.email,
         hashed_password=hashed_password,
         role=models.UserRole(data.role.value),
+        github_repo_url=data.github_repo_url,
         college=data.college,
         domain_id=data.domain_id,
         mentor_id=data.mentor_id,
@@ -306,8 +310,6 @@ def onboard_user(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
-    # N8N webhook triggers removed
     
     return {"message": "User onboarded successfully", "user_id": new_user.id, "intern_id": intern_id}
 
@@ -465,23 +467,40 @@ def get_intern_tasks_with_unlock_status(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    if current_user.role != models.UserRole.INTERN:
+    print(f"DEBUG /tasks/intern: current_user.email={current_user.email}, role={current_user.role}, type={type(current_user.role)}")
+    if current_user.role != models.UserRole.INTERN and getattr(current_user.role, "value", current_user.role) != "intern":
         raise HTTPException(status_code=403, detail="Intern role required")
         
     if current_user.domain_id is None:
         return {"tasks": [], "message": "No domain assigned yet"}
         
-    tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).order_by(models.Task.day_number).all()
-    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
+    tasks = db.query(models.Task).filter(
+        models.Task.domain_id == current_user.domain_id,
+        models.Task.task_type == "coding"
+    ).order_by(models.Task.day_number).all()
+    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).order_by(models.Submission.id.asc()).all()
     
-    sub_map = {sub.task_id: sub for sub in submissions}
+    sub_map = {}
+    for sub in submissions:
+        if sub.task_id not in sub_map:
+            sub_map[sub.task_id] = sub
+        else:
+            if sub.status in ["submitted", "approved"]:
+                sub_map[sub.task_id] = sub
     
-    from datetime import datetime
-    current_date = datetime.utcnow()
-    start_date = current_user.start_date or current_date
-    internship_day = (current_date - start_date).days + 1
-    if internship_day < 1:
-        internship_day = 1
+    current_date_local = datetime.now()
+    
+    # Calculate max_unlocked_day strictly based on when tasks were submitted
+    max_unlocked_day = 1
+    for t in tasks:
+        sub = sub_map.get(t.id)
+        if sub and sub.status in ["submitted", "approved"]:
+            if t.day_number >= max_unlocked_day:
+                max_unlocked_day = t.day_number + 1
+        else:
+            break
+            
+    internship_day = max_unlocked_day
 
     # Sequential Day Locking logic:
     # Day 1 is unlocked if internship_day >= 1
@@ -498,12 +517,38 @@ def get_intern_tasks_with_unlock_status(
         
         if sub:
             status_val = sub.status
+            if status_val in ["submitted", "approved"]:
+                status_val = "completed"
             # calculate combined scores
             score_val = (sub.mcq_score or 0) + (sub.ai_score or 0) + (sub.mentor_score or 0)
             ai_score_val = sub.ai_score or 0
             mentor_score_val = sub.mentor_score or 0
             
-        is_unlocked = sequential_unlocked
+        is_unlocked = sequential_unlocked and (t.day_number <= internship_day)
+        
+        if sub and getattr(sub, "attendance_marked", False):
+            day_attendance = "present"
+        elif t.day_number < internship_day:
+            day_attendance = "absent"
+        elif t.day_number == internship_day:
+            day_attendance = "current"
+        else:
+            day_attendance = "future"
+        
+        coding_prompt = t.coding_prompt
+        if coding_prompt and sub and getattr(sub, "selected_question_id", None):
+            parts = re.split(r'\n(?=\d+\.\s+)', coding_prompt)
+            if len(parts) > 1:
+                title = parts[0]
+                questions = parts[1:]
+                try:
+                    q_idx = int(sub.selected_question_id) - 1
+                    if 0 <= q_idx < len(questions):
+                        coding_prompt = f"{title}\n{questions[q_idx]}"
+                    else:
+                        coding_prompt = f"{title}\n{questions[0]}"
+                except ValueError:
+                    pass
             
         results.append({
             "id": t.id,
@@ -515,9 +560,10 @@ def get_intern_tasks_with_unlock_status(
             "notes": t.notes,
             "resources": t.resources,
             "mcq_questions": t.mcq_questions,
-            "coding_prompt": t.coding_prompt,
+            "coding_prompt": coding_prompt,
             "unlocked": is_unlocked,
             "status": status_val,
+            "day_attendance": day_attendance,
             "score": score_val,
             "ai_score": ai_score_val,
             "mentor_score": mentor_score_val,
@@ -554,7 +600,8 @@ def start_task(
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
             models.Task.domain_id == task.domain_id,
-            models.Task.day_number == task.day_number - 1
+            models.Task.day_number == task.day_number - 1,
+            models.Task.task_type == task.task_type
         ).first()
         prev_sub = None
         if previous_task:
@@ -575,6 +622,11 @@ def start_task(
         if existing.status == "not_started":
             existing.status = "in_progress"
             existing.started_at = datetime.utcnow()
+            if not existing.selected_question_id:
+                existing.selected_question_id = str(random.randint(1, 5))
+            db.commit()
+        elif not getattr(existing, "selected_question_id", None):
+            existing.selected_question_id = str(random.randint(1, 5))
             db.commit()
         return {"message": "Task already started", "status": existing.status}
         
@@ -582,7 +634,8 @@ def start_task(
         intern_id=current_user.id,
         task_id=task_id,
         status="in_progress",
-        started_at=datetime.utcnow()
+        started_at=datetime.utcnow(),
+        selected_question_id=str(random.randint(1, 5))
     )
     db.add(new_sub)
     db.commit()
@@ -997,7 +1050,8 @@ def create_submission(
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
             models.Task.domain_id == task.domain_id,
-            models.Task.day_number == task.day_number - 1
+            models.Task.day_number == task.day_number - 1,
+            models.Task.task_type == task.task_type
         ).first()
         prev_submission = None
         if previous_task:
@@ -1069,6 +1123,53 @@ def create_submission(
             print(f"Error saving submission file: {e}")
             raise HTTPException(status_code=500, detail="Unable to save your submission. Please try again.")
 
+        github_file_url = None
+        if current_user.github_repo_url:
+            github_repo_url = current_user.github_repo_url
+            if github_repo_url.endswith("/"):
+                github_repo_url = github_repo_url[:-1]
+            
+            # Extract owner and repo from url (e.g. https://github.com/owner/repo)
+            match = re.search(r"github\.com/([^/]+)/([^/]+)", github_repo_url)
+            if match:
+                owner, repo = match.groups()
+                repo = repo.replace(".git", "")
+                
+                # We can construct the hypothetical redirect URL even if we don't have a token to push
+                github_file_url = f"https://github.com/{owner}/{repo}/blob/main/{file_name}"
+
+                github_token = os.environ.get("GITHUB_API_TOKEN")
+                if github_token:
+                    try:
+                        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_name}"
+                        headers = {
+                            "Authorization": f"token {github_token}",
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+                        
+                        # Check if file already exists
+                        get_resp = requests.get(api_url, headers=headers)
+                        sha = None
+                        if get_resp.status_code == 200:
+                            sha = get_resp.json().get("sha")
+
+                        # Commit the new code
+                        message = f"Submission for task day {task.day_number}"
+                        content_encoded = base64.b64encode(data.code_submission.encode("utf-8")).decode("utf-8")
+                        payload = {
+                            "message": message,
+                            "content": content_encoded,
+                            "branch": "main"
+                        }
+                        if sha:
+                            payload["sha"] = sha
+                            
+                        put_resp = requests.put(api_url, headers=headers, json=payload)
+                        if put_resp.status_code in [200, 201]:
+                            github_file_url = put_resp.json().get("content", {}).get("html_url", github_file_url)
+                    except Exception as e:
+                        print(f"Failed to push to GitHub: {e}")
+
     # Trigger AI Evaluator and secure runtime execution for code submission
     ai_eval_result = {"score": 0, "feedback": None}
     runtime_result = None
@@ -1080,14 +1181,20 @@ def create_submission(
         combined_score = 0
 
     if existing:
-        existing.code_submission = data.code_submission
-        existing.mcq_answers = data.mcq_answers
-        existing.mcq_score = mcq_score
-        existing.ai_score = combined_score
-        existing.ai_feedback = json.dumps({
-            "ai_analysis": ai_eval_result,
-            "runtime_evaluation": runtime_result
-        }) if runtime_result else ai_eval_result["feedback"]
+        if data.code_submission is not None:
+            existing.code_submission = data.code_submission
+        if data.mcq_answers is not None:
+            existing.mcq_answers = data.mcq_answers
+            existing.mcq_score = mcq_score
+            
+        # recalculate combined score only if new code was submitted
+        if data.code_submission is not None:
+            existing.ai_score = combined_score
+            existing.ai_feedback = json.dumps({
+                "ai_analysis": ai_eval_result,
+                "runtime_evaluation": runtime_result
+            }) if runtime_result else ai_eval_result["feedback"]
+            
         existing.status = "submitted"
         existing.filename = file_name
         existing.submitted_at = datetime.utcnow()
@@ -1160,6 +1267,55 @@ def create_submission(
     current_user.last_task_completion_date = now_dt
     
     db.add(current_user)
+    
+    # Update DailyQuestionResult for analytics overview
+    today_date = datetime.utcnow().date().isoformat()
+    existing_result = db.query(models.DailyQuestionResult).filter(
+        models.DailyQuestionResult.intern_id == current_user.id,
+        models.DailyQuestionResult.date == today_date
+    ).first()
+
+    final_score = mcq_score + combined_score
+    if existing_result:
+        existing_result.question_id = task.id
+        existing_result.mcq_score = mcq_score
+        existing_result.coding_score = combined_score
+        existing_result.final_score = final_score
+        existing_result.attempted_at = datetime.utcnow()
+    else:
+        new_result = models.DailyQuestionResult(
+            intern_id=current_user.id,
+            question_id=task.id,
+            mcq_score=mcq_score,
+            coding_score=combined_score,
+            final_score=final_score,
+            date=today_date,
+            attempted_at=datetime.utcnow()
+        )
+        db.add(new_result)
+    
+    # Award points
+    if final_score > 0 and not existing:
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=int(final_score),
+            source_type="DAILY_ASSESSMENT",
+            source_id=sub.id,
+            reason=f"Daily Assessment Points for Day {task.day_number}"
+        )
+        db.add(pt)
+    elif existing and final_score > (existing.mcq_score + existing.ai_score):
+        # Calculate new points
+        diff = final_score - (existing.mcq_score + existing.ai_score)
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=int(diff),
+            source_type="DAILY_ASSESSMENT",
+            source_id=sub.id,
+            reason=f"Updated Daily Assessment Points for Day {task.day_number}"
+        )
+        db.add(pt)
+        
     db.commit()
 
     # Cancel any pending reminders for today
@@ -1206,6 +1362,9 @@ def create_submission(
             "runtime_evaluation": runtime_result
         }) if runtime_result else ai_eval_result["feedback"]
     }
+    if data.code_submission and 'github_file_url' in locals() and github_file_url:
+        response["github_file_url"] = github_file_url
+
     if runtime_result:
         response.update({
             "runtime_score": runtime_result["runtime_score"],
@@ -2089,3 +2248,8 @@ def apply_for_internship(
     db.add(new_application)
     db.commit()
     return {"message": "Application submitted"}
+
+from app.api.v1.endpoints.onboarding import router as onboarding_router
+from app.api.v1.endpoints.users import router as users_router
+app.include_router(onboarding_router)
+app.include_router(users_router)

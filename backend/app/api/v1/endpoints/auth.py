@@ -31,6 +31,7 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
         name=user_data.name,
         email=user_data.email,
         hashed_password=hashed_password,
+        github_repo_url=user_data.github_repo_url,
         role=models.UserRole(user_data.role.value)
     )
     db.add(new_user)
@@ -67,5 +68,6 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
         "token_type": "bearer",
         "role": user.role.value,
         "name": user.name,
-        "email": user.email
+        "email": user.email,
+        "user_id": user.id
     }

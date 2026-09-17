@@ -18,6 +18,7 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+    github_repo_url: Optional[str] = None
     role: UserRole = UserRole.INTERN
 
 class UserLoginSchema(BaseModel):
@@ -29,6 +30,7 @@ class UserOnboard(BaseModel):
     email: EmailStr
     password: str
     role: UserRole
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
@@ -45,10 +47,12 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     role: UserRole
-    created_at: Optional[datetime] = None
+    created_at: datetime
     intern_id: Optional[str] = None
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
+    domain_name: Optional[str] = None
     mentor_id: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
@@ -93,7 +97,7 @@ class TaskCreate(BaseModel):
     coding_prompt: Optional[str] = None
     coding_solution: Optional[str] = None
     test_cases: Optional[str] = None      # JSON string
-    interactive_json: Optional[str] = None # JSON string for interactive learning
+    interactive_json: Optional[str] = None # JSON string for interactive payload
     deadline_days: Optional[int] = 1
     batch_id: Optional[int] = None
     difficulty: Optional[str] = "medium"
@@ -114,7 +118,6 @@ class TaskResponse(BaseModel):
     resources: Optional[str] = None
     mcq_questions: Optional[str] = None
     coding_prompt: Optional[str] = None
-    coding_solution: Optional[str] = None
     test_cases: Optional[str] = None
     interactive_json: Optional[str] = None
     deadline_days: int
@@ -344,6 +347,7 @@ class OnboardingApplicationCreate(BaseModel):
     graduation_year: int
     domain: str
     resume_url: Optional[str] = None
+    github_repo_url: Optional[str] = None
 
 
 # ==========================================
@@ -356,13 +360,17 @@ class SimulationChoice(BaseModel):
 
 class SimulationScenarioResponse(BaseModel):
     day: int
-    simulation_title: str
+    title: str
+    subtitle: Optional[str] = None
     scenario_number: int
     scenario_id: str
     total_scenarios: int
     situation: str
     question: str
     choices: List[SimulationChoice]
+    completed: Optional[bool] = False
+    completed_days: Optional[List[int]] = []
+    decisionResult: Optional[dict] = None
 
 class SimulationDecision(BaseModel):
     scenario_id: str
