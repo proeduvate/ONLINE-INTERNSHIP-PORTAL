@@ -8,6 +8,7 @@ class TaskCreate(BaseModel):
     description: str
     difficulty: Optional[str] = "Medium"
     deadline_days: Optional[int] = 1
+    interactive_json: Optional[str] = None
 
 class TaskResponse(BaseModel):
     id: int
@@ -22,6 +23,7 @@ class TaskResponse(BaseModel):
     coding_prompt: Optional[str] = None
     domain_name: Optional[str] = None
     task_type: Optional[str] = "curriculum"
+    interactive_json: Optional[str] = None
 
     class Config:
         from_attributes = True

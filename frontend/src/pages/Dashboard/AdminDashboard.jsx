@@ -92,7 +92,8 @@ export default function AdminDashboard() {
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "Intern", college: "", domain: "", mentor: "" });
   const [showMentorModal, setShowMentorModal] = useState(false);
   const [newMentor, setNewMentor] = useState({ name: "", email: "", domain: "" });
-  const [newTask, setNewTask] = useState({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+  const [newTask, setNewTask] = useState({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "", interactiveJson: "" });
+  const [showCreateTask, setShowCreateTask] = useState(false);
   const [newCurriculum, setNewCurriculum] = useState({ day: "", topic: "", resources: "", domain: "Web Development" });
   const [newMeeting, setNewMeeting] = useState({ title: "", time: "", mentor: "", link: "" });
   
@@ -194,20 +195,28 @@ export default function AdminDashboard() {
     setShowMentorModal(false);
   };
 
-  const handleCreateTask = (e) => {
+  const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTask.title) return alert("Please specify task title.");
-    const created = {
-      id: tasks.length + 1,
-      title: newTask.title,
-      difficulty: newTask.difficulty,
-      deadline: newTask.deadline || "TBD",
-      domain: selectedProgramDomain || newTask.domain || "General",
-      status: "Active"
-    };
-    setTasks([...tasks, created]);
-    alert("New task created and assigned successfully!");
-    setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+    try {
+      const payload = {
+        domain_name: selectedProgramDomain || newTask.domain || "General",
+        day_number: parseInt(newTask.dayNumber) || 1,
+        title: newTask.title,
+        description: newTask.description || "Task description",
+        difficulty: newTask.difficulty || "Medium",
+        deadline_days: parseInt(newTask.deadline) || 1,
+        interactive_json: newTask.interactiveJson
+      };
+      const res = await api.post("/tasks", payload);
+      setTasks([...tasks, res.data]);
+      setShowCreateTask(false);
+      setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "", interactiveJson: "" });
+      alert("New task created and assigned successfully!");
+    } catch (err) {
+      console.error("Failed to create task:", err);
+      alert(err.response?.data?.detail || "Failed to create task.");
+    }
   };
 
   const handleUploadCurriculum = (e) => {
@@ -862,6 +871,47 @@ export default function AdminDashboard() {
 
                 {detailSubTab === "Tasks" && (
                   <div className="table-container">
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px", padding: "0 16px" }}>
+                      <button className="btn btn-primary" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }} onClick={() => setShowCreateTask(!showCreateTask)}>
+                        {showCreateTask ? "Cancel" : "➕ Create New Task"}
+                      </button>
+                    </div>
+                    {showCreateTask && (
+                      <div className="card" style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", margin: "0 16px 16px 16px" }}>
+                        <h4 style={{ margin: "0 0 16px 0", color: "#166534" }}>➕ Create New Task</h4>
+                        <form onSubmit={handleCreateTask} style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", fontWeight: 600 }}>Task Title *</label>
+                            <input className="form-control" type="text" placeholder="e.g. Build a Neural Network"
+                              value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", fontWeight: 600 }}>Description</label>
+                            <textarea className="form-control" rows="3" value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} />
+                          </div>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                            <div>
+                              <label style={{ fontSize: "12px", fontWeight: 600 }}>Difficulty</label>
+                              <select className="form-control" value={newTask.difficulty} onChange={(e) => setNewTask({ ...newTask, difficulty: e.target.value })}>
+                                <option>Easy</option><option>Medium</option><option>Hard</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ fontSize: "12px", fontWeight: 600 }}>Deadline</label>
+                              <input className="form-control" type="text" placeholder="e.g. 5 days" value={newTask.deadline} onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value })} />
+                            </div>
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", fontWeight: 600 }}>Interactive Learning Syllabus (JSON, optional)</label>
+                            <textarea className="form-control" rows="4" placeholder='{"topic": "HTML...", "activities": [...]}' value={newTask.interactiveJson} onChange={(e) => setNewTask({ ...newTask, interactiveJson: e.target.value })} />
+                          </div>
+                          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                            <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}>Create Task</button>
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowCreateTask(false)}>Cancel</button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
                     <table className="table">
                       <thead>
                         <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>

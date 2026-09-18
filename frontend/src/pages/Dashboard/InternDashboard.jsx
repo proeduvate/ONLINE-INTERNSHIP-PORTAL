@@ -176,7 +176,7 @@ export default function InternDashboard() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await api.get('/tasks/intern');
+        const res = await api.get('/tasks');
         let tasks = [];
         if (Array.isArray(res.data)) {
            tasks = res.data;

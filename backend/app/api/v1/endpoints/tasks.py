@@ -15,8 +15,8 @@ def create_task(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    if current_user.role.lower() != "admin":
-        raise HTTPException(status_code=403, detail="Only Admins can create tasks.")
+    if current_user.role.lower() != "admin" and current_user.role.lower() != "mentor":
+        raise HTTPException(status_code=403, detail="Only Admins or Mentors can create tasks.")
 
     domain = db.query(models.Domain).filter(models.Domain.name == task_in.domain_name).first()
     if not domain:
@@ -27,7 +27,9 @@ def create_task(
         day_number=task_in.day_number,
         title=task_in.title,
         description=task_in.description,
-        deadline_days=task_in.deadline_days
+        deadline_days=task_in.deadline_days,
+        interactive_json=task_in.interactive_json,
+        difficulty=task_in.difficulty
     )
     db.add(new_task)
     db.commit()
@@ -69,7 +71,8 @@ def get_tasks(
             "difficulty": task.difficulty,
             "deadline_days": task.deadline_days,
             "domain_name": domain_id_to_name.get(task.domain_id, "Unknown"),
-            "task_type": "curriculum"
+            "task_type": "curriculum",
+            "interactive_json": task.interactive_json
         })
         
     # Fetch DomainCodeAssessments

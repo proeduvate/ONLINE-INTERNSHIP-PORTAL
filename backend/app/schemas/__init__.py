@@ -385,3 +385,21 @@ class SimulationDecisionResponse(BaseModel):
     day_completed: bool
 
 
+
+
+class BreakoutRoomBase(BaseModel):
+    title: str
+    max_participants: Optional[int] = 10
+
+class BreakoutRoomCreate(BreakoutRoomBase):
+    meeting_id: int
+
+class BreakoutRoomResponse(BreakoutRoomBase):
+    id: int
+    meeting_id: int
+    room_code: str
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

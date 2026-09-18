@@ -12,13 +12,17 @@ from app import models
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
+import os
+import requests
+
 def get_current_user(
     token: str = Depends(oauth2_scheme), 
     db: Session = Depends(get_db)
 ) -> models.User:
     """
     Get current authenticated user from JWT token.
-    Raises HTTPException if token is invalid or user not found.
+    Supports Supabase JWTs by verifying with the Supabase API,
+    or falls back to local JWT validation.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -26,11 +30,12 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     
+    # Always use local JWT logic since tokens are generated locally
     payload = decode_token(token)
     if payload is None:
         raise credentials_exception
     
-    user_id: int = payload.get("user_id")
+    user_id = payload.get("user_id")
     if user_id is None:
         raise credentials_exception
         

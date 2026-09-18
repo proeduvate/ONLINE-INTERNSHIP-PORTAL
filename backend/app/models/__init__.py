@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean, Float
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean, Float, func
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.session import Base
@@ -66,6 +66,7 @@ class User(Base):
     
     submissions = relationship("Submission", back_populates="intern")
     certificates = relationship("Certificate", back_populates="intern")
+    meetings = relationship("Meeting", back_populates="mentor")
 
 
 class Domain(Base):
@@ -202,6 +203,9 @@ class Meeting(Base):
     room_code = Column(String(100), nullable=False, unique=True)
     status = Column(String(50), default="active") # "active", "completed"
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    mentor = relationship("User", back_populates="meetings")
+    breakout_rooms = relationship("BreakoutRoom", back_populates="meeting", cascade="all, delete-orphan")
 
 
 class Certificate(Base):
@@ -645,3 +649,50 @@ class DomainCodeAssessment(Base):
     requirements = Column(Text, nullable=True)  # JSON list of requirement strings
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ApplicationStatus(str, enum.Enum):
+    PENDING_REVIEW = "PENDING_REVIEW"
+    ACCEPTED = "ACCEPTED"
+    REJECTED = "REJECTED"
+    INTERVIEW_REQUIRED = "INTERVIEW_REQUIRED"
+    INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
+    INTERVIEW_PASSED = "INTERVIEW_PASSED"
+    INTERVIEW_FAILED = "INTERVIEW_FAILED"
+    INTERVIEW_NOT_REQUIRED = "INTERVIEW_NOT_REQUIRED"
+    ELIGIBLE_FOR_PAYMENT = "ELIGIBLE_FOR_PAYMENT"
+    PAYMENT_PENDING = "PAYMENT_PENDING"
+    PAYMENT_SUBMITTED = "PAYMENT_SUBMITTED"
+    PAYMENT_VERIFIED = "PAYMENT_VERIFIED"
+    PAYMENT_REJECTED = "PAYMENT_REJECTED"
+    DOCUMENTS_PENDING = "DOCUMENTS_PENDING"
+    MENTOR_ASSIGNMENT_PENDING = "MENTOR_ASSIGNMENT_PENDING"
+    MENTOR_ASSIGNED = "MENTOR_ASSIGNED"
+    DOCUMENTS_GENERATED = "DOCUMENTS_GENERATED"
+    DOCUMENTS_SENT = "DOCUMENTS_SENT"
+    DOCUMENTS_UPLOADED = "DOCUMENTS_UPLOADED"
+    ACCOUNT_CREATION_PENDING = "ACCOUNT_CREATION_PENDING"
+    ACCOUNT_ACTIVATION_PENDING = "ACCOUNT_ACTIVATION_PENDING"
+    ACCOUNT_CREATED = "ACCOUNT_CREATED"
+    ACTIVE = "ACTIVE"
+    ONBOARDING_COMPLETED = "ONBOARDING_COMPLETED"
+    APPLICATION_REJECTED = "APPLICATION_REJECTED"
+
+# ==========================================
+#          SQLALCHEMY DATABASE MODELS
+# ==========================================
+
+class BreakoutRoom(Base):
+    __tablename__ = "breakout_rooms"
+
+    id = Column(Integer, primary_key=True, index=True)
+    meeting_id = Column(Integer, ForeignKey("meetings.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(200), nullable=False)
+    room_code = Column(String(100), nullable=False, unique=True)
+    status = Column(String(50), default="active") # "active", "closed"
+    max_participants = Column(Integer, default=10)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    meeting = relationship("Meeting", back_populates="breakout_rooms")
+

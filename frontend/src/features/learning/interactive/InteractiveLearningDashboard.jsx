@@ -253,7 +253,7 @@ export default function InteractiveLearningDashboard() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await api.get('/tasks/intern');
+        const res = await api.get('/tasks');
         const fetchedTasks = res.data;
         
         let curriculumList = [];
@@ -320,18 +320,7 @@ export default function InteractiveLearningDashboard() {
           <button className="btn btn-secondary" style={{ width: '100%', marginBottom: '16px' }} onClick={() => window.location.href = '/intern'}>
             &larr; Back to Dashboard
           </button>
-          {dynamicCurriculum.map(d => (
-            <button 
-              key={d.day} 
-              disabled={!dayUnlocked(d.day)} 
-              className={day === d.day ? 'active' : ''} 
-              onClick={() => setDay(d.day)}
-            >
-              <span>{String(d.day).padStart(2, '0')}</span>
-              <em>{d.topic}</em>
-              {!dayUnlocked(d.day) ? <b>🔒</b> : progress[`day-${d.day}`]?.length === d.activities?.length && <b>✓</b>}
-            </button>
-          ))}
+          {/* Topics list removed as per user request */}
         </div>
       </aside>
       <main>
