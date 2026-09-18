@@ -63,7 +63,7 @@ def evaluate_airdrop_submission(task_type: str, task_config: Dict[str, Any], sub
 
     elif task_type == "arrange":
         # Arrange: order validation. submitted_answer should be an ordered list
-        correct_order = task_config.get("correct_order", [])
+        correct_order = task_config.get("correct_order") or task_config.get("correct_sequence", [])
         if not isinstance(submitted_answer, list):
             # Try to parse JSON if string
             if isinstance(submitted_answer, str):

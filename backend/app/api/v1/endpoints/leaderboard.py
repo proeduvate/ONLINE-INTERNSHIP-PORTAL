@@ -57,18 +57,13 @@ def get_leaderboard(
         mcq_query = mcq_query.filter(models.MCQAttempt.submitted_at >= start_date)
     mcq_data = {row[0]: row[1] or 0 for row in mcq_query.group_by(models.MCQAttempt.intern_id).all()}
 
-    # 3. Airdrop Results (bonus_points)
-    air_query = db.query(models.AirdropResult.intern_id, func.sum(models.AirdropResult.bonus_points)).filter(models.AirdropResult.intern_id.in_(user_ids))
-    air_data = {row[0]: row[1] or 0 for row in air_query.group_by(models.AirdropResult.intern_id).all()}
 
     results = []
     for user in users:
         pt_points = pt_data.get(user.id, 0)
         sub_points = sub_data.get(user.id, 0)
         mcq_points = mcq_data.get(user.id, 0)
-        air_points = air_data.get(user.id, 0)
-        
-        total = pt_points + sub_points + air_points + mcq_points
+        total = pt_points + sub_points + mcq_points
         
         batch_name = user.batch.name if getattr(user, 'batch', None) else None
         domain_name = user.domain.name if user.domain else None

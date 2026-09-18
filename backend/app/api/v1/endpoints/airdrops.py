@@ -59,20 +59,33 @@ def get_airdrops(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    now = datetime.utcnow()
+    # Process auto-transitions first for ALL airdrops
+    all_airdrops = db.query(models.BonusAirdrop).all()
+    for a in all_airdrops:
+        if a.status == schemas_airdrops.AirdropStatus.APPROVED.value:
+            # For fixed, if start_time is reached, publish it
+            if a.start_mode == "fixed" and a.start_time and a.start_time.replace(tzinfo=timezone.utc) <= now.replace(tzinfo=timezone.utc):
+                a.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+                a.published_at = now
+                db.commit()
+                db.refresh(a)
+            # For flexible, publish immediately upon approval
+            elif a.start_mode == "flexible":
+                a.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+                a.published_at = now
+                db.commit()
+                db.refresh(a)
+                
+        if a.status == schemas_airdrops.AirdropStatus.PUBLISHED.value:
+            _check_auto_finalize(db, a, now)
+
     if current_user.role.lower() in ["admin", "mentor"]:
-        airdrops = db.query(models.BonusAirdrop).all()
+        airdrops = all_airdrops
     else:
         # Interns see all published airdrops (Global)
-        query = db.query(models.BonusAirdrop).filter(
-            models.BonusAirdrop.status.in_([schemas_airdrops.AirdropStatus.PUBLISHED.value, schemas_airdrops.AirdropStatus.FINALIZED.value])
-        )
-        airdrops = query.all()
+        airdrops = [a for a in all_airdrops if a.status in [schemas_airdrops.AirdropStatus.PUBLISHED.value, schemas_airdrops.AirdropStatus.FINALIZED.value]]
         
-    # Lazy Auto-finalize evaluation
-    for a in airdrops:
-        if a.status == schemas_airdrops.AirdropStatus.PUBLISHED.value:
-            _check_auto_finalize(db, a, datetime.utcnow())
-            
     responses = []
     for a in airdrops:
         resp = _build_airdrop_response(db, a)
@@ -108,6 +121,7 @@ def submit_for_approval(
     db.refresh(airdrop)
     return _build_airdrop_response(db, airdrop)
 
+
 @router.post("/admin/{airdrop_id}/approve", response_model=schemas_airdrops.AirdropResponse)
 def approve_airdrop(
     airdrop_id: int,
@@ -135,10 +149,19 @@ def approve_airdrop(
                 raise HTTPException(status_code=400, detail="End time must be after start time")
             airdrop.end_time = data.new_end_time
 
-    airdrop.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+    airdrop.status = schemas_airdrops.AirdropStatus.APPROVED.value
     
+    now = datetime.utcnow()
+    if airdrop.start_mode == "fixed" and airdrop.start_time and airdrop.start_time.replace(tzinfo=timezone.utc) <= now.replace(tzinfo=timezone.utc):
+        airdrop.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+        airdrop.published_at = now
+    elif airdrop.start_mode == "flexible":
+        airdrop.status = schemas_airdrops.AirdropStatus.PUBLISHED.value
+        airdrop.published_at = now
+
     # Check if we should auto-finalize immediately (if all interns have already completed it)
-    _check_auto_finalize(db, airdrop, datetime.utcnow())
+    if airdrop.status == schemas_airdrops.AirdropStatus.PUBLISHED.value:
+        _check_auto_finalize(db, airdrop, datetime.utcnow())
     
     db.commit()
     db.refresh(airdrop)
@@ -294,6 +317,11 @@ def _check_auto_finalize(db: Session, airdrop: models.BonusAirdrop, now: datetim
             
     if winners_reached or all_completed:
         _finalize_airdrop(db, airdrop, now)
+        return
+
+    # Check if end_time has passed
+    if airdrop.end_time and airdrop.end_time.replace(tzinfo=timezone.utc) <= now.replace(tzinfo=timezone.utc):
+        _finalize_airdrop(db, airdrop, now)
 
 
 def _finalize_airdrop(db: Session, airdrop: models.BonusAirdrop, now: datetime):
@@ -308,10 +336,7 @@ def _finalize_airdrop(db: Session, airdrop: models.BonusAirdrop, now: datetime):
     valid_attempts = []
     for atm in attempts:
         if atm.completed_at and atm.started_at:
-            if airdrop.start_mode == schemas_airdrops.StartMode.FIXED.value and airdrop.start_time:
-                 comp_time_sec = int((atm.completed_at - airdrop.start_time).total_seconds())
-            else:
-                 comp_time_sec = int((atm.completed_at - atm.started_at).total_seconds())
+            comp_time_sec = int((atm.completed_at - atm.started_at).total_seconds())
             valid_attempts.append({"attempt": atm, "time": comp_time_sec})
             
     valid_attempts.sort(key=lambda x: x["time"])
@@ -384,17 +409,17 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
         "batch_id": airdrop.batch_id,
         "start_mode": airdrop.start_mode,
         "time_limit": airdrop.time_limit,
-        "start_time": airdrop.start_time,
-        "end_time": airdrop.end_time,
+        "start_time": airdrop.start_time.replace(tzinfo=timezone.utc) if airdrop.start_time else None,
+        "end_time": airdrop.end_time.replace(tzinfo=timezone.utc) if airdrop.end_time else None,
         "start_time_ist": _format_ist(airdrop.start_time),
         "points_distribution": airdrop.points_distribution,
         "winner_count": airdrop.winner_count,
         "status": airdrop.status,
         "created_by": airdrop.created_by,
         "rejection_reason": airdrop.rejection_reason,
-        "published_at": airdrop.published_at,
-        "finalized_at": airdrop.finalized_at,
-        "created_at": airdrop.created_at,
+        "published_at": airdrop.published_at.replace(tzinfo=timezone.utc) if airdrop.published_at else None,
+        "finalized_at": airdrop.finalized_at.replace(tzinfo=timezone.utc) if airdrop.finalized_at else None,
+        "created_at": airdrop.created_at.replace(tzinfo=timezone.utc) if airdrop.created_at else None,
         "attempts": [],
         "results": []
     }
@@ -403,7 +428,12 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
     
     attempt_responses = []
     for atm in attempts:
-        atm_resp = schemas_airdrops.AirdropAttemptResponse.model_validate(atm)
+        atm_dict = atm.__dict__.copy()
+        if atm_dict.get("started_at"):
+            atm_dict["started_at"] = atm_dict["started_at"].replace(tzinfo=timezone.utc)
+        if atm_dict.get("completed_at"):
+            atm_dict["completed_at"] = atm_dict["completed_at"].replace(tzinfo=timezone.utc)
+        atm_resp = schemas_airdrops.AirdropAttemptResponse(**atm_dict)
         atm_resp.started_at_ist = _format_ist(atm.started_at)
         atm_resp.completed_at_ist = _format_ist(atm.completed_at)
         attempt_responses.append(atm_resp)

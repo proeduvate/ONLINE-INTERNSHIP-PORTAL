@@ -114,6 +114,17 @@ def get_code_assessments_for_day(
     # Randomly select 1 code assessment to show out of the available ones
     selected = random.choice(challenges)
 
+    def parse_reqs(reqs):
+        if not reqs:
+            return []
+        try:
+            parsed = json.loads(reqs)
+            if isinstance(parsed, list):
+                return parsed
+            return [str(parsed)]
+        except Exception:
+            return [reqs]
+
     return {
         "domain": domain_name,
         "day": day,
@@ -124,7 +135,7 @@ def get_code_assessments_for_day(
                 "id": selected.question_id,
                 "title": selected.title,
                 "description": selected.description,
-                "requirements": json.loads(selected.requirements) if selected.requirements else [],
+                "requirements": parse_reqs(selected.requirements),
             }
         ],
     }

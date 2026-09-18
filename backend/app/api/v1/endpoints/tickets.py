@@ -57,6 +57,8 @@ def _ticket_to_response(ticket: models.Ticket) -> dict:
         "id": ticket.id,
         "created_by": ticket.created_by,
         "creator_name": ticket.creator.name if ticket.creator else None,
+        "creator_role": ticket.creator.role.value if ticket.creator and ticket.creator.role else None,
+        "creator_college": ticket.creator.college if ticket.creator else None,
         "assigned_to": ticket.assigned_to,
         "assignee_name": ticket.assignee.name if ticket.assignee else None,
         "title": ticket.title,

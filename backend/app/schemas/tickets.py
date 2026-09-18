@@ -74,6 +74,8 @@ class TicketResponse(BaseModel):
     id: int
     created_by: int
     creator_name: Optional[str] = None
+    creator_role: Optional[str] = None
+    creator_college: Optional[str] = None
     assigned_to: Optional[int] = None
     assignee_name: Optional[str] = None
     title: str

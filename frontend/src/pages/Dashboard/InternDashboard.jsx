@@ -98,9 +98,9 @@ export default function InternDashboard() {
         
         const lastSubDateStr = submissions[submissions.length - 1].date;
         const today = new Date();
-        const offset = today.getTimezoneOffset();
-        const localToday = new Date(today.getTime() - (offset * 60 * 1000));
-        const todayStr = localToday.toISOString().split('T')[0];
+        const utcMs = today.getTime() + (today.getTimezoneOffset() * 60000);
+        const istToday = new Date(utcMs + (3600000 * 5.5));
+        const todayStr = istToday.toISOString().split('T')[0];
         
         if (lastSubDateStr === todayStr) {
           shouldLockToday = true;
@@ -233,6 +233,13 @@ export default function InternDashboard() {
     }
   };
 
+  useEffect(() => {
+    const airdropInterval = setInterval(() => {
+      fetchAirdrops();
+    }, 15000); // Check for new airdrops every 15 seconds
+    return () => clearInterval(airdropInterval);
+  }, []);
+
   // fetchAirdrops is now executed concurrently inside fetchDashboard
 
   useEffect(() => {
@@ -247,25 +254,67 @@ export default function InternDashboard() {
     return () => clearInterval(timer);
   }, [showAirdropModal, airdropTimeLeft]);
 
+  const getParsedConfig = (drop) => {
+    if (!drop || !drop.task_config) return {};
+    if (typeof drop.task_config === 'string') {
+      try { return JSON.parse(drop.task_config); } catch (e) { return {}; }
+    }
+    return drop.task_config;
+  };
+
+  const getAirdropQuestion = (drop) => {
+    if (!drop) return "";
+    const config = getParsedConfig(drop);
+    const taskType = (drop.task_type || drop.taskType || "").toLowerCase();
+
+    if (config.question) return config.question;
+    if (config.statement) return config.statement;
+    if (config.sentence) return config.sentence;
+    if (taskType.includes("match")) return "Match the following items correctly:";
+    if (taskType.includes("arrange")) return "Arrange the following items in the correct sequence:";
+    return drop.title || drop.description || "Bonus Airdrop Challenge";
+  };
+
   const handleStartAirdrop = async (airdrop) => {
     try {
       await api.patch(`/bonus-airdrops/${airdrop.id}`, { action: "start" });
       setActiveAirdrop(airdrop);
       setAirdropTimeLeft(parseInt(airdrop.time_limit));
+
+      const config = getParsedConfig(airdrop);
+      const taskType = (airdrop.task_type || airdrop.taskType || "").toLowerCase();
+
+      if (taskType.includes("match") && config.pairs) {
+        const initialPairs = {};
+        Object.keys(config.pairs).forEach(k => { initialPairs[k] = ""; });
+        setAirdropAnswer(initialPairs);
+      } else if (taskType.includes("arrange")) {
+        const items = [...(config.correct_sequence || config.items || config.correct_order || [])];
+        setAirdropAnswer(items);
+      } else {
+        setAirdropAnswer("");
+      }
+
       setShowAirdropModal(true);
-      setAirdropAnswer("");
     } catch (err) {
       console.error(err);
       alert("Failed to start Airdrop: " + (err.response?.data?.detail || err.message));
     }
   };
 
+  const [isSubmittingAirdrop, setIsSubmittingAirdrop] = useState(false);
+
   const handleSubmitAirdrop = async () => {
-    if (activeAirdrop) {
+    if (activeAirdrop && !isSubmittingAirdrop) {
+      setIsSubmittingAirdrop(true);
       try {
+        let answerPayload = airdropAnswer;
+        if (typeof answerPayload === 'object' && answerPayload !== null) {
+          answerPayload = JSON.stringify(answerPayload);
+        }
         await api.patch(`/bonus-airdrops/${activeAirdrop.id}`, {
           action: "submit",
-          answer: airdropAnswer
+          answer: answerPayload
         });
 
         if (airdropTimeLeft > 0) {
@@ -277,10 +326,15 @@ export default function InternDashboard() {
       } catch (err) {
         console.error(err);
         alert("Failed to submit Airdrop: " + (err.response?.data?.detail || err.message));
+      } finally {
+        setIsSubmittingAirdrop(false);
+        setShowAirdropModal(false);
+        setActiveAirdrop(null);
       }
+    } else {
+      setShowAirdropModal(false);
+      setActiveAirdrop(null);
     }
-    setShowAirdropModal(false);
-    setActiveAirdrop(null);
   };
 
   const [domainInsights, setDomainInsights] = useState([
@@ -329,30 +383,7 @@ export default function InternDashboard() {
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const [ticketsData, setTicketsData] = useState([
-    {
-      id: "TKT-1042",
-      title: "Environment setup failing on local machine during Docker build",
-      date: "2 days ago",
-      status: "In Progress",
-      statusBg: "var(--bg-yellow-light)",
-      statusColor: "var(--warning-darker)",
-      tagBg: "var(--bg-red-lighter)",
-      tagColor: "var(--danger-darkest)",
-      adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
-    },
-    {
-      id: "TKT-0985",
-      title: "Missing lecture notes for Day 5",
-      date: "1 week ago",
-      status: "Resolved",
-      statusBg: "var(--bg-emerald-lighter)",
-      statusColor: "var(--success-darker)",
-      tagBg: "var(--bg-gray-light)",
-      tagColor: "var(--text-gray)",
-      adminReply: "The notes have been uploaded to the portal. Please refresh the page."
-    }
-  ]);
+  const [ticketsData, setTicketsData] = useState([]);
   const [newTicketTitle, setNewTicketTitle] = useState("");
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
@@ -471,13 +502,13 @@ export default function InternDashboard() {
       const res = await api.get(`/questions/code/day/${currentDay}`);
       if (res.data && res.data.questions && res.data.questions.length > 0) {
         setCodeAssessment(res.data.questions[0]);
+        setAssessmentView("coding");
+      } else {
+        alert("No coding assessment available for today.");
       }
-      setAssessmentView("coding");
     } catch (err) {
       console.error(err);
       alert("Failed to load coding assessment: " + (err.response?.data?.detail || err.message));
-      // Fallback
-      setAssessmentView("coding");
     }
   };
 
@@ -530,12 +561,16 @@ export default function InternDashboard() {
         suggestions: parsedFeedback
       });
 
-      // 2. Lock in analytics result for today's MCQ + Code
+      const today = new Date();
+      const utcMs = today.getTime() + (today.getTimezoneOffset() * 60000);
+      const istToday = new Date(utcMs + (3600000 * 5.5));
+      const istDateStr = istToday.toISOString().split('T')[0];
+
       const analyticsRes = await api.post('/daily-questions/results', {
         question_id: currentDay,
         mcq_score: mcqGrade || 0,
         coding_score: aiScoreResult,
-        date: new Date().toISOString().split('T')[0]
+        date: istDateStr
       });
 
       setRecentSubmissions(prev => {
@@ -636,7 +671,7 @@ export default function InternDashboard() {
                       <BookOpen size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{dashboardData?.progress_pct ? Math.round((dashboardData.progress_pct / 100) * 30) : 0} / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{completedDays.length || 0} / 30</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Tasks Completed</span>
                     </div>
                   </div>
@@ -970,7 +1005,7 @@ export default function InternDashboard() {
                     {/* Left Column: Assessments List */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       <div>
-                        <h3 style={{ fontSize: "20px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 4px 0" }}>Day {currentDay} - Assessments</h3>
+                        <h3 style={{ fontSize: "20px", fontWeight: "bold", color: "var(--text-color, #1f2937)", margin: "0 0 4px 0" }}>Day {currentDay} - Assessments</h3>
                         <p style={{ color: "var(--text-muted)", fontSize: "14px", margin: 0 }}>Complete the assessments below to strengthen your understanding.</p>
                       </div>
 
@@ -980,7 +1015,7 @@ export default function InternDashboard() {
                           <FileText size={32} color={mcqDone ? "#16a34a" : "#0284c7"} />
                         </div>
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 6px 0" }}>MCQ Test</h4>
+                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-color, #1f2937)", margin: "0 0 6px 0" }}>MCQ Test</h4>
                           <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "0 0 8px 0" }}>Part A: Timed questions on today's concepts.</p>
                           <div style={{ display: "flex", gap: "16px", color: "var(--text-muted)", fontSize: "12px" }}>
                             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Clock size={14} /> 3 mins</span>
@@ -1005,7 +1040,7 @@ export default function InternDashboard() {
                           <Code size={32} color={codingDone ? "#16a34a" : "#9333ea"} />
                         </div>
                         <div style={{ flex: 1 }}>
-                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 6px 0" }}>{internDomain.toLowerCase() === "ui/ux" ? "UI/UX Assignment" : "Coding Assignment"}</h4>
+                          <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-color, #1f2937)", margin: "0 0 6px 0" }}>{internDomain.toLowerCase() === "ui/ux" ? "UI/UX Assignment" : "Coding Assignment"}</h4>
                           <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "0 0 8px 0" }}>Part B: {internDomain.toLowerCase() === "ui/ux" ? "Upload your photos and Figma link." : "Write and execute code in our compiler."}</p>
                           <div style={{ display: "flex", gap: "16px", color: "var(--text-muted)", fontSize: "12px" }}>
                             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Clock size={14} /> Untimed</span>
@@ -1044,16 +1079,16 @@ export default function InternDashboard() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
                       <div className="card" style={{ padding: "24px" }}>
-                        <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-dark)", margin: "0 0 20px 0" }}>Your Assessment Progress</h4>
+                        <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "var(--text-color, #1f2937)", margin: "0 0 20px 0" }}>Your Assessment Progress</h4>
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
                           <div style={{ width: "100px", height: "100px", borderRadius: "50%", border: "8px solid #f1f5f9", borderTopColor: "#3b82f6", borderRightColor: (mcqDone || codingDone) ? "#3b82f6" : "#f1f5f9", borderBottomColor: (mcqDone && codingDone) ? "#3b82f6" : "#f1f5f9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                             <span style={{ fontSize: "24px", fontWeight: "bold", color: "var(--text-primary, #0f172a)" }}>{(mcqDone ? 1 : 0) + (codingDone ? 1 : 0)} / 2</span>
                           </div>
                           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-dark)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-color, #1f2937)" }}>
                               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#3b82f6" }}></div> Completed ({(mcqDone ? 1 : 0) + (codingDone ? 1 : 0)})
                             </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-dark)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-color, #1f2937)" }}>
                               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }}></div> Pending ({2 - ((mcqDone ? 1 : 0) + (codingDone ? 1 : 0))})
                             </div>
                           </div>
@@ -1144,7 +1179,7 @@ export default function InternDashboard() {
                                 key={opt.val}
                                 className={`btn ${answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "btn-primary" : "btn-secondary"}`}
                                 onClick={() => setAnswers({ ...answers, [mcqQuestions[currentQuestionIndex].id]: opt.val })}
-                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-dark)", border: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
+                                style={{ textAlign: "left", padding: "12px 16px", fontSize: "14px", justifyContent: "flex-start", backgroundColor: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--primary-color)" : "var(--card-bg)", color: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "var(--card-bg)" : "var(--text-color, #1f2937)", border: answers[mcqQuestions[currentQuestionIndex].id] === opt.val ? "none" : "1px solid var(--border-gray-dark)" }}
                               >
                                 {opt.label}
                               </button>
@@ -1620,7 +1655,7 @@ export default function InternDashboard() {
           return (
             <div className="card" style={{ padding: "28px", maxWidth: "800px", margin: "0 auto" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "var(--text-dark)", fontSize: "20px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
+                <h3 style={{ margin: 0, color: "var(--text-color, #1f2937)", fontSize: "20px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
                   <Ticket size={22} color="#3b82f6" /> File a New Support Ticket
                 </h3>
                 <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)} style={{ padding: "6px 14px", fontSize: "13px" }}>
@@ -1632,25 +1667,25 @@ export default function InternDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{user?.name || "Intern"}</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-color, #1f2937)", marginTop: "2px" }}>{user?.name || "Intern"}</div>
                     <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{user?.email || "intern@proeduvate.com"}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Dr. Sakthi</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-color, #1f2937)", marginTop: "2px" }}>Dr. Sakthi</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain}</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-color, #1f2937)", marginTop: "2px" }}>{internDomain}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Computer Science (MIT)</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-color, #1f2937)", marginTop: "2px" }}>Computer Science (MIT)</div>
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Issue Subject / Short Title</label>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-color, #1f2937)" }}>Issue Subject / Short Title</label>
                   <input
                     type="text"
                     className="form-control"
@@ -1662,7 +1697,7 @@ export default function InternDashboard() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Detailed Description & Error Logs</label>
+                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-color, #1f2937)" }}>Detailed Description & Error Logs</label>
                   <textarea
                     className="form-control"
                     rows="5"
@@ -1748,7 +1783,7 @@ export default function InternDashboard() {
               {/* Header & Filter Tabs */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px" }}>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--text-dark)" }}>Ticket History</h3>
+                  <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--text-color, #1f2937)" }}>Ticket History</h3>
                   <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "500" }}>Click on any ticket to expand mentor and admin responses.</span>
                 </div>
 
@@ -1800,7 +1835,7 @@ export default function InternDashboard() {
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <span style={{ fontSize: "11px", color: "#1e40af", fontWeight: 700, backgroundColor: "#dbeafe", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
-                          <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
+                          <span style={{ fontSize: "14.5px", color: "var(--text-color, #1f2937)", fontWeight: "600" }}>{ticket.title}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                           <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
@@ -1913,8 +1948,11 @@ export default function InternDashboard() {
         return <DailyScenario onBackToDashboard={() => { setActiveTab("Overview"); fetchDashboard(); }} domainName={dashboardData?.domain?.name || 'Frontend'} />;
 
       case "Bonus Airdrops":
-        const activeDrops = bonusAirdrops.filter(a => a.status === "PUBLISHED");
-        const completedDrops = bonusAirdrops.filter(a => a.status === "ENDED" || a.status === "FINALIZED");
+        const now = new Date();
+        const isPassedTime = (a) => a.start_mode === "fixed" && a.end_time && new Date(a.end_time) < now;
+        
+        const activeDrops = bonusAirdrops.filter(a => a.status === "PUBLISHED" && (!a.attempts || a.attempts.length === 0) && !isPassedTime(a));
+        const completedDrops = bonusAirdrops.filter(a => a.status === "ENDED" || a.status === "FINALIZED" || (a.attempts && a.attempts.length > 0) || isPassedTime(a));
 
         // Motivational quotes for Airdrops
         const quotes = [
@@ -2017,7 +2055,7 @@ export default function InternDashboard() {
                               {drop.time_limit}s time limit
                             </span>
                           </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 600 }}>{drop.title || "Bonus Airdrop Challenge"}</p>
                         </div>
 
                         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -2069,7 +2107,7 @@ export default function InternDashboard() {
                               <Flag size={12} /> FINISHED
                             </span>
                           </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
+                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 600, opacity: 0.8 }}>{drop.title || "Bonus Airdrop Challenge"}</p>
                         </div>
 
                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
@@ -2268,11 +2306,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{dashboardData?.progress_pct ? Math.round((dashboardData.progress_pct / 100) * 45) : 0} / 45</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{dashboardData?.progress_pct || 0}%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{completedDays.length || 0} / 45</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{Math.round(((completedDays.length || 0) / 45) * 100)}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${dashboardData?.progress_pct || 0}%`, background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.round(((completedDays.length || 0) / 45) * 100)}%`, background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2321,30 +2359,31 @@ export default function InternDashboard() {
                 <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px", paddingLeft: "30px", boxSizing: "border-box" }}>
                   {(() => {
                     const maxDays = 30;
-                    const sortedSubs = [...recentSubmissions].sort((a, b) => a.question_id - b.question_id);
+                    const sortedSubs = [...recentSubmissions].sort((a, b) => new Date(a.date) - new Date(b.date));
                     let points = [];
 
                     if (sortedSubs.length === 0) {
-                      points = [{ x: 0, y: 180, label: "Day 1", value: 0 }];
+                      points = [{ x: 0, y: 160, label: "Day 1", value: 0 }];
                     } else {
-                      points = sortedSubs.map(sub => {
-                        const x = ((sub.question_id - 1) / (maxDays - 1)) * 600;
+                      points = sortedSubs.map((sub, idx) => {
+                        const dayNum = idx + 1;
+                        const x = ((dayNum - 1) / (maxDays - 1)) * 600;
                         const score = sub.final_score || 0;
-                        const y = 180 - (score / 100) * 160;
-                        return { x, y, label: `Day ${sub.question_id}`, value: score };
+                        const y = 160 - (score / 100) * 160;
+                        return { x, y, label: `Day ${dayNum}`, value: score };
                       });
                       if (points[0].x !== 0) {
-                        points.unshift({ x: 0, y: 180, label: "Day 1", value: 0 });
+                        points.unshift({ x: 0, y: 160, label: "Day 1", value: 0 });
                       }
                     }
 
                     const pointsString = points.map(p => `${p.x},${p.y}`).join(" ");
-                    const polygonPoints = `0,200 ${pointsString} ${points[points.length - 1].x},200 0,200`;
+                    const polygonPoints = `0,160 ${pointsString} ${points[points.length - 1].x},160 0,160`;
                     const pathString = `M${points.map(p => `${p.x},${p.y}`).join(" L")}`;
 
                     return (
                       <>
-                        <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+                        <svg width="100%" height="100%" viewBox="0 0 600 160" preserveAspectRatio="none" style={{ overflow: "visible" }}>
                           <defs>
                             <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
@@ -2366,7 +2405,7 @@ export default function InternDashboard() {
                         </svg>
 
                         {points.length > 0 && (
-                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length - 1].y - 50)}px`, left: `calc(${(points[points.length - 1].x / 600) * 100}% - 40px + 30px)`, background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10 }}>
+                          <div style={{ position: "absolute", top: `${Math.max(0, points[points.length - 1].y - 50)}px`, left: `calc(${Math.max(5, (points[points.length - 1].x / 600) * 100)}% + 30px)`, transform: "translateX(-50%)", background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 10, minWidth: "90px", textAlign: "center" }}>
                             <div style={{ marginBottom: "2px" }}>{points[points.length - 1].label}</div>
                             <div style={{ fontSize: "1rem" }}>{points[points.length - 1].value}% Score</div>
                           </div>
@@ -2888,7 +2927,7 @@ export default function InternDashboard() {
             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
               <PartyPopper size={40} />
             </div>
-            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", margin: "0 0 12px 0" }}>Thank You for Attending!</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-color, #1f2937)", margin: "0 0 12px 0" }}>Thank You for Attending!</h2>
             <p style={{ color: "var(--text-gray)", fontSize: "15px", lineHeight: "1.6", margin: "0 0 32px 0" }}>
               You have successfully left the mentoring session <b>"React Hook Refactoring Standup"</b>. Your attendance and active participation points have been recorded.
             </p>
@@ -2963,7 +3002,7 @@ export default function InternDashboard() {
                 <path d="M12 2L14.85 8.65L22 9.24L16.5 13.97L18.18 21L12 17.27L5.82 21L7.5 13.97L2 9.24L9.15 8.65L12 2Z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 style={{ fontSize: "22px", fontWeight: 800, margin: "0 0 4px 0", color: "var(--text-dark)" }}>
+            <h2 style={{ fontSize: "22px", fontWeight: 800, margin: "0 0 4px 0", color: "var(--text-color, #1f2937)" }}>
               Daily Domain Insight
             </h2>
             <span style={{
@@ -3016,55 +3055,271 @@ export default function InternDashboard() {
       )}
 
       {/* Bonus Airdrop Participate Modal */}
-      {showAirdropModal && activeAirdrop && (
-        <div style={{
-          position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)",
-          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100000, padding: "20px"
-        }}>
-          <div style={{
-            backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "500px",
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", border: "1px solid var(--border-color)"
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <Gift size={24} color="#2563eb" />
-                <h3 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Bonus Airdrop Challenge</h3>
-              </div>
-              <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "#fee2e2" : "#f1f5f9", color: airdropTimeLeft <= 10 ? "#ef4444" : "#475569", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <Clock size={16} /> {airdropTimeLeft}s
-              </div>
-            </div>
+      {showAirdropModal && activeAirdrop && (() => {
+        const config = getParsedConfig(activeAirdrop);
+        const rawTaskType = (activeAirdrop.task_type || activeAirdrop.taskType || "mcq").toLowerCase();
+        const questionText = getAirdropQuestion(activeAirdrop);
 
-            <div style={{ padding: "20px", backgroundColor: "var(--bg-light)", borderRadius: "12px", border: "1px solid var(--border-color)", marginBottom: "24px" }}>
-              <p style={{ margin: 0, fontSize: "16px", fontWeight: 500, color: "var(--text-dark)", lineHeight: 1.5 }}>
-                {activeAirdrop.question}
-              </p>
-            </div>
+        const renderTaskBody = () => {
+          if (rawTaskType.includes("mcq") || rawTaskType.includes("multiple choice")) {
+            const rawOptions = config.options || [];
+            let optionsList = [];
+            if (Array.isArray(rawOptions)) {
+              optionsList = rawOptions;
+            } else if (typeof rawOptions === 'object' && rawOptions !== null) {
+              optionsList = [rawOptions.A, rawOptions.B, rawOptions.C, rawOptions.D].filter(Boolean);
+            }
+            const letters = ["A", "B", "C", "D"];
 
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)", marginBottom: "4px" }}>
+                  Select the Correct Option:
+                </label>
+                {letters.map((letter, idx) => {
+                  const optText = optionsList[idx] || `Option ${letter}`;
+                  const isSelected = airdropAnswer === letter;
+                  return (
+                    <div
+                      key={letter}
+                      onClick={() => setAirdropAnswer(letter)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "14px",
+                        padding: "14px 18px",
+                        borderRadius: "14px",
+                        border: isSelected ? "2px solid #2563eb" : "1px solid var(--border-color)",
+                        backgroundColor: isSelected ? "#eff6ff" : "var(--card-bg, #ffffff)",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        boxShadow: isSelected ? "0 4px 12px rgba(37, 99, 235, 0.15)" : "none"
+                      }}
+                    >
+                      <div style={{
+                        width: "32px", height: "32px", borderRadius: "50%",
+                        backgroundColor: isSelected ? "#2563eb" : "#f1f5f9",
+                        color: isSelected ? "#ffffff" : "#475569",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontWeight: 700, fontSize: "14px", flexShrink: 0
+                      }}>
+                        {letter}
+                      </div>
+                      <span style={{ fontSize: "15px", fontWeight: 500, color: "var(--text-color, #1f2937)" }}>
+                        {optText}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (rawTaskType.includes("true_false") || rawTaskType.includes("true / false")) {
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)", marginBottom: "4px" }}>
+                  Choose Your Answer:
+                </label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  {["True", "False"].map((choice) => {
+                    const isSelected = airdropAnswer === choice;
+                    return (
+                      <div
+                        key={choice}
+                        onClick={() => setAirdropAnswer(choice)}
+                        style={{
+                          padding: "20px",
+                          borderRadius: "16px",
+                          border: isSelected ? `2px solid ${choice === "True" ? "#16a34a" : "#dc2626"}` : "1px solid var(--border-color)",
+                          backgroundColor: isSelected ? (choice === "True" ? "#f0fdf4" : "#fef2f2") : "var(--card-bg, #ffffff)",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          fontWeight: 700,
+                          fontSize: "18px",
+                          color: choice === "True" ? "#16a34a" : "#dc2626",
+                          transition: "all 0.2s ease",
+                          boxShadow: isSelected ? "0 4px 12px rgba(0, 0, 0, 0.1)" : "none"
+                        }}
+                      >
+                        {choice}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
+          if (rawTaskType.includes("fill_blank") || rawTaskType.includes("pattern") || rawTaskType.includes("fill in the blank")) {
+            return (
+              <div>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)", marginBottom: "8px" }}>
+                  {(rawTaskType.includes("fill_blank") || rawTaskType.includes("fill in the blank")) ? "Missing Word / Phrase:" : "Your Answer (Run fast!):"}
+                </label>
+                <input
+                  type="text"
+                  value={airdropAnswer || ""}
+                  onChange={(e) => setAirdropAnswer(e.target.value)}
+                  placeholder="Type your answer here..."
+                  style={{
+                    width: "100%", padding: "14px 16px", borderRadius: "12px",
+                    border: "2px solid var(--border-color)", backgroundColor: "var(--card-bg)",
+                    fontSize: "15px", outline: "none", color: "var(--text-color, #1f2937)"
+                  }}
+                  autoFocus
+                />
+              </div>
+            );
+          }
+
+          if (rawTaskType.includes("match")) {
+            const pairs = config.pairs || {};
+            const allValues = Object.values(pairs);
+            const currentMatch = (typeof airdropAnswer === 'object' && airdropAnswer !== null) ? airdropAnswer : {};
+
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)" }}>
+                  Select the matching item for each key:
+                </label>
+                {Object.keys(pairs).map((key) => (
+                  <div key={key} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-color, #1f2937)" }}>{key}</span>
+                    <select
+                      value={currentMatch[key] || ""}
+                      onChange={(e) => setAirdropAnswer({ ...currentMatch, [key]: e.target.value })}
+                      style={{
+                        width: "100%", padding: "10px 14px", borderRadius: "10px",
+                        border: "1px solid var(--border-color)", backgroundColor: "var(--card-bg)",
+                        fontSize: "14px", color: "var(--text-color, #1f2937)", outline: "none"
+                      }}
+                    >
+                      <option value="">-- Select Match --</option>
+                      {allValues.map((val, idx) => (
+                        <option key={idx} value={val}>{val}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          if (rawTaskType.includes("arrange")) {
+            const items = Array.isArray(airdropAnswer) ? airdropAnswer : [];
+
+            const moveItem = (fromIndex, toIndex) => {
+              if (toIndex < 0 || toIndex >= items.length) return;
+              const updated = [...items];
+              const [moved] = updated.splice(fromIndex, 1);
+              updated.splice(toIndex, 0, moved);
+              setAirdropAnswer(updated);
+            };
+
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)" }}>
+                  Reorder items into correct sequence:
+                </label>
+                {items.map((item, idx) => (
+                  <div key={idx} style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "12px 16px", borderRadius: "12px", border: "1px solid var(--border-color)",
+                    backgroundColor: "var(--card-bg)"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontWeight: 700, color: "#6366f1", fontSize: "14px" }}>#{idx + 1}</span>
+                      <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-color, #1f2937)" }}>{item}</span>
+                    </div>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => moveItem(idx, idx - 1)}
+                        style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--border-color)", background: "var(--bg-light)", cursor: idx === 0 ? "not-allowed" : "pointer" }}
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === items.length - 1}
+                        onClick={() => moveItem(idx, idx + 1)}
+                        style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--border-color)", background: "var(--bg-light)", cursor: idx === items.length - 1 ? "not-allowed" : "pointer" }}
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          // Fallback / Textarea
+          return (
             <div>
               <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--text-gray)", marginBottom: "8px" }}>Your Answer (Run fast!)</label>
               <textarea
                 rows="4"
-                value={airdropAnswer}
+                value={typeof airdropAnswer === 'string' ? airdropAnswer : JSON.stringify(airdropAnswer)}
                 onChange={(e) => setAirdropAnswer(e.target.value)}
-                style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "2px solid var(--border-color)", backgroundColor: "var(--card-bg)", fontSize: "14px", outline: "none", resize: "none", color: "var(--text-dark)", transition: "border-color 0.2s" }}
+                style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "2px solid var(--border-color)", backgroundColor: "var(--card-bg)", fontSize: "14px", outline: "none", resize: "none", color: "var(--text-color, #1f2937)", transition: "border-color 0.2s" }}
                 onFocus={(e) => e.target.style.borderColor = "var(--primary-color)"}
                 onBlur={(e) => e.target.style.borderColor = "var(--border-color)"}
                 placeholder="Type your solution here..."
                 autoFocus
               />
             </div>
+          );
+        };
 
-            <Button
-              variant="primary"
-              onClick={handleSubmitAirdrop}
-              style={{ width: "100%", marginTop: "24px", padding: "16px", borderRadius: "12px", fontSize: "16px" }}
-            >
-              Submit Answer
-            </Button>
+        return (
+          <div style={{
+            position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)",
+            display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100000, padding: "20px"
+          }}>
+            <div style={{
+              backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "520px",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", border: "1px solid var(--border-color)",
+              maxHeight: "90vh", overflowY: "auto"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Gift size={24} color="#2563eb" />
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "18px", color: "var(--text-color, #1f2937)", fontWeight: 700 }}>
+                      {activeAirdrop.title || "Bonus Airdrop Challenge"}
+                    </h3>
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase" }}>
+                      Task: {rawTaskType.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "#fee2e2" : "#f1f5f9", color: airdropTimeLeft <= 10 ? "#ef4444" : "#475569", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <Clock size={16} /> {airdropTimeLeft}s
+                </div>
+              </div>
+
+              <div style={{ padding: "20px", backgroundColor: "var(--bg-light, #f8fafc)", borderRadius: "14px", border: "1px solid var(--border-color)", marginBottom: "24px" }}>
+                <p style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "var(--text-color, #1f2937)", lineHeight: 1.5 }}>
+                  {questionText}
+                </p>
+              </div>
+
+              {renderTaskBody()}
+
+              <Button
+                variant="primary"
+                onClick={handleSubmitAirdrop}
+                style={{ width: "100%", marginTop: "24px", padding: "16px", borderRadius: "12px", fontSize: "16px", fontWeight: 700 }}
+              >
+                Submit Answer
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
     </div>
   );

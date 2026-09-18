@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, LineChart, Line } from "recharts";
-import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, TrendingUp, CheckCircle } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Headset, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, TrendingUp, CheckCircle } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
 import AdminLeaderboard from "./AdminLeaderboard";
@@ -22,6 +22,9 @@ export default function MentorDashboard() {
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [ticketsList, setTicketsList] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketReply, setTicketReply] = useState("");
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [profileTab, setProfileTab] = useState("overview");
   const [resetEmailSent, setResetEmailSent] = useState(false);
@@ -71,11 +74,13 @@ export default function MentorDashboard() {
   const [airdropFilter, setAirdropFilter] = useState("All");
   const airdropsPerPage = 13;
   const [selectedAirdrop, setSelectedAirdrop] = useState(null);
+  const [isSubmittingAirdrop, setIsSubmittingAirdrop] = useState(false);
 
   // Bonus Airdrops now fetched via API in fetchMentorData
 
   const handleCreateAirdrop = async (e) => {
     e.preventDefault();
+    if (isSubmittingAirdrop) return;
     if (!newAirdrop.title.trim()) return alert("Please enter an airdrop title.");
     
     // Validate based on taskType
@@ -143,13 +148,17 @@ export default function MentorDashboard() {
       return alert("Please select start and end dates.");
     }
 
-    // Convert times to UTC ISO strings
-    const startDateTimeStr = `${newAirdrop.startDate} ${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`;
-    const endDateTimeStr = `${newAirdrop.endDate} ${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`;
-    
-    // Parse using local time and convert to ISO string
-    const startIso = new Date(startDateTimeStr).toISOString();
-    const endIso = new Date(endDateTimeStr).toISOString();
+    const parseDateSafe = (dateStr, hr, min, ampm) => {
+      let h = parseInt(hr, 10) || 0;
+      if (ampm === "PM" && h < 12) h += 12;
+      if (ampm === "AM" && h === 12) h = 0;
+      const hStr = h.toString().padStart(2, '0');
+      const mStr = min.toString().padStart(2, '0');
+      return new Date(`${dateStr}T${hStr}:${mStr}:00`);
+    };
+
+    const startIso = parseDateSafe(newAirdrop.startDate, newAirdrop.startTimeHour, newAirdrop.startTimeMinute, newAirdrop.startTimeAmPm).toISOString();
+    const endIso = parseDateSafe(newAirdrop.endDate, newAirdrop.endTimeHour, newAirdrop.endTimeMinute, newAirdrop.endTimeAmPm).toISOString();
 
     const payload = {
       title: newAirdrop.title,
@@ -167,6 +176,7 @@ export default function MentorDashboard() {
     };
 
     try {
+      setIsSubmittingAirdrop(true);
       await api.post('/bonus-airdrops', payload);
       
       // Refresh airdrops list
@@ -225,6 +235,8 @@ export default function MentorDashboard() {
     } catch (err) {
       console.error("Failed to create airdrop:", err);
       alert("Failed to create airdrop. Check console for details.");
+    } finally {
+      setIsSubmittingAirdrop(false);
     }
   };
 
@@ -249,8 +261,54 @@ export default function MentorDashboard() {
   const [allUsers, setAllUsers] = useState([]);
   const [selectedChartInternId, setSelectedChartInternId] = useState("");
 
+
+  const fetchTickets = async () => {
+    try {
+      const res = await api.get('/tickets');
+      const mappedTickets = res.data.map(t => {
+        const dateObj = new Date(t.created_at);
+        return {
+          ...t,
+          user: t.creator_name || "Unknown",
+          role: "Intern",
+          date: dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          assigned_to: t.assigned_to
+        };
+      });
+      setTicketsList(mappedTickets);
+    } catch (err) {
+      console.error("Failed to fetch mentor tickets", err);
+    }
+  };
+
+  const handleReplyTicket = async (e) => {
+    e.preventDefault();
+    if (!ticketReply.trim() || !selectedTicket) return;
+    try {
+      await api.patch(`/tickets/${selectedTicket.id}`, { message: ticketReply });
+      setTicketReply("");
+      fetchTickets();
+      setSelectedTicket({
+        ...selectedTicket,
+        messages: [
+          ...(selectedTicket.messages || []),
+          { sender_role: "Mentor", sender_name: "You", message: ticketReply }
+        ]
+      });
+    } catch (err) {
+      console.error("Failed to reply", err);
+      alert("Failed to send reply");
+    }
+  };
+
   useEffect(() => {
-    const fetchMentorData = async () => {
+    fetchTickets();
+  }, []);
+
+  useEffect(() => {
+  
+
+  const fetchMentorData = async () => {
       try {
         const [statsRes, internsRes, subsRes, meetRes, tasksRes, airdropsRes, usersRes] = await Promise.all([
           api.get('/mentor/dashboard'),
@@ -670,19 +728,28 @@ export default function MentorDashboard() {
                 )}
               </div>
 
-              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
-                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#eff6ff", borderColor: "#bfdbfe", animationDelay: '0.6s' }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#1d4ed8", display: "flex", alignItems: "center", gap: "8px" }}><MessageSquare size={18} /> Assigned Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
-                  {dashboardStats.at_risk_interns && dashboardStats.at_risk_interns.map((intern, idx) => (
-                    <div key={idx} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                        <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>{intern.name}</span>
-                        <span style={{ fontSize: "11px", color: "#6b7280" }}>{intern.batch}</span>
-                      </div>
-                      <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>{intern.reason}</p>
-                      <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
+                  {ticketsList.filter(t => t.status !== "Resolved" && t.status !== "Closed").length === 0 ? (
+                    <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280", fontSize: "14px", fontStyle: "italic", textAlign: "center", padding: "20px" }}>
+                      No open tickets assigned to you.
                     </div>
-                  ))}
+                  ) : (
+                    ticketsList.filter(t => t.status !== "Resolved" && t.status !== "Closed").map((ticket, idx) => (
+                      <div key={idx} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #93c5fd", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#1e3a8a", fontWeight: 700 }}>Ticket #{ticket.id}</span>
+                          <span className={`badge ${ticket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ fontSize: "10px", padding: "2px 6px" }}>{ticket.status}</span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{ticket.subject}</p>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+                           <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.user}</span>
+                           <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "11px" }} onClick={() => { setActiveTab("Tickets"); setSelectedTicket(ticket); }}>View Ticket</button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -1693,6 +1760,124 @@ export default function MentorDashboard() {
           </div>
         );
       }
+      case "Tickets":
+        if (selectedTicket) {
+          return (
+            <div className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
+                  <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
+                  <span className={`badge ${selectedTicket.status === 'resolved' || selectedTicket.status === 'Resolved' ? 'badge-success' : selectedTicket.status === 'In Progress' || selectedTicket.status === 'in_progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'resolved' || selectedTicket.status === 'Resolved' ? '#d1fae5' : selectedTicket.status === 'In Progress' || selectedTicket.status === 'in_progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'resolved' || selectedTicket.status === 'Resolved' ? '#065f46' : selectedTicket.status === 'In Progress' || selectedTicket.status === 'in_progress' ? '#92400e' : '#991b1b', textTransform: 'capitalize' }}>
+                    {selectedTicket.status.replace('_', ' ')}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  {selectedTicket.status !== "resolved" && selectedTicket.status !== "Resolved" && selectedTicket.status !== "closed" && selectedTicket.status !== "Closed" && (
+                    <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={async () => {
+                      try {
+                        await api.patch(`/tickets/${selectedTicket.id}`, { action: "resolve", resolution: "Resolved by mentor" });
+                        setSelectedTicket({ ...selectedTicket, status: "resolved" });
+                        fetchTickets();
+                      } catch (err) {
+                        alert("Failed to resolve ticket");
+                      }
+                    }}>Mark as Resolved</button>
+                  )}
+                </div>
+              </div>
+
+              <div className="dashboard-grid-half" style={{ backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.domain}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1f2937" }}>{selectedTicket.title}</h4>
+                <div style={{ padding: "16px", backgroundColor: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
+                  {selectedTicket.description}
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+                  {!(selectedTicket.messages?.length > 0) ? (
+                    <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
+                  ) : (
+                    selectedTicket.messages.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.sender_role === "Admin" || comment.sender_role === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.sender_name || comment.sender_role}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.message}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                  <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
+                  <button type="submit" className="btn btn-primary">Send Reply</button>
+                </form>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="card">
+            <h3>Support Tickets</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Manage issues and support requests assigned to you.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>User</th>
+                    <th>Issue Title</th>
+                    <th>Status</th>
+                    <th>Date Filed</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ticketsList.map((ticket) => (
+                    <tr key={ticket.id}>
+                      <td><span style={{ fontWeight: 600, color: "#1f2937" }}>{ticket.id}</span></td>
+                      <td>
+                        <div style={{ fontWeight: 500 }}>{ticket.user}</div>
+                      </td>
+                      <td><span style={{ color: "#4b5563" }}>{ticket.title}</span></td>
+                      <td>
+                        <span className={`badge ${ticket.status === 'Resolved' ? 'badge-success' : ticket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'Resolved' ? '#d1fae5' : ticket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'Resolved' ? '#065f46' : ticket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
+                          {ticket.status}
+                        </span>
+                      </td>
+                      <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
+                      <td>
+                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>View Details</button>
+                      </td>
+                    </tr>
+                  ))}
+                  {ticketsList.length === 0 && (
+                    <tr>
+                      <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No tickets assigned to you.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
       case "My Profile":
         return <MentorProfile />;
       default:
@@ -1731,7 +1916,8 @@ export default function MentorDashboard() {
           {[
             { id: "Overview", icon: <LayoutDashboard size={18} /> },
             { id: "Cohort", icon: <Users size={18} /> },
-            { id: "Evaluations", icon: <CheckCircle size={18} /> },
+                        { id: "Evaluations", icon: <CheckCircle size={18} /> },
+            { id: "Tickets", icon: <Headset size={18} /> },
             { id: "Programs", icon: <BookOpen size={18} /> },
             { id: "Bonus Airdrops", icon: <Coins size={18} /> },
             { id: "Breakout Rooms", icon: <Video size={18} /> },

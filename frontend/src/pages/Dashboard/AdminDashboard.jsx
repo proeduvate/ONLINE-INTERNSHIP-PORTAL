@@ -40,11 +40,27 @@ export default function AdminDashboard() {
   const [refixEndTime, setRefixEndTime] = useState("");
 
   const transformAirdrops = (data) => {
+    const formatDate = (isoString) => {
+      if (!isoString) return "";
+      const d = new Date(isoString);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+    const formatTime = (isoString) => {
+      if (!isoString) return "";
+      const d = new Date(isoString);
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'pm' : 'am';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+    };
+
     return data.map(a => {
-      const startDate = a.start_time ? new Date(a.start_time).toLocaleDateString() : "";
-      const startTime = a.start_time ? new Date(a.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
-      const endDate = a.end_time ? new Date(a.end_time).toLocaleDateString() : "";
-      const endTime = a.end_time ? new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const startDate = formatDate(a.start_time);
+      const startTime = formatTime(a.start_time);
+      const endDate = formatDate(a.end_time);
+      const endTime = formatTime(a.end_time);
       
       let frontendTaskType = a.task_type;
       let questionText = a.title || "No Title";
@@ -112,6 +128,21 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Failed to approve airdrop:", error);
       alert("Failed to approve airdrop: " + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const handleRejectAirdrop = async (id) => {
+    const reason = prompt("Enter a reason for rejection (optional):");
+    if (reason === null) return; // User cancelled
+    
+    try {
+      await api.post(`/bonus-airdrops/${id}/reject`, { reason: reason || "Rejected by Admin" });
+      alert("Airdrop rejected successfully.");
+      fetchAirdrops();
+      setSelectedAirdrop(null);
+    } catch (error) {
+      console.error("Failed to reject airdrop:", error);
+      alert("Failed to reject airdrop: " + (error.response?.data?.detail || error.message));
     }
   };
 
@@ -271,7 +302,8 @@ export default function AdminDashboard() {
         const updatedList = ticketsRes.data.map(ticket => ({
           ...ticket,
           user: ticket.creator_name || `User ID: ${ticket.created_by}`,
-          role: "Intern",
+          role: ticket.creator_role || "Intern",
+          branch: ticket.creator_college || "N/A",
           date: new Date(ticket.created_at).toLocaleDateString()
         }));
         setTicketsList(updatedList);
@@ -1190,17 +1222,17 @@ export default function AdminDashboard() {
                 <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                   <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <select className="form-control" value={assignedMentor} onChange={(e) => setAssignedMentor(e.target.value)} style={{ width: "200px", marginBottom: 0 }}>
-                      <option value="">Select Mentor to Assign</option>
+                      <option value="">{selectedTicket.assigned_to ? "Select New Mentor" : "Select Mentor to Assign"}</option>
                       {usersList.filter(u => u.role?.toLowerCase() === "mentor").map(m => (
-                        <option key={m.id} value={m.id}>{m.name}</option>
+                        <option key={m.id} value={m.id}>{m.name} ({m.email})</option>
                       ))}
                     </select>
-                    <button onClick={handleAssignMentor} className="btn btn-secondary">Assign Mentor</button>
+                    <button onClick={handleAssignMentor} className="btn btn-secondary">{selectedTicket.assigned_to ? "Re-assign Mentor" : "Assign Mentor"}</button>
                   </div>
-                  {selectedTicket.status !== "Resolved" && selectedTicket.status !== "Closed" && (
+                  {selectedTicket.status.toLowerCase() !== "resolved" && selectedTicket.status.toLowerCase() !== "closed" && (
                     <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
                   )}
-                  {selectedTicket.status !== "Closed" && (
+                  {selectedTicket.status.toLowerCase() !== "closed" && (
                     <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Closed")}>Close Ticket</button>
                   )}
                 </div>
@@ -1226,7 +1258,7 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Assigned To</label>
                   <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>
-                    {selectedTicket.assigned_to ? `User ID: ${selectedTicket.assigned_to}` : "Unassigned"}
+                    {selectedTicket.assigned_to ? (selectedTicket.assignee_name ? `${selectedTicket.assignee_name} (User ID: ${selectedTicket.assigned_to})` : `User ID: ${selectedTicket.assigned_to}`) : "Unassigned"}
                   </div>
                 </div>
               </div>
@@ -1357,31 +1389,28 @@ export default function AdminDashboard() {
                           <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
                           <td style={{ padding: "12px 16px", textAlign: "right" }}>
                             {airdrop.status === "PENDING_APPROVAL" && (
-                              <button 
-                                className="btn btn-primary" 
-                                style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  let isExpired = false;
-                                  if (airdrop.rawEndTime) {
-                                    const endDateTime = new Date(airdrop.rawEndTime);
-                                    if (new Date() > endDateTime) {
-                                      isExpired = true;
-                                    }
-                                  }
-                                  if (isExpired) {
-                                    setRefixStartDate(airdrop.startDate || "");
-                                    setRefixStartTime(airdrop.startTime || "");
-                                    setRefixEndDate(airdrop.endDate || "");
-                                    setRefixEndTime(airdrop.endTime || "");
-                                    setRefixAirdropModal(airdrop);
-                                  } else {
+                              <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                <button
+                                  className="btn btn-primary"
+                                  style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     handleApproveAirdrop(airdrop.id);
-                                  }
-                                }}
-                              >
-                                Approve
-                              </button>
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn btn-secondary"
+                                  style={{ padding: "4px 8px", fontSize: "12px", color: "#ef4444", borderColor: "#ef4444" }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRejectAirdrop(airdrop.id);
+                                  }}
+                                >
+                                  Reject
+                                </button>
+                              </div>
                             )}
                           </td>
                         </tr>

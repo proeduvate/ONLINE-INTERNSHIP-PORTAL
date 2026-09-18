@@ -36,8 +36,8 @@ def get_domain_facts(
     # Removed the 10-minute cache block so a new fact is picked on every request.
 
     facts_query = db.query(models.DomainFact).filter(
-        models.DomainFact.domain == domain_name,
-        models.DomainFact.is_active == True
+        models.DomainFact.is_active == True,
+        models.DomainFact.domain == domain_name
     )
 
     # We no longer limit to one fact per day, so we removed the daily check.

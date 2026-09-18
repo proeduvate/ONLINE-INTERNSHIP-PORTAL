@@ -249,11 +249,11 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                    {getArraySafe(airdrop.matchPairs).map((pair, idx) => (
                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', backgroundColor: 'var(--bg-surface-elevated, #f8fafc)', padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-                       <div style={{ flex: 1, padding: '16px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #cbd5e1', borderRadius: '8px', textAlign: 'center', fontWeight: "500", color: "#334155", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.left}</div>
+                       <div style={{ flex: 1, padding: '16px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #cbd5e1', borderRadius: '8px', textAlign: 'center', fontWeight: "500", color: "#334155", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.left || pair.key}</div>
                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", flexShrink: 0 }}>
                          <ListOrdered size={18} />
                        </div>
-                       <div style={{ flex: 1, padding: '16px', backgroundColor: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center', fontWeight: "600", color: "#166534", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.right}</div>
+                       <div style={{ flex: 1, padding: '16px', backgroundColor: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center', fontWeight: "600", color: "#166534", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.right || pair.value}</div>
                      </div>
                    ))}
                  </div>
@@ -270,19 +270,19 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                         <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#3b82f6', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold' }}>
                           {idx + 1}
                         </div>
-                        <span style={{ fontSize: "16px", color: "#334155", fontWeight: "500" }}>{item.text}</span>
+                        <span style={{ fontSize: "16px", color: "#334155", fontWeight: "500" }}>{item.text || item}</span>
                      </div>
                    ))}
                  </div>
               </div>
             )}
 
-            {/* Short Answer */}
-            {airdrop.taskType === 'Short Answer' && (
+            {/* Short Answer / Fill in the Blank / True/False / Pattern */}
+            {(airdrop.taskType === 'Short Answer' || airdrop.taskType === 'Fill in the Blank' || airdrop.taskType === 'True / False' || airdrop.taskType === 'Pattern / Sequence') && (
               <div>
                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Answer</h4>
                  <div style={{ padding: '24px', backgroundColor: '#f0fdf4', border: '2px dashed #86efac', borderRadius: '12px', color: '#166534', fontWeight: '600', fontSize: "18px", display: "flex", alignItems: "center", gap: "16px" }}>
-                   <CheckCircle2 size={24} color="#22c55e" /> {airdrop.correctAnswer}
+                   <CheckCircle2 size={24} color="#22c55e" /> {String(airdrop.correctAnswer)}
                  </div>
               </div>
             )}
