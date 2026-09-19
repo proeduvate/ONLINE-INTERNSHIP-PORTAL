@@ -14,9 +14,9 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', animation: "fadeIn 0.3s ease-out", width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', animation: "fadeIn 0.3s ease-out", width: '100%' }}>
       {/* Header Section */}
-      <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "20px", borderBottom: "1px solid var(--border-color)" }}>
+      <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "12px", borderBottom: "1px solid var(--border-color)" }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div>
             <h2 style={{ margin: "0 0 8px 0", display: "flex", alignItems: "center", gap: "12px", color: "var(--text-primary, #1e293b)", fontSize: "24px" }}>
@@ -58,7 +58,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
 
 
       {/* Main Content Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", alignItems: "start", marginTop: "8px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "24px", alignItems: "start", marginTop: "8px" }}>
         
         {/* Left Column: Metrics & Schedule */}
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -98,8 +98,12 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                 </div>
                 <div style={{ paddingBottom: "16px" }}>
                   <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Starts</p>
-                  <p style={{ margin: "0", fontSize: "15px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>{airdrop.startDate} at {airdrop.startTime}</p>
-                  <span style={{ fontSize: "12px", color: "#8b5cf6", backgroundColor: "#f3e8ff", padding: "4px 10px", borderRadius: "12px", marginTop: "8px", display: "inline-block", fontWeight: "600" }}>{airdrop.startMode}</span>
+                  <p style={{ margin: "0", fontSize: "15px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>
+                    {airdrop.startDate || 'N/A'} at {airdrop.startTime || 'N/A'}
+                  </p>
+                  {airdrop.startMode && (
+                    <span style={{ fontSize: "12px", color: "#8b5cf6", backgroundColor: "#f3e8ff", padding: "4px 10px", borderRadius: "12px", marginTop: "8px", display: "inline-block", fontWeight: "600" }}>{airdrop.startMode}</span>
+                  )}
                 </div>
               </div>
               <div style={{ display: "flex", gap: "16px" }}>
@@ -108,7 +112,9 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                 </div>
                 <div>
                   <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Ends</p>
-                  <p style={{ margin: "0", fontSize: "15px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>{airdrop.endDate} at {airdrop.endTime}</p>
+                  <p style={{ margin: "0", fontSize: "15px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>
+                    {airdrop.endDate || 'N/A'} at {airdrop.endTime || 'N/A'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -141,7 +147,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
 
         {/* Right Column: Question Content */}
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <div className="card" style={{ margin: 0, padding: "32px", minHeight: "100%", backgroundColor: "var(--bg-surface, #ffffff)", borderRadius: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+          <div className="card" style={{ margin: 0, padding: "32px", backgroundColor: "var(--bg-surface, #ffffff)", borderRadius: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
             
             <div style={{ marginBottom: "32px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
@@ -226,14 +232,14 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
 
             {/* Simple Text Answers */}
             {/* Simple Text Answers */}
-            {(!airdrop.taskType || ['Short Answer', 'Pattern / Sequence', 'True / False', 'Fill in the Blank'].includes(airdrop.taskType) || (airdrop.correctAnswer && typeof airdrop.correctAnswer === 'string' && !airdrop.correctAnswer.startsWith('['))) && (
+            {(!airdrop.taskType || ['Short Answer', 'Pattern / Sequence', 'True / False', 'Fill in the Blank'].includes(airdrop.taskType) || (airdrop.correctAnswer && typeof airdrop.correctAnswer === 'string' && !airdrop.correctAnswer.startsWith('['))) && airdrop.correctAnswer ? (
               <div style={{ marginTop: "24px" }}>
                  <h4 style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Answer</h4>
                  <div style={{ padding: '16px', backgroundColor: '#f0fdf4', border: '1px dashed #86efac', borderRadius: '8px', color: '#166534', fontWeight: '600', fontSize: "15px", display: "flex", alignItems: "center", gap: "12px" }}>
                    <CheckCircle2 size={20} color="#22c55e" /> {airdrop.correctAnswer}
                  </div>
               </div>
-            )}
+            ) : null}
 
           </div>
         </div>

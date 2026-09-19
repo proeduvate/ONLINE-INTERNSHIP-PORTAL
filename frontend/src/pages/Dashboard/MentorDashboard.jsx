@@ -5,6 +5,7 @@ import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, Al
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import AdminLeaderboard from "./AdminLeaderboard";
 import MentorProfile from "./MentorProfile";
+import AdminAirdropDetails from "./AdminAirdropDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
@@ -62,6 +63,7 @@ export default function MentorDashboard() {
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
+  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
   const defaultAirdropState = {
     title: "",
@@ -1019,6 +1021,10 @@ export default function MentorDashboard() {
           </div>
         );
       case "Bonus Airdrops": {
+        if (selectedAirdrop) {
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
+        }
+
         const filteredAirdrops = bonusAirdrops.filter(a => {
           if (airdropFilter === "All") return true;
           if (airdropFilter === "Active") return a.status === "Active" || a.status === "ACTIVE" || a.status === "APPROVED";
@@ -1064,7 +1070,12 @@ export default function MentorDashboard() {
                       </tr>
                     ) : (
                       currentAirdrops.map(airdrop => (
-                        <tr key={airdrop.id}>
+                        <tr 
+                          key={airdrop.id} 
+                          onClick={() => setSelectedAirdrop(airdrop)}
+                          className="hover-row"
+                          style={{ cursor: "pointer" }}
+                        >
                           <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
                           <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 60 ? airdrop.question.substring(0, 60) + "..." : airdrop.question}</td>
                           <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>

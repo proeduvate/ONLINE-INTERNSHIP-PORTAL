@@ -7,6 +7,7 @@ import AdminAirdropDetails from "./AdminAirdropDetails";
 import AdminLeaderboard from "./AdminLeaderboard";
 import AdminProfile from "./AdminProfile";
 import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboardingList";
+import AdminOnboardingDetails from "../../features/onboarding/admin/AdminOnboardingDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
@@ -1169,6 +1170,9 @@ export default function AdminDashboard() {
         );
 
       case "Onboarding":
+        if (pathParts.length > 3 && pathParts[3]) {
+          return <AdminOnboardingDetails />;
+        }
         return <AdminOnboardingList />;
 
       case "Tickets":

@@ -9,8 +9,8 @@ import Apply from "./pages/onboarding/Apply";
 import Status from "./pages/onboarding/Status";
 import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
-import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
-import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
+import AdminOnboardingList from "./features/onboarding/admin/AdminOnboardingList";
+import AdminOnboardingDetails from "./features/onboarding/admin/AdminOnboardingDetails";
 import InternDetails from "./pages/Dashboard/InternDetails";
 import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
@@ -69,18 +69,10 @@ function App() {
               }
             />
             <Route
-              path="/admin/onboarding"
+              path="/admin/:tab/:id"
               element={
                 <ProtectedRoute roles={["admin"]}>
-                  <AdminOnboardingList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/onboarding/:id"
-              element={
-                <ProtectedRoute roles={["admin"]}>
-                  <AdminOnboardingDetails />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
