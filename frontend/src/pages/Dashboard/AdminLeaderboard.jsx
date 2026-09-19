@@ -36,8 +36,12 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
 
   const batches = useMemo(() => {
     const uniqueBatches = new Set(interns.map(i => i.batch || i.college).filter(Boolean));
+    rawLeaderboard.forEach(item => {
+      const batch = item.batch_name || item.batch || item.college;
+      if (batch) uniqueBatches.add(batch);
+    });
     return ['All Batches', ...Array.from(uniqueBatches)];
-  }, [interns]);
+  }, [interns, rawLeaderboard]);
 
   const leaderboardData = useMemo(() => {
     let data = rawLeaderboard.map(item => {

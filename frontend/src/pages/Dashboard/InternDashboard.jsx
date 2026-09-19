@@ -802,7 +802,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Middle Column: Today's Objective & Daily Scenario Activity */}
-              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0 }}>
 
                 {/* Today's Objective Card */}
                 {(() => {
@@ -903,8 +903,8 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
@@ -933,7 +933,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "20px", overflow: "hidden" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0, overflow: "hidden" }}>
 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
@@ -1447,7 +1447,7 @@ export default function InternDashboard() {
 
                     {/* Personal Notes Area */}
                     <div style={{ marginTop: "24px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
                         <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
                           <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
                         </h4>
@@ -2348,7 +2348,7 @@ export default function InternDashboard() {
 
               {/* Column 1: Learning Progress Curve */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
                     <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your performance from Day 1 to Day 30</p>
@@ -2520,7 +2520,7 @@ export default function InternDashboard() {
 
               {/* Day-wise Progress */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Day-wise Progress</h3>
                     <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Track your daily learning and task completion</p>
@@ -3030,7 +3030,7 @@ export default function InternDashboard() {
                 lineHeight: "1.6",
                 margin: 0
               }}>
-                "{domainInsights[currentInsightIndex]}"
+                "{domainInsights[currentInsightIndex % domainInsights.length] || domainInsights[0]}"
               </p>
             </div>
             <button

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 import AdminLeaderboard from "./AdminLeaderboard";
@@ -38,6 +38,29 @@ export default function AdminDashboard() {
   const [refixStartTime, setRefixStartTime] = useState("");
   const [refixEndDate, setRefixEndDate] = useState("");
   const [refixEndTime, setRefixEndTime] = useState("");
+
+  const [adminCredentialInterns, setAdminCredentialInterns] = useState([]);
+  const [selectedAdminCredentialIntern, setSelectedAdminCredentialIntern] = useState(null);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const stored = localStorage.getItem("app_certificate_requests");
+      if (stored) {
+        setAdminCredentialInterns(JSON.parse(stored));
+      }
+    };
+    handleStorageChange();
+    const interval = setInterval(handleStorageChange, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleApproveCertificate = (id) => {
+    const updated = adminCredentialInterns.map(i => i.id === id ? { ...i, status: "Approved" } : i);
+    setAdminCredentialInterns(updated);
+    localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
+    setSelectedAdminCredentialIntern(null);
+    alert("Certificate approved and sent to intern!");
+  };
 
   const transformAirdrops = (data) => {
     const formatDate = (isoString) => {
@@ -1162,45 +1185,94 @@ export default function AdminDashboard() {
       case "Credentials":
         return (
           <div className="card">
-            <h3>Certificate Credentials Panel</h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Generate professional verification-keyed certificates for graduating intern cohorts.</p>
+            <h3 style={{ marginBottom: "16px" }}>Certificate Credentials Panel</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Approve 30-day completion certificates requested by mentors.</p>
             <div className="table-container">
               <table className="table">
                 <thead>
                   <tr>
                     <th>Intern Name</th>
+                    <th>Batch</th>
                     <th>Domain</th>
-                    <th>Final Average Grade</th>
-                    <th>Leaderboard Ranking</th>
-                    <th>Actions</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><b>Raj Patel</b></td>
-                    <td>Data Science</td>
-                    <td><span style={{ color: "#10b981", fontWeight: 600 }}>80%</span></td>
-                    <td><span className="badge badge-success" style={{ padding: "4px 8px", fontSize: "13px" }}>#1</span></td>
-                    <td>
-                      <button onClick={() => alert("Certificate generated for Raj Patel! Verification Key: CERT-DS-884")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
-                        Generate & Email
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><b>Anu Sharma</b></td>
-                    <td>Cyber Security</td>
-                    <td><span style={{ color: "#10b981", fontWeight: 600 }}>75%</span></td>
-                    <td><span className="badge badge-warning" style={{ padding: "4px 8px", fontSize: "13px" }}>#5</span></td>
-                    <td>
-                      <button onClick={() => alert("Certificate generated for Anu Sharma! Verification Key: CERT-CS-122")} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px" }}>
-                        Generate & Email
-                      </button>
-                    </td>
-                  </tr>
+                  {adminCredentialInterns.filter(i => i.status !== "Eligible").length === 0 ? (
+                    <tr><td colSpan="6" style={{ textAlign: "center", color: "#6b7280" }}>No certificate requests found.</td></tr>
+                  ) : (
+                    adminCredentialInterns.filter(i => i.status !== "Eligible").map(intern => (
+                      <tr key={intern.id}>
+                        <td style={{ fontWeight: 600 }}>{intern.name}</td>
+                        <td>{intern.batch}</td>
+                        <td>{intern.domain}</td>
+                        <td><span style={{ fontWeight: 700, color: "var(--primary-color)" }}>{intern.grade}</span></td>
+                        <td>
+                          <span className={`badge ${intern.status === 'Approved' ? 'badge-success' : 'badge-primary'}`}>
+                            {intern.status}
+                          </span>
+                        </td>
+                        <td>
+                          <button 
+                            className="btn btn-secondary" 
+                            style={{ padding: "4px 12px", fontSize: "12px" }}
+                            onClick={() => setSelectedAdminCredentialIntern(intern)}
+                          >
+                            Review & Approve
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
+
+            {selectedAdminCredentialIntern && (
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+                <div style={{ backgroundColor: "#fff", width: "500px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>30-Day Summary Report</h2>
+                    <button onClick={() => setSelectedAdminCredentialIntern(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
+                  </div>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Intern Name:</span>
+                      <span style={{ fontWeight: 700 }}>{selectedAdminCredentialIntern.name}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Domain:</span>
+                      <span>{selectedAdminCredentialIntern.domain}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Attendance:</span>
+                      <span>{selectedAdminCredentialIntern.attendance}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Tasks Completed:</span>
+                      <span>{selectedAdminCredentialIntern.tasksCompleted}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Overall Grade:</span>
+                      <span style={{ fontWeight: 800, color: "var(--primary-color)" }}>{selectedAdminCredentialIntern.grade}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                    <button onClick={() => setSelectedAdminCredentialIntern(null)} className="btn btn-secondary">Cancel</button>
+                    {selectedAdminCredentialIntern.status === "Requested" && (
+                      <button onClick={() => handleApproveCertificate(selectedAdminCredentialIntern.id)} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve Certificate</button>
+                    )}
+                    {selectedAdminCredentialIntern.status === "Approved" && (
+                      <button disabled className="btn btn-secondary" style={{ opacity: 0.7 }}>Already Approved</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 
