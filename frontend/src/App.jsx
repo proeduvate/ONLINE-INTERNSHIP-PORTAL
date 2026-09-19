@@ -29,7 +29,7 @@ function App() {
             <Route path="/onboarding/payment" element={<Payment />} />
             <Route path="/onboarding/documents" element={<Documents />} />
             <Route
-              path="/intern"
+              path="/intern/:tab?"
               element={
                 <ProtectedRoute roles={["intern"]}>
                   <InternDashboard />
@@ -37,7 +37,7 @@ function App() {
               }
             />
             <Route
-              path="/mentor"
+              path="/mentor/:tab?"
               element={
                 <ProtectedRoute roles={["mentor"]}>
                   <MentorDashboard />
@@ -61,7 +61,7 @@ function App() {
               }
             />
             <Route
-              path="/admin"
+              path="/admin/:tab?"
               element={
                 <ProtectedRoute roles={["admin"]}>
                   <AdminDashboard />

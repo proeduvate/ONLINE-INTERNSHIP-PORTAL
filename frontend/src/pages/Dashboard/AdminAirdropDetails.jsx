@@ -21,7 +21,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
           <div>
             <h2 style={{ margin: "0 0 8px 0", display: "flex", alignItems: "center", gap: "12px", color: "var(--text-primary, #1e293b)", fontSize: "24px" }}>
                <Gift size={28} color="#8b5cf6" />
-               {airdrop.title || `Bonus Airdrop #${airdrop.id}`}
+               {airdrop.title || 'Bonus Airdrop'}
                <span style={{ 
                  padding: '4px 12px', 
                  borderRadius: '20px', 
@@ -39,10 +39,10 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                  {airdrop.status}
                </span>
             </h2>
-            <span style={{ fontSize: "14px", fontWeight: 500, color: "#6B7280", display: "flex", gap: "16px", alignItems: "center" }}>
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "#6B7280", display: "flex", gap: "12px", alignItems: "center" }}>
               <span>ID: <b>{airdrop.id}</b></span>
               <span style={{ color: "#d1d5db" }}>|</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Target size={16} color="#3b82f6"/> Task Type: <b>{airdrop.taskType}</b></span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><CheckCircle2 size={14} color="#3b82f6"/> Task Type: <b>{airdrop.taskType}</b></span>
             </span>
           </div>
         </div>
@@ -67,19 +67,19 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <Zap size={20} color="#f59e0b" /> Challenge Parameters
             </h3>
             
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "12px", borderBottom: "1px dashed #e2e8f0" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: "500" }}><Clock size={18} /> Time Limit</span>
                 <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{airdrop.timeLimit}s</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "12px", borderBottom: "1px dashed #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: "500" }}><Users size={18} /> Max Winners</span>
-                <span style={{ fontWeight: 700, color: "#10b981", fontSize: "16px" }}>{airdrop.winners}</span>
+                <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{airdrop.winners}</span>
               </div>
               <div>
                 <span style={{ color: "#475569", display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "500" }}>Total Points Pool</span>
-                <div style={{ height: "8px", backgroundColor: "var(--border-color, #e2e8f0)", borderRadius: "4px", overflow: "hidden" }}>
-                  <div style={{ width: "100%", backgroundColor: "#f59e0b", height: "100%", borderRadius: "4px" }}></div>
+                <div style={{ height: "6px", backgroundColor: "var(--border-color, #e2e8f0)", borderRadius: "3px", overflow: "hidden" }}>
+                  <div style={{ width: "100%", backgroundColor: "#f59e0b", height: "100%", borderRadius: "3px" }}></div>
                 </div>
               </div>
             </div>
@@ -148,8 +148,8 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                  <div style={{ width: "36px", height: "36px", borderRadius: "8px", backgroundColor: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "18px" }}>Q</div>
                  <h3 style={{ fontSize: "20px", margin: 0, color: "var(--text-primary, #1e293b)", fontWeight: "600" }}>Question Prompt</h3>
               </div>
-              <div style={{ backgroundColor: 'var(--bg-surface-elevated, #f8fafc)', borderLeft: '4px solid #3b82f6', padding: '24px', borderRadius: '0 12px 12px 0' }}>
-                <p style={{ margin: 0, fontSize: '16px', color: '#334155', fontWeight: '500', lineHeight: "1.7" }}>{airdrop.question}</p>
+              <div style={{ backgroundColor: '#f1f5f9', padding: '20px', borderRadius: '8px' }}>
+                <p style={{ margin: 0, fontSize: '15px', color: '#334155', fontWeight: '500', lineHeight: "1.6" }}>{airdrop.question}</p>
               </div>
             </div>
 
@@ -224,12 +224,13 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               </div>
             )}
 
-            {/* Short Answer */}
-            {airdrop.taskType === 'Short Answer' && (
-              <div>
-                 <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Answer</h4>
-                 <div style={{ padding: '24px', backgroundColor: '#f0fdf4', border: '2px dashed #86efac', borderRadius: '12px', color: '#166534', fontWeight: '600', fontSize: "18px", display: "flex", alignItems: "center", gap: "16px" }}>
-                   <CheckCircle2 size={24} color="#22c55e" /> {airdrop.correctAnswer}
+            {/* Simple Text Answers */}
+            {/* Simple Text Answers */}
+            {(!airdrop.taskType || ['Short Answer', 'Pattern / Sequence', 'True / False', 'Fill in the Blank'].includes(airdrop.taskType) || (airdrop.correctAnswer && typeof airdrop.correctAnswer === 'string' && !airdrop.correctAnswer.startsWith('['))) && (
+              <div style={{ marginTop: "24px" }}>
+                 <h4 style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Answer</h4>
+                 <div style={{ padding: '16px', backgroundColor: '#f0fdf4', border: '1px dashed #86efac', borderRadius: '8px', color: '#166534', fontWeight: '600', fontSize: "15px", display: "flex", alignItems: "center", gap: "12px" }}>
+                   <CheckCircle2 size={20} color="#22c55e" /> {airdrop.correctAnswer}
                  </div>
               </div>
             )}

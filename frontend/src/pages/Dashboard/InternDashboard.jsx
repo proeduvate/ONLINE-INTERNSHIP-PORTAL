@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
@@ -12,7 +13,31 @@ import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 export default function InternDashboard() {
-  const [activeTab, setActiveTab] = useState("Overview");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const decoded = decodeURIComponent(segment);
+    const normalized = decoded.replace(/-/g, ' ');
+    return normalized.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+  
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab.toLowerCase() !== tabName.toLowerCase()) {
+         setActiveTab(tabName);
+      }
+    }
+  }, [location.pathname, activeTab]);
+
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
@@ -49,6 +74,7 @@ export default function InternDashboard() {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
+    navigate(`/intern/${tabId.toLowerCase().replace(/\s+/g, '-')}`);
     if (isMeetingActive) {
       setIsMeetingMinimized(true);
     }

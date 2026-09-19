@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
@@ -13,7 +13,29 @@ import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Overview");
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const decoded = decodeURIComponent(segment);
+    const normalized = decoded.replace(/-/g, ' ');
+    return normalized.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+  
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab.toLowerCase() !== tabName.toLowerCase()) {
+         setActiveTab(tabName);
+      }
+    }
+  }, [location.pathname, activeTab]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -230,6 +252,7 @@ export default function AdminDashboard() {
   ]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
+  const [assignMentorId, setAssignMentorId] = useState("");
 
   const handleReplyTicket = (e) => {
     e.preventDefault();
@@ -260,6 +283,27 @@ export default function AdminDashboard() {
       return t;
     });
     setTicketsList(updatedTickets);
+  };
+
+  const handleAssignMentor = () => {
+    if (!assignMentorId) return alert("Please select a mentor first.");
+    
+    const mentor = usersList.find(u => u.id === assignMentorId);
+    const updatedTickets = ticketsList.map(t => {
+      if (t.id === selectedTicket.id) {
+        const updatedT = {
+          ...t,
+          assignedTo: mentor.name,
+          comments: [...t.comments, { author: "System Admin", text: `Ticket assigned to mentor ${mentor.name}` }]
+        };
+        setSelectedTicket(updatedT);
+        return updatedT;
+      }
+      return t;
+    });
+    setTicketsList(updatedTickets);
+    setAssignMentorId("");
+    alert(`Ticket assigned to ${mentor.name}`);
   };
 
 
@@ -1139,9 +1183,21 @@ export default function AdminDashboard() {
                     {selectedTicket.status}
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
-                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <select 
+                    className="form-control" 
+                    style={{ marginBottom: 0, padding: "4px 8px", width: "auto", fontSize: "13px", height: "auto" }}
+                    value={assignMentorId}
+                    onChange={(e) => setAssignMentorId(e.target.value)}
+                  >
+                    <option value="">Select Mentor to Assign</option>
+                    {usersList.filter(u => u.role === "Mentor").map(m => (
+                      <option key={m.id} value={m.id}>{m.name}</option>
+                    ))}
+                  </select>
+                  <button className="btn btn-secondary" style={{ color: "#2563eb", borderColor: "#bfdbfe", backgroundColor: "#eff6ff", padding: "4px 10px", fontSize: "13px" }} onClick={handleAssignMentor}>Assign Mentor</button>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "4px 10px", fontSize: "13px" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
+                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "4px 10px", fontSize: "13px" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
                 </div>
               </div>
 
@@ -1161,6 +1217,10 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
                   <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Assigned To</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.assignedTo || "Unassigned"}</div>
                 </div>
               </div>
 
@@ -1360,8 +1420,13 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => {
+                  if (tab.id === "Onboarding") {
+                    navigate('/admin/onboarding');
+                    return;
+                  }
                   setActiveTab(tab.id);
                   if (tab.id === "Bonus Airdrops") setSelectedAirdrop(null);
+                  navigate(`/admin/${tab.id.toLowerCase().replace(/\\s+/g, '-')}`);
                 }}
                 style={{
                   display: "flex",
