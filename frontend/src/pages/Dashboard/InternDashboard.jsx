@@ -416,7 +416,7 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "0px", flex: 1, minHeight: "calc(100vh - 110px)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "24px", flex: 1 }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div className="responsive-flex" style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
@@ -749,7 +749,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0, overflow: "hidden" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px" }}>
                 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", flexShrink: 0 }}>
@@ -757,7 +757,7 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexShrink: 0 }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
@@ -774,7 +774,7 @@ export default function InternDashboard() {
                     <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingRight: "4px" }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -2616,10 +2616,10 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box", overflow: "hidden" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 20px 32px 20px", width: "100%", boxSizing: "border-box", overflowY: "auto" }}>
 
         {/* Content Box */}
-        <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
+        <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: "500px", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
           <BreakoutRoomsApp 
             isIntern={true} 
             onLeaveMeeting={handleEndMeeting} 
@@ -2629,7 +2629,7 @@ export default function InternDashboard() {
         </div>
         
         {(!isMeetingActive || isMeetingMinimized) && (
-          <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          <div style={{ display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
             {renderContent()}
           </div>
         )}
