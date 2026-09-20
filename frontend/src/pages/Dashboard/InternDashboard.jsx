@@ -416,7 +416,7 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "24px", flex: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", flex: 1, minHeight: 0 }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div className="responsive-flex" style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
@@ -518,10 +518,10 @@ export default function InternDashboard() {
               </div>
             </div>
             {/* Main Content Row */}
-            <div style={{ display: "flex", gap: "12px", alignItems: "stretch", flex: 1 }}>
+            <div style={{ display: "flex", gap: "10px", alignItems: "stretch", flex: 1, minHeight: 0 }}>
               
               {/* Left Column: Your 30-Day Journey Timeline */}
-              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
+              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "12px 14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", minHeight: 0 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
@@ -685,63 +685,65 @@ export default function InternDashboard() {
                   <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
                     View All →
                   </button>
-                </div>                {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "12px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexShrink: 0 }}>
+                </div>
+
+                {/* Recent Submissions Card */}
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexShrink: 0 }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={15} />
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "6px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={14} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
+                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
+                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={15} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Clock size={14} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
+                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
+                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.82rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={15} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={14} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
+                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
+                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={15} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={14} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>React Components</span>
-                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>React Components</span>
+                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>95/100</span>
+                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>95/100</span>
                     </div>
                   </div>
                 </div>
@@ -749,7 +751,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
                 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", flexShrink: 0 }}>
@@ -757,24 +759,24 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexShrink: 0 }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexShrink: 0 }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
                     </div>
-                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "4px 8px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700 }}>
+                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "20px", fontSize: "0.72rem", fontWeight: 700 }}>
                       Your Rank: #3
                     </span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "4px", marginBottom: "4px", fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "4px", marginBottom: "4px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
                     <span>Rank</span>
                     <span>Name</span>
                     <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingRight: "4px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "4px" }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -782,10 +784,10 @@ export default function InternDashboard() {
                       { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
                       { rank: 5, name: "David Lee", points: 890, isMe: false }
                     ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px", paddingLeft: user.isMe ? "6px" : "0" }}>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
-                        <span style={{ fontSize: "0.8rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "24px" : "20px" }}>{user.points}</span>
+                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "4px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px", paddingLeft: user.isMe ? "6px" : "0" }}>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
+                        <span style={{ fontSize: "0.78rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "24px" : "20px" }}>{user.points}</span>
                       </div>
                     ))}
                   </div>
