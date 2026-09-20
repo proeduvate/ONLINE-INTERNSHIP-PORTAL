@@ -416,7 +416,7 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", flex: 1, minHeight: 0 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
             <div className="responsive-flex" style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
@@ -518,16 +518,16 @@ export default function InternDashboard() {
               </div>
             </div>
             {/* Main Content Row */}
-            <div style={{ display: "flex", gap: "10px", alignItems: "stretch", flex: 1, minHeight: 0 }}>
+            <div className="responsive-flex" style={{ display: "flex", gap: "12px", alignItems: "stretch" }}>
               
               {/* Left Column: Your 30-Day Journey Timeline */}
-              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "12px 14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", minHeight: 0 }}>
+              <div style={{ flex: "0.8", background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "6px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "space-between", paddingTop: "4px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", position: "relative", paddingLeft: "8px", paddingTop: "4px" }}>
                   <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
 
                   {(() => {
@@ -585,7 +585,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Middle Column: Today's Objective & Daily Scenario Activity */}
-              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "12px" }}>
                 
                 {/* Today's Objective Card */}
                 {(() => {
@@ -688,12 +688,12 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexShrink: 0 }}>
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "6px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, justifyContent: "space-around" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -751,16 +751,16 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "12px" }}>
                 
                 {/* Daily Scenario Calendar Widget */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", flexShrink: 0 }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                   <DailyScenarioCalendar />
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexShrink: 0 }}>
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
@@ -770,13 +770,13 @@ export default function InternDashboard() {
                     </span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "4px", marginBottom: "4px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "6px", marginBottom: "6px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
                     <span>Rank</span>
                     <span>Name</span>
                     <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "4px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, justifyContent: "space-around" }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -784,10 +784,10 @@ export default function InternDashboard() {
                       { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
                       { rank: 5, name: "David Lee", points: 890, isMe: false }
                     ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "4px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px", paddingLeft: user.isMe ? "6px" : "0" }}>
+                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
                         <span style={{ fontSize: "0.78rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
                         <span style={{ fontSize: "0.78rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "24px" : "20px" }}>{user.points}</span>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.points}</span>
                       </div>
                     ))}
                   </div>
@@ -1700,7 +1700,7 @@ export default function InternDashboard() {
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+          <div className="card" style={{ margin: 0, padding: 0, minHeight: "650px", display: "flex", flexDirection: "column", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
             <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
               <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
@@ -1949,7 +1949,7 @@ export default function InternDashboard() {
       case "Progress & Certificate":
         if (showCertificateView) {
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "auto", paddingBottom: "10px", height: "calc(100vh - 110px)", paddingRight: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
                 <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
@@ -2088,7 +2088,7 @@ export default function InternDashboard() {
         }
 
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", height: "calc(100vh - 110px)", overflowY: "auto", paddingRight: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             
 
             {/* Top 4 Metrics Cards */}
@@ -2471,7 +2471,7 @@ export default function InternDashboard() {
   }
 
   return (
-    <div style={{ height: "100vh", overflow: "hidden", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 
@@ -2618,7 +2618,7 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 20px 32px 20px", width: "100%", boxSizing: "border-box", overflowY: "auto" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px 32px 24px", width: "100%", boxSizing: "border-box" }}>
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: "500px", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
@@ -2631,7 +2631,7 @@ export default function InternDashboard() {
         </div>
         
         {(!isMeetingActive || isMeetingMinimized) && (
-          <div style={{ display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
             {renderContent()}
           </div>
         )}
