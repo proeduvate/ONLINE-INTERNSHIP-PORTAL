@@ -419,6 +419,57 @@ export default function MentorDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
 
   useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (tabName === "Evaluations") {
+        if (parts[3]) {
+          const found = submissions.find(s => String(s.id) === parts[3]);
+          setSelectedEvaluation(found || null);
+        } else {
+          navigate("/mentor/evaluations");
+        }
+      } else if (tabName === "Programs") {
+        if (parts[3] === "view" && parts[4]) {
+          const found = tasks.find(t => String(t.id) === parts[4]);
+          setViewingTask(found || null);
+          setEditingTask(null);
+          setTaskDetailTab("MCQ");
+        } else if (parts[3] === "edit" && parts[4]) {
+          const found = tasks.find(t => String(t.id) === parts[4]);
+          setEditingTask(found || null);
+          setViewingTask(null);
+          setTaskDetailTab("General");
+        } else {
+          setViewingTask(null);
+          setEditingTask(null);
+        }
+      } else if (tabName === "Tickets") {
+        if (parts[3]) {
+          const found = mentorTickets.find(t => String(t.id) === parts[3]);
+          setSelectedTicket(found || null);
+        } else {
+          setSelectedTicket(null);
+        }
+      } else if (tabName === "Credentials") {
+        if (parts[3]) {
+          const found = credentialInterns.find(i => String(i.id) === parts[3]);
+          setSelectedCredentialIntern(found || null);
+        } else {
+          setSelectedCredentialIntern(null);
+        }
+      } else if (tabName === "Bonus Airdrops") {
+        if (parts[3] === "completed") {
+          setAirdropTab("Completed");
+        } else {
+          setAirdropTab("Active");
+        }
+      }
+    }
+  }, [location.pathname, submissions, tasks, mentorTickets, credentialInterns]);
+
+
+  useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
     if (storedAirdrops) {
       setBonusAirdrops(JSON.parse(storedAirdrops));
@@ -761,7 +812,7 @@ export default function MentorDashboard() {
                           <td>{sub.domain}</td>
                           <td><span className="badge badge-warning">{sub.status}</span></td>
                           <td>
-                            <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px" }} onClick={() => setSelectedEvaluation(sub)}>Review</button>
+                            <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px" }} onClick={() => navigate("/mentor/evaluations/" + sub.id)}>Review</button>
                           </td>
                         </tr>
                       ))}
@@ -776,7 +827,7 @@ export default function MentorDashboard() {
                 <div style={{ backgroundColor: "#fff", width: "700px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", maxHeight: "90vh", overflowY: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                     <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Evaluation Details</h2>
-                    <button onClick={() => setSelectedEvaluation(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center" }}><X size={16} /></button>
+                    <button onClick={() => navigate("/mentor/evaluations")} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center" }}><X size={16} /></button>
                   </div>
                   
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
@@ -819,13 +870,13 @@ export default function MentorDashboard() {
                       const score = document.getElementById("modalTempScore").value;
                       const feedback = document.getElementById("modalTempFeedback").value;
                       handleReviewSubmission(selectedEvaluation.id, "Reject", score || "0%", feedback || "Needs rework");
-                      setSelectedEvaluation(null);
+                      navigate("/mentor/evaluations");
                     }} className="btn btn-secondary" style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "10px 24px", fontWeight: 600 }}>Reject</button>
                     <button onClick={() => {
                       const score = document.getElementById("modalTempScore").value;
                       const feedback = document.getElementById("modalTempFeedback").value;
                       handleReviewSubmission(selectedEvaluation.id, "Approve", score || "80%", feedback || "Approved");
-                      setSelectedEvaluation(null);
+                      navigate("/mentor/evaluations");
                     }} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "10px 24px", fontWeight: 600 }}>Approve</button>
                   </div>
                 </div>
@@ -967,7 +1018,7 @@ export default function MentorDashboard() {
 
                       <div style={{ display: "flex", gap: "10px", marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                         <button type="submit" className="btn btn-primary">Save Changes</button>
-                        <button type="button" className="btn btn-secondary" onClick={() => setEditingTask(null)}>Cancel</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => navigate("/mentor/programs")}>Cancel</button>
                       </div>
                     </form>
                   </div>
@@ -975,9 +1026,9 @@ export default function MentorDashboard() {
                   <div className="card" style={{ backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <button className="btn btn-secondary" style={{ padding: "4px 8px", display: "flex", alignItems: "center", gap: "6px" }} onClick={() => setViewingTask(null)}><ArrowLeft size={16} /> Back</button>
+                        <button className="btn btn-secondary" style={{ padding: "4px 8px", display: "flex", alignItems: "center", gap: "6px" }} onClick={() => navigate("/mentor/programs")}><ArrowLeft size={16} /> Back</button>
                         <h4 style={{ margin: 0 }}>View Task TSK-{viewingTask.id}: {viewingTask.title}</h4>
-                        <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px", marginLeft: "8px" }} onClick={() => { setEditingTask(viewingTask); setViewingTask(null); setTaskDetailTab("General"); }}>Edit Task</button>
+                        <button className="btn btn-primary" style={{ padding: "4px 12px", fontSize: "12px", marginLeft: "8px" }} onClick={() => navigate("/mentor/programs/edit/" + viewingTask.id)}>Edit Task</button>
                       </div>
                       <div style={{ display: "flex", gap: "8px" }}>
                         <button className={`btn ${taskDetailTab === "MCQ" ? "btn-primary" : "btn-secondary"}`} onClick={() => setTaskDetailTab("MCQ")} style={{ padding: "4px 12px", fontSize: "12px" }}>MCQs ({viewingTask.mcqs.length})</button>
@@ -1024,7 +1075,7 @@ export default function MentorDashboard() {
                       </thead>
                       <tbody>
                         {tasks.map((t) => (
-                          <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => { setViewingTask(t); setTaskDetailTab("MCQ"); }} className="hover-row">
+                          <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => navigate("/mentor/programs/view/" + t.id)} className="hover-row">
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
                             <td><b>{t.title}</b></td>
                             <td><span className={`badge ${t.difficulty === "Hard" ? "badge-danger" : t.difficulty === "Medium" ? "badge-warning" : "badge-success"}`}>{t.difficulty}</span></td>
@@ -1606,7 +1657,7 @@ export default function MentorDashboard() {
             <div className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
+                  <button className="btn btn-secondary" onClick={() => navigate("/mentor/tickets")}>Back to Tickets</button>
                   <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
                   <span className={`badge ${selectedTicket.status === 'Resolved' ? 'badge-success' : 'badge-primary'}`}>
                     {selectedTicket.status}
@@ -1689,7 +1740,7 @@ export default function MentorDashboard() {
                       </td>
                       <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
                       <td>
-                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>View Details</button>
+                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => navigate("/mentor/tickets/" + ticket.id)}>View Details</button>
                       </td>
                     </tr>
                   ))}
@@ -1731,7 +1782,7 @@ export default function MentorDashboard() {
                         <button 
                           className="btn btn-secondary" 
                           style={{ padding: "4px 12px", fontSize: "12px" }}
-                          onClick={() => setSelectedCredentialIntern(intern)}
+                          onClick={() => navigate("/mentor/credentials/" + intern.id)}
                         >
                           View Details
                         </button>
@@ -1747,7 +1798,7 @@ export default function MentorDashboard() {
                 <div style={{ backgroundColor: "#fff", width: "500px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                     <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>30-Day Summary Report</h2>
-                    <button onClick={() => setSelectedCredentialIntern(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
+                    <button onClick={() => navigate("/mentor/credentials")} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
                   </div>
                   
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
@@ -1774,7 +1825,7 @@ export default function MentorDashboard() {
                   </div>
 
                   <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-                    <button onClick={() => setSelectedCredentialIntern(null)} className="btn btn-secondary">Cancel</button>
+                    <button onClick={() => navigate("/mentor/credentials")} className="btn btn-secondary">Cancel</button>
                     {selectedCredentialIntern.status === "Eligible" && (
                       <button onClick={() => handleRequestCertificate(selectedCredentialIntern.id)} className="btn btn-primary">Request Certificate</button>
                     )}
@@ -1804,14 +1855,14 @@ export default function MentorDashboard() {
             <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
               <button 
                 className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => setAirdropTab("Active")}
+                onClick={() => navigate("/mentor/bonus-airdrops/active")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Active Airdrops ({activeDrops.length})
               </button>
               <button 
                 className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => setAirdropTab("Completed")}
+                onClick={() => navigate("/mentor/bonus-airdrops/completed")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Completed Airdrops ({completedDrops.length})

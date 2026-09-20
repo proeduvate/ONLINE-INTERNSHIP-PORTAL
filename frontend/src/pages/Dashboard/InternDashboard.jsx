@@ -19,7 +19,7 @@ export default function InternDashboard() {
   const pathParts = location.pathname.split('/');
 
   const canonicalTabs = [
-    "Overview", "Learning", "Daily Scenario", "Progress & Certificate", 
+    "Overview", "Learning", "Daily Scenario", "Progress", 
     "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
   ];
 
@@ -40,6 +40,20 @@ export default function InternDashboard() {
       const tabName = getTabFromUrl(parts[2]);
       if (activeTab !== tabName) {
          setActiveTab(tabName);
+      }
+      if (tabName === "Learning") {
+        if (parts[3] === "assessment") {
+          setShowAssessment(true);
+          if (parts[4] === "mcq") {
+            setAssessmentView("mcq");
+          } else if (parts[4] === "coding") {
+            setAssessmentView("coding");
+          } else {
+            setAssessmentView("selection");
+          }
+        } else {
+          setShowAssessment(false);
+        }
       }
     }
   }, [location.pathname, activeTab]);
@@ -295,7 +309,7 @@ export default function InternDashboard() {
     setTicketsData([newTicket, ...ticketsData]);
     setNewTicketTitle("");
     setNewTicketDesc("");
-    setShowTicketForm(false);
+    navigate("/intern/tickets");
   };
 
   const [mcqStarted, setMcqStarted] = useState(false);
@@ -332,13 +346,54 @@ export default function InternDashboard() {
   ]);
   const [inputMsg, setInputMsg] = useState("");
 
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (tabName === "Learning") {
+        if (parts[3] === "live-meetings") {
+          setActiveLearningTab("Live Meetings");
+        } else if (parts[3] === "ai-client") {
+          setActiveLearningTab("AI Client");
+        } else if (parts[3] === "reading-materials") {
+          setActiveLearningTab("Reading Materials");
+        }
+      } else if (tabName === "Tickets") {
+        if (parts[3] === "new") {
+          setShowTicketForm(true);
+          setSelectedTicket(null);
+        } else if (parts[3]) {
+          setShowTicketForm(false);
+          const foundTicket = ticketsData.find(t => t.id === parts[3]);
+          setSelectedTicket(foundTicket || null);
+        } else {
+          setShowTicketForm(false);
+          setSelectedTicket(null);
+        }
+      } else if (tabName === "Progress") {
+        if (parts[3] === "certificate") {
+          setShowCertificateView(true);
+        } else {
+          setShowCertificateView(false);
+        }
+      } else if (tabName === "Bonus Airdrops") {
+        if (parts[3] === "completed") {
+          setAirdropTab("Completed");
+        } else {
+          setAirdropTab("Active");
+        }
+      }
+    }
+  }, [location.pathname, ticketsData]);
+
+
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
     const score = Object.keys(answers).length * 50; // simple score
     setMcqGrade(score);
     setMcqDone(true);
     alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
-    setAssessmentView("selection");
+    navigate("/intern/learning/assessment");
   };
 
   // Timer effect for MCQ
@@ -382,7 +437,7 @@ export default function InternDashboard() {
       });
       alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
       setCodingDone(true);
-      setAssessmentView("selection");
+      navigate("/intern/learning/assessment");
     }, 2000);
   };
 
@@ -401,8 +456,7 @@ export default function InternDashboard() {
     setMcqGrade(null);
     setCode("function sum(a, b) {\n  // write code\n}");
     setEvalResult(null);
-    setShowAssessment(false);
-    setAssessmentView("selection");
+    navigate("/intern/learning");
   };
 
   const handleSendMessage = (e) => {
@@ -837,7 +891,7 @@ export default function InternDashboard() {
                       </p>
                     </div>
                     <div>
-                      <button className="btn btn-secondary" onClick={() => setShowAssessment(false)} style={{ background: "white", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-color, #cbd5e1)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}>
+                      <button className="btn btn-secondary" onClick={() => navigate("/intern/learning")} style={{ background: "white", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-color, #cbd5e1)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}>
                         <ArrowLeft size={14} style={{ marginRight: "4px", verticalAlign: "middle" }}/> Back
                       </button>
                     </div>
@@ -873,7 +927,7 @@ export default function InternDashboard() {
                               <span style={{ color: "var(--text-muted)", fontSize: "13px", fontWeight: "600" }}>Score: {mcqGrade}%</span>
                             </div>
                           ) : (
-                            <button className="btn btn-primary" onClick={() => { setAssessmentView("mcq"); setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); }} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600" }}>Start MCQ &rarr;</button>
+                            <button className="btn btn-primary" onClick={() => { setMcqStarted(true); setMcqSubmitted(false); setAnswers({}); setTimer(180); setCurrentQuestionIndex(0); navigate("/intern/learning/assessment/mcq"); }} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600" }}>Start MCQ &rarr;</button>
                           )}
                         </div>
                       </div>
@@ -897,7 +951,7 @@ export default function InternDashboard() {
                               <span style={{ color: "#16a34a", fontWeight: "bold", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}><CheckCircle size={18} /> Completed</span>
                             </div>
                           ) : (
-                            <button className="btn btn-primary" onClick={() => setAssessmentView("coding")} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600", background: "#9333ea", borderColor: "#9333ea" }}>Continue Coding &rarr;</button>
+                            <button className="btn btn-primary" onClick={() => navigate("/intern/learning/assessment/coding")} style={{ padding: "10px 24px", borderRadius: "8px", fontWeight: "600", background: "#9333ea", borderColor: "#9333ea" }}>Continue Coding &rarr;</button>
                           )}
                         </div>
                       </div>
@@ -967,7 +1021,7 @@ export default function InternDashboard() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
                     {mcqSubmitted && (
-                      <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                      <button className="btn btn-secondary" onClick={() => navigate("/intern/learning/assessment")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                     )}
                   </div>
                   {!mcqSubmitted ? (
@@ -1051,7 +1105,7 @@ export default function InternDashboard() {
                   ) : (
                     <div>
                       <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>
-                      <button className="btn btn-primary" onClick={() => setAssessmentView("selection")}>Continue</button>
+                      <button className="btn btn-primary" onClick={() => navigate("/intern/learning/assessment")}>Continue</button>
                     </div>
                   )}
                 </div>
@@ -1062,7 +1116,7 @@ export default function InternDashboard() {
                 <div className="card">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part B: {false ? "UI/UX Assessment" : "Coding Assessment"}</h3>
-                    <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                    <button className="btn btn-secondary" onClick={() => navigate("/intern/learning/assessment")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                   </div>
                   
                   {false ? (
@@ -1126,7 +1180,7 @@ export default function InternDashboard() {
                           <div style={{ background: "var(--bg-blue-light)", border: "1px solid var(--border-blue-light)", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "var(--primary-darkest)", marginTop: "16px" }}>
                             <b>AI Suggestions:</b> {evalResult.suggestions}
                           </div>
-                          <button className="btn btn-primary" onClick={() => setAssessmentView("selection")} style={{ marginTop: "16px" }}>Continue</button>
+                          <button className="btn btn-primary" onClick={() => navigate("/intern/learning/assessment")} style={{ marginTop: "16px" }}>Continue</button>
                         </div>
                       )}
                     </div>
@@ -1185,15 +1239,15 @@ export default function InternDashboard() {
                 
                 {/* Navigation Tabs */}
                 <div style={{ display: "flex", gap: "16px", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px", marginBottom: "8px", flexShrink: 0 }}>
-                  <button onClick={() => setActiveLearningTab("Reading Materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                  <button onClick={() => navigate("/intern/learning/reading-materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <BookOpen size={16} /> Reading Materials
                     {activeLearningTab === "Reading Materials" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
-                  <button onClick={() => setActiveLearningTab("Live Meetings")} style={{ background: "none", border: "none", color: activeLearningTab === "Live Meetings" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                  <button onClick={() => navigate("/intern/learning/live-meetings")} style={{ background: "none", border: "none", color: activeLearningTab === "Live Meetings" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <Calendar size={16} /> Live Meetings
                     {activeLearningTab === "Live Meetings" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
-                  <button onClick={() => setActiveLearningTab("AI Client")} style={{ background: "none", border: "none", color: activeLearningTab === "AI Client" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                  <button onClick={() => navigate("/intern/learning/ai-client")} style={{ background: "none", border: "none", color: activeLearningTab === "AI Client" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <Bot size={16} /> AI Client Review
                     {activeLearningTab === "AI Client" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
@@ -1404,8 +1458,9 @@ export default function InternDashboard() {
                     Ready to complete today's module? Take the MCQ and Coding test now.
                   </p>
                   <button 
-                    onClick={() => setShowAssessment(true)} 
-                    style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px", borderRadius: "8px", fontSize: "14px", fontWeight: 800, cursor: "pointer", transition: "all 0.2s", textAlign: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}
+                    className="btn btn-primary" 
+                    onClick={() => navigate("/intern/learning/assessment")} 
+                    style={{ width: "100%", padding: "12px", borderRadius: "8px", fontWeight: "bold", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", background: "var(--text-primary, #0f172a)", border: "none" }}
                   >
                     Start Assessment &rarr;
                   </button>
@@ -1485,7 +1540,7 @@ export default function InternDashboard() {
                 <h3 style={{ margin: 0, color: "var(--text-dark)", fontSize: "20px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
                   <Ticket size={22} color="#3b82f6" /> File a New Support Ticket
                 </h3>
-                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)} style={{ padding: "6px 14px", fontSize: "13px" }}>
+                <button className="btn btn-secondary" onClick={() => navigate("/intern/tickets")} style={{ padding: "6px 14px", fontSize: "13px" }}>
                   Back
                 </button>
               </div>
@@ -1535,7 +1590,7 @@ export default function InternDashboard() {
                 </div>
                 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
-                  <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Cancel</button>
+                  <button className="btn btn-secondary" onClick={() => navigate("/intern/tickets")}>Cancel</button>
                   <button className="btn btn-primary" style={{ padding: "10px 24px" }} onClick={handleCreateTicket}>Submit Ticket &rarr;</button>
                 </div>
               </div>
@@ -1596,7 +1651,7 @@ export default function InternDashboard() {
               </div>
 
               <div style={{ position: "relative", zIndex: 2 }}>
-                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} onClick={() => setShowTicketForm(true)}>
+                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} onClick={() => navigate("/intern/tickets/new")}>
                   + File a Ticket
                 </button>
               </div>
@@ -1648,7 +1703,7 @@ export default function InternDashboard() {
                   filteredTickets.map(ticket => (
                     <div 
                       key={ticket.id}
-                      onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
+                      onClick={() => navigate(selectedTicket?.id === ticket.id ? "/intern/tickets" : "/intern/tickets/" + ticket.id)}
                       style={{ 
                         padding: "16px 20px", 
                         cursor: "pointer", 
@@ -1835,14 +1890,14 @@ export default function InternDashboard() {
             <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
               <button 
                 className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => setAirdropTab("Active")}
+                onClick={() => navigate("/intern/bonus-airdrops/active")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Active Airdrops ({activeDrops.length})
               </button>
               <button 
                 className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => setAirdropTab("Completed")}
+                onClick={() => navigate("/intern/bonus-airdrops/completed")}
                 style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
               >
                 Completed Airdrops ({completedDrops.length})
@@ -1946,13 +2001,13 @@ export default function InternDashboard() {
           </div>
         );
 
-      case "Progress & Certificate":
+      case "Progress":
         if (showCertificateView) {
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
-                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
+                <button onClick={() => navigate("/intern/progress")} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
                   <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
                 </button>
               </div>
@@ -2416,7 +2471,7 @@ export default function InternDashboard() {
 
                   <button 
                     disabled={!isInternshipCompleted}
-                    onClick={() => setShowCertificateView(true)}
+                    onClick={() => navigate("/intern/progress/certificate")}
                     style={{
                       width: "100%",
                       background: isInternshipCompleted ? "#2563eb" : "var(--border-color, #e2e8f0)",
@@ -2455,7 +2510,7 @@ export default function InternDashboard() {
       <div style={{ height: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", alignItems: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
           <button 
-            onClick={() => setActiveLearningTab("Reading Materials")}
+            onClick={() => navigate("/intern/learning/reading-materials")}
             style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "#334155", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
             onMouseOver={(e) => e.currentTarget.style.color = "#2563eb"}
             onMouseOut={(e) => e.currentTarget.style.color = "#334155"}
@@ -2513,7 +2568,7 @@ export default function InternDashboard() {
               { id: "Overview", label: "Overview", icon: <LayoutDashboard size={14} /> },
               { id: "Learning", label: "Learning", icon: <BookOpen size={14} /> },
               { id: "Daily Scenario", label: "Daily Scenario", icon: <Code size={14} /> },
-              { id: "Progress & Certificate", label: "Progress & Certificate", icon: <Award size={14} /> },
+              { id: "Progress", label: "Progress", icon: <Award size={14} /> },
               { id: "Tickets", label: "Tickets", icon: <Headset size={14} /> },
               { id: "Chat with Mentor", label: "Chat with Mentor", icon: <MessageCircle size={14} /> },
               { id: "Bonus Airdrops", label: "Bonus Airdrops", icon: <Coins size={14} /> }

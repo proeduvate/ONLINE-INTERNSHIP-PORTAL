@@ -263,6 +263,56 @@ export default function AdminDashboard() {
   const [ticketReply, setTicketReply] = useState("");
   const [assignMentorId, setAssignMentorId] = useState("");
 
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (tabName === "Users") {
+        if (parts[3] === "intern" && parts[4]) {
+          const found = usersList.find(u => String(u.id) === parts[4]);
+          setSelectedIntern(found || null);
+          setSelectedMentor(null);
+        } else if (parts[3] === "mentor" && parts[4]) {
+          const found = usersList.find(u => String(u.id) === parts[4]);
+          setSelectedMentor(found || null);
+          setSelectedIntern(null);
+        } else {
+          setSelectedIntern(null);
+          setSelectedMentor(null);
+        }
+      } else if (tabName === "Programs") {
+        if (parts[3]) {
+          // Decode URL component because domain names might have spaces
+          setSelectedProgramDomain(decodeURIComponent(parts[3]));
+        } else {
+          setSelectedProgramDomain(null);
+        }
+      } else if (tabName === "Tickets") {
+        if (parts[3]) {
+          const found = ticketsList.find(t => String(t.id) === parts[3]);
+          setSelectedTicket(found || null);
+        } else {
+          setSelectedTicket(null);
+        }
+      } else if (tabName === "Credentials") {
+        if (parts[3]) {
+          const found = adminCredentialInterns.find(i => String(i.id) === parts[3]);
+          setSelectedAdminCredentialIntern(found || null);
+        } else {
+          setSelectedAdminCredentialIntern(null);
+        }
+      } else if (tabName === "Bonus Airdrops") {
+        if (parts[3]) {
+          const found = bonusAirdrops.find(a => String(a.id) === parts[3]);
+          setSelectedAirdrop(found || null);
+        } else {
+          setSelectedAirdrop(null);
+        }
+      }
+    }
+  }, [location.pathname, usersList, ticketsList, adminCredentialInterns, bonusAirdrops]);
+
+
   const handleReplyTicket = (e) => {
     e.preventDefault();
     if (!ticketReply.trim()) return;
@@ -572,7 +622,7 @@ export default function AdminDashboard() {
             {selectedIntern ? (
               <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
-                  <button onClick={() => setSelectedIntern(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <button onClick={() => navigate("/admin/users")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
                   </button>
                   <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -671,7 +721,7 @@ export default function AdminDashboard() {
             ) : selectedMentor ? (
               <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
-                  <button onClick={() => setSelectedMentor(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <button onClick={() => navigate("/admin/users")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
                   </button>
                   <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -827,7 +877,7 @@ export default function AdminDashboard() {
                               paginatedInterns.map((user) => (
                                 <tr 
                                   key={user.id}
-                                  onClick={() => setSelectedIntern(user)}
+                                  onClick={() => navigate("/admin/users/intern/" + user.id)}
                                   style={{ cursor: "pointer", transition: "background-color 0.2s" }}
                                   onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
                                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
@@ -895,7 +945,7 @@ export default function AdminDashboard() {
                       {mentors.map((user) => (
                         <tr 
                           key={user.id}
-                          onClick={() => setSelectedMentor(user)}
+                          onClick={() => navigate("/admin/users/mentor/" + user.id)}
                           style={{ cursor: "pointer", transition: "background-color 0.2s" }}
                           onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
                           onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
@@ -965,7 +1015,7 @@ export default function AdminDashboard() {
                     <div 
                       key={i} 
                       className="card" 
-                      onClick={() => setSelectedProgramDomain(dom.name)}
+                      onClick={() => navigate("/admin/programs/" + encodeURIComponent(dom.name))}
                       style={{ border: "1px solid #E5E7EB", margin: 0, padding: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", cursor: "pointer", transition: "transform 0.2s" }}
                       onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
                       onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
@@ -981,7 +1031,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="card">
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
-                  <button onClick={() => setSelectedProgramDomain(null)} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <button onClick={() => navigate("/admin/programs")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
                     &larr; Back
                   </button>
                   <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>Program Details - {selectedProgramDomain}</h3>
@@ -1119,7 +1169,7 @@ export default function AdminDashboard() {
                           <button 
                             className="btn btn-secondary" 
                             style={{ padding: "4px 12px", fontSize: "12px" }}
-                            onClick={() => setSelectedAdminCredentialIntern(intern)}
+                            onClick={() => navigate("/admin/credentials/" + intern.id)}
                           >
                             Review & Approve
                           </button>
@@ -1136,7 +1186,7 @@ export default function AdminDashboard() {
                 <div style={{ backgroundColor: "#fff", width: "500px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                     <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>30-Day Summary Report</h2>
-                    <button onClick={() => setSelectedAdminCredentialIntern(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
+                    <button onClick={() => navigate("/admin/credentials")} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
                   </div>
                   
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
@@ -1163,7 +1213,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-                    <button onClick={() => setSelectedAdminCredentialIntern(null)} className="btn btn-secondary">Cancel</button>
+                    <button onClick={() => navigate("/admin/credentials")} className="btn btn-secondary">Cancel</button>
                     {selectedAdminCredentialIntern.status === "Requested" && (
                       <button onClick={() => handleApproveCertificate(selectedAdminCredentialIntern.id)} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve Certificate</button>
                     )}
@@ -1189,7 +1239,7 @@ export default function AdminDashboard() {
             <div className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <button className="btn btn-secondary" onClick={() => setSelectedTicket(null)}>Back to Tickets</button>
+                  <button className="btn btn-secondary" onClick={() => navigate("/admin/tickets")}>Back to Tickets</button>
                   <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
                   <span className={`badge ${selectedTicket.status === 'Resolved' ? 'badge-success' : selectedTicket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'Resolved' ? '#d1fae5' : selectedTicket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'Resolved' ? '#065f46' : selectedTicket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
                     {selectedTicket.status}
@@ -1298,7 +1348,7 @@ export default function AdminDashboard() {
                       </td>
                       <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
                       <td>
-                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => setSelectedTicket(ticket)}>View Details</button>
+                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => navigate("/admin/tickets/" + ticket.id)}>View Details</button>
                       </td>
                     </tr>
                   ))}
@@ -1310,7 +1360,7 @@ export default function AdminDashboard() {
 
       case "Bonus Airdrops":
         if (selectedAirdrop) {
-          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => setSelectedAirdrop(null)} />;
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => navigate("/admin/bonus-airdrops")} />;
         }
         return (
           <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
@@ -1340,7 +1390,7 @@ export default function AdminDashboard() {
                         return currentAirdrops.map(airdrop => (
                         <tr 
                           key={airdrop.id} 
-                          onClick={() => setSelectedAirdrop(airdrop)} 
+                          onClick={() => navigate("/admin/bonus-airdrops/" + airdrop.id)} 
                           style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
                           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
                           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -1464,7 +1514,7 @@ export default function AdminDashboard() {
                     return;
                   }
                   setActiveTab(tab.id);
-                  if (tab.id === "Bonus Airdrops") setSelectedAirdrop(null);
+                  if (tab.id === "Bonus Airdrops") navigate("/admin/bonus-airdrops");
                   navigate(`/admin/${tab.id.toLowerCase().replace(/\\s+/g, '-')}`);
                 }}
                 style={{
