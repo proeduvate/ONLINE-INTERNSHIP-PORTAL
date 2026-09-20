@@ -427,7 +427,7 @@ export default function MentorDashboard() {
           const found = submissions.find(s => String(s.id) === parts[3]);
           setSelectedEvaluation(found || null);
         } else {
-          navigate("/mentor/evaluations");
+          setSelectedEvaluation(null);
         }
       } else if (tabName === "Programs") {
         if (parts[3] === "view" && parts[4]) {
