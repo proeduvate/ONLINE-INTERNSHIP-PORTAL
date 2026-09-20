@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 18,
+  "topic": "Natural Language Processing Fundamentals",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand how text is transformed into machine-readable representations",
+    "Identify common NLP preprocessing techniques",
+    "Differentiate common NLP tasks such as classification and sentiment analysis"
+  ],
+  "activities": [
+    {
+      "id": "d18-a1",
+      "type": "discover",
+      "title": "Text Processing Pipeline",
+      "instruction": "Arrange the stages for preparing text for an ML model.",
+      "content": {
+        "concept": "NLP preprocessing can include tokenization, normalization, stop-word handling, and other transformations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Tokenization Anatomy",
+      "instruction": "Click the text to reveal its individual tokens.",
+      "content": {
+        "concept": "Tokenization divides text into smaller units that can be represented and processed by NLP systems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "NLP Task Matcher",
+      "instruction": "Match each NLP problem with its task type.",
+      "content": {
+        "concept": "NLP supports tasks such as sentiment analysis, text classification, translation, summarization, and information extraction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Sentiment Slider",
+      "instruction": "Adjust the text signal and observe the sentiment classification.",
+      "content": {
+        "concept": "Sentiment analysis classifies text according to expressed polarity or emotional orientation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-18.json",
+  "practicalTaskRef": "practical-day-18.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

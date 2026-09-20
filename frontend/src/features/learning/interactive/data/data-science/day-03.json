@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 3,
+  "topic": "NumPy and Numerical Computing",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create and understand NumPy arrays.",
+    "Apply basic array operations to numerical data.",
+    "Understand how vectorized operations improve data processing."
+  ],
+  "activities": [
+    {
+      "id": "d3-a1",
+      "type": "discover",
+      "title": "Anatomy of a NumPy Array",
+      "instruction": "Explore the array dimensions and elements.",
+      "content": {
+        "concept": "NumPy arrays store numerical data in structured dimensions such as vectors, matrices, and higher-dimensional arrays.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Array Operation Lab",
+      "instruction": "Adjust values and observe the array result.",
+      "content": {
+        "concept": "NumPy supports fast element-wise arithmetic and mathematical operations on arrays.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Build an Array",
+      "instruction": "Compose the correct array from the given values.",
+      "content": {
+        "concept": "Arrays can be created, reshaped, indexed, and combined to prepare numerical data for analysis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Vectorization Challenge",
+      "instruction": "Select the operation that processes all values efficiently.",
+      "content": {
+        "concept": "Vectorization applies operations to entire arrays without manually iterating through every element.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

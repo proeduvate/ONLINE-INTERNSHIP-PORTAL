@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 29,
+  "topic": "Capstone Testing, Visualization, Documentation, and Presentation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Validate the capstone pipeline and model using appropriate tests and metrics.",
+    "Create visualizations that communicate project findings clearly.",
+    "Prepare concise technical documentation and a project presentation."
+  ],
+  "activities": [
+    {
+      "id": "d29-a1",
+      "type": "discover",
+      "title": "Testing Strategy",
+      "instruction": "Map tests to each project component.",
+      "content": {
+        "concept": "Testing verifies data processing, model behavior, API responses, and pipeline reliability.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Visualization Selector",
+      "instruction": "Choose the right chart for each insight.",
+      "content": {
+        "concept": "Effective visualizations match the chart type to the data relationship and communication goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Documentation Anatomy",
+      "instruction": "Identify the essential documentation sections.",
+      "content": {
+        "concept": "Technical documentation explains project objectives, data, methodology, results, setup, and usage.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Presentation Builder",
+      "instruction": "Build the capstone presentation flow.",
+      "content": {
+        "concept": "A clear presentation connects the problem, approach, evidence, results, limitations, and future work.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-29.json",
+  "practicalTaskRef": "practical-day-29.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

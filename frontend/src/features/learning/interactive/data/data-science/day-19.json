@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 19,
+  "topic": "Natural Language Processing Fundamentals",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand how text is transformed into machine-readable features.",
+    "Apply basic text preprocessing techniques.",
+    "Identify common NLP tasks and their applications."
+  ],
+  "activities": [
+    {
+      "id": "d19-a1",
+      "type": "discover",
+      "title": "Build a Text Pipeline",
+      "instruction": "Arrange the text preprocessing stages.",
+      "content": {
+        "concept": "NLP preprocessing can include tokenization, normalization, stop-word handling, and feature extraction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Explore Tokenization",
+      "instruction": "Click the text to reveal its tokens.",
+      "content": {
+        "concept": "Tokenization breaks text into smaller units such as words, subwords, or sentences for further processing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Match NLP Tasks",
+      "instruction": "Match each NLP task with its application.",
+      "content": {
+        "concept": "Sentiment analysis, text classification, named entity recognition, translation, and summarization solve different language tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Build Text Features",
+      "instruction": "Compose the steps for converting text into features.",
+      "content": {
+        "concept": "Text can be represented numerically using approaches such as bag-of-words, TF-IDF, or learned embeddings.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-19.json",
+  "practicalTaskRef": "practical-day-19.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

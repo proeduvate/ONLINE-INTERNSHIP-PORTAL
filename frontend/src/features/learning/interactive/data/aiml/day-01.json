@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 1,
+  "topic": "Python and AI/ML Fundamentals",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the relationship between Python, AI, ML, and data",
+    "Recognize common AI/ML applications in real-world systems",
+    "Differentiate AI, machine learning, and deep learning"
+  ],
+  "activities": [
+    {
+      "id": "d1-a1",
+      "type": "discover",
+      "title": "AI Family Map",
+      "instruction": "Click each layer to explore how AI, ML, and deep learning relate.",
+      "content": {
+        "concept": "AI is the broad field, ML is a subset of AI, and deep learning is a subset of ML.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Spot the AI",
+      "instruction": "Select the examples that use AI or machine learning.",
+      "content": {
+        "concept": "AI and ML power applications such as recommendations, image recognition, and voice assistants.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "ML Pipeline Explorer",
+      "instruction": "Arrange the major steps of a basic machine learning workflow.",
+      "content": {
+        "concept": "A typical ML workflow moves from data collection through preparation and training to evaluation and prediction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "Choose the Learning Type",
+      "instruction": "Match each problem with supervised, unsupervised, or reinforcement learning.",
+      "content": {
+        "concept": "ML learning types differ based on whether labeled data, unlabeled data, or reward-based feedback is available.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 15,
+  "topic": "Introduction to Neural Networks and Deep Learning",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the main components of an artificial neural network",
+    "Understand how neurons, weights, biases, and activation functions work together",
+    "Trace data through a basic neural network"
+  ],
+  "activities": [
+    {
+      "id": "d15-a1",
+      "type": "discover",
+      "title": "Neural Network Anatomy",
+      "instruction": "Click each layer and component to explore its role.",
+      "content": {
+        "concept": "A neural network contains connected layers of neurons that transform inputs into outputs using learned parameters.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "Build a Neural Network",
+      "instruction": "Connect neurons and layers to form a basic network.",
+      "content": {
+        "concept": "Neural networks combine input, hidden, and output layers to learn representations from data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "Activation Function Lab",
+      "instruction": "Adjust the input and observe the activation output.",
+      "content": {
+        "concept": "Activation functions transform neuron outputs and allow neural networks to model nonlinear relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "Forward Pass",
+      "instruction": "Arrange the steps of data flowing through the network.",
+      "content": {
+        "concept": "During a forward pass, input values move through weighted connections and activation functions to produce an output.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-15.json",
+  "practicalTaskRef": "practical-day-15.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

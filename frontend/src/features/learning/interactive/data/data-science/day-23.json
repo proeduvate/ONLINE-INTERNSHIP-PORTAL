@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 23,
+  "topic": "Model Explainability and Feature Importance",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Interpret feature importance from trained machine learning models.",
+    "Explain individual predictions using interpretable techniques.",
+    "Distinguish global model behavior from individual prediction explanations."
+  ],
+  "activities": [
+    {
+      "id": "d23-a1",
+      "type": "discover",
+      "title": "Explainability Map",
+      "instruction": "Connect each technique to its explanation level.",
+      "content": {
+        "concept": "Model explainability helps understand why models produce their predictions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d23-a2",
+      "type": "discover",
+      "title": "Importance Explorer",
+      "instruction": "Select the features driving the prediction.",
+      "content": {
+        "concept": "Feature importance indicates how strongly input variables contribute to model decisions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d23-a3",
+      "type": "discover",
+      "title": "Global vs Local",
+      "instruction": "Match explanations to their scope.",
+      "content": {
+        "concept": "Global explanations describe overall model behavior, while local explanations focus on individual predictions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d23-a4",
+      "type": "discover",
+      "title": "Prediction Breakdown",
+      "instruction": "Build an explanation from feature contributions.",
+      "content": {
+        "concept": "Prediction explanations can show how individual features push an output toward different outcomes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-23.json",
+  "practicalTaskRef": "practical-day-23.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

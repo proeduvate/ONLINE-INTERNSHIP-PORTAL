@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 1,
+  "topic": "Introduction to Data Science",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the key stages of a data science workflow.",
+    "Differentiate data science, data analytics, and machine learning.",
+    "Recognize real-world applications of data science."
+  ],
+  "activities": [
+    {
+      "id": "d1-a1",
+      "type": "discover",
+      "title": "Map the Data Science Workflow",
+      "instruction": "Arrange the workflow stages in order.",
+      "content": {
+        "concept": "Data science typically moves from problem definition and data collection through analysis, modeling, and communication.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Explore Data Science Roles",
+      "instruction": "Match each role with its responsibility.",
+      "content": {
+        "concept": "Data scientists, analysts, engineers, and machine learning engineers contribute different skills to data projects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Identify Data Applications",
+      "instruction": "Select the data science use case for each scenario.",
+      "content": {
+        "concept": "Recommendation systems, fraud detection, forecasting, and customer analytics are common data science applications.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "Build a Data Science Project",
+      "instruction": "Connect project components into a complete workflow.",
+      "content": {
+        "concept": "A data science project connects a business problem, data, analysis, models, and actionable insights.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 21,
+  "topic": "Feature Selection and Dimensionality Reduction",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify relevant and redundant features in a dataset.",
+    "Apply feature selection techniques to reduce unnecessary variables.",
+    "Explain how PCA reduces dimensionality while preserving important information."
+  ],
+  "activities": [
+    {
+      "id": "d21-a1",
+      "type": "discover",
+      "title": "Feature Relevance Map",
+      "instruction": "Connect each feature to its predictive value.",
+      "content": {
+        "concept": "Relevant, irrelevant, and redundant features.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Selection Strategy",
+      "instruction": "Match each technique to its purpose.",
+      "content": {
+        "concept": "Filter, wrapper, and embedded feature selection methods.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "PCA Anatomy",
+      "instruction": "Explore the stages of PCA.",
+      "content": {
+        "concept": "PCA transforms correlated variables into principal components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "Variance Slider",
+      "instruction": "Adjust components and observe retained variance.",
+      "content": {
+        "concept": "The number of principal components controls dimensionality and information retention.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-21.json",
+  "practicalTaskRef": "practical-day-21.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

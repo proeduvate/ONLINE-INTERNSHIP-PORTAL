@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 11,
+  "topic": "NumPy for Machine Learning",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create and manipulate NumPy arrays",
+    "Understand array shape, dimensions, indexing, and slicing",
+    "Apply vectorized operations to numerical data"
+  ],
+  "activities": [
+    {
+      "id": "d11-a1",
+      "type": "discover",
+      "title": "Array Anatomy",
+      "instruction": "Click each part of the array to explore its structure.",
+      "content": {
+        "concept": "NumPy arrays store numerical data in structured dimensions and support efficient mathematical operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Shape Explorer",
+      "instruction": "Change the dimensions and observe the array shape.",
+      "content": {
+        "concept": "An array's shape describes the size of each dimension and determines how data is organized.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Index and Slice",
+      "instruction": "Select indexes to reveal the corresponding array values.",
+      "content": {
+        "concept": "NumPy supports zero-based indexing and flexible slicing for accessing subsets of arrays.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Vectorized Operations",
+      "instruction": "Build an operation using arrays and mathematical operators.",
+      "content": {
+        "concept": "Vectorization applies operations across arrays efficiently without manually iterating through every element.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-11.json",
+  "practicalTaskRef": "practical-day-11.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

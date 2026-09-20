@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 12,
+  "topic": "Feature Engineering and Data Preparation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify useful features from raw datasets.",
+    "Apply encoding and scaling techniques to numerical and categorical data.",
+    "Construct a preprocessing workflow for machine learning."
+  ],
+  "activities": [
+    {
+      "id": "d12-a1",
+      "type": "discover",
+      "title": "Discover Useful Features",
+      "instruction": "Select the features that can support prediction.",
+      "content": {
+        "concept": "Feature engineering transforms raw variables into representations that provide useful information to a model.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Encode Categories",
+      "instruction": "Match each categorical feature with an encoding approach.",
+      "content": {
+        "concept": "Categorical values can be converted into numerical representations using techniques such as one-hot and ordinal encoding.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Explore Feature Scaling",
+      "instruction": "Adjust feature ranges and observe the scaled values.",
+      "content": {
+        "concept": "Scaling transforms numerical features to comparable ranges and can improve the behavior of some algorithms.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Build the Preprocessing Pipeline",
+      "instruction": "Assemble the preprocessing stages correctly.",
+      "content": {
+        "concept": "A preprocessing pipeline can combine missing-value handling, encoding, scaling, and feature transformation before modeling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-12.json",
+  "practicalTaskRef": "practical-day-12.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

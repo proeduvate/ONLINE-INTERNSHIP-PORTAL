@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 30,
+  "topic": "Capstone Demonstration, Review, and Future Enhancements",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Demonstrate the complete data science solution from input to output.",
+    "Evaluate project results against defined success criteria.",
+    "Identify practical improvements and future extensions for the solution."
+  ],
+  "activities": [
+    {
+      "id": "d30-a1",
+      "type": "discover",
+      "title": "Capstone Walkthrough",
+      "instruction": "Explore the complete solution flow.",
+      "content": {
+        "concept": "A capstone demonstration shows how each component works together to solve the defined problem.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d30-a2",
+      "type": "discover",
+      "title": "System Architecture Review",
+      "instruction": "Inspect how the final components connect.",
+      "content": {
+        "concept": "Architecture review verifies that data, models, APIs, storage, and user outputs work together coherently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d30-a3",
+      "type": "discover",
+      "title": "Results Review",
+      "instruction": "Match project results to success criteria.",
+      "content": {
+        "concept": "Project evaluation compares observed results with predefined technical and business objectives.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d30-a4",
+      "type": "discover",
+      "title": "Enhancement Planner",
+      "instruction": "Build a roadmap for future improvements.",
+      "content": {
+        "concept": "Future enhancements can target data quality, model performance, scalability, usability, monitoring, or new capabilities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-30.json",
+  "practicalTaskRef": "practical-day-30.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

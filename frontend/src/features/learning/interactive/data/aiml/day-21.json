@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 21,
+  "topic": "Generative AI Fundamentals",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the basic concept of generative AI",
+    "Differentiate generative models from traditional predictive models",
+    "Identify common generative AI applications"
+  ],
+  "activities": [
+    {
+      "id": "d21-a1",
+      "type": "discover",
+      "title": "Generative AI Map",
+      "instruction": "Explore how generative AI connects to different AI tasks.",
+      "content": {
+        "concept": "Generative AI creates new content such as text, images, audio, or code based on learned patterns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Predict or Generate",
+      "instruction": "Select whether each example predicts or generates content.",
+      "content": {
+        "concept": "Traditional predictive models estimate outcomes, while generative models produce new content or data-like outputs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "Generative AI Use Cases",
+      "instruction": "Match each application with its generative AI capability.",
+      "content": {
+        "concept": "Generative AI can support text generation, code assistance, image creation, summarization, and other content-generation tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "AI System Builder",
+      "instruction": "Build a simple generative AI application flow.",
+      "content": {
+        "concept": "A generative AI application can combine user input, model inference, response processing, and an application interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-21.json",
+  "practicalTaskRef": "practical-day-21.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

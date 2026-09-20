@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 14,
+  "topic": "Supervised Learning Algorithms",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Differentiate classification and regression problems.",
+    "Understand the basic behavior of common supervised algorithms.",
+    "Select an appropriate supervised learning algorithm for a problem."
+  ],
+  "activities": [
+    {
+      "id": "d14-a1",
+      "type": "discover",
+      "title": "Classification or Regression",
+      "instruction": "Select the correct problem type for each scenario.",
+      "content": {
+        "concept": "Classification predicts categories, while regression predicts continuous numerical values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Match Algorithms to Problems",
+      "instruction": "Match each algorithm with a suitable use case.",
+      "content": {
+        "concept": "Linear regression, logistic regression, decision trees, and k-nearest neighbors solve different supervised learning tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "Explore Decision Boundaries",
+      "instruction": "Adjust the model setting and observe the boundary.",
+      "content": {
+        "concept": "A classifier separates observations into classes using a learned decision boundary.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Build a Supervised Model",
+      "instruction": "Assemble the supervised learning workflow.",
+      "content": {
+        "concept": "Supervised learning uses labeled data to train a model that can make predictions on new observations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-14.json",
+  "practicalTaskRef": "practical-day-14.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

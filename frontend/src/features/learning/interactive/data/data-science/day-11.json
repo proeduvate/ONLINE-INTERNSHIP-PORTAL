@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 11,
+  "topic": "Advanced Pandas and Data Transformation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Apply grouping and aggregation operations to datasets.",
+    "Combine multiple datasets using merge and join operations.",
+    "Transform tabular data for analytical workflows."
+  ],
+  "activities": [
+    {
+      "id": "d11-a1",
+      "type": "discover",
+      "title": "Explore GroupBy",
+      "instruction": "Group the dataset and inspect the results.",
+      "content": {
+        "concept": "GroupBy divides data into groups so that aggregate operations can be applied to each group.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Match Aggregations",
+      "instruction": "Match each aggregation with its purpose.",
+      "content": {
+        "concept": "Sum, mean, count, minimum, and maximum summarize grouped data in different ways.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Join the Datasets",
+      "instruction": "Connect the tables using the correct key.",
+      "content": {
+        "concept": "Merge and join operations combine related datasets using common columns or indexes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Transform the Data",
+      "instruction": "Arrange the transformation steps in order.",
+      "content": {
+        "concept": "Data transformation reshapes, derives, filters, and aggregates information for analysis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-11.json",
+  "practicalTaskRef": "practical-day-11.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

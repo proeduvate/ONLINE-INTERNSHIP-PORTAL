@@ -1,0 +1,38 @@
+{
+  "curriculum": "UI/UX",
+  "day": 9,
+  "topic": "Day 9 Topic for UI/UX",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Objective 1",
+    "Objective 2",
+    "Objective 3"
+  ],
+  "activities": [
+    {
+      "id": "d09-a01",
+      "type": "discover",
+      "title": "Activity 1",
+      "instruction": "Instruction for activity 1",
+      "content": {
+        "concept": "Concept 1",
+        "tip": "Tip for activity 1"
+      },
+      "interaction": {
+        "mode": "html-discover"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-09.json",
+  "practicalTaskRef": "practical-day-09.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

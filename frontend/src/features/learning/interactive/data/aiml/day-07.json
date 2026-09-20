@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 7,
+  "topic": "Machine Learning Evaluation Metrics",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand accuracy, precision, recall, and F1-score",
+    "Interpret a classification confusion matrix",
+    "Select appropriate evaluation metrics for different scenarios"
+  ],
+  "activities": [
+    {
+      "id": "d7-a1",
+      "type": "discover",
+      "title": "Confusion Matrix Anatomy",
+      "instruction": "Click each cell to identify the prediction outcome.",
+      "content": {
+        "concept": "A confusion matrix organizes classification results into true positives, true negatives, false positives, and false negatives.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Metric Explorer",
+      "instruction": "Adjust prediction outcomes and observe metric changes.",
+      "content": {
+        "concept": "Classification metrics summarize different aspects of model prediction performance.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Choose the Metric",
+      "instruction": "Match each scenario with a useful evaluation metric.",
+      "content": {
+        "concept": "Metric choice depends on which prediction errors matter most for the application.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Evaluation Pipeline",
+      "instruction": "Build the flow from predictions to performance metrics.",
+      "content": {
+        "concept": "Evaluation compares model predictions with known outcomes and converts errors into measurable performance indicators.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

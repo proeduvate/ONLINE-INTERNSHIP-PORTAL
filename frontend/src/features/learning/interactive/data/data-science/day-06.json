@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 6,
+  "topic": "Data Visualization with Matplotlib and Seaborn",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Select suitable charts for different data types and analytical goals.",
+    "Create basic visualizations for numerical and categorical data.",
+    "Interpret patterns, trends, and relationships from visualizations."
+  ],
+  "activities": [
+    {
+      "id": "d6-a1",
+      "type": "discover",
+      "title": "Match Charts to Data",
+      "instruction": "Match each chart with its best use case.",
+      "content": {
+        "concept": "Bar charts, histograms, scatter plots, and line charts reveal different types of patterns in data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d6-a2",
+      "type": "discover",
+      "title": "Build a Visualization",
+      "instruction": "Compose the chart using the required components.",
+      "content": {
+        "concept": "A visualization combines data, chart type, labels, and formatting to communicate an analytical result.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d6-a3",
+      "type": "discover",
+      "title": "Explore Chart Parameters",
+      "instruction": "Adjust the values and observe the visual changes.",
+      "content": {
+        "concept": "Plot parameters such as bins, figure size, and axis ranges affect how patterns appear in a visualization.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d6-a4",
+      "type": "discover",
+      "title": "Read the Visualization",
+      "instruction": "Select the pattern shown by each chart.",
+      "content": {
+        "concept": "Data visualization helps identify trends, clusters, comparisons, distributions, and relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-6.json",
+  "practicalTaskRef": "practical-day-6.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 5,
+  "topic": "Data Cleaning and Exploratory Data Analysis",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify common data quality problems in datasets.",
+    "Apply exploratory techniques to understand data distributions.",
+    "Use summary statistics to discover patterns and anomalies."
+  ],
+  "activities": [
+    {
+      "id": "d5-a1",
+      "type": "discover",
+      "title": "Detect Data Quality Issues",
+      "instruction": "Select the issues present in the dataset.",
+      "content": {
+        "concept": "Real-world datasets can contain missing values, duplicates, outliers, inconsistent formats, and invalid entries.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Build the Cleaning Pipeline",
+      "instruction": "Arrange the cleaning operations logically.",
+      "content": {
+        "concept": "A cleaning pipeline prepares raw data for reliable analysis by resolving quality and consistency issues.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Explore Data Distributions",
+      "instruction": "Adjust the values and observe distribution changes.",
+      "content": {
+        "concept": "Distributions reveal how numerical values are spread and can expose skewness, concentration, or unusual observations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Connect EDA Techniques",
+      "instruction": "Map each exploratory technique to its purpose.",
+      "content": {
+        "concept": "EDA combines summary statistics, visualizations, correlations, and grouping to understand datasets before modeling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

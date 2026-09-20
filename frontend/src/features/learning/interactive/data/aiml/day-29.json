@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 29,
+  "topic": "Capstone Testing, Documentation, and Presentation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create a structured testing strategy for the AI capstone.",
+    "Identify the essential components of technical documentation.",
+    "Organize an effective technical project presentation."
+  ],
+  "activities": [
+    {
+      "id": "d29-a1",
+      "type": "discover",
+      "title": "Build the Testing Strategy",
+      "instruction": "Arrange tests across the AI application layers.",
+      "content": {
+        "concept": "AI projects benefit from testing data validation, preprocessing, model behavior, APIs, and end-to-end workflows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Explore Documentation Anatomy",
+      "instruction": "Identify the purpose of each documentation section.",
+      "content": {
+        "concept": "Useful AI documentation explains the problem, data, model, architecture, setup, usage, and limitations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Sequence the Presentation",
+      "instruction": "Arrange the presentation sections logically.",
+      "content": {
+        "concept": "A technical presentation can progress from problem and solution to architecture, implementation, results, and future improvements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Validate Project Readiness",
+      "instruction": "Select the items required before the final demo.",
+      "content": {
+        "concept": "A capstone should be checked for functionality, reproducibility, documentation, error handling, and demonstration readiness.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-29.json",
+  "practicalTaskRef": "practical-day-29.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 25,
+  "topic": "AI Capstone Planning and System Design",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Define the problem and requirements for an AI project",
+    "Select suitable data, models, and system components",
+    "Design a complete architecture for an AI capstone"
+  ],
+  "activities": [
+    {
+      "id": "d25-a1",
+      "type": "discover",
+      "title": "Problem-to-Solution Map",
+      "instruction": "Connect a real-world problem to its AI solution components.",
+      "content": {
+        "concept": "A strong AI project begins by connecting a clearly defined problem to measurable requirements and suitable technical components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Choose the AI Approach",
+      "instruction": "Select an appropriate AI approach for each project requirement.",
+      "content": {
+        "concept": "The problem type, available data, expected output, and constraints influence the choice of ML or generative AI approach.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Capstone Architecture",
+      "instruction": "Build the end-to-end architecture for an AI application.",
+      "content": {
+        "concept": "An AI capstone can connect users, applications, APIs, data pipelines, models, storage, and monitoring into one system.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "Project Execution Roadmap",
+      "instruction": "Arrange the major milestones for completing the capstone.",
+      "content": {
+        "concept": "A practical AI project progresses through requirements, data preparation, development, evaluation, deployment, and demonstration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-25.json",
+  "practicalTaskRef": "practical-day-25.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

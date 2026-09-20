@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 10,
+  "topic": "SQL and Database Analytics",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand relational database structures used in data analysis.",
+    "Construct basic SQL queries for filtering and aggregation.",
+    "Connect SQL operations to common data science workflows."
+  ],
+  "activities": [
+    {
+      "id": "d10-a1",
+      "type": "discover",
+      "title": "Explore Database Anatomy",
+      "instruction": "Click the table components to reveal their roles.",
+      "content": {
+        "concept": "Relational databases organize information into tables containing rows, columns, keys, and relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Build a SQL Query",
+      "instruction": "Assemble the query components in the correct order.",
+      "content": {
+        "concept": "SQL queries use clauses such as SELECT, FROM, WHERE, GROUP BY, and ORDER BY to retrieve and analyze data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Sequence the Data Query",
+      "instruction": "Arrange the query execution stages.",
+      "content": {
+        "concept": "Understanding query operations helps explain how filtering, grouping, aggregation, and sorting produce analytical results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Match SQL Operations",
+      "instruction": "Match each SQL operation with its purpose.",
+      "content": {
+        "concept": "SQL operations support filtering records, combining tables, summarizing values, and organizing query results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-10.json",
+  "practicalTaskRef": "practical-day-10.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

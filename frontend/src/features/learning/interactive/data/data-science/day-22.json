@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 22,
+  "topic": "Hyperparameter Tuning and Model Optimization",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Distinguish model parameters from hyperparameters.",
+    "Compare grid search and random search strategies.",
+    "Select suitable hyperparameters using validation performance."
+  ],
+  "activities": [
+    {
+      "id": "d22-a1",
+      "type": "discover",
+      "title": "Parameter Anatomy",
+      "instruction": "Identify parameters and hyperparameters.",
+      "content": {
+        "concept": "Parameters are learned from data, while hyperparameters are configured before training.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Search Strategy",
+      "instruction": "Order the model tuning workflow.",
+      "content": {
+        "concept": "Hyperparameter tuning systematically searches configurations using validation data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Grid vs Random",
+      "instruction": "Match each search method to its behavior.",
+      "content": {
+        "concept": "Grid search evaluates predefined combinations, while random search samples configurations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Tuning Lab",
+      "instruction": "Adjust hyperparameters and compare validation scores.",
+      "content": {
+        "concept": "Hyperparameter choices affect model performance and generalization.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 20,
+  "topic": "Data Science Project Workflow and Deployment",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Connect data preparation, modeling, evaluation, and deployment into one workflow.",
+    "Understand how APIs expose data science models to applications.",
+    "Identify the components required for a production-ready data science project."
+  ],
+  "activities": [
+    {
+      "id": "d20-a1",
+      "type": "discover",
+      "title": "Map the End-to-End Workflow",
+      "instruction": "Connect every stage of the project lifecycle.",
+      "content": {
+        "concept": "A complete data science workflow connects problem definition, data, analysis, modeling, evaluation, deployment, and monitoring.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "Build a Model API",
+      "instruction": "Assemble the components of a prediction API.",
+      "content": {
+        "concept": "A model API receives structured input, applies preprocessing, performs inference, and returns a prediction response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "Sequence Project Deployment",
+      "instruction": "Arrange the deployment steps correctly.",
+      "content": {
+        "concept": "Deployment involves packaging the application, configuring its environment, releasing it, testing the service, and monitoring operation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "Validate Production Readiness",
+      "instruction": "Select the components needed for deployment.",
+      "content": {
+        "concept": "Production data science systems require reliable code, validated models, APIs, configuration, logging, and monitoring.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-20.json",
+  "practicalTaskRef": "practical-day-20.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

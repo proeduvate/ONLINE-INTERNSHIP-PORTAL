@@ -108,6 +108,7 @@ class Task(Base):
     description = Column(Text, nullable=False)
     
     # Learning content
+    interactive_json = Column(Text, nullable=True) # JSON String for Interactive Learning payload
     video_url = Column(String(255), nullable=True)
     document_url = Column(String(255), nullable=True)
     notes = Column(Text, nullable=True)

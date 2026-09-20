@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 10,
+  "topic": "End-to-End Machine Learning Workflow",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Connect data preparation, model training, and evaluation into one workflow",
+    "Identify the components of an end-to-end ML project",
+    "Build a conceptual pipeline from raw data to model prediction"
+  ],
+  "activities": [
+    {
+      "id": "d10-a1",
+      "type": "discover",
+      "title": "Complete ML Pipeline",
+      "instruction": "Arrange every stage from raw data to final prediction.",
+      "content": {
+        "concept": "An ML project typically progresses through data collection, preprocessing, training, evaluation, and deployment or prediction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Pipeline Architecture",
+      "instruction": "Build an end-to-end machine learning system from the available components.",
+      "content": {
+        "concept": "An ML system connects data sources, preprocessing, models, evaluation, and prediction components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Debug the Pipeline",
+      "instruction": "Select the stage responsible for each pipeline problem.",
+      "content": {
+        "concept": "Tracing problems through individual pipeline stages helps identify data, preprocessing, model, or evaluation issues.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Build Your First ML System",
+      "instruction": "Connect the components to create a working conceptual ML workflow.",
+      "content": {
+        "concept": "A complete ML workflow transforms raw inputs into validated predictions through connected processing stages.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-10.json",
+  "practicalTaskRef": "practical-day-10.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

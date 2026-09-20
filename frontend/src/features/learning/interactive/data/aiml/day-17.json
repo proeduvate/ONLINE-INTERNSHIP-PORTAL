@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 17,
+  "topic": "Computer Vision and Convolutional Neural Networks",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand how images are represented as numerical data",
+    "Explain the purpose of convolution and pooling layers",
+    "Trace how a CNN extracts visual features"
+  ],
+  "activities": [
+    {
+      "id": "d17-a1",
+      "type": "discover",
+      "title": "Image as Data",
+      "instruction": "Click image regions to explore pixels and channels.",
+      "content": {
+        "concept": "Digital images are represented as numerical pixel values organized across spatial dimensions and color channels.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Convolution Explorer",
+      "instruction": "Move the filter across the image to observe feature extraction.",
+      "content": {
+        "concept": "Convolution applies a learnable filter across an image to detect local patterns such as edges and textures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "CNN Architecture",
+      "instruction": "Build a CNN using convolution, pooling, and dense layers.",
+      "content": {
+        "concept": "CNNs combine convolutional feature extraction with later layers that use extracted features for prediction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Vision Pipeline",
+      "instruction": "Arrange the steps from image input to classification.",
+      "content": {
+        "concept": "A computer vision pipeline can transform an image into learned features and then use those features for classification.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-17.json",
+  "practicalTaskRef": "practical-day-17.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 9,
+  "topic": "Unsupervised Learning and Clustering",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the purpose of unsupervised learning",
+    "Understand how clustering groups similar data points",
+    "Interpret clusters and select suitable clustering approaches"
+  ],
+  "activities": [
+    {
+      "id": "d9-a1",
+      "type": "discover",
+      "title": "Unsupervised Learning Map",
+      "instruction": "Explore how unlabeled data can reveal hidden patterns.",
+      "content": {
+        "concept": "Unsupervised learning discovers structure in data without predefined target labels.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Build the Clusters",
+      "instruction": "Group the data points into meaningful clusters.",
+      "content": {
+        "concept": "Clustering groups data points according to similarities in their features.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Choose the Cluster Count",
+      "instruction": "Adjust the cluster count and observe the grouping.",
+      "content": {
+        "concept": "The number of clusters influences how data is partitioned and interpreted.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Clustering Use Cases",
+      "instruction": "Match real-world problems with clustering applications.",
+      "content": {
+        "concept": "Clustering can support tasks such as customer segmentation, document grouping, and exploratory data analysis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

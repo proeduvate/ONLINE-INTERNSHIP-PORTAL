@@ -1,0 +1,77 @@
+{
+  "curriculum": "AIML",
+  "day": 13,
+  "topic": "Data Visualization with Matplotlib and Seaborn",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify suitable charts for different data types",
+    "Interpret trends, distributions, and relationships visually",
+    "Build a basic data visualization workflow"
+  ],
+  "activities": [
+    {
+      "id": "d13-a1",
+      "type": "discover",
+      "title": "Chart Selector",
+      "instruction": "Match each analytical question with a suitable chart.",
+      "content": {
+        "concept": "Bar charts, line charts, scatter plots, and histograms highlight different patterns in data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Chart Anatomy",
+      "instruction": "Click chart elements to identify their purpose.",
+      "content": {
+        "concept": "Titles, axes, labels, legends, and scales help viewers correctly interpret visualizations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Explore the Distribution",
+      "instruction": "Adjust the bin setting and observe the histogram change.",
+      "content": {
+        "concept": "Histograms show how numerical values are distributed across ranges or bins.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Visualization Workflow",
+      "instruction": "Arrange the steps from dataset to final visualization.",
+      "content": {
+        "concept": "Visualization involves selecting data, choosing a chart, configuring it, and interpreting the result.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-13.json",
+  "practicalTaskRef": "practical-day-13.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

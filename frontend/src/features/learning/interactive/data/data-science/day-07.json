@@ -1,0 +1,77 @@
+{
+  "curriculum": "Data Science",
+  "day": 7,
+  "topic": "Statistics for Data Science",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Calculate and interpret common descriptive statistics.",
+    "Understand variance, standard deviation, and distribution spread.",
+    "Use statistical measures to summarize datasets."
+  ],
+  "activities": [
+    {
+      "id": "d7-a1",
+      "type": "discover",
+      "title": "Explore Central Tendency",
+      "instruction": "Adjust the dataset and observe mean, median, and mode.",
+      "content": {
+        "concept": "Mean, median, and mode describe the central tendency of a dataset from different perspectives.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Anatomy of Standard Deviation",
+      "instruction": "Explore each component of the calculation.",
+      "content": {
+        "concept": "Standard deviation measures how widely values are distributed around the mean.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Match Statistics to Meaning",
+      "instruction": "Match each statistic with its interpretation.",
+      "content": {
+        "concept": "Range, variance, standard deviation, percentiles, and quartiles describe different aspects of data distribution.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Build a Statistical Summary",
+      "instruction": "Select the measures needed to summarize the dataset.",
+      "content": {
+        "concept": "A statistical summary provides compact information about the center, spread, and distribution of numerical data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}
