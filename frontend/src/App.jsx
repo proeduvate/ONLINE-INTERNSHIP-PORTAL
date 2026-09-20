@@ -9,10 +9,7 @@ import Apply from "./pages/onboarding/Apply";
 import Status from "./pages/onboarding/Status";
 import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
-import AdminOnboardingList from "./features/onboarding/admin/AdminOnboardingList";
-import AdminOnboardingDetails from "./features/onboarding/admin/AdminOnboardingDetails";
 import InternDetails from "./pages/Dashboard/InternDetails";
-import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
 
 function App() {
@@ -41,14 +38,6 @@ function App() {
               element={
                 <ProtectedRoute roles={["mentor"]}>
                   <MentorDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mentor/breakout-rooms"
-              element={
-                <ProtectedRoute roles={["mentor"]}>
-                  <BreakoutRoomsApp />
                 </ProtectedRoute>
               }
             />

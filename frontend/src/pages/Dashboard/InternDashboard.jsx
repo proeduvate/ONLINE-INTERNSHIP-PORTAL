@@ -17,11 +17,17 @@ export default function InternDashboard() {
   const location = useLocation();
 
   const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Learning", "Daily Scenario", "Progress & Certificate", 
+    "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
+  ];
+
   const getTabFromUrl = (segment) => {
     if (!segment) return "Overview";
-    const decoded = decodeURIComponent(segment);
-    const normalized = decoded.replace(/-/g, ' ');
-    return normalized.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
   };
 
   const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
@@ -32,7 +38,7 @@ export default function InternDashboard() {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
       const tabName = getTabFromUrl(parts[2]);
-      if (activeTab.toLowerCase() !== tabName.toLowerCase()) {
+      if (activeTab !== tabName) {
          setActiveTab(tabName);
       }
     }
@@ -410,16 +416,16 @@ export default function InternDashboard() {
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box", paddingBottom: "0px", flex: 1, minHeight: "calc(100vh - 110px)" }}>
             
             {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
-            <div className="responsive-flex" style={{ display: "flex", gap: "20px", flexShrink: 0, minHeight: "180px" }}>
+            <div className="responsive-flex" style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
               
               {/* Hero Banner ("Learn. Build. Grow.") */}
               <div className="hero-banner-card" style={{
                 flex: "2.5",
                 borderRadius: "16px",
-                padding: "20px 24px",
+                padding: "14px 18px",
                 color: "var(--text-primary, #0f172a)",
                 position: "relative",
                 overflow: "hidden",
@@ -492,7 +498,7 @@ export default function InternDashboard() {
               <div className="hero-quote-card" style={{
                 flex: "1",
                 borderRadius: "16px",
-                padding: "24px",
+                padding: "14px 18px",
                 color: "var(--bg-surface, #ffffff)",
                 display: "flex",
                 flexDirection: "column",
@@ -511,22 +517,21 @@ export default function InternDashboard() {
                 <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#60a5fa" }}>— ProEduvate</span>
               </div>
             </div>
-
             {/* Main Content Row */}
-            <div style={{ display: "flex", gap: "20px", alignItems: "stretch" }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "stretch", flex: 1 }}>
               
               {/* Left Column: Your 30-Day Journey Timeline */}
-              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "14px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "flex-start", paddingTop: "10px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "space-between", paddingTop: "4px" }}>
                   <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
 
                   {(() => {
-                    const visibleDaysCount = 10;
+                    const visibleDaysCount = 8;
                     let startDay = Math.max(1, currentDay - 2);
                     if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
                     
@@ -580,37 +585,37 @@ export default function InternDashboard() {
               </div>
 
               {/* Middle Column: Today's Objective & Daily Scenario Activity */}
-              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0 }}>
+              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
                 
                 {/* Today's Objective Card */}
                 {(() => {
                   const activeCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[0];
                   return (
-                    <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
+                    <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px 20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px" }}>
                       
                       {/* Header */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Target size={18} />
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Target size={20} />
                           </div>
                           <div>
-                            <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
-                            <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
+                            <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
+                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#f97316", fontSize: "0.75rem", fontWeight: 700, background: "#fff7ed", padding: "4px 10px", borderRadius: "20px" }}>
                             <Clock size={12} /> 45m
                           </div>
-                          <button className="btn-primary" style={{ padding: "4px 12px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, margin: 0 }} onClick={() => setActiveTab("Learning")}>
+                          <button className="btn-primary" style={{ padding: "6px 14px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, margin: 0 }} onClick={() => setActiveTab("Learning")}>
                             Go to Learning &rarr;
                           </button>
                         </div>
                       </div>
 
                       {/* Module Progress */}
-                      <div style={{ marginBottom: "16px" }}>
+                      <div>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                           <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#334155" }}>Module Progress</span>
                           <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#2563eb" }}>65%</span>
@@ -621,23 +626,23 @@ export default function InternDashboard() {
                       </div>
 
                       {/* Tasks Checklist */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "16px", height: "16px", borderRadius: "4px", background: "#16a34a", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Check size={10} />
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#16a34a", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Check size={12} />
                           </div>
                           <span style={{ fontSize: "0.85rem", color: "#334155", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "16px", height: "16px", borderRadius: "4px", background: "#f1f5f9", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Play size={8} fill="currentColor" />
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#f1f5f9", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Play size={10} fill="currentColor" />
                           </div>
                           <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>JSX Syntax & Rules</span>
                         </div>
                       </div>
 
                       {/* Upcoming / Join Meeting Box */}
-                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}>
+                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--border-color, #e2e8f0)", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Calendar size={16} />
@@ -680,52 +685,63 @@ export default function InternDashboard() {
                   <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
                     View All →
                   </button>
-                </div>
-
-                {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexShrink: 0 }}>
+                </div>                {/* Recent Submissions Card */}
+                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "12px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexShrink: 0 }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, minHeight: 0, gap: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={15} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
+                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
+                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={14} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Clock size={15} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
+                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
+                      <span style={{ fontSize: "0.82rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={15} />
                         </div>
                         <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
+                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
+                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CheckCircle size={15} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>React Components</span>
+                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
+                        </div>
+                      </div>
+                      <span style={{ fontSize: "0.88rem", color: "#16a34a", fontWeight: 800 }}>95/100</span>
                     </div>
                   </div>
                 </div>
@@ -733,7 +749,7 @@ export default function InternDashboard() {
               </div>
 
               {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "16px", minHeight: 0, overflow: "hidden" }}>
+              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0, overflow: "hidden" }}>
                 
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden", flexShrink: 0 }}>
@@ -741,24 +757,24 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
+                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 12px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexShrink: 0 }}>
                     <div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
-                      <p style={{ margin: "4px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
+                      <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
                     </div>
-                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "6px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: 700 }}>
+                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "4px 8px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700 }}>
                       Your Rank: #3
                     </span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "8px", marginBottom: "8px", fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "4px", marginBottom: "4px", fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>
                     <span>Rank</span>
                     <span>Name</span>
-                    <span style={{ textAlign: "right", paddingRight: "40px" }}>Points</span>
+                    <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
                   </div>
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, minHeight: 0, overflowY: "auto", paddingRight: "4px", justifyContent: "space-between" }}>
                     {[
                       { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
                       { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
@@ -766,10 +782,10 @@ export default function InternDashboard() {
                       { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
                       { rank: 5, name: "David Lee", points: 890, isMe: false }
                     ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "8px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "8px", paddingLeft: user.isMe ? "8px" : "0" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "48px" : "40px" }}>{user.points}</span>
+                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 0", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px", paddingLeft: user.isMe ? "6px" : "0" }}>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
+                        <span style={{ fontSize: "0.8rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: user.isMe ? "24px" : "20px" }}>{user.points}</span>
                       </div>
                     ))}
                   </div>
@@ -2361,48 +2377,68 @@ export default function InternDashboard() {
 
               {/* Certificate Card */}
               <div style={{
-                background: isInternshipCompleted ? "linear-gradient(135deg, #cce3fd, #7ab6e8)" : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
+                background: isInternshipCompleted 
+                  ? "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)" 
+                  : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
                 borderRadius: "16px",
-                padding: "16px",
+                padding: "20px",
                 display: "flex",
                 flexDirection: "column",
-                border: isInternshipCompleted ? "none" : "1px solid var(--border-color, #e2e8f0)",
-                color: isInternshipCompleted ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                justifyContent: "space-between",
+                border: isInternshipCompleted ? "1px solid #bfdbfe" : "1px solid var(--border-color, #e2e8f0)",
+                color: "var(--text-primary, #0f172a)",
                 position: "relative",
-                overflow: "hidden"
+                overflow: "hidden",
+                boxShadow: isInternshipCompleted ? "0 4px 14px rgba(37, 99, 235, 0.08)" : "none"
               }}>
-                <div style={{ zIndex: 1 }}>
-                  <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: isInternshipCompleted ? "rgba(255,255,255,0.4)" : "var(--border-color, #e2e8f0)", color: isInternshipCompleted ? "#2563eb" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
-                    {isInternshipCompleted ? <Award size={24} /> : <Lock size={24} />}
+                <div style={{ zIndex: 1, display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ 
+                      width: "44px", height: "44px", borderRadius: "12px", 
+                      background: isInternshipCompleted ? "#ffffff" : "var(--border-color, #e2e8f0)", 
+                      color: isInternshipCompleted ? "#2563eb" : "#94a3b8", 
+                      display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px",
+                      boxShadow: isInternshipCompleted ? "0 2px 6px rgba(37, 99, 235, 0.1)" : "none"
+                    }}>
+                      {isInternshipCompleted ? <Award size={24} color="#2563eb" /> : <Lock size={22} />}
+                    </div>
+                    <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: 800, color: "#1e3a8a" }}>
+                      {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
+                    </h3>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "0.82rem", lineHeight: "1.5", color: "#3b82f6" }}>
+                      {isInternshipCompleted 
+                        ? "Your official verified internship certificate is ready for download." 
+                        : "Complete all 30 days of your internship to unlock."}
+                    </p>
                   </div>
-                  <h3 style={{ margin: "0 0 8px 0", fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #1e293b)" }}>
-                    {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
-                  </h3>
-                  <p style={{ margin: "0 0 20px 0", fontSize: "0.85rem", lineHeight: "1.5", opacity: isInternshipCompleted ? 0.9 : 1 }}>
-                    {isInternshipCompleted 
-                      ? "Your official verified certificate is now available." 
-                      : "Complete all 30 days of your internship to unlock."}
-                  </p>
+
                   <button 
                     disabled={!isInternshipCompleted}
                     onClick={() => setShowCertificateView(true)}
                     style={{
                       width: "100%",
-                      background: isInternshipCompleted ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)",
-                      color: isInternshipCompleted ? "#1e3a8a" : "#94a3b8",
+                      background: isInternshipCompleted ? "#2563eb" : "var(--border-color, #e2e8f0)",
+                      color: isInternshipCompleted ? "#ffffff" : "#94a3b8",
                       border: "none",
-                      padding: "12px",
+                      padding: "10px 16px",
                       borderRadius: "10px",
                       fontWeight: 700,
-                      fontSize: "0.95rem",
+                      fontSize: "0.88rem",
                       cursor: isInternshipCompleted ? "pointer" : "not-allowed",
-                      transition: "all 0.2s"
+                      boxShadow: isInternshipCompleted ? "0 4px 12px rgba(37, 99, 235, 0.25)" : "none",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px"
                     }}
                   >
-                    {isInternshipCompleted ? "View Certificate" : "Locked"}
+                    {isInternshipCompleted ? "View Certificate →" : "Locked"}
                   </button>
                 </div>
-                {isInternshipCompleted && <div style={{ position: "absolute", right: "-20%", bottom: "-20%", width: "150px", height: "150px", background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)", zIndex: 0 }}></div>}
+                {isInternshipCompleted && (
+                  <div style={{ position: "absolute", right: "-15%", bottom: "-15%", width: "140px", height: "140px", background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0) 70%)", zIndex: 0, pointerEvents: "none" }}></div>
+                )}
               </div>
             </div>
           </div>
@@ -2562,7 +2598,7 @@ export default function InternDashboard() {
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
                 <button 
-                  onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
+                  onClick={() => { setActiveTab("Profile"); navigate("/intern/profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #0f172a)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
                   <User size={16} /> Profile

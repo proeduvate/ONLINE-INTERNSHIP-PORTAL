@@ -148,8 +148,8 @@
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 12px;
+  margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -175,15 +175,15 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .stat-card {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);

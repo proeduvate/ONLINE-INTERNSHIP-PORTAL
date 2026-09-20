@@ -17,11 +17,17 @@ export default function AdminDashboard() {
   const location = useLocation();
 
   const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Analytics", "Onboarding", "Users", 
+    "Programs", "Credentials", "Tickets", "Bonus Airdrops", "Leaderboard", "Profile"
+  ];
+
   const getTabFromUrl = (segment) => {
     if (!segment) return "Overview";
-    const decoded = decodeURIComponent(segment);
-    const normalized = decoded.replace(/-/g, ' ');
-    return normalized.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
   };
 
   const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
@@ -32,7 +38,7 @@ export default function AdminDashboard() {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
       const tabName = getTabFromUrl(parts[2]);
-      if (activeTab.toLowerCase() !== tabName.toLowerCase()) {
+      if (activeTab !== tabName) {
          setActiveTab(tabName);
       }
     }
@@ -55,6 +61,8 @@ export default function AdminDashboard() {
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
   const [selectedAirdrop, setSelectedAirdrop] = useState(null);
+  const [airdropCurrentPage, setAirdropCurrentPage] = useState(1);
+  const airdropsPerPage = 14;
 
   useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
@@ -468,7 +476,7 @@ export default function AdminDashboard() {
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
               <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: "16px", animationDelay: '0.5s' }}>
                 <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Batch-wise Progress Trend</h3>
-                <ResponsiveContainer width="100%" height={225}>
+                <ResponsiveContainer width="100%" height={160}>
                   <BarChart data={progressData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
@@ -491,7 +499,7 @@ export default function AdminDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Intern Distribution by Domain</h3>
                 <div style={{ flex: 1, padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <ResponsiveContainer width="100%" height={225}>
+                  <ResponsiveContainer width="100%" height={160}>
                     <RadarChart cx="50%" cy="50%" outerRadius="75%" data={domainData}>
                       <PolarGrid stroke="#e5e7eb" />
                       <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 11, fontWeight: 600 }} />
@@ -1326,7 +1334,10 @@ export default function AdminDashboard() {
                         <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
                       </tr>
                     ) : (
-                      [...bonusAirdrops].reverse().map(airdrop => (
+                      (() => {
+                        const reversedAirdrops = [...bonusAirdrops].reverse();
+                        const currentAirdrops = reversedAirdrops.slice((airdropCurrentPage - 1) * airdropsPerPage, airdropCurrentPage * airdropsPerPage);
+                        return currentAirdrops.map(airdrop => (
                         <tr 
                           key={airdrop.id} 
                           onClick={() => setSelectedAirdrop(airdrop)} 
@@ -1334,10 +1345,10 @@ export default function AdminDashboard() {
                           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
                           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
-                          <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
-                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
-                          <td style={{ padding: "12px 16px" }}>
+                          <td style={{ padding: "10px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                          <td style={{ padding: "10px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
+                          <td style={{ padding: "10px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
+                          <td style={{ padding: "10px 16px" }}>
                             {airdrop.status === "PENDING_APPROVAL" ? (
                               <span className="badge badge-warning">PENDING_APPROVAL</span>
                             ) : (
@@ -1346,8 +1357,8 @@ export default function AdminDashboard() {
                               </span>
                             )}
                           </td>
-                          <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
-                          <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                          <td style={{ padding: "10px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
+                          <td style={{ padding: "10px 16px", textAlign: "right" }}>
                             {airdrop.status === "PENDING_APPROVAL" && (
                               <button 
                                 className="btn btn-primary" 
@@ -1363,10 +1374,34 @@ export default function AdminDashboard() {
                           </td>
                         </tr>
                       ))
+                      })()
                     )}
                   </tbody>
                 </table>
               </div>
+              {bonusAirdrops.length > 0 && Math.ceil(bonusAirdrops.length / airdropsPerPage) > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '12px 16px', gap: '10px', borderTop: '1px solid var(--border-color)' }}>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={airdropCurrentPage === 1}
+                    onClick={() => setAirdropCurrentPage(p => p - 1)}
+                    style={{ padding: "6px 12px", fontSize: "13px" }}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                    Page {airdropCurrentPage} of {Math.ceil(bonusAirdrops.length / airdropsPerPage)}
+                  </span>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={airdropCurrentPage === Math.ceil(bonusAirdrops.length / airdropsPerPage)}
+                    onClick={() => setAirdropCurrentPage(p => p + 1)}
+                    style={{ padding: "6px 12px", fontSize: "13px" }}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -1506,7 +1541,7 @@ export default function AdminDashboard() {
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
                 <button 
-                  onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
+                  onClick={() => { setActiveTab("Profile"); navigate("/admin/profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#475569", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
                   onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
