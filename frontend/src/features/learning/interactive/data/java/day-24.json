@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 24,
-  "topic": "Day 24 Topic for Java",
+  "topic": "Dockerizing Java and Spring Boot Applications",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how containers package Java applications with their runtime requirements.",
+    "Identify the major instructions in a Java Dockerfile.",
+    "Construct a containerization workflow for a Spring Boot application."
   ],
   "activities": [
     {
-      "id": "d24-a01",
+      "id": "d24-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Container Architecture",
+      "instruction": "Explore the parts of a containerized application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A container packages an application and its required runtime environment into an isolated, portable execution unit.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d24-a2",
+      "type": "discover",
+      "title": "Dockerfile Anatomy",
+      "instruction": "Explore the main Dockerfile instructions.",
+      "content": {
+        "concept": "A Java Dockerfile commonly defines a base image, application artifact, working directory, command, and exposed port.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d24-a3",
+      "type": "discover",
+      "title": "Image Build Pipeline",
+      "instruction": "Arrange the container build steps.",
+      "content": {
+        "concept": "Containerization typically builds an image from a Dockerfile and then starts a container from that image.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d24-a4",
+      "type": "discover",
+      "title": "Dockerfile Builder",
+      "instruction": "Compose a Dockerfile for the application.",
+      "content": {
+        "concept": "A Dockerfile describes how to assemble the runtime image and how the Java application should start.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

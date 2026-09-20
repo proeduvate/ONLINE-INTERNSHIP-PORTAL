@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 18,
-  "topic": "Day 18 Topic for Python",
+  "topic": "Concurrency and Async Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Distinguish synchronous execution from asynchronous execution.",
+    "Use async and await for I/O-bound operations.",
+    "Understand tasks, event loops, and concurrency trade-offs."
   ],
   "activities": [
     {
-      "id": "d18-a01",
+      "id": "d18-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Execution Timeline",
+      "instruction": "Compare the synchronous and asynchronous timelines.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Synchronous code waits for each operation, while asynchronous code can switch between waiting tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Async Syntax Anatomy",
+      "instruction": "Click the syntax parts to inspect them.",
+      "content": {
+        "concept": "async defines a coroutine and await pauses it while an asynchronous operation progresses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "Task Sequencer",
+      "instruction": "Arrange concurrent tasks on the timeline.",
+      "content": {
+        "concept": "Multiple asynchronous tasks can make progress during I/O wait periods.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Concurrency Selector",
+      "instruction": "Choose the execution model for each scenario.",
+      "content": {
+        "concept": "The appropriate execution model depends on whether work is I/O-bound, CPU-bound, or sequential.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

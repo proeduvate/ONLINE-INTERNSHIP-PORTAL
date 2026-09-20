@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 27,
-  "topic": "Day 27 Topic for Java",
+  "topic": "Logging, Monitoring, and Production Observability",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how logging and monitoring support production applications.",
+    "Identify useful application metrics and log levels.",
+    "Design a basic observability workflow for diagnosing application behavior."
   ],
   "activities": [
     {
-      "id": "d27-a01",
+      "id": "d27-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Observability Map",
+      "instruction": "Connect logs, metrics, and traces.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Observability combines signals such as logs, metrics, and traces to help understand application behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "discover",
+      "title": "Log Level Selector",
+      "instruction": "Choose the appropriate log level.",
+      "content": {
+        "concept": "Log levels such as DEBUG, INFO, WARN, and ERROR communicate different levels of application information and problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Monitoring Dashboard",
+      "instruction": "Select the metrics for each scenario.",
+      "content": {
+        "concept": "Metrics such as request rate, latency, error rate, and resource usage help reveal application performance and health.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "discover",
+      "title": "Incident Investigation",
+      "instruction": "Arrange the troubleshooting workflow.",
+      "content": {
+        "concept": "Production diagnosis can combine alerts, metrics, logs, and traces to identify the source and impact of a problem.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

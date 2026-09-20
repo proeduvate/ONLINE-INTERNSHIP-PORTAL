@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 5,
-  "topic": "Day 5 Topic for Java",
+  "topic": "Methods and Modular Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create reusable Java methods with parameters and return values.",
+    "Distinguish local variables, parameters, and return values.",
+    "Decompose a program into smaller reusable methods."
   ],
   "activities": [
     {
-      "id": "d05-a01",
+      "id": "d5-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Method Anatomy",
+      "instruction": "Click each part of the method declaration.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A Java method declaration can contain an access modifier, return type, method name, parameters, and a method body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Method Flow",
+      "instruction": "Arrange the steps of a method call.",
+      "content": {
+        "concept": "A method call transfers control to the method, supplies arguments, executes its body, and may return a value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Parameter Matcher",
+      "instruction": "Match arguments with their method parameters.",
+      "content": {
+        "concept": "Parameters define the values a method receives, while arguments provide those values when the method is called.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Method Builder",
+      "instruction": "Compose a reusable method from the given requirements.",
+      "content": {
+        "concept": "Breaking logic into focused methods improves reuse, readability, and maintainability.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-05.json",
-  "practicalTaskRef": "practical-day-05.json",
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

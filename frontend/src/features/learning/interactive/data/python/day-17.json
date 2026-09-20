@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 17,
-  "topic": "Day 17 Topic for Python",
+  "topic": "Testing with pytest and Test-Driven Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Write unit tests for Python functions using pytest.",
+    "Use assertions and fixtures to verify program behavior.",
+    "Apply a basic test-driven development workflow."
   ],
   "activities": [
     {
-      "id": "d17-a01",
+      "id": "d17-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Testing Workflow",
+      "instruction": "Arrange the test-driven development cycle.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "TDD commonly follows a cycle of writing a failing test, implementing code, and improving the solution.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Assertion Anatomy",
+      "instruction": "Identify the parts of a pytest assertion.",
+      "content": {
+        "concept": "Assertions compare actual program results with expected behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Test Case Matcher",
+      "instruction": "Match each function with the appropriate test.",
+      "content": {
+        "concept": "Effective tests check normal inputs, boundary cases, and expected failures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Fixture Builder",
+      "instruction": "Build a reusable pytest fixture.",
+      "content": {
+        "concept": "Fixtures provide reusable setup data and resources for tests.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

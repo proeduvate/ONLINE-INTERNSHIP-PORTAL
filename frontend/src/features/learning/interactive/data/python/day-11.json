@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 11,
-  "topic": "Day 11 Topic for Python",
+  "topic": "List Comprehensions and Functional Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create concise list comprehensions for common data transformations.",
+    "Use lambda, map, filter, and reduce for functional-style operations.",
+    "Choose between traditional loops and functional expressions appropriately."
   ],
   "activities": [
     {
-      "id": "d11-a01",
+      "id": "d11-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Comprehension Anatomy",
+      "instruction": "Explore the parts of a list comprehension.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "List comprehensions combine iteration and optional filtering into a compact expression.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Comprehension Builder",
+      "instruction": "Build a comprehension for the given task.",
+      "content": {
+        "concept": "Comprehensions transform or filter iterable data using a readable expression.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Functional Match",
+      "instruction": "Match each function to its behavior.",
+      "content": {
+        "concept": "map, filter, lambda, and reduce support functional approaches to processing collections.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Transformation Lab",
+      "instruction": "Select the operation that produces the target output.",
+      "content": {
+        "concept": "Functional operations can transform, filter, and aggregate iterable data without explicit loops.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

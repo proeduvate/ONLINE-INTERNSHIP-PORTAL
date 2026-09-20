@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 16,
-  "topic": "Day 16 Topic for Java",
+  "topic": "Java Networking and HTTP Clients",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how Java applications communicate over HTTP.",
+    "Construct basic HTTP requests using Java HTTP Client.",
+    "Handle responses, status codes, and request failures safely."
   ],
   "activities": [
     {
-      "id": "d16-a01",
+      "id": "d16-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "HTTP Request Anatomy",
+      "instruction": "Explore the parts of an HTTP request.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "An HTTP request contains components such as the method, URL, headers, and optional body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "Request Flow",
+      "instruction": "Arrange the client-server communication steps.",
+      "content": {
+        "concept": "A Java HTTP client builds a request, sends it to a server, receives a response, and processes the returned data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "HTTP Client Builder",
+      "instruction": "Build a valid Java HTTP request.",
+      "content": {
+        "concept": "Java's HttpClient, HttpRequest, and HttpResponse APIs provide a modern way to communicate with HTTP services.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "Status Code Selector",
+      "instruction": "Select the correct response category.",
+      "content": {
+        "concept": "HTTP status codes indicate whether a request succeeded, redirected, failed due to the client, or failed on the server.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 1,
-  "topic": "Day 1 Topic for Python",
+  "topic": "Python Fundamentals and Programming Basics",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain Python syntax and the basic structure of a Python program.",
+    "Create variables and use common Python data types.",
+    "Write and execute simple Python statements using operators and expressions."
   ],
   "activities": [
     {
-      "id": "d01-a01",
+      "id": "d1-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Python Program Anatomy",
+      "instruction": "Explore the parts of a Python program.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Python programs consist of statements, expressions, variables, and functions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Data Type Match",
+      "instruction": "Match each value to its data type.",
+      "content": {
+        "concept": "Python provides built-in types such as integers, floats, strings, and booleans.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Variable Builder",
+      "instruction": "Build valid variable assignments.",
+      "content": {
+        "concept": "Variables store references to values and can be assigned using the equals operator.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "Operator Explorer",
+      "instruction": "Select the operator that produces each result.",
+      "content": {
+        "concept": "Arithmetic, comparison, and logical operators allow Python programs to manipulate and evaluate values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-01.json",
-  "practicalTaskRef": "practical-day-01.json",
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

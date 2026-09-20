@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 29,
-  "topic": "Day 29 Topic for Python",
+  "topic": "Capstone Testing, Documentation, and Production Readiness",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create a testing strategy for the capstone application.",
+    "Document APIs, setup instructions, and important design decisions.",
+    "Prepare the project for reliable deployment and demonstration."
   ],
   "activities": [
     {
-      "id": "d29-a01",
+      "id": "d29-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Testing Strategy Map",
+      "instruction": "Map test types to the parts they validate.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A capstone can combine unit, integration, API, and end-to-end tests to validate different system boundaries.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Release Checklist",
+      "instruction": "Arrange the production-readiness checks.",
+      "content": {
+        "concept": "Before release, verify functionality, tests, configuration, security, documentation, and deployment behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Documentation Builder",
+      "instruction": "Build the essential project documentation.",
+      "content": {
+        "concept": "Good documentation helps others understand setup, usage, APIs, architecture, and project decisions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Readiness Selector",
+      "instruction": "Select the correct action for each release issue.",
+      "content": {
+        "concept": "Production readiness requires resolving important defects and configuration risks before deployment.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 9,
-  "topic": "Day 9 Topic for Java",
+  "topic": "Collections Framework and Generics",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Choose suitable Java collection types for different data requirements.",
+    "Use List, Set, Map, and Queue implementations effectively.",
+    "Apply generics to create type-safe collection-based code."
   ],
   "activities": [
     {
-      "id": "d09-a01",
+      "id": "d9-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Collection Map",
+      "instruction": "Connect each collection to its data behavior.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Java collections provide different structures for storing, accessing, ordering, and associating groups of objects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Collection Matcher",
+      "instruction": "Match each requirement with a suitable collection.",
+      "content": {
+        "concept": "Lists preserve ordered elements, sets emphasize uniqueness, and maps associate keys with values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Generic Type Anatomy",
+      "instruction": "Identify the generic type parameters.",
+      "content": {
+        "concept": "Generics allow classes and methods to operate on specified types while providing compile-time type safety.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Collection Builder",
+      "instruction": "Build the collection required by each scenario.",
+      "content": {
+        "concept": "Selecting the right collection depends on requirements such as ordering, uniqueness, lookup, and insertion behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-09.json",
-  "practicalTaskRef": "practical-day-09.json",
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

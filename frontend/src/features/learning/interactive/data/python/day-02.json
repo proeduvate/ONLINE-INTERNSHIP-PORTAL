@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 2,
-  "topic": "Day 2 Topic for Python",
+  "topic": "Input, Output, and Conditional Statements",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Read user input and display formatted output in Python.",
+    "Use if, elif, and else statements to control program decisions.",
+    "Construct conditional logic for real-world programming scenarios."
   ],
   "activities": [
     {
-      "id": "d02-a01",
+      "id": "d2-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Input and Output Flow",
+      "instruction": "Trace data from input to output.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Python uses input() to receive data and print() to display output.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Conditional Anatomy",
+      "instruction": "Identify the parts of a conditional statement.",
+      "content": {
+        "concept": "Conditional statements execute different code depending on whether conditions are true or false.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Decision Builder",
+      "instruction": "Build the correct conditional logic.",
+      "content": {
+        "concept": "if, elif, and else branches allow programs to handle multiple decision paths.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Condition Selector",
+      "instruction": "Choose the condition that matches the scenario.",
+      "content": {
+        "concept": "Comparison and logical operators can be combined to create meaningful conditions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-02.json",
-  "practicalTaskRef": "practical-day-02.json",
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

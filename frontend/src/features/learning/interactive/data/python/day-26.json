@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 26,
-  "topic": "Day 26 Topic for Python",
+  "topic": "Cloud Deployment and Environment Configuration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Configure a Python application for deployment across environments.",
+    "Manage environment variables and application secrets safely.",
+    "Understand the stages involved in deploying a Python service to the cloud."
   ],
   "activities": [
     {
-      "id": "d26-a01",
+      "id": "d26-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Deployment Pipeline",
+      "instruction": "Arrange the steps from local code to cloud deployment.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Cloud deployment moves an application through configuration, building, deployment, and runtime stages.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "Environment Anatomy",
+      "instruction": "Explore the components of an application environment.",
+      "content": {
+        "concept": "An application environment includes runtime settings, dependencies, environment variables, services, and deployment configuration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Configuration Selector",
+      "instruction": "Choose the correct configuration for each environment.",
+      "content": {
+        "concept": "Development, testing, and production environments often require different configuration values while sharing application code.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Cloud Architecture Builder",
+      "instruction": "Build a basic cloud deployment architecture.",
+      "content": {
+        "concept": "A deployed Python service can connect application code, databases, storage, networking, and external services.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

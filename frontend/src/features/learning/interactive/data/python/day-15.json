@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 15,
-  "topic": "Day 15 Topic for Python",
+  "topic": "Web Development with Flask and REST APIs",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure of a basic Flask web application.",
+    "Create routes that handle HTTP requests and return responses.",
+    "Design a simple REST API using Flask."
   ],
   "activities": [
     {
-      "id": "d15-a01",
+      "id": "d15-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Flask Architecture",
+      "instruction": "Explore the components of a Flask application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Flask applications connect routes, request handling, application logic, and responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "Route Anatomy",
+      "instruction": "Identify the parts of a Flask route.",
+      "content": {
+        "concept": "A Flask route maps an HTTP URL and method to a Python function that handles the request.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "REST Method Match",
+      "instruction": "Match HTTP methods to API operations.",
+      "content": {
+        "concept": "REST APIs commonly use GET, POST, PUT or PATCH, and DELETE for resource operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "API Builder",
+      "instruction": "Build a simple Flask REST endpoint.",
+      "content": {
+        "concept": "A REST endpoint accepts a request, performs application logic, and returns structured data such as JSON.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

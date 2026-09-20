@@ -1,77 +1,78 @@
 import os
 import json
 
-data = [
+data_str = """
+[
   {
-    "curriculum": "Data Science",
+    "curriculum": "Java",
     "day": 26,
-    "topic": "Machine Learning Model Deployment and REST APIs",
+    "topic": "Cloud Deployment and Environment Configuration",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Explain how a trained machine learning model is exposed through an API.",
-      "Design a basic REST API workflow for model predictions.",
-      "Connect an application to a deployed machine learning endpoint."
+      "Explain the core concepts involved in deploying Java applications to the cloud.",
+      "Configure application settings using environment variables and external configuration.",
+      "Design a deployment workflow that separates development and production environments."
     ],
     "activities": [
       {
         "id": "d26-a1",
         "type": "discover",
-        "title": "Deployment Pipeline",
-        "instruction": "Explore the path from model training to prediction.",
+        "title": "Cloud Deployment Map",
+        "instruction": "Map the application deployment components.",
         "content": {
-          "concept": "Model deployment makes a trained model available to applications through a serving layer.",
+          "concept": "Cloud deployment moves an application from source code to a managed runtime environment accessible through a network.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-map"
+          "mode": "architecture"
         }
       },
       {
         "id": "d26-a2",
         "type": "discover",
-        "title": "API Anatomy",
-        "instruction": "Identify the parts of a prediction API.",
+        "title": "Configuration Selector",
+        "instruction": "Select where each setting belongs.",
         "content": {
-          "concept": "A prediction API receives input data, runs inference, and returns a model prediction.",
+          "concept": "Environment-specific values such as database URLs and credentials should be supplied through external configuration rather than hardcoded in source code.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "anatomy"
+          "mode": "selector-lab"
         }
       },
       {
         "id": "d26-a3",
         "type": "discover",
-        "title": "Request Builder",
-        "instruction": "Build a valid prediction request.",
+        "title": "Deployment Pipeline",
+        "instruction": "Arrange the cloud deployment stages.",
         "content": {
-          "concept": "API clients send structured input to an endpoint using an HTTP request.",
+          "concept": "A deployment flow commonly builds an artifact or image, configures the environment, starts the application, and verifies its availability.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "semantic-order"
         }
       },
       {
         "id": "d26-a4",
         "type": "discover",
-        "title": "Prediction Workflow",
-        "instruction": "Order the API prediction steps.",
+        "title": "Environment Builder",
+        "instruction": "Build a production configuration.",
         "content": {
-          "concept": "A prediction request follows a sequence from client input through validation, inference, and response.",
+          "concept": "Externalized configuration allows the same application artifact to run with different settings across environments.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-order"
+          "mode": "build"
         }
       }
     ],
     "assessmentRef": "assessment-day-26.json",
     "practicalTaskRef": "practical-day-26.json",
     "progression": {
-      "nextActivityLockedUntilComplete": True,
-      "nextDayLockedUntilComplete": True
+      "nextActivityLockedUntilComplete": true,
+      "nextDayLockedUntilComplete": true
     },
     "separation": {
       "learning": "Teach the concept through an interactive experience.",
@@ -80,24 +81,24 @@ data = [
     }
   },
   {
-    "curriculum": "Data Science",
+    "curriculum": "Java",
     "day": 27,
-    "topic": "MLOps, Experiment Tracking, and Model Versioning",
+    "topic": "Logging, Monitoring, and Production Observability",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Explain why experiment tracking is important in machine learning projects.",
-      "Track model versions, parameters, metrics, and artifacts.",
-      "Design a basic workflow for reproducible machine learning experiments."
+      "Explain how logging and monitoring support production applications.",
+      "Identify useful application metrics and log levels.",
+      "Design a basic observability workflow for diagnosing application behavior."
     ],
     "activities": [
       {
         "id": "d27-a1",
         "type": "discover",
-        "title": "MLOps Lifecycle",
-        "instruction": "Map the stages of an ML lifecycle.",
+        "title": "Observability Map",
+        "instruction": "Connect logs, metrics, and traces.",
         "content": {
-          "concept": "MLOps organizes model development, deployment, monitoring, and maintenance into a repeatable lifecycle.",
+          "concept": "Observability combines signals such as logs, metrics, and traces to help understand application behavior.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -107,23 +108,23 @@ data = [
       {
         "id": "d27-a2",
         "type": "discover",
-        "title": "Experiment Anatomy",
-        "instruction": "Identify what belongs in an experiment record.",
+        "title": "Log Level Selector",
+        "instruction": "Choose the appropriate log level.",
         "content": {
-          "concept": "Experiment records can contain parameters, metrics, datasets, code versions, and model artifacts.",
+          "concept": "Log levels such as DEBUG, INFO, WARN, and ERROR communicate different levels of application information and problems.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "anatomy"
+          "mode": "selector-lab"
         }
       },
       {
         "id": "d27-a3",
         "type": "discover",
-        "title": "Version Control Lab",
-        "instruction": "Match model versions to their changes.",
+        "title": "Monitoring Dashboard",
+        "instruction": "Select the metrics for each scenario.",
         "content": {
-          "concept": "Model versioning allows teams to identify, compare, reproduce, and roll back model releases.",
+          "concept": "Metrics such as request rate, latency, error rate, and resource usage help reveal application performance and health.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -133,22 +134,22 @@ data = [
       {
         "id": "d27-a4",
         "type": "discover",
-        "title": "Reproducible Workflow",
-        "instruction": "Build a repeatable experiment workflow.",
+        "title": "Incident Investigation",
+        "instruction": "Arrange the troubleshooting workflow.",
         "content": {
-          "concept": "Reproducibility requires consistent data, code, configuration, tracking, and evaluation.",
+          "concept": "Production diagnosis can combine alerts, metrics, logs, and traces to identify the source and impact of a problem.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "semantic-order"
         }
       }
     ],
     "assessmentRef": "assessment-day-27.json",
     "practicalTaskRef": "practical-day-27.json",
     "progression": {
-      "nextActivityLockedUntilComplete": True,
-      "nextDayLockedUntilComplete": True
+      "nextActivityLockedUntilComplete": true,
+      "nextDayLockedUntilComplete": true
     },
     "separation": {
       "learning": "Teach the concept through an interactive experience.",
@@ -157,37 +158,37 @@ data = [
     }
   },
   {
-    "curriculum": "Data Science",
+    "curriculum": "Java",
     "day": 28,
-    "topic": "Data Science Capstone Architecture and Implementation",
+    "topic": "Capstone Architecture and System Design",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Define a complete data science problem and its success criteria.",
-      "Design an end-to-end architecture for a data science solution.",
-      "Connect data ingestion, processing, modeling, and prediction components."
+      "Translate application requirements into system components.",
+      "Design a layered Java application architecture.",
+      "Connect frontend, backend, database, authentication, and external services into a coherent system."
     ],
     "activities": [
       {
         "id": "d28-a1",
         "type": "discover",
-        "title": "Problem Definition",
-        "instruction": "Match project goals to measurable outcomes.",
+        "title": "Requirement Mapper",
+        "instruction": "Map requirements to system components.",
         "content": {
-          "concept": "A strong data science project starts with a clearly defined problem, target, constraints, and success metric.",
+          "concept": "System design begins by translating user and business requirements into components, responsibilities, data, and interactions.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "match"
+          "mode": "semantic-map"
         }
       },
       {
         "id": "d28-a2",
         "type": "discover",
-        "title": "Capstone Architecture",
-        "instruction": "Arrange the major project components.",
+        "title": "Application Architecture",
+        "instruction": "Build the capstone architecture.",
         "content": {
-          "concept": "A data science architecture connects data sources, processing, feature engineering, models, and outputs.",
+          "concept": "A full application can combine a client, REST API, service layer, persistence layer, database, authentication, and external integrations.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -197,35 +198,35 @@ data = [
       {
         "id": "d28-a3",
         "type": "discover",
-        "title": "Pipeline Builder",
-        "instruction": "Build the end-to-end data workflow.",
+        "title": "Request Journey",
+        "instruction": "Trace a request through the system.",
         "content": {
-          "concept": "An end-to-end pipeline transforms raw data into validated predictions or analytical insights.",
+          "concept": "A user request can travel from the frontend through authentication and backend layers to persistence before returning a response.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "semantic-order"
         }
       },
       {
         "id": "d28-a4",
         "type": "discover",
-        "title": "Component Sequence",
-        "instruction": "Order the capstone implementation stages.",
+        "title": "Technology Selector",
+        "instruction": "Select technologies for each layer.",
         "content": {
-          "concept": "A structured implementation sequence reduces integration issues and keeps development measurable.",
+          "concept": "Technology choices should match the responsibilities and constraints of each application layer.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-order"
+          "mode": "selector-lab"
         }
       }
     ],
     "assessmentRef": "assessment-day-28.json",
     "practicalTaskRef": "practical-day-28.json",
     "progression": {
-      "nextActivityLockedUntilComplete": True,
-      "nextDayLockedUntilComplete": True
+      "nextActivityLockedUntilComplete": true,
+      "nextDayLockedUntilComplete": true
     },
     "separation": {
       "learning": "Teach the concept through an interactive experience.",
@@ -234,24 +235,24 @@ data = [
     }
   },
   {
-    "curriculum": "Data Science",
+    "curriculum": "Java",
     "day": 29,
-    "topic": "Capstone Testing, Visualization, Documentation, and Presentation",
+    "topic": "Capstone Testing, Documentation, and Optimization",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Validate the capstone pipeline and model using appropriate tests and metrics.",
-      "Create visualizations that communicate project findings clearly.",
-      "Prepare concise technical documentation and a project presentation."
+      "Create a testing strategy covering important application layers.",
+      "Identify documentation required for a production-ready Java project.",
+      "Select optimization and quality improvements based on application requirements."
     ],
     "activities": [
       {
         "id": "d29-a1",
         "type": "discover",
-        "title": "Testing Strategy",
-        "instruction": "Map tests to each project component.",
+        "title": "Testing Strategy Map",
+        "instruction": "Map tests to application layers.",
         "content": {
-          "concept": "Testing verifies data processing, model behavior, API responses, and pipeline reliability.",
+          "concept": "A capstone testing strategy can combine unit, integration, API, and end-to-end tests according to the system's risks and requirements.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -261,10 +262,10 @@ data = [
       {
         "id": "d29-a2",
         "type": "discover",
-        "title": "Visualization Selector",
-        "instruction": "Choose the right chart for each insight.",
+        "title": "Test Type Selector",
+        "instruction": "Choose the appropriate test type.",
         "content": {
-          "concept": "Effective visualizations match the chart type to the data relationship and communication goal.",
+          "concept": "Different test types validate different boundaries, from individual methods to complete user workflows.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -274,35 +275,35 @@ data = [
       {
         "id": "d29-a3",
         "type": "discover",
-        "title": "Documentation Anatomy",
-        "instruction": "Identify the essential documentation sections.",
+        "title": "Production Checklist",
+        "instruction": "Build the project readiness checklist.",
         "content": {
-          "concept": "Technical documentation explains project objectives, data, methodology, results, setup, and usage.",
+          "concept": "Production readiness can include testing, security, configuration, documentation, logging, error handling, and deployment verification.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "anatomy"
+          "mode": "build"
         }
       },
       {
         "id": "d29-a4",
         "type": "discover",
-        "title": "Presentation Builder",
-        "instruction": "Build the capstone presentation flow.",
+        "title": "Optimization Lab",
+        "instruction": "Adjust the application performance factors.",
         "content": {
-          "concept": "A clear presentation connects the problem, approach, evidence, results, limitations, and future work.",
+          "concept": "Performance improvements can target database queries, algorithms, network calls, resource usage, and application configuration.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "slider"
         }
       }
     ],
     "assessmentRef": "assessment-day-29.json",
     "practicalTaskRef": "practical-day-29.json",
     "progression": {
-      "nextActivityLockedUntilComplete": True,
-      "nextDayLockedUntilComplete": True
+      "nextActivityLockedUntilComplete": true,
+      "nextDayLockedUntilComplete": true
     },
     "separation": {
       "learning": "Teach the concept through an interactive experience.",
@@ -311,37 +312,24 @@ data = [
     }
   },
   {
-    "curriculum": "Data Science",
+    "curriculum": "Java",
     "day": 30,
     "topic": "Capstone Demonstration, Review, and Future Enhancements",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Demonstrate the complete data science solution from input to output.",
-      "Evaluate project results against defined success criteria.",
-      "Identify practical improvements and future extensions for the solution."
+      "Present the architecture, features, and technical decisions of a Java capstone project.",
+      "Review the project against functionality, quality, security, and deployment requirements.",
+      "Identify realistic improvements and future development opportunities."
     ],
     "activities": [
       {
         "id": "d30-a1",
         "type": "discover",
-        "title": "Capstone Walkthrough",
-        "instruction": "Explore the complete solution flow.",
+        "title": "Capstone Architecture Review",
+        "instruction": "Explore the completed system architecture.",
         "content": {
-          "concept": "A capstone demonstration shows how each component works together to solve the defined problem.",
-          "tip": "Interact with the example first. Your progress is saved for this session."
-        },
-        "interaction": {
-          "mode": "semantic-map"
-        }
-      },
-      {
-        "id": "d30-a2",
-        "type": "discover",
-        "title": "System Architecture Review",
-        "instruction": "Inspect how the final components connect.",
-        "content": {
-          "concept": "Architecture review verifies that data, models, APIs, storage, and user outputs work together coherently.",
+          "concept": "A capstone review connects requirements, architecture, implementation, integrations, and deployment into one complete system view.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -349,12 +337,25 @@ data = [
         }
       },
       {
+        "id": "d30-a2",
+        "type": "discover",
+        "title": "Demo Flow Builder",
+        "instruction": "Build the ideal project demonstration flow.",
+        "content": {
+          "concept": "An effective technical demonstration can progress from the problem and architecture to key features, implementation, testing, and deployment.",
+          "tip": "Interact with the example first. Your progress is saved for this session."
+        },
+        "interaction": {
+          "mode": "build"
+        }
+      },
+      {
         "id": "d30-a3",
         "type": "discover",
-        "title": "Results Review",
-        "instruction": "Match project results to success criteria.",
+        "title": "Quality Review",
+        "instruction": "Match project areas with review checks.",
         "content": {
-          "concept": "Project evaluation compares observed results with predefined technical and business objectives.",
+          "concept": "Final review can examine functionality, code quality, security, testing, performance, documentation, and deployment readiness.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -364,22 +365,22 @@ data = [
       {
         "id": "d30-a4",
         "type": "discover",
-        "title": "Enhancement Planner",
-        "instruction": "Build a roadmap for future improvements.",
+        "title": "Future Roadmap",
+        "instruction": "Arrange enhancements into a roadmap.",
         "content": {
-          "concept": "Future enhancements can target data quality, model performance, scalability, usability, monitoring, or new capabilities.",
+          "concept": "A development roadmap organizes future improvements such as new features, scalability work, integrations, performance enhancements, and maintenance.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "semantic-order"
         }
       }
     ],
     "assessmentRef": "assessment-day-30.json",
     "practicalTaskRef": "practical-day-30.json",
     "progression": {
-      "nextActivityLockedUntilComplete": True,
-      "nextDayLockedUntilComplete": True
+      "nextActivityLockedUntilComplete": true,
+      "nextDayLockedUntilComplete": true
     },
     "separation": {
       "learning": "Teach the concept through an interactive experience.",
@@ -388,11 +389,16 @@ data = [
     }
   }
 ]
+"""
+data = json.loads(data_str)
 
 dest_dir = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "frontend", "src", "features", "learning", "interactive", "data", "data-science"
+    "frontend", "src", "features", "learning", "interactive", "data", "java"
 )
+
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir)
 
 for day_data in data:
     day_num = day_data['day']

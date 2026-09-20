@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 6,
-  "topic": "Day 6 Topic for Java",
+  "topic": "Object-Oriented Programming Fundamentals",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create classes and objects to model real-world entities.",
+    "Use constructors and instance variables to initialize objects.",
+    "Apply encapsulation to control access to object data."
   ],
   "activities": [
     {
-      "id": "d06-a01",
+      "id": "d6-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Class and Object Anatomy",
+      "instruction": "Explore the parts of a Java class.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A class defines the structure and behavior of objects, while an object is an instance created from that class.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d6-a2",
+      "type": "discover",
+      "title": "Object Creation Flow",
+      "instruction": "Arrange the steps for creating an object.",
+      "content": {
+        "concept": "Objects are created from classes using constructors and the new keyword.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d6-a3",
+      "type": "discover",
+      "title": "Constructor Builder",
+      "instruction": "Build a constructor for the given class.",
+      "content": {
+        "concept": "A constructor initializes a newly created object and can receive parameters for initial values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d6-a4",
+      "type": "discover",
+      "title": "Encapsulation Lab",
+      "instruction": "Select the correct access strategy.",
+      "content": {
+        "concept": "Encapsulation hides internal state and exposes controlled access through methods such as getters and setters.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-06.json",
-  "practicalTaskRef": "practical-day-06.json",
+  "assessmentRef": "assessment-day-6.json",
+  "practicalTaskRef": "practical-day-6.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

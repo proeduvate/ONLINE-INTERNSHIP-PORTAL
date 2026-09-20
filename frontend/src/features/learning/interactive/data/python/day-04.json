@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 4,
-  "topic": "Day 4 Topic for Python",
+  "topic": "Python Collections",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Differentiate lists, tuples, sets, and dictionaries.",
+    "Perform common operations on Python collections.",
+    "Select an appropriate collection type for a programming problem."
   ],
   "activities": [
     {
-      "id": "d04-a01",
+      "id": "d4-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Collection Map",
+      "instruction": "Connect each collection to its characteristics.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Lists, tuples, sets, and dictionaries store and organize data in different ways.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Collection Anatomy",
+      "instruction": "Explore the structure of each collection.",
+      "content": {
+        "concept": "Collections differ in ordering, mutability, uniqueness, and access patterns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "Collection Match",
+      "instruction": "Match each scenario to a collection type.",
+      "content": {
+        "concept": "Choosing the right collection depends on how the data will be stored and accessed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Collection Builder",
+      "instruction": "Build the collection for each requirement.",
+      "content": {
+        "concept": "Collection operations allow programs to add, remove, search, and organize data efficiently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-04.json",
-  "practicalTaskRef": "practical-day-04.json",
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

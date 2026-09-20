@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 12,
-  "topic": "Day 12 Topic for Java",
+  "topic": "Lambda Expressions and Functional Interfaces",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure and purpose of lambda expressions.",
+    "Identify and use common functional interfaces.",
+    "Convert simple anonymous implementations into lambda-based expressions."
   ],
   "activities": [
     {
-      "id": "d12-a01",
+      "id": "d12-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Lambda Anatomy",
+      "instruction": "Explore each part of a lambda expression.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A lambda expression represents behavior with a compact parameter, arrow, and expression or statement body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Functional Interface Match",
+      "instruction": "Match interfaces with their behaviors.",
+      "content": {
+        "concept": "Functional interfaces contain one abstract method and can be implemented using lambda expressions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Lambda Builder",
+      "instruction": "Assemble a valid lambda expression.",
+      "content": {
+        "concept": "Lambda syntax can be composed from parameters, an arrow operator, and an executable body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Method Reference Selector",
+      "instruction": "Select the matching method-reference form.",
+      "content": {
+        "concept": "Method references provide a concise way to reuse existing methods where a compatible functional interface is expected.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

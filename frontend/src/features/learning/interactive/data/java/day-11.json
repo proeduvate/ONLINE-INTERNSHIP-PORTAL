@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 11,
-  "topic": "Day 11 Topic for Java",
+  "topic": "Java I/O, NIO, and File Processing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify Java classes used for reading and writing files.",
+    "Choose appropriate I/O and NIO APIs for common file-processing tasks.",
+    "Construct a safe file-processing workflow using paths, streams, and resources."
   ],
   "activities": [
     {
-      "id": "d11-a01",
+      "id": "d11-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "I/O Class Map",
+      "instruction": "Match each I/O class to its purpose.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Java I/O provides streams and readers/writers for moving data between applications and files.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "File Reading Anatomy",
+      "instruction": "Explore the parts of a file-reading workflow.",
+      "content": {
+        "concept": "File reading commonly involves a Path, an input mechanism, data processing, and resource cleanup.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "NIO Workflow",
+      "instruction": "Arrange the file-processing steps in order.",
+      "content": {
+        "concept": "NIO uses Path and Files APIs to simplify modern file and directory operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Safe Resource Handling",
+      "instruction": "Build a safe resource-handling pattern.",
+      "content": {
+        "concept": "Try-with-resources automatically closes resources and helps prevent resource leaks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

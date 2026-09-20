@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 10,
-  "topic": "Day 10 Topic for Python",
+  "topic": "Advanced Python: Iterators, Generators, and Decorators",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how iterators and generators control data iteration.",
+    "Use generator functions to process values lazily.",
+    "Understand how decorators modify or extend function behavior."
   ],
   "activities": [
     {
-      "id": "d10-a01",
+      "id": "d10-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Iteration Map",
+      "instruction": "Trace how Python moves through iterable data.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Iterators provide values one at a time through the iteration protocol.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Generator Anatomy",
+      "instruction": "Explore how yield creates a generator.",
+      "content": {
+        "concept": "Generators produce values lazily using yield, avoiding the need to store all results at once.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Lazy Evaluation Lab",
+      "instruction": "Adjust the data flow and observe evaluation.",
+      "content": {
+        "concept": "Lazy evaluation computes values only when they are requested, which can reduce memory usage.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Decorator Builder",
+      "instruction": "Build a decorator around a function.",
+      "content": {
+        "concept": "Decorators wrap functions to add or modify behavior without changing the original function definition.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

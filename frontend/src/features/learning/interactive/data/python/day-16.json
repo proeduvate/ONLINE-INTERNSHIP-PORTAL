@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 16,
-  "topic": "Day 16 Topic for Python",
+  "topic": "FastAPI and Modern API Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Build basic REST endpoints using FastAPI.",
+    "Define request and response schemas with Pydantic.",
+    "Organize API routes and validate incoming data."
   ],
   "activities": [
     {
-      "id": "d16-a01",
+      "id": "d16-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "FastAPI Request Flow",
+      "instruction": "Arrange the API request steps in order.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A FastAPI request flows through routing, validation, processing, and response generation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "Route Anatomy",
+      "instruction": "Click each part to reveal its purpose.",
+      "content": {
+        "concept": "A FastAPI route connects an HTTP method and URL path to a Python function.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "Schema Builder",
+      "instruction": "Build a valid request schema from the components.",
+      "content": {
+        "concept": "Pydantic models define and validate the structure and types of API data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "HTTP Method Matcher",
+      "instruction": "Match each operation with its HTTP method.",
+      "content": {
+        "concept": "GET, POST, PUT, PATCH, and DELETE represent different API operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
       }
     }
   ],

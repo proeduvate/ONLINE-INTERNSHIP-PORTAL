@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 10,
-  "topic": "Day 10 Topic for Java",
+  "topic": "Exception Handling and Robust Java Programs",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Handle runtime errors using try, catch, finally, and throw.",
+    "Create and use custom exceptions for application-specific errors.",
+    "Design error-handling flows that keep applications reliable."
   ],
   "activities": [
     {
-      "id": "d10-a01",
+      "id": "d10-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Exception Flow",
+      "instruction": "Trace what happens when an exception occurs.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Exception handling redirects abnormal execution into controlled error-handling paths.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Try-Catch Anatomy",
+      "instruction": "Explore each part of the exception-handling structure.",
+      "content": {
+        "concept": "try contains risky code, catch handles matching exceptions, and finally can run cleanup logic.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Exception Matcher",
+      "instruction": "Match errors with appropriate exception types.",
+      "content": {
+        "concept": "Different failures can produce different exception types that should be handled according to the application's needs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Error Handler Builder",
+      "instruction": "Build a safe exception-handling flow.",
+      "content": {
+        "concept": "A robust error-handling design catches expected failures, communicates useful information, and preserves necessary cleanup.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

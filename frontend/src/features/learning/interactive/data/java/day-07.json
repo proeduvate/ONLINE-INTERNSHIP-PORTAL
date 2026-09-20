@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 7,
-  "topic": "Day 7 Topic for Java",
+  "topic": "Inheritance, Polymorphism, and Abstraction",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create parent-child relationships using inheritance.",
+    "Apply method overriding and polymorphism in Java.",
+    "Use abstract classes and interfaces to define reusable contracts."
   ],
   "activities": [
     {
-      "id": "d07-a01",
+      "id": "d7-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Inheritance Map",
+      "instruction": "Connect parent classes with their child classes.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Inheritance allows a class to reuse and extend fields and methods from another class.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Override Anatomy",
+      "instruction": "Identify the parts of a method override.",
+      "content": {
+        "concept": "Method overriding lets a subclass provide its own implementation of an inherited method.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Polymorphism Matcher",
+      "instruction": "Match each reference with its runtime behavior.",
+      "content": {
+        "concept": "Polymorphism allows a parent type reference to work with objects of compatible child types.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Abstraction Builder",
+      "instruction": "Build an interface or abstract class from the requirements.",
+      "content": {
+        "concept": "Abstraction exposes essential behavior while hiding implementation details.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-07.json",
-  "practicalTaskRef": "practical-day-07.json",
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

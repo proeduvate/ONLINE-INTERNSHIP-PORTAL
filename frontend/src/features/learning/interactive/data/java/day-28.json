@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 28,
-  "topic": "Day 28 Topic for Java",
+  "topic": "Capstone Architecture and System Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Translate application requirements into system components.",
+    "Design a layered Java application architecture.",
+    "Connect frontend, backend, database, authentication, and external services into a coherent system."
   ],
   "activities": [
     {
-      "id": "d28-a01",
+      "id": "d28-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Requirement Mapper",
+      "instruction": "Map requirements to system components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "System design begins by translating user and business requirements into components, responsibilities, data, and interactions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d28-a2",
+      "type": "discover",
+      "title": "Application Architecture",
+      "instruction": "Build the capstone architecture.",
+      "content": {
+        "concept": "A full application can combine a client, REST API, service layer, persistence layer, database, authentication, and external integrations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d28-a3",
+      "type": "discover",
+      "title": "Request Journey",
+      "instruction": "Trace a request through the system.",
+      "content": {
+        "concept": "A user request can travel from the frontend through authentication and backend layers to persistence before returning a response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d28-a4",
+      "type": "discover",
+      "title": "Technology Selector",
+      "instruction": "Select technologies for each layer.",
+      "content": {
+        "concept": "Technology choices should match the responsibilities and constraints of each application layer.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

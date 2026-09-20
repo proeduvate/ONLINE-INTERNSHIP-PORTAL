@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 8,
-  "topic": "Day 8 Topic for Java",
+  "topic": "Interfaces, Packages, and Access Modifiers",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Define and implement Java interfaces.",
+    "Organize related classes using packages.",
+    "Choose appropriate access modifiers for application components."
   ],
   "activities": [
     {
-      "id": "d08-a01",
+      "id": "d8-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Interface Anatomy",
+      "instruction": "Explore the components of an interface.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "An interface defines a contract that implementing classes agree to provide.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Package Organizer",
+      "instruction": "Group classes into suitable packages.",
+      "content": {
+        "concept": "Packages organize related Java classes and help manage namespaces and access boundaries.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Access Modifier Matcher",
+      "instruction": "Match each modifier with its visibility.",
+      "content": {
+        "concept": "public, protected, package-private, and private provide different levels of member accessibility.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "Interface Selector",
+      "instruction": "Choose the right interface design for each scenario.",
+      "content": {
+        "concept": "Interfaces are useful when different classes need to provide a common behavior contract.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-08.json",
-  "practicalTaskRef": "practical-day-08.json",
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 28,
-  "topic": "Day 28 Topic for Python",
+  "topic": "Capstone Architecture and System Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Translate a project requirement into a modular system architecture.",
+    "Design APIs, data storage, services, and application boundaries.",
+    "Create a technical implementation plan for the Python capstone."
   ],
   "activities": [
     {
-      "id": "d28-a01",
+      "id": "d28-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Requirement Map",
+      "instruction": "Connect project requirements to system components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "System design begins by mapping functional requirements to the components responsible for delivering them.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d28-a2",
+      "type": "discover",
+      "title": "System Architecture",
+      "instruction": "Assemble the major capstone components.",
+      "content": {
+        "concept": "A Python application can be divided into interfaces, application services, domain logic, persistence, and external integrations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d28-a3",
+      "type": "discover",
+      "title": "API Design Lab",
+      "instruction": "Build endpoints for the project requirements.",
+      "content": {
+        "concept": "API design translates application capabilities into clear resources, operations, inputs, and responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d28-a4",
+      "type": "discover",
+      "title": "Architecture Decision Lab",
+      "instruction": "Select components for each project constraint.",
+      "content": {
+        "concept": "Architecture decisions should consider requirements such as maintainability, security, scalability, and deployment needs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

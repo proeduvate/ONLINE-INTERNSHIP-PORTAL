@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 30,
-  "topic": "Day 30 Topic for Python",
+  "topic": "Capstone Demonstration, Review, and Future Enhancements",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Present the capstone architecture, implementation, and key features.",
+    "Evaluate the project against functional and technical requirements.",
+    "Identify realistic improvements for future versions."
   ],
   "activities": [
     {
-      "id": "d30-a01",
+      "id": "d30-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Capstone Storyboard",
+      "instruction": "Arrange the key sections of the project presentation.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A technical demonstration can progress from the problem and architecture to implementation, results, and future improvements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d30-a2",
+      "type": "discover",
+      "title": "Architecture Walkthrough",
+      "instruction": "Trace a request through the completed system.",
+      "content": {
+        "concept": "An architecture walkthrough explains how data and control move between the major components of the capstone.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d30-a3",
+      "type": "discover",
+      "title": "Feature Showcase",
+      "instruction": "Select the implementation that satisfies each requirement.",
+      "content": {
+        "concept": "A project review connects implemented features to the requirements they were designed to satisfy.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d30-a4",
+      "type": "discover",
+      "title": "Future Roadmap Builder",
+      "instruction": "Build a prioritized roadmap for future enhancements.",
+      "content": {
+        "concept": "Future improvements can be organized around scalability, usability, security, performance, and additional functionality.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

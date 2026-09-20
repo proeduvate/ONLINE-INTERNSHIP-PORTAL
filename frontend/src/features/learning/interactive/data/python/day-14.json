@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 14,
-  "topic": "Day 14 Topic for Python",
+  "topic": "Databases with Python and SQL",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain relational database concepts and table relationships.",
+    "Write basic SQL queries for retrieving and modifying data.",
+    "Connect a Python application to a database and execute queries."
   ],
   "activities": [
     {
-      "id": "d14-a01",
+      "id": "d14-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Database Architecture",
+      "instruction": "Explore how an application communicates with a database.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Applications use database connections and SQL queries to store and retrieve persistent data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Table Anatomy",
+      "instruction": "Identify columns, rows, keys, and relationships.",
+      "content": {
+        "concept": "Relational databases organize data into tables connected through keys and relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "SQL Query Builder",
+      "instruction": "Build a query for the requested result.",
+      "content": {
+        "concept": "SQL uses commands such as SELECT, INSERT, UPDATE, and DELETE to manipulate relational data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Query Sequence",
+      "instruction": "Order the database interaction steps.",
+      "content": {
+        "concept": "A database operation typically involves connecting, executing a query, processing results, and managing resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

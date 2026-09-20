@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 2,
-  "topic": "Day 2 Topic for Java",
+  "topic": "Input, Output, and Conditional Statements",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Read user input using Java input utilities.",
+    "Produce formatted console output.",
+    "Implement decisions using if, else if, else, and switch."
   ],
   "activities": [
     {
-      "id": "d02-a01",
+      "id": "d2-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Input and Output Flow",
+      "instruction": "Arrange the input-processing-output steps.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Interactive Java programs commonly receive input, process values, and display results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Scanner Anatomy",
+      "instruction": "Explore the parts of a Scanner input statement.",
+      "content": {
+        "concept": "Scanner provides methods for reading different types of input from sources such as the console.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Condition Matcher",
+      "instruction": "Match each requirement with the correct condition.",
+      "content": {
+        "concept": "Conditional statements execute different code paths based on boolean expressions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Decision Builder",
+      "instruction": "Build a conditional program from the given rules.",
+      "content": {
+        "concept": "A decision structure combines conditions and code blocks to select the appropriate execution path.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-02.json",
-  "practicalTaskRef": "practical-day-02.json",
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

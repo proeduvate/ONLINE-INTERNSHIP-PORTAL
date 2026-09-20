@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 15,
-  "topic": "Day 15 Topic for Java",
+  "topic": "JDBC and Database Connectivity",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the components involved in connecting Java applications to databases.",
+    "Construct a basic JDBC workflow using connections, prepared statements, and result sets.",
+    "Choose safe database interaction patterns that reduce SQL injection risks."
   ],
   "activities": [
     {
-      "id": "d15-a01",
+      "id": "d15-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "JDBC Architecture",
+      "instruction": "Map the Java-to-database connection flow.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "JDBC connects Java applications to relational databases through drivers, connections, statements, and result sets.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "JDBC Workflow",
+      "instruction": "Arrange the database interaction steps.",
+      "content": {
+        "concept": "A typical JDBC operation establishes a connection, prepares a statement, executes it, processes results, and closes resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "Prepared Statement Builder",
+      "instruction": "Build a parameterized SQL operation.",
+      "content": {
+        "concept": "PreparedStatement separates SQL structure from parameter values and helps protect against SQL injection.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "ResultSet Explorer",
+      "instruction": "Identify how query results are processed.",
+      "content": {
+        "concept": "ResultSet provides access to rows returned by a database query and can be traversed using its cursor.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
       }
     }
   ],

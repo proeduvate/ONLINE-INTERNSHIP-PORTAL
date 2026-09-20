@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 9,
-  "topic": "Day 9 Topic for Python",
+  "topic": "Modules, Packages, and Virtual Environments",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Import and organize reusable Python modules.",
+    "Understand package structure and dependency management.",
+    "Create isolated virtual environments for Python projects."
   ],
   "activities": [
     {
-      "id": "d09-a01",
+      "id": "d9-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Module Map",
+      "instruction": "Explore how Python modules connect.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Modules allow Python code to be separated into reusable files and imported when needed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Package Anatomy",
+      "instruction": "Identify the parts of a Python package.",
+      "content": {
+        "concept": "Packages organize related modules into structured project directories.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Import Match",
+      "instruction": "Match import syntax to its result.",
+      "content": {
+        "concept": "Python provides different import forms for accessing modules, functions, classes, and aliases.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Environment Builder",
+      "instruction": "Build an isolated project environment.",
+      "content": {
+        "concept": "Virtual environments isolate project dependencies and reduce conflicts between Python projects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-09.json",
-  "practicalTaskRef": "practical-day-09.json",
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

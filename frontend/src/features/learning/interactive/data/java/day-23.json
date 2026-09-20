@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 23,
-  "topic": "Day 23 Topic for Java",
+  "topic": "Microservices and Service Communication",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the core characteristics of a microservices architecture.",
+    "Identify communication patterns between independent services.",
+    "Design a basic service architecture with separated responsibilities."
   ],
   "activities": [
     {
-      "id": "d23-a01",
+      "id": "d23-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Monolith vs Microservices",
+      "instruction": "Compare the structural components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Microservices split an application into independently deployable services organized around specific responsibilities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d23-a2",
+      "type": "discover",
+      "title": "Service Architecture",
+      "instruction": "Build a multi-service application.",
+      "content": {
+        "concept": "A microservices system can separate domains such as users, orders, payments, and notifications into cooperating services.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d23-a3",
+      "type": "discover",
+      "title": "Communication Selector",
+      "instruction": "Select the suitable communication approach.",
+      "content": {
+        "concept": "Services can communicate synchronously through HTTP APIs or asynchronously through messaging systems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d23-a4",
+      "type": "discover",
+      "title": "Request Flow",
+      "instruction": "Arrange the service-to-service request flow.",
+      "content": {
+        "concept": "A distributed request may pass through multiple services before producing a final response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

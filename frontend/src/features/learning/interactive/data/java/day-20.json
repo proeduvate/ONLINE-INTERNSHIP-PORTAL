@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 20,
-  "topic": "Day 20 Topic for Java",
+  "topic": "Spring Boot and REST API Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure of a Spring Boot REST application.",
+    "Design REST endpoints using controllers and HTTP methods.",
+    "Construct a basic request-to-response flow for a Spring Boot API."
   ],
   "activities": [
     {
-      "id": "d20-a01",
+      "id": "d20-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Spring Boot Architecture",
+      "instruction": "Explore the layers of a REST application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A typical Spring Boot REST application separates request handling, business logic, data access, and persistence responsibilities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "REST Endpoint Anatomy",
+      "instruction": "Explore the parts of a REST endpoint.",
+      "content": {
+        "concept": "A REST endpoint combines a URL path, HTTP method, request data, controller logic, and response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "REST Method Selector",
+      "instruction": "Choose the HTTP method for each operation.",
+      "content": {
+        "concept": "REST APIs commonly use GET for retrieval, POST for creation, PUT or PATCH for updates, and DELETE for removal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "API Flow Builder",
+      "instruction": "Build a complete request-to-response flow.",
+      "content": {
+        "concept": "A Spring Boot request can flow from a controller through service and data layers before returning an HTTP response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

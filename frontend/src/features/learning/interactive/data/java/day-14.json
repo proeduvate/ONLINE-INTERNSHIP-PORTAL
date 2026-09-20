@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 14,
-  "topic": "Day 14 Topic for Java",
+  "topic": "Multithreading and Concurrency",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how threads enable concurrent execution in Java.",
+    "Distinguish between common thread states and synchronization concepts.",
+    "Construct a basic concurrent workflow using ExecutorService and synchronization."
   ],
   "activities": [
     {
-      "id": "d14-a01",
+      "id": "d14-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Thread Lifecycle",
+      "instruction": "Arrange the major thread states in sequence.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A Java thread moves through lifecycle states such as new, runnable, waiting, blocked, and terminated.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Concurrency Concepts",
+      "instruction": "Match each concept to its role.",
+      "content": {
+        "concept": "Concurrency uses threads, executors, synchronization, and shared-state controls to coordinate work.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "Executor Builder",
+      "instruction": "Build a task execution workflow.",
+      "content": {
+        "concept": "ExecutorService manages worker threads and provides a structured way to submit and execute tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Synchronization Lab",
+      "instruction": "Select the protection needed for shared data.",
+      "content": {
+        "concept": "Synchronization helps coordinate access to shared mutable state and prevents certain race conditions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

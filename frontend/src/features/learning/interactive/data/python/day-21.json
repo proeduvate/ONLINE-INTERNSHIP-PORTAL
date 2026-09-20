@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 21,
-  "topic": "Day 21 Topic for Python",
+  "topic": "Advanced Python Architecture with Type Hints, Dataclasses, and Pydantic",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply type hints to make Python code clearer and safer.",
+    "Use dataclasses to model structured application data.",
+    "Create validated data models with Pydantic."
   ],
   "activities": [
     {
-      "id": "d21-a01",
+      "id": "d21-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Type Hint Anatomy",
+      "instruction": "Explore each part of the annotated function.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Type hints describe expected variable, parameter, and return-value types without changing Python's runtime behavior by themselves.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Dataclass Builder",
+      "instruction": "Assemble the fields of a dataclass.",
+      "content": {
+        "concept": "Dataclasses provide a concise way to define classes primarily used for storing structured data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "Validation Matcher",
+      "instruction": "Match each validation rule to its field.",
+      "content": {
+        "concept": "Pydantic models validate and parse external data according to declared field definitions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "Model Selection Lab",
+      "instruction": "Select the appropriate modeling approach.",
+      "content": {
+        "concept": "Type hints, dataclasses, and validation models solve different concerns in application design.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

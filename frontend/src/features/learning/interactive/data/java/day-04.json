@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 4,
-  "topic": "Day 4 Topic for Java",
+  "topic": "Arrays and String Handling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create and access one-dimensional and multidimensional arrays.",
+    "Traverse arrays using loops.",
+    "Manipulate strings using common Java String methods."
   ],
   "activities": [
     {
-      "id": "d04-a01",
+      "id": "d4-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Array Anatomy",
+      "instruction": "Explore indexes, elements, and array length.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "An array stores multiple values of the same type using indexed positions beginning at zero.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Index Explorer",
+      "instruction": "Move through the array to inspect each index.",
+      "content": {
+        "concept": "An array element is accessed by its index, while the length property gives the number of elements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "String Method Matcher",
+      "instruction": "Match each task with the correct String method.",
+      "content": {
+        "concept": "String methods such as length, substring, contains, equals, and toUpperCase support common text operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Array Processing Builder",
+      "instruction": "Build a loop that processes every array element.",
+      "content": {
+        "concept": "Loops can systematically access array elements to calculate, search, filter, or transform data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-04.json",
-  "practicalTaskRef": "practical-day-04.json",
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

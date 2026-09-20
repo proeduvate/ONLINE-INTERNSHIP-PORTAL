@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 18,
-  "topic": "Day 18 Topic for Java",
+  "topic": "Unit Testing with JUnit and Mockito",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the purpose of unit testing in Java applications.",
+    "Create test structures using JUnit assertions and lifecycle methods.",
+    "Use mocks to isolate dependencies during unit testing."
   ],
   "activities": [
     {
-      "id": "d18-a01",
+      "id": "d18-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Test Anatomy",
+      "instruction": "Explore the structure of a unit test.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A unit test prepares inputs, executes the target behavior, and verifies the expected result with assertions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Arrange-Act-Assert",
+      "instruction": "Arrange the test phases correctly.",
+      "content": {
+        "concept": "The Arrange-Act-Assert pattern separates test setup, execution, and verification into clear stages.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "Assertion Selector",
+      "instruction": "Choose the assertion for each scenario.",
+      "content": {
+        "concept": "JUnit provides assertions for checking equality, truth values, nullability, exceptions, and other expected outcomes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Mocking Workflow",
+      "instruction": "Build a service test using a mock dependency.",
+      "content": {
+        "concept": "Mockito can replace real dependencies with controlled mock objects so a unit can be tested in isolation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

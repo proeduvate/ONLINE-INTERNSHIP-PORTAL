@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 3,
-  "topic": "Day 3 Topic for Java",
+  "topic": "Loops and Iteration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Use for, while, and do-while loops for repeated operations.",
+    "Control loop execution with break and continue.",
+    "Choose an appropriate loop structure for a given problem."
   ],
   "activities": [
     {
-      "id": "d03-a01",
+      "id": "d3-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Loop Flow Map",
+      "instruction": "Trace the path of a loop condition.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A loop repeatedly executes a block while its controlling condition permits further iterations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Loop Anatomy",
+      "instruction": "Identify the parts of a for loop.",
+      "content": {
+        "concept": "A for loop typically contains initialization, a condition, an update expression, and a loop body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Loop Selector",
+      "instruction": "Choose the best loop for each scenario.",
+      "content": {
+        "concept": "The choice between for, while, and do-while depends on iteration control and when the condition should be evaluated.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Iteration Slider",
+      "instruction": "Change the loop limit and observe iterations.",
+      "content": {
+        "concept": "Changing initialization, conditions, or updates changes how many times a loop executes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],
-  "assessmentRef": "assessment-day-03.json",
-  "practicalTaskRef": "practical-day-03.json",
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

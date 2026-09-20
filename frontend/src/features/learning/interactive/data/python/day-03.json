@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 3,
-  "topic": "Day 3 Topic for Python",
+  "topic": "Loops and Iteration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how for and while loops repeat program instructions.",
+    "Construct loops using ranges, conditions, and iteration variables.",
+    "Apply break and continue to control loop execution."
   ],
   "activities": [
     {
-      "id": "d03-a01",
+      "id": "d3-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Loop Anatomy",
+      "instruction": "Explore the parts of a Python loop.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Loops repeatedly execute a block of code while iterating over values or checking a condition.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Iteration Sequence",
+      "instruction": "Order the steps of a loop execution.",
+      "content": {
+        "concept": "Each loop iteration evaluates its control logic, executes the body, and moves to the next iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Loop Builder",
+      "instruction": "Build a loop for the given task.",
+      "content": {
+        "concept": "for and while loops provide different approaches for repeating operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Loop Control Lab",
+      "instruction": "Select how each control statement changes execution.",
+      "content": {
+        "concept": "break stops a loop, while continue skips the remaining code in the current iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-03.json",
-  "practicalTaskRef": "practical-day-03.json",
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

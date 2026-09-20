@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 22,
-  "topic": "Day 22 Topic for Java",
+  "topic": "Spring Security and Authentication",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Distinguish authentication from authorization in web applications.",
+    "Identify the main components of a Spring Security request flow.",
+    "Construct a basic protected API workflow using roles and authentication."
   ],
   "activities": [
     {
-      "id": "d22-a01",
+      "id": "d22-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Security Flow Map",
+      "instruction": "Map the authentication and authorization flow.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Spring Security processes incoming requests through authentication, authorization, and security filters before allowing protected resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Authentication Anatomy",
+      "instruction": "Explore the pieces of authentication.",
+      "content": {
+        "concept": "Authentication verifies an identity, while authorization determines which resources that identity can access.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Access Rule Builder",
+      "instruction": "Build access rules for API endpoints.",
+      "content": {
+        "concept": "Security rules can restrict endpoints based on authentication status, roles, or authorities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Security Decision Lab",
+      "instruction": "Select the correct security response.",
+      "content": {
+        "concept": "Protected requests can be accepted or rejected depending on authentication and authorization requirements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 20,
-  "topic": "Day 20 Topic for Python",
+  "topic": "Clean Architecture, SOLID Principles, and Design Patterns",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Separate application responsibilities into maintainable layers.",
+    "Apply SOLID principles to improve Python code design.",
+    "Select suitable design patterns for common software problems."
   ],
   "activities": [
     {
-      "id": "d20-a01",
+      "id": "d20-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Clean Architecture Map",
+      "instruction": "Connect each application layer to its responsibility.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Clean architecture separates business rules from frameworks, interfaces, and infrastructure concerns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "SOLID Principle Matcher",
+      "instruction": "Match each scenario with the relevant SOLID principle.",
+      "content": {
+        "concept": "SOLID principles encourage focused responsibilities, flexible dependencies, and maintainable object-oriented designs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "Layer Builder",
+      "instruction": "Build a layered Python application.",
+      "content": {
+        "concept": "A well-structured application keeps domain logic independent from external frameworks and infrastructure.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "Pattern Selector",
+      "instruction": "Choose a suitable design pattern for each problem.",
+      "content": {
+        "concept": "Design patterns provide reusable approaches for recurring software design problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

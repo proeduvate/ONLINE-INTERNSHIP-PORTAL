@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 13,
-  "topic": "Day 13 Topic for Java",
+  "topic": "Stream API and Advanced Collection Processing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Build stream pipelines using intermediate and terminal operations.",
+    "Apply filter, map, sorted, and reduce operations to collections.",
+    "Select appropriate stream operations for transforming and aggregating data."
   ],
   "activities": [
     {
-      "id": "d13-a01",
+      "id": "d13-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Stream Pipeline Map",
+      "instruction": "Connect the stages of a stream pipeline.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A stream pipeline typically starts with a source, applies intermediate operations, and finishes with a terminal operation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Operation Selector",
+      "instruction": "Choose the operation that solves each task.",
+      "content": {
+        "concept": "Operations such as filter, map, sorted, and reduce solve different collection-processing problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Build the Pipeline",
+      "instruction": "Compose a stream pipeline from the given requirements.",
+      "content": {
+        "concept": "Stream operations can be chained to transform, filter, and aggregate collection data declaratively.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Pipeline Ordering",
+      "instruction": "Arrange the stream operations correctly.",
+      "content": {
+        "concept": "The order of stream operations affects the data flowing through the pipeline and can affect efficiency.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

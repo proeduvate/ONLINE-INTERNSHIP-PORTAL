@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 23,
-  "topic": "Day 23 Topic for Python",
+  "topic": "Security, Authentication, and Secure Python Applications",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify common security risks in Python applications.",
+    "Understand authentication and authorization workflows.",
+    "Apply secure practices for passwords, secrets, and user input."
   ],
   "activities": [
     {
-      "id": "d23-a01",
+      "id": "d23-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Security Threat Map",
+      "instruction": "Connect each threat to its affected application layer.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Application security involves protecting inputs, authentication, authorization, data, dependencies, and secrets.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d23-a2",
+      "type": "discover",
+      "title": "Authentication Flow",
+      "instruction": "Arrange the authentication steps.",
+      "content": {
+        "concept": "Authentication verifies identity before an application grants access to protected resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d23-a3",
+      "type": "discover",
+      "title": "Secure Input Lab",
+      "instruction": "Select the safe handling method for each input.",
+      "content": {
+        "concept": "Untrusted input should be validated and safely handled before it reaches application logic or external systems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d23-a4",
+      "type": "discover",
+      "title": "Access Control Builder",
+      "instruction": "Build the authentication and authorization layers.",
+      "content": {
+        "concept": "Authentication identifies users, while authorization determines which protected actions or resources they can access.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 22,
-  "topic": "Day 22 Topic for Python",
+  "topic": "Performance Optimization and Profiling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify performance bottlenecks in Python programs.",
+    "Use profiling concepts to measure execution time and resource usage.",
+    "Choose appropriate optimization techniques based on measured results."
   ],
   "activities": [
     {
-      "id": "d22-a01",
+      "id": "d22-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Performance Pipeline",
+      "instruction": "Arrange the optimization workflow.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Effective optimization starts with measuring a program, locating bottlenecks, changing the implementation, and measuring again.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Complexity Explorer",
+      "instruction": "Compare how algorithms scale with input size.",
+      "content": {
+        "concept": "Algorithmic complexity helps predict how execution cost changes as input grows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Profiler Anatomy",
+      "instruction": "Identify the important profiling metrics.",
+      "content": {
+        "concept": "Profiling data can reveal functions consuming significant execution time or being called frequently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Optimization Selector",
+      "instruction": "Choose an optimization for each bottleneck.",
+      "content": {
+        "concept": "Optimization strategies should target the measured bottleneck rather than relying on assumptions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 21,
-  "topic": "Day 21 Topic for Java",
+  "topic": "Spring Data JPA and Hibernate",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how JPA and Hibernate map Java objects to database tables.",
+    "Create entity and repository relationships for persistent data.",
+    "Construct a basic CRUD workflow using Spring Data JPA."
   ],
   "activities": [
     {
-      "id": "d21-a01",
+      "id": "d21-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "JPA Architecture Map",
+      "instruction": "Map the persistence components together.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Spring Data JPA connects application entities and repositories with relational database persistence through JPA providers such as Hibernate.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Entity Anatomy",
+      "instruction": "Explore the parts of a JPA entity.",
+      "content": {
+        "concept": "A JPA entity maps a Java class to persistent data using annotations such as Entity and Id.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "Repository Builder",
+      "instruction": "Build a repository for the entity.",
+      "content": {
+        "concept": "Spring Data repositories provide ready-to-use persistence operations and support derived query methods.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "CRUD Flow",
+      "instruction": "Arrange the CRUD operations correctly.",
+      "content": {
+        "concept": "A persistence workflow can create, retrieve, update, and delete entity data through repository operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

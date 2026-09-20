@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 5,
-  "topic": "Day 5 Topic for Python",
+  "topic": "Functions and Modular Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Define and call reusable Python functions.",
+    "Use parameters, return values, and default arguments.",
+    "Break a program into modular functions with clear responsibilities."
   ],
   "activities": [
     {
-      "id": "d05-a01",
+      "id": "d5-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Function Anatomy",
+      "instruction": "Explore the components of a Python function.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A Python function contains a name, parameters, a body, and optionally a return value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Function Flow",
+      "instruction": "Trace arguments through a function.",
+      "content": {
+        "concept": "Arguments provide input to functions, while return statements send results back to the caller.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Function Builder",
+      "instruction": "Assemble a reusable function.",
+      "content": {
+        "concept": "Functions encapsulate reusable logic and reduce repetition within programs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Parameter Match",
+      "instruction": "Match parameters to their function behavior.",
+      "content": {
+        "concept": "Parameters can accept required, default, positional, and keyword arguments.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
       }
     }
   ],
-  "assessmentRef": "assessment-day-05.json",
-  "practicalTaskRef": "practical-day-05.json",
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

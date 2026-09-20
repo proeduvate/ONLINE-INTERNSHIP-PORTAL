@@ -1,31 +1,70 @@
 {
   "curriculum": "Java",
   "day": 1,
-  "topic": "Day 1 Topic for Java",
+  "topic": "Java Fundamentals and Programming Basics",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure and execution flow of a basic Java program.",
+    "Declare variables using appropriate Java data types.",
+    "Use operators and expressions to perform basic computations."
   ],
   "activities": [
     {
-      "id": "d01-a01",
+      "id": "d1-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Java Program Anatomy",
+      "instruction": "Click each code part to reveal its role.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A Java program is organized around classes and methods, with execution beginning from the main method.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Java Execution Flow",
+      "instruction": "Arrange the Java execution steps.",
+      "content": {
+        "concept": "Java source code is compiled into bytecode that runs on the Java Virtual Machine.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Data Type Matcher",
+      "instruction": "Match each value with its suitable Java type.",
+      "content": {
+        "concept": "Java provides primitive types such as int, double, char, and boolean for storing different kinds of values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "Variable Builder",
+      "instruction": "Build valid Java variable declarations.",
+      "content": {
+        "concept": "A variable declaration combines a data type, variable name, and optional initial value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-01.json",
-  "practicalTaskRef": "practical-day-01.json",
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 6,
-  "topic": "Day 6 Topic for Python",
+  "topic": "Strings and Text Processing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Manipulate strings using indexing, slicing, and built-in methods.",
+    "Format dynamic text using modern Python string formatting.",
+    "Apply string processing techniques to practical text-based problems."
   ],
   "activities": [
     {
-      "id": "d06-a01",
+      "id": "d6-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "String Anatomy",
+      "instruction": "Explore the structure of a Python string.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Strings are ordered sequences of characters that support indexing and slicing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d6-a2",
+      "type": "discover",
+      "title": "Slice Explorer",
+      "instruction": "Adjust the indexes to extract text.",
+      "content": {
+        "concept": "String slicing extracts portions of a string using start, stop, and step positions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d6-a3",
+      "type": "discover",
+      "title": "Method Match",
+      "instruction": "Match each string method to its purpose.",
+      "content": {
+        "concept": "Methods such as split, replace, strip, and lower simplify common text-processing tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d6-a4",
+      "type": "discover",
+      "title": "Text Formatter",
+      "instruction": "Build a formatted output string.",
+      "content": {
+        "concept": "F-strings provide a concise way to insert variables and expressions into text.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-06.json",
-  "practicalTaskRef": "practical-day-06.json",
+  "assessmentRef": "assessment-day-6.json",
+  "practicalTaskRef": "practical-day-6.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

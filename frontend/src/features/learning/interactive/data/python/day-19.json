@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 19,
-  "topic": "Day 19 Topic for Python",
+  "topic": "Python Automation and Web Scraping",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify common tasks suitable for Python automation.",
+    "Understand HTTP requests and HTML parsing for data extraction.",
+    "Design a basic automation workflow with validation and error handling."
   ],
   "activities": [
     {
-      "id": "d19-a01",
+      "id": "d19-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Automation Pipeline",
+      "instruction": "Arrange the automation workflow from start to finish.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Automation commonly involves collecting input, processing data, validating results, and producing an output.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Web Request Anatomy",
+      "instruction": "Explore the parts of an HTTP request.",
+      "content": {
+        "concept": "A web request contains components such as a URL, method, headers, parameters, and optional body data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "HTML Selector Lab",
+      "instruction": "Select elements that contain the required data.",
+      "content": {
+        "concept": "HTML parsers can locate elements using tags, attributes, and CSS-style selectors.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Automation Builder",
+      "instruction": "Compose a reliable automation workflow.",
+      "content": {
+        "concept": "A robust automation script combines fetching, extraction, validation, error handling, and output steps.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

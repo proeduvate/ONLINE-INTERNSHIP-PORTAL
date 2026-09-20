@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 25,
-  "topic": "Day 25 Topic for Java",
+  "topic": "CI/CD for Java Applications",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the purpose of continuous integration and continuous delivery.",
+    "Identify the stages of a Java application delivery pipeline.",
+    "Design a basic CI/CD workflow for testing and deploying a Java application."
   ],
   "activities": [
     {
-      "id": "d25-a01",
+      "id": "d25-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "CI/CD Pipeline Map",
+      "instruction": "Connect the stages of the delivery pipeline.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A CI/CD pipeline automates activities such as source validation, building, testing, packaging, and deployment.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Pipeline Sequencer",
+      "instruction": "Arrange the CI/CD stages in order.",
+      "content": {
+        "concept": "A typical Java pipeline checks out code, resolves dependencies, builds the project, runs tests, packages the application, and deploys it.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Quality Gate Selector",
+      "instruction": "Select the correct pipeline quality gate.",
+      "content": {
+        "concept": "Automated tests and quality checks can prevent a build from progressing when required conditions are not satisfied.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "CI/CD Builder",
+      "instruction": "Build a complete Java delivery pipeline.",
+      "content": {
+        "concept": "A CI/CD workflow combines source control, automated builds, tests, artifacts, and deployment into a repeatable delivery process.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

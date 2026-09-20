@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 24,
-  "topic": "Day 24 Topic for Python",
+  "topic": "Dockerizing Python Applications",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how containers package Python applications and dependencies.",
+    "Create the essential components of a Python Docker image.",
+    "Configure environment variables and application ports for containers."
   ],
   "activities": [
     {
-      "id": "d24-a01",
+      "id": "d24-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Container Anatomy",
+      "instruction": "Explore the layers of a containerized application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A container packages an application with its required runtime, dependencies, configuration, and filesystem environment.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d24-a2",
+      "type": "discover",
+      "title": "Dockerfile Sequencer",
+      "instruction": "Arrange the Dockerfile instructions correctly.",
+      "content": {
+        "concept": "A Dockerfile describes how an application image is built from a base image and a sequence of instructions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d24-a3",
+      "type": "discover",
+      "title": "Container Builder",
+      "instruction": "Assemble a deployable Python container.",
+      "content": {
+        "concept": "A Python container typically includes a base image, dependency installation, application code, configuration, and a startup command.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d24-a4",
+      "type": "discover",
+      "title": "Container Configuration Lab",
+      "instruction": "Select the correct container configuration.",
+      "content": {
+        "concept": "Environment variables and exposed ports allow containerized applications to receive configuration and communicate with other services.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

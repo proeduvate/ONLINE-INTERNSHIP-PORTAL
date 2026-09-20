@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 26,
-  "topic": "Day 26 Topic for Java",
+  "topic": "Cloud Deployment and Environment Configuration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the core concepts involved in deploying Java applications to the cloud.",
+    "Configure application settings using environment variables and external configuration.",
+    "Design a deployment workflow that separates development and production environments."
   ],
   "activities": [
     {
-      "id": "d26-a01",
+      "id": "d26-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Cloud Deployment Map",
+      "instruction": "Map the application deployment components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Cloud deployment moves an application from source code to a managed runtime environment accessible through a network.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "Configuration Selector",
+      "instruction": "Select where each setting belongs.",
+      "content": {
+        "concept": "Environment-specific values such as database URLs and credentials should be supplied through external configuration rather than hardcoded in source code.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Deployment Pipeline",
+      "instruction": "Arrange the cloud deployment stages.",
+      "content": {
+        "concept": "A deployment flow commonly builds an artifact or image, configures the environment, starts the application, and verifies its availability.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Environment Builder",
+      "instruction": "Build a production configuration.",
+      "content": {
+        "concept": "Externalized configuration allows the same application artifact to run with different settings across environments.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

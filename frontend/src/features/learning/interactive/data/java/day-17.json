@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 17,
-  "topic": "Day 17 Topic for Java",
+  "topic": "Maven, Gradle, and Dependency Management",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain why Java projects use build and dependency management tools.",
+    "Identify the major components of a Maven or Gradle project.",
+    "Construct a basic dependency and build workflow."
   ],
   "activities": [
     {
-      "id": "d17-a01",
+      "id": "d17-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Build Tool Map",
+      "instruction": "Map each build tool feature to its purpose.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Build tools automate dependency management, compilation, testing, packaging, and other project tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Maven Project Anatomy",
+      "instruction": "Explore the parts of a Maven project.",
+      "content": {
+        "concept": "A Maven project commonly uses pom.xml to define project metadata, dependencies, plugins, and build configuration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Dependency Builder",
+      "instruction": "Build a dependency configuration.",
+      "content": {
+        "concept": "Dependencies allow applications to reuse external libraries while the build tool manages their versions and retrieval.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Build Lifecycle",
+      "instruction": "Arrange the major build stages.",
+      "content": {
+        "concept": "A build lifecycle moves source code through stages such as compilation, testing, packaging, and verification.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

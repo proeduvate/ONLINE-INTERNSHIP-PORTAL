@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 7,
-  "topic": "Day 7 Topic for Python",
+  "topic": "File Handling and Exception Handling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Read from and write to files using Python.",
+    "Handle runtime errors using try, except, else, and finally.",
+    "Build robust programs that respond safely to invalid operations."
   ],
   "activities": [
     {
-      "id": "d07-a01",
+      "id": "d7-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "File Handling Flow",
+      "instruction": "Trace how Python accesses a file.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "File handling involves opening a file, performing an operation, and safely closing the resource.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "File Mode Match",
+      "instruction": "Match each file mode to its operation.",
+      "content": {
+        "concept": "File modes such as read, write, and append determine how a file is accessed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Exception Anatomy",
+      "instruction": "Identify each part of exception handling.",
+      "content": {
+        "concept": "Exception handling separates normal program execution from recovery logic when errors occur.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Error Recovery Builder",
+      "instruction": "Build the correct error-handling flow.",
+      "content": {
+        "concept": "try and except handle errors, while else and finally support successful execution and cleanup.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-07.json",
-  "practicalTaskRef": "practical-day-07.json",
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

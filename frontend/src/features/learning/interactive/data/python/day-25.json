@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 25,
-  "topic": "Day 25 Topic for Python",
+  "topic": "CI/CD and Automated Python Delivery",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the stages of a Python CI/CD pipeline.",
+    "Configure automated testing and quality checks.",
+    "Understand how successful builds can progress toward deployment."
   ],
   "activities": [
     {
-      "id": "d25-a01",
+      "id": "d25-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "CI/CD Pipeline",
+      "instruction": "Arrange the pipeline stages from commit to deployment.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A CI/CD pipeline can automatically validate code, run tests, build artifacts, and deliver applications.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Pipeline Architecture",
+      "instruction": "Connect the components of a CI/CD system.",
+      "content": {
+        "concept": "CI/CD combines source control, automated checks, build processes, artifacts, and deployment environments.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Quality Gate Matcher",
+      "instruction": "Match each quality check to its purpose.",
+      "content": {
+        "concept": "Linting, testing, type checking, and security checks catch different categories of development problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "Pipeline Builder",
+      "instruction": "Build a complete automated Python pipeline.",
+      "content": {
+        "concept": "A reliable pipeline defines automated validation and delivery steps that run consistently for code changes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

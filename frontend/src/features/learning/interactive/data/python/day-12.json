@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 12,
-  "topic": "Day 12 Topic for Python",
+  "topic": "Regular Expressions and Text Processing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify common regular expression patterns and metacharacters.",
+    "Use Python's re module to search, match, and replace text.",
+    "Build patterns for validating and extracting structured information."
   ],
   "activities": [
     {
-      "id": "d12-a01",
+      "id": "d12-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Regex Anatomy",
+      "instruction": "Explore the parts of a regular expression.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Regular expressions describe text patterns using characters, groups, quantifiers, and anchors.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Pattern Match",
+      "instruction": "Match patterns to the text they recognize.",
+      "content": {
+        "concept": "Regex patterns can identify specific structures such as numbers, words, emails, and repeated characters.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Regex Builder",
+      "instruction": "Build a pattern for the target text.",
+      "content": {
+        "concept": "Regex patterns can be composed from character classes, quantifiers, groups, and anchors.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Pattern Tester",
+      "instruction": "Adjust the pattern and inspect matching text.",
+      "content": {
+        "concept": "Testing a regular expression against sample text helps verify whether the pattern captures the intended data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],

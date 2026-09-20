@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 19,
-  "topic": "Day 19 Topic for Java",
+  "topic": "Spring Framework Fundamentals and Dependency Injection",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain inversion of control and dependency injection.",
+    "Identify common Spring components and their responsibilities.",
+    "Construct a basic dependency-injection flow using Spring-managed components."
   ],
   "activities": [
     {
-      "id": "d19-a01",
+      "id": "d19-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Spring Architecture Map",
+      "instruction": "Map the major Spring concepts.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Spring provides an application framework built around concepts such as the IoC container, dependency injection, configuration, and managed components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Dependency Injection Flow",
+      "instruction": "Arrange how dependencies are provided.",
+      "content": {
+        "concept": "Dependency injection lets a container create and provide required objects instead of requiring classes to construct their dependencies directly.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Bean Selector",
+      "instruction": "Select the appropriate Spring component.",
+      "content": {
+        "concept": "Spring annotations such as Component, Service, Repository, and Controller identify application components managed by the container.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "DI Container Builder",
+      "instruction": "Compose a simple dependency graph.",
+      "content": {
+        "concept": "The Spring IoC container manages object creation and connects collaborating components according to configuration and dependency relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

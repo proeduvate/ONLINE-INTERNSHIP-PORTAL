@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 27,
-  "topic": "Day 27 Topic for Python",
+  "topic": "Logging, Monitoring, and Observability",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Implement structured logging for Python applications.",
+    "Distinguish logs, metrics, and traces in application monitoring.",
+    "Design an observability workflow for diagnosing application issues."
   ],
   "activities": [
     {
-      "id": "d27-a01",
+      "id": "d27-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Observability Map",
+      "instruction": "Connect each observability signal to its purpose.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Logs, metrics, and traces provide complementary views of application behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "discover",
+      "title": "Log Anatomy",
+      "instruction": "Identify the important parts of a structured log.",
+      "content": {
+        "concept": "Useful logs include information such as timestamps, severity, context, and meaningful event details.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Signal Matcher",
+      "instruction": "Match each problem with the most useful signal.",
+      "content": {
+        "concept": "Different operational questions are better answered by logs, metrics, or traces depending on the problem.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "discover",
+      "title": "Monitoring Workflow",
+      "instruction": "Build a workflow for detecting and diagnosing failures.",
+      "content": {
+        "concept": "Monitoring workflows combine detection, investigation, diagnosis, and corrective action.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

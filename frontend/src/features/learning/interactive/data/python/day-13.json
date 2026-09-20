@@ -1,26 +1,65 @@
 {
   "curriculum": "Python",
   "day": 13,
-  "topic": "Day 13 Topic for Python",
+  "topic": "Working with JSON, APIs, and HTTP Requests",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Parse and generate JSON data using Python.",
+    "Explain the basic structure of HTTP requests and responses.",
+    "Consume data from REST APIs using Python."
   ],
   "activities": [
     {
-      "id": "d13-a01",
+      "id": "d13-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "JSON Anatomy",
+      "instruction": "Explore the structure of a JSON object.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "JSON represents structured data using objects, arrays, strings, numbers, booleans, and null values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "JSON-Python Match",
+      "instruction": "Match JSON structures to Python types.",
+      "content": {
+        "concept": "Python dictionaries, lists, strings, numbers, booleans, and None map naturally to JSON data types.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "HTTP Request Flow",
+      "instruction": "Order the API request and response steps.",
+      "content": {
+        "concept": "An HTTP client sends a request to a server, which processes it and returns a response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "API Request Builder",
+      "instruction": "Build a valid API request.",
+      "content": {
+        "concept": "API requests can include methods, URLs, headers, parameters, and request bodies.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

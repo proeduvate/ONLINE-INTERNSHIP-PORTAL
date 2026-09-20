@@ -1,26 +1,65 @@
 {
   "curriculum": "Java",
   "day": 29,
-  "topic": "Day 29 Topic for Java",
+  "topic": "Capstone Testing, Documentation, and Optimization",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create a testing strategy covering important application layers.",
+    "Identify documentation required for a production-ready Java project.",
+    "Select optimization and quality improvements based on application requirements."
   ],
   "activities": [
     {
-      "id": "d29-a01",
+      "id": "d29-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Testing Strategy Map",
+      "instruction": "Map tests to application layers.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A capstone testing strategy can combine unit, integration, API, and end-to-end tests according to the system's risks and requirements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Test Type Selector",
+      "instruction": "Choose the appropriate test type.",
+      "content": {
+        "concept": "Different test types validate different boundaries, from individual methods to complete user workflows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Production Checklist",
+      "instruction": "Build the project readiness checklist.",
+      "content": {
+        "concept": "Production readiness can include testing, security, configuration, documentation, logging, error handling, and deployment verification.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Optimization Lab",
+      "instruction": "Adjust the application performance factors.",
+      "content": {
+        "concept": "Performance improvements can target database queries, algorithms, network calls, resource usage, and application configuration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],

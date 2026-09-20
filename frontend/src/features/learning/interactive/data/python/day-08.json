@@ -1,31 +1,70 @@
 {
   "curriculum": "Python",
   "day": 8,
-  "topic": "Day 8 Topic for Python",
+  "topic": "Object-Oriented Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create classes and objects using Python.",
+    "Apply encapsulation, inheritance, and polymorphism to program designs.",
+    "Model real-world entities using object-oriented structures."
   ],
   "activities": [
     {
-      "id": "d08-a01",
+      "id": "d8-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "OOP Concept Map",
+      "instruction": "Connect OOP concepts to their roles.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Object-oriented programming organizes software around objects that combine data and behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Class Anatomy",
+      "instruction": "Explore the components of a Python class.",
+      "content": {
+        "concept": "A class defines attributes and methods that describe the state and behavior of objects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Object Builder",
+      "instruction": "Construct objects from a class.",
+      "content": {
+        "concept": "Objects are instances of classes and can maintain their own state.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "OOP Principle Match",
+      "instruction": "Match each example to an OOP principle.",
+      "content": {
+        "concept": "Encapsulation, inheritance, and polymorphism support reusable and organized object-oriented designs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
       }
     }
   ],
-  "assessmentRef": "assessment-day-08.json",
-  "practicalTaskRef": "practical-day-08.json",
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true
