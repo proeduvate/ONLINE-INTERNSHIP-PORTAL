@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, LineChart, Line } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Headset, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, TrendingUp, CheckCircle } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
@@ -13,7 +13,39 @@ import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Overview");
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Cohort", "Evaluations", "Tickets", "Programs", 
+    "Bonus Airdrops", "Credentials", "Breakout Rooms", "My Profile"
+  ];
+
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cleanSegment === "myinterns") return "Cohort";
+    if (cleanSegment === "submissions") return "Evaluations";
+    if (cleanSegment === "livemeeting") return "Breakout Rooms";
+    if (cleanSegment === "profile" || cleanSegment === "myprofile") return "My Profile";
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab !== tabName) {
+         setActiveTab(tabName);
+      }
+    }
+  }, [location.pathname]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting");
   const [isMeetingActive, setIsMeetingActive] = useState(() => {
@@ -495,6 +527,17 @@ export default function MentorDashboard() {
     window.location.href = "/login";
   };
 
+  const handleTabClick = (tabId) => {
+    const canonical = canonicalTabs.find(t => t.toLowerCase() === tabId.toLowerCase()) || tabId;
+    setActiveTab(canonical);
+    let slug = canonical.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (canonical === "Cohort") slug = "myinterns";
+    if (canonical === "Evaluations") slug = "submissions";
+    if (canonical === "Breakout Rooms") slug = "livemeeting";
+    if (canonical === "My Profile") slug = "profile";
+    navigate(`/mentor/${slug}`);
+  };
+
   const handleSendChatMessage = (e) => {
     e.preventDefault();
     if (!currentMessage.trim()) return;
@@ -765,7 +808,7 @@ export default function MentorDashboard() {
                         <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{ticket.subject}</p>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
                            <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.user}</span>
-                           <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "11px" }} onClick={() => { setActiveTab("Tickets"); setSelectedTicket(ticket); }}>View Ticket</button>
+                           <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "11px" }} onClick={() => { handleTabClick("Tickets"); setSelectedTicket(ticket); }}>View Ticket</button>
                         </div>
                       </div>
                     ))
@@ -791,7 +834,7 @@ export default function MentorDashboard() {
                             onClick={() => {
                               setIsMeetingActive(true);
                               localStorage.setItem("breakout_meeting_active", "true");
-                              setActiveTab("Breakout Rooms");
+                              handleTabClick("Breakout Rooms");
                             }}
                             className="btn btn-primary"
                             style={{ padding: "4px 8px", fontSize: "11px", borderRadius: "4px" }}
@@ -872,7 +915,7 @@ export default function MentorDashboard() {
                             onClick={() => {
                               setIsMeetingActive(true);
                               localStorage.setItem("breakout_meeting_active", "true");
-                              setActiveTab("Breakout Rooms");
+                              handleTabClick("Breakout Rooms");
                             }} 
                             className="btn btn-primary" 
                             style={{ padding: "4px 8px", fontSize: "12px" }}
@@ -2037,7 +2080,7 @@ export default function MentorDashboard() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -2122,7 +2165,7 @@ export default function MentorDashboard() {
                   <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
                 </div>
                 <button
-                  onClick={() => { setActiveTab("My Profile"); setIsProfileDropdownOpen(false); }}
+                  onClick={() => { handleTabClick("My Profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "11px 16px", backgroundColor: "transparent", border: "none", color: "#334155", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500" }}
                   onMouseOver={e => e.currentTarget.style.backgroundColor = "#f1f5f9"}
                   onMouseOut={e => e.currentTarget.style.backgroundColor = "transparent"}
@@ -2152,7 +2195,7 @@ export default function MentorDashboard() {
                 onLeaveMeeting={() => {
                   setIsMeetingActive(false);
                   localStorage.setItem("breakout_meeting_active", "false");
-                  setActiveTab("Overview");
+                  handleTabClick("Overview");
                 }}
               />
             </div>
@@ -2187,7 +2230,7 @@ export default function MentorDashboard() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button 
-                onClick={() => setActiveTab("Breakout Rooms")}
+                onClick={() => handleTabClick("Breakout Rooms")}
                 style={{ background: "none", border: "none", color: "#b5bac1", cursor: "pointer", fontSize: "16px", padding: "2px 4px" }}
                 title="Maximize to full meeting screen"
               >
@@ -2197,7 +2240,7 @@ export default function MentorDashboard() {
           </div>
 
           <div 
-            onClick={() => setActiveTab("Breakout Rooms")}
+            onClick={() => handleTabClick("Breakout Rooms")}
             style={{ padding: "20px 16px", textAlign: "center", backgroundColor: "#111214", cursor: "pointer" }}
           >
             <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "#5865f2", color: "#fff", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "18px", margin: "0 auto 8px auto", boxShadow: "0 0 12px rgba(88,101,242,0.5)" }}>
@@ -2208,10 +2251,10 @@ export default function MentorDashboard() {
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: "#2b2d31", gap: "8px" }}>
-            <button onClick={() => setActiveTab("Breakout Rooms")} style={{ flex: 1, backgroundColor: "#5865f2", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+            <button onClick={() => handleTabClick("Breakout Rooms")} style={{ flex: 1, backgroundColor: "#5865f2", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
               <span>Return</span> <Maximize2 size={14} />
             </button>
-            <button onClick={() => { setIsMeetingActive(false); setActiveTab("Overview"); }} style={{ backgroundColor: "#da373c", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
+            <button onClick={() => { setIsMeetingActive(false); handleTabClick("Overview"); }} style={{ backgroundColor: "#da373c", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
               Leave
             </button>
           </div>

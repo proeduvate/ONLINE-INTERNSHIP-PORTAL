@@ -10,8 +10,7 @@ import Apply from "./pages/onboarding/Apply";
 import Status from "./pages/onboarding/Status";
 import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
-import AdminOnboardingList from "./pages/admin/onboarding/AdminOnboardingList";
-import AdminOnboardingDetails from "./pages/admin/onboarding/AdminOnboardingDetails";
+
 import InternDetails from "./pages/Dashboard/InternDetails";
 import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
@@ -31,18 +30,10 @@ function App() {
             <Route path="/onboarding/payment" element={<Payment />} />
             <Route path="/onboarding/documents" element={<Documents />} />
             <Route
-              path="/intern"
+              path="/intern/*"
               element={
                 <ProtectedRoute roles={["intern"]}>
                   <InternDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mentor"
-              element={
-                <ProtectedRoute roles={["mentor"]}>
-                  <MentorDashboard />
                 </ProtectedRoute>
               }
             />
@@ -63,26 +54,19 @@ function App() {
               }
             />
             <Route
-              path="/admin"
+              path="/mentor/*"
+              element={
+                <ProtectedRoute roles={["mentor"]}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/*"
               element={
                 <ProtectedRoute roles={["admin"]}>
                   <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/onboarding"
-              element={
-                <ProtectedRoute roles={["admin"]}>
-                  <AdminOnboardingList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/onboarding/:id"
-              element={
-                <ProtectedRoute roles={["admin"]}>
-                  <AdminOnboardingDetails />
                 </ProtectedRoute>
               }
             />

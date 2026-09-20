@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
@@ -18,9 +19,53 @@ import { useAuth } from "../../services/AuthContext";
 const getArraySafe = (arr) => Array.isArray(arr) ? arr : [];
 
 export default function InternDashboard() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Learning", "Daily Scenario", "Progress & Certificate", 
+    "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
+  ];
+
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("Overview");
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab !== tabName) {
+         setActiveTab(tabName);
+      }
+      if (tabName === "Learning") {
+        if (parts[3] === "live-meetings") {
+          setActiveLearningTab("Live Meetings");
+        } else if (parts[3] === "ai-client") {
+          setActiveLearningTab("AI Client");
+        } else if (parts[3] === "reading-materials") {
+          setActiveLearningTab("Reading Materials");
+        }
+      } else if (tabName === "Progress & Certificate" || tabName === "Progress") {
+        if (parts[3] === "certificate") {
+          setShowCertificateView(true);
+        } else {
+          setShowCertificateView(false);
+        }
+      }
+    }
+  }, [location.pathname]);
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -203,6 +248,8 @@ export default function InternDashboard() {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
+    const slug = tabId.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    navigate(`/intern/${slug}`);
     if (isMeetingActive) {
       setIsMeetingMinimized(true);
     }
@@ -741,7 +788,7 @@ export default function InternDashboard() {
               <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
-                  <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
+                  <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => handleTabClick("Progress & Certificate")}>View Path &rarr;</span>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "flex-start", paddingTop: "10px" }}>

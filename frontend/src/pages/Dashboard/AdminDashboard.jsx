@@ -1,20 +1,55 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 import AdminLeaderboard from "./AdminLeaderboard";
 import AdminProfile from "./AdminProfile";
-import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboardingList";
+import AdminOnboardingList from "../admin/onboarding/AdminOnboardingList";
+import AdminOnboardingDetails from "../admin/onboarding/AdminOnboardingDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Overview");
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Analytics", "Onboarding", "Users", 
+    "Programs", "Credentials", "Tickets", "Bonus Airdrops", "Leaderboard", "Profile"
+  ];
+
+  const isSameDomain = (d1, d2) => {
+    if (!d1 || !d2) return false;
+    const clean = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+    return clean(d1) === clean(d2);
+  };
+
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab !== tabName) {
+         setActiveTab(tabName);
+      }
+    }
+  }, [location.pathname]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -22,6 +57,13 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     navigate("/login");
+  };
+
+  const handleTabClick = (tabId) => {
+    const canonical = canonicalTabs.find(t => t.toLowerCase() === tabId.toLowerCase()) || tabId;
+    setActiveTab(canonical);
+    const slug = canonical.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    navigate(`/admin/${slug}`);
   };
 
   const mockNotifications = [
@@ -193,8 +235,17 @@ export default function AdminDashboard() {
         }
 
         const domainMap = {};
-        if (domainsRes && domainsRes.data) {
+        if (domainsRes && domainsRes.data && domainsRes.data.length > 0) {
           domainsRes.data.forEach(d => { domainMap[d.id] = d.name; });
+          const mappedDomains = domainsRes.data.map(d => ({
+            id: d.id,
+            name: d.name,
+            duration: d.duration || "8 Weeks",
+            interns: usersRes.data ? usersRes.data.filter(u => u.domain_id === d.id && u.role?.toLowerCase() === 'intern').length : 0,
+            mentors: usersRes.data ? usersRes.data.filter(u => u.domain_id === d.id && u.role?.toLowerCase() === 'mentor').length : 0,
+            status: "Active"
+          }));
+          setDomainsList(mappedDomains);
         }
 
         if (usersRes.data && usersRes.data.length > 0) {
@@ -215,8 +266,8 @@ export default function AdminDashboard() {
             id: t.id,
             title: t.title,
             difficulty: t.difficulty || "Medium",
-            deadline: `${t.deadline_days} Days`,
-            domain: domainMap[t.domain_id] || "Unknown",  
+            deadline: `${t.deadline_days || 1} Days`,
+            domain: t.domain_name || domainMap[t.domain_id] || "Unknown",  
             status: "Active",
             task_type: t.task_type || "curriculum",
             domain_id: t.domain_id
@@ -713,7 +764,7 @@ export default function AdminDashboard() {
                         <div 
                           key={ticket.id}
                           onClick={() => {
-                            setActiveTab("tickets");
+                            handleTabClick("Tickets");
                             setSelectedTicket(ticket);
                           }}
                           style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
@@ -1093,7 +1144,7 @@ export default function AdminDashboard() {
                         <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
                       </thead>
                       <tbody>
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'curriculum').map((t) => (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'curriculum').map((t) => (
                           <tr key={t.id}>
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
                             <td><b>{t.title}</b></td>
@@ -1101,7 +1152,7 @@ export default function AdminDashboard() {
                             <td>{t.deadline}</td>
                           </tr>
                         ))}
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'curriculum').length === 0 && (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'curriculum').length === 0 && (
                           <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No curriculum tasks assigned to this domain yet.</td></tr>
                         )}
                       </tbody>
@@ -1116,7 +1167,7 @@ export default function AdminDashboard() {
                         <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
                       </thead>
                       <tbody>
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'coding').map((t) => (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'coding').map((t) => (
                           <tr key={t.id}>
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
                             <td><b>{t.title}</b></td>
@@ -1124,7 +1175,7 @@ export default function AdminDashboard() {
                             <td>{t.deadline}</td>
                           </tr>
                         ))}
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'coding').length === 0 && (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'coding').length === 0 && (
                           <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No coding assessments assigned to this domain yet.</td></tr>
                         )}
                       </tbody>
@@ -1139,7 +1190,7 @@ export default function AdminDashboard() {
                         <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
                       </thead>
                       <tbody>
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'mcq').map((t) => (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'mcq').map((t) => (
                           <tr key={t.id}>
                             <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
                             <td><b>{t.title}</b></td>
@@ -1147,7 +1198,7 @@ export default function AdminDashboard() {
                             <td>{t.deadline}</td>
                           </tr>
                         ))}
-                        {tasks.filter(t => t.domain === selectedProgramDomain && t.task_type === 'mcq').length === 0 && (
+                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'mcq').length === 0 && (
                           <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No MCQs assigned to this domain yet.</td></tr>
                         )}
                       </tbody>
@@ -1277,6 +1328,9 @@ export default function AdminDashboard() {
         );
 
       case "Onboarding":
+        if (pathParts[3]) {
+          return <AdminOnboardingDetails id={pathParts[3]} />;
+        }
         return <AdminOnboardingList />;
 
       case "Tickets":
@@ -1548,7 +1602,7 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id);
+                  handleTabClick(tab.id);
                   if (tab.id === "Bonus Airdrops") setSelectedAirdrop(null);
                 }}
                 style={{
@@ -1625,7 +1679,7 @@ export default function AdminDashboard() {
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
                 <button 
-                  onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
+                  onClick={() => { handleTabClick("Profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#475569", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
                   onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
