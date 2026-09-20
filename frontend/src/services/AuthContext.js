@@ -12,13 +12,16 @@ export const AuthProvider = ({ children }) => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    const response = await fetch(`${API_BASE}/profile`, {
+                    const response = await fetch(`${API_BASE}/api/auth/me`, {
                         headers: {
                             'Authorization': `Bearer ${authToken}`
                         }
                     });
                     if (response.ok) {
                         const userData = await response.json();
+                        if (userData && userData.role) {
+                            userData.role = userData.role.toLowerCase();
+                        }
                         setUser(userData);
                     } else {
                         console.error('Failed to fetch user data with token, logging out.');
@@ -38,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE}/login`, {
+            const response = await fetch(`${API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,10 +55,15 @@ export const AuthProvider = ({ children }) => {
             }
 
             const data = await response.json();
+            const userObj = data.user || data; // Fallback in case it's flat
+            
+            const normalizedRole = userObj.role ? userObj.role.toLowerCase() : "";
+
             localStorage.setItem('authToken', data.access_token);
-            localStorage.setItem('role', data.role);
+            localStorage.setItem('role', normalizedRole);
             setAuthToken(data.access_token);
-            const userData = { role: data.role, name: data.name, email: data.email };
+            
+            const userData = { role: normalizedRole, name: userObj.full_name || userObj.name, email: userObj.email };
             setUser(userData);
             return userData;
         } finally {

@@ -62,11 +62,10 @@ export default function AdminOnboardingDetails() {
         try {
             const data = { required: isRequired };
             if (isRequired) {
-                if (!meetLink || !scheduledTime) {
-                    alert("Please provide both meet link and scheduled time.");
+                if (!scheduledTime) {
+                    alert("Please provide the scheduled time.");
                     return;
                 }
-                data.meet_link = meetLink;
                 data.scheduled_time = scheduledTime;
             } else {
                 if (!paymentFormLink) {
@@ -78,29 +77,13 @@ export default function AdminOnboardingDetails() {
             await api.post(`/api/v1/onboarding/${id}/interview`, data);
             
             if (isRequired) {
-                try {
-                    const templateParams = {
-                        intern_name: app.name,
-                        to_email: app.email,
-                        meet_link: meetLink,
-                        scheduled_time: new Date(scheduledTime).toLocaleString()
-                    };
-                    await emailjs.send(
-                        'service_tcpvv7r',
-                        'template_mpcare4',
-                        templateParams,
-                        'AUbUjQbyafx3K-_aP'
-                    );
-                    alert("Interview scheduled and email sent successfully");
-                } catch (e) {
-                    console.error("Failed to send email", e);
-                    alert("Interview scheduled, but failed to send email.");
-                }
+                alert("Interview scheduled and emails sent successfully via backend");
             }
             
             refreshApp();
         } catch (error) {
             console.error("Error submitting decision", error);
+            alert("Error scheduling interview: " + (error.response?.data?.detail || error.message));
         }
     };
 
@@ -244,7 +227,6 @@ export default function AdminOnboardingDetails() {
                         {app.status === ONBOARDING_STATUSES.PENDING_REVIEW && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                    <input type="text" placeholder="Meet Link" className="input-field" value={meetLink} onChange={e => setMeetLink(e.target.value)} />
                                     <input type="datetime-local" className="input-field" value={scheduledTime} onChange={e => setScheduledTime(e.target.value)} />
                                     <button className="btn btn-primary" onClick={() => handleInterviewDecision(true)}>Require Interview & Schedule</button>
                                 </div>

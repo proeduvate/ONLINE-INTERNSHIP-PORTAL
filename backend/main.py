@@ -85,12 +85,15 @@ app = FastAPI(
 
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
-app.include_router(airdrops.router, prefix="/api/airdrops", tags=["Airdrops"])
+app.include_router(airdrops.router, tags=["Airdrops"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
-app.include_router(onboarding.router, prefix="/api/onboarding", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
 # Meetings uses a custom prefix internally for WS, but we'll register the router
 app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
 app.include_router(certificates.router)
+app.include_router(tasks.router)
+from routers import notifications
+app.include_router(notifications.router)
 
 app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
 app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])

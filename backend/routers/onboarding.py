@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form, UploadFile, File
 from sqlalchemy.orm import Session
 from database import get_db
+from dependencies import get_current_user
 from services.document_service import document_service
 import models
 import schemas
@@ -24,6 +25,24 @@ def apply_for_onboarding(
     resume: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
+    from services.supabase_service import supabase_service
+    import uuid
+
+    resume_url = None
+    if resume:
+        try:
+            content = resume.file.read()
+            # Generate a unique filename to avoid overwrites
+            ext = resume.filename.split('.')[-1] if '.' in resume.filename else 'pdf'
+            unique_filename = f"{uuid.uuid4().hex}_{name.replace(' ', '_')}.{ext}"
+            uploaded_url = supabase_service.upload_file(content, bucket_name="resumes", filename=unique_filename, content_type=resume.content_type)
+            if uploaded_url:
+                resume_url = uploaded_url
+            else:
+                resume_url = resume.filename  # Fallback
+        finally:
+            resume.file.close()
+
     # Create the new application object
     new_app = models.OnboardingApplication(
         name=name,
@@ -34,7 +53,7 @@ def apply_for_onboarding(
         degree=degree,
         graduation_year=graduation_year,
         domain=domain,
-        resume_url=resume.filename if resume else None,
+        resume_url=resume_url,
         status=models.ApplicationStatus.PENDING_REVIEW
     )
     db.add(new_app)
@@ -84,7 +103,11 @@ class StatusUpdate(BaseModel):
 
 @router.get("/applications/{application_id}")
 def get_application_details(application_id: str, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    try:
+        app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid application ID format")
+        
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -121,7 +144,12 @@ class InterviewReq(BaseModel):
     payment_form_link: Optional[str] = None
 
 @router.post("/{application_id}/interview")
-def schedule_interview(application_id: str, req: InterviewReq, db: Session = Depends(get_db)):
+def schedule_interview(
+    application_id: str, 
+    req: InterviewReq, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_user)
+):
     app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
@@ -129,11 +157,50 @@ def schedule_interview(application_id: str, req: InterviewReq, db: Session = Dep
     
     if req.required:
         db_app.status = models.ApplicationStatus.INTERVIEW_SCHEDULED
+        
+        if not req.scheduled_time:
+            raise HTTPException(status_code=400, detail="Scheduled time is required for interview")
+            
+        # Generate daily link based on date portion of scheduled time (e.g. YYYY-MM-DD)
+        date_part = req.scheduled_time.split("T")[0]
+        generated_meet_link = f"http://localhost:3000/meeting/interview-{date_part}"
+        
+        from services.email_service import dispatch_notification, EventType
+        
+        # 1. Email the Intern
+        dispatch_notification(
+            recipient_email=db_app.email,
+            event_type=EventType.MEETING_SCHEDULED,
+            title="Interview Scheduled",
+            message=f"Hi {db_app.name}, your interview is scheduled at {req.scheduled_time}. Join using the link.",
+            action_url=generated_meet_link,
+            sender_name="ProEduvate Onboarding"
+        )
+        
+        # 2. Email the logged-in Admin
+        dispatch_notification(
+            recipient_email=current_user.email,
+            event_type=EventType.MEETING_SCHEDULED,
+            title="Interview Scheduled (Admin Copy)",
+            message=f"You scheduled an interview for {db_app.name} at {req.scheduled_time}. Link: {generated_meet_link}",
+            action_url=generated_meet_link,
+            sender_name="ProEduvate System"
+        )
+        
+        # 3. Email the main ProEduvate account
+        dispatch_notification(
+            recipient_email="proeduvate@gmail.com",
+            event_type=EventType.MEETING_SCHEDULED,
+            title="Interview Scheduled (System Copy)",
+            message=f"An interview for {db_app.name} was scheduled by {current_user.name} at {req.scheduled_time}. Link: {generated_meet_link}",
+            action_url=generated_meet_link,
+            sender_name="ProEduvate System"
+        )
     else:
         db_app.status = models.ApplicationStatus.PAYMENT_PENDING
         
     db.commit()
-    return {"message": "Interview decision recorded"}
+    return {"message": "Interview decision recorded and emails sent."}
 
 class InterviewRes(BaseModel):
     passed: bool
@@ -257,7 +324,19 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
         db_app.status = models.ApplicationStatus.ACTIVE
         db.commit()
         
+        from services.email_service import dispatch_notification, EventType
+        login_url = "http://localhost:3000/login"
+        dispatch_notification(
+            recipient_email=new_user.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Account Activated",
+            message=f"Your account has been activated. Your default password is: {default_pwd}. Please login and change your password.",
+            action_url=login_url,
+            sender_name="ProEduvate System"
+        )
+        
         return {"message": "Account created successfully", "password": default_pwd}
+
         
     db_app.status = models.ApplicationStatus.ACTIVE
     db.commit()
@@ -274,14 +353,17 @@ def sign_document_inline(application_id: str, req: SignDocumentReq, db: Session 
         raise HTTPException(status_code=404, detail="Application not found")
     
     if req.document_type == "offer_letter":
-        # Mock saving the signed document
-        db_app.signed_offer_letter_url = f"https://example.com/signed_offer_{app_id}.pdf"
+        # Generate the signed offer letter and upload it
+        signed_url = document_service.process_signed_document_generation(db_app, "offer_letter", req.signature_base64)
+        db_app.signed_offer_letter_url = signed_url
     elif req.document_type == "tc":
-        db_app.signed_tc_url = f"https://example.com/signed_tc_{app_id}.pdf"
+        # Generate the signed T&C and upload it
+        signed_url = document_service.process_signed_document_generation(db_app, "tc", req.signature_base64)
+        db_app.signed_tc_url = signed_url
         
     # If both are signed, update status
     if db_app.signed_offer_letter_url and db_app.signed_tc_url:
         db_app.status = models.ApplicationStatus.DOCUMENTS_UPLOADED
         
     db.commit()
-    return {"message": "Document signed successfully"}
+    return {"message": "Document signed successfully", "url": signed_url}

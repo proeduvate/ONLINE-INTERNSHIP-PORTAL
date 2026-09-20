@@ -20,8 +20,8 @@ class DocumentService:
         new_id = f"PE-{year}-{user.id:04d}"
         return new_id
 
-    def generate_offer_letter_pdf(self, user) -> str:
-        """Generates the offer letter PDF and saves to a temporary file."""
+    def generate_offer_letter_pdf(self, user, signature_base64=None) -> str:
+        """Generates the offer letter PDF and saves to a temporary file, optionally adding a signature."""
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", "B", 20)
@@ -54,17 +54,33 @@ class DocumentService:
             f"Your internship is scheduled to commence on {start} and will conclude on {end}. "
             f"Please carefully review the attached terms and conditions. If you accept this offer, please sign and return the documents.\n\n"
             f"Welcome to the team!\n\n"
-            f"Sincerely,\\n"
+            f"Sincerely,\n"
             f"The ProEduvate Team"
         )
         pdf.multi_cell(0, 10, content)
+
+        if signature_base64:
+            import base64
+            if "," in signature_base64:
+                encoded = signature_base64.split(",", 1)[1]
+            else:
+                encoded = signature_base64
+            sig_data = base64.b64decode(encoded)
+            sig_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+            sig_file.write(sig_data)
+            sig_file.close()
+
+            pdf.ln(15)
+            pdf.cell(0, 10, "Accepted and Agreed by:", ln=True)
+            pdf.image(sig_file.name, x=10, w=50)
+            os.remove(sig_file.name)
         
         tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(tmp_file.name)
         return tmp_file.name
 
-    def generate_terms_and_conditions_pdf(self, user) -> str:
-        """Generates the T&C PDF and saves to a temporary file."""
+    def generate_terms_and_conditions_pdf(self, user, signature_base64=None) -> str:
+        """Generates the T&C PDF and saves to a temporary file, optionally adding a signature."""
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", "B", 20)
@@ -96,6 +112,22 @@ class DocumentService:
             f"6. Termination: Either party may terminate this internship at any time, with or without cause, by providing written notice."
         )
         pdf.multi_cell(0, 10, content)
+
+        if signature_base64:
+            import base64
+            if "," in signature_base64:
+                encoded = signature_base64.split(",", 1)[1]
+            else:
+                encoded = signature_base64
+            sig_data = base64.b64decode(encoded)
+            sig_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+            sig_file.write(sig_data)
+            sig_file.close()
+
+            pdf.ln(15)
+            pdf.cell(0, 10, "Accepted and Agreed by:", ln=True)
+            pdf.image(sig_file.name, x=10, w=50)
+            os.remove(sig_file.name)
         
         tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
         pdf.output(tmp_file.name)
@@ -129,6 +161,31 @@ class DocumentService:
             }
         except Exception as e:
             logger.error(f"[DocumentService] Error processing documents for {getattr(user, 'id', 'unknown')}: {e}")
+            raise e
+
+    def process_signed_document_generation(self, user, doc_type: str, signature_base64: str) -> str:
+        """Generates a signed document and uploads it to Supabase."""
+        try:
+            intern_id = getattr(user, 'intern_id', None) or f"APP-{user.id}"
+            if doc_type == "offer_letter":
+                pdf_path = self.generate_offer_letter_pdf(user, signature_base64)
+                filename = f"Signed_Offer_Letter_{intern_id}.pdf"
+            elif doc_type == "tc":
+                pdf_path = self.generate_terms_and_conditions_pdf(user, signature_base64)
+                filename = f"Signed_Terms_and_Conditions_{intern_id}.pdf"
+            else:
+                raise ValueError("Invalid document type")
+
+            with open(pdf_path, "rb") as f:
+                pdf_bytes = f.read()
+
+            from .supabase_service import supabase_service
+            url = supabase_service.upload_file(pdf_bytes, "documents", filename)
+            
+            os.remove(pdf_path)
+            return url
+        except Exception as e:
+            logger.error(f"[DocumentService] Error processing signed document for {getattr(user, 'id', 'unknown')}: {e}")
             raise e
 
 document_service = DocumentService()
