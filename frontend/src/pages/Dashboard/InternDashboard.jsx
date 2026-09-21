@@ -163,9 +163,25 @@ export default function InternDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mock State
-  const [aiScore, setAiScore] = useState(88);
-  const attendancePercent = 90;
+  const [aiScore, setAiScore] = useState(user?.progress_pct || 0);
+  const attendancePercent = user?.attendance_pct || 0;
+
+  const [recentSubmissions, setRecentSubmissions] = useState([]);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        const res = await api.get('/submissions');
+        if (res.data) {
+          const sorted = res.data.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+          setRecentSubmissions(sorted.slice(0, 3));
+        }
+      } catch (err) {
+        console.error("Failed to fetch submissions", err);
+      }
+    };
+    fetchSubmissions();
+  }, []);
 
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
@@ -278,7 +294,19 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const mcqQuestionsList = [
+  const activeTaskForAssessment = curriculumData.find(c => (c.day_number || c.day) === currentDay);
+  let parsedMcq = [];
+  if (activeTaskForAssessment && activeTaskForAssessment.mcq_questions) {
+    try {
+      parsedMcq = typeof activeTaskForAssessment.mcq_questions === 'string' 
+        ? JSON.parse(activeTaskForAssessment.mcq_questions) 
+        : activeTaskForAssessment.mcq_questions;
+    } catch (e) {
+      console.error("Failed to parse mcq", e);
+    }
+  }
+
+  const mcqQuestionsList = parsedMcq.length > 0 ? parsedMcq : [
     { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
     { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
     { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
@@ -511,14 +539,25 @@ export default function InternDashboard() {
                   <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
 
                   {(() => {
+                    if (internDomain === "Pending Assignment") {
+                      return [{
+                        day: "Pending",
+                        title: "Waiting for mentor to assign tasks",
+                        done: false,
+                        current: true,
+                        locked: true,
+                        isFlag: false
+                      }];
+                    }
+
                     const visibleDaysCount = 10;
                     let startDay = Math.max(1, currentDay - 2);
                     if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
                     
                     return Array.from({ length: visibleDaysCount }, (_, i) => {
                       const dayNum = startDay + i;
-                      const topics = ["Introduction to HTML", "CSS Styling", "JavaScript Basics", "DOM Manipulation", "React Basics", "Component Composition", "State and Props", "React Hooks Lifecycle", "Context API & Global State", "Routing and Layouts", "Redux Basics", "Testing & Debugging", "REST API Development", "Authentication", "Git & GitHub", "Database Basics", "Node.js Basics", "Express framework", "MongoDB Integration", "Building the Backend", "Frontend/Backend Connect", "Security Best Practices", "Deployment", "CI/CD Pipelines", "Docker Basics", "Cloud Services", "Performance Optimization", "Web Accessibility", "Final Project Setup", "Final Project Delivery"];
-                      const mockTitle = curriculumData.find(c => c.day === dayNum)?.topic || topics[dayNum - 1];
+                      const task = curriculumData.find(c => (c.day_number || c.day) === dayNum);
+                      const mockTitle = task?.topic || task?.title || `Day ${dayNum} Task`;
                       return {
                         day: `Day ${dayNum}`,
                         title: mockTitle,
@@ -675,44 +714,22 @@ export default function InternDashboard() {
                     <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
+                    {recentSubmissions.length > 0 ? recentSubmissions.map((sub, idx) => (
+                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: (sub.ai_score || 0) >= 50 ? "#dcfce7" : "#fef3c7", color: (sub.ai_score || 0) >= 50 ? "#16a34a" : "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {(sub.ai_score || 0) >= 50 ? <CheckCircle size={14} /> : <Clock size={14} />}
+                          </div>
+                          <div>
+                            <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>Task #{sub.task_id}</span>
+                            <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{sub.status || "Graded"}</span>
+                          </div>
                         </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
+                        <span style={{ fontSize: "0.9rem", color: (sub.ai_score || 0) >= 50 ? "#16a34a" : "#d97706", fontWeight: 800 }}>{sub.ai_score || 0}/100</span>
                       </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.8rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
-                    </div>
+                    )) : (
+                      <div style={{ padding: "8px 12px", textAlign: "center", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>No recent submissions.</div>
+                    )}
                   </div>
                 </div>
 

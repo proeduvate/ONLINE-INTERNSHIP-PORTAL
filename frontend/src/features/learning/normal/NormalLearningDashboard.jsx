@@ -6,6 +6,7 @@ import {
   Send, Sparkles, Target, Users, Wand2
 } from "lucide-react";
 import "./styles.css";
+import { useAuth } from "../../../services/AuthContext";
 
 const API = "http://localhost:8000/api";
 
@@ -43,6 +44,7 @@ const learningSlides = [
 ];
 
 export default function NormalLearningDashboard() {
+  const { user } = useAuth();
   const [role, setRole] = useState("intern");
   const [task, setTask] = useState(null);
 
@@ -74,7 +76,7 @@ export default function NormalLearningDashboard() {
 
       <main className="main">
         {role === "intern"
-          ? <InternDashboard task={task} />
+          ? <InternDashboard task={task} user={user} />
           : <MentorDashboard task={task} onTask={setTask} />}
       </main>
     </div>
@@ -88,18 +90,18 @@ function Topbar({eyebrow, title, right}) {
   </header>
 }
 
-function InternDashboard({task}) {
+function InternDashboard({task, user}) {
   const [view, setView] = useState("dashboard");
   const [completed, setCompleted] = useState(false);
 
-  if (view === "learning") return <LearningDeck task={task} onDone={() => {setCompleted(true); setView("dashboard")}} />;
+  if (view === "learning") return <LearningDeck task={task} user={user} onDone={() => {setCompleted(true); setView("dashboard")}} />;
   return <div>
-    <Topbar eyebrow="INTERNSHIP / DAY 01" title="Good evening, Alex" right={<div className="status-pill"><span/> Day 1 active</div>} />
+    <Topbar eyebrow="INTERNSHIP / DAY 01" title={`Good evening, ${user?.name ? user.name.split(' ')[0] : 'Intern'}`} right={<div className="status-pill"><span/> Day 1 active</div>} />
     <section className="hero-card">
       <div>
         <div className="lime-label"><Sparkles size={15}/> TODAY'S MISSION</div>
-        <h2>{task?.title || "HTML5 Fundamentals & Semantic Structure"}</h2>
-        <p>{task?.description || "Learn HTML fundamentals through an interactive experience, then prove your understanding."}</p>
+        <h2>{task?.title || "Daily Assessment & Learning"}</h2>
+        <p>{task?.description || "Learn today's fundamentals through an interactive experience, then prove your understanding."}</p>
         <button className="primary-btn" onClick={() => setView("learning")}><Play size={16}/> Start Interactive Learning <ArrowRight size={16}/></button>
       </div>
       <div className="day-orb"><span>DAY</span><strong>01</strong><small>of 30</small></div>
@@ -131,11 +133,41 @@ function PathCard({icon,title,text,state,onClick}) {
   </button>
 }
 
-function LearningDeck({task,onDone}) {
+function LearningDeck({task, user, onDone}) {
   const [slide, setSlide] = useState(0);
   const [interactionDone, setInteractionDone] = useState(false);
   const [marks, setMarks] = useState({});
-  const current = learningSlides[slide];
+  const isFrontend = user?.domain?.toLowerCase().includes("frontend") || user?.domain?.toLowerCase().includes("full stack");
+
+  const genericSlides = [
+    {
+      type: "generic_discover",
+      title: "Understanding the Core Concept",
+      subtitle: "Explore the theoretical foundations.",
+      body: "Before diving into code, it is essential to understand why this concept exists and what problems it solves.",
+    },
+    {
+      type: "generic_anatomy",
+      title: "Analyzing the Structure",
+      subtitle: "Break down the components.",
+      body: "Every technical implementation has a structure. Identify the key moving parts in today's lesson.",
+    },
+    {
+      type: "generic_experiment",
+      title: "Interactive Experimentation",
+      subtitle: "Try it out yourself.",
+      body: "Interact with the provided variables to see how the system behaves under different conditions.",
+    },
+    {
+      type: "generic_reveal",
+      title: "Connecting Theory to Code",
+      subtitle: "Reveal the underlying implementation.",
+      body: "Now that you understand the concept, let's look at how it is typically implemented in a real-world scenario.",
+    }
+  ];
+
+  const activeSlides = isFrontend ? learningSlides : genericSlides;
+  const current = activeSlides[slide];
 
   useEffect(() => { setInteractionDone(false); }, [slide]);
 
@@ -144,15 +176,15 @@ function LearningDeck({task,onDone}) {
   };
 
   const next = () => {
-    if (slide === learningSlides.length - 1) onDone();
+    if (slide === activeSlides.length - 1) onDone();
     else setSlide(s => s + 1);
   };
 
   return <div className="learning-shell">
     <div className="deck-top">
       <button className="icon-btn" onClick={onDone}><ArrowLeft size={17}/></button>
-      <div><span className="eyebrow">DAY 01 · INTERACTIVE LEARNING</span><strong>HTML Fundamentals</strong></div>
-      <div className="deck-progress">{learningSlides.map((_,i)=><i className={i <= slide ? "on":""} key={i}/>)}</div>
+      <div><span className="eyebrow">DAY 01 · INTERACTIVE LEARNING</span><strong>{task?.title || "Fundamentals"}</strong></div>
+      <div className="deck-progress">{activeSlides.map((_,i)=><i className={i <= slide ? "on":""} key={i}/>)}</div>
     </div>
 
     <div className="deck-card">
@@ -168,13 +200,23 @@ function LearningDeck({task,onDone}) {
         {current.type === "experiment" && <Experiment complete={() => setInteractionDone(true)} />}
         {current.type === "reveal" && <Reveal complete={() => setInteractionDone(true)} />}
         {current.type === "guided" && <Guided complete={() => setInteractionDone(true)} />}
+        
+        {/* Generic Interactive Fallbacks */}
+        {current.type?.startsWith("generic_") && (
+          <div className="generic-interaction-box" style={{ padding: "40px", textAlign: "center", background: "var(--card-bg)", borderRadius: "12px", border: "1px dashed var(--border-color)" }}>
+            <Sparkles size={48} color="var(--primary-color)" style={{ marginBottom: "20px", opacity: 0.5 }} />
+            <h3 style={{ marginBottom: "16px" }}>Interactive Module Loading</h3>
+            <p style={{ color: "var(--text-muted)", marginBottom: "24px" }}>Click the button below to simulate completing this interactive exercise.</p>
+            <button className="btn btn-primary" onClick={() => setInteractionDone(true)}>Simulate Interaction Complete</button>
+          </div>
+        )}
       </div>
     </div>
 
     <div className="deck-footer">
       <div className="hint"><Sparkles size={15}/> Interact with the concept — don't just read it.</div>
       <button className="primary-btn" disabled={!interactionReady(current.type, marks, interactionDone)} onClick={next}>
-        {slide === learningSlides.length - 1 ? "Finish Learning" : "Continue"} <ArrowRight size={16}/>
+        {slide === activeSlides.length - 1 ? "Finish Learning" : "Continue"} <ArrowRight size={16}/>
       </button>
     </div>
   </div>

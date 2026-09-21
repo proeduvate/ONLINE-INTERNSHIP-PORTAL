@@ -16,10 +16,31 @@ import BreakoutRoomsApp from "./pages/breakout-rooms/BreakoutRoomsApp";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
 import NormalLearningDashboard from "./features/learning/normal/NormalLearningDashboard";
 import InteractiveLearningDashboard from "./features/learning/interactive/InteractiveLearningDashboard";
+import { useAuth } from "./services/AuthContext";
+
+function DevDomainSwitcher() {
+  const { user, devDomain, setDevDomain } = useAuth();
+  if (!user || user.role !== 'intern') return null;
+  return (
+    <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 999999, background: '#1e293b', padding: '10px 16px', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', border: '1px solid #334155', display: 'flex', alignItems: 'center', gap: '10px', color: 'white', fontFamily: 'Inter' }}>
+      <span style={{ fontSize: '12px', fontWeight: 700 }}>DEV PREVIEW DOMAIN:</span>
+      <select value={devDomain} onChange={e => setDevDomain(e.target.value)} style={{ padding: '6px', borderRadius: '6px', background: '#334155', color: 'white', border: '1px solid #475569', outline: 'none', cursor: 'pointer' }}>
+        <option value="">Actual DB Domain</option>
+        <option value="Frontend">Frontend</option>
+        <option value="Full Stack">Full Stack</option>
+        <option value="AI/ML">AI/ML</option>
+        <option value="Python">Python</option>
+        <option value="Java">Java</option>
+        <option value="Pending Assignment">Pending Assignment</option>
+      </select>
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
+      <DevDomainSwitcher />
       <div className="app-monolithic-wrapper">
         <GlobalHeader />
         <main className="app-main-content">

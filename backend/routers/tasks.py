@@ -11,16 +11,24 @@ router = APIRouter(prefix="", tags=["Tasks"])
 
 @router.get("/tasks/intern")
 def get_intern_tasks_with_unlock_status(
+    dev_domain: str = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
         
-    if current_user.domain_id is None:
+    target_domain_id = current_user.domain_id
+    if dev_domain:
+        # Lookup domain by name
+        domain_record = db.query(models.Domain).filter(models.Domain.name.ilike(f"%{dev_domain}%")).first()
+        if domain_record:
+            target_domain_id = domain_record.id
+
+    if target_domain_id is None:
         return {"tasks": [], "message": "No domain assigned yet"}
         
-    tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).order_by(models.Task.day_number).all()
+    tasks = db.query(models.Task).filter(models.Task.domain_id == target_domain_id).order_by(models.Task.day_number).all()
     submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
     
     sub_map = {sub.task_id: sub for sub in submissions}
@@ -65,6 +73,7 @@ def get_intern_tasks_with_unlock_status(
             "resources": t.resources,
             "mcq_questions": t.mcq_questions,
             "coding_prompt": t.coding_prompt,
+            "interactive_json": t.interactive_json,
             "unlocked": is_unlocked,
             "status": status_val,
             "score": score_val,

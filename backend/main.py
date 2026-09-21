@@ -117,7 +117,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 Hours
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt", "pbkdf2_sha256"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 # Ensure DB tables exist on startup
@@ -236,7 +236,8 @@ def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     try:
         if not user or not pwd_context.verify(login_in.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid email or password")
-    except passlib.exc.UnknownHashError:
+    except Exception as e:
+        print("Login hash check error:", e)
         # If the hash in the DB is plain text or invalid, we can just check it manually for demo purposes
         if not user or user.hashed_password != login_in.password:
             raise HTTPException(status_code=401, detail="Invalid email or password")

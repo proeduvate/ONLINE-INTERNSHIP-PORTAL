@@ -10,8 +10,7 @@ import models
 
 # Data directory path
 DATA_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "frontend", "src", "features", "learning", "interactive", "data"
+    os.path.dirname(__file__), "seed_data", "interactive"
 )
 
 def main():

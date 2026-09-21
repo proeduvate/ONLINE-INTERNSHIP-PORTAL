@@ -3,6 +3,7 @@ import api from '../../../api/axios';
 import { createRoot } from 'react-dom/client';
 import { curriculum } from './data/curriculum';
 import './styles.css';
+import { useAuth } from '../../../services/AuthContext';
 
 const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 const emailOk = (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
@@ -241,6 +242,7 @@ function Activity({ activity, done, locked, onComplete }) {
 }
 
 export default function InteractiveLearningDashboard() {
+  const { devDomain } = useAuth();
   const [day, setDay] = useState(1);
   const [maxUnlockedDay, setMaxUnlockedDay] = useState(1);
   const [dynamicCurriculum, setDynamicCurriculum] = useState([]);
@@ -253,7 +255,8 @@ export default function InteractiveLearningDashboard() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await api.get('/tasks/intern');
+        const url = devDomain ? `/tasks/intern?dev_domain=${encodeURIComponent(devDomain)}` : '/tasks/intern';
+        const res = await api.get(url);
         const fetchedTasks = res.data;
         
         let curriculumList = [];
@@ -290,7 +293,7 @@ export default function InteractiveLearningDashboard() {
       }
     };
     fetchTasks();
-  }, []);
+  }, [devDomain]);
 
   if (loading) return <div style={{ padding: '24px' }}>Loading Interactive Modules...</div>;
   if (!dynamicCurriculum.length) return <div style={{ padding: '24px' }}>No interactive modules assigned for your domain.</div>;

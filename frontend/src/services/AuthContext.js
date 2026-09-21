@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
     const [loading, setLoading] = useState(true);
+    const [devDomain, setDevDomain] = useState("");
 
     useEffect(() => {
         const loadUser = async () => {
@@ -63,7 +64,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('role', normalizedRole);
             setAuthToken(data.access_token);
             
-            const userData = { role: normalizedRole, name: userObj.full_name || userObj.name, email: userObj.email };
+            const userData = { ...userObj, role: normalizedRole, name: userObj.full_name || userObj.name };
             setUser(userData);
             return userData;
         } finally {
@@ -78,8 +79,10 @@ export const AuthProvider = ({ children }) => {
         // Optionally redirect to login page or home
     };
 
+    const effectiveUser = user ? { ...user, domain: devDomain || user.domain } : null;
+
     return (
-        <AuthContext.Provider value={{ user, authToken, login, logout, loading }}>
+        <AuthContext.Provider value={{ user: effectiveUser, authToken, login, logout, loading, setDevDomain, devDomain }}>
             {children}
         </AuthContext.Provider>
     );
