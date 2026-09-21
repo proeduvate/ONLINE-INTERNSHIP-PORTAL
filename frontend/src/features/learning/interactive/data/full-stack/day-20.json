@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 20,
-  "topic": "Day 20 Topic for Full Stack",
+  "topic": "Full Stack Integration: React, Node.js, Express, and Database",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Trace data flow between a React frontend, backend API, and database.",
+    "Connect frontend components to backend REST endpoints.",
+    "Design a complete full stack application architecture."
   ],
   "activities": [
     {
-      "id": "d20-a01",
+      "id": "d20-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Full Stack Architecture",
+      "instruction": "Build the architecture of a complete web application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A full stack application connects the frontend, backend API, business logic, and database into one system.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "End-to-End Data Flow",
+      "instruction": "Trace data from the UI to the database and back.",
+      "content": {
+        "concept": "User actions can trigger frontend requests, backend processing, database operations, and responses that update the interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "Integration Sequence",
+      "instruction": "Arrange the stages of a full stack request.",
+      "content": {
+        "concept": "A typical request travels from the React UI through an API route and service layer to the database before returning a response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "Full Stack Feature Builder",
+      "instruction": "Compose the frontend, API, logic, and data layers for a feature.",
+      "content": {
+        "concept": "A complete feature requires coordinated frontend components, API endpoints, backend logic, and persistent data models.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

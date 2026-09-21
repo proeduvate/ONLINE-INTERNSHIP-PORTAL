@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 27,
-  "topic": "Day 27 Topic for UI/UX",
+  "topic": "Capstone Information Architecture, User Flows, and Wireframes",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Organize capstone content into a clear information architecture.",
+    "Design task-focused user flows for primary user goals.",
+    "Translate flows into structured low-fidelity wireframes."
   ],
   "activities": [
     {
-      "id": "d27-a01",
+      "id": "d27-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Content Structure Map",
+      "instruction": "Arrange content into a logical information hierarchy.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Information architecture organizes content and features so users can find and understand them efficiently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "discover",
+      "title": "User Flow Builder",
+      "instruction": "Build the shortest logical path to the user's goal.",
+      "content": {
+        "concept": "User flows represent the sequence of actions users take to complete a specific task.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Flow Sequence Challenge",
+      "instruction": "Drag each screen into the correct task sequence.",
+      "content": {
+        "concept": "A well-structured flow reduces unnecessary steps and keeps users oriented toward their goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "discover",
+      "title": "Wireframe Anatomy",
+      "instruction": "Identify the purpose of each wireframe region.",
+      "content": {
+        "concept": "Wireframes define hierarchy, structure, navigation, and content placement before visual styling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
       }
     }
   ],

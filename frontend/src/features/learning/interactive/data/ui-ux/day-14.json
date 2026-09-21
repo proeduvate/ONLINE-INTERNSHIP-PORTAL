@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 14,
-  "topic": "Day 14 Topic for UI/UX",
+  "topic": "Usability Testing and UX Evaluation",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Plan a basic usability test around a specific user goal.",
+    "Identify usability problems from user behavior and feedback.",
+    "Prioritize findings based on their impact on task completion."
   ],
   "activities": [
     {
-      "id": "d14-a01",
+      "id": "d14-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Usability Test Flow",
+      "instruction": "Arrange the stages of a usability test.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Usability testing involves defining goals, preparing tasks, observing users, collecting findings, and synthesizing results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Test Task Builder",
+      "instruction": "Build a clear usability test task.",
+      "content": {
+        "concept": "A good usability task gives users a realistic goal without unnecessarily revealing the steps they should take.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "Usability Problem Detector",
+      "instruction": "Identify the usability issue in each scenario.",
+      "content": {
+        "concept": "Usability problems can appear as confusion, errors, hesitation, inefficient paths, or inability to complete a task.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Finding Priority Lab",
+      "instruction": "Adjust impact and frequency to prioritize findings.",
+      "content": {
+        "concept": "Usability findings can be prioritized using factors such as severity, frequency, and impact on important user tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],

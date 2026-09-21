@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 4,
-  "topic": "Day 4 Topic for Full Stack",
+  "topic": "JavaScript Fundamentals and DOM Manipulation",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Use JavaScript variables, data types, operators, and control flow.",
+    "Manipulate HTML elements through the DOM.",
+    "Build basic interactive browser behaviors using events."
   ],
   "activities": [
     {
-      "id": "d04-a01",
+      "id": "d4-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "JavaScript Syntax Anatomy",
+      "instruction": "Explore the parts of JavaScript statements.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "JavaScript uses variables, values, operators, expressions, and statements to describe application behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Logic Selector",
+      "instruction": "Choose the correct control-flow structure.",
+      "content": {
+        "concept": "Conditional statements and loops control which code executes and how many times it runs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "DOM Architecture",
+      "instruction": "Map the HTML page to the DOM.",
+      "content": {
+        "concept": "The DOM represents an HTML document as a tree of objects that JavaScript can inspect and modify.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Event Flow Builder",
+      "instruction": "Build an interactive button behavior.",
+      "content": {
+        "concept": "Browser events allow JavaScript to respond to user actions such as clicks, input changes, and keyboard interactions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-04.json",
-  "practicalTaskRef": "practical-day-04.json",
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 21,
-  "topic": "Day 21 Topic for Full Stack",
+  "topic": "UI/UX Fundamentals, User Research, and Design Thinking",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the differences between UI design and UX design.",
+    "Identify user needs through basic research and observation.",
+    "Apply design thinking stages to a digital product problem."
   ],
   "activities": [
     {
-      "id": "d21-a01",
+      "id": "d21-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UI vs UX Explorer",
+      "instruction": "Match each task to UI or UX design.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "UI focuses on the interface and visual interaction, while UX focuses on the overall user experience and problem-solving process.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "User Research Map",
+      "instruction": "Map research methods to the information they reveal.",
+      "content": {
+        "concept": "Interviews, surveys, observation, and usability tests provide different types of insights about users and their needs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "Design Thinking Journey",
+      "instruction": "Arrange the stages of a design thinking process.",
+      "content": {
+        "concept": "Design thinking commonly moves through understanding users, defining problems, generating ideas, prototyping, and testing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "Problem Framing Lab",
+      "instruction": "Build a clear user problem statement.",
+      "content": {
+        "concept": "A focused problem statement connects a specific user need with a meaningful problem to solve.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 21,
-  "topic": "Day 21 Topic for UI/UX",
+  "topic": "Design Thinking and Problem Definition",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply design thinking stages to a real-world design problem.",
+    "Convert user research findings into a clearly defined problem statement.",
+    "Create focused how-might-we questions for ideation."
   ],
   "activities": [
     {
-      "id": "d21-a01",
+      "id": "d21-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Design Thinking Map",
+      "instruction": "Explore how each design thinking stage connects.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Design thinking uses empathy, definition, ideation, prototyping, and testing to solve user-centered problems iteratively.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Problem Statement Builder",
+      "instruction": "Build a focused user problem statement.",
+      "content": {
+        "concept": "A strong problem statement identifies the target user, their need, and the meaningful problem without prescribing a solution.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "How Might We Lab",
+      "instruction": "Transform user problems into design questions.",
+      "content": {
+        "concept": "How-might-we questions reframe user problems as open opportunities for generating multiple possible solutions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "Problem Validation",
+      "instruction": "Select the problem statement supported by evidence.",
+      "content": {
+        "concept": "A well-defined problem should connect directly to research evidence and a meaningful user need.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
       }
     }
   ],

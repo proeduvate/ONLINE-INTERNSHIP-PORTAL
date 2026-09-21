@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 13,
-  "topic": "Day 13 Topic for UI/UX",
+  "topic": "Prototyping and User Interaction Flows",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Connect interface screens into interactive user flows.",
+    "Use triggers and actions to simulate common interactions.",
+    "Create prototypes that communicate intended user behavior."
   ],
   "activities": [
     {
-      "id": "d13-a01",
+      "id": "d13-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Prototype Anatomy",
+      "instruction": "Explore the parts of an interactive prototype.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A prototype connects screens through triggers, actions, transitions, and destinations to simulate an experience.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Trigger and Action Matcher",
+      "instruction": "Match each trigger with the appropriate action.",
+      "content": {
+        "concept": "Triggers such as clicks, taps, hovering, and keyboard actions can initiate prototype responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Prototype Flow Builder",
+      "instruction": "Connect screens to complete the user journey.",
+      "content": {
+        "concept": "Prototype flows model how users move between screens while completing a specific task.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Transition Lab",
+      "instruction": "Select the transition that best fits each interaction.",
+      "content": {
+        "concept": "Transitions should reinforce the relationship between states without distracting users from their task.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 29,
-  "topic": "Day 29 Topic for Full Stack",
+  "topic": "Full Stack Capstone Integration and Testing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Integrate frontend, backend, database, and UI/UX components into one application.",
+    "Validate complete user journeys across the application.",
+    "Identify and resolve integration issues before final delivery."
   ],
   "activities": [
     {
-      "id": "d29-a01",
+      "id": "d29-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Capstone Architecture Map",
+      "instruction": "Connect every major component of the capstone.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A capstone architecture connects the user interface, frontend logic, backend APIs, database, authentication, and deployment environment.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "User Journey Validator",
+      "instruction": "Arrange the complete flow for a key user task.",
+      "content": {
+        "concept": "End-to-end validation checks whether a user can complete important tasks across all connected application layers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Integration Issue Lab",
+      "instruction": "Select the likely source of each integration problem.",
+      "content": {
+        "concept": "Integration failures can originate in frontend state, API contracts, backend logic, database operations, authentication, or configuration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Capstone Validation Builder",
+      "instruction": "Build a final validation plan for the application.",
+      "content": {
+        "concept": "A capstone validation plan combines functional, integration, UI, accessibility, security, and performance checks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

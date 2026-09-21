@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 25,
-  "topic": "Day 25 Topic for Full Stack",
+  "topic": "Responsive UI Implementation from Figma to Code",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Translate Figma layouts into reusable frontend components.",
+    "Apply responsive design principles across different screen sizes.",
+    "Maintain visual consistency between designs and implemented interfaces."
   ],
   "activities": [
     {
-      "id": "d25-a01",
+      "id": "d25-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Design-to-Code Map",
+      "instruction": "Map Figma elements to frontend implementation choices.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Design-to-code work translates visual layouts, components, spacing, typography, and interactions into reusable frontend structures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Responsive Layout Lab",
+      "instruction": "Adjust the layout across different viewport sizes.",
+      "content": {
+        "concept": "Responsive interfaces adapt layouts, dimensions, and component behavior to different screen sizes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Component Mapping",
+      "instruction": "Match design elements with reusable code components.",
+      "content": {
+        "concept": "Reusable frontend components can represent repeated patterns from a design system and reduce duplicated implementation work.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "Responsive Page Builder",
+      "instruction": "Build a responsive page from design components.",
+      "content": {
+        "concept": "A responsive page combines reusable components, flexible layouts, appropriate breakpoints, and consistent design tokens.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

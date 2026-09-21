@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 11,
-  "topic": "Day 11 Topic for UI/UX",
+  "topic": "Figma Fundamentals and Interface Workspace",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify the main tools and panels used in Figma.",
+    "Create and organize basic frames, layers, and objects.",
+    "Apply fundamental layout and alignment tools in a design file."
   ],
   "activities": [
     {
-      "id": "d11-a01",
+      "id": "d11-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Figma Workspace Anatomy",
+      "instruction": "Explore the main areas of the Figma workspace.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Figma organizes design work through tools, canvas, layers, properties, assets, and reusable resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Tool Matcher",
+      "instruction": "Match each design task with the correct tool.",
+      "content": {
+        "concept": "Figma tools support tasks such as selecting, drawing, creating frames, adding text, and arranging objects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Frame Builder",
+      "instruction": "Build a basic mobile interface frame.",
+      "content": {
+        "concept": "Frames define the boundaries of screens and containers and provide the foundation for structured interface layouts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Layer Organization Lab",
+      "instruction": "Arrange layers into a clear structure.",
+      "content": {
+        "concept": "Well-organized layers make complex designs easier to understand, edit, and maintain.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],

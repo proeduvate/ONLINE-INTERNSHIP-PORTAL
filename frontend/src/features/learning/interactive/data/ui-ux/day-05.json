@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 5,
-  "topic": "Day 5 Topic for UI/UX",
+  "topic": "Wireframing and Low-Fidelity Interface Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify the essential components of a low-fidelity wireframe.",
+    "Create a basic screen layout based on user goals and information hierarchy.",
+    "Use wireframes to validate structure before applying visual styling."
   ],
   "activities": [
     {
-      "id": "d05-a01",
+      "id": "d5-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Wireframe Anatomy",
+      "instruction": "Explore the main parts of a wireframe.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Wireframes define layout, hierarchy, navigation, and content placement without focusing on final visual styling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Layout Hierarchy Lab",
+      "instruction": "Arrange elements by importance on the screen.",
+      "content": {
+        "concept": "Visual hierarchy begins with deciding which content and actions deserve the strongest placement and emphasis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Wireframe Flow",
+      "instruction": "Connect screens into a usable task flow.",
+      "content": {
+        "concept": "Multiple wireframes can be connected to represent how users move between screens to complete a task.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Wireframe Critique",
+      "instruction": "Select the wireframe with clearer structure.",
+      "content": {
+        "concept": "A useful wireframe makes task priorities, navigation, content hierarchy, and primary actions easy to understand.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-05.json",
-  "practicalTaskRef": "practical-day-05.json",
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 7,
-  "topic": "Day 7 Topic for Full Stack",
+  "topic": "Git, GitHub, Branching, and Collaborative Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how Git tracks and manages source code changes.",
+    "Use branches and commits to organize development work.",
+    "Understand a collaborative GitHub workflow using pull requests."
   ],
   "activities": [
     {
-      "id": "d07-a01",
+      "id": "d7-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Git Workflow Map",
+      "instruction": "Explore how changes move through the Git workflow.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Git tracks changes through the working directory, staging area, commits, and remote repositories.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Command Anatomy",
+      "instruction": "Click each Git command to reveal its purpose.",
+      "content": {
+        "concept": "Commands such as add, commit, pull, push, and clone perform different repository operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Branching Strategy",
+      "instruction": "Build a branch structure for a team project.",
+      "content": {
+        "concept": "Branches isolate development work and help teams integrate features safely.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Pull Request Sequence",
+      "instruction": "Arrange the steps from feature development to merge.",
+      "content": {
+        "concept": "A pull request provides a structured workflow for reviewing and integrating changes into a shared branch.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],
-  "assessmentRef": "assessment-day-07.json",
-  "practicalTaskRef": "practical-day-07.json",
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 28,
-  "topic": "Day 28 Topic for Full Stack",
+  "topic": "CI/CD, Performance, Security, and Production Readiness",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the basic stages of a CI/CD pipeline.",
+    "Identify performance and security improvements for production applications.",
+    "Evaluate application readiness using production-focused checks."
   ],
   "activities": [
     {
-      "id": "d28-a01",
+      "id": "d28-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "CI/CD Pipeline",
+      "instruction": "Arrange the stages of a deployment pipeline.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A CI/CD pipeline can automate code validation, testing, building, and deployment after changes are submitted.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d28-a2",
+      "type": "discover",
+      "title": "Performance Selector",
+      "instruction": "Choose the appropriate optimization for each issue.",
+      "content": {
+        "concept": "Performance improvements can target assets, rendering, network requests, database queries, and backend processing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d28-a3",
+      "type": "discover",
+      "title": "Security Checkpoint",
+      "instruction": "Identify security controls for common application risks.",
+      "content": {
+        "concept": "Production applications should protect authentication, user input, secrets, APIs, and stored data against common security risks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d28-a4",
+      "type": "discover",
+      "title": "Production Readiness Builder",
+      "instruction": "Build a production readiness checklist.",
+      "content": {
+        "concept": "Production readiness combines testing, security, performance, monitoring, configuration, backups, and reliable deployment practices.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

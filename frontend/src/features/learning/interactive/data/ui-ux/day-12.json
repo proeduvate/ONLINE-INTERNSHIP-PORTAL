@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 12,
-  "topic": "Day 12 Topic for UI/UX",
+  "topic": "Figma Components, Variants, and Auto Layout",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create reusable components for common interface elements.",
+    "Use variants to represent different component states.",
+    "Apply Auto Layout to create flexible and maintainable interfaces."
   ],
   "activities": [
     {
-      "id": "d12-a01",
+      "id": "d12-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Component Anatomy",
+      "instruction": "Explore the structure of a reusable component.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Components package reusable interface elements so designers can maintain consistent behavior and styling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Variant Matcher",
+      "instruction": "Match component states to their variants.",
+      "content": {
+        "concept": "Variants group related component states such as default, hover, active, disabled, and selected versions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Auto Layout Builder",
+      "instruction": "Build a flexible card using Auto Layout.",
+      "content": {
+        "concept": "Auto Layout automatically manages spacing, sizing, and positioning as content changes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Responsive Component Lab",
+      "instruction": "Resize the component and observe its behavior.",
+      "content": {
+        "concept": "Flexible components adapt their dimensions and spacing when content or container sizes change.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],

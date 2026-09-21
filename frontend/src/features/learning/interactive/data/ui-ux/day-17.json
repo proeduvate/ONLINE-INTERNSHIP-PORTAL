@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 17,
-  "topic": "Day 17 Topic for UI/UX",
+  "topic": "Design Systems, Tokens, and Scalable UI Architecture",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify the core layers of a scalable design system.",
+    "Use design tokens to maintain visual consistency.",
+    "Structure reusable components for large interface projects."
   ],
   "activities": [
     {
-      "id": "d17-a01",
+      "id": "d17-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Design System Anatomy",
+      "instruction": "Explore the layers of a design system.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A design system combines foundations, design tokens, components, patterns, guidelines, and documentation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Token Matcher",
+      "instruction": "Match design tokens to their UI roles.",
+      "content": {
+        "concept": "Design tokens store reusable values such as colors, spacing, typography, radii, and shadows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Token Scale Builder",
+      "instruction": "Build a consistent spacing and type scale.",
+      "content": {
+        "concept": "Consistent token scales help interfaces remain visually coherent as the product grows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Component Architecture Lab",
+      "instruction": "Organize components into a scalable structure.",
+      "content": {
+        "concept": "A scalable component architecture separates foundations, reusable components, patterns, and page-level compositions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

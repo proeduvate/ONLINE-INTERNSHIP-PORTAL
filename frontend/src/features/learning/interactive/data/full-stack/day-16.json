@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 16,
-  "topic": "Day 16 Topic for Full Stack",
+  "topic": "Backend Architecture and Middleware",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the role of middleware in a backend application.",
+    "Organize backend code into maintainable architectural layers.",
+    "Trace how requests move through middleware and route handlers."
   ],
   "activities": [
     {
-      "id": "d16-a01",
+      "id": "d16-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Backend Layer Map",
+      "instruction": "Map requests across the major backend layers.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A layered backend separates routing, business logic, data access, and infrastructure concerns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "Middleware Anatomy",
+      "instruction": "Explore the parts of a middleware function.",
+      "content": {
+        "concept": "Middleware can inspect requests, modify responses, perform checks, and pass control to the next handler.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "Request Pipeline",
+      "instruction": "Arrange middleware in the correct request sequence.",
+      "content": {
+        "concept": "Backend requests can pass through logging, authentication, validation, routing, and error-handling stages.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "Backend Structure Builder",
+      "instruction": "Compose a maintainable backend project structure.",
+      "content": {
+        "concept": "Separating controllers, services, repositories, routes, and configuration improves backend maintainability.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

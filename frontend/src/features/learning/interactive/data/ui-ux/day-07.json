@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 7,
-  "topic": "Day 7 Topic for UI/UX",
+  "topic": "Typography and Color Theory for Interfaces",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Select typography that supports readability and interface hierarchy.",
+    "Apply basic color theory to interface components.",
+    "Create accessible and visually consistent text and color combinations."
   ],
   "activities": [
     {
-      "id": "d07-a01",
+      "id": "d7-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Typography Anatomy",
+      "instruction": "Explore the parts of an interface type system.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Typography systems define font families, sizes, weights, line heights, and hierarchy for readable interfaces.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Type Scale Slider",
+      "instruction": "Adjust the type scale and observe hierarchy.",
+      "content": {
+        "concept": "A consistent type scale creates predictable differences between headings, labels, body text, and supporting content.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Color Role Matcher",
+      "instruction": "Match each color to its interface role.",
+      "content": {
+        "concept": "Interface colors can communicate actions, states, emphasis, information, and brand identity.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Contrast Checker Lab",
+      "instruction": "Adjust contrast until the text becomes readable.",
+      "content": {
+        "concept": "Sufficient contrast improves readability and supports users with visual accessibility needs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],
-  "assessmentRef": "assessment-day-07.json",
-  "practicalTaskRef": "practical-day-07.json",
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

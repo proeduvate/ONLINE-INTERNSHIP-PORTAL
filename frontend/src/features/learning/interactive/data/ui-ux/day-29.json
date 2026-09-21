@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 29,
-  "topic": "Day 29 Topic for UI/UX",
+  "topic": "Capstone Usability Testing, Iteration, Accessibility, and Handoff",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Evaluate the capstone prototype through usability testing.",
+    "Prioritize findings and iterate on the design.",
+    "Prepare accessible designs and implementation-ready developer handoff."
   ],
   "activities": [
     {
-      "id": "d29-a01",
+      "id": "d29-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Usability Test Planner",
+      "instruction": "Arrange the stages of a focused usability test.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Usability testing observes users completing representative tasks to uncover interaction problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Finding Prioritizer",
+      "instruction": "Select findings that require attention first.",
+      "content": {
+        "concept": "Usability findings can be prioritized using factors such as severity, frequency, and impact on task completion.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Accessibility Check",
+      "instruction": "Match interface issues with appropriate accessibility improvements.",
+      "content": {
+        "concept": "Accessible interfaces consider keyboard access, contrast, labels, focus states, readable content, and assistive technologies.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Developer Handoff Builder",
+      "instruction": "Assemble the essential assets and specifications for handoff.",
+      "content": {
+        "concept": "Design handoff communicates components, measurements, states, assets, interactions, and implementation requirements to developers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

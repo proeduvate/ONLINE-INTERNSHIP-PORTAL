@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 23,
-  "topic": "Day 23 Topic for Full Stack",
+  "topic": "Visual Design Systems, Typography, Color, and Accessibility",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply typography and visual hierarchy principles to interface design.",
+    "Choose colors and spacing that support usability and consistency.",
+    "Identify accessibility considerations for digital interfaces."
   ],
   "activities": [
     {
-      "id": "d23-a01",
+      "id": "d23-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Visual Hierarchy Explorer",
+      "instruction": "Adjust visual properties to reveal hierarchy changes.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Visual hierarchy uses size, weight, spacing, contrast, and position to guide attention through an interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d23-a2",
+      "type": "discover",
+      "title": "Typography Match",
+      "instruction": "Match typography choices to interface purposes.",
+      "content": {
+        "concept": "Typography choices affect readability, hierarchy, tone, and consistency across digital products.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d23-a3",
+      "type": "discover",
+      "title": "Color Accessibility Lab",
+      "instruction": "Select accessible color combinations for each interface.",
+      "content": {
+        "concept": "Accessible color choices provide sufficient contrast and should not rely on color alone to communicate meaning.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d23-a4",
+      "type": "discover",
+      "title": "Design System Builder",
+      "instruction": "Compose reusable tokens and interface components.",
+      "content": {
+        "concept": "A design system combines reusable visual tokens and components to maintain consistency across an interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

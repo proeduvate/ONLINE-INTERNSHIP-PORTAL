@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 30,
-  "topic": "Day 30 Topic for Full Stack",
+  "topic": "Capstone Demonstration, Portfolio, UX Case Study, and Future Roadmap",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Present a complete full stack project and explain its technical architecture.",
+    "Document the UI/UX design process and key implementation decisions.",
+    "Identify future improvements and communicate the project's development roadmap."
   ],
   "activities": [
     {
-      "id": "d30-a01",
+      "id": "d30-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Capstone Story Map",
+      "instruction": "Arrange the key sections of a project presentation.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A strong project presentation connects the problem, users, solution, architecture, implementation, results, and future improvements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d30-a2",
+      "type": "discover",
+      "title": "Technical Architecture Review",
+      "instruction": "Build the architecture diagram for the final project.",
+      "content": {
+        "concept": "Technical architecture communicates how the frontend, backend, database, external services, and deployment components work together.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d30-a3",
+      "type": "discover",
+      "title": "UX Case Study Builder",
+      "instruction": "Compose the major sections of a UX case study.",
+      "content": {
+        "concept": "A UX case study documents the problem, research, design process, iterations, implementation, and resulting user experience.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d30-a4",
+      "type": "discover",
+      "title": "Project Review Checklist",
+      "instruction": "Select the evidence needed for final project review.",
+      "content": {
+        "concept": "A final review can cover functionality, code quality, UI consistency, accessibility, testing, deployment, documentation, and presentation readiness.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

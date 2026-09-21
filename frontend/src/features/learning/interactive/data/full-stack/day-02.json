@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 2,
-  "topic": "Day 2 Topic for Full Stack",
+  "topic": "HTML5 and Semantic Web Structure",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create structured web pages using HTML5 elements.",
+    "Distinguish semantic elements from generic containers.",
+    "Compose accessible page structures using appropriate HTML elements."
   ],
   "activities": [
     {
-      "id": "d02-a01",
+      "id": "d2-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "HTML Document Anatomy",
+      "instruction": "Explore the parts of an HTML document.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "An HTML document uses elements such as html, head, and body to define document structure and content.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Semantic Element Match",
+      "instruction": "Match elements with their purpose.",
+      "content": {
+        "concept": "Semantic elements such as header, nav, main, section, article, and footer communicate the meaning of page content.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Page Structure Builder",
+      "instruction": "Build a semantic webpage structure.",
+      "content": {
+        "concept": "A well-structured page organizes content into meaningful regions that improve maintainability and accessibility.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Form Element Selector",
+      "instruction": "Choose the correct form element.",
+      "content": {
+        "concept": "HTML form controls collect user input through elements such as input, select, textarea, button, and label.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-02.json",
-  "practicalTaskRef": "practical-day-02.json",
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

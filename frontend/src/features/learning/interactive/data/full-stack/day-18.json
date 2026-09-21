@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 18,
-  "topic": "Day 18 Topic for Full Stack",
+  "topic": "SQL, PostgreSQL, and Relational Data Modeling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain relational databases, tables, keys, and relationships.",
+    "Design normalized database structures for application data.",
+    "Construct basic SQL operations for creating and querying data."
   ],
   "activities": [
     {
-      "id": "d18-a01",
+      "id": "d18-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Relational Database Anatomy",
+      "instruction": "Explore tables, rows, columns, and keys.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Relational databases organize structured data into tables connected through keys and relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Relationship Mapper",
+      "instruction": "Connect tables according to their relationships.",
+      "content": {
+        "concept": "One-to-one, one-to-many, and many-to-many relationships describe how records relate across tables.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "SQL Operation Match",
+      "instruction": "Match SQL commands to their database operations.",
+      "content": {
+        "concept": "SQL commands such as SELECT, INSERT, UPDATE, and DELETE perform common data operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Database Schema Builder",
+      "instruction": "Build a normalized schema for a web application.",
+      "content": {
+        "concept": "A relational schema separates related data into structured tables while maintaining relationships through keys.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

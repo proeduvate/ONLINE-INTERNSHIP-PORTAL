@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 22,
-  "topic": "Day 22 Topic for UI/UX",
+  "topic": "Ideation, User Journey Mapping, and Solution Exploration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Generate multiple solution ideas from a defined user problem.",
+    "Map user emotions, actions, and pain points across a journey.",
+    "Select concepts for further exploration using clear criteria."
   ],
   "activities": [
     {
-      "id": "d22-a01",
+      "id": "d22-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "User Journey Map",
+      "instruction": "Explore the user's journey from start to finish.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A journey map visualizes user stages, actions, thoughts, emotions, pain points, and opportunities across an experience.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Journey Sequencer",
+      "instruction": "Arrange the user's actions in the correct order.",
+      "content": {
+        "concept": "Mapping actions in sequence helps reveal friction points and opportunities throughout the complete user experience.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Ideation Builder",
+      "instruction": "Combine solution concepts to address the user problem.",
+      "content": {
+        "concept": "Ideation expands the solution space by generating multiple possibilities before narrowing toward promising concepts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Concept Selection Lab",
+      "instruction": "Select concepts using the given design criteria.",
+      "content": {
+        "concept": "Early concepts can be compared using factors such as user value, feasibility, clarity, and alignment with the problem.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

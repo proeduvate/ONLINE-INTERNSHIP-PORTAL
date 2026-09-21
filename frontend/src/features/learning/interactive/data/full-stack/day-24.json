@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 24,
-  "topic": "Day 24 Topic for Full Stack",
+  "topic": "Figma Prototyping and Interactive UI Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify the core workflow for creating interfaces in Figma.",
+    "Connect interface screens into interactive prototypes.",
+    "Apply components and reusable design elements to prototype screens."
   ],
   "activities": [
     {
-      "id": "d24-a01",
+      "id": "d24-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Figma Workspace Anatomy",
+      "instruction": "Explore the major areas of a Figma workspace.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A Figma workspace provides tools for designing frames, components, layers, prototypes, and collaborative interfaces.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d24-a2",
+      "type": "discover",
+      "title": "Component System Builder",
+      "instruction": "Build a reusable component from interface elements.",
+      "content": {
+        "concept": "Components allow repeated interface elements to share structure and visual behavior across designs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d24-a3",
+      "type": "discover",
+      "title": "Prototype Flow",
+      "instruction": "Connect screens to create an interactive user flow.",
+      "content": {
+        "concept": "Prototyping connects frames and interactions to simulate how users move through an interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d24-a4",
+      "type": "discover",
+      "title": "Interaction Selector",
+      "instruction": "Choose the appropriate interaction for each UI element.",
+      "content": {
+        "concept": "Different interface elements can trigger actions such as navigation, overlays, state changes, or feedback.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

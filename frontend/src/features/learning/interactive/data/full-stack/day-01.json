@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 1,
-  "topic": "Day 1 Topic for Full Stack",
+  "topic": "Web Development Fundamentals and Internet Basics",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how websites and web applications work.",
+    "Identify the roles of browsers, servers, DNS, HTTP, and databases.",
+    "Trace a basic request from a browser to a web server and back."
   ],
   "activities": [
     {
-      "id": "d01-a01",
+      "id": "d1-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Web Architecture Map",
+      "instruction": "Connect the main parts of the web.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A web application connects clients, servers, APIs, databases, and networks to deliver functionality to users.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Request Journey",
+      "instruction": "Arrange the request-response steps.",
+      "content": {
+        "concept": "A browser sends a request to a server, which processes it and returns a response that the browser renders.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Web Technology Match",
+      "instruction": "Match each technology to its role.",
+      "content": {
+        "concept": "HTML structures content, CSS controls presentation, JavaScript adds behavior, and servers handle application logic and data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "HTTP Explorer",
+      "instruction": "Explore the parts of an HTTP request.",
+      "content": {
+        "concept": "HTTP requests contain methods, URLs, headers, and optional bodies used to communicate with web servers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
       }
     }
   ],
-  "assessmentRef": "assessment-day-01.json",
-  "practicalTaskRef": "practical-day-01.json",
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 8,
-  "topic": "Day 8 Topic for UI/UX",
+  "topic": "UI Components, Design Patterns, and Design Systems",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify common UI components and their appropriate use cases.",
+    "Understand how reusable components create interface consistency.",
+    "Assemble a basic design system from reusable UI elements."
   ],
   "activities": [
     {
-      "id": "d08-a01",
+      "id": "d8-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UI Component Anatomy",
+      "instruction": "Explore the anatomy of common UI components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Buttons, inputs, cards, navigation, dialogs, and other components provide reusable interaction patterns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Component Matcher",
+      "instruction": "Match each user need to the correct component.",
+      "content": {
+        "concept": "Choosing the right component reduces interaction complexity and creates familiar user experiences.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Component States Lab",
+      "instruction": "Explore how components respond to interaction states.",
+      "content": {
+        "concept": "Components commonly have states such as default, hover, focus, active, disabled, loading, and error.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "Mini Design System Builder",
+      "instruction": "Assemble reusable components into a system.",
+      "content": {
+        "concept": "A design system combines reusable components, styles, tokens, and usage rules to maintain consistency.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-08.json",
-  "practicalTaskRef": "practical-day-08.json",
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

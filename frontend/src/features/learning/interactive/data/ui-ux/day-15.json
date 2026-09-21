@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 15,
-  "topic": "Day 15 Topic for UI/UX",
+  "topic": "UX Metrics, Analytics, and Data-Driven Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify UX metrics that measure task success and user behavior.",
+    "Interpret basic product analytics for UX decisions.",
+    "Connect quantitative findings with qualitative research insights."
   ],
   "activities": [
     {
-      "id": "d15-a01",
+      "id": "d15-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UX Metrics Map",
+      "instruction": "Explore how common UX metrics relate to user goals.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Metrics such as task completion, conversion, retention, error rate, and time on task provide different views of user behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "Metric Matcher",
+      "instruction": "Match each design question with a useful metric.",
+      "content": {
+        "concept": "The right metric depends on the user behavior or product outcome being investigated.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "Analytics Explorer",
+      "instruction": "Adjust the data and observe the UX signal.",
+      "content": {
+        "concept": "Changes in behavioral data can reveal where users succeed, hesitate, abandon tasks, or encounter friction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "Insight Synthesis Lab",
+      "instruction": "Combine research and analytics into an insight.",
+      "content": {
+        "concept": "Combining qualitative evidence with quantitative patterns creates stronger hypotheses about user problems and opportunities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

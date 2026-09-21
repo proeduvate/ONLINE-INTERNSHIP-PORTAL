@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 13,
-  "topic": "Day 13 Topic for Full Stack",
+  "topic": "TypeScript for Frontend Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify TypeScript types and interfaces used in frontend applications.",
+    "Add type safety to component props and application data.",
+    "Use TypeScript to detect common JavaScript development errors."
   ],
   "activities": [
     {
-      "id": "d13-a01",
+      "id": "d13-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "TypeScript Type Explorer",
+      "instruction": "Match values with their appropriate TypeScript types.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "TypeScript adds static type information to JavaScript values, variables, functions, and objects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Interface Anatomy",
+      "instruction": "Explore the parts of a TypeScript interface.",
+      "content": {
+        "concept": "Interfaces describe the expected structure of objects and can improve type safety across an application.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Type Error Detector",
+      "instruction": "Select the type mismatch in each example.",
+      "content": {
+        "concept": "Type checking identifies incompatible values and function usage before runtime execution.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Typed Component Builder",
+      "instruction": "Build a React component with typed props.",
+      "content": {
+        "concept": "TypeScript can define component props and data structures to make React components safer and easier to maintain.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

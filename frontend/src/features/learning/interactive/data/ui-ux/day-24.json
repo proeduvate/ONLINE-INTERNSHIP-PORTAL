@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 24,
-  "topic": "Day 24 Topic for UI/UX",
+  "topic": "Advanced Prototyping, Motion, and Interaction Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Design realistic interactive prototypes for complex user flows.",
+    "Use motion and transitions to communicate interface state changes.",
+    "Evaluate whether animation improves usability or introduces distraction."
   ],
   "activities": [
     {
-      "id": "d24-a01",
+      "id": "d24-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Advanced Prototype Architecture",
+      "instruction": "Connect states and interactions into a complete flow.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Advanced prototypes model multiple states, conditional paths, overlays, transitions, and interaction outcomes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d24-a2",
+      "type": "discover",
+      "title": "Motion Purpose Matcher",
+      "instruction": "Match each animation with its communication purpose.",
+      "content": {
+        "concept": "Motion can communicate hierarchy, continuity, feedback, progress, and changes between interface states.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d24-a3",
+      "type": "discover",
+      "title": "Transition Timing Lab",
+      "instruction": "Adjust transition timing and observe the interaction.",
+      "content": {
+        "concept": "Animation timing affects perceived responsiveness, continuity, and the amount of attention an interaction requires.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d24-a4",
+      "type": "discover",
+      "title": "Interaction State Builder",
+      "instruction": "Build a complete interaction from trigger to result.",
+      "content": {
+        "concept": "A robust interaction defines the trigger, transition, system response, feedback, and resulting state.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

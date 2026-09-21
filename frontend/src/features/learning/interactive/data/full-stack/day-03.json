@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 3,
-  "topic": "Day 3 Topic for Full Stack",
+  "topic": "CSS Fundamentals and Responsive Styling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply CSS selectors, properties, and the box model.",
+    "Construct layouts using Flexbox and responsive techniques.",
+    "Choose appropriate styling strategies for different screen sizes."
   ],
   "activities": [
     {
-      "id": "d03-a01",
+      "id": "d3-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "CSS Anatomy",
+      "instruction": "Explore the parts of a CSS rule.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A CSS rule combines a selector with declarations that control how matching HTML elements are displayed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Box Model Explorer",
+      "instruction": "Adjust the box model layers.",
+      "content": {
+        "concept": "The CSS box model describes an element through content, padding, border, and margin dimensions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Layout Builder",
+      "instruction": "Build a responsive page layout.",
+      "content": {
+        "concept": "Flexbox provides a flexible way to align and distribute elements within a container.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Responsive Strategy",
+      "instruction": "Select the correct responsive approach.",
+      "content": {
+        "concept": "Responsive design adapts layouts and content presentation to different viewport sizes and device conditions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-03.json",
-  "practicalTaskRef": "practical-day-03.json",
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

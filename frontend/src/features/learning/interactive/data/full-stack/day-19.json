@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 19,
-  "topic": "Day 19 Topic for Full Stack",
+  "topic": "Authentication, Authorization, JWT, and Security",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Differentiate authentication from authorization.",
+    "Understand JWT-based authentication and token flow.",
+    "Identify common security practices for full stack applications."
   ],
   "activities": [
     {
-      "id": "d19-a01",
+      "id": "d19-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Auth vs Authorization",
+      "instruction": "Match security concepts with their responsibilities.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Authentication verifies identity, while authorization determines which resources or actions an authenticated user can access.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "JWT Anatomy",
+      "instruction": "Explore the parts of a JSON Web Token.",
+      "content": {
+        "concept": "A JWT commonly contains a header, payload, and signature used to represent signed claims.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Authentication Flow",
+      "instruction": "Arrange the steps of a login and token flow.",
+      "content": {
+        "concept": "A typical token-based login flow verifies credentials, issues a token, and uses that token for protected requests.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Security Strategy Lab",
+      "instruction": "Select the appropriate security control for each scenario.",
+      "content": {
+        "concept": "Secure applications use practices such as password hashing, input validation, secure token handling, and access control.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 18,
-  "topic": "Day 18 Topic for UI/UX",
+  "topic": "Advanced Accessibility and Inclusive Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify accessibility issues across visual, auditory, motor, and cognitive experiences.",
+    "Apply inclusive interaction and content patterns.",
+    "Evaluate interfaces using accessibility-focused design criteria."
   ],
   "activities": [
     {
-      "id": "d18-a01",
+      "id": "d18-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Accessibility Needs Map",
+      "instruction": "Explore different accessibility needs and design responses.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Inclusive design considers diverse sensory, motor, cognitive, and communication needs throughout the experience.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Accessible Pattern Matcher",
+      "instruction": "Match each barrier with a suitable design solution.",
+      "content": {
+        "concept": "Accessible patterns can include keyboard support, clear labels, sufficient contrast, captions, focus indicators, and understandable feedback.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "Keyboard Navigation Lab",
+      "instruction": "Arrange the correct keyboard focus sequence.",
+      "content": {
+        "concept": "Logical focus order allows keyboard users to navigate and operate interface controls predictably.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Accessibility Audit",
+      "instruction": "Select the accessibility issues in the interface.",
+      "content": {
+        "concept": "An accessibility audit checks visual, interaction, content, navigation, and feedback patterns for barriers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

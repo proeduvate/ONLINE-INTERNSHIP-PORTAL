@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 22,
-  "topic": "Day 22 Topic for Full Stack",
+  "topic": "Wireframing, Information Architecture, and User Flows",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Organize content using basic information architecture principles.",
+    "Create low-fidelity wireframes for application screens.",
+    "Design user flows that connect tasks and screens logically."
   ],
   "activities": [
     {
-      "id": "d22-a01",
+      "id": "d22-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Information Architecture Map",
+      "instruction": "Organize content into a logical application structure.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Information architecture organizes content, features, and navigation so users can find what they need efficiently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Wireframe Anatomy",
+      "instruction": "Explore the main regions of a wireframe.",
+      "content": {
+        "concept": "Wireframes define the structure, hierarchy, and placement of interface elements before detailed visual styling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "User Flow Sequencer",
+      "instruction": "Arrange screens for a common user task.",
+      "content": {
+        "concept": "A user flow represents the sequence of steps and screens required to complete a specific goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Wireframe Builder",
+      "instruction": "Compose a low-fidelity screen from interface blocks.",
+      "content": {
+        "concept": "Low-fidelity wireframes focus on layout and functionality without detailed colors, imagery, or visual decoration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 10,
-  "topic": "Day 10 Topic for UI/UX",
+  "topic": "Responsive Design, Accessibility, and Inclusive UX",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply responsive design principles across different screen sizes.",
+    "Identify accessibility barriers in common interface patterns.",
+    "Design inclusive interactions that support diverse user needs."
   ],
   "activities": [
     {
-      "id": "d10-a01",
+      "id": "d10-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Responsive Layout Explorer",
+      "instruction": "Resize the interface and observe layout changes.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Responsive design adapts layout, content, and interactions to different screen sizes and device contexts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Accessibility Barrier Hunt",
+      "instruction": "Select the accessibility issue in each interface.",
+      "content": {
+        "concept": "Accessibility barriers can involve contrast, keyboard access, labels, focus states, text size, motion, and interaction complexity.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Inclusive Pattern Matcher",
+      "instruction": "Match each accessibility need with a design solution.",
+      "content": {
+        "concept": "Inclusive design provides multiple ways to perceive information, navigate interfaces, and complete tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Responsive Interface Builder",
+      "instruction": "Compose a layout that works across breakpoints.",
+      "content": {
+        "concept": "Responsive interfaces reorganize components and content while preserving usability across different viewport sizes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

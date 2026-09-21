@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 14,
-  "topic": "Day 14 Topic for Full Stack",
+  "topic": "Node.js and npm Fundamentals",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how Node.js enables JavaScript execution outside the browser.",
+    "Identify the role of modules, packages, and npm in backend development.",
+    "Create a basic Node.js project structure using package management concepts."
   ],
   "activities": [
     {
-      "id": "d14-a01",
+      "id": "d14-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Node.js Runtime Anatomy",
+      "instruction": "Explore the major parts of the Node.js runtime.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Node.js provides a JavaScript runtime built around an event-driven architecture for server-side applications.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Module System Explorer",
+      "instruction": "Match module concepts with their purposes.",
+      "content": {
+        "concept": "Node.js applications organize reusable functionality into modules that can be imported and exported.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "npm Workflow",
+      "instruction": "Arrange the steps for adding a package to a project.",
+      "content": {
+        "concept": "npm manages project dependencies, scripts, package metadata, and installed JavaScript packages.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Node Project Builder",
+      "instruction": "Compose the files and dependencies of a basic Node project.",
+      "content": {
+        "concept": "A Node.js project typically combines source modules, package metadata, dependencies, and executable scripts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

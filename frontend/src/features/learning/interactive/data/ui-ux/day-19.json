@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 19,
-  "topic": "Day 19 Topic for UI/UX",
+  "topic": "Design Critique, Heuristic Evaluation, and UX Improvement",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply usability heuristics to evaluate interface designs.",
+    "Identify usability problems and explain their underlying causes.",
+    "Propose evidence-based improvements to interface experiences."
   ],
   "activities": [
     {
-      "id": "d19-a01",
+      "id": "d19-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Heuristic Anatomy",
+      "instruction": "Explore the key principles used in heuristic evaluation.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Heuristic evaluation uses established usability principles to identify potential interface problems systematically.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Heuristic Matcher",
+      "instruction": "Match each interface problem to its heuristic.",
+      "content": {
+        "concept": "Common usability principles address visibility, consistency, error prevention, user control, recognition, and simplicity.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Design Critique Lab",
+      "instruction": "Identify the most important issue in each design.",
+      "content": {
+        "concept": "A useful critique describes the observed problem, its user impact, and a possible improvement rather than focusing only on personal preference.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Improvement Builder",
+      "instruction": "Assemble a solution for the identified usability issue.",
+      "content": {
+        "concept": "Design improvements should connect directly to observed user problems and preserve important user goals and constraints.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 4,
-  "topic": "Day 4 Topic for UI/UX",
+  "topic": "Information Architecture and User Flows",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Organize interface content into a clear information hierarchy.",
+    "Create logical user flows for common tasks.",
+    "Identify navigation patterns that reduce user effort."
   ],
   "activities": [
     {
-      "id": "d04-a01",
+      "id": "d4-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Information Architecture Map",
+      "instruction": "Explore how content is organized into a hierarchy.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Information architecture structures content, navigation, and relationships so users can find what they need.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Navigation Pattern Match",
+      "instruction": "Match each navigation pattern to its use case.",
+      "content": {
+        "concept": "Tabs, navigation bars, breadcrumbs, menus, and search support different navigation needs and content structures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "User Flow Builder",
+      "instruction": "Arrange the steps to complete a user task.",
+      "content": {
+        "concept": "A user flow represents the sequence of actions and decisions required to complete a specific goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Flow Friction Lab",
+      "instruction": "Identify the step that creates unnecessary friction.",
+      "content": {
+        "concept": "Reducing unnecessary steps, decisions, and navigation changes can make task completion more efficient.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-04.json",
-  "practicalTaskRef": "practical-day-04.json",
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

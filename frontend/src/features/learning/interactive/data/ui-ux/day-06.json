@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 6,
-  "topic": "Day 6 Topic for UI/UX",
+  "topic": "Visual Design Fundamentals: Layout, Spacing, and Composition",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply layout and spacing principles to create organized interfaces.",
+    "Identify visual hierarchy using size, position, spacing, and grouping.",
+    "Improve interface composition by reducing visual clutter."
   ],
   "activities": [
     {
-      "id": "d06-a01",
+      "id": "d6-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Visual Hierarchy Explorer",
+      "instruction": "Select the element users should notice first.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Visual hierarchy guides attention by using size, position, contrast, spacing, and emphasis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d6-a2",
+      "type": "discover",
+      "title": "Spacing System Lab",
+      "instruction": "Adjust spacing to improve the layout.",
+      "content": {
+        "concept": "Consistent spacing creates relationships between elements and makes interfaces easier to scan.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d6-a3",
+      "type": "discover",
+      "title": "Alignment Builder",
+      "instruction": "Arrange elements using a consistent alignment.",
+      "content": {
+        "concept": "Alignment creates visual order by establishing shared edges, columns, and relationships between elements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d6-a4",
+      "type": "discover",
+      "title": "Composition Challenge",
+      "instruction": "Choose the cleaner interface composition.",
+      "content": {
+        "concept": "Effective composition balances hierarchy, alignment, whitespace, grouping, and visual weight.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-06.json",
-  "practicalTaskRef": "practical-day-06.json",
+  "assessmentRef": "assessment-day-6.json",
+  "practicalTaskRef": "practical-day-6.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

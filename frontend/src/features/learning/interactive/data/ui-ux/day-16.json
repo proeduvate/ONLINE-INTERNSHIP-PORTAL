@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 16,
-  "topic": "Day 16 Topic for UI/UX",
+  "topic": "Advanced Information Architecture and Complex User Flows",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Design information structures for complex applications.",
+    "Map multi-step user journeys and decision points.",
+    "Identify and reduce unnecessary complexity in navigation."
   ],
   "activities": [
     {
-      "id": "d16-a01",
+      "id": "d16-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Complex IA Explorer",
+      "instruction": "Explore the hierarchy of a complex application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Complex information architecture organizes large amounts of content into understandable categories, levels, and navigation structures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "Navigation Depth Lab",
+      "instruction": "Adjust navigation depth and observe the user path.",
+      "content": {
+        "concept": "Excessive navigation depth can increase effort, while appropriate grouping helps users reach information efficiently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "Journey Flow Builder",
+      "instruction": "Build a multi-step user journey.",
+      "content": {
+        "concept": "Complex user journeys combine tasks, decisions, alternate paths, errors, and completion states.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "Flow Complexity Detector",
+      "instruction": "Select the point where users may experience friction.",
+      "content": {
+        "concept": "Decision overload, unnecessary steps, unclear labels, and dead ends can make complex flows difficult to complete.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

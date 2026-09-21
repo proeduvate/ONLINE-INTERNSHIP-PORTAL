@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 27,
-  "topic": "Day 27 Topic for Full Stack",
+  "topic": "Docker, Deployment, and Environment Configuration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain how containers package applications and dependencies.",
+    "Create a basic deployment architecture for a full stack application.",
+    "Manage environment-specific configuration securely."
   ],
   "activities": [
     {
-      "id": "d27-a01",
+      "id": "d27-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Docker Anatomy",
+      "instruction": "Explore the parts of a containerized application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Docker packages applications and their dependencies into portable containers that can run consistently across environments.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "discover",
+      "title": "Container Workflow",
+      "instruction": "Arrange the stages from Dockerfile to running container.",
+      "content": {
+        "concept": "A container workflow commonly builds an image from instructions and then runs that image as a container.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Environment Variable Lab",
+      "instruction": "Select where each configuration value should be stored.",
+      "content": {
+        "concept": "Environment variables separate deployment-specific configuration and sensitive values from application source code.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "discover",
+      "title": "Deployment Architecture Builder",
+      "instruction": "Compose a deployment architecture for a full stack app.",
+      "content": {
+        "concept": "A deployed application can connect frontend hosting, backend services, databases, environment configuration, and external services.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

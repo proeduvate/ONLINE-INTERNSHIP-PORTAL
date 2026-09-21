@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 1,
-  "topic": "Day 1 Topic for UI/UX",
+  "topic": "UI/UX Fundamentals and Human-Centered Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Differentiate UI design from UX design and explain how they work together.",
+    "Identify the core stages of a human-centered design process.",
+    "Recognize usability, accessibility, and user needs as key design considerations."
   ],
   "activities": [
     {
-      "id": "d01-a01",
+      "id": "d1-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UI vs UX Explorer",
+      "instruction": "Match each task to UI or UX.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "UI focuses on visual interfaces, while UX focuses on the overall user experience and problem-solving.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Human-Centered Design Map",
+      "instruction": "Explore each stage of the design process.",
+      "content": {
+        "concept": "Human-centered design begins by understanding users and iterates through research, definition, ideation, prototyping, and testing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Good vs Poor Experience",
+      "instruction": "Select the design with better usability.",
+      "content": {
+        "concept": "Usability depends on how easily users can understand, navigate, and complete tasks within an interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "UX Design Principles",
+      "instruction": "Match each principle with its example.",
+      "content": {
+        "concept": "Consistency, feedback, visibility, simplicity, and user control help create predictable and usable interfaces.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
       }
     }
   ],
-  "assessmentRef": "assessment-day-01.json",
-  "practicalTaskRef": "practical-day-01.json",
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

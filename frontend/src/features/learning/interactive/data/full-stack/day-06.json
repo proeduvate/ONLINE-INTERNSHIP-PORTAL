@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 6,
-  "topic": "Day 6 Topic for Full Stack",
+  "topic": "JavaScript DOM, Events, Forms, and Validation",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Manipulate DOM elements dynamically using JavaScript.",
+    "Handle user interactions through browser events.",
+    "Validate form inputs and provide appropriate feedback."
   ],
   "activities": [
     {
-      "id": "d06-a01",
+      "id": "d6-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "DOM Tree Explorer",
+      "instruction": "Click elements to reveal their DOM relationships.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "The DOM represents an HTML document as a hierarchical tree of elements and nodes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d6-a2",
+      "type": "discover",
+      "title": "Event Flow Builder",
+      "instruction": "Arrange the steps of a browser event.",
+      "content": {
+        "concept": "Browser events connect user actions such as clicks and input changes to JavaScript handlers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d6-a3",
+      "type": "discover",
+      "title": "Form Validation Lab",
+      "instruction": "Select the correct validation rule for each field.",
+      "content": {
+        "concept": "Client-side validation checks user input before data is submitted to the server.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d6-a4",
+      "type": "discover",
+      "title": "Interactive Form Builder",
+      "instruction": "Build a form using fields, events, and validation.",
+      "content": {
+        "concept": "Interactive forms combine HTML inputs, DOM updates, event handlers, and validation logic.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-06.json",
-  "practicalTaskRef": "practical-day-06.json",
+  "assessmentRef": "assessment-day-6.json",
+  "practicalTaskRef": "practical-day-6.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

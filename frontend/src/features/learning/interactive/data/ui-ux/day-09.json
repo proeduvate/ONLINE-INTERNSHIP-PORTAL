@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 9,
-  "topic": "Day 9 Topic for UI/UX",
+  "topic": "Interaction Design, Microinteractions, and Feedback",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify interaction patterns that communicate system behavior.",
+    "Design appropriate feedback for user actions and system states.",
+    "Use microinteractions to improve clarity without adding unnecessary complexity."
   ],
   "activities": [
     {
-      "id": "d09-a01",
+      "id": "d9-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Interaction State Explorer",
+      "instruction": "Trigger each interaction state to reveal its purpose.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Interaction states communicate what users can do, what they are doing, and what the system is doing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Feedback Matcher",
+      "instruction": "Match each user action with suitable feedback.",
+      "content": {
+        "concept": "Feedback confirms actions and communicates results through visual, textual, motion, or sensory cues.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Microinteraction Builder",
+      "instruction": "Build a microinteraction from trigger to response.",
+      "content": {
+        "concept": "A microinteraction connects a trigger, system response, feedback, and sometimes a resulting state change.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Feedback Timing Lab",
+      "instruction": "Adjust feedback timing and observe the experience.",
+      "content": {
+        "concept": "Feedback should appear at an appropriate time so users understand whether their action succeeded, failed, or is still processing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],
-  "assessmentRef": "assessment-day-09.json",
-  "practicalTaskRef": "practical-day-09.json",
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

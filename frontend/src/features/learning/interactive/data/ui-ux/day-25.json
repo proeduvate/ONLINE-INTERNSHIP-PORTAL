@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 25,
-  "topic": "Day 25 Topic for UI/UX",
+  "topic": "UX Strategy, Product Thinking, and Design Handoff",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Connect UX decisions with user needs and product objectives.",
+    "Prepare designs and specifications for development handoff.",
+    "Communicate design decisions clearly to cross-functional teams."
   ],
   "activities": [
     {
-      "id": "d25-a01",
+      "id": "d25-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UX Strategy Map",
+      "instruction": "Explore how user needs connect to product goals.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "UX strategy aligns user needs, business objectives, product constraints, and measurable outcomes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Product Decision Matcher",
+      "instruction": "Match product goals with relevant UX decisions.",
+      "content": {
+        "concept": "Design decisions should consider user value, product goals, technical constraints, and available evidence.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Developer Handoff Builder",
+      "instruction": "Assemble the essential parts of a design handoff.",
+      "content": {
+        "concept": "A useful handoff communicates layouts, dimensions, states, assets, interactions, responsive behavior, and design tokens.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "Handoff Completeness Check",
+      "instruction": "Select the missing information in each handoff.",
+      "content": {
+        "concept": "Complete handoff documentation reduces ambiguity between designers and developers during implementation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

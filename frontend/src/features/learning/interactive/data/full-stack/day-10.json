@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 10,
-  "topic": "Day 10 Topic for Full Stack",
+  "topic": "React Routing, Forms, and API Integration",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create multi-page navigation using client-side routing concepts.",
+    "Build controlled forms and manage form submissions.",
+    "Connect React interfaces to backend APIs and display responses."
   ],
   "activities": [
     {
-      "id": "d10-a01",
+      "id": "d10-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Routing Architecture",
+      "instruction": "Map routes to their corresponding application views.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Client-side routing maps application URLs to React components without requiring a full page reload.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Controlled Form Builder",
+      "instruction": "Build a form using React-controlled inputs.",
+      "content": {
+        "concept": "Controlled React inputs use component state as the source of truth for form values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "API Integration Flow",
+      "instruction": "Arrange the steps of a React API request.",
+      "content": {
+        "concept": "Frontend API integration sends requests, handles responses, updates state, and renders the resulting data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Response Handling Lab",
+      "instruction": "Select the correct UI behavior for each API response.",
+      "content": {
+        "concept": "A frontend should handle successful responses, loading states, validation failures, and server errors appropriately.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],

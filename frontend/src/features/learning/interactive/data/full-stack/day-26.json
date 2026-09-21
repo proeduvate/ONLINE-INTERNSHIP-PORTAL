@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 26,
-  "topic": "Day 26 Topic for Full Stack",
+  "topic": "Testing Full Stack Applications",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Differentiate unit, integration, and end-to-end testing approaches.",
+    "Identify suitable tests for frontend and backend components.",
+    "Apply testing strategies to validate full stack application behavior."
   ],
   "activities": [
     {
-      "id": "d26-a01",
+      "id": "d26-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Testing Pyramid",
+      "instruction": "Explore the layers of the testing pyramid.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "The testing pyramid organizes tests by scope, with smaller focused tests supporting broader integration and end-to-end tests.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "Test Type Match",
+      "instruction": "Match scenarios with the appropriate test type.",
+      "content": {
+        "concept": "Unit tests isolate small pieces of logic, integration tests verify connected components, and end-to-end tests validate complete user flows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Test Execution Flow",
+      "instruction": "Arrange the stages of a test workflow.",
+      "content": {
+        "concept": "A testing workflow typically defines test cases, prepares data, executes tests, evaluates results, and reports failures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Test Suite Builder",
+      "instruction": "Build a test strategy for a full stack feature.",
+      "content": {
+        "concept": "A balanced test suite validates frontend behavior, backend logic, API integration, and critical user journeys.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

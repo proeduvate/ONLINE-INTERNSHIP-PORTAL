@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 26,
-  "topic": "Day 26 Topic for UI/UX",
+  "topic": "Capstone Project Discovery, Research Synthesis, and Problem Framing",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Synthesize user research findings into actionable insights.",
+    "Identify and prioritize the core user problem for a capstone project.",
+    "Create a clear problem statement and measurable design goals."
   ],
   "activities": [
     {
-      "id": "d26-a01",
+      "id": "d26-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Research Insight Map",
+      "instruction": "Connect research findings to recurring user needs.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Research synthesis groups observations into patterns, themes, and actionable insights.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "Problem Framing",
+      "instruction": "Arrange the elements into a focused problem statement.",
+      "content": {
+        "concept": "A strong problem statement identifies the target user, their need, and the context or challenge.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Insight Prioritizer",
+      "instruction": "Adjust priority values to identify the most important insights.",
+      "content": {
+        "concept": "Prioritization helps teams focus design effort on problems with meaningful user impact.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Design Goal Builder",
+      "instruction": "Select goals that directly address the defined problem.",
+      "content": {
+        "concept": "Design goals translate user problems into specific outcomes the solution should achieve.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

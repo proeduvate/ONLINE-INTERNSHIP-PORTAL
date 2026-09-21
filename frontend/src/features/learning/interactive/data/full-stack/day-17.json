@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 17,
-  "topic": "Day 17 Topic for Full Stack",
+  "topic": "MongoDB and NoSQL Data Modeling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure and characteristics of MongoDB documents and collections.",
+    "Design document models for common application requirements.",
+    "Choose appropriate embedding and referencing strategies."
   ],
   "activities": [
     {
-      "id": "d17-a01",
+      "id": "d17-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "MongoDB Anatomy",
+      "instruction": "Explore databases, collections, documents, and fields.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "MongoDB stores flexible JSON-like documents inside collections within databases.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "NoSQL Modeling Match",
+      "instruction": "Match application requirements to document structures.",
+      "content": {
+        "concept": "NoSQL data models should reflect how application data is accessed and related.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Embedding vs Referencing",
+      "instruction": "Select the suitable relationship strategy for each case.",
+      "content": {
+        "concept": "MongoDB models can embed related data or reference separate documents depending on access patterns and relationships.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Document Model Builder",
+      "instruction": "Build a MongoDB model for an application.",
+      "content": {
+        "concept": "A practical document model organizes fields and relationships around the application's primary queries and operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

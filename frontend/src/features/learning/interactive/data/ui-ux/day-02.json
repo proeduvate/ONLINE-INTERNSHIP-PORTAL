@@ -1,31 +1,70 @@
 {
   "curriculum": "UI/UX",
   "day": 2,
-  "topic": "Day 2 Topic for UI/UX",
+  "topic": "User Research and Understanding User Needs",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Identify suitable user research methods for different design problems.",
+    "Distinguish qualitative and quantitative research data.",
+    "Create basic user insights from research findings."
   ],
   "activities": [
     {
-      "id": "d02-a01",
+      "id": "d2-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Research Method Selector",
+      "instruction": "Choose the best research method for each scenario.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Interviews, surveys, observation, usability testing, and analytics answer different types of research questions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Qualitative vs Quantitative",
+      "instruction": "Sort each research finding into the correct category.",
+      "content": {
+        "concept": "Qualitative research explores behaviors and motivations, while quantitative research measures patterns using numerical data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Interview Flow Builder",
+      "instruction": "Arrange the stages of a user interview.",
+      "content": {
+        "concept": "Effective interviews use clear goals, open-ended questions, active listening, and structured synthesis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Insight Extraction Lab",
+      "instruction": "Select the strongest insight from each observation.",
+      "content": {
+        "concept": "A useful UX insight connects observed user behavior with an underlying need, frustration, or motivation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
       }
     }
   ],
-  "assessmentRef": "assessment-day-02.json",
-  "practicalTaskRef": "practical-day-02.json",
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

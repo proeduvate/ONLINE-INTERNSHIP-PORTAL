@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 15,
-  "topic": "Day 15 Topic for Full Stack",
+  "topic": "Express.js and REST API Development",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the structure and purpose of an Express.js backend.",
+    "Create REST endpoints using HTTP methods and routes.",
+    "Understand how requests, responses, and middleware work together."
   ],
   "activities": [
     {
-      "id": "d15-a01",
+      "id": "d15-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Express Architecture",
+      "instruction": "Explore the main components of an Express application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Express organizes backend applications around routes, middleware, request handling, and responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "REST Method Match",
+      "instruction": "Match HTTP methods to their typical REST operations.",
+      "content": {
+        "concept": "REST APIs commonly use HTTP methods such as GET, POST, PUT, PATCH, and DELETE to represent resource operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "Request Response Journey",
+      "instruction": "Arrange the path of a request through an Express server.",
+      "content": {
+        "concept": "An Express request can pass through middleware and route handlers before producing a response to the client.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "REST API Builder",
+      "instruction": "Build routes for a simple resource-based API.",
+      "content": {
+        "concept": "A REST API exposes resources through predictable routes, HTTP methods, request data, and structured responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

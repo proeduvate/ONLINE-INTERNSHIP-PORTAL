@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 8,
-  "topic": "Day 8 Topic for Full Stack",
+  "topic": "React Fundamentals and Component Architecture",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the purpose of React components and JSX.",
+    "Compose reusable interfaces from smaller components.",
+    "Identify the basic structure of a React application."
   ],
   "activities": [
     {
-      "id": "d08-a01",
+      "id": "d8-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "React App Anatomy",
+      "instruction": "Explore the major parts of a React application.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "A React application is composed of components, JSX, application logic, and a rendering entry point.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "JSX Explorer",
+      "instruction": "Click JSX elements to identify their roles.",
+      "content": {
+        "concept": "JSX combines JavaScript expressions with HTML-like syntax to describe React interfaces.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Component Composition",
+      "instruction": "Build a page by combining reusable components.",
+      "content": {
+        "concept": "Component composition allows complex interfaces to be constructed from smaller reusable components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "React Rendering Flow",
+      "instruction": "Arrange the stages of React rendering.",
+      "content": {
+        "concept": "React evaluates components and updates the rendered interface when relevant data changes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
       }
     }
   ],
-  "assessmentRef": "assessment-day-08.json",
-  "practicalTaskRef": "practical-day-08.json",
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

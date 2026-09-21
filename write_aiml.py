@@ -4,50 +4,37 @@ import json
 data_str = """
 [
   {
-    "curriculum": "Java",
+    "curriculum": "UI/UX",
     "day": 26,
-    "topic": "Cloud Deployment and Environment Configuration",
+    "topic": "Capstone Project Discovery, Research Synthesis, and Problem Framing",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Explain the core concepts involved in deploying Java applications to the cloud.",
-      "Configure application settings using environment variables and external configuration.",
-      "Design a deployment workflow that separates development and production environments."
+      "Synthesize user research findings into actionable insights.",
+      "Identify and prioritize the core user problem for a capstone project.",
+      "Create a clear problem statement and measurable design goals."
     ],
     "activities": [
       {
         "id": "d26-a1",
         "type": "discover",
-        "title": "Cloud Deployment Map",
-        "instruction": "Map the application deployment components.",
+        "title": "Research Insight Map",
+        "instruction": "Connect research findings to recurring user needs.",
         "content": {
-          "concept": "Cloud deployment moves an application from source code to a managed runtime environment accessible through a network.",
+          "concept": "Research synthesis groups observations into patterns, themes, and actionable insights.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "architecture"
+          "mode": "semantic-map"
         }
       },
       {
         "id": "d26-a2",
         "type": "discover",
-        "title": "Configuration Selector",
-        "instruction": "Select where each setting belongs.",
+        "title": "Problem Framing",
+        "instruction": "Arrange the elements into a focused problem statement.",
         "content": {
-          "concept": "Environment-specific values such as database URLs and credentials should be supplied through external configuration rather than hardcoded in source code.",
-          "tip": "Interact with the example first. Your progress is saved for this session."
-        },
-        "interaction": {
-          "mode": "selector-lab"
-        }
-      },
-      {
-        "id": "d26-a3",
-        "type": "discover",
-        "title": "Deployment Pipeline",
-        "instruction": "Arrange the cloud deployment stages.",
-        "content": {
-          "concept": "A deployment flow commonly builds an artifact or image, configures the environment, starts the application, and verifies its availability.",
+          "concept": "A strong problem statement identifies the target user, their need, and the context or challenge.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -55,12 +42,25 @@ data_str = """
         }
       },
       {
+        "id": "d26-a3",
+        "type": "discover",
+        "title": "Insight Prioritizer",
+        "instruction": "Adjust priority values to identify the most important insights.",
+        "content": {
+          "concept": "Prioritization helps teams focus design effort on problems with meaningful user impact.",
+          "tip": "Interact with the example first. Your progress is saved for this session."
+        },
+        "interaction": {
+          "mode": "slider"
+        }
+      },
+      {
         "id": "d26-a4",
         "type": "discover",
-        "title": "Environment Builder",
-        "instruction": "Build a production configuration.",
+        "title": "Design Goal Builder",
+        "instruction": "Select goals that directly address the defined problem.",
         "content": {
-          "concept": "Externalized configuration allows the same application artifact to run with different settings across environments.",
+          "concept": "Design goals translate user problems into specific outcomes the solution should achieve.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -81,67 +81,67 @@ data_str = """
     }
   },
   {
-    "curriculum": "Java",
+    "curriculum": "UI/UX",
     "day": 27,
-    "topic": "Logging, Monitoring, and Production Observability",
+    "topic": "Capstone Information Architecture, User Flows, and Wireframes",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Explain how logging and monitoring support production applications.",
-      "Identify useful application metrics and log levels.",
-      "Design a basic observability workflow for diagnosing application behavior."
+      "Organize capstone content into a clear information architecture.",
+      "Design task-focused user flows for primary user goals.",
+      "Translate flows into structured low-fidelity wireframes."
     ],
     "activities": [
       {
         "id": "d27-a1",
         "type": "discover",
-        "title": "Observability Map",
-        "instruction": "Connect logs, metrics, and traces.",
+        "title": "Content Structure Map",
+        "instruction": "Arrange content into a logical information hierarchy.",
         "content": {
-          "concept": "Observability combines signals such as logs, metrics, and traces to help understand application behavior.",
+          "concept": "Information architecture organizes content and features so users can find and understand them efficiently.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-map"
+          "mode": "architecture"
         }
       },
       {
         "id": "d27-a2",
         "type": "discover",
-        "title": "Log Level Selector",
-        "instruction": "Choose the appropriate log level.",
+        "title": "User Flow Builder",
+        "instruction": "Build the shortest logical path to the user's goal.",
         "content": {
-          "concept": "Log levels such as DEBUG, INFO, WARN, and ERROR communicate different levels of application information and problems.",
+          "concept": "User flows represent the sequence of actions users take to complete a specific task.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "selector-lab"
+          "mode": "build"
         }
       },
       {
         "id": "d27-a3",
         "type": "discover",
-        "title": "Monitoring Dashboard",
-        "instruction": "Select the metrics for each scenario.",
+        "title": "Flow Sequence Challenge",
+        "instruction": "Drag each screen into the correct task sequence.",
         "content": {
-          "concept": "Metrics such as request rate, latency, error rate, and resource usage help reveal application performance and health.",
+          "concept": "A well-structured flow reduces unnecessary steps and keeps users oriented toward their goal.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "match"
+          "mode": "semantic-order"
         }
       },
       {
         "id": "d27-a4",
         "type": "discover",
-        "title": "Incident Investigation",
-        "instruction": "Arrange the troubleshooting workflow.",
+        "title": "Wireframe Anatomy",
+        "instruction": "Identify the purpose of each wireframe region.",
         "content": {
-          "concept": "Production diagnosis can combine alerts, metrics, logs, and traces to identify the source and impact of a problem.",
+          "concept": "Wireframes define hierarchy, structure, navigation, and content placement before visual styling.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-order"
+          "mode": "anatomy"
         }
       }
     ],
@@ -158,37 +158,24 @@ data_str = """
     }
   },
   {
-    "curriculum": "Java",
+    "curriculum": "UI/UX",
     "day": 28,
-    "topic": "Capstone Architecture and System Design",
+    "topic": "Capstone High-Fidelity UI, Design System, and Prototype",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Translate application requirements into system components.",
-      "Design a layered Java application architecture.",
-      "Connect frontend, backend, database, authentication, and external services into a coherent system."
+      "Transform wireframes into consistent high-fidelity interfaces.",
+      "Apply reusable components and design tokens.",
+      "Build an interactive prototype representing the primary user journey."
     ],
     "activities": [
       {
         "id": "d28-a1",
         "type": "discover",
-        "title": "Requirement Mapper",
-        "instruction": "Map requirements to system components.",
+        "title": "Design System Assembly",
+        "instruction": "Combine reusable components into a consistent interface.",
         "content": {
-          "concept": "System design begins by translating user and business requirements into components, responsibilities, data, and interactions.",
-          "tip": "Interact with the example first. Your progress is saved for this session."
-        },
-        "interaction": {
-          "mode": "semantic-map"
-        }
-      },
-      {
-        "id": "d28-a2",
-        "type": "discover",
-        "title": "Application Architecture",
-        "instruction": "Build the capstone architecture.",
-        "content": {
-          "concept": "A full application can combine a client, REST API, service layer, persistence layer, database, authentication, and external integrations.",
+          "concept": "Design systems provide reusable components, styles, and rules that maintain consistency across screens.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -196,29 +183,42 @@ data_str = """
         }
       },
       {
-        "id": "d28-a3",
+        "id": "d28-a2",
         "type": "discover",
-        "title": "Request Journey",
-        "instruction": "Trace a request through the system.",
+        "title": "Token Selector",
+        "instruction": "Choose appropriate values for spacing, type, and color tokens.",
         "content": {
-          "concept": "A user request can travel from the frontend through authentication and backend layers to persistence before returning a response.",
+          "concept": "Design tokens store reusable design values such as colors, typography, spacing, and component dimensions.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-order"
+          "mode": "selector-lab"
+        }
+      },
+      {
+        "id": "d28-a3",
+        "type": "discover",
+        "title": "High-Fidelity Builder",
+        "instruction": "Build a polished screen from reusable UI elements.",
+        "content": {
+          "concept": "High-fidelity UI combines hierarchy, typography, color, spacing, imagery, and components into a realistic interface.",
+          "tip": "Interact with the example first. Your progress is saved for this session."
+        },
+        "interaction": {
+          "mode": "build"
         }
       },
       {
         "id": "d28-a4",
         "type": "discover",
-        "title": "Technology Selector",
-        "instruction": "Select technologies for each layer.",
+        "title": "Prototype Flow",
+        "instruction": "Connect screens to create the primary interaction path.",
         "content": {
-          "concept": "Technology choices should match the responsibilities and constraints of each application layer.",
+          "concept": "Interactive prototypes simulate navigation and key interactions before implementation.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "selector-lab"
+          "mode": "semantic-map"
         }
       }
     ],
@@ -235,37 +235,37 @@ data_str = """
     }
   },
   {
-    "curriculum": "Java",
+    "curriculum": "UI/UX",
     "day": 29,
-    "topic": "Capstone Testing, Documentation, and Optimization",
+    "topic": "Capstone Usability Testing, Iteration, Accessibility, and Handoff",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Create a testing strategy covering important application layers.",
-      "Identify documentation required for a production-ready Java project.",
-      "Select optimization and quality improvements based on application requirements."
+      "Evaluate the capstone prototype through usability testing.",
+      "Prioritize findings and iterate on the design.",
+      "Prepare accessible designs and implementation-ready developer handoff."
     ],
     "activities": [
       {
         "id": "d29-a1",
         "type": "discover",
-        "title": "Testing Strategy Map",
-        "instruction": "Map tests to application layers.",
+        "title": "Usability Test Planner",
+        "instruction": "Arrange the stages of a focused usability test.",
         "content": {
-          "concept": "A capstone testing strategy can combine unit, integration, API, and end-to-end tests according to the system's risks and requirements.",
+          "concept": "Usability testing observes users completing representative tasks to uncover interaction problems.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-map"
+          "mode": "semantic-order"
         }
       },
       {
         "id": "d29-a2",
         "type": "discover",
-        "title": "Test Type Selector",
-        "instruction": "Choose the appropriate test type.",
+        "title": "Finding Prioritizer",
+        "instruction": "Select findings that require attention first.",
         "content": {
-          "concept": "Different test types validate different boundaries, from individual methods to complete user workflows.",
+          "concept": "Usability findings can be prioritized using factors such as severity, frequency, and impact on task completion.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -275,27 +275,27 @@ data_str = """
       {
         "id": "d29-a3",
         "type": "discover",
-        "title": "Production Checklist",
-        "instruction": "Build the project readiness checklist.",
+        "title": "Accessibility Check",
+        "instruction": "Match interface issues with appropriate accessibility improvements.",
         "content": {
-          "concept": "Production readiness can include testing, security, configuration, documentation, logging, error handling, and deployment verification.",
+          "concept": "Accessible interfaces consider keyboard access, contrast, labels, focus states, readable content, and assistive technologies.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "build"
+          "mode": "match"
         }
       },
       {
         "id": "d29-a4",
         "type": "discover",
-        "title": "Optimization Lab",
-        "instruction": "Adjust the application performance factors.",
+        "title": "Developer Handoff Builder",
+        "instruction": "Assemble the essential assets and specifications for handoff.",
         "content": {
-          "concept": "Performance improvements can target database queries, algorithms, network calls, resource usage, and application configuration.",
+          "concept": "Design handoff communicates components, measurements, states, assets, interactions, and implementation requirements to developers.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "slider"
+          "mode": "build"
         }
       }
     ],
@@ -312,37 +312,37 @@ data_str = """
     }
   },
   {
-    "curriculum": "Java",
+    "curriculum": "UI/UX",
     "day": 30,
-    "topic": "Capstone Demonstration, Review, and Future Enhancements",
+    "topic": "Capstone Presentation, Portfolio Case Study, and Design Documentation",
     "version": 1,
     "learningMode": "interactive_deck",
     "learningObjectives": [
-      "Present the architecture, features, and technical decisions of a Java capstone project.",
-      "Review the project against functionality, quality, security, and deployment requirements.",
-      "Identify realistic improvements and future development opportunities."
+      "Present the capstone project using a clear UX case-study structure.",
+      "Document the design process, decisions, iterations, and outcomes.",
+      "Create a portfolio-ready project narrative and future improvement roadmap."
     ],
     "activities": [
       {
         "id": "d30-a1",
         "type": "discover",
-        "title": "Capstone Architecture Review",
-        "instruction": "Explore the completed system architecture.",
+        "title": "Case Study Story Map",
+        "instruction": "Arrange the project stages into a clear UX story.",
         "content": {
-          "concept": "A capstone review connects requirements, architecture, implementation, integrations, and deployment into one complete system view.",
+          "concept": "A UX case study connects the problem, research, design decisions, iterations, and outcome into a coherent narrative.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "architecture"
+          "mode": "semantic-order"
         }
       },
       {
         "id": "d30-a2",
         "type": "discover",
-        "title": "Demo Flow Builder",
-        "instruction": "Build the ideal project demonstration flow.",
+        "title": "Presentation Structure",
+        "instruction": "Build a concise structure for the final project presentation.",
         "content": {
-          "concept": "An effective technical demonstration can progress from the problem and architecture to key features, implementation, testing, and deployment.",
+          "concept": "A strong design presentation communicates the problem, process, solution, evidence, and key learnings clearly.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
@@ -352,27 +352,27 @@ data_str = """
       {
         "id": "d30-a3",
         "type": "discover",
-        "title": "Quality Review",
-        "instruction": "Match project areas with review checks.",
+        "title": "Portfolio Evidence Selector",
+        "instruction": "Select artifacts that best demonstrate the design process.",
         "content": {
-          "concept": "Final review can examine functionality, code quality, security, testing, performance, documentation, and deployment readiness.",
+          "concept": "Portfolio evidence should demonstrate reasoning, iteration, user-centered decisions, and the final solution.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "match"
+          "mode": "selector-lab"
         }
       },
       {
         "id": "d30-a4",
         "type": "discover",
-        "title": "Future Roadmap",
-        "instruction": "Arrange enhancements into a roadmap.",
+        "title": "Future Roadmap Builder",
+        "instruction": "Connect project findings to meaningful next steps.",
         "content": {
-          "concept": "A development roadmap organizes future improvements such as new features, scalability work, integrations, performance enhancements, and maintenance.",
+          "concept": "A UX roadmap identifies future improvements, validation opportunities, and product extensions based on current evidence.",
           "tip": "Interact with the example first. Your progress is saved for this session."
         },
         "interaction": {
-          "mode": "semantic-order"
+          "mode": "semantic-map"
         }
       }
     ],
@@ -394,7 +394,7 @@ data = json.loads(data_str)
 
 dest_dir = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "frontend", "src", "features", "learning", "interactive", "data", "java"
+    "frontend", "src", "features", "learning", "interactive", "data", "ui-ux"
 )
 
 if not os.path.exists(dest_dir):

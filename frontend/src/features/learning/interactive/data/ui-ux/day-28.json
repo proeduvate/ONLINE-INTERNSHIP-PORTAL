@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 28,
-  "topic": "Day 28 Topic for UI/UX",
+  "topic": "Capstone High-Fidelity UI, Design System, and Prototype",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Transform wireframes into consistent high-fidelity interfaces.",
+    "Apply reusable components and design tokens.",
+    "Build an interactive prototype representing the primary user journey."
   ],
   "activities": [
     {
-      "id": "d28-a01",
+      "id": "d28-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Design System Assembly",
+      "instruction": "Combine reusable components into a consistent interface.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Design systems provide reusable components, styles, and rules that maintain consistency across screens.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "architecture"
+      }
+    },
+    {
+      "id": "d28-a2",
+      "type": "discover",
+      "title": "Token Selector",
+      "instruction": "Choose appropriate values for spacing, type, and color tokens.",
+      "content": {
+        "concept": "Design tokens store reusable design values such as colors, typography, spacing, and component dimensions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d28-a3",
+      "type": "discover",
+      "title": "High-Fidelity Builder",
+      "instruction": "Build a polished screen from reusable UI elements.",
+      "content": {
+        "concept": "High-fidelity UI combines hierarchy, typography, color, spacing, imagery, and components into a realistic interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d28-a4",
+      "type": "discover",
+      "title": "Prototype Flow",
+      "instruction": "Connect screens to create the primary interaction path.",
+      "content": {
+        "concept": "Interactive prototypes simulate navigation and key interactions before implementation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
       }
     }
   ],

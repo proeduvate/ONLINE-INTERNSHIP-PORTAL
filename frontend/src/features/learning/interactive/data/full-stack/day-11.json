@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 11,
-  "topic": "Day 11 Topic for Full Stack",
+  "topic": "Advanced React Hooks and Component Patterns",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Use React hooks to manage component state and side effects.",
+    "Identify appropriate hooks for common application scenarios.",
+    "Apply reusable component patterns to organize frontend logic."
   ],
   "activities": [
     {
-      "id": "d11-a01",
+      "id": "d11-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Hooks Anatomy",
+      "instruction": "Explore the parts of common React hooks.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "React hooks such as useState and useEffect provide state and side-effect capabilities to functional components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Hook Selector Lab",
+      "instruction": "Choose the appropriate hook for each scenario.",
+      "content": {
+        "concept": "Different hooks solve different problems, such as state management, side effects, references, and memoization.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Effect Execution Flow",
+      "instruction": "Arrange when an effect runs and cleans up.",
+      "content": {
+        "concept": "The dependency array controls when an effect is evaluated, while cleanup handles resources from previous effects.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Reusable Hook Builder",
+      "instruction": "Compose a custom hook from reusable logic.",
+      "content": {
+        "concept": "Custom hooks extract reusable stateful logic so multiple components can share behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],

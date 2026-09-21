@@ -1,26 +1,65 @@
 {
   "curriculum": "Full Stack",
   "day": 12,
-  "topic": "Day 12 Topic for Full Stack",
+  "topic": "State Management and Context API",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain the challenges of managing shared application state.",
+    "Use Context API concepts to share state across components.",
+    "Choose suitable state management approaches for different application needs."
   ],
   "activities": [
     {
-      "id": "d12-a01",
+      "id": "d12-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "State Architecture Map",
+      "instruction": "Map local and shared state across components.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Application state can be local to a component or shared across multiple parts of an interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Context Anatomy",
+      "instruction": "Explore the parts of a Context API setup.",
+      "content": {
+        "concept": "React Context provides a way to make shared values available to components without passing props through every level.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy"
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "State Strategy Selector",
+      "instruction": "Select the appropriate state strategy for each case.",
+      "content": {
+        "concept": "State placement should match the scope and update requirements of the data being managed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Context Provider Builder",
+      "instruction": "Build a shared state structure using providers and consumers.",
+      "content": {
+        "concept": "A provider supplies shared context values while consuming components access those values where needed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

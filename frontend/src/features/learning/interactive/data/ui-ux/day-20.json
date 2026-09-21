@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 20,
-  "topic": "Day 20 Topic for UI/UX",
+  "topic": "End-to-End UX Process and Product Design Workflow",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Connect research, definition, ideation, design, prototyping, and testing into one workflow.",
+    "Select appropriate UX methods at different stages of a project.",
+    "Build an end-to-end workflow for solving a user problem."
   ],
   "activities": [
     {
-      "id": "d20-a01",
+      "id": "d20-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "UX Process Map",
+      "instruction": "Explore how UX activities connect across a project.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Product design is iterative, connecting research, problem definition, ideation, prototyping, evaluation, and refinement.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "Method Selection Challenge",
+      "instruction": "Choose the right UX method for each project stage.",
+      "content": {
+        "concept": "Different project questions require different methods, from interviews and journey maps to prototypes and usability tests.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "UX Workflow Sequencer",
+      "instruction": "Arrange the major stages of a UX project.",
+      "content": {
+        "concept": "A typical UX workflow moves from understanding users and defining problems toward solutions, validation, and iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order"
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "End-to-End Product Builder",
+      "instruction": "Build a complete UX workflow for a product problem.",
+      "content": {
+        "concept": "An end-to-end design workflow connects evidence, decisions, interface design, validation, and iteration into a continuous process.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture"
       }
     }
   ],

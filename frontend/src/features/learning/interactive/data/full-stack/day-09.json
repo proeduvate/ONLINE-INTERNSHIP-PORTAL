@@ -1,31 +1,70 @@
 {
   "curriculum": "Full Stack",
   "day": 9,
-  "topic": "Day 9 Topic for Full Stack",
+  "topic": "React Components, Props, State, and Event Handling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Differentiate props and state in React components.",
+    "Pass data between components using props.",
+    "Manage interactive UI behavior using state and events."
   ],
   "activities": [
     {
-      "id": "d09-a01",
+      "id": "d9-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Props vs State",
+      "instruction": "Match each data type to its correct React role.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Props provide data to components, while state stores data that can change during component interaction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "match"
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Data Flow Explorer",
+      "instruction": "Trace how props move through components.",
+      "content": {
+        "concept": "React commonly follows a one-way data flow from parent components to child components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "State Update Lab",
+      "instruction": "Adjust state values and observe the interface change.",
+      "content": {
+        "concept": "Updating component state causes React to render the affected interface with the new state value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Interactive Component Builder",
+      "instruction": "Compose a component using props, state, and events.",
+      "content": {
+        "concept": "Interactive React components combine incoming props, local state, and event handlers.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
       }
     }
   ],
-  "assessmentRef": "assessment-day-09.json",
-  "practicalTaskRef": "practical-day-09.json",
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

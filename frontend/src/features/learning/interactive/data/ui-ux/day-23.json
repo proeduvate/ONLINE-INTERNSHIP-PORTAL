@@ -1,26 +1,65 @@
 {
   "curriculum": "UI/UX",
   "day": 23,
-  "topic": "Day 23 Topic for UI/UX",
+  "topic": "Mobile UX, Responsive Patterns, and Cross-Platform Design",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply mobile-first principles to interface layouts.",
+    "Adapt navigation and interactions for different device contexts.",
+    "Design consistent experiences across mobile, tablet, and desktop screens."
   ],
   "activities": [
     {
-      "id": "d23-a01",
+      "id": "d23-a1",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Responsive Pattern Map",
+      "instruction": "Explore how interface patterns adapt across devices.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Responsive design adapts layouts, navigation, controls, and content priorities to different screen sizes and contexts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-map"
+      }
+    },
+    {
+      "id": "d23-a2",
+      "type": "discover",
+      "title": "Mobile Navigation Lab",
+      "instruction": "Select the navigation pattern for each mobile task.",
+      "content": {
+        "concept": "Mobile navigation patterns should prioritize frequently used tasks while keeping important destinations discoverable.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab"
+      }
+    },
+    {
+      "id": "d23-a3",
+      "type": "discover",
+      "title": "Breakpoint Builder",
+      "instruction": "Adapt the layout across screen sizes.",
+      "content": {
+        "concept": "Breakpoints allow layouts to reorganize when available space changes significantly.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build"
+      }
+    },
+    {
+      "id": "d23-a4",
+      "type": "discover",
+      "title": "Touch Target Lab",
+      "instruction": "Adjust control sizes for comfortable interaction.",
+      "content": {
+        "concept": "Touch interfaces require controls with sufficient size and spacing to support accurate interaction on smaller screens.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider"
       }
     }
   ],
