@@ -14,9 +14,9 @@
       "id": "d22-a1",
       "type": "discover",
       "title": "Parameter Anatomy",
-      "instruction": "Identify parameters and hyperparameters.",
+      "instruction": "Identify which values are learned during training and which are configured before training.",
       "content": {
-        "concept": "Parameters are learned from data, while hyperparameters are configured before training.",
+        "concept": "Model parameters are learned from training data, while hyperparameters control the learning process and are configured before training.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Model Weights",
+            "Model Bias",
+            "Learning Rate",
+            "Tree Depth",
+            "Number of Trees",
+            "Regularization Strength"
+          ],
+          "descriptions": [
+            "Learned from training data.",
+            "Learned during model training.",
+            "Controls the size of parameter updates during optimization.",
+            "Controls the maximum depth of a decision tree.",
+            "Controls how many trees are created in an ensemble.",
+            "Controls the strength of a regularization constraint."
           ]
         }
       }
@@ -34,10 +45,10 @@
     {
       "id": "d22-a2",
       "type": "discover",
-      "title": "Search Strategy",
-      "instruction": "Order the model tuning workflow.",
+      "title": "Tuning Workflow",
+      "instruction": "Order the steps used to tune a model using validation performance.",
       "content": {
-        "concept": "Hyperparameter tuning systematically searches configurations using validation data.",
+        "concept": "Hyperparameter tuning evaluates different configurations and uses validation performance to select a suitable configuration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +56,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Prepare Training and Validation Data",
+            "2. Define Hyperparameter Search Space",
+            "3. Generate Candidate Configurations",
+            "4. Train Models with Candidate Configurations",
+            "5. Evaluate Each Model on Validation Data",
+            "6. Select a Suitable Configuration",
+            "7. Retrain or Finalize the Model"
           ]
         }
       }
@@ -56,9 +71,9 @@
       "id": "d22-a3",
       "type": "discover",
       "title": "Grid vs Random",
-      "instruction": "Match each search method to its behavior.",
+      "instruction": "Compare how grid search and random search explore hyperparameter configurations.",
       "content": {
-        "concept": "Grid search evaluates predefined combinations, while random search samples configurations.",
+        "concept": "Grid search evaluates predefined combinations, while random search samples configurations from specified ranges or distributions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,26 +81,31 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Grid Search → Evaluates predefined combinations",
+            "Random Search → Samples configurations from specified ranges",
+            "Grid Search → Can become expensive as the number of combinations grows",
+            "Random Search → Can explore a larger search space with a fixed evaluation budget"
+          ],
+          "answer": "Grid Search → Evaluates predefined combinations"
         }
       }
     },
     {
       "id": "d22-a4",
       "type": "discover",
-      "title": "Tuning Lab",
-      "instruction": "Adjust hyperparameters and compare validation scores.",
+      "title": "Tuning Challenge",
+      "instruction": "Adjust the hyperparameters and compare the resulting validation performance.",
       "content": {
-        "concept": "Hyperparameter choices affect model performance and generalization.",
+        "concept": "Different hyperparameter values can change model complexity, validation performance, and generalization.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "hyperparameter-tuning",
+        "family": "slider",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "min": 1,
+          "max": 20,
+          "default": 5
         }
       }
     }

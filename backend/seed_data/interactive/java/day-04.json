@@ -14,52 +14,103 @@
       "id": "d4-a1",
       "type": "discover",
       "title": "Array Anatomy",
-      "instruction": "Explore indexes, elements, and array length.",
+      "instruction": "Explore indexes, elements, and the length of an array.",
       "content": {
-        "concept": "An array stores multiple values of the same type using indexed positions beginning at zero.",
+        "concept": "A Java array stores a fixed number of values of the same type. Indexing begins at zero, and the length field gives the number of elements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "array-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "int[] scores",
+            "scores[0]",
+            "scores[1]",
+            "scores[2]",
+            "scores.length"
+          ],
+          "descriptions": [
+            "Declares a reference to an integer array.",
+            "Accesses the first element because Java arrays use zero-based indexing.",
+            "Accesses the second element.",
+            "Accesses the third element.",
+            "Returns the number of elements in the array."
+          ]
+        }
       }
     },
     {
       "id": "d4-a2",
       "type": "discover",
       "title": "Index Explorer",
-      "instruction": "Move through the array to inspect each index.",
+      "instruction": "Move through the array and identify the value at each index.",
       "content": {
-        "concept": "An array element is accessed by its index, while the length property gives the number of elements.",
+        "concept": "Each array element has a unique zero-based index. For an array of length n, the valid indexes range from 0 through n - 1.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "array-index-explorer",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 4,
+          "default": 0
+        }
       }
     },
     {
       "id": "d4-a3",
       "type": "discover",
       "title": "String Method Matcher",
-      "instruction": "Match each task with the correct String method.",
+      "instruction": "Match each text operation with the appropriate Java String method.",
       "content": {
-        "concept": "String methods such as length, substring, contains, equals, and toUpperCase support common text operations.",
+        "concept": "Common String operations include length(), substring(), contains(), equals(), and toUpperCase(). String methods return information or transformed strings without changing the original String object.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "string-method-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Find the number of characters",
+            "Extract part of a string",
+            "Check whether text contains another sequence",
+            "Compare two strings for equal content",
+            "Convert text to uppercase"
+          ],
+          "answer": "Find the number of characters"
+        }
       }
     },
     {
       "id": "d4-a4",
       "type": "discover",
-      "title": "Array Processing Builder",
-      "instruction": "Build a loop that processes every array element.",
+      "title": "Array Traversal Builder",
+      "instruction": "Build a loop that visits every element of an array.",
       "content": {
-        "concept": "Loops can systematically access array elements to calculate, search, filter, or transform data.",
+        "concept": "A standard indexed loop can traverse an array by starting at index 0 and continuing while the index is less than array.length.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "array-traversal-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "for",
+            "(int i = 0;",
+            "i < scores.length;",
+            "i++)",
+            "System.out.println(scores[i]);"
+          ],
+          "required": [
+            "for",
+            "(int i = 0;",
+            "i < scores.length;",
+            "i++)",
+            "System.out.println(scores[i]);"
+          ]
+        }
       }
     }
   ],

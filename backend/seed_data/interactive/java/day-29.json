@@ -13,53 +13,106 @@
     {
       "id": "d29-a1",
       "type": "discover",
-      "title": "Testing Strategy Map",
-      "instruction": "Map tests to application layers.",
+      "title": "Testing Strategy",
+      "instruction": "Explore how different tests cover different application boundaries.",
       "content": {
-        "concept": "A capstone testing strategy can combine unit, integration, API, and end-to-end tests according to the system's risks and requirements.",
+        "concept": "A capstone testing strategy can combine unit tests for isolated logic, integration tests for component boundaries, API tests for HTTP behavior, and end-to-end tests for important user journeys.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Unit Tests",
+            "Integration Tests",
+            "API Tests",
+            "End-to-End Tests"
+          ],
+          "descriptions": [
+            "Test individual classes or methods in isolation.",
+            "Verify that multiple application components work together correctly.",
+            "Verify HTTP endpoints, request handling, responses, and API behavior.",
+            "Validate complete user workflows across the application."
+          ]
+        }
       }
     },
     {
       "id": "d29-a2",
       "type": "discover",
-      "title": "Test Type Selector",
-      "instruction": "Choose the appropriate test type.",
+      "title": "Choose the Test Type",
+      "instruction": "Choose the test type that best matches the scenario.",
       "content": {
-        "concept": "Different test types validate different boundaries, from individual methods to complete user workflows.",
+        "concept": "The appropriate test depends on the boundary being validated and the behavior that needs to be verified.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Testing one service method with mocked dependencies → Unit Test",
+            "Testing the complete registration journey through the UI → End-to-End Test",
+            "Testing a controller endpoint through HTTP → API Test",
+            "Testing repository and database interaction together → Integration Test"
+          ],
+          "answer": "Testing one service method with mocked dependencies → Unit Test"
+        }
       }
     },
     {
       "id": "d29-a3",
       "type": "discover",
-      "title": "Production Checklist",
-      "instruction": "Build the project readiness checklist.",
+      "title": "Production Readiness Builder",
+      "instruction": "Build a practical production-readiness checklist.",
       "content": {
-        "concept": "Production readiness can include testing, security, configuration, documentation, logging, error handling, and deployment verification.",
+        "concept": "A production-ready Java application should address functional testing, security, configuration, error handling, observability, documentation, and deployment verification.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Automated tests",
+            "Security checks",
+            "Externalized configuration",
+            "Error handling",
+            "Logging and monitoring",
+            "API documentation",
+            "Deployment verification",
+            "Hardcoded production credentials"
+          ],
+          "required": [
+            "Automated tests",
+            "Security checks",
+            "Externalized configuration",
+            "Error handling",
+            "Logging and monitoring",
+            "API documentation",
+            "Deployment verification"
+          ]
+        }
       }
     },
     {
       "id": "d29-a4",
       "type": "discover",
-      "title": "Optimization Lab",
-      "instruction": "Adjust the application performance factors.",
+      "title": "Performance Investigation",
+      "instruction": "Explore the main areas that can affect Java application performance.",
       "content": {
-        "concept": "Performance improvements can target database queries, algorithms, network calls, resource usage, and application configuration.",
+        "concept": "Performance optimization should be based on observed bottlenecks. Common investigation areas include database queries, algorithms, network calls, memory usage, and application configuration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 5,
+          "default": 3
+        }
       }
     }
   ],

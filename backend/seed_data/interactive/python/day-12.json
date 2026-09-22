@@ -14,9 +14,9 @@
       "id": "d12-a1",
       "type": "discover",
       "title": "Regex Anatomy",
-      "instruction": "Explore the parts of a regular expression.",
+      "instruction": "Explore the components of a regular expression.",
       "content": {
-        "concept": "Regular expressions describe text patterns using characters, groups, quantifiers, and anchors.",
+        "concept": "Regular expressions describe text patterns using character classes, quantifiers, groups, and anchors.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "^\\d{4}$",
+            "^",
+            "\\d",
+            "{4}",
+            "$"
+          ],
+          "descriptions": [
+            "Pattern that matches exactly four digits from start to end.",
+            "Start-of-string anchor.",
+            "Matches a digit character.",
+            "Quantifier requiring exactly four occurrences.",
+            "End-of-string anchor."
           ]
         }
       }
@@ -34,20 +43,23 @@
     {
       "id": "d12-a2",
       "type": "discover",
-      "title": "Pattern Match",
-      "instruction": "Match patterns to the text they recognize.",
+      "title": "Pattern Explorer",
+      "instruction": "Choose the regex pattern that matches the required text.",
       "content": {
-        "concept": "Regex patterns can identify specific structures such as numbers, words, emails, and repeated characters.",
+        "concept": "Regex patterns can describe digits, words, whitespace, repeated characters, and many other text structures.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "\\d+ → one or more digits",
+            "\\w+ → one or more word characters",
+            "^cat$ → exactly the text cat",
+            "All of the above"
+          ],
+          "answer": "All of the above"
         }
       }
     },
@@ -55,9 +67,9 @@
       "id": "d12-a3",
       "type": "discover",
       "title": "Regex Builder",
-      "instruction": "Build a pattern for the target text.",
+      "instruction": "Build a pattern that validates a four-digit PIN.",
       "content": {
-        "concept": "Regex patterns can be composed from character classes, quantifiers, groups, and anchors.",
+        "concept": "Character classes and quantifiers can be combined with anchors to describe an exact input format.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -65,9 +77,19 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "^",
+            "\\d",
+            "{4}",
+            "$",
+            "\\d+",
+            ".*",
+            "import re"
+          ],
+          "required": [
+            "^",
+            "\\d",
+            "{4}",
+            "$"
           ]
         }
       }
@@ -76,18 +98,22 @@
       "id": "d12-a4",
       "type": "discover",
       "title": "Pattern Tester",
-      "instruction": "Adjust the pattern and inspect matching text.",
+      "instruction": "Choose the pattern that correctly validates the target input.",
       "content": {
-        "concept": "Testing a regular expression against sample text helps verify whether the pattern captures the intended data.",
+        "concept": "A regex should describe the complete structure you intend to validate. Anchors can prevent valid-looking substrings from being accepted as the entire input.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
-        "family": "slider",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "choices": [
+            "^\\d{4}$",
+            "\\d+",
+            ".*\\d.*",
+            "^\\w+$"
+          ],
+          "answer": "^\\d{4}$"
         }
       }
     }

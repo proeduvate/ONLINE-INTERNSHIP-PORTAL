@@ -14,19 +14,28 @@
       "id": "d25-a1",
       "type": "discover",
       "title": "Design-to-Code Map",
-      "instruction": "Map Figma elements to frontend implementation choices.",
+      "instruction": "Explore how common Figma design elements translate into frontend implementation decisions.",
       "content": {
-        "concept": "Design-to-code work translates visual layouts, components, spacing, typography, and interactions into reusable frontend structures.",
+        "concept": "Design-to-code work translates frames into page structures, components into reusable UI pieces, design tokens into CSS values, and layout constraints into responsive rules.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "design-code-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Figma Frame",
+            "Component",
+            "Auto Layout",
+            "Design Token",
+            "Prototype Interaction"
+          ],
+          "descriptions": [
+            "Can map to a page, section, or application screen in the implementation.",
+            "Can become a reusable frontend component.",
+            "Can inform flexbox or other layout behavior that adapts to content.",
+            "Can map to reusable CSS values such as colors, spacing, or typography.",
+            "Can guide the implementation of navigation, events, or UI state changes."
           ]
         }
       }
@@ -35,18 +44,18 @@
       "id": "d25-a2",
       "type": "discover",
       "title": "Responsive Layout Lab",
-      "instruction": "Adjust the layout across different viewport sizes.",
+      "instruction": "Adjust the viewport and observe how the layout should adapt.",
       "content": {
-        "concept": "Responsive interfaces adapt layouts, dimensions, and component behavior to different screen sizes.",
+        "concept": "Responsive interfaces adapt their layout, spacing, sizing, and component behavior to different viewport sizes instead of simply shrinking a desktop layout.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "viewport-slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 320,
+          "max": 1440,
+          "default": 768
         }
       }
     },
@@ -54,19 +63,20 @@
       "id": "d25-a3",
       "type": "discover",
       "title": "Component Mapping",
-      "instruction": "Match design elements with reusable code components.",
+      "instruction": "Choose the implementation approach that best preserves reusable design patterns.",
       "content": {
-        "concept": "Reusable frontend components can represent repeated patterns from a design system and reduce duplicated implementation work.",
+        "concept": "Repeated visual patterns should normally become reusable components. This reduces duplication and makes updates more consistent across an application.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "component-mapping",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Create one reusable Card component and render it with different data",
+            "Copy and modify the same card markup separately on every page"
+          ],
+          "answer": "Create one reusable Card component and render it with different data"
         }
       }
     },
@@ -74,19 +84,28 @@
       "id": "d25-a4",
       "type": "discover",
       "title": "Responsive Page Builder",
-      "instruction": "Build a responsive page from design components.",
+      "instruction": "Compose a responsive page using reusable components and layout rules.",
       "content": {
-        "concept": "A responsive page combines reusable components, flexible layouts, appropriate breakpoints, and consistent design tokens.",
+        "concept": "A responsive implementation combines reusable components, flexible layout systems, breakpoints, design tokens, and content-aware sizing to maintain consistency across devices.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "responsive-page-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Reusable Header",
+            "Responsive Content Grid",
+            "Flexible Spacing",
+            "Responsive Typography",
+            "Breakpoint Rules",
+            "Fixed desktop-only width"
+          ],
+          "required": [
+            "Reusable Header",
+            "Responsive Content Grid",
+            "Flexible Spacing",
+            "Breakpoint Rules"
           ]
         }
       }

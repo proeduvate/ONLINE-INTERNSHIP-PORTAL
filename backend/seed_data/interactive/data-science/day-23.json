@@ -14,9 +14,9 @@
       "id": "d23-a1",
       "type": "discover",
       "title": "Explainability Map",
-      "instruction": "Connect each technique to its explanation level.",
+      "instruction": "Connect each explainability technique to the type of information it provides.",
       "content": {
-        "concept": "Model explainability helps understand why models produce their predictions.",
+        "concept": "Explainability techniques help describe how a model behaves overall or why it produced a particular prediction.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Feature Importance",
+            "Permutation Importance",
+            "SHAP",
+            "Global Explanation",
+            "Local Explanation"
+          ],
+          "descriptions": [
+            "Shows how important input features are to a model.",
+            "Measures how model performance changes when a feature's values are shuffled.",
+            "Can attribute a prediction to contributions from individual features.",
+            "Describes patterns in model behavior across many observations.",
+            "Explains the contribution of features for an individual prediction."
           ]
         }
       }
@@ -35,16 +44,22 @@
       "id": "d23-a2",
       "type": "discover",
       "title": "Importance Explorer",
-      "instruction": "Select the features driving the prediction.",
+      "instruction": "Identify which features contribute most strongly to the model's overall predictions.",
       "content": {
-        "concept": "Feature importance indicates how strongly input variables contribute to model decisions.",
+        "concept": "Feature importance provides a measure of how strongly features contribute to model behavior, although the meaning depends on the importance method used.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "feature-importance",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Monthly Income → High importance",
+            "Purchase Frequency → High importance",
+            "Customer ID → Low importance",
+            "Random Identifier → Low importance"
+          ],
+          "answer": "Monthly Income → High importance"
         }
       }
     },
@@ -52,9 +67,9 @@
       "id": "d23-a3",
       "type": "discover",
       "title": "Global vs Local",
-      "instruction": "Match explanations to their scope.",
+      "instruction": "Match each explanation to its scope.",
       "content": {
-        "concept": "Global explanations describe overall model behavior, while local explanations focus on individual predictions.",
+        "concept": "Global explanations describe model behavior across the dataset, while local explanations focus on one prediction or observation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +77,12 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Global Feature Importance → Overall model behavior",
+            "Permutation Importance → Overall effect of feature disruption",
+            "SHAP Explanation for One Record → Individual prediction",
+            "Local Explanation → Why one specific prediction was produced"
+          ],
+          "answer": "Global Feature Importance → Overall model behavior"
         }
       }
     },
@@ -72,9 +90,9 @@
       "id": "d23-a4",
       "type": "discover",
       "title": "Prediction Breakdown",
-      "instruction": "Build an explanation from feature contributions.",
+      "instruction": "Build an explanation showing how feature contributions lead to an individual prediction.",
       "content": {
-        "concept": "Prediction explanations can show how individual features push an output toward different outcomes.",
+        "concept": "Local explanations can represent how individual features contribute positively or negatively to a particular model prediction.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -82,9 +100,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Start with the model's baseline prediction",
+            "Select the individual input record",
+            "Calculate feature contributions",
+            "Identify positive contributions",
+            "Identify negative contributions",
+            "Combine contributions into the final prediction explanation"
+          ],
+          "required": [
+            "Start with the model's baseline prediction",
+            "Select the individual input record",
+            "Calculate feature contributions",
+            "Combine contributions into the final prediction explanation"
           ]
         }
       }

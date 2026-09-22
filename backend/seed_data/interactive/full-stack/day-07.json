@@ -14,19 +14,26 @@
       "id": "d7-a1",
       "type": "discover",
       "title": "Git Workflow Map",
-      "instruction": "Explore how changes move through the Git workflow.",
+      "instruction": "Click each stage to explore how a change moves through Git.",
       "content": {
-        "concept": "Git tracks changes through the working directory, staging area, commits, and remote repositories.",
+        "concept": "Git tracks changes through the working directory, staging area, local repository, and remote repository.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "git-workflow",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Working Directory",
+            "Staging Area",
+            "Local Repository",
+            "Remote Repository"
+          ],
+          "descriptions": [
+            "Contains the files currently being edited.",
+            "Contains changes selected with git add before committing.",
+            "Stores committed versions of the project locally.",
+            "A shared repository such as a GitHub repository."
           ]
         }
       }
@@ -34,20 +41,29 @@
     {
       "id": "d7-a2",
       "type": "discover",
-      "title": "Command Anatomy",
-      "instruction": "Click each Git command to reveal its purpose.",
+      "title": "Command Explorer",
+      "instruction": "Click each Git command to learn what it does.",
       "content": {
-        "concept": "Commands such as add, commit, pull, push, and clone perform different repository operations.",
+        "concept": "Git commands perform different repository operations: git add stages changes, git commit records changes, git pull retrieves remote changes, git push uploads commits, and git clone copies a remote repository.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "command-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "git add",
+            "git commit",
+            "git pull",
+            "git push",
+            "git clone"
+          ],
+          "descriptions": [
+            "Stages selected changes for the next commit.",
+            "Creates a new commit containing staged changes.",
+            "Fetches changes from a remote repository and integrates them into the current branch.",
+            "Uploads local commits to a remote repository.",
+            "Creates a local copy of a remote repository."
           ]
         }
       }
@@ -55,17 +71,30 @@
     {
       "id": "d7-a3",
       "type": "discover",
-      "title": "Branching Strategy",
-      "instruction": "Build a branch structure for a team project.",
+      "title": "Branching Strategy Builder",
+      "instruction": "Build a simple branch structure for developing and integrating a feature.",
       "content": {
-        "concept": "Branches isolate development work and help teams integrate features safely.",
+        "concept": "Branches isolate development work so features can be developed independently before being reviewed and integrated into a shared branch.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "branch-flow",
+        "family": "builder",
         "config": {
-          "code": "console.log('Hello World');"
+          "options": [
+            "main",
+            "feature/login",
+            "Commit feature changes",
+            "Open pull request",
+            "Merge into main"
+          ],
+          "required": [
+            "main",
+            "feature/login",
+            "Commit feature changes",
+            "Open pull request",
+            "Merge into main"
+          ]
         }
       }
     },
@@ -73,19 +102,22 @@
       "id": "d7-a4",
       "type": "discover",
       "title": "Pull Request Sequence",
-      "instruction": "Arrange the steps from feature development to merge.",
+      "instruction": "Arrange the steps from feature development to integration.",
       "content": {
-        "concept": "A pull request provides a structured workflow for reviewing and integrating changes into a shared branch.",
+        "concept": "A pull request provides a structured workflow for reviewing and integrating changes from a development branch into a shared branch.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "pull-request-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Create a feature branch",
+            "2. Make and commit changes",
+            "3. Push the feature branch",
+            "4. Open a pull request",
+            "5. Review and update the changes",
+            "6. Merge the pull request"
           ]
         }
       }

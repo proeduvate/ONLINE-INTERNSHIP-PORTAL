@@ -1,26 +1,100 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 28,
-  "topic": "Day 28 Topic for Frontend",
-  "version": 1,
+  "topic": "React Router & Application Architecture",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand routes",
+    "Navigate with links",
+    "Use route params"
   ],
   "activities": [
     {
       "id": "d28-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "routes",
+      "title": "Route Map",
+      "instruction": "Match URL paths to the React components that should render for them.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand how routes map URL paths to components in a React application.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "route-map",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "/ → Home",
+            "/about → About",
+            "/dashboard → Dashboard",
+            "/users/:id → UserProfile"
+          ],
+          "answer": "/dashboard → Dashboard"
+        }
+      }
+    },
+    {
+      "id": "d28-a02",
+      "type": "navigation",
+      "title": "Navigation Lab",
+      "instruction": "Choose the correct navigation mechanism for moving between React routes.",
+      "content": {
+        "concept": "Navigate between routes using React Router links instead of unnecessary full-page reloads.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "navigation",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Link to /dashboard",
+            "Reload the entire page",
+            "Change window.location for every internal route"
+          ],
+          "answer": "Link to /dashboard"
+        }
+      }
+    },
+    {
+      "id": "d28-a03",
+      "type": "params",
+      "title": "Route Parameter Explorer",
+      "instruction": "Change the route ID and identify which resource the route should load.",
+      "content": {
+        "concept": "Use dynamic route parameters such as /users/:id to identify resources from the URL.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "route-params",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 100,
+          "default": 1
+        }
+      }
+    },
+    {
+      "id": "d28-a04",
+      "type": "architecture",
+      "title": "Application Architecture",
+      "instruction": "Arrange common frontend layers into a maintainable application structure.",
+      "content": {
+        "concept": "Understand how routing fits into a frontend architecture containing UI components, pages, state, services and API communication.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Routes",
+            "2. Pages",
+            "3. Reusable Components",
+            "4. State / Hooks",
+            "5. Services / API layer"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +105,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

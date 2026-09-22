@@ -13,20 +13,21 @@
     {
       "id": "d19-a1",
       "type": "discover",
-      "title": "Auth vs Authorization",
-      "instruction": "Match security concepts with their responsibilities.",
+      "title": "Authentication vs Authorization",
+      "instruction": "Choose the security concept that matches each scenario.",
       "content": {
-        "concept": "Authentication verifies identity, while authorization determines which resources or actions an authenticated user can access.",
+        "concept": "Authentication verifies who a user is, while authorization determines what an authenticated user is allowed to access or perform.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "auth-concepts",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Checking a password to verify a user's identity → Authentication",
+            "Checking whether a user can access an admin page → Authorization"
+          ],
+          "answer": "Checking a password to verify a user's identity → Authentication"
         }
       }
     },
@@ -34,19 +35,24 @@
       "id": "d19-a2",
       "type": "discover",
       "title": "JWT Anatomy",
-      "instruction": "Explore the parts of a JSON Web Token.",
+      "instruction": "Explore the three main parts of a JSON Web Token.",
       "content": {
-        "concept": "A JWT commonly contains a header, payload, and signature used to represent signed claims.",
+        "concept": "A JWT is commonly represented as three dot-separated parts: a header describing the token type and algorithm, a payload containing claims, and a signature used to verify integrity.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "jwt-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Header",
+            "Payload",
+            "Signature"
+          ],
+          "descriptions": [
+            "Contains metadata such as the token type and signing algorithm.",
+            "Contains claims such as user or role information.",
+            "Provides a cryptographic integrity check for the signed token."
           ]
         }
       }
@@ -55,19 +61,23 @@
       "id": "d19-a3",
       "type": "discover",
       "title": "Authentication Flow",
-      "instruction": "Arrange the steps of a login and token flow.",
+      "instruction": "Arrange the basic login and protected-request flow.",
       "content": {
-        "concept": "A typical token-based login flow verifies credentials, issues a token, and uses that token for protected requests.",
+        "concept": "A token-based authentication flow verifies credentials, issues a token, and uses that token when accessing protected resources.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "authentication-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. User submits credentials",
+            "2. Server verifies the credentials",
+            "3. Server issues an authentication token",
+            "4. Client stores the token according to the application's security design",
+            "5. Client sends the token with a protected request",
+            "6. Server verifies the token and authorization",
+            "7. Server returns the protected resource"
           ]
         }
       }
@@ -75,17 +85,21 @@
     {
       "id": "d19-a4",
       "type": "discover",
-      "title": "Security Strategy Lab",
-      "instruction": "Select the appropriate security control for each scenario.",
+      "title": "Security Strategy Explorer",
+      "instruction": "Choose the security practice that best addresses each scenario.",
       "content": {
-        "concept": "Secure applications use practices such as password hashing, input validation, secure token handling, and access control.",
+        "concept": "Full stack applications should use practices such as password hashing, input validation, secure transport, access control, safe token handling, and protection against common web attacks.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "security-choice",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Store user passwords using a secure password-hashing algorithm",
+            "Store user passwords as plain text"
+          ],
+          "answer": "Store user passwords using a secure password-hashing algorithm"
         }
       }
     }

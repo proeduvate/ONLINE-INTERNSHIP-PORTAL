@@ -14,7 +14,7 @@
       "id": "d28-a1",
       "type": "discover",
       "title": "Design System Assembly",
-      "instruction": "Combine reusable components into a consistent interface.",
+      "instruction": "Combine foundations, components, and patterns into a consistent interface.",
       "content": {
         "concept": "Design systems provide reusable components, styles, and rules that maintain consistency across screens.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -23,7 +23,43 @@
         "mode": "architecture",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "layers": [
+            {
+              "label": "Foundations",
+              "items": [
+                "Color",
+                "Typography",
+                "Spacing",
+                "Grid"
+              ]
+            },
+            {
+              "label": "Tokens",
+              "items": [
+                "Color Tokens",
+                "Spacing Tokens",
+                "Type Tokens",
+                "Radius Tokens"
+              ]
+            },
+            {
+              "label": "Components",
+              "items": [
+                "Button",
+                "Input",
+                "Card",
+                "Navigation"
+              ]
+            },
+            {
+              "label": "Patterns",
+              "items": [
+                "Search Pattern",
+                "Form Pattern",
+                "Dashboard Pattern"
+              ]
+            }
+          ]
         }
       }
     },
@@ -31,7 +67,7 @@
       "id": "d28-a2",
       "type": "discover",
       "title": "Token Selector",
-      "instruction": "Choose appropriate values for spacing, type, and color tokens.",
+      "instruction": "Choose appropriate token values for different interface situations.",
       "content": {
         "concept": "Design tokens store reusable design values such as colors, typography, spacing, and component dimensions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -40,7 +76,48 @@
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "Which token should control the spacing between related form fields?",
+              "options": [
+                "Spacing Token",
+                "Color Token",
+                "Icon Token",
+                "Content Token"
+              ],
+              "correctAnswer": "Spacing Token"
+            },
+            {
+              "question": "Which token should control the size hierarchy of headings?",
+              "options": [
+                "Typography Token",
+                "Radius Token",
+                "Shadow Token",
+                "Spacing Token"
+              ],
+              "correctAnswer": "Typography Token"
+            },
+            {
+              "question": "Which token should define the consistent corner rounding of cards?",
+              "options": [
+                "Radius Token",
+                "Color Token",
+                "Typography Token",
+                "Grid Token"
+              ],
+              "correctAnswer": "Radius Token"
+            },
+            {
+              "question": "Which token should define the primary brand color?",
+              "options": [
+                "Color Token",
+                "Spacing Token",
+                "Radius Token",
+                "Motion Token"
+              ],
+              "correctAnswer": "Color Token"
+            }
+          ]
         }
       }
     },
@@ -48,7 +125,7 @@
       "id": "d28-a3",
       "type": "discover",
       "title": "High-Fidelity Builder",
-      "instruction": "Build a polished screen from reusable UI elements.",
+      "instruction": "Build a polished screen using appropriate reusable UI elements.",
       "content": {
         "concept": "High-fidelity UI combines hierarchy, typography, color, spacing, imagery, and components into a realistic interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -58,9 +135,21 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Page Header",
+            "Navigation",
+            "Page Title",
+            "Primary Content",
+            "Supporting Card",
+            "Primary Action",
+            "Secondary Action",
+            "Decorative Element"
+          ],
+          "required": [
+            "Page Header",
+            "Navigation",
+            "Page Title",
+            "Primary Content",
+            "Primary Action"
           ]
         }
       }
@@ -69,7 +158,7 @@
       "id": "d28-a4",
       "type": "discover",
       "title": "Prototype Flow",
-      "instruction": "Connect screens to create the primary interaction path.",
+      "instruction": "Connect the screens to create the primary user journey.",
       "content": {
         "concept": "Interactive prototypes simulate navigation and key interactions before implementation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -79,9 +168,32 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Login",
+              "description": "User enters the application."
+            },
+            {
+              "label": "Dashboard",
+              "description": "User views available tasks and chooses the primary goal."
+            },
+            {
+              "label": "Task Details",
+              "description": "User reviews information and available actions."
+            },
+            {
+              "label": "Action",
+              "description": "User performs the main task."
+            },
+            {
+              "label": "Confirmation",
+              "description": "System confirms that the task was completed."
+            }
+          ],
+          "connections": [
+            "Login -> Dashboard",
+            "Dashboard -> Task Details",
+            "Task Details -> Action",
+            "Action -> Confirmation"
           ]
         }
       }

@@ -1,26 +1,98 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 6,
-  "topic": "Day 6 Topic for Frontend",
-  "version": 1,
+  "topic": "CSS Box Model",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand content, padding, border, and margin",
+    "Inspect how CSS properties affect element dimensions",
+    "Debug common spacing and sizing problems"
   ],
   "activities": [
     {
       "id": "d06-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "inspect",
+      "title": "Box Model Inspector",
+      "instruction": "Click each layer of the box model to see how it contributes to an element's size.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand content, padding, border, and margin",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "box-inspect",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Content",
+            "Padding",
+            "Border",
+            "Margin"
+          ],
+          "descriptions": [
+            "The actual text, image, or child content inside the element.",
+            "Space between the content and the border.",
+            "The visible edge surrounding padding and content.",
+            "Space outside the border that separates the element from others."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d06-a02",
+      "type": "slider",
+      "title": "Spacing Sliders",
+      "instruction": "Adjust padding and margin and observe how the element's spacing changes.",
+      "content": {
+        "concept": "Inspect how CSS properties affect element dimensions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "box-slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 40,
+          "default": 16
+        }
+      }
+    },
+    {
+      "id": "d06-a03",
+      "type": "compare",
+      "title": "Box Sizing Compare",
+      "instruction": "Compare content-box and border-box when the same width is declared.",
+      "content": {
+        "concept": "Understand how sizing affects dimensions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "box-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "content-box: width excludes padding and border",
+            "border-box: width includes padding and border"
+          ],
+          "answer": "border-box: width includes padding and border"
+        }
+      }
+    },
+    {
+      "id": "d06-a04",
+      "type": "debug",
+      "title": "Spacing Debugger",
+      "instruction": "Find the incorrect spacing value and adjust it until the two cards align.",
+      "content": {
+        "concept": "Debug common spacing and sizing problems",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "box-debug",
+        "family": "debug",
+        "config": {
+          "target": 24
+        }
       }
     }
   ],
@@ -31,7 +103,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

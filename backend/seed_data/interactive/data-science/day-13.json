@@ -14,9 +14,9 @@
       "id": "d13-a1",
       "type": "discover",
       "title": "Map Machine Learning Types",
-      "instruction": "Connect each learning type to its characteristics.",
+      "instruction": "Explore the characteristics of each major machine learning approach.",
       "content": {
-        "concept": "Machine learning includes supervised, unsupervised, and reinforcement learning approaches for different problem settings.",
+        "concept": "Supervised learning uses labeled examples, unsupervised learning discovers patterns without target labels, and reinforcement learning learns through interactions and rewards.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,14 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Supervised Learning",
+            "Unsupervised Learning",
+            "Reinforcement Learning"
+          ],
+          "descriptions": [
+            "Learns from labeled examples to predict or classify new observations.",
+            "Finds patterns, groups, or structures in data without predefined target labels.",
+            "Learns actions through interaction with an environment using rewards or penalties."
           ]
         }
       }
@@ -35,26 +40,32 @@
       "id": "d13-a2",
       "type": "discover",
       "title": "Choose the Learning Approach",
-      "instruction": "Select the suitable approach for each scenario.",
+      "instruction": "Identify the machine learning approach that fits each scenario.",
       "content": {
-        "concept": "The available labels, desired output, and learning objective help determine which machine learning approach fits a problem.",
+        "concept": "The presence of labels, the desired output, and the learning setting help determine which machine learning approach is appropriate.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Predict house prices from labeled examples → Supervised Learning",
+            "Group customers based on purchasing behavior → Unsupervised Learning",
+            "Teach an agent to maximize rewards in a game → Reinforcement Learning",
+            "Predict whether an email is spam using labeled emails → Supervised Learning"
+          ],
+          "answer": "Predict house prices from labeled examples → Supervised Learning"
         }
       }
     },
     {
       "id": "d13-a3",
       "type": "discover",
-      "title": "Anatomy of a ML Model",
-      "instruction": "Explore the parts of a machine learning setup.",
+      "title": "Anatomy of a Machine Learning Model",
+      "instruction": "Explore the main components of a supervised machine learning setup.",
       "content": {
-        "concept": "Features, targets, training data, algorithms, parameters, and predictions form core parts of supervised machine learning.",
+        "concept": "Features, targets, training data, algorithms, learned parameters, and predictions are core components of a supervised machine learning workflow.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +73,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Features",
+            "Target",
+            "Training Data",
+            "Algorithm",
+            "Learned Parameters",
+            "Prediction"
+          ],
+          "descriptions": [
+            "Input variables used by the model.",
+            "The value or category the model learns to predict.",
+            "Examples used to learn the relationship between inputs and targets.",
+            "The method used to learn a mapping from inputs to outputs.",
+            "Values learned from training data during model fitting.",
+            "The output produced by the trained model for new input data."
           ]
         }
       }
@@ -73,9 +95,9 @@
       "id": "d13-a4",
       "type": "discover",
       "title": "Build the ML Workflow",
-      "instruction": "Arrange the machine learning stages in order.",
+      "instruction": "Arrange the machine learning workflow from raw data to predictions.",
       "content": {
-        "concept": "A machine learning workflow progresses from data preparation to training, evaluation, and prediction.",
+        "concept": "A machine learning workflow progresses through data preparation, model training, evaluation, and prediction on new data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -83,9 +105,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Collect the Data",
+            "2. Clean and Prepare the Data",
+            "3. Split the Data",
+            "4. Select and Train a Model",
+            "5. Evaluate the Model",
+            "6. Make Predictions on New Data"
           ]
         }
       }

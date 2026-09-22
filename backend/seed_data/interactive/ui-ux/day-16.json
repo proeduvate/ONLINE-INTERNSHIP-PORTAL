@@ -14,19 +14,36 @@
       "id": "d16-a1",
       "type": "discover",
       "title": "Complex IA Explorer",
-      "instruction": "Explore the hierarchy of a complex application.",
+      "instruction": "Explore how content is organized into categories, subcategories, and navigation levels.",
       "content": {
         "concept": "Complex information architecture organizes large amounts of content into understandable categories, levels, and navigation structures.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Interact with each level to understand how information moves from broad categories to specific content."
       },
       "interaction": {
         "mode": "semantic-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Products",
+              "description": "Top-level category containing product-related content."
+            },
+            {
+              "label": "Product Category",
+              "description": "Groups related products into meaningful subcategories."
+            },
+            {
+              "label": "Product Detail",
+              "description": "Provides detailed information about a selected product."
+            },
+            {
+              "label": "Checkout",
+              "description": "Contains the steps required to complete a purchase."
+            },
+            {
+              "label": "Order Confirmation",
+              "description": "Confirms that the user's transaction has been completed."
+            }
           ]
         }
       }
@@ -35,18 +52,38 @@
       "id": "d16-a2",
       "type": "discover",
       "title": "Navigation Depth Lab",
-      "instruction": "Adjust navigation depth and observe the user path.",
+      "instruction": "Adjust the number of navigation levels and observe how the user's path changes.",
       "content": {
         "concept": "Excessive navigation depth can increase effort, while appropriate grouping helps users reach information efficiently.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Compare shallow and deep structures and notice how many steps are required to reach the same content."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 6,
+          "default": 3,
+          "unit": "levels",
+          "labels": [
+            "Shallow",
+            "Balanced",
+            "Deep"
+          ],
+          "scenarios": [
+            {
+              "value": 1,
+              "description": "Content is immediately available but may create crowded navigation."
+            },
+            {
+              "value": 3,
+              "description": "Content is grouped into a moderate number of meaningful levels."
+            },
+            {
+              "value": 6,
+              "description": "Users must pass through many levels before reaching content."
+            }
+          ]
         }
       }
     },
@@ -54,16 +91,39 @@
       "id": "d16-a3",
       "type": "discover",
       "title": "Journey Flow Builder",
-      "instruction": "Build a multi-step user journey.",
+      "instruction": "Build a multi-step journey containing actions, decisions, alternate paths, and completion states.",
       "content": {
         "concept": "Complex user journeys combine tasks, decisions, alternate paths, errors, and completion states.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Connect the steps in a logical order and include an alternate path where a decision changes the journey."
       },
       "interaction": {
         "mode": "architecture",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "nodes": [
+            "Start",
+            "Enter Details",
+            "Validate Details",
+            "Details Valid?",
+            "Fix Errors",
+            "Review",
+            "Submit",
+            "Success"
+          ],
+          "correctFlow": [
+            "Start",
+            "Enter Details",
+            "Validate Details",
+            "Details Valid?",
+            "Review",
+            "Submit",
+            "Success"
+          ],
+          "alternateFlow": [
+            "Details Valid?",
+            "Fix Errors",
+            "Enter Details"
+          ]
         }
       }
     },
@@ -71,16 +131,47 @@
       "id": "d16-a4",
       "type": "discover",
       "title": "Flow Complexity Detector",
-      "instruction": "Select the point where users may experience friction.",
+      "instruction": "Identify the points where unnecessary complexity may create friction.",
       "content": {
         "concept": "Decision overload, unnecessary steps, unclear labels, and dead ends can make complex flows difficult to complete.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Look for unnecessary decisions, repeated information, unclear actions, and paths that do not lead anywhere."
       },
       "interaction": {
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "A checkout requires users to choose between seven delivery options before they can continue.",
+              "options": [
+                "Decision overload",
+                "Clear navigation",
+                "Helpful feedback"
+              ],
+              "correctAnswer": "Decision overload",
+              "explanation": "Too many choices at one point can increase cognitive effort."
+            },
+            {
+              "question": "A user reaches a page where there is no action to continue or return.",
+              "options": [
+                "Dead end",
+                "Progressive disclosure",
+                "Good hierarchy"
+              ],
+              "correctAnswer": "Dead end",
+              "explanation": "Users should have a clear way to continue, go back, or recover."
+            },
+            {
+              "question": "A multi-step form asks for the same phone number on three different screens.",
+              "options": [
+                "Unnecessary repetition",
+                "Useful validation",
+                "Clear grouping"
+              ],
+              "correctAnswer": "Unnecessary repetition",
+              "explanation": "Repeated input increases effort without adding user value."
+            }
+          ]
         }
       }
     }

@@ -13,20 +13,29 @@
     {
       "id": "d10-a1",
       "type": "discover",
-      "title": "Iteration Map",
-      "instruction": "Trace how Python moves through iterable data.",
+      "title": "Iterator Map",
+      "instruction": "Explore how Python obtains values from an iterable.",
       "content": {
-        "concept": "Iterators provide values one at a time through the iteration protocol.",
+        "concept": "An iterator implements the iteration protocol and provides values one at a time. The iter() function obtains an iterator and next() retrieves the next value.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Iterable",
+            "iter()",
+            "Iterator",
+            "next()",
+            "StopIteration"
+          ],
+          "descriptions": [
+            "An object that can provide its members one at a time, such as a list.",
+            "Creates an iterator from an iterable.",
+            "Object that produces successive values through __next__().",
+            "Requests the next value from an iterator.",
+            "Exception raised when the iterator has no more values."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d10-a2",
       "type": "discover",
       "title": "Generator Anatomy",
-      "instruction": "Explore how yield creates a generator.",
+      "instruction": "Explore how yield turns a function into a generator function.",
       "content": {
-        "concept": "Generators produce values lazily using yield, avoiding the need to store all results at once.",
+        "concept": "A function containing yield becomes a generator function. Calling it returns a generator, and each next() call resumes execution until the next yield.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "def count_up_to(limit):",
+            "    number = 1",
+            "    while number <= limit:",
+            "        yield number",
+            "        number += 1",
+            "numbers = count_up_to(3)"
+          ],
+          "descriptions": [
+            "Defines a generator function.",
+            "Initializes the current value.",
+            "Continues while the limit has not been reached.",
+            "Produces the current value and pauses execution.",
+            "Updates the value before the next iteration.",
+            "Creates a generator object; the function body does not run to completion immediately."
           ]
         }
       }
@@ -55,19 +75,19 @@
     {
       "id": "d10-a3",
       "type": "discover",
-      "title": "Lazy Evaluation Lab",
-      "instruction": "Adjust the data flow and observe evaluation.",
+      "title": "Lazy Evaluation Explorer",
+      "instruction": "Adjust the number of values requested from a generator.",
       "content": {
-        "concept": "Lazy evaluation computes values only when they are requested, which can reduce memory usage.",
+        "concept": "Generators produce values on demand. They can process large or potentially unbounded sequences without creating all values in memory at once.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 20,
+          "default": 5
         }
       }
     },
@@ -75,9 +95,9 @@
       "id": "d10-a4",
       "type": "discover",
       "title": "Decorator Builder",
-      "instruction": "Build a decorator around a function.",
+      "instruction": "Assemble the components of a simple function decorator.",
       "content": {
-        "concept": "Decorators wrap functions to add or modify behavior without changing the original function definition.",
+        "concept": "A decorator is a callable that takes a function and returns a wrapped function, allowing behavior to be added around the original call.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -85,9 +105,22 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "def logger(func):",
+            "    def wrapper(*args, **kwargs):",
+            "        print(\"Calling function\")",
+            "        result = func(*args, **kwargs)",
+            "        return result",
+            "    return wrapper",
+            "@logger",
+            "def greet():",
+            "    print(\"Hello\")"
+          ],
+          "required": [
+            "def logger(func):",
+            "    def wrapper(*args, **kwargs):",
+            "        result = func(*args, **kwargs)",
+            "    return wrapper",
+            "@logger"
           ]
         }
       }

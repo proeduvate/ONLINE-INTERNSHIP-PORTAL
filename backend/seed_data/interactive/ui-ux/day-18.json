@@ -14,19 +14,36 @@
       "id": "d18-a1",
       "type": "discover",
       "title": "Accessibility Needs Map",
-      "instruction": "Explore different accessibility needs and design responses.",
+      "instruction": "Explore different accessibility needs and the design responses that support them.",
       "content": {
         "concept": "Inclusive design considers diverse sensory, motor, cognitive, and communication needs throughout the experience.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Select each need to discover practical design responses."
       },
       "interaction": {
         "mode": "semantic-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Visual",
+              "description": "Use sufficient contrast, scalable text, meaningful structure, and non-color indicators."
+            },
+            {
+              "label": "Auditory",
+              "description": "Provide captions, transcripts, and visual alternatives for important audio information."
+            },
+            {
+              "label": "Motor",
+              "description": "Support keyboard navigation, adequate target sizes, and alternatives to precise gestures."
+            },
+            {
+              "label": "Cognitive",
+              "description": "Use clear language, predictable navigation, manageable choices, and helpful error recovery."
+            },
+            {
+              "label": "Communication",
+              "description": "Present information through multiple understandable channels where appropriate."
+            }
           ]
         }
       }
@@ -35,18 +52,43 @@
       "id": "d18-a2",
       "type": "discover",
       "title": "Accessible Pattern Matcher",
-      "instruction": "Match each barrier with a suitable design solution.",
+      "instruction": "Match each accessibility barrier with an appropriate design solution.",
       "content": {
         "concept": "Accessible patterns can include keyboard support, clear labels, sufficient contrast, captions, focus indicators, and understandable feedback.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Identify the barrier first, then select the pattern that directly addresses it."
       },
       "interaction": {
         "mode": "match",
         "family": "compare",
         "config": {
+          "pairs": [
+            {
+              "prompt": "A video contains important spoken instructions but has no captions.",
+              "answer": "Captions"
+            },
+            {
+              "prompt": "A form field is identified only by placeholder text.",
+              "answer": "Persistent label"
+            },
+            {
+              "prompt": "Keyboard users cannot see which control currently has focus.",
+              "answer": "Visible focus indicator"
+            },
+            {
+              "prompt": "An error is communicated only by changing text color to red.",
+              "answer": "Text and non-color feedback"
+            },
+            {
+              "prompt": "Interactive controls require precise mouse movement.",
+              "answer": "Keyboard-accessible interaction"
+            }
+          ],
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+            "Captions",
+            "Persistent label",
+            "Visible focus indicator",
+            "Text and non-color feedback",
+            "Keyboard-accessible interaction"
           ]
         }
       }
@@ -55,19 +97,22 @@
       "id": "d18-a3",
       "type": "discover",
       "title": "Keyboard Navigation Lab",
-      "instruction": "Arrange the correct keyboard focus sequence.",
+      "instruction": "Arrange the correct keyboard focus sequence for the interface.",
       "content": {
         "concept": "Logical focus order allows keyboard users to navigate and operate interface controls predictably.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Follow the visual and task order instead of jumping randomly between controls."
       },
       "interaction": {
         "mode": "semantic-order",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Skip to Main Content",
+            "2. Search",
+            "3. Navigation",
+            "4. Main Heading",
+            "5. Form Input",
+            "6. Submit Button"
           ]
         }
       }
@@ -76,16 +121,47 @@
       "id": "d18-a4",
       "type": "discover",
       "title": "Accessibility Audit",
-      "instruction": "Select the accessibility issues in the interface.",
+      "instruction": "Identify the accessibility issues in each interface scenario.",
       "content": {
         "concept": "An accessibility audit checks visual, interaction, content, navigation, and feedback patterns for barriers.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Look beyond visual appearance and consider how different users operate the interface."
       },
       "interaction": {
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "A button has light gray text on a white background.",
+              "options": [
+                "Insufficient contrast",
+                "Good keyboard support",
+                "Clear focus state"
+              ],
+              "correctAnswer": "Insufficient contrast",
+              "explanation": "Low contrast can make text difficult to perceive."
+            },
+            {
+              "question": "A form error is indicated only with a red border.",
+              "options": [
+                "Color-only feedback",
+                "Clear semantic labeling",
+                "Good focus management"
+              ],
+              "correctAnswer": "Color-only feedback",
+              "explanation": "Important feedback should not depend on color alone."
+            },
+            {
+              "question": "A modal opens but keyboard focus remains behind the modal.",
+              "options": [
+                "Focus management issue",
+                "Good navigation",
+                "Responsive layout issue"
+              ],
+              "correctAnswer": "Focus management issue",
+              "explanation": "Keyboard focus should move appropriately into the active modal."
+            }
+          ]
         }
       }
     }

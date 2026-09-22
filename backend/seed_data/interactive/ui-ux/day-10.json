@@ -7,6 +7,7 @@
   "learningObjectives": [
     "Apply responsive design principles across different screen sizes.",
     "Identify accessibility barriers in common interface patterns.",
+    "Apply basic accessibility principles to interface content and controls.",
     "Design inclusive interactions that support diverse user needs."
   ],
   "activities": [
@@ -14,18 +15,23 @@
       "id": "d10-a1",
       "type": "discover",
       "title": "Responsive Layout Explorer",
-      "instruction": "Resize the interface and observe layout changes.",
+      "instruction": "Adjust the viewport and observe how the interface adapts.",
       "content": {
-        "concept": "Responsive design adapts layout, content, and interactions to different screen sizes and device contexts.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Responsive design adapts layout, content, sizing, and interactions to different screen sizes and device contexts.",
+        "tip": "Observe when columns stack, navigation changes, and content resizes."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "responsive-preview",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 320,
+          "max": 1440,
+          "default": 768,
+          "unit": "px",
+          "labels": {
+            "min": "Mobile",
+            "max": "Desktop"
+          }
         }
       }
     },
@@ -33,16 +39,23 @@
       "id": "d10-a2",
       "type": "discover",
       "title": "Accessibility Barrier Hunt",
-      "instruction": "Select the accessibility issue in each interface.",
+      "instruction": "Identify the accessibility problem in each interface example.",
       "content": {
-        "concept": "Accessibility barriers can involve contrast, keyboard access, labels, focus states, text size, motion, and interaction complexity.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Accessibility barriers can involve poor contrast, missing labels, keyboard access, unclear focus states, small text, excessive motion, and interaction complexity.",
+        "tip": "Look beyond visual appearance and consider how users with different abilities interact with the interface."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "accessibility-hunt",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Low color contrast",
+            "Missing form label",
+            "Keyboard-inaccessible control",
+            "Missing visible focus state",
+            "Text-only error indication"
+          ],
+          "answer": "Missing form label"
         }
       }
     },
@@ -50,19 +63,23 @@
       "id": "d10-a3",
       "type": "discover",
       "title": "Inclusive Pattern Matcher",
-      "instruction": "Match each accessibility need with a design solution.",
+      "instruction": "Match each accessibility need with an appropriate design solution.",
       "content": {
         "concept": "Inclusive design provides multiple ways to perceive information, navigate interfaces, and complete tasks.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Choose solutions that reduce barriers rather than relying on a single sensory or interaction method."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "inclusive-pattern-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Low vision → Sufficient text contrast",
+            "Keyboard users → Visible focus indicators",
+            "Screen reader users → Semantic labels",
+            "Color vision deficiency → Color plus text or icons",
+            "Motor limitations → Adequate target sizes"
+          ],
+          "answer": "Keyboard users → Visible focus indicators"
         }
       }
     },
@@ -70,18 +87,26 @@
       "id": "d10-a4",
       "type": "discover",
       "title": "Responsive Interface Builder",
-      "instruction": "Compose a layout that works across breakpoints.",
+      "instruction": "Build a layout that reorganizes appropriately across breakpoints.",
       "content": {
         "concept": "Responsive interfaces reorganize components and content while preserving usability across different viewport sizes.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Think about what should remain visible, what can stack, and what can collapse on smaller screens."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "responsive-layout-builder",
         "family": "builder",
         "config": {
           "options": [
             "Header",
+            "Navigation",
             "Sidebar",
+            "Main Content",
+            "Secondary Content",
+            "Mobile Menu"
+          ],
+          "required": [
+            "Header",
+            "Navigation",
             "Main Content"
           ]
         }

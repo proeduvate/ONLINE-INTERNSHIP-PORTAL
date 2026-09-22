@@ -14,9 +14,9 @@
       "id": "d6-a1",
       "type": "discover",
       "title": "String Anatomy",
-      "instruction": "Explore the structure of a Python string.",
+      "instruction": "Explore indexing and slicing in a Python string.",
       "content": {
-        "concept": "Strings are ordered sequences of characters that support indexing and slicing.",
+        "concept": "Strings are ordered sequences of characters. Indexing accesses one character, while slicing extracts a portion of the string.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "text = \"Python\"",
+            "text[0]",
+            "text[1:4]",
+            "text[-1]"
+          ],
+          "descriptions": [
+            "Stores the string value Python.",
+            "Accesses the first character, P.",
+            "Extracts characters from index 1 up to, but not including, index 4: yth.",
+            "Accesses the last character, n."
           ]
         }
       }
@@ -35,9 +42,9 @@
       "id": "d6-a2",
       "type": "discover",
       "title": "Slice Explorer",
-      "instruction": "Adjust the indexes to extract text.",
+      "instruction": "Adjust the slice boundaries to extract the required text.",
       "content": {
-        "concept": "String slicing extracts portions of a string using start, stop, and step positions.",
+        "concept": "The syntax text[start:stop:step] controls which characters are selected. The stop index is excluded.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,38 +52,41 @@
         "family": "slider",
         "config": {
           "min": 0,
-          "max": 100,
-          "default": 50
+          "max": 6,
+          "default": 3
         }
       }
     },
     {
       "id": "d6-a3",
       "type": "discover",
-      "title": "Method Match",
-      "instruction": "Match each string method to its purpose.",
+      "title": "String Method Explorer",
+      "instruction": "Choose the method that best solves each text-processing task.",
       "content": {
-        "concept": "Methods such as split, replace, strip, and lower simplify common text-processing tasks.",
+        "concept": "Methods such as strip(), lower(), replace(), and split() provide reusable operations for processing text.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "strip() → remove leading and trailing whitespace",
+            "lower() → split text into a list",
+            "replace() → convert text to lowercase",
+            "split() → replace one substring with another"
+          ],
+          "answer": "strip() → remove leading and trailing whitespace"
         }
       }
     },
     {
       "id": "d6-a4",
       "type": "discover",
-      "title": "Text Formatter",
-      "instruction": "Build a formatted output string.",
+      "title": "F-String Builder",
+      "instruction": "Build a formatted message using an f-string.",
       "content": {
-        "concept": "F-strings provide a concise way to insert variables and expressions into text.",
+        "concept": "F-strings allow expressions and variable values to be embedded directly inside string literals using braces.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -84,9 +94,16 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "name = \"Maya\"",
+            "score = 95",
+            "f\"{name} scored {score}\"",
+            "print(message)",
+            "\"{name} scored {score}\""
+          ],
+          "required": [
+            "name = \"Maya\"",
+            "score = 95",
+            "f\"{name} scored {score}\""
           ]
         }
       }

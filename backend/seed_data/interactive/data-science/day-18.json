@@ -14,9 +14,9 @@
       "id": "d18-a1",
       "type": "discover",
       "title": "Explore Time Series Components",
-      "instruction": "Adjust each component and observe the series.",
+      "instruction": "Adjust the component level and observe how it can affect a time series.",
       "content": {
-        "concept": "Time series can contain trend, seasonality, cyclical behavior, and irregular noise.",
+        "concept": "Time series data can contain long-term trend, repeating seasonal patterns, and irregular noise.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -33,9 +33,9 @@
       "id": "d18-a2",
       "type": "discover",
       "title": "Map Forecasting Components",
-      "instruction": "Connect each component to its role.",
+      "instruction": "Explore the role of each component in a forecasting task.",
       "content": {
-        "concept": "Forecasting uses historical observations and time-dependent patterns to estimate future values.",
+        "concept": "Forecasting uses historical observations, time-dependent patterns, and a forecasting model to estimate future values.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -43,9 +43,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Historical Data",
+            "Trend",
+            "Seasonality",
+            "Forecast Model",
+            "Future Prediction"
+          ],
+          "descriptions": [
+            "Previously observed values used to understand the behavior of the series.",
+            "A long-term upward or downward movement in the data.",
+            "A pattern that repeats at a known or regular interval.",
+            "A statistical or machine learning method used to estimate future values.",
+            "The estimated values for future time periods."
           ]
         }
       }
@@ -54,9 +63,9 @@
       "id": "d18-a3",
       "type": "discover",
       "title": "Build a Forecasting Workflow",
-      "instruction": "Arrange the forecasting stages in order.",
+      "instruction": "Arrange the stages of a time series forecasting workflow.",
       "content": {
-        "concept": "A forecasting workflow includes preparing chronological data, exploring patterns, training a model, validating predictions, and forecasting future values.",
+        "concept": "A forecasting workflow prepares chronological data, analyzes patterns, trains a model, validates predictions, and produces future forecasts.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,9 +73,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Collect and Order Time Series Data",
+            "2. Clean Missing and Invalid Observations",
+            "3. Explore Trend and Seasonality",
+            "4. Split Data Chronologically",
+            "5. Train a Forecasting Model",
+            "6. Validate the Forecast",
+            "7. Generate Future Predictions"
           ]
         }
       }
@@ -75,16 +88,22 @@
       "id": "d18-a4",
       "type": "discover",
       "title": "Choose the Forecasting Method",
-      "instruction": "Select an appropriate approach for each scenario.",
+      "instruction": "Match each scenario with a suitable forecasting approach.",
       "content": {
-        "concept": "Forecasting methods should match the structure, frequency, history, and behavior of the time series.",
+        "concept": "The appropriate forecasting method depends on the amount of historical data, trend, seasonality, frequency, and complexity of the series.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Simple series with a stable recent level → Moving Average",
+            "Series with trend and seasonality → Exponential Smoothing",
+            "Autocorrelated time series with suitable historical structure → ARIMA",
+            "Complex series with many external predictors → Machine Learning Forecasting"
+          ],
+          "answer": "Simple series with a stable recent level → Moving Average"
         }
       }
     }

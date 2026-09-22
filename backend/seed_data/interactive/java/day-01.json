@@ -14,39 +14,77 @@
       "id": "d1-a1",
       "type": "discover",
       "title": "Java Program Anatomy",
-      "instruction": "Click each code part to reveal its role.",
+      "instruction": "Explore the parts of a basic Java program.",
       "content": {
-        "concept": "A Java program is organized around classes and methods, with execution beginning from the main method.",
+        "concept": "A Java program is organized around classes and methods. Execution of a standard standalone application begins from the main method.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "java-program-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "class HelloWorld",
+            "public static void main(String[] args)",
+            "System.out.println(\"Hello\")",
+            "Class body",
+            "Statement"
+          ],
+          "descriptions": [
+            "Defines a class named HelloWorld that contains the program structure.",
+            "Defines the main method where execution begins for a standard Java application.",
+            "Calls println to write text to the console.",
+            "Contains the fields and methods belonging to the class.",
+            "An executable instruction inside a method."
+          ]
+        }
       }
     },
     {
       "id": "d1-a2",
       "type": "discover",
       "title": "Java Execution Flow",
-      "instruction": "Arrange the Java execution steps.",
+      "instruction": "Arrange the stages from Java source code to program execution.",
       "content": {
-        "concept": "Java source code is compiled into bytecode that runs on the Java Virtual Machine.",
+        "concept": "Java source code is compiled by the Java compiler into bytecode. The Java Virtual Machine then loads and executes that bytecode.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "execution-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Write Java source code",
+            "2. Compile the source with javac",
+            "3. Generate bytecode (.class)",
+            "4. JVM loads the bytecode",
+            "5. JVM executes the program"
+          ]
+        }
       }
     },
     {
       "id": "d1-a3",
       "type": "discover",
       "title": "Data Type Matcher",
-      "instruction": "Match each value with its suitable Java type.",
+      "instruction": "Choose the most suitable Java type for each value.",
       "content": {
-        "concept": "Java provides primitive types such as int, double, char, and boolean for storing different kinds of values.",
+        "concept": "Java primitive types represent different kinds of values. For example, int stores whole numbers, double stores decimal values, char stores a single character, and boolean stores true or false.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "data-type-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "int",
+            "double",
+            "char",
+            "boolean",
+            "String"
+          ],
+          "answer": "int"
+        }
       }
     },
     {
@@ -55,11 +93,36 @@
       "title": "Variable Builder",
       "instruction": "Build valid Java variable declarations.",
       "content": {
-        "concept": "A variable declaration combines a data type, variable name, and optional initial value.",
+        "concept": "A variable declaration specifies a type and variable name, and it can optionally initialize the variable with a value.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "variable-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "int",
+            "double",
+            "char",
+            "boolean",
+            "String",
+            "age",
+            "price",
+            "grade",
+            "isActive",
+            "name",
+            "25",
+            "99.5",
+            "'A'",
+            "true",
+            "\"Sakthi\""
+          ],
+          "required": [
+            "int",
+            "age",
+            "25"
+          ]
+        }
       }
     }
   ],

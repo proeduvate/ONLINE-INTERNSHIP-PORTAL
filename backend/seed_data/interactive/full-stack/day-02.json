@@ -14,19 +14,26 @@
       "id": "d2-a1",
       "type": "discover",
       "title": "HTML Document Anatomy",
-      "instruction": "Explore the parts of an HTML document.",
+      "instruction": "Explore the main parts of an HTML5 document.",
       "content": {
-        "concept": "An HTML document uses elements such as html, head, and body to define document structure and content.",
+        "concept": "An HTML document uses the doctype, html, head, and body elements to establish its document structure.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "html-document-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "<body>"
+          ],
+          "descriptions": [
+            "Declares that the document uses HTML5.",
+            "Root element containing the complete HTML document.",
+            "Contains metadata, title, stylesheets, and other document information.",
+            "Contains the visible page content."
           ]
         }
       }
@@ -35,39 +42,52 @@
       "id": "d2-a2",
       "type": "discover",
       "title": "Semantic Element Match",
-      "instruction": "Match elements with their purpose.",
+      "instruction": "Choose the semantic HTML element that best describes each page region.",
       "content": {
-        "concept": "Semantic elements such as header, nav, main, section, article, and footer communicate the meaning of page content.",
+        "concept": "Semantic elements such as header, nav, main, section, article, and footer communicate the purpose of page content.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "semantic-match",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "header → introductory or navigational content",
+            "nav → primary navigation links",
+            "main → primary page content",
+            "article → self-contained content",
+            "footer → closing information"
+          ],
+          "answer": "main → primary page content"
         }
       }
     },
     {
       "id": "d2-a3",
       "type": "discover",
-      "title": "Page Structure Builder",
-      "instruction": "Build a semantic webpage structure.",
+      "title": "Semantic Page Builder",
+      "instruction": "Compose a meaningful HTML5 page structure using semantic elements.",
       "content": {
-        "concept": "A well-structured page organizes content into meaningful regions that improve maintainability and accessibility.",
+        "concept": "Semantic page structures improve readability, maintainability, accessibility, and the organization of content.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "semantic-page-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "<header>",
+            "<nav>",
+            "<main>",
+            "<section>",
+            "<article>",
+            "<footer>"
+          ],
+          "required": [
+            "<header>",
+            "<nav>",
+            "<main>",
+            "<footer>"
           ]
         }
       }
@@ -75,17 +95,24 @@
     {
       "id": "d2-a4",
       "type": "discover",
-      "title": "Form Element Selector",
-      "instruction": "Choose the correct form element.",
+      "title": "Accessible Form Elements",
+      "instruction": "Choose the appropriate HTML element for each form requirement.",
       "content": {
-        "concept": "HTML form controls collect user input through elements such as input, select, textarea, button, and label.",
+        "concept": "Accessible forms use labels and appropriate controls such as input, select, textarea, and button to collect user information.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "form-element-selector",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "input → short user value",
+            "select → choose from predefined options",
+            "textarea → multi-line text",
+            "button → submit or perform an action",
+            "label → describe a form control"
+          ],
+          "answer": "label → describe a form control"
         }
       }
     }

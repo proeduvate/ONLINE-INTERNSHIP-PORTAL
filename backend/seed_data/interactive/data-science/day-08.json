@@ -14,7 +14,7 @@
       "id": "d8-a1",
       "type": "discover",
       "title": "Explore Probability",
-      "instruction": "Adjust event probabilities and observe outcomes.",
+      "instruction": "Adjust the probability and observe how likely the event becomes.",
       "content": {
         "concept": "Probability represents the likelihood of an event occurring and ranges from impossible to certain.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -33,9 +33,9 @@
       "id": "d8-a2",
       "type": "discover",
       "title": "Map Population and Sample",
-      "instruction": "Connect each statistical concept to its role.",
+      "instruction": "Explore how a population, sample, parameter, and statistic are related.",
       "content": {
-        "concept": "A population contains the full group of interest, while a sample represents a subset used for analysis.",
+        "concept": "A population contains the full group of interest, while a sample is a subset used to estimate characteristics of that population.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -43,9 +43,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Population",
+            "Sample",
+            "Population Parameter",
+            "Sample Statistic",
+            "Statistical Inference"
+          ],
+          "descriptions": [
+            "The complete group about which a study seeks information.",
+            "A subset selected from the population for analysis.",
+            "A numerical characteristic describing the population.",
+            "A numerical measure calculated from the sample.",
+            "Using sample evidence to draw conclusions about the population."
           ]
         }
       }
@@ -54,9 +63,9 @@
       "id": "d8-a3",
       "type": "discover",
       "title": "Sequence the Sampling Process",
-      "instruction": "Arrange the sampling steps in order.",
+      "instruction": "Arrange the steps of statistical sampling and inference in order.",
       "content": {
-        "concept": "Statistical inference begins with defining a population, selecting a sample, analyzing it, and drawing conclusions with uncertainty.",
+        "concept": "Statistical inference begins with defining a population, selecting a sample, analyzing it, and drawing conclusions while accounting for uncertainty.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,9 +73,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Define the Population",
+            "2. Select a Sample",
+            "3. Collect Sample Data",
+            "4. Calculate Sample Statistics",
+            "5. Estimate or Test Population Characteristics",
+            "6. Interpret the Results with Uncertainty"
           ]
         }
       }
@@ -75,16 +87,22 @@
       "id": "d8-a4",
       "type": "discover",
       "title": "Choose the Statistical Method",
-      "instruction": "Select the appropriate method for each scenario.",
+      "instruction": "Match each analytical goal with an appropriate statistical approach.",
       "content": {
-        "concept": "Different analytical questions require different statistical approaches and sampling strategies.",
+        "concept": "Different analytical questions require different statistical methods, sampling strategies, and measures of uncertainty.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "match",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Estimate a population mean → Confidence Interval",
+            "Compare two group means → Hypothesis Test",
+            "Measure the relationship between numerical variables → Correlation",
+            "Estimate an event likelihood → Probability",
+            "Draw conclusions from a sample → Statistical Inference"
+          ]
         }
       }
     }

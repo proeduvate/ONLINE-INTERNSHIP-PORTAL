@@ -14,19 +14,36 @@
       "id": "d21-a1",
       "type": "discover",
       "title": "Design Thinking Map",
-      "instruction": "Explore how each design thinking stage connects.",
+      "instruction": "Explore how each design thinking stage contributes to solving a user problem.",
       "content": {
         "concept": "Design thinking uses empathy, definition, ideation, prototyping, and testing to solve user-centered problems iteratively.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Select each stage to understand what designers do and what output it produces."
       },
       "interaction": {
         "mode": "semantic-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Empathize",
+              "description": "Understand users, their context, behaviors, and needs."
+            },
+            {
+              "label": "Define",
+              "description": "Synthesize research into a focused problem."
+            },
+            {
+              "label": "Ideate",
+              "description": "Generate multiple possible solutions."
+            },
+            {
+              "label": "Prototype",
+              "description": "Create representations of potential solutions."
+            },
+            {
+              "label": "Test",
+              "description": "Evaluate solutions and learn from user feedback."
+            }
           ]
         }
       }
@@ -35,19 +52,28 @@
       "id": "d21-a2",
       "type": "discover",
       "title": "Problem Statement Builder",
-      "instruction": "Build a focused user problem statement.",
+      "instruction": "Arrange the elements of a focused user problem statement.",
       "content": {
         "concept": "A strong problem statement identifies the target user, their need, and the meaningful problem without prescribing a solution.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Do not include a proposed interface or feature in the problem statement."
       },
       "interaction": {
         "mode": "build",
         "family": "builder",
         "config": {
-          "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+          "items": [
+            "Target User",
+            "User Need",
+            "Observed Problem",
+            "Context",
+            "Impact"
+          ],
+          "correctOrder": [
+            "Target User",
+            "Context",
+            "User Need",
+            "Observed Problem",
+            "Impact"
           ]
         }
       }
@@ -56,16 +82,37 @@
       "id": "d21-a3",
       "type": "discover",
       "title": "How Might We Lab",
-      "instruction": "Transform user problems into design questions.",
+      "instruction": "Transform user problems into focused, open-ended design questions.",
       "content": {
         "concept": "How-might-we questions reframe user problems as open opportunities for generating multiple possible solutions.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "A strong HMW question should be open enough to encourage ideas but focused enough to remain connected to the problem."
       },
       "interaction": {
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "Users struggle to find relevant internship opportunities among hundreds of listings. Which HMW question is most useful?",
+              "options": [
+                "How might we help users discover relevant internships more easily?",
+                "How might we build a blue filter button?",
+                "How might we force users to read every listing?"
+              ],
+              "correctAnswer": "How might we help users discover relevant internships more easily?",
+              "explanation": "The question focuses on the user problem without prescribing a specific solution."
+            },
+            {
+              "question": "Users abandon a long registration form because it feels overwhelming.",
+              "options": [
+                "How might we make registration feel easier to complete?",
+                "How might we add five more fields?",
+                "How might we use a larger logo?"
+              ],
+              "correctAnswer": "How might we make registration feel easier to complete?",
+              "explanation": "The question creates space for multiple possible solutions."
+            }
+          ]
         }
       }
     },
@@ -73,18 +120,33 @@
       "id": "d21-a4",
       "type": "discover",
       "title": "Problem Validation",
-      "instruction": "Select the problem statement supported by evidence.",
+      "instruction": "Select the problem statement that is best supported by research evidence.",
       "content": {
         "concept": "A well-defined problem should connect directly to research evidence and a meaningful user need.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Choose the statement that describes an observed user problem rather than a proposed feature."
       },
       "interaction": {
         "mode": "match",
         "family": "compare",
         "config": {
+          "pairs": [
+            {
+              "prompt": "Users interviewed repeatedly reported difficulty comparing internship opportunities.",
+              "answer": "Users need an easier way to compare relevant opportunities."
+            },
+            {
+              "prompt": "Users said they frequently forget which applications they have already submitted.",
+              "answer": "Users need clearer application status tracking."
+            },
+            {
+              "prompt": "A designer thinks users would like an AI chatbot.",
+              "answer": "Not enough evidence to define a validated problem."
+            }
+          ],
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+            "Users need an easier way to compare relevant opportunities.",
+            "Users need clearer application status tracking.",
+            "Not enough evidence to define a validated problem."
           ]
         }
       }

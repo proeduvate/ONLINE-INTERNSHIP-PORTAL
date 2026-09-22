@@ -1,26 +1,108 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 11,
-  "topic": "Day 11 Topic for Frontend",
-  "version": 1,
+  "topic": "CSS Positioning & Layout",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand static, relative, absolute, fixed, and sticky positioning",
+    "Anchor positioned elements to the correct containing block",
+    "Use sticky positioning appropriately"
   ],
   "activities": [
     {
       "id": "d11-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "position-map",
+      "title": "Position Map",
+      "instruction": "Explore each CSS position mode and identify the reference frame used by the element.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand CSS positioning modes",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "position-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "static",
+            "relative",
+            "absolute",
+            "fixed",
+            "sticky"
+          ],
+          "descriptions": [
+            "Uses the normal document flow and ignores top, right, bottom, and left offsets.",
+            "Remains in normal flow but can be offset from its original position.",
+            "Removed from normal flow and positioned relative to its containing block.",
+            "Positioned relative to the viewport and remains fixed during scrolling.",
+            "Behaves normally until a scroll threshold is reached, then remains stuck within its container."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d11-a02",
+      "type": "anchor",
+      "title": "Anchor Challenge",
+      "instruction": "Position a badge inside a card using a positioned parent and top/right offsets.",
+      "content": {
+        "concept": "Anchor positioned elements to the correct containing block",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anchor",
+        "family": "builder",
+        "config": {
+          "options": [
+            ".card { position: relative; }",
+            ".badge { position: absolute; }",
+            "top: 12px;",
+            "right: 12px;",
+            "position: fixed;"
+          ],
+          "required": [
+            ".card { position: relative; }",
+            ".badge { position: absolute; }",
+            "top: 12px;",
+            "right: 12px;"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d11-a03",
+      "type": "sticky",
+      "title": "Sticky Demo",
+      "instruction": "Scroll the mini-document and observe when the sticky heading becomes fixed within its container.",
+      "content": {
+        "concept": "Use sticky positioning appropriately",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "sticky",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 0
+        }
+      }
+    },
+    {
+      "id": "d11-a04",
+      "type": "debug",
+      "title": "Position Debugger",
+      "instruction": "Fix the positioned badge by assigning the correct positioning context to its ancestor.",
+      "content": {
+        "concept": "Anchor positioned elements to the correct containing block",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "position-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
@@ -31,7 +113,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

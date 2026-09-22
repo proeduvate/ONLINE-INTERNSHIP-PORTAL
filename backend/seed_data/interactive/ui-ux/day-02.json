@@ -14,16 +14,23 @@
       "id": "d2-a1",
       "type": "discover",
       "title": "Research Method Selector",
-      "instruction": "Choose the best research method for each scenario.",
+      "instruction": "Choose the most suitable research method for each scenario.",
       "content": {
-        "concept": "Interviews, surveys, observation, usability testing, and analytics answer different types of research questions.",
+        "concept": "Different research methods answer different questions. Interviews can explore motivations, surveys can collect measurable responses, observation reveals real behavior, usability testing evaluates interactions, and analytics reveals usage patterns.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "research-method-choice",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Interview",
+            "Survey",
+            "Observation",
+            "Usability Testing",
+            "Analytics"
+          ],
+          "answer": "Interview"
         }
       }
     },
@@ -31,18 +38,28 @@
       "id": "d2-a2",
       "type": "discover",
       "title": "Qualitative vs Quantitative",
-      "instruction": "Sort each research finding into the correct category.",
+      "instruction": "Identify whether each research finding is qualitative or quantitative.",
       "content": {
-        "concept": "Qualitative research explores behaviors and motivations, while quantitative research measures patterns using numerical data.",
+        "concept": "Qualitative data describes experiences, behaviors, opinions, and motivations. Quantitative data represents measurable values such as counts, percentages, ratings, and completion rates.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
-        "family": "compare",
+        "mode": "research-data-map",
+        "family": "click-map",
         "config": {
-          "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+          "items": [
+            "User Quote",
+            "Observed Behavior",
+            "Survey Percentage",
+            "Task Completion Rate",
+            "Interview Theme"
+          ],
+          "descriptions": [
+            "A participant's statement or explanation is qualitative evidence.",
+            "A description of what a participant actually does can provide qualitative behavioral evidence.",
+            "A percentage from a survey is quantitative data.",
+            "The percentage or number of users completing a task is quantitative data.",
+            "A repeated theme found across interviews is qualitative evidence."
           ]
         }
       }
@@ -50,20 +67,22 @@
     {
       "id": "d2-a3",
       "type": "discover",
-      "title": "Interview Flow Builder",
-      "instruction": "Arrange the stages of a user interview.",
+      "title": "User Interview Flow",
+      "instruction": "Arrange the stages of a focused user interview.",
       "content": {
-        "concept": "Effective interviews use clear goals, open-ended questions, active listening, and structured synthesis.",
+        "concept": "A good interview begins with a clear research goal, builds rapport, asks open-ended questions, listens without leading the participant, and ends by organizing the findings.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "interview-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Define the research goal",
+            "2. Prepare open-ended questions",
+            "3. Introduce the session and build rapport",
+            "4. Ask questions and actively listen",
+            "5. Record and synthesize findings"
           ]
         }
       }
@@ -71,17 +90,21 @@
     {
       "id": "d2-a4",
       "type": "discover",
-      "title": "Insight Extraction Lab",
-      "instruction": "Select the strongest insight from each observation.",
+      "title": "Insight Extraction",
+      "instruction": "Choose the statement that represents the strongest UX insight.",
       "content": {
-        "concept": "A useful UX insight connects observed user behavior with an underlying need, frustration, or motivation.",
+        "concept": "A useful UX insight goes beyond describing an observation. It connects behavior to a possible user need, motivation, or difficulty that can inform design decisions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "insight-choice",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Observation: Three users abandoned checkout. Insight: Users may be uncertain about the final cost before confirming the purchase.",
+            "Observation: Three users abandoned checkout. Insight: Users do not like websites."
+          ],
+          "answer": "Observation: Three users abandoned checkout. Insight: Users may be uncertain about the final cost before confirming the purchase."
         }
       }
     }

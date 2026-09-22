@@ -14,16 +14,29 @@
       "id": "d14-a1",
       "type": "discover",
       "title": "Database Architecture",
-      "instruction": "Explore how an application communicates with a database.",
+      "instruction": "Explore how a Python application communicates with a relational database.",
       "content": {
-        "concept": "Applications use database connections and SQL queries to store and retrieve persistent data.",
+        "concept": "A Python application can connect to a database, execute SQL statements, retrieve results, and manage the database connection.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "items": [
+            "Python Application",
+            "Database Connection",
+            "SQL Query",
+            "Database",
+            "Query Result"
+          ],
+          "descriptions": [
+            "Application code that requests data or performs database operations.",
+            "Connection object used to communicate with the database.",
+            "SQL statement used to retrieve or modify data.",
+            "Persistent relational data store containing tables.",
+            "Rows or other information returned after a query executes."
+          ]
         }
       }
     },
@@ -31,9 +44,9 @@
       "id": "d14-a2",
       "type": "discover",
       "title": "Table Anatomy",
-      "instruction": "Identify columns, rows, keys, and relationships.",
+      "instruction": "Explore the structure of a relational database table.",
       "content": {
-        "concept": "Relational databases organize data into tables connected through keys and relationships.",
+        "concept": "A relational table contains rows and columns. Primary keys uniquely identify rows, while foreign keys can connect rows across tables.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -41,9 +54,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "CREATE TABLE students (",
+            "    id INTEGER PRIMARY KEY,",
+            "    name VARCHAR(100),",
+            "    course_id INTEGER",
+            ");"
+          ],
+          "descriptions": [
+            "Defines a new relational table.",
+            "Defines a unique identifier for each row.",
+            "Defines a text column for student names.",
+            "Column that can store a reference to a course record.",
+            "Ends the table definition."
           ]
         }
       }
@@ -52,9 +74,9 @@
       "id": "d14-a3",
       "type": "discover",
       "title": "SQL Query Builder",
-      "instruction": "Build a query for the requested result.",
+      "instruction": "Build a SQL query that retrieves students from a table.",
       "content": {
-        "concept": "SQL uses commands such as SELECT, INSERT, UPDATE, and DELETE to manipulate relational data.",
+        "concept": "SELECT retrieves data from tables. WHERE can filter rows, while INSERT, UPDATE, and DELETE modify stored data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +84,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "SELECT",
+            "*",
+            "FROM students",
+            "WHERE course_id = 1",
+            "INSERT INTO students",
+            "UPDATE students",
+            "DELETE FROM students"
+          ],
+          "required": [
+            "SELECT",
+            "*",
+            "FROM students"
           ]
         }
       }
@@ -72,20 +103,23 @@
     {
       "id": "d14-a4",
       "type": "discover",
-      "title": "Query Sequence",
-      "instruction": "Order the database interaction steps.",
+      "title": "Database Query Flow",
+      "instruction": "Order the main steps of a Python database operation.",
       "content": {
-        "concept": "A database operation typically involves connecting, executing a query, processing results, and managing resources.",
+        "concept": "Database code normally obtains a connection, executes a parameterized query, processes the result, and closes or releases resources appropriately.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Open or obtain a database connection",
+            "2. Create a cursor or database operation object",
+            "3. Execute the SQL query with parameters when needed",
+            "4. Process returned rows or confirm the modification",
+            "5. Commit changes when required",
+            "6. Close or release database resources"
           ]
         }
       }

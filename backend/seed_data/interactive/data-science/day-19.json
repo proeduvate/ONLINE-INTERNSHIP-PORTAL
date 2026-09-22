@@ -14,9 +14,9 @@
       "id": "d19-a1",
       "type": "discover",
       "title": "Build a Text Pipeline",
-      "instruction": "Arrange the text preprocessing stages.",
+      "instruction": "Arrange the major stages of a basic text preprocessing pipeline.",
       "content": {
-        "concept": "NLP preprocessing can include tokenization, normalization, stop-word handling, and feature extraction.",
+        "concept": "NLP preprocessing can include normalization, tokenization, stop-word handling, and conversion of text into numerical features.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Collect Text Data",
+            "2. Normalize the Text",
+            "3. Tokenize the Text",
+            "4. Handle Stop Words When Appropriate",
+            "5. Apply Additional Text Processing",
+            "6. Convert Text into Numerical Features"
           ]
         }
       }
@@ -35,9 +38,9 @@
       "id": "d19-a2",
       "type": "discover",
       "title": "Explore Tokenization",
-      "instruction": "Click the text to reveal its tokens.",
+      "instruction": "Explore how a sentence can be divided into smaller text units.",
       "content": {
-        "concept": "Tokenization breaks text into smaller units such as words, subwords, or sentences for further processing.",
+        "concept": "Tokenization breaks text into units such as words, subwords, or sentences so that the text can be processed computationally.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +48,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Original Sentence",
+            "Sentence Token",
+            "Word Token",
+            "Subword Token",
+            "Token Sequence"
+          ],
+          "descriptions": [
+            "The original text before it is divided into smaller units.",
+            "A complete sentence treated as one unit during sentence-level tokenization.",
+            "An individual word treated as a token.",
+            "A smaller piece of a word used by subword tokenization methods.",
+            "The ordered collection of tokens produced from the input text."
           ]
         }
       }
@@ -56,19 +68,23 @@
       "id": "d19-a3",
       "type": "discover",
       "title": "Match NLP Tasks",
-      "instruction": "Match each NLP task with its application.",
+      "instruction": "Match each NLP task with a suitable application.",
       "content": {
-        "concept": "Sentiment analysis, text classification, named entity recognition, translation, and summarization solve different language tasks.",
+        "concept": "Different NLP tasks process language for different goals, including classification, entity extraction, translation, and summarization.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Sentiment Analysis → Determine whether text expresses positive, negative, or other sentiment",
+            "Text Classification → Assign text to predefined categories",
+            "Named Entity Recognition → Identify people, organizations, locations, and other entities",
+            "Machine Translation → Convert text from one language to another",
+            "Text Summarization → Produce a shorter representation of longer text"
+          ],
+          "answer": "Sentiment Analysis → Determine whether text expresses positive, negative, or other sentiment"
         }
       }
     },
@@ -76,9 +92,9 @@
       "id": "d19-a4",
       "type": "discover",
       "title": "Build Text Features",
-      "instruction": "Compose the steps for converting text into features.",
+      "instruction": "Arrange the stages for converting raw text into machine-readable features.",
       "content": {
-        "concept": "Text can be represented numerically using approaches such as bag-of-words, TF-IDF, or learned embeddings.",
+        "concept": "Text can be represented numerically using methods such as bag-of-words, TF-IDF, or learned embeddings.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -86,9 +102,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Collect Text",
+            "Preprocess Text",
+            "Tokenize Text",
+            "Choose a Feature Representation",
+            "Create Numerical Features",
+            "Use Features for an NLP Model"
+          ],
+          "required": [
+            "Collect Text",
+            "Preprocess Text",
+            "Tokenize Text",
+            "Choose a Feature Representation",
+            "Create Numerical Features",
+            "Use Features for an NLP Model"
           ]
         }
       }

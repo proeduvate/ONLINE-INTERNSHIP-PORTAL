@@ -14,19 +14,36 @@
       "id": "d23-a1",
       "type": "discover",
       "title": "Responsive Pattern Map",
-      "instruction": "Explore how interface patterns adapt across devices.",
+      "instruction": "Explore how layout, navigation, content, and controls adapt across device sizes.",
       "content": {
         "concept": "Responsive design adapts layouts, navigation, controls, and content priorities to different screen sizes and contexts.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Select each pattern to compare its mobile, tablet, and desktop behavior."
       },
       "interaction": {
         "mode": "semantic-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Navigation",
+              "description": "Desktop navigation may collapse into a menu or bottom navigation on smaller screens."
+            },
+            {
+              "label": "Content Layout",
+              "description": "Multi-column layouts can become a single-column mobile layout."
+            },
+            {
+              "label": "Images",
+              "description": "Images can resize or crop differently based on available space."
+            },
+            {
+              "label": "Controls",
+              "description": "Controls should remain usable and appropriately sized on touch devices."
+            },
+            {
+              "label": "Typography",
+              "description": "Text sizes and line lengths can adapt to maintain readability."
+            }
           ]
         }
       }
@@ -35,16 +52,47 @@
       "id": "d23-a2",
       "type": "discover",
       "title": "Mobile Navigation Lab",
-      "instruction": "Select the navigation pattern for each mobile task.",
+      "instruction": "Select an appropriate navigation pattern for each mobile task.",
       "content": {
         "concept": "Mobile navigation patterns should prioritize frequently used tasks while keeping important destinations discoverable.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Consider frequency, discoverability, available space, and task importance."
       },
       "interaction": {
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "A mobile app has five frequently used primary destinations.",
+              "options": [
+                "Bottom navigation",
+                "Deep hamburger menu",
+                "Footer links"
+              ],
+              "correctAnswer": "Bottom navigation",
+              "explanation": "Frequently used primary destinations can remain accessible through bottom navigation."
+            },
+            {
+              "question": "An app contains many secondary settings that users access occasionally.",
+              "options": [
+                "Menu or settings hierarchy",
+                "Bottom navigation for every setting",
+                "Floating button for every setting"
+              ],
+              "correctAnswer": "Menu or settings hierarchy",
+              "explanation": "Secondary destinations can be grouped to avoid overwhelming primary navigation."
+            },
+            {
+              "question": "A mobile task requires users to switch frequently between two major sections.",
+              "options": [
+                "Persistent navigation",
+                "Hide both sections in deep menus",
+                "Remove navigation"
+              ],
+              "correctAnswer": "Persistent navigation",
+              "explanation": "Frequent switching benefits from easy access to the relevant destinations."
+            }
+          ]
         }
       }
     },
@@ -52,19 +100,26 @@
       "id": "d23-a3",
       "type": "discover",
       "title": "Breakpoint Builder",
-      "instruction": "Adapt the layout across screen sizes.",
+      "instruction": "Arrange how a layout should adapt from mobile to tablet and desktop.",
       "content": {
         "concept": "Breakpoints allow layouts to reorganize when available space changes significantly.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Focus on structural changes rather than simply shrinking every element."
       },
       "interaction": {
         "mode": "build",
         "family": "builder",
         "config": {
-          "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+          "items": [
+            "Mobile: Single Column",
+            "Tablet: Wider Content + Optional Sidebar",
+            "Desktop: Multi-Column Layout",
+            "Desktop: Expanded Navigation"
+          ],
+          "correctOrder": [
+            "Mobile: Single Column",
+            "Tablet: Wider Content + Optional Sidebar",
+            "Desktop: Multi-Column Layout",
+            "Desktop: Expanded Navigation"
           ]
         }
       }
@@ -73,18 +128,38 @@
       "id": "d23-a4",
       "type": "discover",
       "title": "Touch Target Lab",
-      "instruction": "Adjust control sizes for comfortable interaction.",
+      "instruction": "Adjust the control size and spacing to create a comfortable touch interface.",
       "content": {
         "concept": "Touch interfaces require controls with sufficient size and spacing to support accurate interaction on smaller screens.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Increase target size and spacing when controls are difficult to tap accurately."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 24,
+          "max": 64,
+          "default": 44,
+          "unit": "px",
+          "labels": [
+            "Small",
+            "Comfortable",
+            "Large"
+          ],
+          "scenarios": [
+            {
+              "value": 24,
+              "description": "Small target that may be difficult to tap accurately."
+            },
+            {
+              "value": 44,
+              "description": "Comfortable target size for many touch interactions."
+            },
+            {
+              "value": 64,
+              "description": "Large target with generous interaction area."
+            }
+          ]
         }
       }
     }

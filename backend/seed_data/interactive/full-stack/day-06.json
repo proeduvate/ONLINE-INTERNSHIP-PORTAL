@@ -14,19 +14,28 @@
       "id": "d6-a1",
       "type": "discover",
       "title": "DOM Tree Explorer",
-      "instruction": "Click elements to reveal their DOM relationships.",
+      "instruction": "Click each node to explore its relationship in the DOM tree.",
       "content": {
-        "concept": "The DOM represents an HTML document as a hierarchical tree of elements and nodes.",
+        "concept": "The DOM represents an HTML document as a hierarchical tree of nodes, where elements can contain child elements and can be accessed or modified with JavaScript.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
-        "family": "anatomy",
+        "mode": "dom-tree",
+        "family": "click-map",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "document",
+            "html",
+            "body",
+            "main",
+            "button"
+          ],
+          "descriptions": [
+            "The root object representing the entire HTML document.",
+            "The root HTML element containing head and body.",
+            "Contains the visible content of the webpage.",
+            "Groups the primary content of the page.",
+            "An interactive element that can be selected and modified with JavaScript."
           ]
         }
       }
@@ -35,19 +44,21 @@
       "id": "d6-a2",
       "type": "discover",
       "title": "Event Flow Builder",
-      "instruction": "Arrange the steps of a browser event.",
+      "instruction": "Arrange the steps from a user action to a UI update.",
       "content": {
-        "concept": "Browser events connect user actions such as clicks and input changes to JavaScript handlers.",
+        "concept": "An event-driven interface responds to user actions by detecting an event, running a handler, and updating the DOM when necessary.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "event-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. User clicks a button",
+            "2. Browser dispatches the click event",
+            "3. Event listener runs the handler",
+            "4. Handler changes application or DOM data",
+            "5. Browser displays the updated interface"
           ]
         }
       }
@@ -55,17 +66,21 @@
     {
       "id": "d6-a3",
       "type": "discover",
-      "title": "Form Validation Lab",
-      "instruction": "Select the correct validation rule for each field.",
+      "title": "Validation Rule Selector",
+      "instruction": "Choose the validation rule that best fits each form field.",
       "content": {
-        "concept": "Client-side validation checks user input before data is submitted to the server.",
+        "concept": "Client-side validation checks whether submitted values satisfy rules such as required fields, valid email formats, minimum lengths, and numeric ranges before sending data to the server.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "validation-choice",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Email field → require a valid email format",
+            "Email field → require a minimum numeric value"
+          ],
+          "answer": "Email field → require a valid email format"
         }
       }
     },
@@ -73,19 +88,28 @@
       "id": "d6-a4",
       "type": "discover",
       "title": "Interactive Form Builder",
-      "instruction": "Build a form using fields, events, and validation.",
+      "instruction": "Build a form flow using inputs, an event handler, validation, and feedback.",
       "content": {
-        "concept": "Interactive forms combine HTML inputs, DOM updates, event handlers, and validation logic.",
+        "concept": "An interactive form combines input elements with event handling, validation logic, and DOM updates to provide immediate feedback to users.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "form-flow",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Name input",
+            "Email input",
+            "Submit event",
+            "Validate input",
+            "Display feedback"
+          ],
+          "required": [
+            "Name input",
+            "Email input",
+            "Submit event",
+            "Validate input",
+            "Display feedback"
           ]
         }
       }

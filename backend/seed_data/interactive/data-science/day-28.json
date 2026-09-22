@@ -14,9 +14,9 @@
       "id": "d28-a1",
       "type": "discover",
       "title": "Problem Definition",
-      "instruction": "Match project goals to measurable outcomes.",
+      "instruction": "Match project requirements with measurable success criteria.",
       "content": {
-        "concept": "A strong data science project starts with a clearly defined problem, target, constraints, and success metric.",
+        "concept": "A strong data science project starts with a clearly defined problem, target outcome, constraints, and measurable success criteria.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,13 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Business Problem → Clearly describe what needs to be solved",
+            "Target Variable → Define what the model should predict",
+            "Success Metric → Define how the solution will be evaluated",
+            "Constraints → Identify limitations such as time, cost, data, or latency",
+            "Acceptance Criteria → Define conditions that indicate the solution meets requirements"
+          ],
+          "answer": "Success Metric → Define how the solution will be evaluated"
         }
       }
     },
@@ -34,16 +38,33 @@
       "id": "d28-a2",
       "type": "discover",
       "title": "Capstone Architecture",
-      "instruction": "Arrange the major project components.",
+      "instruction": "Explore how the major components of a data science solution connect.",
       "content": {
-        "concept": "A data science architecture connects data sources, processing, feature engineering, models, and outputs.",
+        "concept": "A data science architecture connects data sources, ingestion, processing, feature engineering, models, APIs, and user-facing outputs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "architecture",
-        "family": "lab",
+        "family": "click-map",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "items": [
+            "Data Sources",
+            "Data Ingestion",
+            "Data Processing",
+            "Feature Engineering",
+            "ML Model",
+            "Prediction API",
+            "Application or Dashboard"
+          ],
+          "descriptions": [
+            "Provide raw information such as files, databases, APIs, or sensors.",
+            "Collects data into the processing system.",
+            "Cleans, validates, and transforms the data.",
+            "Creates or selects features for the model.",
+            "Generates predictions or analytical outputs.",
+            "Exposes model predictions to applications.",
+            "Presents predictions, insights, or results to users."
+          ]
         }
       }
     },
@@ -51,9 +72,9 @@
       "id": "d28-a3",
       "type": "discover",
       "title": "Pipeline Builder",
-      "instruction": "Build the end-to-end data workflow.",
+      "instruction": "Build the end-to-end workflow from raw data to prediction.",
       "content": {
-        "concept": "An end-to-end pipeline transforms raw data into validated predictions or analytical insights.",
+        "concept": "An end-to-end pipeline transforms raw data into validated model predictions or analytical insights.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -61,9 +82,22 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Collect Data",
+            "Validate and Clean Data",
+            "Explore Data",
+            "Engineer Features",
+            "Train Model",
+            "Evaluate Model",
+            "Deploy Model",
+            "Generate Predictions"
+          ],
+          "required": [
+            "Collect Data",
+            "Validate and Clean Data",
+            "Engineer Features",
+            "Train Model",
+            "Evaluate Model",
+            "Generate Predictions"
           ]
         }
       }
@@ -72,9 +106,9 @@
       "id": "d28-a4",
       "type": "discover",
       "title": "Component Sequence",
-      "instruction": "Order the capstone implementation stages.",
+      "instruction": "Order the main stages of capstone implementation.",
       "content": {
-        "concept": "A structured implementation sequence reduces integration issues and keeps development measurable.",
+        "concept": "A structured implementation sequence helps integrate components while keeping development and evaluation measurable.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -82,9 +116,14 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Define Problem and Success Criteria",
+            "2. Collect and Validate Data",
+            "3. Explore and Prepare Data",
+            "4. Build Features",
+            "5. Train and Evaluate Model",
+            "6. Integrate Prediction Component",
+            "7. Test End-to-End Pipeline",
+            "8. Deploy the Solution"
           ]
         }
       }

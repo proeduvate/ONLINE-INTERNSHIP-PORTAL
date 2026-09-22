@@ -14,19 +14,28 @@
       "id": "d8-a1",
       "type": "discover",
       "title": "OOP Concept Map",
-      "instruction": "Connect OOP concepts to their roles.",
+      "instruction": "Explore the main concepts used in Python object-oriented programming.",
       "content": {
-        "concept": "Object-oriented programming organizes software around objects that combine data and behavior.",
+        "concept": "OOP organizes programs around objects that combine state and behavior. Classes define the structure and behavior that objects can have.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Class",
+            "Object",
+            "Encapsulation",
+            "Inheritance",
+            "Polymorphism"
+          ],
+          "descriptions": [
+            "Blueprint that defines attributes and methods.",
+            "An instance created from a class.",
+            "Combines data and behavior while controlling how implementation details are accessed.",
+            "Allows a class to reuse or extend behavior from another class.",
+            "Allows the same interface or method call to produce different behavior for different objects."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d8-a2",
       "type": "discover",
       "title": "Class Anatomy",
-      "instruction": "Explore the components of a Python class.",
+      "instruction": "Explore the parts of a Python class.",
       "content": {
-        "concept": "A class defines attributes and methods that describe the state and behavior of objects.",
+        "concept": "A class can contain class attributes, instance attributes, methods, and an initializer such as __init__ for setting initial object state.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "    def introduce(self):",
+            "        return f\"I am {self.name}\""
+          ],
+          "descriptions": [
+            "Defines the Student class.",
+            "Initializer method that runs when a Student object is created.",
+            "Stores name as instance state.",
+            "Defines behavior that can be called on a Student object.",
+            "Uses the object's state to produce a result."
           ]
         }
       }
@@ -56,9 +74,9 @@
       "id": "d8-a3",
       "type": "discover",
       "title": "Object Builder",
-      "instruction": "Construct objects from a class.",
+      "instruction": "Build an object from a Python class.",
       "content": {
-        "concept": "Objects are instances of classes and can maintain their own state.",
+        "concept": "Calling a class creates an object. Constructor arguments can initialize the object's instance attributes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +84,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "student = Student(\"Maya\")",
+            "student.name",
+            "import math"
+          ],
+          "required": [
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "student = Student(\"Maya\")"
           ]
         }
       }
@@ -76,20 +103,23 @@
     {
       "id": "d8-a4",
       "type": "discover",
-      "title": "OOP Principle Match",
-      "instruction": "Match each example to an OOP principle.",
+      "title": "OOP Principle Explorer",
+      "instruction": "Choose the OOP principle illustrated by each scenario.",
       "content": {
-        "concept": "Encapsulation, inheritance, and polymorphism support reusable and organized object-oriented designs.",
+        "concept": "Encapsulation controls access to implementation details, inheritance reuses or extends existing behavior, and polymorphism allows common interfaces to work with different implementations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "Inheritance",
+            "Encapsulation",
+            "Polymorphism",
+            "Object instantiation"
+          ],
+          "answer": "Inheritance"
         }
       }
     }

@@ -13,53 +13,112 @@
     {
       "id": "d21-a1",
       "type": "discover",
-      "title": "JPA Architecture Map",
-      "instruction": "Map the persistence components together.",
+      "title": "JPA Persistence Architecture",
+      "instruction": "Explore how application objects reach the database.",
       "content": {
-        "concept": "Spring Data JPA connects application entities and repositories with relational database persistence through JPA providers such as Hibernate.",
+        "concept": "Spring Data JPA provides repository abstractions over JPA, while Hibernate is a commonly used JPA provider that handles object-relational mapping between Java entities and relational database data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Spring Boot Application",
+            "Spring Data Repository",
+            "JPA",
+            "Hibernate",
+            "Relational Database"
+          ],
+          "descriptions": [
+            "Contains the application logic that uses persistent data.",
+            "Provides repository abstractions for common persistence operations.",
+            "Defines standard APIs and annotations for object-relational persistence.",
+            "Implements JPA functionality and maps entity objects to relational data.",
+            "Stores persistent records in tables and relationships."
+          ]
+        }
       }
     },
     {
       "id": "d21-a2",
       "type": "discover",
-      "title": "Entity Anatomy",
-      "instruction": "Explore the parts of a JPA entity.",
+      "title": "JPA Entity Anatomy",
+      "instruction": "Explore the important parts of a JPA entity.",
       "content": {
-        "concept": "A JPA entity maps a Java class to persistent data using annotations such as Entity and Id.",
+        "concept": "A JPA entity is a Java class mapped to persistent data. Common annotations identify the entity and its primary key, while fields represent persistent attributes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@Entity",
+            "Class",
+            "@Id",
+            "Entity Field",
+            "Constructor"
+          ],
+          "descriptions": [
+            "Marks the class as a JPA entity.",
+            "Defines the Java object whose instances can be persisted.",
+            "Identifies the entity's primary-key field.",
+            "Represents persistent data such as name, email, or age.",
+            "Provides a constructor that JPA can use when creating entity instances."
+          ]
+        }
       }
     },
     {
       "id": "d21-a3",
       "type": "discover",
       "title": "Repository Builder",
-      "instruction": "Build a repository for the entity.",
+      "instruction": "Build a Spring Data repository for an entity.",
       "content": {
-        "concept": "Spring Data repositories provide ready-to-use persistence operations and support derived query methods.",
+        "concept": "Spring Data repositories provide ready-to-use persistence operations such as saving, finding, and deleting entities. Repository interfaces can also define derived query methods.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "public interface UserRepository",
+            "extends JpaRepository<User, Long>",
+            "findByEmail(String email)",
+            "save(user)",
+            "deleteById(id)",
+            "implements Runnable"
+          ],
+          "required": [
+            "public interface UserRepository",
+            "extends JpaRepository<User, Long>"
+          ]
+        }
       }
     },
     {
       "id": "d21-a4",
       "type": "discover",
-      "title": "CRUD Flow",
-      "instruction": "Arrange the CRUD operations correctly.",
+      "title": "JPA CRUD Operations",
+      "instruction": "Arrange a basic persistence workflow.",
       "content": {
-        "concept": "A persistence workflow can create, retrieve, update, and delete entity data through repository operations.",
+        "concept": "Spring Data JPA repositories expose operations for creating or updating entities, retrieving them, and deleting them from persistent storage.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create or modify an entity object",
+            "2. Save the entity through the repository",
+            "3. Retrieve entity data with a repository query",
+            "4. Modify the retrieved entity when needed",
+            "5. Delete the entity through the repository when required"
+          ]
+        }
       }
     }
   ],

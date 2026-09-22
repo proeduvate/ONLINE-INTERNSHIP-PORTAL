@@ -14,9 +14,9 @@
       "id": "d7-a1",
       "type": "discover",
       "title": "Explore Central Tendency",
-      "instruction": "Adjust the dataset and observe mean, median, and mode.",
+      "instruction": "Adjust the dataset and observe how mean, median, and mode respond.",
       "content": {
-        "concept": "Mean, median, and mode describe the central tendency of a dataset from different perspectives.",
+        "concept": "Mean, median, and mode describe the center of a dataset from different perspectives.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -33,9 +33,9 @@
       "id": "d7-a2",
       "type": "discover",
       "title": "Anatomy of Standard Deviation",
-      "instruction": "Explore each component of the calculation.",
+      "instruction": "Explore the components involved in measuring data spread.",
       "content": {
-        "concept": "Standard deviation measures how widely values are distributed around the mean.",
+        "concept": "Standard deviation measures the typical spread of values around the mean.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -43,9 +43,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Dataset",
+            "Mean",
+            "Deviation from Mean",
+            "Squared Deviation",
+            "Variance",
+            "Standard Deviation"
+          ],
+          "descriptions": [
+            "The collection of numerical observations being analyzed.",
+            "The arithmetic average of the observations.",
+            "The difference between an observation and the mean.",
+            "The squared difference used when calculating variance.",
+            "The average of the squared deviations.",
+            "The square root of variance, expressed in the original units."
           ]
         }
       }
@@ -54,9 +65,9 @@
       "id": "d7-a3",
       "type": "discover",
       "title": "Match Statistics to Meaning",
-      "instruction": "Match each statistic with its interpretation.",
+      "instruction": "Match each statistical measure with what it describes.",
       "content": {
-        "concept": "Range, variance, standard deviation, percentiles, and quartiles describe different aspects of data distribution.",
+        "concept": "Range, variance, standard deviation, percentiles, and quartiles describe different aspects of a data distribution.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,8 +75,13 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
+            "Mean → Arithmetic average",
+            "Median → Middle value after ordering",
+            "Range → Difference between maximum and minimum",
+            "Variance → Average squared deviation from the mean",
+            "Standard Deviation → Typical spread around the mean",
+            "Percentile → Value below which a specified percentage of observations fall",
+            "Quartile → Divides ordered data into four parts"
           ]
         }
       }
@@ -74,7 +90,7 @@
       "id": "d7-a4",
       "type": "discover",
       "title": "Build a Statistical Summary",
-      "instruction": "Select the measures needed to summarize the dataset.",
+      "instruction": "Select the measures needed to summarize the center and spread of a dataset.",
       "content": {
         "concept": "A statistical summary provides compact information about the center, spread, and distribution of numerical data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -84,9 +100,23 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Count",
+            "Mean",
+            "Median",
+            "Minimum",
+            "Maximum",
+            "Standard Deviation",
+            "Quartiles",
+            "Unrelated Text Field"
+          ],
+          "required": [
+            "Count",
+            "Mean",
+            "Median",
+            "Minimum",
+            "Maximum",
+            "Standard Deviation",
+            "Quartiles"
           ]
         }
       }

@@ -13,53 +13,112 @@
     {
       "id": "d26-a1",
       "type": "discover",
-      "title": "Cloud Deployment Map",
-      "instruction": "Map the application deployment components.",
+      "title": "Cloud Deployment Architecture",
+      "instruction": "Explore the major components involved in deploying a Java application.",
       "content": {
-        "concept": "Cloud deployment moves an application from source code to a managed runtime environment accessible through a network.",
+        "concept": "Cloud deployment places an application artifact or container into a managed runtime environment and connects it to required configuration, databases, networking, and external services.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Source Repository",
+            "Build Artifact",
+            "Cloud Runtime",
+            "Environment Configuration",
+            "Database",
+            "Application URL"
+          ],
+          "descriptions": [
+            "Stores the Java application's source code.",
+            "Contains the packaged application or container image prepared for deployment.",
+            "Runs the deployed Java application in the cloud environment.",
+            "Provides environment-specific values such as URLs, ports, and secrets.",
+            "Stores persistent application data when the application requires a database.",
+            "Provides the network address through which clients access the application."
+          ]
+        }
       }
     },
     {
       "id": "d26-a2",
       "type": "discover",
-      "title": "Configuration Selector",
-      "instruction": "Select where each setting belongs.",
+      "title": "Configuration Strategy",
+      "instruction": "Choose the appropriate place for environment-specific configuration.",
       "content": {
-        "concept": "Environment-specific values such as database URLs and credentials should be supplied through external configuration rather than hardcoded in source code.",
+        "concept": "Values that differ between environments should be externalized. Sensitive values such as database credentials should not be hardcoded into source code or committed to version control.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Store production database credentials in the deployment platform's secret or environment configuration",
+            "Commit production database passwords directly into application source code",
+            "Use one hardcoded database URL for development and production",
+            "Store API secrets in a public README file"
+          ],
+          "answer": "Store production database credentials in the deployment platform's secret or environment configuration"
+        }
       }
     },
     {
       "id": "d26-a3",
       "type": "discover",
-      "title": "Deployment Pipeline",
-      "instruction": "Arrange the cloud deployment stages.",
+      "title": "Cloud Deployment Pipeline",
+      "instruction": "Arrange the main stages of a cloud deployment.",
       "content": {
-        "concept": "A deployment flow commonly builds an artifact or image, configures the environment, starts the application, and verifies its availability.",
+        "concept": "A deployment workflow prepares a verified application artifact, configures the target environment, starts the application, and verifies that the deployed service is available.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Build and verify the Java application",
+            "2. Create or select the deployable artifact",
+            "3. Configure environment variables and secrets",
+            "4. Deploy the artifact to the cloud runtime",
+            "5. Start the application",
+            "6. Verify the deployed endpoint"
+          ]
+        }
       }
     },
     {
       "id": "d26-a4",
       "type": "discover",
-      "title": "Environment Builder",
-      "instruction": "Build a production configuration.",
+      "title": "Environment Configuration Builder",
+      "instruction": "Build a production configuration without hardcoding secrets.",
       "content": {
-        "concept": "Externalized configuration allows the same application artifact to run with different settings across environments.",
+        "concept": "The same application artifact can run in different environments when environment-specific settings are supplied externally.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "SPRING_PROFILES_ACTIVE=prod",
+            "DATABASE_URL",
+            "DATABASE_USERNAME",
+            "DATABASE_PASSWORD",
+            "External secret configuration",
+            "Hardcoded production password in Java source",
+            "Production credentials committed to Git"
+          ],
+          "required": [
+            "SPRING_PROFILES_ACTIVE=prod",
+            "DATABASE_URL",
+            "DATABASE_USERNAME",
+            "DATABASE_PASSWORD",
+            "External secret configuration"
+          ]
+        }
       }
     }
   ],

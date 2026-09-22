@@ -14,7 +14,7 @@
       "id": "d27-a1",
       "type": "discover",
       "title": "MLOps Lifecycle",
-      "instruction": "Map the stages of an ML lifecycle.",
+      "instruction": "Explore the stages of a repeatable machine learning lifecycle.",
       "content": {
         "concept": "MLOps organizes model development, deployment, monitoring, and maintenance into a repeatable lifecycle.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,22 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Data Preparation",
+            "Experimentation",
+            "Model Training",
+            "Model Validation",
+            "Deployment",
+            "Monitoring",
+            "Model Maintenance"
+          ],
+          "descriptions": [
+            "Prepare reliable data for model development.",
+            "Run and compare different experiments.",
+            "Train models using selected data and configurations.",
+            "Evaluate models against predefined criteria.",
+            "Make an approved model available to applications.",
+            "Track model behavior and system performance in production.",
+            "Update, retrain, or replace models when required."
           ]
         }
       }
@@ -35,9 +48,9 @@
       "id": "d27-a2",
       "type": "discover",
       "title": "Experiment Anatomy",
-      "instruction": "Identify what belongs in an experiment record.",
+      "instruction": "Identify the information that should be recorded for a machine learning experiment.",
       "content": {
-        "concept": "Experiment records can contain parameters, metrics, datasets, code versions, and model artifacts.",
+        "concept": "Experiment records can contain parameters, metrics, datasets, code versions, environment details, and model artifacts.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +58,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Experiment ID",
+            "Dataset Version",
+            "Hyperparameters",
+            "Evaluation Metrics",
+            "Code Version",
+            "Model Artifact"
+          ],
+          "descriptions": [
+            "Uniquely identifies a particular experiment run.",
+            "Identifies which dataset or data snapshot was used.",
+            "Records values such as learning rate or tree depth.",
+            "Stores results such as accuracy, F1, MAE, or RMSE.",
+            "Identifies the source-code version used for the run.",
+            "Stores the trained model produced by the experiment."
           ]
         }
       }
@@ -55,8 +79,8 @@
     {
       "id": "d27-a3",
       "type": "discover",
-      "title": "Version Control Lab",
-      "instruction": "Match model versions to their changes.",
+      "title": "Version Control Explorer",
+      "instruction": "Match each model version to the change that produced it.",
       "content": {
         "concept": "Model versioning allows teams to identify, compare, reproduce, and roll back model releases.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -66,9 +90,12 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Model v1 → Initial trained model",
+            "Model v2 → Retrained using a newer dataset",
+            "Model v3 → Updated after hyperparameter tuning",
+            "Model v4 → Updated preprocessing pipeline"
+          ],
+          "answer": "Model v1 → Initial trained model"
         }
       }
     },
@@ -76,9 +103,9 @@
       "id": "d27-a4",
       "type": "discover",
       "title": "Reproducible Workflow",
-      "instruction": "Build a repeatable experiment workflow.",
+      "instruction": "Build a workflow that allows an experiment to be reproduced later.",
       "content": {
-        "concept": "Reproducibility requires consistent data, code, configuration, tracking, and evaluation.",
+        "concept": "Reproducibility requires consistent data, code, configuration, environment, experiment tracking, and evaluation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -86,9 +113,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Version the Dataset",
+            "Version the Source Code",
+            "Record Configuration and Hyperparameters",
+            "Run the Experiment",
+            "Track Metrics",
+            "Store the Model Artifact",
+            "Record the Environment"
+          ],
+          "required": [
+            "Version the Dataset",
+            "Version the Source Code",
+            "Record Configuration and Hyperparameters",
+            "Track Metrics",
+            "Store the Model Artifact"
           ]
         }
       }

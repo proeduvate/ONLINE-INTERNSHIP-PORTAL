@@ -12,59 +12,101 @@
   "activities": [
     {
       "id": "d28-a1",
-      "type": "discover",
+      "type": "click-map",
       "title": "Requirement Map",
-      "instruction": "Connect project requirements to system components.",
+      "instruction": "Explore how requirements map to system components.",
       "content": {
-        "concept": "System design begins by mapping functional requirements to the components responsible for delivering them.",
+        "concept": "System design begins by translating functional and non-functional requirements into components and responsibilities.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "User Requirements",
+            "API Layer",
+            "Application Services",
+            "Domain Logic",
+            "Data Layer",
+            "External Integrations"
+          ],
+          "descriptions": [
+            "Describe what users need the system to accomplish and any important constraints.",
+            "Defines how clients communicate with the application through endpoints and request/response contracts.",
+            "Coordinates application workflows and use cases.",
+            "Contains business rules and core concepts of the application.",
+            "Handles persistence and communication with databases or repositories.",
+            "Connects the application to external APIs, services, storage, or other systems."
           ]
         }
       }
     },
     {
       "id": "d28-a2",
-      "type": "discover",
-      "title": "System Architecture",
-      "instruction": "Assemble the major capstone components.",
+      "type": "builder",
+      "title": "System Architecture Builder",
+      "instruction": "Assemble a modular architecture for the capstone.",
       "content": {
-        "concept": "A Python application can be divided into interfaces, application services, domain logic, persistence, and external integrations.",
+        "concept": "A modular Python application separates responsibilities so individual components can be developed, tested, and changed with fewer unintended effects.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "builder",
+        "family": "builder",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "options": [
+            "API routes",
+            "Request and response schemas",
+            "Application services",
+            "Domain models and business rules",
+            "Repository or data-access layer",
+            "Database",
+            "External service adapters",
+            "Configuration and environment management"
+          ],
+          "required": [
+            "API routes",
+            "Request and response schemas",
+            "Application services",
+            "Domain models and business rules",
+            "Repository or data-access layer",
+            "Database",
+            "External service adapters",
+            "Configuration and environment management"
+          ]
         }
       }
     },
     {
       "id": "d28-a3",
-      "type": "discover",
-      "title": "API Design Lab",
-      "instruction": "Build endpoints for the project requirements.",
+      "type": "builder",
+      "title": "API Design Builder",
+      "instruction": "Compose the essential parts of a REST endpoint.",
       "content": {
-        "concept": "API design translates application capabilities into clear resources, operations, inputs, and responses.",
+        "concept": "A well-designed API endpoint defines a resource, HTTP operation, path, input contract, and predictable response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "HTTP method",
+            "Resource path",
+            "Request schema",
+            "Authentication requirement",
+            "Business operation",
+            "Success response",
+            "Error response"
+          ],
+          "required": [
+            "HTTP method",
+            "Resource path",
+            "Request schema",
+            "Business operation",
+            "Success response",
+            "Error response"
           ]
         }
       }
@@ -72,17 +114,23 @@
     {
       "id": "d28-a4",
       "type": "discover",
-      "title": "Architecture Decision Lab",
-      "instruction": "Select components for each project constraint.",
+      "title": "Architecture Decision Selector",
+      "instruction": "Choose the design decision that best addresses the stated requirement.",
       "content": {
-        "concept": "Architecture decisions should consider requirements such as maintainability, security, scalability, and deployment needs.",
+        "concept": "Architecture decisions should be based on project requirements, constraints, security, maintainability, performance, and expected scale.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Use a repository/data-access layer to isolate database operations",
+            "Put all SQL queries directly inside API route functions",
+            "Store database passwords directly in source code",
+            "Make every module responsible for every application concern"
+          ],
+          "answer": "Use a repository/data-access layer to isolate database operations"
         }
       }
     }

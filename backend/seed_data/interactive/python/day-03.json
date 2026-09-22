@@ -14,9 +14,9 @@
       "id": "d3-a1",
       "type": "discover",
       "title": "Loop Anatomy",
-      "instruction": "Explore the parts of a Python loop.",
+      "instruction": "Explore the parts of a for loop.",
       "content": {
-        "concept": "Loops repeatedly execute a block of code while iterating over values or checking a condition.",
+        "concept": "A for loop iterates over items in an iterable. The loop variable receives each item and the indented body executes for each iteration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "for number in range(1, 4):",
+            "    print(number)",
+            "range(1, 4)",
+            "number"
+          ],
+          "descriptions": [
+            "Starts the loop and assigns each value from the iterable to number.",
+            "The indented loop body executes once for each iteration.",
+            "Produces the sequence 1, 2, 3.",
+            "Loop variable that receives the current value."
           ]
         }
       }
@@ -35,19 +42,20 @@
       "id": "d3-a2",
       "type": "discover",
       "title": "Iteration Sequence",
-      "instruction": "Order the steps of a loop execution.",
+      "instruction": "Order the steps of a for-loop execution.",
       "content": {
-        "concept": "Each loop iteration evaluates its control logic, executes the body, and moves to the next iteration.",
+        "concept": "A loop obtains the next value from its iterable, assigns it to the loop variable, executes the body, and continues until the iterable is exhausted.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Get the next value from the iterable",
+            "2. Assign the value to the loop variable",
+            "3. Execute the loop body",
+            "4. Repeat until no values remain"
           ]
         }
       }
@@ -56,9 +64,9 @@
       "id": "d3-a3",
       "type": "discover",
       "title": "Loop Builder",
-      "instruction": "Build a loop for the given task.",
+      "instruction": "Build a loop that prints the numbers 1 through 5.",
       "content": {
-        "concept": "for and while loops provide different approaches for repeating operations.",
+        "concept": "range() can generate a sequence of numbers for a for loop. The stop value is excluded.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +74,15 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "for number in range(1, 6):",
+            "    print(number)",
+            "for number in range(1, 5):",
+            "    print(number * 2)",
+            "while number < 5:"
+          ],
+          "required": [
+            "for number in range(1, 6):",
+            "    print(number)"
           ]
         }
       }
@@ -76,17 +90,23 @@
     {
       "id": "d3-a4",
       "type": "discover",
-      "title": "Loop Control Lab",
-      "instruction": "Select how each control statement changes execution.",
+      "title": "Loop Control Explorer",
+      "instruction": "Identify what break and continue do inside a loop.",
       "content": {
-        "concept": "break stops a loop, while continue skips the remaining code in the current iteration.",
+        "concept": "break terminates the loop immediately, while continue skips the remaining statements in the current iteration and proceeds to the next iteration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "break → stop the entire loop",
+            "continue → skip to the next iteration",
+            "break → skip only one statement",
+            "continue → stop the entire loop"
+          ],
+          "answer": "break → stop the entire loop"
         }
       }
     }

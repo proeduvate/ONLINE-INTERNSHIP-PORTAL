@@ -13,14 +13,24 @@
     {
       "id": "d2-a1",
       "type": "discover",
-      "title": "Input and Output Flow",
-      "instruction": "Arrange the input-processing-output steps.",
+      "title": "Input-Process-Output Flow",
+      "instruction": "Arrange the stages of a simple interactive Java program.",
       "content": {
-        "concept": "Interactive Java programs commonly receive input, process values, and display results.",
+        "concept": "A console program commonly reads input, stores or converts the value, processes it using program logic, and displays the result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "input-output-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Prompt the user",
+            "2. Read input with Scanner",
+            "3. Store or convert the value",
+            "4. Process the value",
+            "5. Display the result"
+          ]
+        }
       }
     },
     {
@@ -29,37 +39,83 @@
       "title": "Scanner Anatomy",
       "instruction": "Explore the parts of a Scanner input statement.",
       "content": {
-        "concept": "Scanner provides methods for reading different types of input from sources such as the console.",
+        "concept": "Scanner reads input from a source such as System.in. Methods such as nextInt(), nextDouble(), and nextLine() read different forms of input.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "scanner-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Scanner",
+            "System.in",
+            "scanner",
+            "nextInt()",
+            "int age ="
+          ],
+          "descriptions": [
+            "The Java utility class used for reading input.",
+            "The standard input stream, commonly connected to keyboard input.",
+            "The variable referencing the Scanner object.",
+            "Reads the next integer value.",
+            "Declares an integer variable and stores the value returned by nextInt()."
+          ]
+        }
       }
     },
     {
       "id": "d2-a3",
       "type": "discover",
       "title": "Condition Matcher",
-      "instruction": "Match each requirement with the correct condition.",
+      "instruction": "Choose the condition that correctly represents each requirement.",
       "content": {
-        "concept": "Conditional statements execute different code paths based on boolean expressions.",
+        "concept": "Conditional statements evaluate boolean expressions and select which block of code should execute.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "condition-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "age >= 18",
+            "score < 50",
+            "temperature == 30",
+            "name.equals(\"Java\")"
+          ],
+          "answer": "age >= 18"
+        }
       }
     },
     {
       "id": "d2-a4",
       "type": "discover",
       "title": "Decision Builder",
-      "instruction": "Build a conditional program from the given rules.",
+      "instruction": "Build an if-else structure from the given requirement.",
       "content": {
-        "concept": "A decision structure combines conditions and code blocks to select the appropriate execution path.",
+        "concept": "An if-else structure evaluates a condition and executes one block when it is true and another block when it is false.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "conditional-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "if",
+            "(marks >= 50)",
+            "{",
+            "System.out.println(\"Pass\");",
+            "}",
+            "else",
+            "System.out.println(\"Fail\");"
+          ],
+          "required": [
+            "if",
+            "(marks >= 50)",
+            "System.out.println(\"Pass\");",
+            "else",
+            "System.out.println(\"Fail\");"
+          ]
+        }
       }
     }
   ],

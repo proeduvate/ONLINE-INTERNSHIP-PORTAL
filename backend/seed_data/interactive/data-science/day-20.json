@@ -14,9 +14,9 @@
       "id": "d20-a1",
       "type": "discover",
       "title": "Map the End-to-End Workflow",
-      "instruction": "Connect every stage of the project lifecycle.",
+      "instruction": "Explore how the major stages of a data science project connect.",
       "content": {
-        "concept": "A complete data science workflow connects problem definition, data, analysis, modeling, evaluation, deployment, and monitoring.",
+        "concept": "A complete data science workflow connects problem definition, data collection, preparation, analysis, modeling, evaluation, deployment, and monitoring.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,24 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Problem Definition",
+            "Data",
+            "Data Preparation",
+            "Exploratory Analysis",
+            "Modeling",
+            "Evaluation",
+            "Deployment",
+            "Monitoring"
+          ],
+          "descriptions": [
+            "Define the question or business problem that needs to be solved.",
+            "Collect the relevant raw information required for analysis.",
+            "Clean, transform, and prepare data for analysis and modeling.",
+            "Explore distributions, relationships, patterns, and anomalies.",
+            "Train and configure a suitable statistical or machine learning model.",
+            "Measure model performance using appropriate validation methods and metrics.",
+            "Make the trained model available to an application or users.",
+            "Track system behavior, data changes, model performance, and operational issues."
           ]
         }
       }
@@ -35,16 +50,33 @@
       "id": "d20-a2",
       "type": "discover",
       "title": "Build a Model API",
-      "instruction": "Assemble the components of a prediction API.",
+      "instruction": "Assemble the components of a basic prediction API.",
       "content": {
-        "concept": "A model API receives structured input, applies preprocessing, performs inference, and returns a prediction response.",
+        "concept": "A model API receives structured input, applies the required preprocessing, runs model inference, and returns a prediction response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "architecture",
-        "family": "lab",
+        "family": "builder",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "options": [
+            "Client Application",
+            "API Endpoint",
+            "Input Validation",
+            "Preprocessing",
+            "Trained Model",
+            "Prediction",
+            "JSON Response"
+          ],
+          "required": [
+            "Client Application",
+            "API Endpoint",
+            "Input Validation",
+            "Preprocessing",
+            "Trained Model",
+            "Prediction",
+            "JSON Response"
+          ]
         }
       }
     },
@@ -52,9 +84,9 @@
       "id": "d20-a3",
       "type": "discover",
       "title": "Sequence Project Deployment",
-      "instruction": "Arrange the deployment steps correctly.",
+      "instruction": "Arrange the major steps for deploying a data science application.",
       "content": {
-        "concept": "Deployment involves packaging the application, configuring its environment, releasing it, testing the service, and monitoring operation.",
+        "concept": "Deployment involves packaging the application and model, configuring its environment, releasing the service, testing it, and monitoring its operation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +94,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Prepare the Application and Model",
+            "2. Define Dependencies and Configuration",
+            "3. Package the Application",
+            "4. Deploy the Service",
+            "5. Test the Deployed API",
+            "6. Monitor Performance and Errors",
+            "7. Maintain and Update the System"
           ]
         }
       }
@@ -73,16 +109,35 @@
       "id": "d20-a4",
       "type": "discover",
       "title": "Validate Production Readiness",
-      "instruction": "Select the components needed for deployment.",
+      "instruction": "Identify the components that support a reliable production data science system.",
       "content": {
-        "concept": "Production data science systems require reliable code, validated models, APIs, configuration, logging, and monitoring.",
+        "concept": "Production systems require validated models, reliable application code, secure configuration, input validation, logging, monitoring, and maintainable deployment processes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "build",
+        "family": "builder",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "options": [
+            "Validated Model",
+            "Input Validation",
+            "API Service",
+            "Configuration Management",
+            "Logging and Error Handling",
+            "Monitoring",
+            "Version Control",
+            "Documentation"
+          ],
+          "required": [
+            "Validated Model",
+            "Input Validation",
+            "API Service",
+            "Configuration Management",
+            "Logging and Error Handling",
+            "Monitoring",
+            "Version Control",
+            "Documentation"
+          ]
         }
       }
     }

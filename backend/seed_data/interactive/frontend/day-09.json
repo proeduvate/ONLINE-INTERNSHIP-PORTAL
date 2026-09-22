@@ -1,26 +1,97 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 9,
-  "topic": "Day 9 Topic for Frontend",
-  "version": 1,
+  "topic": "CSS Grid",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand grid tracks, rows, and columns",
+    "Place items within a CSS Grid",
+    "Use grid areas and responsive track definitions"
   ],
   "activities": [
     {
       "id": "d09-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "grid-builder",
+      "title": "Grid Builder",
+      "instruction": "Change the number of columns and gap size and observe how items fit into the grid.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand grid tracks, rows, and columns",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "grid-builder",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 4,
+          "default": 3
+        }
+      }
+    },
+    {
+      "id": "d09-a02",
+      "type": "areas",
+      "title": "Grid Areas",
+      "instruction": "Assign grid areas to create a header, main content, sidebar, and footer layout.",
+      "content": {
+        "concept": "Place items within a CSS Grid",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "grid-areas",
+        "family": "builder",
+        "config": {
+          "options": [
+            "grid-template-areas: \"header header\" \"main sidebar\" \"footer footer\"",
+            "header",
+            "main",
+            "sidebar",
+            "footer"
+          ],
+          "required": [
+            "header",
+            "main",
+            "sidebar",
+            "footer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d09-a03",
+      "type": "responsive",
+      "title": "Grid Breakpoint",
+      "instruction": "Change the simulated viewport width and observe when the grid changes from multiple columns to a single column.",
+      "content": {
+        "concept": "Use grid areas and responsive track definitions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "grid-responsive",
+        "family": "slider",
+        "config": {
+          "min": 320,
+          "max": 1440,
+          "default": 1024
+        }
+      }
+    },
+    {
+      "id": "d09-a04",
+      "type": "debug",
+      "title": "Grid Debugger",
+      "instruction": "Fix the overflowing grid by changing the track definition.",
+      "content": {
+        "concept": "Understand grid track sizing",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "grid-debug",
+        "family": "debug",
+        "config": {
+          "target": 3
+        }
       }
     }
   ],
@@ -31,7 +102,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

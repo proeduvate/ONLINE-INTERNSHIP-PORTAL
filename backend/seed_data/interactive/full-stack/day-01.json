@@ -14,16 +14,29 @@
       "id": "d1-a1",
       "type": "discover",
       "title": "Web Architecture Map",
-      "instruction": "Connect the main parts of the web.",
+      "instruction": "Explore the major parts of a web application and identify what each one does.",
       "content": {
-        "concept": "A web application connects clients, servers, APIs, databases, and networks to deliver functionality to users.",
+        "concept": "A web application connects a browser, network, server, application logic, APIs, and databases to deliver functionality.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "web-architecture",
+        "family": "click-map",
         "config": {
-          "code": "// sandbox"
+          "items": [
+            "Browser",
+            "DNS",
+            "Web Server",
+            "Application Server",
+            "Database"
+          ],
+          "descriptions": [
+            "Requests and displays web resources for the user.",
+            "Translates a domain name such as example.com into an IP address.",
+            "Receives HTTP requests and serves web resources or forwards requests.",
+            "Runs application logic and generates dynamic responses.",
+            "Stores and retrieves persistent application data."
+          ]
         }
       }
     },
@@ -31,19 +44,22 @@
       "id": "d1-a2",
       "type": "discover",
       "title": "Request Journey",
-      "instruction": "Arrange the request-response steps.",
+      "instruction": "Arrange the steps of a browser request from entering a URL to displaying the response.",
       "content": {
-        "concept": "A browser sends a request to a server, which processes it and returns a response that the browser renders.",
+        "concept": "A browser resolves the domain, sends an HTTP request to a server, receives a response, and renders the returned resources.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "request-journey",
         "family": "reorder",
         "config": {
           "goal": [
-            "Initialize browser",
-            "Process sends",
-            "Output request"
+            "1. User enters a URL",
+            "2. DNS resolves the domain",
+            "3. Browser sends an HTTP request",
+            "4. Server processes the request",
+            "5. Server sends an HTTP response",
+            "6. Browser renders the response"
           ]
         }
       }
@@ -52,39 +68,50 @@
       "id": "d1-a3",
       "type": "discover",
       "title": "Web Technology Match",
-      "instruction": "Match each technology to its role.",
+      "instruction": "Identify the role of each core web technology.",
       "content": {
-        "concept": "HTML structures content, CSS controls presentation, JavaScript adds behavior, and servers handle application logic and data.",
+        "concept": "HTML structures content, CSS controls presentation, JavaScript adds behavior, and servers and databases support application functionality and data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "technology-match",
         "family": "compare",
         "config": {
           "choices": [
-            "Standard structures",
-            "Optimized structures"
-          ]
+            "HTML → Structure",
+            "CSS → Presentation",
+            "JavaScript → Behavior",
+            "Server → Application logic",
+            "Database → Persistent data"
+          ],
+          "answer": "JavaScript → Behavior"
         }
       }
     },
     {
       "id": "d1-a4",
       "type": "discover",
-      "title": "HTTP Explorer",
-      "instruction": "Explore the parts of an HTTP request.",
+      "title": "HTTP Request Anatomy",
+      "instruction": "Explore the main parts of an HTTP request.",
       "content": {
-        "concept": "HTTP requests contain methods, URLs, headers, and optional bodies used to communicate with web servers.",
+        "concept": "HTTP requests contain a method, URL, headers, and sometimes a request body used to communicate with servers.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "http-request-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "requests",
-            "contain",
-            "methods"
+            "HTTP method",
+            "URL",
+            "Headers",
+            "Request body"
+          ],
+          "descriptions": [
+            "Specifies the intended operation, such as GET or POST.",
+            "Identifies the resource being requested.",
+            "Carries metadata such as content type or authentication information.",
+            "Contains data sent to the server, commonly with POST, PUT, or PATCH requests."
           ]
         }
       }

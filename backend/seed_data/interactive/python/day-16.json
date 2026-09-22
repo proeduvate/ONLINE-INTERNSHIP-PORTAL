@@ -14,19 +14,21 @@
       "id": "d16-a1",
       "type": "discover",
       "title": "FastAPI Request Flow",
-      "instruction": "Arrange the API request steps in order.",
+      "instruction": "Arrange the steps of a FastAPI request from arrival to response.",
       "content": {
-        "concept": "A FastAPI request flows through routing, validation, processing, and response generation.",
+        "concept": "A FastAPI request is routed to an endpoint, validated when a schema is defined, processed by the path operation function, and converted into a response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Client sends an HTTP request",
+            "2. FastAPI matches the route",
+            "3. FastAPI validates request data",
+            "4. Path operation function runs",
+            "5. FastAPI generates the response"
           ]
         }
       }
@@ -34,10 +36,10 @@
     {
       "id": "d16-a2",
       "type": "discover",
-      "title": "Route Anatomy",
-      "instruction": "Click each part to reveal its purpose.",
+      "title": "FastAPI Route Anatomy",
+      "instruction": "Click each part of the FastAPI endpoint to understand its role.",
       "content": {
-        "concept": "A FastAPI route connects an HTTP method and URL path to a Python function.",
+        "concept": "A FastAPI route combines an HTTP method, URL path, Python function, and response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +47,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "@app.get(\"/users/{user_id}\")",
+            "def get_user(user_id: int):",
+            "user_id: int",
+            "return {\"id\": user_id}"
+          ],
+          "descriptions": [
+            "Registers a GET endpoint and declares a path parameter.",
+            "Defines the Python function that handles the request.",
+            "Declares that the path parameter should be interpreted as an integer.",
+            "Returns response data that FastAPI can serialize as JSON."
           ]
         }
       }
@@ -55,20 +64,29 @@
     {
       "id": "d16-a3",
       "type": "discover",
-      "title": "Schema Builder",
-      "instruction": "Build a valid request schema from the components.",
+      "title": "Pydantic Schema Builder",
+      "instruction": "Build a valid Pydantic request model.",
       "content": {
-        "concept": "Pydantic models define and validate the structure and types of API data.",
+        "concept": "Pydantic models describe the expected structure and types of incoming data and allow FastAPI to validate request bodies.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "from pydantic import BaseModel",
+            "class UserCreate(BaseModel):",
+            "name: str",
+            "age: int",
+            "email: str"
+          ],
+          "required": [
+            "from pydantic import BaseModel",
+            "class UserCreate(BaseModel):",
+            "name: str",
+            "age: int",
+            "email: str"
           ]
         }
       }
@@ -76,20 +94,23 @@
     {
       "id": "d16-a4",
       "type": "discover",
-      "title": "HTTP Method Matcher",
-      "instruction": "Match each operation with its HTTP method.",
+      "title": "HTTP Method Selector",
+      "instruction": "Choose the HTTP method that best matches the operation.",
       "content": {
-        "concept": "GET, POST, PUT, PATCH, and DELETE represent different API operations.",
+        "concept": "REST APIs commonly use GET for retrieval, POST for creation, PUT or PATCH for updates, and DELETE for removal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+          ],
+          "answer": "POST"
         }
       }
     }

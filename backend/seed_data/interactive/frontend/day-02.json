@@ -1,26 +1,123 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 2,
-  "topic": "Day 2 Topic for Frontend",
-  "version": 1,
+  "topic": "Semantic HTML5",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand the meaning of semantic HTML elements",
+    "Choose appropriate semantic landmarks",
+    "Structure content accessibly using semantic elements"
   ],
   "activities": [
     {
       "id": "d02-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "compare",
+      "title": "Semantic or Generic?",
+      "instruction": "Compare the two structures and identify which one communicates the page structure more clearly.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand the meaning of semantic HTML elements",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "semantic-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "<div class=\"navigation\">...</div>",
+            "<nav>...</nav>"
+          ],
+          "answer": "<nav>...</nav>"
+        }
+      }
+    },
+    {
+      "id": "d02-a02",
+      "type": "click-map",
+      "title": "Landmark Map",
+      "instruction": "Click each landmark to learn what type of content belongs inside it.",
+      "content": {
+        "concept": "Choose appropriate semantic landmarks",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "<header>",
+            "<nav>",
+            "<main>",
+            "<section>",
+            "<article>",
+            "<aside>",
+            "<footer>"
+          ],
+          "descriptions": [
+            "Introductory content or a group of navigation links.",
+            "Contains primary navigation links.",
+            "Contains the primary content of the document.",
+            "Groups thematically related content.",
+            "Represents a self-contained piece of content.",
+            "Contains related but secondary content.",
+            "Contains closing information such as copyright or contact links."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d02-a03",
+      "type": "reorder",
+      "title": "Semantic Page Order",
+      "instruction": "Arrange the semantic elements into a sensible document structure.",
+      "content": {
+        "concept": "Structure content accessibly using semantic elements",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. <header>",
+            "2. <nav>",
+            "3. <main>",
+            "4. <section>",
+            "5. <footer>"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d02-a04",
+      "type": "guided-code",
+      "title": "Semantic Builder",
+      "instruction": "Choose the appropriate semantic element for each content block.",
+      "content": {
+        "concept": "Apply semantic HTML appropriately",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<header>",
+            "<nav>",
+            "<main>",
+            "<section>",
+            "<article>",
+            "<aside>",
+            "<footer>"
+          ],
+          "required": [
+            "<header>",
+            "<nav>",
+            "<main>",
+            "<section>",
+            "<footer>"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +128,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

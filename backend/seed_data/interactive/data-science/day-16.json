@@ -1,49 +1,71 @@
 {
-  "curriculum": "Data Science",
+  "curriculum": "AIML",
   "day": 16,
-  "topic": "Unsupervised Learning and Clustering",
+  "topic": "Deep Learning with TensorFlow and Keras",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Differentiate supervised and unsupervised learning problems.",
-    "Understand how clustering groups similar observations.",
-    "Apply clustering concepts to discover patterns in unlabeled data."
+    "Understand the basic workflow of building a neural network with Keras.",
+    "Identify layers, activation functions, loss functions, and optimizers.",
+    "Trace the training process of a neural network."
   ],
   "activities": [
     {
       "id": "d16-a1",
       "type": "discover",
-      "title": "Explore Unsupervised Learning",
-      "instruction": "Select the scenarios that use unlabeled data.",
+      "title": "Keras Model Anatomy",
+      "instruction": "Explore each component of a neural network and its purpose.",
       "content": {
-        "concept": "Unsupervised learning discovers patterns or structures in data without predefined target labels.",
+        "concept": "A Keras model is composed of layers that transform inputs into predictions, with activation functions controlling nonlinear transformations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "anatomy",
+        "family": "anatomy",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "items": [
+            "Input Layer",
+            "Dense Layer",
+            "Activation Function",
+            "Output Layer",
+            "Model"
+          ],
+          "descriptions": [
+            "Receives the input features supplied to the neural network.",
+            "A fully connected layer that transforms inputs using learned weights and biases.",
+            "Applies a nonlinear transformation to help the network learn complex patterns.",
+            "Produces the final prediction or output of the network.",
+            "Represents the complete collection of configured layers used for training and prediction."
+          ]
         }
       }
     },
     {
       "id": "d16-a2",
       "type": "discover",
-      "title": "Build Data Clusters",
-      "instruction": "Group the points according to their similarity.",
+      "title": "Build a Neural Network",
+      "instruction": "Assemble the components of a simple Keras neural network.",
       "content": {
-        "concept": "Clustering groups observations so that similar points are placed together based on their features.",
+        "concept": "Neural networks are built by connecting layers that progressively transform input representations into useful outputs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "architecture",
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Input Layer",
+            "Dense Layer",
+            "ReLU Activation",
+            "Output Layer",
+            "Connect Layers"
+          ],
+          "required": [
+            "Input Layer",
+            "Dense Layer",
+            "ReLU Activation",
+            "Output Layer",
+            "Connect Layers"
           ]
         }
       }
@@ -51,29 +73,34 @@
     {
       "id": "d16-a3",
       "type": "discover",
-      "title": "Explore K-Means",
-      "instruction": "Adjust the cluster count and observe the grouping.",
+      "title": "Training Configuration",
+      "instruction": "Identify the role of each component used to configure model training.",
       "content": {
-        "concept": "K-Means assigns observations to clusters around learned centroids and requires the number of clusters as an input.",
+        "concept": "Layers define the model structure, activation functions transform values, loss functions measure prediction error, optimizers update parameters, and metrics track performance.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
-        "family": "slider",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "choices": [
+            "Layer → Defines how information is transformed",
+            "Activation Function → Adds a nonlinear transformation",
+            "Loss Function → Measures prediction error",
+            "Optimizer → Updates model parameters to reduce loss",
+            "Metric → Tracks a chosen measure of model performance"
+          ],
+          "answer": "Loss Function → Measures prediction error"
         }
       }
     },
     {
       "id": "d16-a4",
       "type": "discover",
-      "title": "Sequence the Clustering Process",
-      "instruction": "Arrange the K-Means steps in order.",
+      "title": "Training Loop",
+      "instruction": "Arrange the stages of a neural network training cycle.",
       "content": {
-        "concept": "K-Means repeatedly assigns points to centroids and updates centroids until the clusters stabilize.",
+        "concept": "Training repeatedly performs forward passes, calculates loss, computes gradients, updates parameters, and repeats across batches and epochs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -81,9 +108,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Load a Batch of Training Data",
+            "2. Perform a Forward Pass",
+            "3. Calculate the Loss",
+            "4. Compute Gradients",
+            "5. Update Model Weights",
+            "6. Repeat for Subsequent Batches and Epochs"
           ]
         }
       }

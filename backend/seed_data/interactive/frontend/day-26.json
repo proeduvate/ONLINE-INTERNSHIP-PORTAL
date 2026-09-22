@@ -1,26 +1,105 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 26,
-  "topic": "Day 26 Topic for Frontend",
-  "version": 1,
+  "topic": "React Hooks",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand useEffect",
+    "Use dependencies",
+    "Recognize custom hooks"
   ],
   "activities": [
     {
       "id": "d26-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "useeffect",
+      "title": "Effect Execution Explorer",
+      "instruction": "Change the dependency configuration and identify when the effect executes.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand that useEffect runs after rendering according to its dependency configuration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "effect-execution",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Runs after every render",
+            "Runs once after the initial render",
+            "Runs when a listed dependency changes"
+          ],
+          "answer": "Runs when a listed dependency changes"
+        }
+      }
+    },
+    {
+      "id": "d26-a02",
+      "type": "dependency",
+      "title": "Dependency Array Lab",
+      "instruction": "Choose the dependency list that matches the values used by the effect.",
+      "content": {
+        "concept": "Use dependency arrays to tell React which values an effect depends on.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dependency-array",
+        "family": "builder",
+        "config": {
+          "options": [
+            "[]",
+            "[userId]",
+            "[userId, theme]",
+            "[theme]"
+          ],
+          "required": [
+            "[userId]"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a03",
+      "type": "custom-hook",
+      "title": "Custom Hook Explorer",
+      "instruction": "Identify the reusable logic that belongs inside a custom hook.",
+      "content": {
+        "concept": "Recognize custom hooks as reusable functions that share stateful React logic between components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "custom-hook",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "useOnlineStatus()",
+            "Component A",
+            "Component B",
+            "Shared stateful logic"
+          ],
+          "descriptions": [
+            "A custom hook that exposes reusable online-status logic.",
+            "A component consuming the custom hook.",
+            "Another component consuming the same reusable logic.",
+            "Logic that can be shared without duplicating it in each component."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a04",
+      "type": "debug",
+      "title": "Hook Dependency Debugger",
+      "instruction": "Identify the missing dependency that causes an effect to use stale data.",
+      "content": {
+        "concept": "Debug useEffect dependency lists so effects respond to the values they actually use.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "hook-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
@@ -31,7 +110,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

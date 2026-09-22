@@ -14,19 +14,26 @@
       "id": "d8-a1",
       "type": "discover",
       "title": "React App Anatomy",
-      "instruction": "Explore the major parts of a React application.",
+      "instruction": "Click each part to explore its role in a React application.",
       "content": {
-        "concept": "A React application is composed of components, JSX, application logic, and a rendering entry point.",
+        "concept": "A React application is built from components that return JSX and are rendered through an application entry point.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "react-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Component",
+            "JSX",
+            "Props",
+            "Application Entry Point"
+          ],
+          "descriptions": [
+            "A reusable UI building block that can contain its own logic and presentation.",
+            "A syntax extension that lets React components describe UI using HTML-like syntax.",
+            "Inputs passed from a parent component to a child component.",
+            "The part of the application that starts rendering the React component tree."
           ]
         }
       }
@@ -35,36 +42,56 @@
       "id": "d8-a2",
       "type": "discover",
       "title": "JSX Explorer",
-      "instruction": "Click JSX elements to identify their roles.",
+      "instruction": "Identify the JavaScript and JSX parts of a React component.",
       "content": {
-        "concept": "JSX combines JavaScript expressions with HTML-like syntax to describe React interfaces.",
+        "concept": "JSX allows developers to describe UI with HTML-like syntax while embedding JavaScript expressions inside curly braces.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "jsx-parts",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "JSX Element",
+            "{expression}",
+            "Component Function",
+            "return"
+          ],
+          "descriptions": [
+            "Describes an element that React can render.",
+            "Embeds a JavaScript expression inside JSX.",
+            "Defines the reusable React component.",
+            "Returns the JSX that the component renders."
+          ]
         }
       }
     },
     {
       "id": "d8-a3",
       "type": "discover",
-      "title": "Component Composition",
-      "instruction": "Build a page by combining reusable components.",
+      "title": "Component Composition Builder",
+      "instruction": "Compose a page from smaller reusable React components.",
       "content": {
-        "concept": "Component composition allows complex interfaces to be constructed from smaller reusable components.",
+        "concept": "Component composition builds complex interfaces by combining smaller components such as Header, Navigation, Content, and Footer.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "component-composition",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "App",
+            "Header",
+            "Navigation",
+            "MainContent",
+            "Footer"
+          ],
+          "required": [
+            "App",
+            "Header",
+            "Navigation",
+            "MainContent",
+            "Footer"
           ]
         }
       }
@@ -73,19 +100,20 @@
       "id": "d8-a4",
       "type": "discover",
       "title": "React Rendering Flow",
-      "instruction": "Arrange the stages of React rendering.",
+      "instruction": "Arrange the basic flow from a React component to the rendered interface.",
       "content": {
-        "concept": "React evaluates components and updates the rendered interface when relevant data changes.",
+        "concept": "React evaluates the component tree, creates the corresponding UI representation, and updates the browser when the rendered output changes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "render-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. React application starts",
+            "2. Root component is rendered",
+            "3. Components return JSX",
+            "4. React updates the browser UI"
           ]
         }
       }

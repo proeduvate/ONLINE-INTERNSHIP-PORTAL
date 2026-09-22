@@ -14,19 +14,28 @@
       "id": "d11-a1",
       "type": "discover",
       "title": "Hooks Anatomy",
-      "instruction": "Explore the parts of common React hooks.",
+      "instruction": "Click each part of a hook example to explore its purpose.",
       "content": {
-        "concept": "React hooks such as useState and useEffect provide state and side-effect capabilities to functional components.",
+        "concept": "React hooks such as useState and useEffect allow functional components to manage state and synchronize with external systems.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "hooks-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "useState",
+            "state value",
+            "state setter",
+            "useEffect",
+            "dependency array"
+          ],
+          "descriptions": [
+            "Hook used to add local state to a functional component.",
+            "The current value stored by the state hook.",
+            "Function used to request a state update.",
+            "Hook used to synchronize a component with an external system or perform side effects.",
+            "Controls when an effect is re-run based on its dependencies."
           ]
         }
       }
@@ -34,17 +43,21 @@
     {
       "id": "d11-a2",
       "type": "discover",
-      "title": "Hook Selector Lab",
-      "instruction": "Choose the appropriate hook for each scenario.",
+      "title": "Hook Selector",
+      "instruction": "Choose the hook that best fits the described scenario.",
       "content": {
-        "concept": "Different hooks solve different problems, such as state management, side effects, references, and memoization.",
+        "concept": "Different hooks address different needs: useState manages local state, useEffect handles synchronization and side effects, useRef stores mutable references, and useMemo can cache expensive calculations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "hook-choice",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Store a value that changes when the user interacts → useState",
+            "Store a value that changes when the user interacts → useRef"
+          ],
+          "answer": "Store a value that changes when the user interacts → useState"
         }
       }
     },
@@ -52,19 +65,21 @@
       "id": "d11-a3",
       "type": "discover",
       "title": "Effect Execution Flow",
-      "instruction": "Arrange when an effect runs and cleans up.",
+      "instruction": "Arrange the basic lifecycle of an effect with cleanup.",
       "content": {
-        "concept": "The dependency array controls when an effect is evaluated, while cleanup handles resources from previous effects.",
+        "concept": "An effect runs after rendering when its dependencies require it to run. When needed, its cleanup function runs before the effect is re-run or when the component is removed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "effect-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Component renders",
+            "2. React evaluates the effect dependencies",
+            "3. Effect runs",
+            "4. Dependencies change or component unmounts",
+            "5. Cleanup runs when applicable"
           ]
         }
       }
@@ -72,20 +87,29 @@
     {
       "id": "d11-a4",
       "type": "discover",
-      "title": "Reusable Hook Builder",
-      "instruction": "Compose a custom hook from reusable logic.",
+      "title": "Custom Hook Builder",
+      "instruction": "Build the structure of a reusable custom hook.",
       "content": {
-        "concept": "Custom hooks extract reusable stateful logic so multiple components can share behavior.",
+        "concept": "Custom hooks extract reusable stateful logic into functions whose names conventionally begin with use, allowing multiple components to share behavior without duplicating logic.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "custom-hook",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Define a function beginning with use",
+            "Call required React hooks",
+            "Manage reusable logic",
+            "Return values or functions",
+            "Use the custom hook inside a component"
+          ],
+          "required": [
+            "Define a function beginning with use",
+            "Call required React hooks",
+            "Manage reusable logic",
+            "Return values or functions",
+            "Use the custom hook inside a component"
           ]
         }
       }

@@ -13,20 +13,22 @@
     {
       "id": "d17-a1",
       "type": "discover",
-      "title": "Testing Workflow",
-      "instruction": "Arrange the test-driven development cycle.",
+      "title": "TDD Workflow",
+      "instruction": "Arrange the core TDD cycle in the correct order.",
       "content": {
-        "concept": "TDD commonly follows a cycle of writing a failing test, implementing code, and improving the solution.",
+        "concept": "Test-driven development commonly follows a Red-Green-Refactor cycle: write a failing test, implement enough code to pass it, then improve the implementation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Write a test for the desired behavior",
+            "2. Run the test and observe failure",
+            "3. Implement the minimum code needed",
+            "4. Run the test and observe success",
+            "5. Refactor while keeping the tests passing"
           ]
         }
       }
@@ -34,10 +36,10 @@
     {
       "id": "d17-a2",
       "type": "discover",
-      "title": "Assertion Anatomy",
-      "instruction": "Identify the parts of a pytest assertion.",
+      "title": "pytest Assertion Anatomy",
+      "instruction": "Click each part of the assertion to understand what it verifies.",
       "content": {
-        "concept": "Assertions compare actual program results with expected behavior.",
+        "concept": "A pytest assertion checks whether an actual expression matches the expected behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +47,14 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "def test_add():",
+            "result = add(2, 3)",
+            "assert result == 5"
+          ],
+          "descriptions": [
+            "Defines a pytest test function. Functions beginning with test_ are normally collected by pytest.",
+            "Calls the function under test and stores its actual result.",
+            "Checks that the actual result is equal to the expected value of 5."
           ]
         }
       }
@@ -55,20 +62,23 @@
     {
       "id": "d17-a3",
       "type": "discover",
-      "title": "Test Case Matcher",
-      "instruction": "Match each function with the appropriate test.",
+      "title": "Test Case Selector",
+      "instruction": "Choose the test case that best checks the function behavior.",
       "content": {
-        "concept": "Effective tests check normal inputs, boundary cases, and expected failures.",
+        "concept": "Good tests cover normal cases, boundary cases, and expected error conditions rather than checking only one happy path.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "test_add_two_positive_numbers()",
+            "test_add_with_zero()",
+            "test_add_with_negative_numbers()",
+            "test_add_with_non_numeric_input()"
+          ],
+          "answer": "test_add_with_zero()"
         }
       }
     },
@@ -76,19 +86,26 @@
       "id": "d17-a4",
       "type": "discover",
       "title": "Fixture Builder",
-      "instruction": "Build a reusable pytest fixture.",
+      "instruction": "Assemble a reusable pytest fixture.",
       "content": {
-        "concept": "Fixtures provide reusable setup data and resources for tests.",
+        "concept": "A pytest fixture provides reusable setup data or resources that can be injected into test functions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "import pytest",
+            "@pytest.fixture",
+            "def sample_user():",
+            "return {\"name\": \"Maya\", \"age\": 21}"
+          ],
+          "required": [
+            "import pytest",
+            "@pytest.fixture",
+            "def sample_user():",
+            "return {\"name\": \"Maya\", \"age\": 21}"
           ]
         }
       }

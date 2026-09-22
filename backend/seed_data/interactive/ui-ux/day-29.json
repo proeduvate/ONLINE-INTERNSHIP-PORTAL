@@ -24,9 +24,22 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Define Test Objective",
+            "2. Recruit Representative Participants",
+            "3. Prepare Test Tasks",
+            "4. Conduct Test Sessions",
+            "5. Record Observations",
+            "6. Synthesize Findings",
+            "7. Prioritize Improvements"
+          ],
+          "items": [
+            "Record Observations",
+            "Prepare Test Tasks",
+            "Prioritize Improvements",
+            "Define Test Objective",
+            "Synthesize Findings",
+            "Recruit Representative Participants",
+            "Conduct Test Sessions"
           ]
         }
       }
@@ -35,7 +48,7 @@
       "id": "d29-a2",
       "type": "discover",
       "title": "Finding Prioritizer",
-      "instruction": "Select findings that require attention first.",
+      "instruction": "Evaluate usability findings using severity, frequency, and task impact.",
       "content": {
         "concept": "Usability findings can be prioritized using factors such as severity, frequency, and impact on task completion.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -44,7 +57,44 @@
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "finding": "Most participants cannot identify the button required to complete the main task.",
+              "options": [
+                "High Priority",
+                "Medium Priority",
+                "Low Priority"
+              ],
+              "correctAnswer": "High Priority"
+            },
+            {
+              "finding": "One participant dislikes the shade of a decorative illustration.",
+              "options": [
+                "High Priority",
+                "Medium Priority",
+                "Low Priority"
+              ],
+              "correctAnswer": "Low Priority"
+            },
+            {
+              "finding": "Several participants hesitate briefly because a secondary label is unclear.",
+              "options": [
+                "High Priority",
+                "Medium Priority",
+                "Low Priority"
+              ],
+              "correctAnswer": "Medium Priority"
+            },
+            {
+              "finding": "Users are prevented from submitting invalid information and receive clear correction guidance.",
+              "options": [
+                "High Priority",
+                "Medium Priority",
+                "Low Priority"
+              ],
+              "correctAnswer": "Low Priority"
+            }
+          ]
         }
       }
     },
@@ -52,7 +102,7 @@
       "id": "d29-a3",
       "type": "discover",
       "title": "Accessibility Check",
-      "instruction": "Match interface issues with appropriate accessibility improvements.",
+      "instruction": "Match each accessibility barrier with the appropriate design improvement.",
       "content": {
         "concept": "Accessible interfaces consider keyboard access, contrast, labels, focus states, readable content, and assistive technologies.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -61,9 +111,31 @@
         "mode": "match",
         "family": "compare",
         "config": {
-          "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+          "pairs": [
+            {
+              "problem": "Form fields have no visible labels.",
+              "answer": "Add clear programmatically associated labels."
+            },
+            {
+              "problem": "Keyboard users cannot see which control currently has focus.",
+              "answer": "Provide a clear visible focus indicator."
+            },
+            {
+              "problem": "Important information is communicated only through color.",
+              "answer": "Use text, icons, or other non-color cues."
+            },
+            {
+              "problem": "Videos contain spoken information but no captions.",
+              "answer": "Provide accurate captions."
+            },
+            {
+              "problem": "Text and background have insufficient contrast.",
+              "answer": "Increase the contrast to improve readability."
+            },
+            {
+              "problem": "Interactive controls cannot be reached using the keyboard.",
+              "answer": "Ensure controls are keyboard accessible."
+            }
           ]
         }
       }
@@ -72,7 +144,7 @@
       "id": "d29-a4",
       "type": "discover",
       "title": "Developer Handoff Builder",
-      "instruction": "Assemble the essential assets and specifications for handoff.",
+      "instruction": "Assemble the essential assets and specifications needed for implementation.",
       "content": {
         "concept": "Design handoff communicates components, measurements, states, assets, interactions, and implementation requirements to developers.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -82,9 +154,25 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Design Specifications",
+            "Component States",
+            "Responsive Rules",
+            "Interaction Behavior",
+            "Design Tokens",
+            "Exported Assets",
+            "Accessibility Requirements",
+            "Implementation Notes",
+            "Personal Design Preferences"
+          ],
+          "required": [
+            "Design Specifications",
+            "Component States",
+            "Responsive Rules",
+            "Interaction Behavior",
+            "Design Tokens",
+            "Exported Assets",
+            "Accessibility Requirements",
+            "Implementation Notes"
           ]
         }
       }

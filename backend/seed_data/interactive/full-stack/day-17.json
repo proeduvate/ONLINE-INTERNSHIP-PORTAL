@@ -14,19 +14,28 @@
       "id": "d17-a1",
       "type": "discover",
       "title": "MongoDB Anatomy",
-      "instruction": "Explore databases, collections, documents, and fields.",
+      "instruction": "Explore the hierarchy from a MongoDB database to individual document fields.",
       "content": {
-        "concept": "MongoDB stores flexible JSON-like documents inside collections within databases.",
+        "concept": "MongoDB organizes data into databases, collections, and documents. Documents contain fields and values in a flexible JSON-like structure.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "mongodb-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Database",
+            "Collection",
+            "Document",
+            "Field",
+            "Value"
+          ],
+          "descriptions": [
+            "Container that holds collections and related application data.",
+            "Group of MongoDB documents representing a particular type of resource.",
+            "A single record stored as a BSON document.",
+            "A named property inside a document.",
+            "The data stored in a field, such as a string, number, array, or object."
           ]
         }
       }
@@ -34,20 +43,21 @@
     {
       "id": "d17-a2",
       "type": "discover",
-      "title": "NoSQL Modeling Match",
-      "instruction": "Match application requirements to document structures.",
+      "title": "NoSQL Modeling Explorer",
+      "instruction": "Choose the document design that best fits the access pattern.",
       "content": {
-        "concept": "NoSQL data models should reflect how application data is accessed and related.",
+        "concept": "MongoDB data models should be designed around how an application reads and updates data rather than simply copying relational table structures.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "nosql-model",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Frequently accessed small profile details → Keep them together in one document",
+            "Frequently accessed small profile details → Always split every field into separate documents"
+          ],
+          "answer": "Frequently accessed small profile details → Keep them together in one document"
         }
       }
     },
@@ -55,16 +65,20 @@
       "id": "d17-a3",
       "type": "discover",
       "title": "Embedding vs Referencing",
-      "instruction": "Select the suitable relationship strategy for each case.",
+      "instruction": "Choose the modeling strategy that best fits each relationship.",
       "content": {
-        "concept": "MongoDB models can embed related data or reference separate documents depending on access patterns and relationships.",
+        "concept": "Embedding stores related data inside the parent document, while referencing stores related documents separately and connects them through identifiers.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "relationship-strategy",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "A user has a small set of addresses always loaded with the user → Embed",
+            "A product has thousands of reviews that are queried independently → Reference"
+          ],
+          "answer": "A user has a small set of addresses always loaded with the user → Embed"
         }
       }
     },
@@ -72,19 +86,28 @@
       "id": "d17-a4",
       "type": "discover",
       "title": "Document Model Builder",
-      "instruction": "Build a MongoDB model for an application.",
+      "instruction": "Build a MongoDB document model for a user profile.",
       "content": {
-        "concept": "A practical document model organizes fields and relationships around the application's primary queries and operations.",
+        "concept": "A practical MongoDB document model organizes fields and relationships around application access patterns and expected queries.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "document-model",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "_id",
+            "name",
+            "email",
+            "profile",
+            "createdAt",
+            "roles"
+          ],
+          "required": [
+            "_id",
+            "name",
+            "email",
+            "createdAt"
           ]
         }
       }

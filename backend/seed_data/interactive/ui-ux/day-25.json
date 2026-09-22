@@ -14,19 +14,36 @@
       "id": "d25-a1",
       "type": "discover",
       "title": "UX Strategy Map",
-      "instruction": "Explore how user needs connect to product goals.",
+      "instruction": "Explore how user needs, product objectives, constraints, and outcomes connect.",
       "content": {
         "concept": "UX strategy aligns user needs, business objectives, product constraints, and measurable outcomes.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Select each element to understand how it influences design decisions."
       },
       "interaction": {
         "mode": "semantic-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "User Needs",
+              "description": "The problems, goals, expectations, and behaviors the product should address."
+            },
+            {
+              "label": "Product Goals",
+              "description": "The outcomes the product or organization wants to achieve."
+            },
+            {
+              "label": "Constraints",
+              "description": "Technical, business, time, regulatory, or resource limitations."
+            },
+            {
+              "label": "UX Decisions",
+              "description": "Design choices that balance user needs with product goals and constraints."
+            },
+            {
+              "label": "Success Metrics",
+              "description": "Measures used to evaluate whether the experience achieves its intended outcomes."
+            }
           ]
         }
       }
@@ -35,18 +52,43 @@
       "id": "d25-a2",
       "type": "discover",
       "title": "Product Decision Matcher",
-      "instruction": "Match product goals with relevant UX decisions.",
+      "instruction": "Match product situations with the UX decision that best addresses them.",
       "content": {
         "concept": "Design decisions should consider user value, product goals, technical constraints, and available evidence.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Consider both user impact and product context when evaluating a design decision."
       },
       "interaction": {
         "mode": "match",
         "family": "compare",
         "config": {
+          "pairs": [
+            {
+              "prompt": "Users cannot find the most important task on the homepage.",
+              "answer": "Improve information hierarchy"
+            },
+            {
+              "prompt": "A feature has high user value but requires infrastructure that is unavailable for the current release.",
+              "answer": "Explore a feasible alternative"
+            },
+            {
+              "prompt": "Research shows users misunderstand an important action label.",
+              "answer": "Revise the content and interaction"
+            },
+            {
+              "prompt": "A proposed feature has no evidence of solving the target problem.",
+              "answer": "Validate the problem and value first"
+            },
+            {
+              "prompt": "A successful experience needs to be measured after launch.",
+              "answer": "Define a success metric"
+            }
+          ],
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+            "Improve information hierarchy",
+            "Explore a feasible alternative",
+            "Revise the content and interaction",
+            "Validate the problem and value first",
+            "Define a success metric"
           ]
         }
       }
@@ -55,19 +97,32 @@
       "id": "d25-a3",
       "type": "discover",
       "title": "Developer Handoff Builder",
-      "instruction": "Assemble the essential parts of a design handoff.",
+      "instruction": "Assemble the essential information required for a clear design handoff.",
       "content": {
         "concept": "A useful handoff communicates layouts, dimensions, states, assets, interactions, responsive behavior, and design tokens.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "A developer should be able to understand what to build, how it behaves, and what values or assets to use."
       },
       "interaction": {
         "mode": "build",
         "family": "builder",
         "config": {
-          "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+          "items": [
+            "Layout Specifications",
+            "Design Tokens",
+            "Component States",
+            "Interaction Behavior",
+            "Responsive Rules",
+            "Assets",
+            "Content Requirements"
+          ],
+          "correctOrder": [
+            "Layout Specifications",
+            "Design Tokens",
+            "Component States",
+            "Interaction Behavior",
+            "Responsive Rules",
+            "Assets",
+            "Content Requirements"
           ]
         }
       }
@@ -76,16 +131,57 @@
       "id": "d25-a4",
       "type": "discover",
       "title": "Handoff Completeness Check",
-      "instruction": "Select the missing information in each handoff.",
+      "instruction": "Identify the missing information that could create implementation ambiguity.",
       "content": {
         "concept": "Complete handoff documentation reduces ambiguity between designers and developers during implementation.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Look for missing states, dimensions, responsive behavior, interaction rules, assets, and design tokens."
       },
       "interaction": {
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "A button design shows only its default appearance. What important information is missing?",
+              "options": [
+                "Interaction states",
+                "Brand name",
+                "Page title"
+              ],
+              "correctAnswer": "Interaction states",
+              "explanation": "Developers need to know how the button behaves in hover, focus, disabled, loading, and active states when applicable."
+            },
+            {
+              "question": "A desktop layout is provided but no information explains how it should behave on mobile.",
+              "options": [
+                "Responsive rules",
+                "Color palette",
+                "Project logo"
+              ],
+              "correctAnswer": "Responsive rules",
+              "explanation": "Responsive behavior should explain how the design changes across screen sizes."
+            },
+            {
+              "question": "An interface uses icons but no source files or specifications are provided.",
+              "options": [
+                "Assets",
+                "User research",
+                "Navigation hierarchy"
+              ],
+              "correctAnswer": "Assets",
+              "explanation": "Developers need the correct assets or a clear reference for obtaining them."
+            },
+            {
+              "question": "Spacing values are inconsistent and no token system is documented.",
+              "options": [
+                "Design tokens",
+                "User personas",
+                "Interview notes"
+              ],
+              "correctAnswer": "Design tokens",
+              "explanation": "Documented tokens help developers reproduce the intended spacing and visual system consistently."
+            }
+          ]
         }
       }
     }

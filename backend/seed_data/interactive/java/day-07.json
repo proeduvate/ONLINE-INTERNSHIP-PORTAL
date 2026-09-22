@@ -14,52 +14,109 @@
       "id": "d7-a1",
       "type": "discover",
       "title": "Inheritance Map",
-      "instruction": "Connect parent classes with their child classes.",
+      "instruction": "Explore the relationship between parent and child classes.",
       "content": {
-        "concept": "Inheritance allows a class to reuse and extend fields and methods from another class.",
+        "concept": "Inheritance allows a subclass to extend a superclass and reuse accessible fields and methods. The subclass can also add new behavior or override inherited methods.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "inheritance-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Animal",
+            "Dog extends Animal",
+            "Animal.eat()",
+            "Dog.bark()",
+            "Dog inherits eat()"
+          ],
+          "descriptions": [
+            "The superclass representing common animal behavior.",
+            "A subclass that extends Animal.",
+            "A method inherited by compatible subclasses.",
+            "Behavior specific to the Dog subclass.",
+            "The Dog object can use the inherited eat method."
+          ]
+        }
       }
     },
     {
       "id": "d7-a2",
       "type": "discover",
-      "title": "Override Anatomy",
-      "instruction": "Identify the parts of a method override.",
+      "title": "Method Override Anatomy",
+      "instruction": "Explore the parts of a method override.",
       "content": {
-        "concept": "Method overriding lets a subclass provide its own implementation of an inherited method.",
+        "concept": "Method overriding occurs when a subclass provides a compatible implementation of an inherited instance method. The subclass implementation can then be selected when the object is used polymorphically.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "override-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@Override",
+            "void sound()",
+            "Dog",
+            "System.out.println(\"Bark\")"
+          ],
+          "descriptions": [
+            "Annotation indicating that the method is intended to override an inherited method.",
+            "The method declaration being reimplemented.",
+            "The subclass providing the new implementation.",
+            "The subclass-specific implementation of the method."
+          ]
+        }
       }
     },
     {
       "id": "d7-a3",
       "type": "discover",
-      "title": "Polymorphism Matcher",
-      "instruction": "Match each reference with its runtime behavior.",
+      "title": "Polymorphism Explorer",
+      "instruction": "Choose the behavior produced by each parent-type reference.",
       "content": {
-        "concept": "Polymorphism allows a parent type reference to work with objects of compatible child types.",
+        "concept": "With runtime polymorphism, a superclass reference can refer to a subclass object. When an overridden instance method is called, Java selects the implementation associated with the actual object at runtime.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "polymorphism-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Animal a = new Dog(); a.sound() → Dog's overridden sound()",
+            "Animal a = new Cat(); a.sound() → Cat's overridden sound()"
+          ],
+          "answer": "Animal a = new Dog(); a.sound() → Dog's overridden sound()"
+        }
       }
     },
     {
       "id": "d7-a4",
       "type": "discover",
       "title": "Abstraction Builder",
-      "instruction": "Build an interface or abstract class from the requirements.",
+      "instruction": "Build an abstraction that defines required behavior without exposing implementation details.",
       "content": {
-        "concept": "Abstraction exposes essential behavior while hiding implementation details.",
+        "concept": "Abstraction focuses on what an object must do rather than how it does it. Abstract classes and interfaces can define contracts that concrete classes implement.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "abstraction-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "interface",
+            "Payment",
+            "{",
+            "void pay();",
+            "}",
+            "class CardPayment implements Payment"
+          ],
+          "required": [
+            "interface",
+            "Payment",
+            "void pay();",
+            "class CardPayment implements Payment"
+          ]
+        }
       }
     }
   ],

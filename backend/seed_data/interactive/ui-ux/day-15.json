@@ -7,6 +7,7 @@
   "learningObjectives": [
     "Identify UX metrics that measure task success and user behavior.",
     "Interpret basic product analytics for UX decisions.",
+    "Distinguish quantitative signals from qualitative evidence.",
     "Connect quantitative findings with qualitative research insights."
   ],
   "activities": [
@@ -16,17 +17,28 @@
       "title": "UX Metrics Map",
       "instruction": "Explore how common UX metrics relate to user goals.",
       "content": {
-        "concept": "Metrics such as task completion, conversion, retention, error rate, and time on task provide different views of user behavior.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Metrics such as task completion, conversion rate, retention, error rate, and time on task provide different views of user behavior.",
+        "tip": "Explore each metric and identify the user behavior or outcome it helps measure."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "metrics-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Task Completion Rate",
+            "Conversion Rate",
+            "Time on Task",
+            "Error Rate",
+            "Retention Rate",
+            "Drop-off Rate"
+          ],
+          "descriptions": [
+            "Measures how often users successfully complete a task.",
+            "Measures the proportion of users who complete a desired action.",
+            "Measures how long users take to complete a task.",
+            "Measures how frequently users encounter errors.",
+            "Measures how many users return over a defined period.",
+            "Shows where users leave or abandon a flow."
           ]
         }
       }
@@ -35,19 +47,23 @@
       "id": "d15-a2",
       "type": "discover",
       "title": "Metric Matcher",
-      "instruction": "Match each design question with a useful metric.",
+      "instruction": "Match each UX question with the most useful metric.",
       "content": {
-        "concept": "The right metric depends on the user behavior or product outcome being investigated.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "The appropriate metric depends on the user behavior or product outcome being investigated.",
+        "tip": "First identify exactly what behavior the UX team wants to measure."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "metric-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Can users complete the task? → Task Completion Rate",
+            "Where do users abandon checkout? → Drop-off Rate",
+            "How long does the task take? → Time on Task",
+            "How often do users make mistakes? → Error Rate",
+            "Do users return to the product? → Retention Rate"
+          ],
+          "answer": "Can users complete the task? → Task Completion Rate"
         }
       }
     },
@@ -55,18 +71,22 @@
       "id": "d15-a3",
       "type": "discover",
       "title": "Analytics Explorer",
-      "instruction": "Adjust the data and observe the UX signal.",
+      "instruction": "Adjust the analytics values and observe the UX signal.",
       "content": {
-        "concept": "Changes in behavioral data can reveal where users succeed, hesitate, abandon tasks, or encounter friction.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Behavioral data can reveal where users succeed, hesitate, abandon tasks, or encounter friction.",
+        "tip": "Look for changes in patterns rather than relying on a single number."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "analytics-explorer",
         "family": "slider",
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 50,
+          "labels": {
+            "min": "Low Friction",
+            "max": "High Friction"
+          }
         }
       }
     },
@@ -74,19 +94,28 @@
       "id": "d15-a4",
       "type": "discover",
       "title": "Insight Synthesis Lab",
-      "instruction": "Combine research and analytics into an insight.",
+      "instruction": "Combine quantitative and qualitative evidence into a UX insight.",
       "content": {
-        "concept": "Combining qualitative evidence with quantitative patterns creates stronger hypotheses about user problems and opportunities.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Combining behavioral data with user observations and feedback creates stronger hypotheses about problems and opportunities.",
+        "tip": "Connect the metric signal with an observed user behavior before proposing a design response."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "insight-synthesis",
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Quantitative Signal",
+            "User Observation",
+            "User Feedback",
+            "Problem Hypothesis",
+            "Design Opportunity",
+            "Immediate Redesign"
+          ],
+          "required": [
+            "Quantitative Signal",
+            "User Observation",
+            "User Feedback",
+            "Problem Hypothesis"
           ]
         }
       }

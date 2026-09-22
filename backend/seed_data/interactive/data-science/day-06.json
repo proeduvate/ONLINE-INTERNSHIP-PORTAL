@@ -14,9 +14,9 @@
       "id": "d6-a1",
       "type": "discover",
       "title": "Match Charts to Data",
-      "instruction": "Match each chart with its best use case.",
+      "instruction": "Match each chart type with its appropriate analytical use.",
       "content": {
-        "concept": "Bar charts, histograms, scatter plots, and line charts reveal different types of patterns in data.",
+        "concept": "Different chart types reveal different patterns, including comparisons, distributions, trends, and relationships.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,8 +24,11 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
+            "Bar Chart → Compare categories",
+            "Line Chart → Show trends over time",
+            "Histogram → Show a numerical distribution",
+            "Scatter Plot → Examine relationships between numerical variables",
+            "Box Plot → Compare distributions and identify potential outliers"
           ]
         }
       }
@@ -34,9 +37,9 @@
       "id": "d6-a2",
       "type": "discover",
       "title": "Build a Visualization",
-      "instruction": "Compose the chart using the required components.",
+      "instruction": "Assemble the components needed to create a meaningful chart.",
       "content": {
-        "concept": "A visualization combines data, chart type, labels, and formatting to communicate an analytical result.",
+        "concept": "A useful visualization combines appropriate data, chart type, labels, and formatting to communicate an analytical result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -44,9 +47,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Select the Data",
+            "Choose the Chart Type",
+            "Create the Plot",
+            "Label the Axes",
+            "Add a Title",
+            "Interpret the Result"
+          ],
+          "required": [
+            "Select the Data",
+            "Choose the Chart Type",
+            "Create the Plot",
+            "Label the Axes",
+            "Add a Title",
+            "Interpret the Result"
           ]
         }
       }
@@ -55,18 +69,18 @@
       "id": "d6-a3",
       "type": "discover",
       "title": "Explore Chart Parameters",
-      "instruction": "Adjust the values and observe the visual changes.",
+      "instruction": "Adjust a visualization parameter and observe how the chart changes.",
       "content": {
-        "concept": "Plot parameters such as bins, figure size, and axis ranges affect how patterns appear in a visualization.",
+        "concept": "Parameters such as histogram bins, figure size, and axis ranges affect how patterns appear in a visualization.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 50,
+          "default": 10
         }
       }
     },
@@ -74,16 +88,25 @@
       "id": "d6-a4",
       "type": "discover",
       "title": "Read the Visualization",
-      "instruction": "Select the pattern shown by each chart.",
+      "instruction": "Identify the pattern represented by each visualization.",
       "content": {
-        "concept": "Data visualization helps identify trends, clusters, comparisons, distributions, and relationships.",
+        "concept": "Visualizations help reveal trends, clusters, comparisons, distributions, and relationships that may not be obvious in raw data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "selector-lab",
-        "family": "lab",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Increasing Trend",
+            "Decreasing Trend",
+            "Category Comparison",
+            "Normal-like Distribution",
+            "Right-Skewed Distribution",
+            "Strong Positive Relationship",
+            "Weak or No Relationship",
+            "Potential Outliers"
+          ]
         }
       }
     }

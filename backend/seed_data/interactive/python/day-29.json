@@ -12,21 +12,28 @@
   "activities": [
     {
       "id": "d29-a1",
-      "type": "discover",
+      "type": "click-map",
       "title": "Testing Strategy Map",
-      "instruction": "Map test types to the parts they validate.",
+      "instruction": "Explore what each test level validates.",
       "content": {
-        "concept": "A capstone can combine unit, integration, API, and end-to-end tests to validate different system boundaries.",
+        "concept": "Different test levels validate different boundaries of an application, from individual functions to complete user workflows.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Unit Tests",
+            "Integration Tests",
+            "API Tests",
+            "End-to-End Tests"
+          ],
+          "descriptions": [
+            "Test individual functions or components in isolation.",
+            "Verify that multiple components work correctly together.",
+            "Verify HTTP endpoints, request validation, responses, and API behavior.",
+            "Validate a complete user workflow through the running system."
           ]
         }
       }
@@ -35,40 +42,59 @@
       "id": "d29-a2",
       "type": "discover",
       "title": "Release Checklist",
-      "instruction": "Arrange the production-readiness checks.",
+      "instruction": "Arrange the major release-readiness steps.",
       "content": {
-        "concept": "Before release, verify functionality, tests, configuration, security, documentation, and deployment behavior.",
+        "concept": "Production readiness combines functional verification, automated tests, secure configuration, documentation, deployment checks, and monitoring.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Review requirements and known issues",
+            "2. Run automated tests and quality checks",
+            "3. Verify configuration and secrets",
+            "4. Build and deploy the application",
+            "5. Run health and smoke checks",
+            "6. Verify logging and monitoring",
+            "7. Finalize documentation and release notes"
           ]
         }
       }
     },
     {
       "id": "d29-a3",
-      "type": "discover",
+      "type": "builder",
       "title": "Documentation Builder",
-      "instruction": "Build the essential project documentation.",
+      "instruction": "Assemble the essential sections of a project README.",
       "content": {
-        "concept": "Good documentation helps others understand setup, usage, APIs, architecture, and project decisions.",
+        "concept": "Good documentation allows another developer to understand the project, install it, configure it, use its APIs, and understand important architectural decisions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "Project overview",
+            "Features",
+            "Technology stack",
+            "Installation and setup",
+            "Environment variables",
+            "API usage or endpoint documentation",
+            "Testing instructions",
+            "Architecture overview"
+          ],
+          "required": [
+            "Project overview",
+            "Features",
+            "Technology stack",
+            "Installation and setup",
+            "Environment variables",
+            "API usage or endpoint documentation",
+            "Testing instructions",
+            "Architecture overview"
           ]
         }
       }
@@ -76,17 +102,23 @@
     {
       "id": "d29-a4",
       "type": "discover",
-      "title": "Readiness Selector",
-      "instruction": "Select the correct action for each release issue.",
+      "title": "Production Readiness Selector",
+      "instruction": "Choose the action that should be taken before release.",
       "content": {
-        "concept": "Production readiness requires resolving important defects and configuration risks before deployment.",
+        "concept": "Production readiness means addressing important functional, security, configuration, and operational risks before exposing the application to users.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Remove hard-coded production secrets and configure them securely",
+            "Ignore failing tests because the application starts",
+            "Deploy with development credentials",
+            "Disable error logging to hide failures"
+          ],
+          "answer": "Remove hard-coded production secrets and configure them securely"
         }
       }
     }

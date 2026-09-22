@@ -1,26 +1,130 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 1,
-  "topic": "Day 1 Topic for Frontend",
-  "version": 1,
+  "topic": "HTML Fundamentals & Document Structure",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Explain HTML's role in structuring web content",
+    "Recognize the structure of an HTML document and elements",
+    "Build a valid starter HTML document"
   ],
   "activities": [
     {
       "id": "d01-a01",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Page Structure Explorer",
+      "instruction": "Click each part of the HTML document to discover what it does.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Explain HTML's role in structuring web content",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "html-discover",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "<body>"
+          ],
+          "descriptions": [
+            "Declares that the document uses HTML5.",
+            "Root element containing the entire HTML document.",
+            "Contains metadata such as the page title and linked resources.",
+            "Contains the visible content of the webpage."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d01-a02",
+      "type": "anatomy",
+      "title": "Element Anatomy",
+      "instruction": "Explore the opening tag, content, and closing tag that make up an HTML element.",
+      "content": {
+        "concept": "Recognize HTML elements and their structure",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "html-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Opening Tag: <p>",
+            "Content: Hello World",
+            "Closing Tag: </p>",
+            "Complete Element: <p>Hello World</p>"
+          ],
+          "descriptions": [
+            "Marks where the paragraph element begins.",
+            "The text or nested content contained inside the element.",
+            "Marks where the paragraph element ends.",
+            "The complete HTML element made from its tags and content."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d01-a03",
+      "type": "live-code",
+      "title": "Tag Preview Lab",
+      "instruction": "Switch between HTML tags and observe how the rendered content changes.",
+      "content": {
+        "concept": "Understand how HTML elements structure content",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "html-live",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "<h1>Page Title</h1>",
+            "<h2>Section Title</h2>",
+            "<p>Paragraph text</p>",
+            "<strong>Important text</strong>"
+          ],
+          "answer": "<h1>Page Title</h1>"
+        }
+      }
+    },
+    {
+      "id": "d01-a04",
+      "type": "guided-code",
+      "title": "Build the HTML Skeleton",
+      "instruction": "Assemble the required parts of a valid HTML5 document in the correct order.",
+      "content": {
+        "concept": "Build a valid starter HTML document",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "html-skeleton",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "<title>My Page</title>",
+            "</head>",
+            "<body>",
+            "<h1>Hello World</h1>",
+            "</body>",
+            "</html>"
+          ],
+          "required": [
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "<title>My Page</title>",
+            "</head>",
+            "<body>",
+            "<h1>Hello World</h1>",
+            "</body>",
+            "</html>"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +135,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

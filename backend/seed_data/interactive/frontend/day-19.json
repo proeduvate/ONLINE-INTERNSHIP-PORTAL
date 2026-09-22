@@ -1,26 +1,103 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 19,
-  "topic": "Day 19 Topic for Frontend",
-  "version": 1,
+  "topic": "Forms & Client-Side Validation",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Validate user input on the client side",
+    "Define validation rules for form fields",
+    "Provide clear and actionable validation feedback"
   ],
   "activities": [
     {
       "id": "d19-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "validate",
+      "title": "Validation Playground",
+      "instruction": "Enter different values and observe how the form validation state changes.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Validate user input on the client side",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "validate",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Valid email: user@example.com",
+            "Invalid email: user@",
+            "Valid password: Frontend123!",
+            "Invalid password: 123"
+          ],
+          "answer": "Valid email: user@example.com"
+        }
+      }
+    },
+    {
+      "id": "d19-a02",
+      "type": "rules",
+      "title": "Rule Builder",
+      "instruction": "Combine required, minimum length, and pattern rules to define a field's validation requirements.",
+      "content": {
+        "concept": "Define validation rules for form fields",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "rules",
+        "family": "builder",
+        "config": {
+          "options": [
+            "required",
+            "minlength=\"8\"",
+            "type=\"email\"",
+            "pattern=\"[A-Za-z]+\"",
+            "maxlength=\"50\""
+          ],
+          "required": [
+            "required",
+            "minlength=\"8\""
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a03",
+      "type": "feedback",
+      "title": "Feedback Designer",
+      "instruction": "Choose the message that clearly explains the error and tells the user how to correct it.",
+      "content": {
+        "concept": "Provide clear and actionable validation feedback",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "feedback",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Invalid input",
+            "Password must contain at least 8 characters",
+            "Error",
+            "Wrong value"
+          ],
+          "answer": "Password must contain at least 8 characters"
+        }
+      }
+    },
+    {
+      "id": "d19-a04",
+      "type": "debug",
+      "title": "Validation Debugger",
+      "instruction": "Fix the validation rule that incorrectly rejects a valid input.",
+      "content": {
+        "concept": "Debug client-side validation rules",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "validation-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
@@ -31,7 +108,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

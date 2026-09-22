@@ -12,32 +12,41 @@
   "activities": [
     {
       "id": "d18-a1",
-      "type": "discover",
-      "title": "Execution Timeline",
-      "instruction": "Compare the synchronous and asynchronous timelines.",
+      "type": "click-map",
+      "title": "Async Execution Model",
+      "instruction": "Explore the components that make asynchronous execution possible.",
       "content": {
-        "concept": "Synchronous code waits for each operation, while asynchronous code can switch between waiting tasks.",
+        "concept": "Python's asyncio model uses an event loop to coordinate coroutines and tasks, allowing other work to progress while an operation is awaiting I/O.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Coroutine",
+            "async",
+            "await",
+            "Task",
+            "Event Loop"
+          ],
+          "descriptions": [
+            "A coroutine is an awaitable computation defined with async def.",
+            "The async keyword defines a coroutine function.",
+            "await suspends the current coroutine until the awaited operation can continue.",
+            "A Task schedules a coroutine to run concurrently with other tasks.",
+            "The event loop coordinates and runs asynchronous tasks and callbacks."
           ]
         }
       }
     },
     {
       "id": "d18-a2",
-      "type": "discover",
+      "type": "anatomy",
       "title": "Async Syntax Anatomy",
-      "instruction": "Click the syntax parts to inspect them.",
+      "instruction": "Click each part of the async function to inspect its role.",
       "content": {
-        "concept": "async defines a coroutine and await pauses it while an asynchronous operation progresses.",
+        "concept": "async def creates a coroutine function, while await allows the coroutine to suspend during an asynchronous operation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,14 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "async def fetch_data():",
+            "    response = await client.get(url)",
+            "    return response"
+          ],
+          "descriptions": [
+            "Defines fetch_data as a coroutine function.",
+            "await pauses this coroutine while the asynchronous HTTP operation is waiting for completion.",
+            "Returns the completed response to the caller."
           ]
         }
       }
@@ -55,20 +69,23 @@
     {
       "id": "d18-a3",
       "type": "discover",
-      "title": "Task Sequencer",
-      "instruction": "Arrange concurrent tasks on the timeline.",
+      "title": "Concurrent Task Flow",
+      "instruction": "Arrange the steps for running multiple asynchronous tasks.",
       "content": {
-        "concept": "Multiple asynchronous tasks can make progress during I/O wait periods.",
+        "concept": "Multiple I/O-bound coroutines can be scheduled as tasks so the event loop can make progress on another task while one is waiting.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Define asynchronous operations",
+            "2. Create or schedule tasks",
+            "3. Event loop runs the tasks",
+            "4. A task awaits I/O",
+            "5. Event loop runs another ready task",
+            "6. Awaited task resumes when its I/O completes"
           ]
         }
       }
@@ -76,17 +93,23 @@
     {
       "id": "d18-a4",
       "type": "discover",
-      "title": "Concurrency Selector",
-      "instruction": "Choose the execution model for each scenario.",
+      "title": "Concurrency Strategy",
+      "instruction": "Choose the execution approach that fits the scenario.",
       "content": {
-        "concept": "The appropriate execution model depends on whether work is I/O-bound, CPU-bound, or sequential.",
+        "concept": "Async programming is particularly useful for I/O-bound workloads. CPU-heavy work generally requires different concurrency or parallelism strategies.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "asyncio with concurrent HTTP requests",
+            "A simple sequential loop",
+            "asyncio for intensive CPU calculations",
+            "No concurrency model is needed"
+          ],
+          "answer": "asyncio with concurrent HTTP requests"
         }
       }
     }

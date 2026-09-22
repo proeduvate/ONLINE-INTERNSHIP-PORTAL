@@ -1,26 +1,116 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 20,
-  "topic": "Day 20 Topic for Frontend",
-  "version": 1,
+  "topic": "JSON, Local Storage & Session Storage",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Read and work with JSON data",
+    "Understand how browser storage stores key-value data",
+    "Distinguish localStorage persistence from sessionStorage lifetime"
   ],
   "activities": [
     {
       "id": "d20-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "json",
+      "title": "JSON Explorer",
+      "instruction": "Edit a JSON object and inspect how its properties are represented as structured data.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Read and work with JSON data",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "json",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Object",
+            "Property",
+            "String Value",
+            "Number Value",
+            "Array"
+          ],
+          "descriptions": [
+            "A JSON object contains key-value pairs inside braces.",
+            "A named key followed by a colon and its value.",
+            "A text value enclosed in double quotes.",
+            "A numerical value without quotation marks.",
+            "An ordered collection of values enclosed in square brackets."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a02",
+      "type": "storage",
+      "title": "Local Storage Lab",
+      "instruction": "Add, update, read, and remove a key-value pair in a simulated localStorage panel.",
+      "content": {
+        "concept": "Understand how browser storage stores key-value data",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "storage",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. setItem()",
+            "2. getItem()",
+            "3. update the stored value",
+            "4. removeItem()"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a03",
+      "type": "session",
+      "title": "Session vs Local",
+      "instruction": "Compare what happens to stored data when the page is refreshed or the browser tab is closed.",
+      "content": {
+        "concept": "Distinguish localStorage persistence from sessionStorage lifetime",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "session",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "localStorage → persists across browser sessions until removed",
+            "sessionStorage → persists for the current page session"
+          ],
+          "answer": "localStorage → persists across browser sessions until removed"
+        }
+      }
+    },
+    {
+      "id": "d20-a04",
+      "type": "build",
+      "title": "Persistence Builder",
+      "instruction": "Choose the appropriate storage mechanism for each piece of application data.",
+      "content": {
+        "concept": "Choose an appropriate browser storage mechanism",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "persistence",
+        "family": "builder",
+        "config": {
+          "options": [
+            "localStorage",
+            "sessionStorage",
+            "User theme preference",
+            "Temporary checkout state",
+            "Remembered language preference",
+            "Temporary tab-specific data"
+          ],
+          "required": [
+            "localStorage",
+            "User theme preference",
+            "sessionStorage",
+            "Temporary checkout state"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +121,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

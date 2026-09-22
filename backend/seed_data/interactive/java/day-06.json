@@ -14,52 +14,104 @@
       "id": "d6-a1",
       "type": "discover",
       "title": "Class and Object Anatomy",
-      "instruction": "Explore the parts of a Java class.",
+      "instruction": "Explore the parts of a Java class and the object created from it.",
       "content": {
-        "concept": "A class defines the structure and behavior of objects, while an object is an instance created from that class.",
+        "concept": "A class defines the fields and methods that describe a type of object. An object is an instance of that class with its own instance state.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "class-object-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "class Student",
+            "String name",
+            "int age",
+            "void study()",
+            "Student student = new Student()"
+          ],
+          "descriptions": [
+            "Defines a class named Student.",
+            "An instance variable representing the student's name.",
+            "An instance variable representing the student's age.",
+            "A method representing behavior of a Student object.",
+            "Creates an object from the Student class and stores its reference."
+          ]
+        }
       }
     },
     {
       "id": "d6-a2",
       "type": "discover",
       "title": "Object Creation Flow",
-      "instruction": "Arrange the steps for creating an object.",
+      "instruction": "Arrange the steps involved in creating an object.",
       "content": {
-        "concept": "Objects are created from classes using constructors and the new keyword.",
+        "concept": "The new keyword creates an object and invokes an appropriate constructor. The resulting object reference can be stored in a variable and used to access its members.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "object-creation-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define the class",
+            "2. Declare an object reference",
+            "3. Use new to request an object",
+            "4. Constructor initializes the object",
+            "5. Store the object reference"
+          ]
+        }
       }
     },
     {
       "id": "d6-a3",
       "type": "discover",
       "title": "Constructor Builder",
-      "instruction": "Build a constructor for the given class.",
+      "instruction": "Build a constructor that initializes the object's fields.",
       "content": {
-        "concept": "A constructor initializes a newly created object and can receive parameters for initial values.",
+        "concept": "A constructor has the same name as its class and has no return type. Constructors can receive parameters and initialize instance variables when objects are created.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "constructor-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Student",
+            "(String name, int age)",
+            "{",
+            "this.name = name;",
+            "this.age = age;",
+            "}"
+          ],
+          "required": [
+            "Student",
+            "(String name, int age)",
+            "this.name = name;",
+            "this.age = age;"
+          ]
+        }
       }
     },
     {
       "id": "d6-a4",
       "type": "discover",
-      "title": "Encapsulation Lab",
-      "instruction": "Select the correct access strategy.",
+      "title": "Encapsulation Strategy",
+      "instruction": "Choose the access strategy that protects object state.",
       "content": {
-        "concept": "Encapsulation hides internal state and exposes controlled access through methods such as getters and setters.",
+        "concept": "Encapsulation keeps internal state controlled by restricting direct access and exposing appropriate public methods. A common pattern is private fields with public getters and carefully designed setters.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "encapsulation-strategy",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "private field + controlled public methods",
+            "public field + unrestricted direct modification"
+          ],
+          "answer": "private field + controlled public methods"
+        }
       }
     }
   ],

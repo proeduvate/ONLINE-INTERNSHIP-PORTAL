@@ -16,50 +16,104 @@
       "title": "Lambda Anatomy",
       "instruction": "Explore each part of a lambda expression.",
       "content": {
-        "concept": "A lambda expression represents behavior with a compact parameter, arrow, and expression or statement body.",
+        "concept": "A lambda expression provides a compact implementation of a functional interface. Its syntax can contain parameters, the arrow operator, and an expression or statement body.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "lambda-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "(a, b)",
+            "->",
+            "a + b",
+            "(a, b) -> a + b",
+            "BiFunction<Integer, Integer, Integer>"
+          ],
+          "descriptions": [
+            "The lambda parameters receiving input values.",
+            "The lambda operator separating parameters from the body.",
+            "The expression that produces the result.",
+            "A complete lambda expression implementing compatible functional behavior.",
+            "A functional interface whose method accepts two values and produces a result."
+          ]
+        }
       }
     },
     {
       "id": "d12-a2",
       "type": "discover",
-      "title": "Functional Interface Match",
-      "instruction": "Match interfaces with their behaviors.",
+      "title": "Functional Interface Matcher",
+      "instruction": "Match common functional interfaces with the behavior they represent.",
       "content": {
-        "concept": "Functional interfaces contain one abstract method and can be implemented using lambda expressions.",
+        "concept": "A functional interface has exactly one abstract method. Common interfaces include Predicate for boolean tests, Function for transforming a value, Consumer for accepting a value without returning one, and Supplier for producing a value.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "functional-interface-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Predicate<T> → tests a value and returns boolean",
+            "Function<T,R> → transforms a value into another value",
+            "Consumer<T> → accepts a value and returns no result",
+            "Supplier<T> → supplies a value without an input"
+          ],
+          "answer": "Predicate<T> → tests a value and returns boolean"
+        }
       }
     },
     {
       "id": "d12-a3",
       "type": "discover",
       "title": "Lambda Builder",
-      "instruction": "Assemble a valid lambda expression.",
+      "instruction": "Build a lambda that checks whether a number is positive.",
       "content": {
-        "concept": "Lambda syntax can be composed from parameters, an arrow operator, and an executable body.",
+        "concept": "Lambda syntax can replace simple anonymous implementations when a functional interface is expected. Parameter types can often be inferred from the target functional interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "lambda-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Predicate<Integer>",
+            "positive",
+            "=",
+            "n",
+            "->",
+            "n > 0"
+          ],
+          "required": [
+            "Predicate<Integer>",
+            "positive",
+            "=",
+            "n",
+            "->",
+            "n > 0"
+          ]
+        }
       }
     },
     {
       "id": "d12-a4",
       "type": "discover",
       "title": "Method Reference Selector",
-      "instruction": "Select the matching method-reference form.",
+      "instruction": "Choose the method reference that is equivalent to each lambda.",
       "content": {
-        "concept": "Method references provide a concise way to reuse existing methods where a compatible functional interface is expected.",
+        "concept": "A method reference uses the :: operator to refer directly to an existing compatible method. It can make lambda-based code shorter when the lambda simply delegates to an existing method.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "method-reference-selector",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "x -> System.out.println(x) → System.out::println",
+            "x -> x + 1 → System.out::println"
+          ],
+          "answer": "x -> System.out.println(x) → System.out::println"
+        }
       }
     }
   ],

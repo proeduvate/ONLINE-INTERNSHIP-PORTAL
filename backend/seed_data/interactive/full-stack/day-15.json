@@ -14,36 +14,50 @@
       "id": "d15-a1",
       "type": "discover",
       "title": "Express Architecture",
-      "instruction": "Explore the main components of an Express application.",
+      "instruction": "Click each part to explore its role in an Express application.",
       "content": {
-        "concept": "Express organizes backend applications around routes, middleware, request handling, and responses.",
+        "concept": "An Express application organizes backend logic around an application instance, middleware, routes, request handling, and responses.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "express-architecture",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "Express App",
+            "Middleware",
+            "Route",
+            "Request",
+            "Response"
+          ],
+          "descriptions": [
+            "The main Express application instance that coordinates middleware and routes.",
+            "Function that can inspect or modify requests and responses or pass control to the next handler.",
+            "Defines how a specific HTTP method and URL should be handled.",
+            "Contains information sent by the client to the server.",
+            "Carries the data and status returned by the server to the client."
+          ]
         }
       }
     },
     {
       "id": "d15-a2",
       "type": "discover",
-      "title": "REST Method Match",
-      "instruction": "Match HTTP methods to their typical REST operations.",
+      "title": "REST Method Explorer",
+      "instruction": "Choose the HTTP method that best matches each resource operation.",
       "content": {
-        "concept": "REST APIs commonly use HTTP methods such as GET, POST, PUT, PATCH, and DELETE to represent resource operations.",
+        "concept": "REST APIs commonly use GET to retrieve resources, POST to create resources, PUT or PATCH to update resources, and DELETE to remove resources.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "rest-method",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Create a new user → POST",
+            "Create a new user → GET"
+          ],
+          "answer": "Create a new user → POST"
         }
       }
     },
@@ -53,17 +67,20 @@
       "title": "Request Response Journey",
       "instruction": "Arrange the path of a request through an Express server.",
       "content": {
-        "concept": "An Express request can pass through middleware and route handlers before producing a response to the client.",
+        "concept": "An incoming request can pass through middleware and route handlers before the server sends a response back to the client.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "express-request-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Client sends HTTP request",
+            "2. Express receives the request",
+            "3. Middleware processes the request",
+            "4. Matching route handler runs",
+            "5. Server creates the response",
+            "6. Client receives the response"
           ]
         }
       }
@@ -72,19 +89,28 @@
       "id": "d15-a4",
       "type": "discover",
       "title": "REST API Builder",
-      "instruction": "Build routes for a simple resource-based API.",
+      "instruction": "Build a simple CRUD API for a users resource.",
       "content": {
-        "concept": "A REST API exposes resources through predictable routes, HTTP methods, request data, and structured responses.",
+        "concept": "A REST API exposes resources through predictable routes and HTTP methods so clients can create, retrieve, update, and delete data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "rest-api",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "GET /users",
+            "GET /users/:id",
+            "POST /users",
+            "PATCH /users/:id",
+            "DELETE /users/:id"
+          ],
+          "required": [
+            "GET /users",
+            "GET /users/:id",
+            "POST /users",
+            "PATCH /users/:id",
+            "DELETE /users/:id"
           ]
         }
       }

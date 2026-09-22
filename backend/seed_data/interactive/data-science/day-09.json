@@ -14,18 +14,18 @@
       "id": "d9-a1",
       "type": "discover",
       "title": "Explore Correlation",
-      "instruction": "Adjust the relationship and observe the correlation.",
+      "instruction": "Adjust the relationship strength and observe how correlation changes.",
       "content": {
-        "concept": "Correlation describes the strength and direction of association between two numerical variables.",
+        "concept": "Correlation measures the strength and direction of the linear relationship between two numerical variables.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
+          "min": -100,
           "max": 100,
-          "default": 50
+          "default": 0
         }
       }
     },
@@ -33,9 +33,9 @@
       "id": "d9-a2",
       "type": "discover",
       "title": "Anatomy of a Regression Line",
-      "instruction": "Explore the parts of the regression equation.",
+      "instruction": "Explore the components of a simple linear regression equation.",
       "content": {
-        "concept": "A linear regression model represents the relationship between a target variable and one or more predictors.",
+        "concept": "A simple linear regression model estimates a target variable using a predictor and represents the relationship with an equation such as y = mx + b.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -43,9 +43,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "x: Predictor Variable",
+            "y: Target Variable",
+            "m: Slope",
+            "b: Intercept",
+            "ŷ: Predicted Value"
+          ],
+          "descriptions": [
+            "The input variable used to explain or predict the target.",
+            "The actual outcome variable being studied.",
+            "Indicates how much the predicted target changes for a one-unit change in the predictor.",
+            "The predicted value of y when x equals zero.",
+            "The value predicted by the regression model."
           ]
         }
       }
@@ -54,9 +63,9 @@
       "id": "d9-a3",
       "type": "discover",
       "title": "Build the Regression Workflow",
-      "instruction": "Arrange the regression steps into a workflow.",
+      "instruction": "Arrange the steps into a logical regression workflow.",
       "content": {
-        "concept": "Regression analysis involves preparing data, selecting variables, fitting a model, evaluating predictions, and interpreting results.",
+        "concept": "Regression analysis involves preparing data, selecting variables, training a model, evaluating predictions, and interpreting the results.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,9 +73,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Collect and Prepare Data",
+            "2. Select Predictor and Target Variables",
+            "3. Split the Data into Training and Testing Sets",
+            "4. Train the Regression Model",
+            "5. Evaluate Predictions",
+            "6. Interpret the Model Results"
           ]
         }
       }
@@ -75,16 +87,22 @@
       "id": "d9-a4",
       "type": "discover",
       "title": "Correlation or Causation?",
-      "instruction": "Select the correct interpretation for each scenario.",
+      "instruction": "Choose whether each statement describes association or establishes causation.",
       "content": {
-        "concept": "Correlation indicates association but does not by itself establish that one variable causes another.",
+        "concept": "Correlation shows that variables are associated, while causation requires evidence that changes in one variable produce changes in another.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Ice cream sales and swimming activity increase together → Correlation",
+            "A study randomly assigns a treatment and observes its effect → Evidence of causation",
+            "Umbrella sales and rainfall increase together → Correlation",
+            "Two variables move together because of a third variable → Possible confounding relationship"
+          ],
+          "answer": "Ice cream sales and swimming activity increase together → Correlation"
         }
       }
     }

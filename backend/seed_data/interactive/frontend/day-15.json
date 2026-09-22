@@ -1,26 +1,113 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 15,
-  "topic": "Day 15 Topic for Frontend",
-  "version": 1,
+  "topic": "Functions, Scope & Closures",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Define and invoke JavaScript functions",
+    "Understand global, function, and block scope",
+    "Recognize how closures preserve access to surrounding variables"
   ],
   "activities": [
     {
       "id": "d15-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "build",
+      "title": "Function Builder",
+      "instruction": "Assemble a function with a name, parameters, body, and return statement.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Define and invoke JavaScript functions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "function-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "function",
+            "add",
+            "(a, b)",
+            "{",
+            "return a + b;",
+            "}"
+          ],
+          "required": [
+            "function",
+            "add",
+            "(a, b)",
+            "{",
+            "return a + b;",
+            "}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a02",
+      "type": "scope",
+      "title": "Scope Explorer",
+      "instruction": "Move variables through global, function, and block scopes and inspect where each can be accessed.",
+      "content": {
+        "concept": "Understand JavaScript scope",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "scope",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Global Scope",
+            "Function Scope",
+            "Block Scope"
+          ],
+          "descriptions": [
+            "Variables declared outside functions and blocks can be available throughout the script.",
+            "Variables declared with function-local scope are accessible within that function.",
+            "Variables declared with let or const inside a block are accessible within that block."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a03",
+      "type": "callback",
+      "title": "Callback Timeline",
+      "instruction": "Trace a function being passed as an argument and invoked later.",
+      "content": {
+        "concept": "Understand functions as values and callbacks",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "callback",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define callback function",
+            "2. Pass callback as an argument",
+            "3. Outer function receives callback",
+            "4. Outer function invokes callback",
+            "5. Callback executes"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a04",
+      "type": "closure",
+      "title": "Closure Memory",
+      "instruction": "Call the returned function repeatedly and observe how it retains access to its private state.",
+      "content": {
+        "concept": "Recognize how closures preserve access to surrounding variables",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "closure",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 10,
+          "default": 1
+        }
       }
     }
   ],
@@ -31,7 +118,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

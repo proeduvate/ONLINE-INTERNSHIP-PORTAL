@@ -6,24 +6,31 @@
   "learningMode": "interactive_deck",
   "learningObjectives": [
     "Apply layout and spacing principles to create organized interfaces.",
-    "Identify visual hierarchy using size, position, spacing, and grouping.",
-    "Improve interface composition by reducing visual clutter."
+    "Identify visual hierarchy using size, position, spacing, contrast, and grouping.",
+    "Use alignment and consistent spacing to establish visual relationships.",
+    "Improve interface composition by reducing visual clutter and strengthening hierarchy."
   ],
   "activities": [
     {
       "id": "d6-a1",
       "type": "discover",
       "title": "Visual Hierarchy Explorer",
-      "instruction": "Select the element users should notice first.",
+      "instruction": "Select the element users should notice first in the interface.",
       "content": {
-        "concept": "Visual hierarchy guides attention by using size, position, contrast, spacing, and emphasis.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Visual hierarchy controls the order in which users notice and understand interface elements. Size, contrast, position, spacing, and emphasis can make one element more visually dominant than others.",
+        "tip": "Look for the element with the strongest visual emphasis before making your selection."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "hierarchy-selector",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Page Title",
+            "Primary Action Button",
+            "Secondary Link",
+            "Supporting Description"
+          ],
+          "answer": "Page Title"
         }
       }
     },
@@ -31,18 +38,23 @@
       "id": "d6-a2",
       "type": "discover",
       "title": "Spacing System Lab",
-      "instruction": "Adjust spacing to improve the layout.",
+      "instruction": "Adjust the spacing between interface elements until the layout feels organized and easy to scan.",
       "content": {
-        "concept": "Consistent spacing creates relationships between elements and makes interfaces easier to scan.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Spacing creates relationships between elements. Smaller gaps can show that elements belong together, while larger gaps can separate different sections. A consistent spacing system also prevents interfaces from feeling chaotic.",
+        "tip": "Use smaller spacing within related groups and larger spacing between separate sections."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "spacing-adjuster",
         "family": "slider",
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 40,
+          "unit": "px",
+          "labels": {
+            "min": "Too Tight",
+            "max": "Too Loose"
+          }
         }
       }
     },
@@ -50,16 +62,23 @@
       "id": "d6-a3",
       "type": "discover",
       "title": "Alignment Builder",
-      "instruction": "Arrange elements using a consistent alignment.",
+      "instruction": "Arrange the interface sections so that their edges and content follow a consistent alignment system.",
       "content": {
-        "concept": "Alignment creates visual order by establishing shared edges, columns, and relationships between elements.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Alignment creates invisible visual lines that connect elements. Consistent alignment makes interfaces easier to scan and gives layouts a stronger sense of order.",
+        "tip": "Look for shared left and right edges between the header, sidebar, and main content."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "layout-builder",
         "family": "builder",
         "config": {
           "options": [
+            "Header",
+            "Sidebar",
+            "Main Content",
+            "Footer",
+            "Floating Card"
+          ],
+          "required": [
             "Header",
             "Sidebar",
             "Main Content"
@@ -71,16 +90,21 @@
       "id": "d6-a4",
       "type": "discover",
       "title": "Composition Challenge",
-      "instruction": "Choose the cleaner interface composition.",
+      "instruction": "Choose the interface composition that provides the clearest hierarchy with the least visual clutter.",
       "content": {
-        "concept": "Effective composition balances hierarchy, alignment, whitespace, grouping, and visual weight.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Good composition balances hierarchy, alignment, whitespace, grouping, and visual weight. Removing unnecessary decoration and organizing related elements can make an interface easier to understand.",
+        "tip": "Choose the composition where the primary action is clear and related information is grouped logically."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "composition-compare",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Composition A: Equal-sized elements, inconsistent spacing, and weak grouping",
+            "Composition B: Clear hierarchy, consistent spacing, strong alignment, and grouped content",
+            "Composition C: Heavy decoration, dense content, and competing visual emphasis"
+          ],
+          "answer": "Composition B: Clear hierarchy, consistent spacing, strong alignment, and grouped content"
         }
       }
     }

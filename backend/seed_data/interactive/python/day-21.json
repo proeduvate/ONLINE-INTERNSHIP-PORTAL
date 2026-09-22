@@ -14,9 +14,9 @@
       "id": "d21-a1",
       "type": "discover",
       "title": "Type Hint Anatomy",
-      "instruction": "Explore each part of the annotated function.",
+      "instruction": "Click each annotated part of the function to understand its meaning.",
       "content": {
-        "concept": "Type hints describe expected variable, parameter, and return-value types without changing Python's runtime behavior by themselves.",
+        "concept": "Type hints describe expected parameter and return types. Python does not generally enforce these annotations at runtime by itself, but tools such as type checkers can use them to detect problems.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "def calculate_total(price: float, quantity: int) -> float:",
+            "price: float",
+            "quantity: int",
+            "-> float",
+            "return price * quantity"
+          ],
+          "descriptions": [
+            "Defines a function with annotated parameters and an annotated return type.",
+            "Indicates that price is expected to be a floating-point value.",
+            "Indicates that quantity is expected to be an integer.",
+            "Indicates that the function is expected to return a floating-point value.",
+            "Calculates and returns the total."
           ]
         }
       }
@@ -35,19 +44,30 @@
       "id": "d21-a2",
       "type": "discover",
       "title": "Dataclass Builder",
-      "instruction": "Assemble the fields of a dataclass.",
+      "instruction": "Assemble a dataclass for representing a user.",
       "content": {
-        "concept": "Dataclasses provide a concise way to define classes primarily used for storing structured data.",
+        "concept": "The dataclasses module can automatically generate common methods such as an initializer for classes primarily intended to store structured data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "from dataclasses import dataclass",
+            "@dataclass",
+            "class User:",
+            "name: str",
+            "age: int",
+            "email: str"
+          ],
+          "required": [
+            "from dataclasses import dataclass",
+            "@dataclass",
+            "class User:",
+            "name: str",
+            "age: int",
+            "email: str"
           ]
         }
       }
@@ -55,37 +75,46 @@
     {
       "id": "d21-a3",
       "type": "discover",
-      "title": "Validation Matcher",
-      "instruction": "Match each validation rule to its field.",
+      "title": "Pydantic Validation Selector",
+      "instruction": "Choose the validation rule that best fits the field.",
       "content": {
-        "concept": "Pydantic models validate and parse external data according to declared field definitions.",
+        "concept": "Pydantic models define fields and constraints for external data and can validate and parse incoming values according to the model definition.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "name: str",
+            "age: int",
+            "email: EmailStr",
+            "items: list[str]"
+          ],
+          "answer": "email: EmailStr"
         }
       }
     },
     {
       "id": "d21-a4",
       "type": "discover",
-      "title": "Model Selection Lab",
-      "instruction": "Select the appropriate modeling approach.",
+      "title": "Data Modeling Selector",
+      "instruction": "Choose the approach that best fits the requirement.",
       "content": {
-        "concept": "Type hints, dataclasses, and validation models solve different concerns in application design.",
+        "concept": "Type hints improve code clarity and tooling, dataclasses are convenient for structured Python objects, and Pydantic models are especially useful when validating or parsing external data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Use type hints when documenting expected types in application code",
+            "Use a dataclass for a simple internal data container",
+            "Use a Pydantic model for validating API request data",
+            "Use an untyped dictionary for every external request"
+          ],
+          "answer": "Use a Pydantic model for validating API request data"
         }
       }
     }

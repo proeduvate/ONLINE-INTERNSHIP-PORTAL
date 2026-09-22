@@ -14,9 +14,9 @@
       "id": "d28-a1",
       "type": "discover",
       "title": "CI/CD Pipeline",
-      "instruction": "Arrange the stages of a deployment pipeline.",
+      "instruction": "Arrange the stages of a typical CI/CD pipeline.",
       "content": {
-        "concept": "A CI/CD pipeline can automate code validation, testing, building, and deployment after changes are submitted.",
+        "concept": "A CI/CD pipeline can automatically validate changes, run tests, build application artifacts, and deploy approved changes to an environment.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Developer pushes changes",
+            "2. CI pipeline installs dependencies",
+            "3. Linting and automated tests run",
+            "4. Application is built",
+            "5. Deployment is performed"
           ]
         }
       }
@@ -35,16 +37,20 @@
       "id": "d28-a2",
       "type": "discover",
       "title": "Performance Selector",
-      "instruction": "Choose the appropriate optimization for each issue.",
+      "instruction": "Choose the optimization that best addresses the issue.",
       "content": {
-        "concept": "Performance improvements can target assets, rendering, network requests, database queries, and backend processing.",
+        "concept": "Performance work should target the actual bottleneck. Common areas include frontend assets, rendering, network requests, database queries, caching, and backend processing.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "performance-compare",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "A page loads a very large image that is displayed as a small thumbnail → optimize and appropriately size the image",
+            "A page loads slowly because of an expensive database query → increase the image dimensions"
+          ],
+          "answer": "A page loads a very large image that is displayed as a small thumbnail → optimize and appropriately size the image"
         }
       }
     },
@@ -52,18 +58,30 @@
       "id": "d28-a3",
       "type": "discover",
       "title": "Security Checkpoint",
-      "instruction": "Identify security controls for common application risks.",
+      "instruction": "Explore security controls that address common application risks.",
       "content": {
-        "concept": "Production applications should protect authentication, user input, secrets, APIs, and stored data against common security risks.",
+        "concept": "Production applications should validate input, protect authentication, secure secrets, enforce authorization, use secure transport, and protect APIs and stored data against common attacks.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
-        "family": "compare",
+        "mode": "security-controls",
+        "family": "click-map",
         "config": {
-          "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
+          "items": [
+            "Input Validation",
+            "Authentication",
+            "Authorization",
+            "Secret Management",
+            "HTTPS",
+            "Rate Limiting"
+          ],
+          "descriptions": [
+            "Checks incoming data against expected formats and constraints.",
+            "Verifies the identity of a user or service.",
+            "Determines whether an authenticated identity is allowed to perform an action.",
+            "Keeps API keys, passwords, and other sensitive configuration outside source code.",
+            "Encrypts data transmitted between clients and servers.",
+            "Limits excessive requests to reduce abuse and protect application resources."
           ]
         }
       }
@@ -72,19 +90,31 @@
       "id": "d28-a4",
       "type": "discover",
       "title": "Production Readiness Builder",
-      "instruction": "Build a production readiness checklist.",
+      "instruction": "Build a checklist for evaluating whether an application is ready for production.",
       "content": {
-        "concept": "Production readiness combines testing, security, performance, monitoring, configuration, backups, and reliable deployment practices.",
+        "concept": "Production readiness combines functional testing, security, performance, monitoring, reliable configuration, backups where applicable, deployment checks, and documentation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "production-checklist-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Automated tests",
+            "Security checks",
+            "Performance checks",
+            "Environment configuration",
+            "Monitoring and logging",
+            "Backup and recovery plan",
+            "Deployment rollback strategy",
+            "Hard-coded production credentials"
+          ],
+          "required": [
+            "Automated tests",
+            "Security checks",
+            "Performance checks",
+            "Environment configuration",
+            "Monitoring and logging"
           ]
         }
       }

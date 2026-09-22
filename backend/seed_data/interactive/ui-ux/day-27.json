@@ -14,7 +14,7 @@
       "id": "d27-a1",
       "type": "discover",
       "title": "Content Structure Map",
-      "instruction": "Arrange content into a logical information hierarchy.",
+      "instruction": "Explore how content and features can be grouped into a logical hierarchy.",
       "content": {
         "concept": "Information architecture organizes content and features so users can find and understand them efficiently.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -23,7 +23,34 @@
         "mode": "architecture",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "nodes": [
+            {
+              "label": "Home",
+              "children": [
+                "Dashboard",
+                "Projects",
+                "Profile"
+              ]
+            },
+            {
+              "label": "Projects",
+              "children": [
+                "Active Projects",
+                "Completed Projects",
+                "Project Details"
+              ]
+            },
+            {
+              "label": "Project Details",
+              "children": [
+                "Overview",
+                "Tasks",
+                "Resources",
+                "Activity"
+              ]
+            }
+          ],
+          "principle": "Group related content while keeping frequently used destinations easy to reach."
         }
       }
     },
@@ -31,7 +58,7 @@
       "id": "d27-a2",
       "type": "discover",
       "title": "User Flow Builder",
-      "instruction": "Build the shortest logical path to the user's goal.",
+      "instruction": "Build the shortest logical path for a user completing a primary task.",
       "content": {
         "concept": "User flows represent the sequence of actions users take to complete a specific task.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -41,9 +68,22 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Open Dashboard",
+            "Select Project",
+            "View Project Details",
+            "Choose Task",
+            "Complete Task",
+            "Receive Confirmation",
+            "Open Unrelated Settings",
+            "Return to Home"
+          ],
+          "correctOrder": [
+            "Open Dashboard",
+            "Select Project",
+            "View Project Details",
+            "Choose Task",
+            "Complete Task",
+            "Receive Confirmation"
           ]
         }
       }
@@ -52,7 +92,7 @@
       "id": "d27-a3",
       "type": "discover",
       "title": "Flow Sequence Challenge",
-      "instruction": "Drag each screen into the correct task sequence.",
+      "instruction": "Drag each screen into the correct sequence for completing a task.",
       "content": {
         "concept": "A well-structured flow reduces unnecessary steps and keeps users oriented toward their goal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -62,9 +102,20 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Login",
+            "2. Dashboard",
+            "3. Select Project",
+            "4. Project Details",
+            "5. Complete Task",
+            "6. Confirmation"
+          ],
+          "items": [
+            "Confirmation",
+            "Project Details",
+            "Dashboard",
+            "Complete Task",
+            "Login",
+            "Select Project"
           ]
         }
       }
@@ -73,7 +124,7 @@
       "id": "d27-a4",
       "type": "discover",
       "title": "Wireframe Anatomy",
-      "instruction": "Identify the purpose of each wireframe region.",
+      "instruction": "Identify the purpose of each region in a low-fidelity wireframe.",
       "content": {
         "concept": "Wireframes define hierarchy, structure, navigation, and content placement before visual styling.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -83,9 +134,26 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            {
+              "label": "Navigation",
+              "description": "Provides access to major sections and helps users understand where they are."
+            },
+            {
+              "label": "Page Title",
+              "description": "Clearly communicates the purpose of the current screen."
+            },
+            {
+              "label": "Primary Content",
+              "description": "Contains the information or controls needed to complete the task."
+            },
+            {
+              "label": "Primary Action",
+              "description": "Represents the main action users are expected to take."
+            },
+            {
+              "label": "Supporting Information",
+              "description": "Provides additional context without competing with the primary task."
+            }
           ]
         }
       }

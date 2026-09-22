@@ -14,9 +14,9 @@
       "id": "d26-a1",
       "type": "discover",
       "title": "Deployment Pipeline",
-      "instruction": "Explore the path from model training to prediction.",
+      "instruction": "Explore the path from a trained model to a prediction returned to an application.",
       "content": {
-        "concept": "Model deployment makes a trained model available to applications through a serving layer.",
+        "concept": "Model deployment makes a trained model available to applications through a serving layer such as a REST API.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Trained Model",
+            "Model Server",
+            "REST API Endpoint",
+            "Client Application",
+            "Prediction Response"
+          ],
+          "descriptions": [
+            "The trained model saved for inference.",
+            "Loads the model and handles prediction requests.",
+            "A URL through which applications send prediction requests.",
+            "Sends input data to the deployed endpoint.",
+            "Contains the model's prediction and related response data."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d26-a2",
       "type": "discover",
       "title": "API Anatomy",
-      "instruction": "Identify the parts of a prediction API.",
+      "instruction": "Identify the main components of a REST prediction API.",
       "content": {
-        "concept": "A prediction API receives input data, runs inference, and returns a model prediction.",
+        "concept": "A prediction API receives structured input, validates it, performs inference, and returns a structured response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "HTTP Method",
+            "API Endpoint",
+            "Request Body",
+            "Input Validation",
+            "Model Inference",
+            "JSON Response"
+          ],
+          "descriptions": [
+            "Defines the operation, such as POST for sending prediction data.",
+            "The URL path that receives prediction requests.",
+            "Contains the input features sent by the client.",
+            "Checks that incoming data has the expected structure and values.",
+            "Uses the trained model to generate a prediction.",
+            "Returns the prediction and relevant information to the client."
           ]
         }
       }
@@ -56,9 +76,9 @@
       "id": "d26-a3",
       "type": "discover",
       "title": "Request Builder",
-      "instruction": "Build a valid prediction request.",
+      "instruction": "Build a valid request for a model prediction endpoint.",
       "content": {
-        "concept": "API clients send structured input to an endpoint using an HTTP request.",
+        "concept": "A client sends structured feature values to a prediction endpoint, usually using an HTTP POST request with JSON data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +86,17 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "POST /predict",
+            "Content-Type: application/json",
+            "JSON feature values",
+            "Send the HTTP request",
+            "Receive prediction response"
+          ],
+          "required": [
+            "POST /predict",
+            "Content-Type: application/json",
+            "JSON feature values",
+            "Send the HTTP request"
           ]
         }
       }
@@ -77,9 +105,9 @@
       "id": "d26-a4",
       "type": "discover",
       "title": "Prediction Workflow",
-      "instruction": "Order the API prediction steps.",
+      "instruction": "Order the steps from an application request to the returned prediction.",
       "content": {
-        "concept": "A prediction request follows a sequence from client input through validation, inference, and response.",
+        "concept": "A prediction request flows from the client through the API, validation, model inference, and response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -87,9 +115,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Client Creates Prediction Request",
+            "2. Request Reaches API Endpoint",
+            "3. API Validates Input",
+            "4. API Preprocesses Input",
+            "5. Model Generates Prediction",
+            "6. API Returns JSON Response",
+            "7. Client Displays or Uses Prediction"
           ]
         }
       }

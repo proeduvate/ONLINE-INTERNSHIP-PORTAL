@@ -14,19 +14,28 @@
       "id": "d4-a1",
       "type": "discover",
       "title": "Information Architecture Map",
-      "instruction": "Explore how content is organized into a hierarchy.",
+      "instruction": "Explore how information architecture organizes content and navigation.",
       "content": {
-        "concept": "Information architecture structures content, navigation, and relationships so users can find what they need.",
+        "concept": "Information architecture organizes content, labels, navigation, and relationships so users can understand where they are and find what they need.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "information-architecture-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Content",
+            "Categories",
+            "Navigation",
+            "Labels",
+            "Search"
+          ],
+          "descriptions": [
+            "The information, features, and resources users need to access.",
+            "Groups related content into understandable sections.",
+            "Provides paths for users to move between sections or screens.",
+            "Uses clear names so users understand what a section or action contains.",
+            "Helps users directly locate specific information when browsing is inefficient."
           ]
         }
       }
@@ -35,19 +44,22 @@
       "id": "d4-a2",
       "type": "discover",
       "title": "Navigation Pattern Match",
-      "instruction": "Match each navigation pattern to its use case.",
+      "instruction": "Choose the navigation pattern that best fits each situation.",
       "content": {
-        "concept": "Tabs, navigation bars, breadcrumbs, menus, and search support different navigation needs and content structures.",
+        "concept": "Navigation patterns should match the content structure and user task. Tabs work well for related peer sections, breadcrumbs show location in a hierarchy, and search helps users locate specific content directly.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "navigation-choice",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Tabs: Switch between closely related sections at the same level",
+            "Breadcrumbs: Show the user's location within a hierarchy",
+            "Search: Find specific content directly",
+            "Navigation Menu: Move between major areas of an application"
+          ],
+          "answer": "Tabs: Switch between closely related sections at the same level"
         }
       }
     },
@@ -55,19 +67,22 @@
       "id": "d4-a3",
       "type": "discover",
       "title": "User Flow Builder",
-      "instruction": "Arrange the steps to complete a user task.",
+      "instruction": "Arrange the steps for a user completing an online purchase.",
       "content": {
-        "concept": "A user flow represents the sequence of actions and decisions required to complete a specific goal.",
+        "concept": "A user flow represents the actions, screens, and decisions a user goes through to achieve a specific goal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "purchase-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Browse or search for a product",
+            "2. Open the product details",
+            "3. Add the product to the cart",
+            "4. Review the cart",
+            "5. Enter delivery and payment information",
+            "6. Confirm the order"
           ]
         }
       }
@@ -75,17 +90,21 @@
     {
       "id": "d4-a4",
       "type": "discover",
-      "title": "Flow Friction Lab",
-      "instruction": "Identify the step that creates unnecessary friction.",
+      "title": "Flow Friction Detector",
+      "instruction": "Choose the flow with less unnecessary friction.",
       "content": {
-        "concept": "Reducing unnecessary steps, decisions, and navigation changes can make task completion more efficient.",
+        "concept": "Task flows become harder when users encounter unnecessary steps, repeated information, unclear choices, unexpected navigation, or avoidable interruptions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "flow-friction-choice",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Checkout: Cart → Address → Payment → Review → Confirm",
+            "Checkout: Cart → Login → Home → Cart → Address → Help → Payment → Cart → Review → Confirm"
+          ],
+          "answer": "Checkout: Cart → Address → Payment → Review → Confirm"
         }
       }
     }

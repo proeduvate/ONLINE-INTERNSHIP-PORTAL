@@ -13,53 +13,93 @@
     {
       "id": "d3-a1",
       "type": "discover",
-      "title": "Loop Flow Map",
-      "instruction": "Trace the path of a loop condition.",
+      "title": "Loop Execution Flow",
+      "instruction": "Arrange the stages of a for-loop iteration.",
       "content": {
-        "concept": "A loop repeatedly executes a block while its controlling condition permits further iterations.",
+        "concept": "A loop evaluates its controlling condition before or after an iteration depending on the loop type. A for loop performs initialization, checks the condition, executes the body, updates the loop variable, and repeats while the condition remains true.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "loop-execution-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Initialize the loop variable",
+            "2. Evaluate the condition",
+            "3. Execute the loop body",
+            "4. Update the loop variable",
+            "5. Evaluate the condition again"
+          ]
+        }
       }
     },
     {
       "id": "d3-a2",
       "type": "discover",
-      "title": "Loop Anatomy",
-      "instruction": "Identify the parts of a for loop.",
+      "title": "For Loop Anatomy",
+      "instruction": "Explore the components of a Java for loop.",
       "content": {
-        "concept": "A for loop typically contains initialization, a condition, an update expression, and a loop body.",
+        "concept": "A for loop commonly contains initialization, a boolean condition, an update expression, and a body that executes for each iteration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "for-loop-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "int i = 0",
+            "i < 5",
+            "i++",
+            "System.out.println(i)"
+          ],
+          "descriptions": [
+            "Initializes the loop variable before the first iteration.",
+            "Determines whether another iteration should execute.",
+            "Updates the loop variable after each iteration.",
+            "The loop body executed during each iteration."
+          ]
+        }
       }
     },
     {
       "id": "d3-a3",
       "type": "discover",
-      "title": "Loop Selector",
-      "instruction": "Choose the best loop for each scenario.",
+      "title": "Choose the Loop",
+      "instruction": "Choose the loop structure that best fits each scenario.",
       "content": {
-        "concept": "The choice between for, while, and do-while depends on iteration control and when the condition should be evaluated.",
+        "concept": "Use for when iteration is naturally controlled by a counter or known range, while when repetition depends on a condition, and do-while when the body must execute at least once.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "loop-selection",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "for",
+            "while",
+            "do-while"
+          ],
+          "answer": "for"
+        }
       }
     },
     {
       "id": "d3-a4",
       "type": "discover",
-      "title": "Iteration Slider",
-      "instruction": "Change the loop limit and observe iterations.",
+      "title": "Iteration Controller",
+      "instruction": "Change the loop limit and observe how the number of iterations changes.",
       "content": {
-        "concept": "Changing initialization, conditions, or updates changes how many times a loop executes.",
+        "concept": "Changing the loop condition or update expression changes the number of iterations. A loop such as for (int i = 1; i <= n; i++) executes n times when n is positive.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "iteration-controller",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 10,
+          "default": 5
+        }
       }
     }
   ],

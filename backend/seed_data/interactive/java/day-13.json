@@ -14,52 +14,103 @@
       "id": "d13-a1",
       "type": "discover",
       "title": "Stream Pipeline Map",
-      "instruction": "Connect the stages of a stream pipeline.",
+      "instruction": "Explore the stages of a Java Stream pipeline.",
       "content": {
-        "concept": "A stream pipeline typically starts with a source, applies intermediate operations, and finishes with a terminal operation.",
+        "concept": "A stream pipeline consists of a source, zero or more intermediate operations, and a terminal operation. Intermediate operations transform or filter the stream, while the terminal operation produces a result or side effect.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "stream-pipeline-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Source",
+            "filter()",
+            "map()",
+            "sorted()",
+            "collect()"
+          ],
+          "descriptions": [
+            "Creates a stream from a collection, array, or another source.",
+            "Keeps elements that satisfy a predicate.",
+            "Transforms each element into another value.",
+            "Orders the stream elements according to the selected ordering.",
+            "A terminal operation that gathers stream results into a collection or other result."
+          ]
+        }
       }
     },
     {
       "id": "d13-a2",
       "type": "discover",
-      "title": "Operation Selector",
-      "instruction": "Choose the operation that solves each task.",
+      "title": "Stream Operation Selector",
+      "instruction": "Choose the stream operation that best solves each task.",
       "content": {
-        "concept": "Operations such as filter, map, sorted, and reduce solve different collection-processing problems.",
+        "concept": "filter selects elements, map transforms elements, sorted orders elements, and reduce combines elements into a single accumulated result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "stream-operation-selector",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Keep only numbers greater than 50 → filter()",
+            "Convert names to uppercase → map()",
+            "Order numbers from smallest to largest → sorted()",
+            "Calculate the total of all numbers → reduce()"
+          ],
+          "answer": "Keep only numbers greater than 50 → filter()"
+        }
       }
     },
     {
       "id": "d13-a3",
       "type": "discover",
-      "title": "Build the Pipeline",
-      "instruction": "Compose a stream pipeline from the given requirements.",
+      "title": "Build the Stream Pipeline",
+      "instruction": "Compose a pipeline that keeps even numbers and converts them to squares.",
       "content": {
-        "concept": "Stream operations can be chained to transform, filter, and aggregate collection data declaratively.",
+        "concept": "Stream operations can be chained into a declarative pipeline. Each intermediate operation receives the result of the previous stage, while the terminal operation completes the pipeline.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "stream-pipeline-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            ".stream()",
+            ".filter(n -> n % 2 == 0)",
+            ".map(n -> n * n)",
+            ".toList()"
+          ],
+          "required": [
+            ".stream()",
+            ".filter(n -> n % 2 == 0)",
+            ".map(n -> n * n)",
+            ".toList()"
+          ]
+        }
       }
     },
     {
       "id": "d13-a4",
       "type": "discover",
       "title": "Pipeline Ordering",
-      "instruction": "Arrange the stream operations correctly.",
+      "instruction": "Arrange the stream operations to transform the data correctly.",
       "content": {
-        "concept": "The order of stream operations affects the data flowing through the pipeline and can affect efficiency.",
+        "concept": "The order of intermediate operations determines which data reaches later stages. For example, filtering before an expensive transformation can reduce the number of elements that must be transformed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "stream-ordering",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create the stream",
+            "2. Filter unwanted elements",
+            "3. Transform the remaining elements",
+            "4. Collect or otherwise consume the result"
+          ]
+        }
       }
     }
   ],

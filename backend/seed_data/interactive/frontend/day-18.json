@@ -1,26 +1,126 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 18,
-  "topic": "Day 18 Topic for Frontend",
-  "version": 1,
+  "topic": "Events & Event Handling",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Recognize common browser event types",
+    "Attach event listeners and respond to events",
+    "Understand event bubbling and event delegation"
   ],
   "activities": [
     {
       "id": "d18-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "event-map",
+      "title": "Event Map",
+      "instruction": "Click each UI control to discover which browser events it can trigger.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Recognize common browser event types",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "event-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Button",
+            "Text Input",
+            "Form",
+            "Mouse Area",
+            "Keyboard Focus"
+          ],
+          "descriptions": [
+            "Can emit events such as click.",
+            "Can emit input, change, focus, and keyboard events.",
+            "Can emit submit.",
+            "Can emit mouseover, mousemove, and click.",
+            "Can emit focus and blur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a02",
+      "type": "listener",
+      "title": "Listener Lab",
+      "instruction": "Attach an event listener to a button and trigger the resulting UI response.",
+      "content": {
+        "concept": "Attach event listeners and respond to events",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "listener",
+        "family": "builder",
+        "config": {
+          "options": [
+            "button",
+            "addEventListener",
+            "'click'",
+            "() => {",
+            "showMessage();",
+            "}"
+          ],
+          "required": [
+            "button",
+            "addEventListener",
+            "'click'",
+            "() => {",
+            "showMessage();",
+            "}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a03",
+      "type": "bubble",
+      "title": "Bubbling Visualizer",
+      "instruction": "Click a nested element and trace the event as it travels from the target toward its ancestors.",
+      "content": {
+        "concept": "Understand event bubbling",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "bubble",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Event occurs on target",
+            "2. Target handler runs",
+            "3. Parent handler runs",
+            "4. Higher ancestor handlers run",
+            "5. Event reaches the document"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a04",
+      "type": "delegate",
+      "title": "Delegation Demo",
+      "instruction": "Use one parent listener to respond to clicks from dynamically created child buttons.",
+      "content": {
+        "concept": "Understand event delegation",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "delegate",
+        "family": "builder",
+        "config": {
+          "options": [
+            "parent.addEventListener('click', handler)",
+            "event.target",
+            "event.target.matches('.item')",
+            "handleItem(event.target)"
+          ],
+          "required": [
+            "parent.addEventListener('click', handler)",
+            "event.target",
+            "event.target.matches('.item')",
+            "handleItem(event.target)"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +131,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

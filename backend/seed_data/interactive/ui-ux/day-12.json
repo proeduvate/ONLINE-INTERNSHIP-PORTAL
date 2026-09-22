@@ -14,19 +14,28 @@
       "id": "d12-a1",
       "type": "discover",
       "title": "Component Anatomy",
-      "instruction": "Explore the structure of a reusable component.",
+      "instruction": "Explore the structure of a reusable Figma component.",
       "content": {
-        "concept": "Components package reusable interface elements so designers can maintain consistent behavior and styling.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Components package reusable interface elements so designers can maintain consistent styling and behavior across a design.",
+        "tip": "Identify the main component, its properties, and the content that can change."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "figma-component-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            "Main Component",
+            "Component Instance",
+            "Component Property",
+            "Nested Element",
+            "Instance Override"
+          ],
+          "descriptions": [
+            "The source definition used to create reusable instances.",
+            "A reusable copy of the main component.",
+            "Controls configurable content or behavior.",
+            "A component placed inside another component.",
+            "A controlled customization made to an instance."
           ]
         }
       }
@@ -35,19 +44,23 @@
       "id": "d12-a2",
       "type": "discover",
       "title": "Variant Matcher",
-      "instruction": "Match component states to their variants.",
+      "instruction": "Match component states with their appropriate variants.",
       "content": {
         "concept": "Variants group related component states such as default, hover, active, disabled, and selected versions.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Think of variants as different versions of the same reusable component."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "variant-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Default → Resting button",
+            "Hover → Pointer over button",
+            "Pressed → Button currently being activated",
+            "Disabled → Action unavailable",
+            "Selected → Option currently chosen"
+          ],
+          "answer": "Hover → Pointer over button"
         }
       }
     },
@@ -55,19 +68,31 @@
       "id": "d12-a3",
       "type": "discover",
       "title": "Auto Layout Builder",
-      "instruction": "Build a flexible card using Auto Layout.",
+      "instruction": "Build a flexible card using Auto Layout concepts.",
       "content": {
-        "concept": "Auto Layout automatically manages spacing, sizing, and positioning as content changes.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Auto Layout automatically manages direction, spacing, padding, and sizing as content changes.",
+        "tip": "Combine a container, content, spacing, and padding to create a flexible structure."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "auto-layout-builder",
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Container",
+            "Vertical Direction",
+            "Padding",
+            "Gap",
+            "Title",
+            "Description",
+            "Action Button"
+          ],
+          "required": [
+            "Container",
+            "Vertical Direction",
+            "Padding",
+            "Gap",
+            "Title",
+            "Description"
           ]
         }
       }
@@ -76,18 +101,23 @@
       "id": "d12-a4",
       "type": "discover",
       "title": "Responsive Component Lab",
-      "instruction": "Resize the component and observe its behavior.",
+      "instruction": "Resize the component and observe how Auto Layout responds.",
       "content": {
         "concept": "Flexible components adapt their dimensions and spacing when content or container sizes change.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Observe which elements resize, wrap, or maintain their spacing as the container changes."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "auto-layout-resize",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 200,
+          "max": 600,
+          "default": 400,
+          "unit": "px",
+          "labels": {
+            "min": "Compact",
+            "max": "Expanded"
+          }
         }
       }
     }

@@ -13,53 +13,110 @@
     {
       "id": "d19-a1",
       "type": "discover",
-      "title": "Spring Architecture Map",
-      "instruction": "Map the major Spring concepts.",
+      "title": "Spring Core Concepts",
+      "instruction": "Explore the major concepts behind Spring dependency management.",
       "content": {
-        "concept": "Spring provides an application framework built around concepts such as the IoC container, dependency injection, configuration, and managed components.",
+        "concept": "Spring's IoC container manages application objects and can inject their dependencies instead of requiring each class to construct those dependencies itself.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "IoC Container",
+            "Dependency Injection",
+            "Bean",
+            "Configuration",
+            "Component Scanning"
+          ],
+          "descriptions": [
+            "Creates and manages Spring application objects.",
+            "Provides an object's required dependencies from outside the object.",
+            "An object managed by the Spring container.",
+            "Defines how application components and dependencies are configured.",
+            "Discovers classes annotated as Spring components."
+          ]
+        }
       }
     },
     {
       "id": "d19-a2",
       "type": "discover",
       "title": "Dependency Injection Flow",
-      "instruction": "Arrange how dependencies are provided.",
+      "instruction": "Arrange how a Spring-managed dependency is provided.",
       "content": {
-        "concept": "Dependency injection lets a container create and provide required objects instead of requiring classes to construct their dependencies directly.",
+        "concept": "A Spring application defines components and their dependencies, the container creates the required objects, and the dependency is supplied when the dependent component is created.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define a service component",
+            "2. Define the dependency it requires",
+            "3. Spring discovers the components",
+            "4. The IoC container creates the dependency",
+            "5. Spring injects the dependency into the service"
+          ]
+        }
       }
     },
     {
       "id": "d19-a3",
       "type": "discover",
-      "title": "Bean Selector",
-      "instruction": "Select the appropriate Spring component.",
+      "title": "Choose the Spring Component",
+      "instruction": "Choose the annotation that best matches the component's responsibility.",
       "content": {
-        "concept": "Spring annotations such as Component, Service, Repository, and Controller identify application components managed by the container.",
+        "concept": "Spring provides stereotype annotations such as @Component, @Service, @Repository, and @Controller to identify common application-layer components.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "@Controller for handling web requests",
+            "@Repository for implementing business rules",
+            "@Service for mapping HTTP requests",
+            "@Controller for database persistence"
+          ],
+          "answer": "@Controller for handling web requests"
+        }
       }
     },
     {
       "id": "d19-a4",
       "type": "discover",
-      "title": "DI Container Builder",
-      "instruction": "Compose a simple dependency graph.",
+      "title": "Dependency Graph Builder",
+      "instruction": "Build a simple Spring dependency relationship.",
       "content": {
-        "concept": "The Spring IoC container manages object creation and connects collaborating components according to configuration and dependency relationships.",
+        "concept": "A service can depend on another Spring-managed component through constructor injection, allowing the container to connect the components without manual object construction inside the service.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "UserController",
+            "UserService",
+            "UserRepository",
+            "Constructor injection",
+            "UserController → UserService",
+            "UserService → UserRepository",
+            "Create every dependency with new inside the controller"
+          ],
+          "required": [
+            "UserController",
+            "UserService",
+            "UserRepository",
+            "Constructor injection",
+            "UserController → UserService",
+            "UserService → UserRepository"
+          ]
+        }
       }
     }
   ],

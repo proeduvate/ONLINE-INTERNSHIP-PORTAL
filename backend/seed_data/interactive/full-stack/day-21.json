@@ -14,19 +14,20 @@
       "id": "d21-a1",
       "type": "discover",
       "title": "UI vs UX Explorer",
-      "instruction": "Match each task to UI or UX design.",
+      "instruction": "Choose whether the activity is primarily UI or UX focused.",
       "content": {
-        "concept": "UI focuses on the interface and visual interaction, while UX focuses on the overall user experience and problem-solving process.",
+        "concept": "UI focuses on the interface's visual and interactive elements, while UX focuses on the user's overall experience, needs, tasks, and problems.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "ui-ux-compare",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Designing the visual style of a button",
+            "Observing users to discover why they struggle to complete checkout"
+          ],
+          "answer": "Designing the visual style of a button"
         }
       }
     },
@@ -34,19 +35,26 @@
       "id": "d21-a2",
       "type": "discover",
       "title": "User Research Map",
-      "instruction": "Map research methods to the information they reveal.",
+      "instruction": "Explore each research method and identify the type of insight it can provide.",
       "content": {
-        "concept": "Interviews, surveys, observation, and usability tests provide different types of insights about users and their needs.",
+        "concept": "Interviews reveal motivations and opinions, surveys collect structured responses, observation reveals real behavior, and usability testing exposes interaction problems.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "research-methods",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "User Interviews",
+            "Surveys",
+            "Observation",
+            "Usability Testing"
+          ],
+          "descriptions": [
+            "Useful for understanding motivations, expectations, frustrations, and opinions.",
+            "Useful for collecting structured responses from a larger group of users.",
+            "Useful for seeing how users actually behave in their real context.",
+            "Useful for identifying usability problems while users attempt specific tasks."
           ]
         }
       }
@@ -55,9 +63,9 @@
       "id": "d21-a3",
       "type": "discover",
       "title": "Design Thinking Journey",
-      "instruction": "Arrange the stages of a design thinking process.",
+      "instruction": "Arrange the common design thinking stages in the correct order.",
       "content": {
-        "concept": "Design thinking commonly moves through understanding users, defining problems, generating ideas, prototyping, and testing.",
+        "concept": "Design thinking commonly moves through empathizing with users, defining the problem, generating ideas, creating prototypes, and testing them. The process can be iterative.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -65,9 +73,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Empathize",
+            "2. Define",
+            "3. Ideate",
+            "4. Prototype",
+            "5. Test"
           ]
         }
       }
@@ -75,20 +85,27 @@
     {
       "id": "d21-a4",
       "type": "discover",
-      "title": "Problem Framing Lab",
-      "instruction": "Build a clear user problem statement.",
+      "title": "Problem Framing Builder",
+      "instruction": "Build a focused user problem statement from the key parts.",
       "content": {
-        "concept": "A focused problem statement connects a specific user need with a meaningful problem to solve.",
+        "concept": "A useful problem statement identifies a specific user, their need or difficulty, and the context in which the problem occurs without prematurely prescribing a solution.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "problem-statement-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Specific user",
+            "User need or problem",
+            "Relevant context",
+            "Evidence or observation",
+            "Specific solution"
+          ],
+          "required": [
+            "Specific user",
+            "User need or problem",
+            "Relevant context"
           ]
         }
       }

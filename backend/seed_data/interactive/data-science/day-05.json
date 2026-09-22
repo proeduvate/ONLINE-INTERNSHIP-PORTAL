@@ -14,16 +14,23 @@
       "id": "d5-a1",
       "type": "discover",
       "title": "Detect Data Quality Issues",
-      "instruction": "Select the issues present in the dataset.",
+      "instruction": "Identify the data quality problems that can occur in a dataset.",
       "content": {
         "concept": "Real-world datasets can contain missing values, duplicates, outliers, inconsistent formats, and invalid entries.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "selector-lab",
-        "family": "lab",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Missing Values",
+            "Duplicate Records",
+            "Outliers",
+            "Inconsistent Formats",
+            "Invalid Values",
+            "Complete and Consistent Data"
+          ]
         }
       }
     },
@@ -31,7 +38,7 @@
       "id": "d5-a2",
       "type": "discover",
       "title": "Build the Cleaning Pipeline",
-      "instruction": "Arrange the cleaning operations logically.",
+      "instruction": "Arrange the data-cleaning operations in a logical order.",
       "content": {
         "concept": "A cleaning pipeline prepares raw data for reliable analysis by resolving quality and consistency issues.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -41,9 +48,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Inspect the Dataset",
+            "2. Identify Missing and Invalid Values",
+            "3. Remove or Handle Duplicates",
+            "4. Handle Missing Values and Outliers",
+            "5. Standardize Formats and Data Types",
+            "6. Validate the Cleaned Dataset"
           ]
         }
       }
@@ -52,9 +62,9 @@
       "id": "d5-a3",
       "type": "discover",
       "title": "Explore Data Distributions",
-      "instruction": "Adjust the values and observe distribution changes.",
+      "instruction": "Adjust the data distribution and observe how its shape changes.",
       "content": {
-        "concept": "Distributions reveal how numerical values are spread and can expose skewness, concentration, or unusual observations.",
+        "concept": "Distributions reveal how numerical values are spread and can expose skewness, concentration, and unusual observations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -71,7 +81,7 @@
       "id": "d5-a4",
       "type": "discover",
       "title": "Connect EDA Techniques",
-      "instruction": "Map each exploratory technique to its purpose.",
+      "instruction": "Explore each exploratory technique and its purpose.",
       "content": {
         "concept": "EDA combines summary statistics, visualizations, correlations, and grouping to understand datasets before modeling.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -81,9 +91,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Summary Statistics",
+            "Histograms",
+            "Box Plots",
+            "Correlation Analysis",
+            "Group Analysis"
+          ],
+          "descriptions": [
+            "Summarize center, spread, and distribution using numerical measures.",
+            "Show the distribution and frequency of numerical values.",
+            "Help identify spread and potential outliers.",
+            "Measure relationships between numerical variables.",
+            "Compare patterns across categories or groups."
           ]
         }
       }

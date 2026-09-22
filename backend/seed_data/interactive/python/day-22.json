@@ -13,20 +13,23 @@
     {
       "id": "d22-a1",
       "type": "discover",
-      "title": "Performance Pipeline",
-      "instruction": "Arrange the optimization workflow.",
+      "title": "Optimization Workflow",
+      "instruction": "Arrange the optimization workflow in the correct order.",
       "content": {
-        "concept": "Effective optimization starts with measuring a program, locating bottlenecks, changing the implementation, and measuring again.",
+        "concept": "Effective optimization starts with measurement, identifies the actual bottleneck, applies a targeted change, and measures again to verify the result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Measure the current performance",
+            "2. Identify the bottleneck",
+            "3. Choose a targeted optimization",
+            "4. Change the implementation",
+            "5. Measure again",
+            "6. Compare the results"
           ]
         }
       }
@@ -35,28 +38,32 @@
       "id": "d22-a2",
       "type": "discover",
       "title": "Complexity Explorer",
-      "instruction": "Compare how algorithms scale with input size.",
+      "instruction": "Choose the complexity that best matches the described algorithm.",
       "content": {
-        "concept": "Algorithmic complexity helps predict how execution cost changes as input grows.",
+        "concept": "Big-O notation describes how an algorithm's resource requirements grow as input size increases. It helps identify algorithms that may become expensive at scale.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
-        "family": "slider",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "choices": [
+            "O(1)",
+            "O(log n)",
+            "O(n)",
+            "O(n²)"
+          ],
+          "answer": "O(n)"
         }
       }
     },
     {
       "id": "d22-a3",
-      "type": "discover",
-      "title": "Profiler Anatomy",
-      "instruction": "Identify the important profiling metrics.",
+      "type": "anatomy",
+      "title": "Profiler Metrics",
+      "instruction": "Click each profiling metric to understand what it tells you.",
       "content": {
-        "concept": "Profiling data can reveal functions consuming significant execution time or being called frequently.",
+        "concept": "Profilers help locate expensive parts of a program by reporting information such as function call counts and execution time.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,9 +71,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "ncalls",
+            "tottime",
+            "cumtime",
+            "function"
+          ],
+          "descriptions": [
+            "Shows how many times a function was called.",
+            "Shows the total time spent inside the function itself, excluding time in called functions.",
+            "Shows cumulative time spent in the function and functions it called.",
+            "Identifies the function associated with the profiling measurement."
           ]
         }
       }
@@ -75,16 +89,22 @@
       "id": "d22-a4",
       "type": "discover",
       "title": "Optimization Selector",
-      "instruction": "Choose an optimization for each bottleneck.",
+      "instruction": "Choose the optimization that directly addresses the measured bottleneck.",
       "content": {
-        "concept": "Optimization strategies should target the measured bottleneck rather than relying on assumptions.",
+        "concept": "Optimization should be driven by profiling evidence. For example, repeated linear searches may benefit from a set or dictionary when appropriate, while excessive repeated computation may benefit from caching.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Replace repeated membership checks in a large collection with a set",
+            "Add random optimizations without measuring",
+            "Increase the number of print statements",
+            "Rewrite unrelated functions"
+          ],
+          "answer": "Replace repeated membership checks in a large collection with a set"
         }
       }
     }

@@ -14,7 +14,7 @@
       "id": "d13-a1",
       "type": "discover",
       "title": "JSON Anatomy",
-      "instruction": "Explore the structure of a JSON object.",
+      "instruction": "Explore the components of a JSON object.",
       "content": {
         "concept": "JSON represents structured data using objects, arrays, strings, numbers, booleans, and null values.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,19 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "{",
+            "  \"name\": \"Maya\",",
+            "  \"age\": 21,",
+            "  \"skills\": [\"Python\", \"SQL\"],",
+            "  \"active\": true",
+            "}"
+          ],
+          "descriptions": [
+            "Opening brace starts a JSON object.",
+            "String key-value pair.",
+            "Numeric value associated with the age key.",
+            "Array containing multiple string values.",
+            "Boolean value representing true."
           ]
         }
       }
@@ -34,19 +44,29 @@
     {
       "id": "d13-a2",
       "type": "discover",
-      "title": "JSON-Python Match",
-      "instruction": "Match JSON structures to Python types.",
+      "title": "JSON-Python Explorer",
+      "instruction": "Identify the Python type corresponding to each JSON value.",
       "content": {
-        "concept": "Python dictionaries, lists, strings, numbers, booleans, and None map naturally to JSON data types.",
+        "concept": "Python's json module maps JSON objects to dictionaries, arrays to lists, strings to str, numbers to int or float, booleans to bool, and null to None.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
-        "family": "compare",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
+          "items": [
+            "JSON object → dict",
+            "JSON array → list",
+            "JSON string → str",
+            "JSON boolean → bool",
+            "JSON null → None"
+          ],
+          "descriptions": [
+            "JSON object is represented as a Python dictionary.",
+            "JSON array is represented as a Python list.",
+            "JSON string is represented as a Python string.",
+            "JSON true/false values map to Python True/False.",
+            "JSON null maps to Python None."
           ]
         }
       }
@@ -55,19 +75,21 @@
       "id": "d13-a3",
       "type": "discover",
       "title": "HTTP Request Flow",
-      "instruction": "Order the API request and response steps.",
+      "instruction": "Order the main steps in an API request and response.",
       "content": {
-        "concept": "An HTTP client sends a request to a server, which processes it and returns a response.",
+        "concept": "An HTTP client creates a request, sends it to a server, receives a response, and processes the returned status and data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Build the HTTP request",
+            "2. Send the request to the API",
+            "3. Receive the HTTP response",
+            "4. Check the status code",
+            "5. Parse and process the response data"
           ]
         }
       }
@@ -76,9 +98,9 @@
       "id": "d13-a4",
       "type": "discover",
       "title": "API Request Builder",
-      "instruction": "Build a valid API request.",
+      "instruction": "Assemble the components of a Python API request.",
       "content": {
-        "concept": "API requests can include methods, URLs, headers, parameters, and request bodies.",
+        "concept": "An API request typically contains an HTTP method and URL and may also include query parameters, headers, and a request body.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -86,9 +108,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "import requests",
+            "url = \"https://api.example.com/users\"",
+            "response = requests.get(url)",
+            "response.status_code",
+            "response.json()",
+            "requests.post(url, json=data)"
+          ],
+          "required": [
+            "import requests",
+            "url = \"https://api.example.com/users\"",
+            "response = requests.get(url)",
+            "response.json()"
           ]
         }
       }

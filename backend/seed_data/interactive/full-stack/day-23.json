@@ -14,18 +14,18 @@
       "id": "d23-a1",
       "type": "discover",
       "title": "Visual Hierarchy Explorer",
-      "instruction": "Adjust visual properties to reveal hierarchy changes.",
+      "instruction": "Adjust the hierarchy level and observe how visual emphasis changes.",
       "content": {
-        "concept": "Visual hierarchy uses size, weight, spacing, contrast, and position to guide attention through an interface.",
+        "concept": "Visual hierarchy guides attention using size, weight, spacing, contrast, position, and grouping. Stronger emphasis should normally be reserved for more important information.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "hierarchy-slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 5,
+          "default": 3
         }
       }
     },
@@ -33,36 +33,41 @@
       "id": "d23-a2",
       "type": "discover",
       "title": "Typography Match",
-      "instruction": "Match typography choices to interface purposes.",
+      "instruction": "Choose the typography treatment that best supports the stated interface purpose.",
       "content": {
-        "concept": "Typography choices affect readability, hierarchy, tone, and consistency across digital products.",
+        "concept": "Typography affects readability, hierarchy, tone, and consistency. Headings typically use stronger emphasis than supporting body text, while body text prioritizes comfortable reading.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "typography-compare",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Large, bold heading with smaller regular body text",
+            "Same size and weight for every piece of text"
+          ],
+          "answer": "Large, bold heading with smaller regular body text"
         }
       }
     },
     {
       "id": "d23-a3",
       "type": "discover",
-      "title": "Color Accessibility Lab",
-      "instruction": "Select accessible color combinations for each interface.",
+      "title": "Color Accessibility Explorer",
+      "instruction": "Explore color choices that improve readability and accessibility.",
       "content": {
-        "concept": "Accessible color choices provide sufficient contrast and should not rely on color alone to communicate meaning.",
+        "concept": "Accessible color design requires sufficient contrast and should not rely on color alone to communicate important information. Text, controls, and status indicators need distinguishable visual treatment.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "color-accessibility",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Dark text on a light background with an additional icon for error state",
+            "Light gray text on a white background with red color as the only error indicator"
+          ],
+          "answer": "Dark text on a light background with an additional icon for error state"
         }
       }
     },
@@ -70,19 +75,28 @@
       "id": "d23-a4",
       "type": "discover",
       "title": "Design System Builder",
-      "instruction": "Compose reusable tokens and interface components.",
+      "instruction": "Compose the core parts of a reusable design system.",
       "content": {
-        "concept": "A design system combines reusable visual tokens and components to maintain consistency across an interface.",
+        "concept": "A design system combines reusable visual tokens, components, and usage rules to maintain consistency across screens and products.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "design-system-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Color tokens",
+            "Typography tokens",
+            "Spacing tokens",
+            "Component library",
+            "Usage guidelines",
+            "One-off page-specific styling"
+          ],
+          "required": [
+            "Color tokens",
+            "Typography tokens",
+            "Spacing tokens",
+            "Component library"
           ]
         }
       }

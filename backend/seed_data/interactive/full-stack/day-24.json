@@ -14,19 +14,28 @@
       "id": "d24-a1",
       "type": "discover",
       "title": "Figma Workspace Anatomy",
-      "instruction": "Explore the major areas of a Figma workspace.",
+      "instruction": "Explore the major areas of a Figma design workspace.",
       "content": {
-        "concept": "A Figma workspace provides tools for designing frames, components, layers, prototypes, and collaborative interfaces.",
+        "concept": "A Figma workspace includes areas for navigating files and pages, editing the canvas, managing layers and properties, and creating prototype interactions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "figma-workspace",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Toolbar",
+            "Layers Panel",
+            "Canvas",
+            "Properties Panel",
+            "Prototype Controls"
+          ],
+          "descriptions": [
+            "Provides tools for creating and editing design objects.",
+            "Shows the hierarchy of frames, groups, components, and layers.",
+            "The main workspace where interface designs and frames are arranged.",
+            "Displays properties such as dimensions, layout, typography, fills, and effects.",
+            "Allows designers to define connections and interactions between prototype frames."
           ]
         }
       }
@@ -35,19 +44,26 @@
       "id": "d24-a2",
       "type": "discover",
       "title": "Component System Builder",
-      "instruction": "Build a reusable component from interface elements.",
+      "instruction": "Build a reusable UI component from its essential parts.",
       "content": {
-        "concept": "Components allow repeated interface elements to share structure and visual behavior across designs.",
+        "concept": "Figma components allow repeated interface patterns to share a common structure and design. Variants can represent different states or properties of a component.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "component-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Base component",
+            "Component properties or variants",
+            "Consistent visual structure",
+            "Reusable instances",
+            "One-off unrelated screens"
+          ],
+          "required": [
+            "Base component",
+            "Consistent visual structure",
+            "Reusable instances"
           ]
         }
       }
@@ -56,19 +72,26 @@
       "id": "d24-a3",
       "type": "discover",
       "title": "Prototype Flow",
-      "instruction": "Connect screens to create an interactive user flow.",
+      "instruction": "Explore the parts required to connect screens into an interactive prototype.",
       "content": {
-        "concept": "Prototyping connects frames and interactions to simulate how users move through an interface.",
+        "concept": "A prototype connects frames through user-triggered interactions. A trigger starts the interaction, an action determines what happens, and the destination identifies where the user goes when navigation is involved.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "prototype-flow",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Trigger",
+            "Action",
+            "Destination Frame",
+            "Transition"
+          ],
+          "descriptions": [
+            "The event that starts an interaction, such as clicking or tapping an element.",
+            "The behavior performed after the trigger, such as navigating or opening an overlay.",
+            "The target frame or screen reached by a navigation interaction.",
+            "Defines how the prototype visually moves from one state or frame to another."
           ]
         }
       }
@@ -77,16 +100,20 @@
       "id": "d24-a4",
       "type": "discover",
       "title": "Interaction Selector",
-      "instruction": "Choose the appropriate interaction for each UI element.",
+      "instruction": "Choose the interaction that best fits each interface behavior.",
       "content": {
-        "concept": "Different interface elements can trigger actions such as navigation, overlays, state changes, or feedback.",
+        "concept": "Prototype interactions should represent the intended user behavior, such as navigating to another screen, opening an overlay, changing a component state, or providing feedback.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "interaction-compare",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Tap Login → navigate to Dashboard",
+            "Tap Login → change the page title to a random color"
+          ],
+          "answer": "Tap Login → navigate to Dashboard"
         }
       }
     }

@@ -1,26 +1,122 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 17,
-  "topic": "Day 17 Topic for Frontend",
-  "version": 1,
+  "topic": "DOM Manipulation",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand the DOM tree and parent-child relationships",
+    "Select elements using DOM APIs",
+    "Change element content and attributes dynamically"
   ],
   "activities": [
     {
       "id": "d17-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "dom-tree",
+      "title": "DOM Tree Explorer",
+      "instruction": "Click nodes in the DOM tree to inspect their parent, child, and sibling relationships.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand the DOM tree and parent-child relationships",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "dom-tree",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "document",
+            "html",
+            "body",
+            "main",
+            "section",
+            "button"
+          ],
+          "descriptions": [
+            "The document root representing the loaded webpage.",
+            "The root HTML element.",
+            "Contains the visible document content.",
+            "Contains the primary page content.",
+            "Groups related content.",
+            "An interactive element nested within the section."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a02",
+      "type": "change",
+      "title": "Content Changer",
+      "instruction": "Select an element and change its text content or attribute in the live preview.",
+      "content": {
+        "concept": "Change element content and attributes dynamically",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-change",
+        "family": "builder",
+        "config": {
+          "options": [
+            "document.querySelector('.title')",
+            ".textContent = 'New Title'",
+            ".setAttribute('class', 'highlight')",
+            "document.querySelector('.button')"
+          ],
+          "required": [
+            "document.querySelector('.title')",
+            ".textContent = 'New Title'"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a03",
+      "type": "create",
+      "title": "Element Creator",
+      "instruction": "Create a new list item and append it to the existing list.",
+      "content": {
+        "concept": "Create and insert DOM elements dynamically",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-create",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create an element",
+            "2. Set its text content",
+            "3. Select the parent",
+            "4. Append the new element"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a04",
+      "type": "guided-code",
+      "title": "DOM Code Builder",
+      "instruction": "Choose a selector and DOM operation to construct the correct JavaScript statement.",
+      "content": {
+        "concept": "Select elements using DOM APIs",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-code",
+        "family": "builder",
+        "config": {
+          "options": [
+            "document.querySelector('#title')",
+            "document.querySelector('.card')",
+            ".textContent",
+            ".style.color",
+            " = 'Welcome'",
+            " = 'blue'"
+          ],
+          "required": [
+            "document.querySelector('#title')",
+            ".textContent",
+            " = 'Welcome'"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +127,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

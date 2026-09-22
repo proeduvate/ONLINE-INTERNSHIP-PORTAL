@@ -12,54 +12,105 @@
   "activities": [
     {
       "id": "d18-a1",
-      "type": "discover",
-      "title": "Test Anatomy",
-      "instruction": "Explore the structure of a unit test.",
+      "type": "anatomy",
+      "title": "Unit Test Anatomy",
+      "instruction": "Explore the important parts of a JUnit test.",
       "content": {
-        "concept": "A unit test prepares inputs, executes the target behavior, and verifies the expected result with assertions.",
+        "concept": "A unit test typically prepares input, invokes the behavior under test, and verifies the result with assertions. JUnit annotations identify test and lifecycle methods.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@Test",
+            "Arrange",
+            "Act",
+            "Assert",
+            "@BeforeEach"
+          ],
+          "descriptions": [
+            "Marks a method as a JUnit test method.",
+            "Creates the required test data and setup.",
+            "Calls the behavior being tested.",
+            "Checks the actual result against the expected result.",
+            "Runs setup before each test method."
+          ]
+        }
       }
     },
     {
       "id": "d18-a2",
       "type": "discover",
       "title": "Arrange-Act-Assert",
-      "instruction": "Arrange the test phases correctly.",
+      "instruction": "Arrange the phases of a unit test correctly.",
       "content": {
-        "concept": "The Arrange-Act-Assert pattern separates test setup, execution, and verification into clear stages.",
+        "concept": "Arrange-Act-Assert separates test preparation, execution, and verification, making the purpose of a test easier to understand.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Arrange test data and dependencies",
+            "2. Act by calling the method under test",
+            "3. Assert that the actual result matches the expectation"
+          ]
+        }
       }
     },
     {
       "id": "d18-a3",
       "type": "discover",
-      "title": "Assertion Selector",
-      "instruction": "Choose the assertion for each scenario.",
+      "title": "Choose the Correct Assertion",
+      "instruction": "Choose the JUnit assertion that matches the scenario.",
       "content": {
-        "concept": "JUnit provides assertions for checking equality, truth values, nullability, exceptions, and other expected outcomes.",
+        "concept": "JUnit assertions allow tests to verify expected values, conditions, nullability, and other outcomes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "assertEquals(expected, actual)",
+            "assertTrue(condition)",
+            "assertNull(value)",
+            "assertThrows(Exception.class, executable)"
+          ],
+          "answer": "assertEquals(expected, actual)"
+        }
       }
     },
     {
       "id": "d18-a4",
       "type": "discover",
-      "title": "Mocking Workflow",
-      "instruction": "Build a service test using a mock dependency.",
+      "title": "Mockito Mocking Flow",
+      "instruction": "Build a unit test that isolates a service from its dependency.",
       "content": {
-        "concept": "Mockito can replace real dependencies with controlled mock objects so a unit can be tested in isolation.",
+        "concept": "Mockito creates controlled test doubles so a unit can be tested without invoking the real implementation of an external dependency.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "@Mock",
+            "when(repository.findById(1L)).thenReturn(user)",
+            "Call the service method",
+            "Verify the expected result",
+            "Connect to the real production database"
+          ],
+          "required": [
+            "@Mock",
+            "when(repository.findById(1L)).thenReturn(user)",
+            "Call the service method",
+            "Verify the expected result"
+          ]
+        }
       }
     }
   ],

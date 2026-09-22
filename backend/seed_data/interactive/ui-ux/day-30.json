@@ -14,7 +14,7 @@
       "id": "d30-a1",
       "type": "discover",
       "title": "Case Study Story Map",
-      "instruction": "Arrange the project stages into a clear UX story.",
+      "instruction": "Arrange the project stages into a clear UX case-study narrative.",
       "content": {
         "concept": "A UX case study connects the problem, research, design decisions, iterations, and outcome into a coherent narrative.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,28 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Project Context",
+            "2. Problem",
+            "3. Research",
+            "4. Key Insights",
+            "5. Ideation",
+            "6. Design",
+            "7. Prototype",
+            "8. Testing",
+            "9. Iteration",
+            "10. Final Outcome"
+          ],
+          "items": [
+            "Testing",
+            "Project Context",
+            "Final Outcome",
+            "Ideation",
+            "Research",
+            "Problem",
+            "Iteration",
+            "Prototype",
+            "Design",
+            "Key Insights"
           ]
         }
       }
@@ -45,9 +64,31 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Project Context",
+            "Problem Statement",
+            "Research Evidence",
+            "Key Insights",
+            "Design Process",
+            "Final Solution",
+            "Prototype Demonstration",
+            "Testing Results",
+            "Iterations",
+            "Key Learnings",
+            "Future Improvements",
+            "Unrelated Personal Information"
+          ],
+          "correctOrder": [
+            "Project Context",
+            "Problem Statement",
+            "Research Evidence",
+            "Key Insights",
+            "Design Process",
+            "Final Solution",
+            "Prototype Demonstration",
+            "Testing Results",
+            "Iterations",
+            "Key Learnings",
+            "Future Improvements"
           ]
         }
       }
@@ -56,7 +97,7 @@
       "id": "d30-a3",
       "type": "discover",
       "title": "Portfolio Evidence Selector",
-      "instruction": "Select artifacts that best demonstrate the design process.",
+      "instruction": "Select artifacts that demonstrate the reasoning and evolution behind the final design.",
       "content": {
         "concept": "Portfolio evidence should demonstrate reasoning, iteration, user-centered decisions, and the final solution.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -65,7 +106,48 @@
         "mode": "selector-lab",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "scenarios": [
+            {
+              "question": "Which artifact best demonstrates how the original problem was understood?",
+              "options": [
+                "User research findings",
+                "Final logo only",
+                "Decorative background",
+                "Personal photo"
+              ],
+              "correctAnswer": "User research findings"
+            },
+            {
+              "question": "Which artifact best demonstrates how the design evolved?",
+              "options": [
+                "Iteration screenshots",
+                "Final screenshot only",
+                "Random inspiration images",
+                "Unrelated certificates"
+              ],
+              "correctAnswer": "Iteration screenshots"
+            },
+            {
+              "question": "Which artifact best demonstrates interaction design?",
+              "options": [
+                "Interactive prototype",
+                "Color palette only",
+                "Project title",
+                "Static contact card"
+              ],
+              "correctAnswer": "Interactive prototype"
+            },
+            {
+              "question": "Which artifact provides evidence that the design was evaluated?",
+              "options": [
+                "Usability testing findings",
+                "Decorative illustrations",
+                "Final wallpaper",
+                "Unused icons"
+              ],
+              "correctAnswer": "Usability testing findings"
+            }
+          ]
         }
       }
     },
@@ -73,7 +155,7 @@
       "id": "d30-a4",
       "type": "discover",
       "title": "Future Roadmap Builder",
-      "instruction": "Connect project findings to meaningful next steps.",
+      "instruction": "Connect project findings to meaningful future improvements and validation activities.",
       "content": {
         "concept": "A UX roadmap identifies future improvements, validation opportunities, and product extensions based on current evidence.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -83,9 +165,32 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Usability Finding",
+              "description": "Users struggle to discover an important feature."
+            },
+            {
+              "label": "Design Improvement",
+              "description": "Improve navigation visibility and information hierarchy."
+            },
+            {
+              "label": "Validation",
+              "description": "Run another usability test to evaluate whether discoverability improves."
+            },
+            {
+              "label": "Product Extension",
+              "description": "Consider related features only after validating the primary experience."
+            },
+            {
+              "label": "Success Metric",
+              "description": "Measure feature discovery and task completion."
+            }
+          ],
+          "connections": [
+            "Usability Finding -> Design Improvement",
+            "Design Improvement -> Validation",
+            "Validation -> Success Metric",
+            "Success Metric -> Product Extension"
           ]
         }
       }

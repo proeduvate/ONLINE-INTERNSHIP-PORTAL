@@ -14,36 +14,50 @@
       "id": "d20-a1",
       "type": "discover",
       "title": "Clean Architecture Map",
-      "instruction": "Connect each application layer to its responsibility.",
+      "instruction": "Explore the responsibilities of each application layer.",
       "content": {
-        "concept": "Clean architecture separates business rules from frameworks, interfaces, and infrastructure concerns.",
+        "concept": "Clean Architecture separates core business rules from application orchestration, external interfaces, frameworks, and infrastructure concerns.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "items": [
+            "Entities / Domain",
+            "Use Cases",
+            "Interface Adapters",
+            "Frameworks and Infrastructure"
+          ],
+          "descriptions": [
+            "Contains core business rules and domain concepts that should be independent of external technology.",
+            "Contains application-specific business workflows and coordinates domain operations.",
+            "Converts data between external formats and the application or domain models.",
+            "Contains frameworks, databases, web servers, external services, and other implementation details."
+          ]
         }
       }
     },
     {
       "id": "d20-a2",
       "type": "discover",
-      "title": "SOLID Principle Matcher",
-      "instruction": "Match each scenario with the relevant SOLID principle.",
+      "title": "SOLID Principle Selector",
+      "instruction": "Choose the SOLID principle that best matches the scenario.",
       "content": {
-        "concept": "SOLID principles encourage focused responsibilities, flexible dependencies, and maintainable object-oriented designs.",
+        "concept": "SOLID principles address different design concerns, such as focused responsibilities, extensibility, substitutability, smaller interfaces, and dependency direction.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "Single Responsibility Principle",
+            "Open/Closed Principle",
+            "Liskov Substitution Principle",
+            "Dependency Inversion Principle"
+          ],
+          "answer": "Single Responsibility Principle"
         }
       }
     },
@@ -51,19 +65,30 @@
       "id": "d20-a3",
       "type": "discover",
       "title": "Layer Builder",
-      "instruction": "Build a layered Python application.",
+      "instruction": "Assemble the major layers of a maintainable Python application.",
       "content": {
-        "concept": "A well-structured application keeps domain logic independent from external frameworks and infrastructure.",
+        "concept": "Separating domain logic, application services, interfaces, and infrastructure makes components easier to test, replace, and maintain.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "Domain entities",
+            "Application use cases",
+            "API or interface layer",
+            "Repository interfaces",
+            "Database infrastructure",
+            "External service adapters"
+          ],
+          "required": [
+            "Domain entities",
+            "Application use cases",
+            "API or interface layer",
+            "Repository interfaces",
+            "Database infrastructure",
+            "External service adapters"
           ]
         }
       }
@@ -71,17 +96,23 @@
     {
       "id": "d20-a4",
       "type": "discover",
-      "title": "Pattern Selector",
-      "instruction": "Choose a suitable design pattern for each problem.",
+      "title": "Design Pattern Selector",
+      "instruction": "Choose the pattern that best fits the described problem.",
       "content": {
-        "concept": "Design patterns provide reusable approaches for recurring software design problems.",
+        "concept": "Design patterns provide reusable structures for recurring design problems. The appropriate choice depends on the problem rather than on the programming language alone.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Factory",
+            "Strategy",
+            "Observer",
+            "Singleton"
+          ],
+          "answer": "Strategy"
         }
       }
     }

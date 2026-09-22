@@ -1,26 +1,108 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 16,
-  "topic": "Day 16 Topic for Frontend",
-  "version": 1,
+  "topic": "Arrays, Objects & Modern JavaScript",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Create and manipulate JavaScript arrays",
+    "Model structured data using objects",
+    "Use modern JavaScript syntax for common data operations"
   ],
   "activities": [
     {
       "id": "d16-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "array",
+      "title": "Array Playground",
+      "instruction": "Add, remove, reorder, and inspect items in a JavaScript array.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Create and manipulate JavaScript arrays",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "array",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Add item",
+            "2. Remove item",
+            "3. Reorder items",
+            "4. Read an item by index"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a02",
+      "type": "methods",
+      "title": "Array Method Lab",
+      "instruction": "Apply map, filter, and find to a dataset and inspect the resulting array or value.",
+      "content": {
+        "concept": "Use common array methods for data operations",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "methods",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "map() → transforms every item",
+            "filter() → keeps matching items",
+            "find() → returns the first matching item"
+          ],
+          "answer": "map() → transforms every item"
+        }
+      }
+    },
+    {
+      "id": "d16-a03",
+      "type": "object",
+      "title": "Object Inspector",
+      "instruction": "Edit object properties and observe how the structured profile changes.",
+      "content": {
+        "concept": "Model structured data using objects",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "object",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "name",
+            "age",
+            "email",
+            "address"
+          ],
+          "descriptions": [
+            "A string property representing the person's name.",
+            "A numerical property representing age.",
+            "A string property representing an email address.",
+            "A nested object containing address information."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a04",
+      "type": "modern",
+      "title": "Modern JS Refactor",
+      "instruction": "Compare traditional JavaScript with template literals, destructuring, and spread syntax.",
+      "content": {
+        "concept": "Use modern JavaScript syntax for common data operations",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "modern",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Template literals → `Hello ${name}`",
+            "Destructuring → `const { name } = user`",
+            "Spread → `const copy = { ...user }`",
+            "Traditional concatenation → `\"Hello \" + name`"
+          ],
+          "answer": "Template literals → `Hello ${name}`"
+        }
       }
     }
   ],
@@ -31,7 +113,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

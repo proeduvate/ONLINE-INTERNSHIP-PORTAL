@@ -14,52 +14,127 @@
       "id": "d30-a1",
       "type": "discover",
       "title": "Capstone Architecture Review",
-      "instruction": "Explore the completed system architecture.",
+      "instruction": "Explore the complete system from requirements to deployment.",
       "content": {
-        "concept": "A capstone review connects requirements, architecture, implementation, integrations, and deployment into one complete system view.",
+        "concept": "A final architecture review connects the project's requirements, frontend, backend, data layer, authentication, integrations, testing, and deployment into one system view.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Requirements",
+            "Frontend",
+            "Backend API",
+            "Database",
+            "Authentication",
+            "External Services",
+            "Deployment"
+          ],
+          "descriptions": [
+            "Define the user and business problems the project solves.",
+            "Provides the interface through which users interact with the system.",
+            "Handles requests and application behavior.",
+            "Stores persistent application data.",
+            "Verifies identity and controls access to protected resources.",
+            "Provide capabilities integrated from outside the core application.",
+            "Runs the application in a target environment."
+          ]
+        }
       }
     },
     {
       "id": "d30-a2",
       "type": "discover",
       "title": "Demo Flow Builder",
-      "instruction": "Build the ideal project demonstration flow.",
+      "instruction": "Build a clear technical demonstration sequence.",
       "content": {
-        "concept": "An effective technical demonstration can progress from the problem and architecture to key features, implementation, testing, and deployment.",
+        "concept": "A strong project demonstration can introduce the problem, explain the architecture, demonstrate important features, show implementation and testing evidence, and finish with deployment and future improvements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Problem and target users",
+            "Key features",
+            "Architecture overview",
+            "Live feature demonstration",
+            "Technical implementation",
+            "Testing and quality evidence",
+            "Deployment",
+            "Future enhancements",
+            "Unrelated source-code dump"
+          ],
+          "required": [
+            "Problem and target users",
+            "Key features",
+            "Architecture overview",
+            "Live feature demonstration",
+            "Testing and quality evidence",
+            "Deployment"
+          ]
+        }
       }
     },
     {
       "id": "d30-a3",
       "type": "discover",
-      "title": "Quality Review",
-      "instruction": "Match project areas with review checks.",
+      "title": "Final Quality Review",
+      "instruction": "Explore the areas that should be reviewed before completing the capstone.",
       "content": {
-        "concept": "Final review can examine functionality, code quality, security, testing, performance, documentation, and deployment readiness.",
+        "concept": "A final review should verify that the system works as intended and that important concerns such as security, testing, performance, documentation, and deployment have been addressed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Functionality",
+            "Code Quality",
+            "Security",
+            "Testing",
+            "Performance",
+            "Documentation",
+            "Deployment"
+          ],
+          "descriptions": [
+            "Verify that required features behave according to the requirements.",
+            "Review structure, readability, maintainability, and appropriate design.",
+            "Check authentication, authorization, validation, secrets, and other security controls.",
+            "Review automated and manual evidence that important behavior has been tested.",
+            "Investigate important bottlenecks and resource usage.",
+            "Ensure setup, usage, architecture, and API information are documented.",
+            "Verify that the application can be configured and operated in its target environment."
+          ]
+        }
       }
     },
     {
       "id": "d30-a4",
       "type": "discover",
-      "title": "Future Roadmap",
-      "instruction": "Arrange enhancements into a roadmap.",
+      "title": "Future Enhancement Roadmap",
+      "instruction": "Arrange a realistic sequence for planning future improvements.",
       "content": {
-        "concept": "A development roadmap organizes future improvements such as new features, scalability work, integrations, performance enhancements, and maintenance.",
+        "concept": "Future development should begin by identifying real limitations or user needs, prioritizing improvements, implementing them incrementally, and validating their impact.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Identify limitations or new user requirements",
+            "2. Analyze impact and technical dependencies",
+            "3. Prioritize improvements",
+            "4. Implement the selected enhancement",
+            "5. Test and validate the change",
+            "6. Deploy and monitor the improvement"
+          ]
+        }
       }
     }
   ],

@@ -14,52 +14,111 @@
       "id": "d8-a1",
       "type": "discover",
       "title": "Interface Anatomy",
-      "instruction": "Explore the components of an interface.",
+      "instruction": "Explore the parts of a Java interface and its implementation.",
       "content": {
-        "concept": "An interface defines a contract that implementing classes agree to provide.",
+        "concept": "An interface defines a contract that implementing classes agree to fulfill. A class uses implements to provide the required behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "interface-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "interface Payment",
+            "void pay();",
+            "class CardPayment",
+            "implements Payment",
+            "public void pay()"
+          ],
+          "descriptions": [
+            "Declares an interface named Payment.",
+            "Declares behavior that implementing classes must provide.",
+            "Defines a concrete implementation class.",
+            "Connects CardPayment to the Payment contract.",
+            "Provides the implementation of the interface method."
+          ]
+        }
       }
     },
     {
       "id": "d8-a2",
       "type": "discover",
       "title": "Package Organizer",
-      "instruction": "Group classes into suitable packages.",
+      "instruction": "Organize classes into packages according to their responsibilities.",
       "content": {
-        "concept": "Packages organize related Java classes and help manage namespaces and access boundaries.",
+        "concept": "Packages group related classes, provide namespace organization, and help structure larger Java applications. A package declaration appears at the beginning of a Java source file.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "package-organizer",
+        "family": "builder",
+        "config": {
+          "options": [
+            "com.app.model",
+            "Student",
+            "Course",
+            "com.app.service",
+            "StudentService",
+            "CourseService",
+            "com.app.controller",
+            "StudentController",
+            "RandomClass"
+          ],
+          "required": [
+            "com.app.model",
+            "Student",
+            "Course",
+            "com.app.service",
+            "StudentService",
+            "CourseService",
+            "com.app.controller",
+            "StudentController"
+          ]
+        }
       }
     },
     {
       "id": "d8-a3",
       "type": "discover",
       "title": "Access Modifier Matcher",
-      "instruction": "Match each modifier with its visibility.",
+      "instruction": "Match each modifier with its accessibility behavior.",
       "content": {
-        "concept": "public, protected, package-private, and private provide different levels of member accessibility.",
+        "concept": "Java provides public, protected, package-private, and private access levels. They control where classes and members can be accessed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "access-modifier-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "public → accessible wherever permitted",
+            "protected → same package and accessible to subclasses",
+            "package-private → accessible within the same package",
+            "private → accessible within the declaring class"
+          ],
+          "answer": "private → accessible within the declaring class"
+        }
       }
     },
     {
       "id": "d8-a4",
       "type": "discover",
-      "title": "Interface Selector",
-      "instruction": "Choose the right interface design for each scenario.",
+      "title": "Interface Design Selector",
+      "instruction": "Choose when an interface is an appropriate design choice.",
       "content": {
-        "concept": "Interfaces are useful when different classes need to provide a common behavior contract.",
+        "concept": "Interfaces are useful when unrelated or different concrete classes need to follow the same behavior contract. This supports loose coupling and polymorphic designs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "interface-selection",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Different payment classes must all provide pay()",
+            "A class needs only one private helper variable"
+          ],
+          "answer": "Different payment classes must all provide pay()"
+        }
       }
     }
   ],

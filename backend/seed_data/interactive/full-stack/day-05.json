@@ -13,40 +13,46 @@
     {
       "id": "d5-a1",
       "type": "discover",
-      "title": "Modern JavaScript Match",
-      "instruction": "Match syntax with its purpose.",
+      "title": "Modern JavaScript Explorer",
+      "instruction": "Identify the modern JavaScript feature being used in each example.",
       "content": {
-        "concept": "Modern JavaScript provides concise syntax and features such as arrow functions, destructuring, spread syntax, and modules.",
+        "concept": "Modern JavaScript includes features such as arrow functions, destructuring, spread syntax, and modules that make code more expressive and reusable.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "modern-js",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "const add = (a, b) => a + b → Arrow function",
+            "const { name } = user → Destructuring",
+            "const copy = { ...user } → Spread syntax",
+            "export default User → Module export"
+          ],
+          "answer": "const { name } = user → Destructuring"
         }
       }
     },
     {
       "id": "d5-a2",
       "type": "discover",
-      "title": "Async Flow",
-      "instruction": "Arrange the asynchronous execution steps.",
+      "title": "Async Execution Flow",
+      "instruction": "Arrange the steps of an async/await operation.",
       "content": {
-        "concept": "Promises represent future results, while async and await provide a structured way to work with asynchronous operations.",
+        "concept": "Promises represent future results, while async and await provide a readable way to pause an async function until a Promise settles.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "async-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Call the async function",
+            "2. Start the asynchronous operation",
+            "3. Await the Promise",
+            "4. Promise settles",
+            "5. Async function resumes",
+            "6. Process the result"
           ]
         }
       }
@@ -55,19 +61,27 @@
       "id": "d5-a3",
       "type": "discover",
       "title": "Fetch Request Builder",
-      "instruction": "Build an API request workflow.",
+      "instruction": "Construct a basic fetch request and response-handling flow.",
       "content": {
-        "concept": "The Fetch API allows browser JavaScript to send HTTP requests and process responses asynchronously.",
+        "concept": "The Fetch API allows browser JavaScript to send HTTP requests and asynchronously process server responses.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "fetch-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "fetch('/api/users')",
+            "await response",
+            "response.json()",
+            "data",
+            "render data"
+          ],
+          "required": [
+            "fetch('/api/users')",
+            "response.json()",
+            "data",
+            "render data"
           ]
         }
       }
@@ -76,19 +90,24 @@
       "id": "d5-a4",
       "type": "discover",
       "title": "API Response Anatomy",
-      "instruction": "Explore the parts of an API response.",
+      "instruction": "Explore the important parts of an API response.",
       "content": {
-        "concept": "An API response can contain a status code, headers, and a body such as JSON data that the frontend can process.",
+        "concept": "An API response commonly contains a status code, headers, and a body such as JSON data that the frontend can process.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "api-response-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Status code",
+            "Headers",
+            "JSON body"
+          ],
+          "descriptions": [
+            "Indicates whether the request succeeded or failed.",
+            "Contains metadata about the response, such as its content type.",
+            "Contains the actual structured data returned by the API."
           ]
         }
       }

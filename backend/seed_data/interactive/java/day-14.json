@@ -14,52 +14,101 @@
       "id": "d14-a1",
       "type": "discover",
       "title": "Thread Lifecycle",
-      "instruction": "Arrange the major thread states in sequence.",
+      "instruction": "Explore the major states in the lifecycle of a Java thread.",
       "content": {
-        "concept": "A Java thread moves through lifecycle states such as new, runnable, waiting, blocked, and terminated.",
+        "concept": "Java defines thread states such as NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, and TERMINATED. A thread can move between states depending on scheduling, synchronization, waiting, and completion.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "thread-lifecycle",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. NEW",
+            "2. RUNNABLE",
+            "3. Running or waiting for execution",
+            "4. BLOCKED / WAITING / TIMED_WAITING when applicable",
+            "5. RUNNABLE again when execution can continue",
+            "6. TERMINATED"
+          ]
+        }
       }
     },
     {
       "id": "d14-a2",
       "type": "discover",
-      "title": "Concurrency Concepts",
-      "instruction": "Match each concept to its role.",
+      "title": "Concurrency Concept Map",
+      "instruction": "Explore the role of common Java concurrency tools.",
       "content": {
-        "concept": "Concurrency uses threads, executors, synchronization, and shared-state controls to coordinate work.",
+        "concept": "Concurrency requires coordination when multiple tasks execute independently or access shared state. Threads perform work, executors manage task execution, synchronization protects critical sections, and concurrent utilities provide safer coordination patterns.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "concurrency-concepts",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Thread",
+            "ExecutorService",
+            "synchronized",
+            "Lock",
+            "Concurrent Collections"
+          ],
+          "descriptions": [
+            "Represents a thread of execution.",
+            "Manages a pool or group of worker threads and executes submitted tasks.",
+            "Provides intrinsic locking for synchronized methods or blocks.",
+            "Provides explicit locking mechanisms for coordinated access.",
+            "Collections designed to support concurrent access with appropriate thread-safety characteristics."
+          ]
+        }
       }
     },
     {
       "id": "d14-a3",
       "type": "discover",
-      "title": "Executor Builder",
-      "instruction": "Build a task execution workflow.",
+      "title": "ExecutorService Builder",
+      "instruction": "Build a basic task-execution workflow using an executor.",
       "content": {
-        "concept": "ExecutorService manages worker threads and provides a structured way to submit and execute tasks.",
+        "concept": "ExecutorService separates task submission from thread management. Tasks can be submitted to an executor, which schedules them on available worker threads. The executor should be shut down when it is no longer needed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "executor-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "ExecutorService executor = Executors.newFixedThreadPool(2);",
+            "executor.submit(task);",
+            "executor.shutdown();"
+          ],
+          "required": [
+            "ExecutorService executor = Executors.newFixedThreadPool(2);",
+            "executor.submit(task);",
+            "executor.shutdown();"
+          ]
+        }
       }
     },
     {
       "id": "d14-a4",
       "type": "discover",
-      "title": "Synchronization Lab",
-      "instruction": "Select the protection needed for shared data.",
+      "title": "Shared-State Protection",
+      "instruction": "Choose the appropriate protection strategy for shared mutable data.",
       "content": {
-        "concept": "Synchronization helps coordinate access to shared mutable state and prevents certain race conditions.",
+        "concept": "When multiple threads access shared mutable state, unsynchronized operations can produce race conditions. Synchronization or other concurrency controls can ensure that critical operations occur safely.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "synchronization-selector",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Multiple threads update the same counter → protect the critical update",
+            "Each thread works only with independent local variables → synchronization is unnecessary for those variables"
+          ],
+          "answer": "Multiple threads update the same counter → protect the critical update"
+        }
       }
     }
   ],

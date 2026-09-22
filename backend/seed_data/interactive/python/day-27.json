@@ -12,32 +12,41 @@
   "activities": [
     {
       "id": "d27-a1",
-      "type": "discover",
+      "type": "click-map",
       "title": "Observability Map",
-      "instruction": "Connect each observability signal to its purpose.",
+      "instruction": "Explore the three major observability signals and their purposes.",
       "content": {
-        "concept": "Logs, metrics, and traces provide complementary views of application behavior.",
+        "concept": "Logs describe events, metrics measure numerical behavior over time, and traces show the path of a request across components.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Logs",
+            "Metrics",
+            "Traces",
+            "Alerts",
+            "Dashboard"
+          ],
+          "descriptions": [
+            "Timestamped records of application events, errors, and useful contextual information.",
+            "Numerical measurements such as request count, latency, CPU usage, or memory usage.",
+            "Records the path and timing of a request as it travels through application components.",
+            "Notifications triggered when monitored conditions cross defined thresholds or rules.",
+            "A visual view that presents important metrics and service health information."
           ]
         }
       }
     },
     {
       "id": "d27-a2",
-      "type": "discover",
-      "title": "Log Anatomy",
-      "instruction": "Identify the important parts of a structured log.",
+      "type": "anatomy",
+      "title": "Python Log Anatomy",
+      "instruction": "Click each part of the logging example to understand its role.",
       "content": {
-        "concept": "Useful logs include information such as timestamps, severity, context, and meaningful event details.",
+        "concept": "Python's logging module supports severity levels and structured contextual information that can help diagnose application behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,14 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "logger = logging.getLogger(__name__)",
+            "logger.info(\"User login\", extra={\"user_id\": 42})",
+            "logger.exception(\"Database request failed\")"
+          ],
+          "descriptions": [
+            "Creates or retrieves a logger associated with the current Python module.",
+            "Records an informational event and attaches contextual data such as a user ID.",
+            "Records an error with exception information, useful when diagnosing failures inside an exception handler."
           ]
         }
       }
@@ -55,40 +69,54 @@
     {
       "id": "d27-a3",
       "type": "discover",
-      "title": "Signal Matcher",
-      "instruction": "Match each problem with the most useful signal.",
+      "title": "Observability Signal Selector",
+      "instruction": "Choose the signal that best answers the question.",
       "content": {
-        "concept": "Different operational questions are better answered by logs, metrics, or traces depending on the problem.",
+        "concept": "Logs, metrics, and traces complement each other. Selecting the appropriate signal makes troubleshooting more efficient.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "Logs",
+            "Metrics",
+            "Traces",
+            "Source code only"
+          ],
+          "answer": "Traces"
         }
       }
     },
     {
       "id": "d27-a4",
-      "type": "discover",
-      "title": "Monitoring Workflow",
-      "instruction": "Build a workflow for detecting and diagnosing failures.",
+      "type": "builder",
+      "title": "Monitoring Workflow Builder",
+      "instruction": "Build a workflow for detecting and diagnosing an application failure.",
       "content": {
-        "concept": "Monitoring workflows combine detection, investigation, diagnosis, and corrective action.",
+        "concept": "An effective observability workflow moves from detecting an abnormal condition to investigating evidence, identifying the cause, and taking corrective action.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "Detect an alert or abnormal metric",
+            "Inspect relevant logs",
+            "Trace the affected request",
+            "Identify the likely root cause",
+            "Apply a corrective change",
+            "Verify the system returns to normal"
+          ],
+          "required": [
+            "Detect an alert or abnormal metric",
+            "Inspect relevant logs",
+            "Trace the affected request",
+            "Identify the likely root cause",
+            "Apply a corrective change",
+            "Verify the system returns to normal"
           ]
         }
       }

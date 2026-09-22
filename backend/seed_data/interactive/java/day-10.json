@@ -13,53 +13,107 @@
     {
       "id": "d10-a1",
       "type": "discover",
-      "title": "Exception Flow",
-      "instruction": "Trace what happens when an exception occurs.",
+      "title": "Exception Handling Flow",
+      "instruction": "Arrange the execution path when an exception is thrown.",
       "content": {
-        "concept": "Exception handling redirects abnormal execution into controlled error-handling paths.",
+        "concept": "When an exception is thrown inside a try block, Java searches for a compatible catch handler. If one is found, its code executes; a finally block can then perform cleanup regardless of whether an exception occurred.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "exception-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Enter the try block",
+            "2. Risky operation executes",
+            "3. Exception is thrown",
+            "4. Matching catch block handles it",
+            "5. finally block performs cleanup when present"
+          ]
+        }
       }
     },
     {
       "id": "d10-a2",
       "type": "discover",
       "title": "Try-Catch Anatomy",
-      "instruction": "Explore each part of the exception-handling structure.",
+      "instruction": "Explore the role of each exception-handling component.",
       "content": {
-        "concept": "try contains risky code, catch handles matching exceptions, and finally can run cleanup logic.",
+        "concept": "The try block contains code that may throw an exception. A catch block handles a matching exception type, while finally is commonly used for cleanup that should occur after the try/catch processing.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "try-catch-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "try",
+            "catch (Exception e)",
+            "finally",
+            "throw new IllegalArgumentException()"
+          ],
+          "descriptions": [
+            "Contains code whose exceptions may be handled.",
+            "Handles an exception compatible with the catch parameter type.",
+            "Contains code that is intended to execute after try/catch processing.",
+            "Explicitly creates and throws an exception object."
+          ]
+        }
       }
     },
     {
       "id": "d10-a3",
       "type": "discover",
       "title": "Exception Matcher",
-      "instruction": "Match errors with appropriate exception types.",
+      "instruction": "Match each failure scenario with an appropriate exception type.",
       "content": {
-        "concept": "Different failures can produce different exception types that should be handled according to the application's needs.",
+        "concept": "Different programming errors and invalid operations can produce different exception types. Understanding the exception helps determine appropriate handling and recovery behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "exception-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Array index outside valid range → ArrayIndexOutOfBoundsException",
+            "Attempting to use a null reference → NullPointerException",
+            "Parsing invalid integer text → NumberFormatException",
+            "Invalid argument supplied to a method → IllegalArgumentException"
+          ],
+          "answer": "Parsing invalid integer text → NumberFormatException"
+        }
       }
     },
     {
       "id": "d10-a4",
       "type": "discover",
-      "title": "Error Handler Builder",
-      "instruction": "Build a safe exception-handling flow.",
+      "title": "Robust Error Handler Builder",
+      "instruction": "Build an exception-handling structure for invalid user input.",
       "content": {
-        "concept": "A robust error-handling design catches expected failures, communicates useful information, and preserves necessary cleanup.",
+        "concept": "Robust error handling anticipates expected failures, catches appropriate exception types, gives useful feedback, and keeps cleanup separate from normal business logic where appropriate.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "exception-handler-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "try",
+            "{",
+            "int age = Integer.parseInt(input);",
+            "}",
+            "catch (NumberFormatException e)",
+            "{",
+            "System.out.println(\"Invalid number\");",
+            "}"
+          ],
+          "required": [
+            "try",
+            "int age = Integer.parseInt(input);",
+            "catch (NumberFormatException e)",
+            "System.out.println(\"Invalid number\");"
+          ]
+        }
       }
     }
   ],

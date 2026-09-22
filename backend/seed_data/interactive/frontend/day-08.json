@@ -1,26 +1,106 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 8,
-  "topic": "Day 8 Topic for Frontend",
-  "version": 1,
+  "topic": "Flexbox",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand main and cross axes",
+    "Control alignment and distribution of flex items",
+    "Arrange responsive rows and columns using Flexbox"
   ],
   "activities": [
     {
       "id": "d08-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "layout",
+      "title": "Flex Layout Lab",
+      "instruction": "Change flex direction, justification, and alignment and observe the items move.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand main and cross axes",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "flex-layout",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "flex-direction: row",
+            "flex-direction: column",
+            "justify-content: center",
+            "align-items: center"
+          ],
+          "answer": "flex-direction: row"
+        }
+      }
+    },
+    {
+      "id": "d08-a02",
+      "type": "order",
+      "title": "Flex Item Order",
+      "instruction": "Arrange the flex items using the order property and observe their visual positions.",
+      "content": {
+        "concept": "Control alignment and item positioning",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flex-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Navigation",
+            "2. Search",
+            "3. Profile",
+            "4. Actions"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d08-a03",
+      "type": "gap",
+      "title": "Flex Gap Controller",
+      "instruction": "Adjust the gap between flex items and observe how the row responds.",
+      "content": {
+        "concept": "Arrange responsive rows and columns",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flex-gap",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 48,
+          "default": 16
+        }
+      }
+    },
+    {
+      "id": "d08-a04",
+      "type": "build",
+      "title": "Flex Challenge",
+      "instruction": "Build a toolbar with the required Flexbox alignment and spacing properties.",
+      "content": {
+        "concept": "Apply Flexbox layout rules",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flex-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "display: flex",
+            "flex-direction: row",
+            "justify-content: space-between",
+            "align-items: center",
+            "gap: 16px"
+          ],
+          "required": [
+            "display: flex",
+            "flex-direction: row",
+            "justify-content: space-between",
+            "align-items: center"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +111,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

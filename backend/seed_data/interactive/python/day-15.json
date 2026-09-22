@@ -14,16 +14,29 @@
       "id": "d15-a1",
       "type": "discover",
       "title": "Flask Architecture",
-      "instruction": "Explore the components of a Flask application.",
+      "instruction": "Explore how a Flask application handles a web request.",
       "content": {
-        "concept": "Flask applications connect routes, request handling, application logic, and responses.",
+        "concept": "A Flask application maps incoming HTTP requests to route functions, executes application logic, and returns an HTTP response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "items": [
+            "Flask Application",
+            "Route",
+            "View Function",
+            "Application Logic",
+            "Response"
+          ],
+          "descriptions": [
+            "The Flask application object that receives incoming requests.",
+            "URL and HTTP method mapping that determines which function handles a request.",
+            "Python function executed for a matching route.",
+            "Code that processes the request and prepares the result.",
+            "HTTP response returned to the client."
+          ]
         }
       }
     },
@@ -31,9 +44,9 @@
       "id": "d15-a2",
       "type": "discover",
       "title": "Route Anatomy",
-      "instruction": "Identify the parts of a Flask route.",
+      "instruction": "Explore the parts of a Flask route.",
       "content": {
-        "concept": "A Flask route maps an HTTP URL and method to a Python function that handles the request.",
+        "concept": "The @app.route decorator associates a URL path and optionally HTTP methods with a Python function.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -41,9 +54,14 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "@app.route(\"/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}"
+          ],
+          "descriptions": [
+            "Registers the /users URL and allows GET requests for this route.",
+            "Defines the Python function that handles the matching request.",
+            "Returns structured data that Flask can serialize as a response."
           ]
         }
       }
@@ -51,30 +69,33 @@
     {
       "id": "d15-a3",
       "type": "discover",
-      "title": "REST Method Match",
-      "instruction": "Match HTTP methods to API operations.",
+      "title": "REST Method Explorer",
+      "instruction": "Choose the HTTP method that best matches each REST operation.",
       "content": {
-        "concept": "REST APIs commonly use GET, POST, PUT or PATCH, and DELETE for resource operations.",
+        "concept": "REST APIs commonly use GET to retrieve resources, POST to create resources, PUT or PATCH to update resources, and DELETE to remove resources.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "GET → retrieve a resource",
+            "POST → create a resource",
+            "PUT/PATCH → update a resource",
+            "DELETE → remove a resource"
+          ],
+          "answer": "GET → retrieve a resource"
         }
       }
     },
     {
       "id": "d15-a4",
       "type": "discover",
-      "title": "API Builder",
-      "instruction": "Build a simple Flask REST endpoint.",
+      "title": "Flask API Builder",
+      "instruction": "Build a simple Flask endpoint that returns JSON data.",
       "content": {
-        "concept": "A REST endpoint accepts a request, performs application logic, and returns structured data such as JSON.",
+        "concept": "A Flask REST endpoint combines a route, an HTTP method, a view function, and a response containing structured data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -82,9 +103,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "from flask import Flask",
+            "app = Flask(__name__)",
+            "@app.route(\"/api/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}",
+            "app.run()",
+            "import math"
+          ],
+          "required": [
+            "from flask import Flask",
+            "app = Flask(__name__)",
+            "@app.route(\"/api/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}"
           ]
         }
       }

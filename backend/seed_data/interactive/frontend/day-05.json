@@ -1,26 +1,107 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 5,
-  "topic": "Day 5 Topic for Frontend",
-  "version": 1,
+  "topic": "CSS Fundamentals & Selectors",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand the structure of CSS rules",
+    "Use element, class, and ID selectors",
+    "Connect CSS rules to HTML elements"
   ],
   "activities": [
     {
       "id": "d05-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "before-after",
+      "title": "Style Switcher",
+      "instruction": "Toggle CSS declarations and observe how they change the rendered element.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand the structure of CSS rules",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "css-before",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "p { color: blue; }",
+            "p { font-size: 24px; }",
+            "p { background-color: lightgray; }"
+          ],
+          "answer": "p { color: blue; }"
+        }
+      }
+    },
+    {
+      "id": "d05-a02",
+      "type": "selector-lab",
+      "title": "Selector Lab",
+      "instruction": "Select the selector that targets each highlighted HTML element.",
+      "content": {
+        "concept": "Use element, class, and ID selectors",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "p",
+            ".card",
+            "#main-title",
+            "button"
+          ],
+          "answer": ".card"
+        }
+      }
+    },
+    {
+      "id": "d05-a03",
+      "type": "live-style",
+      "title": "Live CSS Preview",
+      "instruction": "Change CSS properties and watch the card update immediately.",
+      "content": {
+        "concept": "Connect CSS rules to HTML elements",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "css-live",
+        "family": "slider",
+        "config": {
+          "min": 8,
+          "max": 48,
+          "default": 18
+        }
+      }
+    },
+    {
+      "id": "d05-a04",
+      "type": "guided-code",
+      "title": "Write the CSS Rule",
+      "instruction": "Assemble a selector, property, and value to create a valid CSS rule.",
+      "content": {
+        "concept": "Understand the structure of CSS rules",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "css-rule",
+        "family": "builder",
+        "config": {
+          "options": [
+            ".card",
+            "color",
+            "blue",
+            "background-color",
+            "white",
+            "font-size",
+            "20px"
+          ],
+          "required": [
+            ".card",
+            "color",
+            "blue"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +112,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

@@ -14,16 +14,29 @@
       "id": "d20-a1",
       "type": "discover",
       "title": "Full Stack Architecture",
-      "instruction": "Build the architecture of a complete web application.",
+      "instruction": "Explore the major layers of a complete full stack application.",
       "content": {
-        "concept": "A full stack application connects the frontend, backend API, business logic, and database into one system.",
+        "concept": "A full stack application connects a frontend interface to a backend API, application logic, and persistent database storage.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "full-stack-architecture",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "React Frontend",
+            "REST API",
+            "Backend Services",
+            "Database",
+            "Response"
+          ],
+          "descriptions": [
+            "Displays the user interface and collects user interactions.",
+            "Defines HTTP endpoints through which the frontend communicates with the backend.",
+            "Contains validation, business logic, authentication, and application processing.",
+            "Stores persistent application data.",
+            "Carries processed data back to the frontend for rendering."
+          ]
         }
       }
     },
@@ -31,19 +44,32 @@
       "id": "d20-a2",
       "type": "discover",
       "title": "End-to-End Data Flow",
-      "instruction": "Trace data from the UI to the database and back.",
+      "instruction": "Click each stage to trace data from the UI to the database and back.",
       "content": {
-        "concept": "User actions can trigger frontend requests, backend processing, database operations, and responses that update the interface.",
+        "concept": "A user action can trigger a frontend request, backend processing, database access, and a response that updates the React interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "end-to-end-flow",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "User Action",
+            "React Component",
+            "Express API Route",
+            "Service Logic",
+            "Database",
+            "API Response",
+            "Updated UI"
+          ],
+          "descriptions": [
+            "The user performs an action such as submitting a form.",
+            "The React component handles the interaction and initiates the request.",
+            "The Express route receives and directs the HTTP request.",
+            "Backend logic validates and processes the operation.",
+            "The database stores or retrieves the required data.",
+            "The backend returns the operation result to the frontend.",
+            "React uses the returned data to update the interface."
           ]
         }
       }
@@ -52,19 +78,23 @@
       "id": "d20-a3",
       "type": "discover",
       "title": "Integration Sequence",
-      "instruction": "Arrange the stages of a full stack request.",
+      "instruction": "Arrange the stages of a complete full stack request.",
       "content": {
-        "concept": "A typical request travels from the React UI through an API route and service layer to the database before returning a response.",
+        "concept": "A typical full stack request travels from a React component through an API route and backend logic to the database, then returns data to the frontend.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "full-stack-request",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. User interacts with React UI",
+            "2. React sends API request",
+            "3. Express route receives request",
+            "4. Backend service processes the request",
+            "5. Database is queried or updated",
+            "6. Backend sends API response",
+            "7. React updates the UI"
           ]
         }
       }
@@ -73,19 +103,32 @@
       "id": "d20-a4",
       "type": "discover",
       "title": "Full Stack Feature Builder",
-      "instruction": "Compose the frontend, API, logic, and data layers for a feature.",
+      "instruction": "Compose the layers required to implement a complete feature.",
       "content": {
-        "concept": "A complete feature requires coordinated frontend components, API endpoints, backend logic, and persistent data models.",
+        "concept": "A complete full stack feature coordinates frontend components, API routes, backend services, database operations, and response handling.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "full-stack-feature",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "React Component",
+            "API Request",
+            "Express Route",
+            "Service Logic",
+            "Database Operation",
+            "API Response",
+            "UI State Update"
+          ],
+          "required": [
+            "React Component",
+            "API Request",
+            "Express Route",
+            "Service Logic",
+            "Database Operation",
+            "API Response",
+            "UI State Update"
           ]
         }
       }

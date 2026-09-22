@@ -1,26 +1,99 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 7,
-  "topic": "Day 7 Topic for Frontend",
-  "version": 1,
+  "topic": "CSS Typography, Colors & Backgrounds",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Style readable text using typography properties",
+    "Use color with appropriate contrast",
+    "Control background images, position, size, and repetition"
   ],
   "activities": [
     {
       "id": "d07-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "visual-mixer",
+      "title": "Typography Mixer",
+      "instruction": "Adjust font size, weight, and line-height to improve the readability of the sample text.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Style readable text using typography properties",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "type-mixer",
+        "family": "slider",
+        "config": {
+          "min": 12,
+          "max": 32,
+          "default": 18
+        }
+      }
+    },
+    {
+      "id": "d07-a02",
+      "type": "palette",
+      "title": "Color Contrast Lab",
+      "instruction": "Choose text and background colors and inspect the resulting contrast.",
+      "content": {
+        "concept": "Use color with appropriate contrast",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "palette",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Dark text on light background",
+            "Light text on dark background",
+            "Light gray text on white background",
+            "Dark gray text on white background"
+          ],
+          "answer": "Dark text on light background"
+        }
+      }
+    },
+    {
+      "id": "d07-a03",
+      "type": "background",
+      "title": "Background Lab",
+      "instruction": "Change background size, position, and repeat settings to control a hero section.",
+      "content": {
+        "concept": "Control background images and positioning",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "background",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "background-size: cover",
+            "background-size: contain",
+            "background-position: center",
+            "background-repeat: no-repeat"
+          ],
+          "answer": "background-size: cover"
+        }
+      }
+    },
+    {
+      "id": "d07-a04",
+      "type": "compare",
+      "title": "Readability Compare",
+      "instruction": "Compare two typographic configurations and identify the one with clearer spacing and hierarchy.",
+      "content": {
+        "concept": "Style readable text using typography properties",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "type-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "16px text, 1.5 line-height, clear heading hierarchy",
+            "12px text, 1.0 line-height, minimal hierarchy"
+          ],
+          "answer": "16px text, 1.5 line-height, clear heading hierarchy"
+        }
       }
     }
   ],
@@ -31,7 +104,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

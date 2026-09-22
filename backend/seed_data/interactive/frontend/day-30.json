@@ -1,26 +1,111 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 30,
-  "topic": "Day 30 Topic for Frontend",
-  "version": 1,
+  "topic": "Web Accessibility, Security & Deployment",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Improve accessibility",
+    "Recognize security basics",
+    "Understand deployment flow"
   ],
   "activities": [
     {
       "id": "d30-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "accessibility",
+      "title": "Accessibility Inspector",
+      "instruction": "Inspect a UI and identify accessible names, keyboard focus and meaningful semantic elements.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Improve accessibility by providing semantic structure, accessible names and usable keyboard focus.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "accessibility-inspector",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Semantic heading",
+            "Accessible button name",
+            "Keyboard focus",
+            "Form label"
+          ],
+          "descriptions": [
+            "Headings provide meaningful document structure.",
+            "Interactive controls should have an accessible name.",
+            "Keyboard users need a visible and logical focus path.",
+            "Form controls should be associated with descriptive labels."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a02",
+      "type": "aria",
+      "title": "ARIA Explorer",
+      "instruction": "Choose the appropriate accessible name or semantic solution for each UI control.",
+      "content": {
+        "concept": "Use semantic HTML first and understand when ARIA can provide additional accessible information.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "aria",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Use a real <button> for a button action",
+            "Use a <div> with no keyboard behavior",
+            "Hide the control from assistive technology"
+          ],
+          "answer": "Use a real <button> for a button action"
+        }
+      }
+    },
+    {
+      "id": "d30-a03",
+      "type": "security",
+      "title": "Frontend Security Explorer",
+      "instruction": "Choose safer handling for user input, authentication tokens and external content.",
+      "content": {
+        "concept": "Recognize basic frontend security practices such as avoiding unsafe HTML injection and protecting sensitive credentials.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "security",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Render untrusted HTML directly",
+            "Keep secrets out of client-side source code",
+            "Place private API keys in public frontend code",
+            "Trust all user-provided content"
+          ],
+          "answer": "Keep secrets out of client-side source code"
+        }
+      }
+    },
+    {
+      "id": "d30-a04",
+      "type": "deploy",
+      "title": "Deployment Pipeline",
+      "instruction": "Arrange the main steps required to move a frontend application from source code to production.",
+      "content": {
+        "concept": "Understand the deployment flow from source code through testing and build configuration to a production deployment.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "deployment-pipeline",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Commit source code",
+            "2. Install dependencies",
+            "3. Run tests and checks",
+            "4. Build the production application",
+            "5. Configure environment variables",
+            "6. Deploy the build",
+            "7. Verify the deployed application"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +116,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

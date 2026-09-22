@@ -13,20 +13,27 @@
     {
       "id": "d3-a1",
       "type": "discover",
-      "title": "CSS Anatomy",
-      "instruction": "Explore the parts of a CSS rule.",
+      "title": "CSS Rule Anatomy",
+      "instruction": "Explore the selector, property, value, and declaration of a CSS rule.",
       "content": {
-        "concept": "A CSS rule combines a selector with declarations that control how matching HTML elements are displayed.",
+        "concept": "A CSS rule uses a selector to target elements and declarations to define their visual properties.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "css-rule-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Selector",
+            "Property",
+            "Value",
+            "Declaration"
+          ],
+          "descriptions": [
+            "Identifies which HTML elements should be styled.",
+            "Specifies the characteristic being changed, such as color or margin.",
+            "Specifies the setting assigned to the property.",
+            "A property-value pair that defines one style rule."
           ]
         }
       }
@@ -35,38 +42,46 @@
       "id": "d3-a2",
       "type": "discover",
       "title": "Box Model Explorer",
-      "instruction": "Adjust the box model layers.",
+      "instruction": "Adjust spacing layers and observe how they change the element's size.",
       "content": {
-        "concept": "The CSS box model describes an element through content, padding, border, and margin dimensions.",
+        "concept": "The CSS box model consists of content, padding, border, and margin, each affecting layout differently.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "box-model",
         "family": "slider",
         "config": {
           "min": 0,
-          "max": 100,
-          "default": 50
+          "max": 50,
+          "default": 10
         }
       }
     },
     {
       "id": "d3-a3",
       "type": "discover",
-      "title": "Layout Builder",
-      "instruction": "Build a responsive page layout.",
+      "title": "Flexbox Layout Builder",
+      "instruction": "Configure a Flexbox container to align and distribute its children.",
       "content": {
-        "concept": "Flexbox provides a flexible way to align and distribute elements within a container.",
+        "concept": "Flexbox provides properties such as display, flex-direction, justify-content, align-items, and gap for arranging elements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "flexbox-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "display: flex",
+            "flex-direction: row",
+            "justify-content: center",
+            "align-items: center",
+            "gap: 16px",
+            "flex-wrap: wrap"
+          ],
+          "required": [
+            "display: flex",
+            "justify-content: center",
+            "align-items: center"
           ]
         }
       }
@@ -75,16 +90,21 @@
       "id": "d3-a4",
       "type": "discover",
       "title": "Responsive Strategy",
-      "instruction": "Select the correct responsive approach.",
+      "instruction": "Choose the styling approach that best adapts a layout across screen sizes.",
       "content": {
-        "concept": "Responsive design adapts layouts and content presentation to different viewport sizes and device conditions.",
+        "concept": "Responsive design combines flexible layouts, relative sizing, and media queries to adapt interfaces to different viewport sizes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "responsive-strategy",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Use fixed desktop widths everywhere",
+            "Use flexible layouts with appropriate breakpoints",
+            "Create a separate page for every screen width"
+          ],
+          "answer": "Use flexible layouts with appropriate breakpoints"
         }
       }
     }

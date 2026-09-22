@@ -14,40 +14,56 @@
       "id": "d26-a1",
       "type": "discover",
       "title": "Deployment Pipeline",
-      "instruction": "Arrange the steps from local code to cloud deployment.",
+      "instruction": "Arrange the major stages from application code to a running cloud service.",
       "content": {
-        "concept": "Cloud deployment moves an application through configuration, building, deployment, and runtime stages.",
+        "concept": "Cloud deployment typically involves preparing the application, configuring its runtime, building or packaging it, deploying it, and verifying that the service is healthy.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Prepare application code",
+            "2. Configure dependencies and environment variables",
+            "3. Build or package the application",
+            "4. Deploy to the cloud runtime",
+            "5. Start the service",
+            "6. Run health checks and verify the deployment"
           ]
         }
       }
     },
     {
       "id": "d26-a2",
-      "type": "discover",
+      "type": "click-map",
       "title": "Environment Anatomy",
-      "instruction": "Explore the components of an application environment.",
+      "instruction": "Explore the parts of a Python application's deployment environment.",
       "content": {
-        "concept": "An application environment includes runtime settings, dependencies, environment variables, services, and deployment configuration.",
+        "concept": "An application environment combines the runtime, dependencies, configuration, secrets, external services, and networking needed to run the application.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
-        "family": "anatomy",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "Python Runtime",
+            "Dependencies",
+            "Environment Variables",
+            "Secrets",
+            "Database",
+            "Application Port",
+            "Health Check"
+          ],
+          "descriptions": [
+            "Provides the Python interpreter and runtime used by the service.",
+            "Libraries required by the application, commonly installed from a dependency file.",
+            "Non-secret configuration values that can vary between environments.",
+            "Sensitive values such as credentials and API keys that should be managed securely.",
+            "The persistent data service used by the application.",
+            "The network port on which the application accepts requests.",
+            "An endpoint or mechanism used to determine whether the deployed service is functioning."
           ]
         }
       }
@@ -56,33 +72,56 @@
       "id": "d26-a3",
       "type": "discover",
       "title": "Configuration Selector",
-      "instruction": "Choose the correct configuration for each environment.",
+      "instruction": "Choose the safer configuration approach.",
       "content": {
-        "concept": "Development, testing, and production environments often require different configuration values while sharing application code.",
+        "concept": "The same application code can run in different environments by supplying environment-specific configuration externally.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Read DATABASE_URL from an environment variable",
+            "Hard-code the production database URL in source code",
+            "Commit production API keys to Git",
+            "Use the development database credentials in every environment"
+          ],
+          "answer": "Read DATABASE_URL from an environment variable"
         }
       }
     },
     {
       "id": "d26-a4",
-      "type": "discover",
+      "type": "builder",
       "title": "Cloud Architecture Builder",
-      "instruction": "Build a basic cloud deployment architecture.",
+      "instruction": "Assemble the essential components of a deployed Python service.",
       "content": {
-        "concept": "A deployed Python service can connect application code, databases, storage, networking, and external services.",
+        "concept": "A cloud-hosted Python application commonly connects a runtime service to configuration, persistent storage, external services, networking, and health monitoring.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "builder",
+        "family": "builder",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "options": [
+            "Python application runtime",
+            "Environment configuration",
+            "Secret management",
+            "Managed database",
+            "External service integrations",
+            "Network and application port",
+            "Health check and monitoring"
+          ],
+          "required": [
+            "Python application runtime",
+            "Environment configuration",
+            "Secret management",
+            "Managed database",
+            "External service integrations",
+            "Network and application port",
+            "Health check and monitoring"
+          ]
         }
       }
     }

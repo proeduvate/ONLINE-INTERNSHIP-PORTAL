@@ -14,16 +14,31 @@
       "id": "d29-a1",
       "type": "discover",
       "title": "Capstone Architecture Map",
-      "instruction": "Connect every major component of the capstone.",
+      "instruction": "Explore how the major components of a full stack capstone connect.",
       "content": {
-        "concept": "A capstone architecture connects the user interface, frontend logic, backend APIs, database, authentication, and deployment environment.",
+        "concept": "A complete application connects the user interface to frontend logic, backend APIs, business logic, databases, authentication, and deployment infrastructure.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "capstone-architecture",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "UI/UX Layer",
+            "React Frontend",
+            "Backend API",
+            "Authentication",
+            "Database",
+            "Deployment Infrastructure"
+          ],
+          "descriptions": [
+            "Defines the screens, interaction patterns, accessibility, and user experience.",
+            "Manages UI state, components, navigation, and communication with backend services.",
+            "Receives requests, validates data, applies business logic, and returns responses.",
+            "Verifies identity and controls access to protected application resources.",
+            "Stores and retrieves persistent application data.",
+            "Hosts and connects the application components in the target environment."
+          ]
         }
       }
     },
@@ -31,9 +46,9 @@
       "id": "d29-a2",
       "type": "discover",
       "title": "User Journey Validator",
-      "instruction": "Arrange the complete flow for a key user task.",
+      "instruction": "Arrange the complete flow for a user creating an account and using a protected feature.",
       "content": {
-        "concept": "End-to-end validation checks whether a user can complete important tasks across all connected application layers.",
+        "concept": "End-to-end validation checks whether a user can complete important tasks across the connected UI, frontend, backend, authentication, and database layers.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -41,9 +56,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. User opens registration screen",
+            "2. React submits registration data to the API",
+            "3. Backend validates and creates the account",
+            "4. User authenticates",
+            "5. React sends authenticated request for protected data",
+            "6. Backend verifies access and reads data",
+            "7. React displays the result"
           ]
         }
       }
@@ -51,17 +70,21 @@
     {
       "id": "d29-a3",
       "type": "discover",
-      "title": "Integration Issue Lab",
-      "instruction": "Select the likely source of each integration problem.",
+      "title": "Integration Issue Explorer",
+      "instruction": "Identify the layer most likely responsible for each integration symptom.",
       "content": {
-        "concept": "Integration failures can originate in frontend state, API contracts, backend logic, database operations, authentication, or configuration.",
+        "concept": "Integration problems can originate in frontend state or requests, API contracts, backend logic, database operations, authentication, or environment configuration. Debugging starts by narrowing the failure to a layer.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "integration-debugging",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "The browser sends the expected API request, but the backend returns a database connection error → inspect backend/database configuration",
+            "The database query succeeds, but the browser does not update because the response is never stored in frontend state → inspect frontend state handling"
+          ],
+          "answer": "The browser sends the expected API request, but the backend returns a database connection error → inspect backend/database configuration"
         }
       }
     },
@@ -69,19 +92,32 @@
       "id": "d29-a4",
       "type": "discover",
       "title": "Capstone Validation Builder",
-      "instruction": "Build a final validation plan for the application.",
+      "instruction": "Build a final validation plan covering the application's critical quality areas.",
       "content": {
-        "concept": "A capstone validation plan combines functional, integration, UI, accessibility, security, and performance checks.",
+        "concept": "A capstone validation plan should combine functional, integration, UI, accessibility, security, performance, and deployment checks for important application behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "capstone-validation-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Functional tests",
+            "API integration tests",
+            "End-to-end user journey tests",
+            "UI and responsive checks",
+            "Accessibility checks",
+            "Security checks",
+            "Performance checks",
+            "Deployment verification"
+          ],
+          "required": [
+            "Functional tests",
+            "API integration tests",
+            "End-to-end user journey tests",
+            "UI and responsive checks",
+            "Accessibility checks",
+            "Security checks"
           ]
         }
       }

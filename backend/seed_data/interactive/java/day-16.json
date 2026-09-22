@@ -14,52 +14,109 @@
       "id": "d16-a1",
       "type": "discover",
       "title": "HTTP Request Anatomy",
-      "instruction": "Explore the parts of an HTTP request.",
+      "instruction": "Explore the main parts of an HTTP request.",
       "content": {
-        "concept": "An HTTP request contains components such as the method, URL, headers, and optional body.",
+        "concept": "An HTTP request can contain a method, target URL, headers, and an optional request body. These components tell the server what operation is being requested and provide any required data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "HTTP Method",
+            "URL",
+            "Headers",
+            "Request Body"
+          ],
+          "descriptions": [
+            "Defines the requested operation, such as GET or POST.",
+            "Identifies the server resource being requested.",
+            "Carries metadata such as content type or authorization information.",
+            "Carries data sent to the server when the request requires a payload."
+          ]
+        }
       }
     },
     {
       "id": "d16-a2",
       "type": "discover",
-      "title": "Request Flow",
-      "instruction": "Arrange the client-server communication steps.",
+      "title": "HTTP Request Flow",
+      "instruction": "Arrange the steps of a Java HTTP request in the correct order.",
       "content": {
-        "concept": "A Java HTTP client builds a request, sends it to a server, receives a response, and processes the returned data.",
+        "concept": "Java's HTTP Client creates a request, sends it to the server, receives an HTTP response, and then the application processes the response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create an HttpClient",
+            "2. Build an HttpRequest",
+            "3. Send the request",
+            "4. Receive the HttpResponse",
+            "5. Process the status code and response body"
+          ]
+        }
       }
     },
     {
       "id": "d16-a3",
       "type": "discover",
-      "title": "HTTP Client Builder",
-      "instruction": "Build a valid Java HTTP request.",
+      "title": "Build an HTTP Request",
+      "instruction": "Construct the essential parts of a Java HttpRequest.",
       "content": {
-        "concept": "Java's HttpClient, HttpRequest, and HttpResponse APIs provide a modern way to communicate with HTTP services.",
+        "concept": "A Java HttpRequest can be configured with a target URI, HTTP method, headers, and an optional body before it is sent through HttpClient.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "HttpRequest.newBuilder()",
+            "URI.create(\"https://api.example.com/users\")",
+            ".GET()",
+            ".header(\"Accept\", \"application/json\")",
+            ".build()",
+            "HttpResponse.BodyHandlers.ofString()"
+          ],
+          "required": [
+            "HttpRequest.newBuilder()",
+            "URI.create(\"https://api.example.com/users\")",
+            ".GET()",
+            ".build()"
+          ]
+        }
       }
     },
     {
       "id": "d16-a4",
       "type": "discover",
-      "title": "Status Code Selector",
-      "instruction": "Select the correct response category.",
+      "title": "HTTP Status Codes",
+      "instruction": "Identify what each HTTP status-code category communicates.",
       "content": {
-        "concept": "HTTP status codes indicate whether a request succeeded, redirected, failed due to the client, or failed on the server.",
+        "concept": "HTTP status codes are grouped into categories: 2xx indicates success, 3xx indicates redirection, 4xx indicates a client-side request problem, and 5xx indicates a server-side failure.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "2xx Success",
+            "3xx Redirection",
+            "4xx Client Error",
+            "5xx Server Error"
+          ],
+          "descriptions": [
+            "The request was successfully received and processed.",
+            "The client may need to follow another location or handle a redirection.",
+            "The request has a problem from the client's side, such as an invalid request or missing authorization.",
+            "The server encountered a problem while processing a valid request."
+          ]
+        }
       }
     }
   ],

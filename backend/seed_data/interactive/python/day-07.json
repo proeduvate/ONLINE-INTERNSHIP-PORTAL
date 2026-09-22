@@ -14,19 +14,26 @@
       "id": "d7-a1",
       "type": "discover",
       "title": "File Handling Flow",
-      "instruction": "Trace how Python accesses a file.",
+      "instruction": "Explore the safe workflow for working with a file.",
       "content": {
-        "concept": "File handling involves opening a file, performing an operation, and safely closing the resource.",
+        "concept": "Python can open a file, perform read or write operations, and close it. The with statement is preferred because it manages cleanup automatically.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "open()",
+            "File Operation",
+            "with Statement",
+            "Automatic Close"
+          ],
+          "descriptions": [
+            "Creates a file object using a path and access mode.",
+            "Reads from or writes data to the opened file.",
+            "Creates a context manager that handles resource cleanup.",
+            "The file is closed automatically when the with block ends."
           ]
         }
       }
@@ -34,20 +41,23 @@
     {
       "id": "d7-a2",
       "type": "discover",
-      "title": "File Mode Match",
-      "instruction": "Match each file mode to its operation.",
+      "title": "File Mode Explorer",
+      "instruction": "Choose the file mode that matches the required operation.",
       "content": {
-        "concept": "File modes such as read, write, and append determine how a file is accessed.",
+        "concept": "The mode passed to open() determines how the file is accessed. Common modes include r for reading, w for writing, and a for appending.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "r → read",
+            "w → write and truncate existing content",
+            "a → append",
+            "All of the above"
+          ],
+          "answer": "All of the above"
         }
       }
     },
@@ -55,9 +65,9 @@
       "id": "d7-a3",
       "type": "discover",
       "title": "Exception Anatomy",
-      "instruction": "Identify each part of exception handling.",
+      "instruction": "Explore the roles of try, except, else, and finally.",
       "content": {
-        "concept": "Exception handling separates normal program execution from recovery logic when errors occur.",
+        "concept": "Exception handling separates code that may fail from code that handles errors and cleanup.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -65,9 +75,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "try:",
+            "    result = 10 / value",
+            "except ZeroDivisionError:",
+            "    print(\"Cannot divide by zero\")",
+            "finally:",
+            "    print(\"Finished\")"
+          ],
+          "descriptions": [
+            "Contains code that may raise an exception.",
+            "Attempts the potentially failing operation.",
+            "Handles a specific exception type.",
+            "Runs when a ZeroDivisionError occurs.",
+            "Defines cleanup or code that should run regardless of success or failure.",
+            "Executes after the try/except processing."
           ]
         }
       }
@@ -76,9 +97,9 @@
       "id": "d7-a4",
       "type": "discover",
       "title": "Error Recovery Builder",
-      "instruction": "Build the correct error-handling flow.",
+      "instruction": "Assemble the correct exception-handling structure.",
       "content": {
-        "concept": "try and except handle errors, while else and finally support successful execution and cleanup.",
+        "concept": "A robust exception-handling structure catches expected failures and can use finally for cleanup that must happen regardless of the result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -86,9 +107,19 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "try:",
+            "    value = int(input(\"Enter a number: \"))",
+            "except ValueError:",
+            "    print(\"Invalid number\")",
+            "finally:",
+            "    print(\"Done\")",
+            "import math"
+          ],
+          "required": [
+            "try:",
+            "    value = int(input(\"Enter a number: \"))",
+            "except ValueError:",
+            "    print(\"Invalid number\")"
           ]
         }
       }

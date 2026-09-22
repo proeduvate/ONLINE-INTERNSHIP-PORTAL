@@ -14,19 +14,28 @@
       "id": "d27-a1",
       "type": "discover",
       "title": "Docker Anatomy",
-      "instruction": "Explore the parts of a containerized application.",
+      "instruction": "Explore the major parts of a Docker-based application.",
       "content": {
-        "concept": "Docker packages applications and their dependencies into portable containers that can run consistently across environments.",
+        "concept": "A Dockerfile defines how an image is built, an image packages the application and its dependencies, and a container is a running instance of an image.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "docker-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Dockerfile",
+            "Docker Image",
+            "Container",
+            "Docker Registry",
+            "Volume"
+          ],
+          "descriptions": [
+            "Contains instructions used to build a Docker image.",
+            "A packaged, immutable template containing application code, dependencies, and runtime configuration.",
+            "A running instance of a Docker image.",
+            "Stores and distributes container images so they can be pulled by deployment environments.",
+            "Provides persistent storage that can exist independently of a container's writable layer."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d27-a2",
       "type": "discover",
       "title": "Container Workflow",
-      "instruction": "Arrange the stages from Dockerfile to running container.",
+      "instruction": "Arrange the stages from Dockerfile to a running container.",
       "content": {
-        "concept": "A container workflow commonly builds an image from instructions and then runs that image as a container.",
+        "concept": "A typical Docker workflow creates a Dockerfile, builds an image, optionally pushes it to a registry, pulls it into the deployment environment, and runs it as a container.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Create Dockerfile",
+            "2. Build Docker image",
+            "3. Push image to registry",
+            "4. Pull image in deployment environment",
+            "5. Run container"
           ]
         }
       }
@@ -55,17 +66,21 @@
     {
       "id": "d27-a3",
       "type": "discover",
-      "title": "Environment Variable Lab",
-      "instruction": "Select where each configuration value should be stored.",
+      "title": "Environment Variable Explorer",
+      "instruction": "Choose the appropriate configuration approach for each value.",
       "content": {
-        "concept": "Environment variables separate deployment-specific configuration and sensitive values from application source code.",
+        "concept": "Environment-specific values such as database URLs, API keys, ports, and deployment settings should be supplied through configuration rather than hard-coded into source code. Secrets should be stored using secure secret-management facilities.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "environment-config",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Store a production API secret in the deployment platform's secret/environment configuration",
+            "Commit the production API secret directly into the application's source code"
+          ],
+          "answer": "Store a production API secret in the deployment platform's secret/environment configuration"
         }
       }
     },
@@ -73,16 +88,30 @@
       "id": "d27-a4",
       "type": "discover",
       "title": "Deployment Architecture Builder",
-      "instruction": "Compose a deployment architecture for a full stack app.",
+      "instruction": "Compose a basic deployment architecture for a full stack application.",
       "content": {
-        "concept": "A deployed application can connect frontend hosting, backend services, databases, environment configuration, and external services.",
+        "concept": "A production architecture can connect a frontend, backend API, database, environment configuration, and external services. Each component should have a clear responsibility and secure connection path.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "deployment-architecture-builder",
+        "family": "builder",
         "config": {
-          "code": "console.log('Hello World');"
+          "options": [
+            "Frontend hosting",
+            "Backend API",
+            "Database",
+            "Environment variables/secrets",
+            "External services",
+            "Source code repository",
+            "Hard-coded production secrets"
+          ],
+          "required": [
+            "Frontend hosting",
+            "Backend API",
+            "Database",
+            "Environment variables/secrets"
+          ]
         }
       }
     }

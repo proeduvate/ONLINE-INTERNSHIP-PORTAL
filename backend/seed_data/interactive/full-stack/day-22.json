@@ -14,16 +14,29 @@
       "id": "d22-a1",
       "type": "discover",
       "title": "Information Architecture Map",
-      "instruction": "Organize content into a logical application structure.",
+      "instruction": "Explore how an application can organize content and navigation.",
       "content": {
-        "concept": "Information architecture organizes content, features, and navigation so users can find what they need efficiently.",
+        "concept": "Information architecture structures content, features, and navigation so users can understand where they are and find what they need.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "information-architecture",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "Home",
+            "Products",
+            "Product Details",
+            "Account",
+            "Settings"
+          ],
+          "descriptions": [
+            "Provides an entry point and overview of the application.",
+            "Groups related products or resources into a browsable section.",
+            "Contains detailed information and actions for one selected item.",
+            "Provides access to user-specific information and actions.",
+            "Contains preferences and configuration options for the user."
+          ]
         }
       }
     },
@@ -31,19 +44,28 @@
       "id": "d22-a2",
       "type": "discover",
       "title": "Wireframe Anatomy",
-      "instruction": "Explore the main regions of a wireframe.",
+      "instruction": "Explore the main structural regions of a low-fidelity wireframe.",
       "content": {
-        "concept": "Wireframes define the structure, hierarchy, and placement of interface elements before detailed visual styling.",
+        "concept": "Wireframes communicate layout, hierarchy, navigation, and functionality before detailed visual styling is applied.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "wireframe-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Navigation",
+            "Page Heading",
+            "Content Area",
+            "Primary Action",
+            "Footer"
+          ],
+          "descriptions": [
+            "Provides navigation between major sections or screens.",
+            "Clearly identifies the purpose of the current screen.",
+            "Contains the main information or controls required for the task.",
+            "Represents the main action the user is expected to perform.",
+            "Contains supporting links, information, or secondary navigation."
           ]
         }
       }
@@ -52,9 +74,9 @@
       "id": "d22-a3",
       "type": "discover",
       "title": "User Flow Sequencer",
-      "instruction": "Arrange screens for a common user task.",
+      "instruction": "Arrange the screens for a typical online purchase flow.",
       "content": {
-        "concept": "A user flow represents the sequence of steps and screens required to complete a specific goal.",
+        "concept": "A user flow represents the sequence of screens and actions a user follows to accomplish a specific goal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +84,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Browse Products",
+            "2. View Product Details",
+            "3. Add Product to Cart",
+            "4. Review Cart",
+            "5. Complete Checkout"
           ]
         }
       }
@@ -73,19 +97,28 @@
       "id": "d22-a4",
       "type": "discover",
       "title": "Wireframe Builder",
-      "instruction": "Compose a low-fidelity screen from interface blocks.",
+      "instruction": "Compose a low-fidelity application screen from structural blocks.",
       "content": {
-        "concept": "Low-fidelity wireframes focus on layout and functionality without detailed colors, imagery, or visual decoration.",
+        "concept": "Low-fidelity wireframes focus on structure and functionality rather than colors, imagery, typography details, or polished visual decoration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "wireframe-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Navigation",
+            "Page Heading",
+            "Content Section",
+            "Primary Action",
+            "Secondary Action",
+            "Decorative Illustration"
+          ],
+          "required": [
+            "Navigation",
+            "Page Heading",
+            "Content Section",
+            "Primary Action"
           ]
         }
       }

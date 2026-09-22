@@ -14,9 +14,9 @@
       "id": "d15-a1",
       "type": "discover",
       "title": "Build the Data Split",
-      "instruction": "Arrange the dataset into the correct subsets.",
+      "instruction": "Arrange the roles of the training, validation, and test sets.",
       "content": {
-        "concept": "Training, validation, and test sets help train models, tune choices, and estimate performance on unseen data.",
+        "concept": "Training data is used to fit a model, validation data supports model selection and tuning, and test data provides a final estimate using unseen data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Start with the Available Dataset",
+            "2. Create a Training Set",
+            "3. Create a Validation Set for Model Selection and Tuning",
+            "4. Train Candidate Models",
+            "5. Evaluate and Tune Using the Validation Set",
+            "6. Evaluate the Final Model on the Unseen Test Set"
           ]
         }
       }
@@ -35,29 +38,34 @@
       "id": "d15-a2",
       "type": "discover",
       "title": "Match Evaluation Metrics",
-      "instruction": "Match each metric with its purpose.",
+      "instruction": "Match each metric with the type of performance it measures.",
       "content": {
-        "concept": "Accuracy, precision, recall, F1-score, MAE, and RMSE measure different aspects of model performance.",
+        "concept": "Different metrics capture different aspects of classification and regression performance, so the metric should match the task and evaluation goal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Accuracy → Proportion of predictions that are correct",
+            "Precision → Proportion of predicted positives that are actually positive",
+            "Recall → Proportion of actual positives that are correctly identified",
+            "F1-Score → Harmonic mean of precision and recall",
+            "MAE → Average absolute prediction error",
+            "RMSE → Square root of the average squared prediction error"
+          ],
+          "answer": "Accuracy → Proportion of predictions that are correct"
         }
       }
     },
     {
       "id": "d15-a3",
       "type": "discover",
-      "title": "Explore Overfitting",
-      "instruction": "Adjust model complexity and observe performance.",
+      "title": "Explore Overfitting and Underfitting",
+      "instruction": "Adjust model complexity and observe how training and validation performance can change.",
       "content": {
-        "concept": "Overfitting occurs when a model learns training data too closely and performs poorly on unseen data.",
+        "concept": "Underfitting occurs when a model is too simple to capture important patterns, while overfitting occurs when a model fits training data too closely and generalizes poorly.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -74,16 +82,33 @@
       "id": "d15-a4",
       "type": "discover",
       "title": "Build the Validation Workflow",
-      "instruction": "Connect validation steps into a complete process.",
+      "instruction": "Assemble the steps used to evaluate whether a model generalizes to unseen data.",
       "content": {
-        "concept": "Model validation compares predictions against unseen data to estimate how well the model generalizes.",
+        "concept": "Model validation compares model behavior on data that was not used for fitting, helping estimate generalization and identify problems such as overfitting.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "build",
+        "family": "builder",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "options": [
+            "Prepare the Dataset",
+            "Split Training and Validation Data",
+            "Train the Model",
+            "Generate Validation Predictions",
+            "Calculate Evaluation Metrics",
+            "Compare Results and Tune the Model",
+            "Evaluate the Final Model on Test Data"
+          ],
+          "required": [
+            "Prepare the Dataset",
+            "Split Training and Validation Data",
+            "Train the Model",
+            "Generate Validation Predictions",
+            "Calculate Evaluation Metrics",
+            "Compare Results and Tune the Model",
+            "Evaluate the Final Model on Test Data"
+          ]
         }
       }
     }

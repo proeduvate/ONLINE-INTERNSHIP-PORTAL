@@ -14,52 +14,110 @@
       "id": "d5-a1",
       "type": "discover",
       "title": "Method Anatomy",
-      "instruction": "Click each part of the method declaration.",
+      "instruction": "Explore each part of a Java method declaration.",
       "content": {
-        "concept": "A Java method declaration can contain an access modifier, return type, method name, parameters, and a method body.",
+        "concept": "A Java method can include an access modifier, return type, method name, parameters, and a method body. The return type describes the value returned by the method, or void when no value is returned.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "method-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "public",
+            "static",
+            "int",
+            "add",
+            "int a, int b",
+            "return a + b"
+          ],
+          "descriptions": [
+            "Access modifier that makes the method accessible from other classes where permitted.",
+            "Declares the method as belonging to the class rather than an instance.",
+            "The return type indicating that the method returns an integer.",
+            "The name used when calling the method.",
+            "The parameters that receive values supplied by the caller.",
+            "Returns the computed result to the caller."
+          ]
+        }
       }
     },
     {
       "id": "d5-a2",
       "type": "discover",
-      "title": "Method Flow",
-      "instruction": "Arrange the steps of a method call.",
+      "title": "Method Call Flow",
+      "instruction": "Arrange the stages of a method call.",
       "content": {
-        "concept": "A method call transfers control to the method, supplies arguments, executes its body, and may return a value.",
+        "concept": "When a method is called, control transfers to that method. Arguments are matched to parameters, the method body executes, and a return statement can send a value back to the caller.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "method-call-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Call the method with arguments",
+            "2. Arguments are assigned to parameters",
+            "3. Method body executes",
+            "4. Return statement produces a value",
+            "5. Control returns to the caller"
+          ]
+        }
       }
     },
     {
       "id": "d5-a3",
       "type": "discover",
-      "title": "Parameter Matcher",
-      "instruction": "Match arguments with their method parameters.",
+      "title": "Parameter and Argument Matcher",
+      "instruction": "Identify which values are arguments and which are parameters.",
       "content": {
-        "concept": "Parameters define the values a method receives, while arguments provide those values when the method is called.",
+        "concept": "Parameters are variables declared in a method definition. Arguments are the actual values or expressions supplied when the method is called.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "parameter-argument-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Parameters: int a, int b",
+            "Arguments: 10, 20"
+          ],
+          "answer": "Parameters: int a, int b"
+        }
       }
     },
     {
       "id": "d5-a4",
       "type": "discover",
       "title": "Method Builder",
-      "instruction": "Compose a reusable method from the given requirements.",
+      "instruction": "Build a reusable method that calculates the sum of two integers.",
       "content": {
-        "concept": "Breaking logic into focused methods improves reuse, readability, and maintainability.",
+        "concept": "Breaking a program into focused methods makes logic easier to reuse, test, read, and maintain. A method should have a clear responsibility and an appropriate interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "method-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "public",
+            "static",
+            "int",
+            "add",
+            "(int a, int b)",
+            "{",
+            "return a + b;",
+            "}"
+          ],
+          "required": [
+            "public",
+            "static",
+            "int",
+            "add",
+            "(int a, int b)",
+            "return a + b;"
+          ]
+        }
       }
     }
   ],

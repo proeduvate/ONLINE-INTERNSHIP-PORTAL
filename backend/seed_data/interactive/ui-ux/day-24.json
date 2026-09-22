@@ -14,16 +14,44 @@
       "id": "d24-a1",
       "type": "discover",
       "title": "Advanced Prototype Architecture",
-      "instruction": "Connect states and interactions into a complete flow.",
+      "instruction": "Connect triggers, states, transitions, and outcomes into a complete prototype flow.",
       "content": {
         "concept": "Advanced prototypes model multiple states, conditional paths, overlays, transitions, and interaction outcomes.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Think of the prototype as a state machine: an action should move the interface from one understandable state to another."
       },
       "interaction": {
         "mode": "architecture",
         "family": "lab",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "nodes": [
+            "Idle",
+            "User Taps Submit",
+            "Loading",
+            "Success",
+            "Error"
+          ],
+          "connections": [
+            {
+              "from": "Idle",
+              "action": "Tap Submit",
+              "to": "Loading"
+            },
+            {
+              "from": "Loading",
+              "action": "Request Succeeds",
+              "to": "Success"
+            },
+            {
+              "from": "Loading",
+              "action": "Request Fails",
+              "to": "Error"
+            },
+            {
+              "from": "Error",
+              "action": "Retry",
+              "to": "Loading"
+            }
+          ]
         }
       }
     },
@@ -31,18 +59,43 @@
       "id": "d24-a2",
       "type": "discover",
       "title": "Motion Purpose Matcher",
-      "instruction": "Match each animation with its communication purpose.",
+      "instruction": "Match each animation with the purpose it communicates.",
       "content": {
         "concept": "Motion can communicate hierarchy, continuity, feedback, progress, and changes between interface states.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Ask what information the animation communicates rather than whether it simply looks attractive."
       },
       "interaction": {
         "mode": "match",
         "family": "compare",
         "config": {
+          "pairs": [
+            {
+              "prompt": "A button briefly changes state after being clicked.",
+              "answer": "Interaction feedback"
+            },
+            {
+              "prompt": "A card smoothly moves into a new position after filtering.",
+              "answer": "Continuity"
+            },
+            {
+              "prompt": "A progress indicator animates while a file is uploading.",
+              "answer": "Progress communication"
+            },
+            {
+              "prompt": "A modal smoothly appears above the current page.",
+              "answer": "State transition"
+            },
+            {
+              "prompt": "A subtle animation draws attention to an important newly available action.",
+              "answer": "Hierarchy and attention"
+            }
+          ],
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
+            "Interaction feedback",
+            "Continuity",
+            "Progress communication",
+            "State transition",
+            "Hierarchy and attention"
           ]
         }
       }
@@ -51,18 +104,38 @@
       "id": "d24-a3",
       "type": "discover",
       "title": "Transition Timing Lab",
-      "instruction": "Adjust transition timing and observe the interaction.",
+      "instruction": "Adjust transition timing and observe how it affects perceived responsiveness.",
       "content": {
         "concept": "Animation timing affects perceived responsiveness, continuity, and the amount of attention an interaction requires.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Compare very fast, balanced, and slow transitions to understand when motion becomes distracting."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 100,
+          "max": 1000,
+          "default": 300,
+          "unit": "ms",
+          "labels": [
+            "Fast",
+            "Balanced",
+            "Slow"
+          ],
+          "scenarios": [
+            {
+              "value": 150,
+              "description": "Fast transition with minimal delay."
+            },
+            {
+              "value": 300,
+              "description": "Moderate transition that provides visible continuity."
+            },
+            {
+              "value": 800,
+              "description": "Long transition that may make simple interactions feel slow."
+            }
+          ]
         }
       }
     },
@@ -70,19 +143,28 @@
       "id": "d24-a4",
       "type": "discover",
       "title": "Interaction State Builder",
-      "instruction": "Build a complete interaction from trigger to result.",
+      "instruction": "Build a complete interaction from trigger to final state.",
       "content": {
         "concept": "A robust interaction defines the trigger, transition, system response, feedback, and resulting state.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "Every interaction should communicate what happened and what state the interface is now in."
       },
       "interaction": {
         "mode": "build",
         "family": "builder",
         "config": {
-          "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+          "items": [
+            "Trigger",
+            "Transition",
+            "System Response",
+            "User Feedback",
+            "Resulting State"
+          ],
+          "correctOrder": [
+            "Trigger",
+            "Transition",
+            "System Response",
+            "User Feedback",
+            "Resulting State"
           ]
         }
       }

@@ -14,19 +14,30 @@
       "id": "d7-a1",
       "type": "discover",
       "title": "Typography Anatomy",
-      "instruction": "Explore the parts of an interface type system.",
+      "instruction": "Explore the key parts of an interface typography system.",
       "content": {
-        "concept": "Typography systems define font families, sizes, weights, line heights, and hierarchy for readable interfaces.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "A typography system defines font family, size, weight, line height, and hierarchy to create readable and consistent interfaces.",
+        "tip": "Explore each typography property and observe how it affects readability and hierarchy."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "typography-map",
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            "Font Family",
+            "Font Size",
+            "Font Weight",
+            "Line Height",
+            "Letter Spacing",
+            "Text Hierarchy"
+          ],
+          "descriptions": [
+            "Defines the visual character and readability of text.",
+            "Controls the visual scale of text.",
+            "Controls emphasis and distinguishes headings from supporting text.",
+            "Controls vertical space between lines of text.",
+            "Controls horizontal spacing between characters.",
+            "Organizes headings, body text, labels, and supporting information."
           ]
         }
       }
@@ -35,18 +46,22 @@
       "id": "d7-a2",
       "type": "discover",
       "title": "Type Scale Slider",
-      "instruction": "Adjust the type scale and observe hierarchy.",
+      "instruction": "Adjust the type scale and observe how hierarchy changes.",
       "content": {
-        "concept": "A consistent type scale creates predictable differences between headings, labels, body text, and supporting content.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "A consistent type scale creates predictable differences between headings, subheadings, body text, labels, and supporting content.",
+        "tip": "Increase the difference between heading and body sizes until the hierarchy becomes easy to scan."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "type-scale",
         "family": "slider",
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 50,
+          "labels": {
+            "min": "Weak Hierarchy",
+            "max": "Strong Hierarchy"
+          }
         }
       }
     },
@@ -54,19 +69,23 @@
       "id": "d7-a3",
       "type": "discover",
       "title": "Color Role Matcher",
-      "instruction": "Match each color to its interface role.",
+      "instruction": "Match each interface color to its appropriate role.",
       "content": {
-        "concept": "Interface colors can communicate actions, states, emphasis, information, and brand identity.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Color roles help communicate actions, states, hierarchy, information, and brand identity consistently.",
+        "tip": "Think about what the user needs to understand before choosing a color role."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "color-role-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Primary — Main actions and emphasis",
+            "Success — Completed or successful states",
+            "Warning — Potential problems requiring attention",
+            "Error — Failed actions or critical problems",
+            "Neutral — Supporting information and surfaces"
+          ],
+          "answer": "Primary — Main actions and emphasis"
         }
       }
     },
@@ -74,18 +93,23 @@
       "id": "d7-a4",
       "type": "discover",
       "title": "Contrast Checker Lab",
-      "instruction": "Adjust contrast until the text becomes readable.",
+      "instruction": "Adjust contrast until the text is clearly readable.",
       "content": {
-        "concept": "Sufficient contrast improves readability and supports users with visual accessibility needs.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Adequate contrast improves readability and helps users distinguish text and interface elements.",
+        "tip": "Higher contrast generally improves readability, but avoid using contrast alone to communicate meaning."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "contrast-adjuster",
         "family": "slider",
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 50,
+          "target": 70,
+          "labels": {
+            "min": "Low Contrast",
+            "max": "High Contrast"
+          }
         }
       }
     }

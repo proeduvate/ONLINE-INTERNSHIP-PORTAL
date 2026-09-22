@@ -1,26 +1,103 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 29,
-  "topic": "Day 29 Topic for Frontend",
-  "version": 1,
+  "topic": "Frontend Performance, Debugging & Optimization",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Find bottlenecks",
+    "Understand lazy loading",
+    "Use audits"
   ],
   "activities": [
     {
       "id": "d29-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "debug",
+      "title": "Performance Bottleneck Hunt",
+      "instruction": "Inspect a slow interface and identify which operation is creating unnecessary work.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Find frontend performance bottlenecks by identifying expensive rendering, unnecessary work or oversized resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "performance-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
+      }
+    },
+    {
+      "id": "d29-a02",
+      "type": "performance",
+      "title": "Performance Strategy Compare",
+      "instruction": "Compare rendering strategies and identify which change reduces unnecessary initial work.",
+      "content": {
+        "concept": "Recognize how rendering strategy, resource size and unnecessary work affect frontend responsiveness.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "performance-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Load every large feature immediately",
+            "Load expensive features only when needed",
+            "Duplicate the same data and UI work"
+          ],
+          "answer": "Load expensive features only when needed"
+        }
+      }
+    },
+    {
+      "id": "d29-a03",
+      "type": "lazy",
+      "title": "Lazy Loading Flow",
+      "instruction": "Arrange the steps of route-level lazy loading.",
+      "content": {
+        "concept": "Understand how lazy loading delays loading code until the corresponding feature or route is needed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "lazy-loading",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. User requests a route",
+            "2. Application detects the lazy component",
+            "3. Required JavaScript chunk is requested",
+            "4. Component code loads",
+            "5. Component renders"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d29-a04",
+      "type": "audit",
+      "title": "Performance Audit",
+      "instruction": "Inspect audit findings and identify which issues should be investigated first.",
+      "content": {
+        "concept": "Use browser performance and auditing tools to identify measurable opportunities for improvement.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "audit",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Large JavaScript bundle",
+            "Unoptimized image",
+            "Long-running JavaScript task",
+            "Unused resource"
+          ],
+          "descriptions": [
+            "A large bundle can increase download and parsing work.",
+            "Large or improperly sized images can increase page load cost.",
+            "Long tasks can block the main thread and reduce responsiveness.",
+            "Unused resources can add unnecessary network and processing work."
+          ]
+        }
       }
     }
   ],
@@ -31,7 +108,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

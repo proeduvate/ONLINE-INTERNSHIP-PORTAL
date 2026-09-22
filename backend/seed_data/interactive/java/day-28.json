@@ -13,53 +13,116 @@
     {
       "id": "d28-a1",
       "type": "discover",
-      "title": "Requirement Mapper",
-      "instruction": "Map requirements to system components.",
+      "title": "Requirement to Component Map",
+      "instruction": "Explore how requirements translate into system responsibilities.",
       "content": {
-        "concept": "System design begins by translating user and business requirements into components, responsibilities, data, and interactions.",
+        "concept": "System design starts by identifying users, business requirements, application responsibilities, data, integrations, and constraints before selecting implementation components.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "User Requirements",
+            "Frontend",
+            "Backend API",
+            "Database",
+            "Authentication",
+            "External Services"
+          ],
+          "descriptions": [
+            "Describe what users need the system to accomplish.",
+            "Provides the interface through which users interact with the system.",
+            "Processes requests and implements application behavior.",
+            "Stores persistent application data.",
+            "Verifies identity and controls access to protected resources.",
+            "Provide capabilities outside the application's core system."
+          ]
+        }
       }
     },
     {
       "id": "d28-a2",
       "type": "discover",
-      "title": "Application Architecture",
-      "instruction": "Build the capstone architecture.",
+      "title": "Application Architecture Builder",
+      "instruction": "Build a coherent full-stack Java application architecture.",
       "content": {
-        "concept": "A full application can combine a client, REST API, service layer, persistence layer, database, authentication, and external integrations.",
+        "concept": "A complete application can connect a client interface to a Java REST backend, business services, persistence, authentication, a database, and optional external integrations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Frontend",
+            "REST Controller",
+            "Service Layer",
+            "Repository Layer",
+            "Authentication",
+            "Database",
+            "External Service",
+            "Unrelated duplicate business logic"
+          ],
+          "required": [
+            "Frontend",
+            "REST Controller",
+            "Service Layer",
+            "Repository Layer",
+            "Authentication",
+            "Database"
+          ]
+        }
       }
     },
     {
       "id": "d28-a3",
       "type": "discover",
       "title": "Request Journey",
-      "instruction": "Trace a request through the system.",
+      "instruction": "Arrange a typical authenticated request through the application.",
       "content": {
-        "concept": "A user request can travel from the frontend through authentication and backend layers to persistence before returning a response.",
+        "concept": "A request can travel from the frontend through authentication and backend layers to business logic and persistence before a response is returned to the client.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. User triggers an action in the frontend",
+            "2. Frontend sends an HTTP request",
+            "3. Authentication and authorization are checked",
+            "4. Controller receives the request",
+            "5. Service layer executes business logic",
+            "6. Repository accesses persistent data when required",
+            "7. Backend returns the HTTP response",
+            "8. Frontend updates the user interface"
+          ]
+        }
       }
     },
     {
       "id": "d28-a4",
       "type": "discover",
-      "title": "Technology Selector",
-      "instruction": "Select technologies for each layer.",
+      "title": "Technology Choice",
+      "instruction": "Choose the technology that fits the described responsibility.",
       "content": {
-        "concept": "Technology choices should match the responsibilities and constraints of each application layer.",
+        "concept": "Technology selection should follow system responsibilities and constraints rather than choosing tools without considering what each layer needs to accomplish.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Spring Boot for implementing a Java REST backend",
+            "Relational database for rendering browser buttons",
+            "Frontend framework for storing server-side secrets",
+            "Git repository as the application's runtime database"
+          ],
+          "answer": "Spring Boot for implementing a Java REST backend"
+        }
       }
     }
   ],

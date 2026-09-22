@@ -14,19 +14,30 @@
       "id": "d5-a1",
       "type": "discover",
       "title": "Wireframe Anatomy",
-      "instruction": "Explore the main parts of a wireframe.",
+      "instruction": "Explore the essential parts of a low-fidelity wireframe.",
       "content": {
-        "concept": "Wireframes define layout, hierarchy, navigation, and content placement without focusing on final visual styling.",
+        "concept": "A low-fidelity wireframe focuses on structure and functionality rather than final colors, typography, imagery, or visual polish.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "wireframe-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            "Header / Navigation",
+            "Page Title",
+            "Main Content Area",
+            "Primary Action",
+            "Supporting Content",
+            "Footer / Secondary Navigation"
+          ],
+          "descriptions": [
+            "Provides orientation and access to major navigation options.",
+            "Clearly identifies the purpose of the current screen.",
+            "Contains the main information or task the user needs to complete.",
+            "Represents the most important action the user is expected to take.",
+            "Contains secondary information, supporting controls, or related content.",
+            "Provides secondary links, information, or navigation when needed."
           ]
         }
       }
@@ -34,20 +45,29 @@
     {
       "id": "d5-a2",
       "type": "discover",
-      "title": "Layout Hierarchy Lab",
-      "instruction": "Arrange elements by importance on the screen.",
+      "title": "Screen Layout Builder",
+      "instruction": "Build a basic wireframe structure for a task-focused screen.",
       "content": {
-        "concept": "Visual hierarchy begins with deciding which content and actions deserve the strongest placement and emphasis.",
+        "concept": "A wireframe should reflect the user's goal and information hierarchy. The primary task and important content should be easy to locate before visual styling is added.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "wireframe-builder",
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Header / Navigation",
+            "Page Title",
+            "Primary Content",
+            "Primary Action",
+            "Supporting Content",
+            "Secondary Navigation"
+          ],
+          "required": [
+            "Header / Navigation",
+            "Page Title",
+            "Primary Content",
+            "Primary Action"
           ]
         }
       }
@@ -55,17 +75,23 @@
     {
       "id": "d5-a3",
       "type": "discover",
-      "title": "Wireframe Flow",
-      "instruction": "Connect screens into a usable task flow.",
+      "title": "Wireframe User Flow",
+      "instruction": "Connect the screens in the correct order for a simple task.",
       "content": {
-        "concept": "Multiple wireframes can be connected to represent how users move between screens to complete a task.",
+        "concept": "Wireframes can represent individual screens, while connecting them creates a low-fidelity representation of the user's task flow.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "wireframe-flow",
+        "family": "reorder",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "goal": [
+            "1. Product Listing Screen",
+            "2. Product Details Screen",
+            "3. Cart Screen",
+            "4. Checkout Screen",
+            "5. Order Confirmation Screen"
+          ]
         }
       }
     },
@@ -73,16 +99,20 @@
       "id": "d5-a4",
       "type": "discover",
       "title": "Wireframe Critique",
-      "instruction": "Select the wireframe with clearer structure.",
+      "instruction": "Choose the wireframe structure that better supports the user's task.",
       "content": {
-        "concept": "A useful wireframe makes task priorities, navigation, content hierarchy, and primary actions easy to understand.",
+        "concept": "A strong wireframe makes the user's goal, content hierarchy, navigation, and primary action understandable without relying on visual decoration.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "wireframe-critique",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "Page title is clear, main task is prominent, primary action is visible, and secondary information is separated.",
+            "Decorative elements dominate the screen, the main task is unclear, and the primary action is difficult to locate."
+          ],
+          "answer": "Page title is clear, main task is prominent, primary action is visible, and secondary information is separated."
         }
       }
     }

@@ -14,19 +14,26 @@
       "id": "d12-a1",
       "type": "discover",
       "title": "State Architecture Map",
-      "instruction": "Map local and shared state across components.",
+      "instruction": "Click each state location to explore whether the data should be local or shared.",
       "content": {
-        "concept": "Application state can be local to a component or shared across multiple parts of an interface.",
+        "concept": "State can remain local to one component or be shared across multiple components when several parts of an application depend on the same data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "state-architecture",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Local Component State",
+            "Parent State",
+            "Context State",
+            "Global State"
+          ],
+          "descriptions": [
+            "State used by one component or a small isolated UI area.",
+            "State lifted to a common parent so multiple child components can access it through props.",
+            "Shared values provided through React Context to components within a provider.",
+            "State managed through a dedicated application-wide state solution when broader coordination is required."
           ]
         }
       }
@@ -35,19 +42,28 @@
       "id": "d12-a2",
       "type": "discover",
       "title": "Context Anatomy",
-      "instruction": "Explore the parts of a Context API setup.",
+      "instruction": "Explore the main parts of a Context API setup.",
       "content": {
-        "concept": "React Context provides a way to make shared values available to components without passing props through every level.",
+        "concept": "A Context setup commonly includes a context object, a Provider that supplies a value, and consuming components that read the shared value.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "context-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "createContext()",
+            "Context Provider",
+            "value",
+            "useContext()",
+            "Consumer Component"
+          ],
+          "descriptions": [
+            "Creates the Context object used to share a value.",
+            "Makes the context value available to components in its subtree.",
+            "The data or functions supplied through the context.",
+            "Hook used by a functional component to read the current context value.",
+            "Component that accesses and uses the shared context."
           ]
         }
       }
@@ -56,16 +72,20 @@
       "id": "d12-a3",
       "type": "discover",
       "title": "State Strategy Selector",
-      "instruction": "Select the appropriate state strategy for each case.",
+      "instruction": "Choose the most appropriate state strategy for each scenario.",
       "content": {
-        "concept": "State placement should match the scope and update requirements of the data being managed.",
+        "concept": "State should be placed according to its scope: local state for isolated UI behavior, lifted state for related components, and Context or other shared solutions when many components need the same data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "state-strategy",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "A form field used by one component → Local state",
+            "A form field used by one component → Global state"
+          ],
+          "answer": "A form field used by one component → Local state"
         }
       }
     },
@@ -73,16 +93,29 @@
       "id": "d12-a4",
       "type": "discover",
       "title": "Context Provider Builder",
-      "instruction": "Build a shared state structure using providers and consumers.",
+      "instruction": "Build the flow for sharing a value through React Context.",
       "content": {
-        "concept": "A provider supplies shared context values while consuming components access those values where needed.",
+        "concept": "A Provider makes a context value available to its descendant components, which can access the value without receiving it through every intermediate component as a prop.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "context-flow",
+        "family": "builder",
         "config": {
-          "code": "console.log('Hello World');"
+          "options": [
+            "Create context",
+            "Create provider",
+            "Provide shared value",
+            "Wrap consuming components",
+            "Read value with useContext"
+          ],
+          "required": [
+            "Create context",
+            "Create provider",
+            "Provide shared value",
+            "Wrap consuming components",
+            "Read value with useContext"
+          ]
         }
       }
     }

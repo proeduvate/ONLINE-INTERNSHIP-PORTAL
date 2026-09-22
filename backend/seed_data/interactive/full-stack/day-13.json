@@ -14,18 +14,30 @@
       "id": "d13-a1",
       "type": "discover",
       "title": "TypeScript Type Explorer",
-      "instruction": "Match values with their appropriate TypeScript types.",
+      "instruction": "Click each type to explore the kind of value it can represent.",
       "content": {
-        "concept": "TypeScript adds static type information to JavaScript values, variables, functions, and objects.",
+        "concept": "TypeScript provides static types such as string, number, boolean, arrays, objects, and unions to describe the values used by an application.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
-        "family": "compare",
+        "mode": "typescript-types",
+        "family": "click-map",
         "config": {
-          "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
+          "items": [
+            "string",
+            "number",
+            "boolean",
+            "array",
+            "object",
+            "union"
+          ],
+          "descriptions": [
+            "Represents text values.",
+            "Represents numeric values.",
+            "Represents true or false values.",
+            "Represents a collection of values, often with a defined element type.",
+            "Represents structured data with named properties.",
+            "Allows a value to be one of several specified types."
           ]
         }
       }
@@ -36,17 +48,26 @@
       "title": "Interface Anatomy",
       "instruction": "Explore the parts of a TypeScript interface.",
       "content": {
-        "concept": "Interfaces describe the expected structure of objects and can improve type safety across an application.",
+        "concept": "An interface describes the expected shape of an object by defining its property names and types.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "interface-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
+            "interface User",
+            "name: string",
+            "age: number",
+            "email?: string",
             "}"
+          ],
+          "descriptions": [
+            "Declares an interface named User.",
+            "Defines a required name property containing a string.",
+            "Defines a required age property containing a number.",
+            "Defines an optional email property containing a string.",
+            "Closes the interface declaration."
           ]
         }
       }
@@ -55,16 +76,20 @@
       "id": "d13-a3",
       "type": "discover",
       "title": "Type Error Detector",
-      "instruction": "Select the type mismatch in each example.",
+      "instruction": "Choose the example that contains a TypeScript type mismatch.",
       "content": {
-        "concept": "Type checking identifies incompatible values and function usage before runtime execution.",
+        "concept": "Static type checking can detect incompatible assignments and function arguments during development before the code is executed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "type-error",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "let age: number = 25",
+            "let age: number = \"twenty-five\""
+          ],
+          "answer": "let age: number = \"twenty-five\""
         }
       }
     },
@@ -72,19 +97,28 @@
       "id": "d13-a4",
       "type": "discover",
       "title": "Typed Component Builder",
-      "instruction": "Build a React component with typed props.",
+      "instruction": "Build the structure of a React component with typed props.",
       "content": {
-        "concept": "TypeScript can define component props and data structures to make React components safer and easier to maintain.",
+        "concept": "TypeScript can define the shape of React component props so incorrect or missing values can be detected during development.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "typed-component",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Define Props interface",
+            "Add prop types",
+            "Declare component with Props",
+            "Use typed props in JSX",
+            "Render component"
+          ],
+          "required": [
+            "Define Props interface",
+            "Add prop types",
+            "Declare component with Props",
+            "Use typed props in JSX",
+            "Render component"
           ]
         }
       }

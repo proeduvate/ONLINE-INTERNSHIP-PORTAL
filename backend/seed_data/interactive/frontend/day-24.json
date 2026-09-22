@@ -1,26 +1,105 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 24,
-  "topic": "Day 24 Topic for Frontend",
-  "version": 1,
+  "topic": "JSX, Props & Component Composition",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Use props",
+    "Compose components",
+    "Pass children"
   ],
   "activities": [
     {
       "id": "d24-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "props",
+      "title": "Props Inspector",
+      "instruction": "Match each prop to the value received by the child component.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand that props allow parent components to pass data into child components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "props-inspector",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "name → 'Sakthi'",
+            "age → 21",
+            "isActive → true",
+            "theme → 'dark'"
+          ],
+          "answer": "name → 'Sakthi'"
+        }
+      }
+    },
+    {
+      "id": "d24-a02",
+      "type": "compose",
+      "title": "Component Composition",
+      "instruction": "Arrange reusable components to construct a complete page section.",
+      "content": {
+        "concept": "Compose larger interfaces by nesting smaller reusable React components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "component-composition",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. PageSection",
+            "2. SectionHeader",
+            "3. CardGrid",
+            "4. Card",
+            "5. ActionButton"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d24-a03",
+      "type": "children",
+      "title": "Children Slot",
+      "instruction": "Place different JSX content inside a reusable Card component's children slot.",
+      "content": {
+        "concept": "Understand how the special children prop lets a component render nested JSX supplied by its parent.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "children-slot",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<Card>",
+            "<h2>Profile</h2>",
+            "<p>User information</p>",
+            "<button>View</button>",
+            "</Card>"
+          ],
+          "required": [
+            "<Card>",
+            "<h2>Profile</h2>",
+            "<p>User information</p>",
+            "</Card>"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d24-a04",
+      "type": "debug",
+      "title": "Props Debugger",
+      "instruction": "Identify the mismatched prop name that prevents the child component from displaying the expected value.",
+      "content": {
+        "concept": "Debug prop-name mismatches between parent and child components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "props-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
@@ -31,7 +110,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

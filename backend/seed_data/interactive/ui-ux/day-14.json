@@ -7,6 +7,7 @@
   "learningObjectives": [
     "Plan a basic usability test around a specific user goal.",
     "Identify usability problems from user behavior and feedback.",
+    "Distinguish observations from assumptions when evaluating usability.",
     "Prioritize findings based on their impact on task completion."
   ],
   "activities": [
@@ -14,19 +15,22 @@
       "id": "d14-a1",
       "type": "discover",
       "title": "Usability Test Flow",
-      "instruction": "Arrange the stages of a usability test.",
+      "instruction": "Arrange the stages of a basic usability test.",
       "content": {
-        "concept": "Usability testing involves defining goals, preparing tasks, observing users, collecting findings, and synthesizing results.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Usability testing involves defining goals, preparing tasks, recruiting participants, observing behavior, collecting findings, and synthesizing results.",
+        "tip": "Start with the research goal and finish by turning observations into findings."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "usability-test-order",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Define Test Goal",
+            "2. Create User Task",
+            "3. Conduct Test",
+            "4. Observe User Behavior",
+            "5. Record Findings",
+            "6. Synthesize Results"
           ]
         }
       }
@@ -35,19 +39,26 @@
       "id": "d14-a2",
       "type": "discover",
       "title": "Test Task Builder",
-      "instruction": "Build a clear usability test task.",
+      "instruction": "Build a clear and realistic usability test task.",
       "content": {
-        "concept": "A good usability task gives users a realistic goal without unnecessarily revealing the steps they should take.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "A good usability task gives users a realistic goal without unnecessarily revealing the exact steps they should take.",
+        "tip": "Focus on what the user wants to accomplish rather than telling them how to accomplish it."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "test-task-builder",
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "User Goal",
+            "Realistic Scenario",
+            "Success Condition",
+            "Step-by-Step Instructions",
+            "Interface-Specific Hints"
+          ],
+          "required": [
+            "User Goal",
+            "Realistic Scenario",
+            "Success Condition"
           ]
         }
       }
@@ -56,16 +67,22 @@
       "id": "d14-a3",
       "type": "discover",
       "title": "Usability Problem Detector",
-      "instruction": "Identify the usability issue in each scenario.",
+      "instruction": "Identify the usability issue demonstrated in each scenario.",
       "content": {
-        "concept": "Usability problems can appear as confusion, errors, hesitation, inefficient paths, or inability to complete a task.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Usability problems can appear as confusion, errors, hesitation, inefficient paths, repeated actions, or inability to complete a task.",
+        "tip": "Focus on observable user behavior rather than guessing the user's thoughts."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "usability-problem-detector",
+        "family": "compare",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "choices": [
+            "User cannot find the primary action",
+            "User completes the task quickly",
+            "User understands the navigation immediately",
+            "User successfully recovers from an error"
+          ],
+          "answer": "User cannot find the primary action"
         }
       }
     },
@@ -73,18 +90,22 @@
       "id": "d14-a4",
       "type": "discover",
       "title": "Finding Priority Lab",
-      "instruction": "Adjust impact and frequency to prioritize findings.",
+      "instruction": "Adjust severity and frequency to understand finding priority.",
       "content": {
         "concept": "Usability findings can be prioritized using factors such as severity, frequency, and impact on important user tasks.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "tip": "A frequent problem that prevents users from completing an important task deserves greater attention than a minor cosmetic issue."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "finding-priority",
         "family": "slider",
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 50,
+          "labels": {
+            "min": "Low Priority",
+            "max": "High Priority"
+          }
         }
       }
     }

@@ -14,9 +14,9 @@
       "id": "d11-a1",
       "type": "discover",
       "title": "Comprehension Anatomy",
-      "instruction": "Explore the parts of a list comprehension.",
+      "instruction": "Explore the parts of a Python list comprehension.",
       "content": {
-        "concept": "List comprehensions combine iteration and optional filtering into a compact expression.",
+        "concept": "A list comprehension combines an expression, an iterable, and optionally a condition to create a new list concisely.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "[number * 2 for number in numbers if number % 2 == 0]",
+            "number * 2",
+            "for number in numbers",
+            "if number % 2 == 0"
+          ],
+          "descriptions": [
+            "Complete list comprehension that creates a new list.",
+            "Expression applied to each selected element.",
+            "Iterates through each value in numbers.",
+            "Optional filtering condition that keeps only even numbers."
           ]
         }
       }
@@ -35,9 +42,9 @@
       "id": "d11-a2",
       "type": "discover",
       "title": "Comprehension Builder",
-      "instruction": "Build a comprehension for the given task.",
+      "instruction": "Build a comprehension that squares only even numbers.",
       "content": {
-        "concept": "Comprehensions transform or filter iterable data using a readable expression.",
+        "concept": "List comprehensions can transform values and filter elements in one readable expression.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +52,17 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "[number ** 2 for number in numbers if number % 2 == 0]",
+            "numbers = [1, 2, 3, 4, 5, 6]",
+            "[number ** 2 for number in numbers]",
+            "number % 2 == 0",
+            "for number in numbers",
+            "import math"
+          ],
+          "required": [
+            "numbers = [1, 2, 3, 4, 5, 6]",
+            "number % 2 == 0",
+            "for number in numbers"
           ]
         }
       }
@@ -55,19 +70,27 @@
     {
       "id": "d11-a3",
       "type": "discover",
-      "title": "Functional Match",
-      "instruction": "Match each function to its behavior.",
+      "title": "Functional Tool Explorer",
+      "instruction": "Choose the functional tool that matches the operation.",
       "content": {
-        "concept": "map, filter, lambda, and reduce support functional approaches to processing collections.",
+        "concept": "lambda creates small anonymous functions, map transforms elements, filter selects elements, and reduce combines values into a single result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
-        "family": "compare",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
+          "items": [
+            "lambda",
+            "map()",
+            "filter()",
+            "reduce()"
+          ],
+          "descriptions": [
+            "Creates a small anonymous function expression.",
+            "Applies a function to each item of an iterable.",
+            "Keeps items for which a function returns a truthy result.",
+            "Combines iterable elements cumulatively into one value; imported from functools."
           ]
         }
       }
@@ -75,17 +98,23 @@
     {
       "id": "d11-a4",
       "type": "discover",
-      "title": "Transformation Lab",
-      "instruction": "Select the operation that produces the target output.",
+      "title": "Transformation Selector",
+      "instruction": "Choose the operation that produces the target result.",
       "content": {
-        "concept": "Functional operations can transform, filter, and aggregate iterable data without explicit loops.",
+        "concept": "Different functional operations solve different problems: transformation, filtering, or aggregation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "map(lambda x: x * 2, numbers)",
+            "filter(lambda x: x > 5, numbers)",
+            "reduce(lambda a, b: a + b, numbers)",
+            "sorted(numbers)"
+          ],
+          "answer": "map(lambda x: x * 2, numbers)"
         }
       }
     }

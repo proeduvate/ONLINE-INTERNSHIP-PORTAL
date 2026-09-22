@@ -14,7 +14,7 @@
       "id": "d10-a1",
       "type": "discover",
       "title": "Explore Database Anatomy",
-      "instruction": "Click the table components to reveal their roles.",
+      "instruction": "Click the database components to reveal their roles.",
       "content": {
         "concept": "Relational databases organize information into tables containing rows, columns, keys, and relationships.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Table",
+            "Row",
+            "Column",
+            "Primary Key",
+            "Foreign Key"
+          ],
+          "descriptions": [
+            "A structured collection of related records.",
+            "A single record containing values for different columns.",
+            "A field that represents one attribute of the records.",
+            "A column or combination of columns that uniquely identifies a row.",
+            "A column that references a key in another table to represent a relationship."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d10-a2",
       "type": "discover",
       "title": "Build a SQL Query",
-      "instruction": "Assemble the query components in the correct order.",
+      "instruction": "Assemble the SQL components needed to retrieve filtered data.",
       "content": {
-        "concept": "SQL queries use clauses such as SELECT, FROM, WHERE, GROUP BY, and ORDER BY to retrieve and analyze data.",
+        "concept": "A basic SQL query uses clauses such as SELECT, FROM, and WHERE to choose columns, specify a table, and filter records.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,16 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "SELECT name, age",
+            "FROM students",
+            "WHERE age > 18",
+            "GROUP BY age",
+            "ORDER BY age"
+          ],
+          "required": [
+            "SELECT name, age",
+            "FROM students",
+            "WHERE age > 18"
           ]
         }
       }
@@ -55,10 +71,10 @@
     {
       "id": "d10-a3",
       "type": "discover",
-      "title": "Sequence the Data Query",
-      "instruction": "Arrange the query execution stages.",
+      "title": "Sequence the SQL Analysis",
+      "instruction": "Arrange the stages of a typical SQL data analysis task.",
       "content": {
-        "concept": "Understanding query operations helps explain how filtering, grouping, aggregation, and sorting produce analytical results.",
+        "concept": "SQL analysis commonly involves identifying the required data, selecting and filtering records, aggregating results, and organizing the output.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +82,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Identify the Required Data",
+            "2. Select the Required Columns",
+            "3. Filter the Records",
+            "4. Group the Data When Needed",
+            "5. Calculate Aggregations",
+            "6. Sort and Review the Results"
           ]
         }
       }
@@ -77,19 +96,24 @@
       "id": "d10-a4",
       "type": "discover",
       "title": "Match SQL Operations",
-      "instruction": "Match each SQL operation with its purpose.",
+      "instruction": "Choose the purpose that best matches each SQL operation.",
       "content": {
-        "concept": "SQL operations support filtering records, combining tables, summarizing values, and organizing query results.",
+        "concept": "SQL operations support selecting columns, filtering records, combining tables, grouping data, and calculating summaries.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "SELECT → Choose columns or expressions",
+            "WHERE → Filter individual records",
+            "GROUP BY → Organize records into groups",
+            "JOIN → Combine related data from tables",
+            "COUNT() → Count records or values",
+            "AVG() → Calculate an average"
+          ],
+          "answer": "SELECT → Choose columns or expressions"
         }
       }
     }

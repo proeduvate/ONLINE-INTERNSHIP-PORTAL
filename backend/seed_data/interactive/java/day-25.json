@@ -13,53 +13,111 @@
     {
       "id": "d25-a1",
       "type": "discover",
-      "title": "CI/CD Pipeline Map",
-      "instruction": "Connect the stages of the delivery pipeline.",
+      "title": "CI/CD Pipeline Concepts",
+      "instruction": "Explore the major stages and purposes of a Java CI/CD pipeline.",
       "content": {
-        "concept": "A CI/CD pipeline automates activities such as source validation, building, testing, packaging, and deployment.",
+        "concept": "A CI/CD pipeline automates repeatable software-delivery tasks such as validating source changes, resolving dependencies, building, testing, packaging, and deploying applications.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Source Control",
+            "Build",
+            "Automated Tests",
+            "Artifact",
+            "Deployment"
+          ],
+          "descriptions": [
+            "Stores and triggers the pipeline from application source changes.",
+            "Compiles the Java project and resolves required dependencies.",
+            "Checks application behavior and code quality automatically.",
+            "A deployable output such as a JAR or container image.",
+            "Releases the verified artifact to a target environment."
+          ]
+        }
       }
     },
     {
       "id": "d25-a2",
       "type": "discover",
       "title": "Pipeline Sequencer",
-      "instruction": "Arrange the CI/CD stages in order.",
+      "instruction": "Arrange a typical Java CI/CD pipeline.",
       "content": {
-        "concept": "A typical Java pipeline checks out code, resolves dependencies, builds the project, runs tests, packages the application, and deploys it.",
+        "concept": "A basic pipeline validates a source change, prepares dependencies, builds the project, runs tests, creates a deployable artifact, and deploys the verified result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Detect or receive the source-code change",
+            "2. Check out the source code",
+            "3. Resolve dependencies and build the Java project",
+            "4. Run automated tests and quality checks",
+            "5. Package the application artifact",
+            "6. Deploy the verified artifact"
+          ]
+        }
       }
     },
     {
       "id": "d25-a3",
       "type": "discover",
-      "title": "Quality Gate Selector",
-      "instruction": "Select the correct pipeline quality gate.",
+      "title": "Quality Gate",
+      "instruction": "Choose the condition that should allow a build to continue.",
       "content": {
-        "concept": "Automated tests and quality checks can prevent a build from progressing when required conditions are not satisfied.",
+        "concept": "A quality gate prevents a pipeline from progressing when required checks fail, such as compilation, automated tests, or configured quality checks.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "All required tests pass and the build succeeds",
+            "One required test fails but deployment should continue anyway",
+            "Compilation fails but the artifact should still be deployed",
+            "A required security check fails but the pipeline should ignore it"
+          ],
+          "answer": "All required tests pass and the build succeeds"
+        }
       }
     },
     {
       "id": "d25-a4",
       "type": "discover",
-      "title": "CI/CD Builder",
-      "instruction": "Build a complete Java delivery pipeline.",
+      "title": "CI/CD Pipeline Builder",
+      "instruction": "Build a complete delivery pipeline for a Java application.",
       "content": {
-        "concept": "A CI/CD workflow combines source control, automated builds, tests, artifacts, and deployment into a repeatable delivery process.",
+        "concept": "A repeatable CI/CD workflow connects source control, automated build and test stages, artifact creation, and deployment so verified Java changes can be delivered consistently.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Source repository",
+            "Build Java project",
+            "Run unit tests",
+            "Run integration tests",
+            "Create JAR or container image",
+            "Deploy verified artifact",
+            "Skip all tests",
+            "Deploy directly from uncommitted local files"
+          ],
+          "required": [
+            "Source repository",
+            "Build Java project",
+            "Run unit tests",
+            "Create JAR or container image",
+            "Deploy verified artifact"
+          ]
+        }
       }
     }
   ],

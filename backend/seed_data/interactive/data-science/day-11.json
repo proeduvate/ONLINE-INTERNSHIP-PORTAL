@@ -14,9 +14,9 @@
       "id": "d11-a1",
       "type": "discover",
       "title": "Explore GroupBy",
-      "instruction": "Group the dataset and inspect the results.",
+      "instruction": "Build a GroupBy operation to summarize data by category.",
       "content": {
-        "concept": "GroupBy divides data into groups so that aggregate operations can be applied to each group.",
+        "concept": "GroupBy divides a DataFrame into groups based on one or more columns so that calculations can be performed on each group.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,14 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "df.groupby('category')",
+            ".sum()",
+            ".mean()",
+            ".count()"
+          ],
+          "required": [
+            "df.groupby('category')",
+            ".mean()"
           ]
         }
       }
@@ -35,19 +40,23 @@
       "id": "d11-a2",
       "type": "discover",
       "title": "Match Aggregations",
-      "instruction": "Match each aggregation with its purpose.",
+      "instruction": "Identify what each aggregation tells you about grouped data.",
       "content": {
-        "concept": "Sum, mean, count, minimum, and maximum summarize grouped data in different ways.",
+        "concept": "Aggregation functions summarize grouped values using measures such as sum, mean, count, minimum, and maximum.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "sum() → Total of the values",
+            "mean() → Average of the values",
+            "count() → Number of records",
+            "min() → Smallest value",
+            "max() → Largest value"
+          ],
+          "answer": "mean() → Average of the values"
         }
       }
     },
@@ -55,16 +64,29 @@
       "id": "d11-a3",
       "type": "discover",
       "title": "Join the Datasets",
-      "instruction": "Connect the tables using the correct key.",
+      "instruction": "Explore how related tables can be combined using a common key.",
       "content": {
-        "concept": "Merge and join operations combine related datasets using common columns or indexes.",
+        "concept": "Pandas merge and join operations combine related datasets using matching columns or indexes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "anatomy",
+        "family": "anatomy",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "items": [
+            "Left DataFrame",
+            "Right DataFrame",
+            "Common Key",
+            "Merge",
+            "Result DataFrame"
+          ],
+          "descriptions": [
+            "The first dataset participating in the combination.",
+            "The second dataset containing related information.",
+            "A column whose matching values connect records between datasets.",
+            "The operation that combines rows from the related datasets.",
+            "The resulting DataFrame containing the combined information."
+          ]
         }
       }
     },
@@ -72,9 +94,9 @@
       "id": "d11-a4",
       "type": "discover",
       "title": "Transform the Data",
-      "instruction": "Arrange the transformation steps in order.",
+      "instruction": "Arrange the transformation steps into a logical analytical workflow.",
       "content": {
-        "concept": "Data transformation reshapes, derives, filters, and aggregates information for analysis.",
+        "concept": "Data transformation can involve selecting, filtering, deriving, grouping, reshaping, and aggregating information for analysis.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -82,9 +104,13 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Load the DataFrame",
+            "2. Select Relevant Columns",
+            "3. Filter Required Rows",
+            "4. Create or Modify Columns",
+            "5. Group or Reshape the Data",
+            "6. Apply Aggregations",
+            "7. Validate the Transformed Data"
           ]
         }
       }

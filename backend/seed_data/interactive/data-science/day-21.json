@@ -14,9 +14,9 @@
       "id": "d21-a1",
       "type": "discover",
       "title": "Feature Relevance Map",
-      "instruction": "Connect each feature to its predictive value.",
+      "instruction": "Identify which features are relevant, irrelevant, or redundant for prediction.",
       "content": {
-        "concept": "Relevant, irrelevant, and redundant features.",
+        "concept": "Relevant features provide useful predictive information, irrelevant features add little value, and redundant features duplicate information already captured by other variables.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Age",
+            "Customer ID",
+            "Monthly Income",
+            "Purchase Frequency",
+            "Duplicate Income Feature"
+          ],
+          "descriptions": [
+            "Can provide useful information for predicting customer behavior.",
+            "Usually identifies a record rather than providing predictive information.",
+            "May help explain purchasing behavior.",
+            "Can be strongly related to customer activity and predictions.",
+            "Contains information already represented by another income feature."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d21-a2",
       "type": "discover",
       "title": "Selection Strategy",
-      "instruction": "Match each technique to its purpose.",
+      "instruction": "Match each feature selection approach to how it selects features.",
       "content": {
-        "concept": "Filter, wrapper, and embedded feature selection methods.",
+        "concept": "Filter methods evaluate features independently of a model, wrapper methods evaluate feature subsets using a model, and embedded methods select features during model training.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,12 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Filter Method → Select features using statistical properties before model training",
+            "Wrapper Method → Evaluate different feature subsets using a model",
+            "Embedded Method → Select features as part of model training",
+            "Correlation Filtering → Remove highly redundant numerical features"
+          ],
+          "answer": "Filter Method → Select features using statistical properties before model training"
         }
       }
     },
@@ -55,9 +67,9 @@
       "id": "d21-a3",
       "type": "discover",
       "title": "PCA Anatomy",
-      "instruction": "Explore the stages of PCA.",
+      "instruction": "Explore the main stages of Principal Component Analysis.",
       "content": {
-        "concept": "PCA transforms correlated variables into principal components.",
+        "concept": "PCA transforms correlated features into a smaller set of principal components that capture important variation in the data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -65,9 +77,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Standardize Features",
+            "Calculate Covariance Structure",
+            "Find Principal Components",
+            "Rank Components by Explained Variance",
+            "Select Components",
+            "Transform the Dataset"
+          ],
+          "descriptions": [
+            "Put numerical features on comparable scales when required.",
+            "Describe how features vary together.",
+            "Find new directions that capture variation in the data.",
+            "Determine how much variance each component explains.",
+            "Keep a smaller number of components based on the desired information retention.",
+            "Represent the original data using the selected components."
           ]
         }
       }
@@ -76,18 +99,18 @@
       "id": "d21-a4",
       "type": "discover",
       "title": "Variance Slider",
-      "instruction": "Adjust components and observe retained variance.",
+      "instruction": "Adjust the number of retained components and observe the trade-off between dimensionality and explained variance.",
       "content": {
-        "concept": "The number of principal components controls dimensionality and information retention.",
+        "concept": "Selecting more principal components generally retains more information but provides less dimensionality reduction.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 20,
+          "default": 5
         }
       }
     }

@@ -14,19 +14,26 @@
       "id": "d2-a1",
       "type": "discover",
       "title": "Input and Output Flow",
-      "instruction": "Trace data from input to output.",
+      "instruction": "Explore how data moves from user input to program output.",
       "content": {
-        "concept": "Python uses input() to receive data and print() to display output.",
+        "concept": "input() reads text from the user and returns a string. print() displays values or formatted text to the output.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "input()",
+            "Variable",
+            "Processing",
+            "print()"
+          ],
+          "descriptions": [
+            "Reads user input and returns it as a string.",
+            "Stores the received or processed value.",
+            "Applies operations or decisions to the data.",
+            "Displays the resulting value or message."
           ]
         }
       }
@@ -35,9 +42,9 @@
       "id": "d2-a2",
       "type": "discover",
       "title": "Conditional Anatomy",
-      "instruction": "Identify the parts of a conditional statement.",
+      "instruction": "Explore the parts of an if-elif-else statement.",
       "content": {
-        "concept": "Conditional statements execute different code depending on whether conditions are true or false.",
+        "concept": "A conditional evaluates expressions and chooses which indented block should execute.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +52,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "age = 20",
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "else:",
+            "    print(\"Minor\")"
+          ],
+          "descriptions": [
+            "Stores the value that will be tested.",
+            "Evaluates a Boolean condition.",
+            "Runs when the condition is True.",
+            "Provides an alternative branch when the condition is False.",
+            "Runs when the else branch is selected."
           ]
         }
       }
@@ -56,9 +72,9 @@
       "id": "d2-a3",
       "type": "discover",
       "title": "Decision Builder",
-      "instruction": "Build the correct conditional logic.",
+      "instruction": "Build a conditional that categorizes a person's age.",
       "content": {
-        "concept": "if, elif, and else branches allow programs to handle multiple decision paths.",
+        "concept": "if handles the first condition, elif adds additional conditions, and else handles the remaining cases.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +82,17 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "elif age >= 13:",
+            "    print(\"Teen\")",
+            "else:",
+            "    print(\"Child\")"
+          ],
+          "required": [
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "else:"
           ]
         }
       }
@@ -77,16 +101,22 @@
       "id": "d2-a4",
       "type": "discover",
       "title": "Condition Selector",
-      "instruction": "Choose the condition that matches the scenario.",
+      "instruction": "Choose the condition that correctly represents the scenario.",
       "content": {
-        "concept": "Comparison and logical operators can be combined to create meaningful conditions.",
+        "concept": "Comparison and logical operators create Boolean expressions that can be used to make program decisions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "age >= 18",
+            "age = 18",
+            "age + 18",
+            "age != 18"
+          ],
+          "answer": "age >= 18"
         }
       }
     }

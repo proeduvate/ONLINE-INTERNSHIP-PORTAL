@@ -14,7 +14,7 @@
       "id": "d26-a1",
       "type": "discover",
       "title": "Research Insight Map",
-      "instruction": "Connect research findings to recurring user needs.",
+      "instruction": "Connect research observations to recurring themes and user needs.",
       "content": {
         "concept": "Research synthesis groups observations into patterns, themes, and actionable insights.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,26 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            {
+              "label": "Observation",
+              "description": "A user repeatedly abandons the checkout process when asked to enter lengthy information."
+            },
+            {
+              "label": "Pattern",
+              "description": "Users experience friction when tasks require unnecessary manual input."
+            },
+            {
+              "label": "User Need",
+              "description": "Users need a faster and simpler way to complete checkout."
+            },
+            {
+              "label": "Insight",
+              "description": "Reducing unnecessary input can improve task completion and perceived ease of use."
+            },
+            {
+              "label": "Opportunity",
+              "description": "Explore autofill, saved information, or progressive disclosure."
+            }
           ]
         }
       }
@@ -45,9 +62,18 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "1. Target User",
+            "2. User Need",
+            "3. Context",
+            "4. Core Problem",
+            "5. User Impact"
+          ],
+          "items": [
+            "User Impact",
+            "Core Problem",
+            "Target User",
+            "Context",
+            "User Need"
           ]
         }
       }
@@ -56,7 +82,7 @@
       "id": "d26-a3",
       "type": "discover",
       "title": "Insight Prioritizer",
-      "instruction": "Adjust priority values to identify the most important insights.",
+      "instruction": "Adjust the impact level of each insight and identify which problems deserve greater design attention.",
       "content": {
         "concept": "Prioritization helps teams focus design effort on problems with meaningful user impact.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -67,7 +93,31 @@
         "config": {
           "min": 0,
           "max": 100,
-          "default": 50
+          "default": 50,
+          "label": "User Impact",
+          "scenarios": [
+            {
+              "insight": "Users occasionally struggle to find a secondary settings option.",
+              "recommendedRange": [
+                20,
+                40
+              ]
+            },
+            {
+              "insight": "Users frequently abandon the main task because they cannot understand the next step.",
+              "recommendedRange": [
+                70,
+                90
+              ]
+            },
+            {
+              "insight": "Users report that a decorative animation feels slightly distracting.",
+              "recommendedRange": [
+                10,
+                30
+              ]
+            }
+          ]
         }
       }
     },
@@ -75,7 +125,7 @@
       "id": "d26-a4",
       "type": "discover",
       "title": "Design Goal Builder",
-      "instruction": "Select goals that directly address the defined problem.",
+      "instruction": "Select measurable goals that directly respond to the defined user problem.",
       "content": {
         "concept": "Design goals translate user problems into specific outcomes the solution should achieve.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -85,9 +135,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Reduce unnecessary form fields",
+            "Improve task completion rate",
+            "Make the next action easier to identify",
+            "Reduce user confusion",
+            "Add decorative elements everywhere",
+            "Increase unnecessary navigation steps"
+          ],
+          "correctOptions": [
+            "Reduce unnecessary form fields",
+            "Improve task completion rate",
+            "Make the next action easier to identify",
+            "Reduce user confusion"
           ]
         }
       }

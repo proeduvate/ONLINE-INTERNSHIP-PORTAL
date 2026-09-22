@@ -7,6 +7,7 @@
   "learningObjectives": [
     "Identify common UI components and their appropriate use cases.",
     "Understand how reusable components create interface consistency.",
+    "Recognize common component states and interaction patterns.",
     "Assemble a basic design system from reusable UI elements."
   ],
   "activities": [
@@ -14,19 +15,30 @@
       "id": "d8-a1",
       "type": "discover",
       "title": "UI Component Anatomy",
-      "instruction": "Explore the anatomy of common UI components.",
+      "instruction": "Explore the anatomy of common interface components.",
       "content": {
-        "concept": "Buttons, inputs, cards, navigation, dialogs, and other components provide reusable interaction patterns.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Components such as buttons, inputs, cards, navigation, dialogs, and dropdowns provide reusable interaction patterns.",
+        "tip": "Explore each component to understand its structure and purpose."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "component-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            "Button",
+            "Text Input",
+            "Card",
+            "Navigation",
+            "Dialog",
+            "Dropdown"
+          ],
+          "descriptions": [
+            "Triggers a primary or secondary action.",
+            "Allows users to enter or edit information.",
+            "Groups related content and actions.",
+            "Helps users move between sections or screens.",
+            "Displays important information or requests an action.",
+            "Allows users to select from a list of options."
           ]
         }
       }
@@ -35,19 +47,23 @@
       "id": "d8-a2",
       "type": "discover",
       "title": "Component Matcher",
-      "instruction": "Match each user need to the correct component.",
+      "instruction": "Match each user need with the most appropriate UI component.",
       "content": {
-        "concept": "Choosing the right component reduces interaction complexity and creates familiar user experiences.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Selecting familiar components reduces interaction complexity and makes interfaces easier to understand.",
+        "tip": "Choose the component that directly supports the user's task."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "component-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Text Input",
+            "Dropdown",
+            "Checkbox",
+            "Radio Group",
+            "Modal Dialog"
+          ],
+          "answer": "Dropdown"
         }
       }
     },
@@ -55,16 +71,33 @@
       "id": "d8-a3",
       "type": "discover",
       "title": "Component States Lab",
-      "instruction": "Explore how components respond to interaction states.",
+      "instruction": "Explore how a component changes across different interaction states.",
       "content": {
-        "concept": "Components commonly have states such as default, hover, focus, active, disabled, loading, and error.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Components commonly have states such as default, hover, focus, active, disabled, loading, selected, and error.",
+        "tip": "Observe how each state communicates what the user can do and what the system is doing."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "component-states",
+        "family": "anatomy",
         "config": {
-          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+          "items": [
+            "Default",
+            "Hover",
+            "Focus",
+            "Active",
+            "Disabled",
+            "Loading",
+            "Error"
+          ],
+          "descriptions": [
+            "The normal resting state.",
+            "Appears when the pointer is positioned over the component.",
+            "Shows keyboard or interaction focus.",
+            "Indicates that the component is currently being activated.",
+            "Shows that the action is temporarily unavailable.",
+            "Communicates that an operation is in progress.",
+            "Communicates that an input or operation has a problem."
+          ]
         }
       }
     },
@@ -72,19 +105,31 @@
       "id": "d8-a4",
       "type": "discover",
       "title": "Mini Design System Builder",
-      "instruction": "Assemble reusable components into a system.",
+      "instruction": "Assemble the essential parts of a basic design system.",
       "content": {
-        "concept": "A design system combines reusable components, styles, tokens, and usage rules to maintain consistency.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "A design system combines reusable components, design tokens, styles, states, and usage rules to maintain consistency.",
+        "tip": "Build the system from foundational styles toward reusable components."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "design-system-builder",
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Sidebar",
-            "Main Content"
+            "Color Tokens",
+            "Typography Tokens",
+            "Spacing Tokens",
+            "Buttons",
+            "Form Inputs",
+            "Cards",
+            "Navigation",
+            "Component States"
+          ],
+          "required": [
+            "Color Tokens",
+            "Typography Tokens",
+            "Spacing Tokens",
+            "Buttons",
+            "Form Inputs"
           ]
         }
       }

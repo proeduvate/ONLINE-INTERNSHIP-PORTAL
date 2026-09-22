@@ -1,26 +1,104 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 10,
-  "topic": "Day 10 Topic for Frontend",
-  "version": 1,
+  "topic": "Responsive Web Design",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Apply mobile-first design principles",
+    "Use media-query breakpoints appropriately",
+    "Test layouts across multiple viewport sizes"
   ],
   "activities": [
     {
       "id": "d10-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "resize",
+      "title": "Responsive Preview",
+      "instruction": "Change the simulated viewport width and observe how the layout adapts.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Apply mobile-first design principles",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "responsive-resize",
+        "family": "slider",
+        "config": {
+          "min": 320,
+          "max": 1440,
+          "default": 768
+        }
+      }
+    },
+    {
+      "id": "d10-a02",
+      "type": "breakpoint",
+      "title": "Breakpoint Lab",
+      "instruction": "Adjust the breakpoint and observe when the navigation switches between mobile and desktop layouts.",
+      "content": {
+        "concept": "Use media-query breakpoints appropriately",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "breakpoint",
+        "family": "slider",
+        "config": {
+          "min": 480,
+          "max": 1200,
+          "default": 768
+        }
+      }
+    },
+    {
+      "id": "d10-a03",
+      "type": "compare",
+      "title": "Mobile-First Compare",
+      "instruction": "Compare two layout strategies and identify the one that starts with a small-screen layout and progressively adapts.",
+      "content": {
+        "concept": "Understand mobile-first responsive design",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "responsive-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Base styles for mobile, then enhance with min-width media queries",
+            "Desktop-only fixed width with no responsive rules"
+          ],
+          "answer": "Base styles for mobile, then enhance with min-width media queries"
+        }
+      }
+    },
+    {
+      "id": "d10-a04",
+      "type": "build",
+      "title": "Responsive Card",
+      "instruction": "Build a card layout that works across mobile, tablet, and desktop viewport sizes.",
+      "content": {
+        "concept": "Apply responsive layout techniques",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "responsive-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "width: 100%",
+            "max-width: 900px",
+            "display: grid",
+            "grid-template-columns: 1fr",
+            "@media (min-width: 768px)",
+            "grid-template-columns: repeat(2, 1fr)",
+            "gap: 24px"
+          ],
+          "required": [
+            "width: 100%",
+            "max-width: 900px",
+            "grid-template-columns: 1fr",
+            "@media (min-width: 768px)",
+            "grid-template-columns: repeat(2, 1fr)"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +109,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

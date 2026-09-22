@@ -14,9 +14,9 @@
       "id": "d29-a1",
       "type": "discover",
       "title": "Testing Strategy",
-      "instruction": "Map tests to each project component.",
+      "instruction": "Connect each project component with an appropriate type of test.",
       "content": {
-        "concept": "Testing verifies data processing, model behavior, API responses, and pipeline reliability.",
+        "concept": "Testing verifies data processing, model behavior, API responses, and end-to-end pipeline reliability.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,20 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Data Validation Test",
+            "Unit Test",
+            "Model Evaluation",
+            "API Test",
+            "Integration Test",
+            "End-to-End Test"
+          ],
+          "descriptions": [
+            "Checks whether incoming or processed data meets expected rules.",
+            "Tests an individual function or component in isolation.",
+            "Measures model performance using appropriate evaluation metrics.",
+            "Checks whether an API accepts requests and returns expected responses.",
+            "Checks whether multiple components work together correctly.",
+            "Validates the complete workflow from input to final output."
           ]
         }
       }
@@ -35,16 +46,23 @@
       "id": "d29-a2",
       "type": "discover",
       "title": "Visualization Selector",
-      "instruction": "Choose the right chart for each insight.",
+      "instruction": "Match each analytical goal with an appropriate visualization.",
       "content": {
         "concept": "Effective visualizations match the chart type to the data relationship and communication goal.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "match",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Compare Categories → Bar Chart",
+            "Show a Trend Over Time → Line Chart",
+            "Show Numerical Distribution → Histogram",
+            "Show Relationship Between Two Numerical Variables → Scatter Plot",
+            "Compare Distributions → Box Plot"
+          ],
+          "answer": "Compare Categories → Bar Chart"
         }
       }
     },
@@ -52,9 +70,9 @@
       "id": "d29-a3",
       "type": "discover",
       "title": "Documentation Anatomy",
-      "instruction": "Identify the essential documentation sections.",
+      "instruction": "Identify the essential sections of technical project documentation.",
       "content": {
-        "concept": "Technical documentation explains project objectives, data, methodology, results, setup, and usage.",
+        "concept": "Technical documentation explains the project's purpose, data, methodology, results, setup, usage, and limitations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +80,22 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Problem Statement",
+            "Dataset Description",
+            "Methodology",
+            "Implementation",
+            "Results and Evaluation",
+            "Setup and Usage",
+            "Limitations and Future Work"
+          ],
+          "descriptions": [
+            "Defines the problem being addressed.",
+            "Describes the source, structure, and important characteristics of the data.",
+            "Explains the analytical and machine learning approach.",
+            "Describes the major components and implementation details.",
+            "Presents metrics, findings, and relevant visualizations.",
+            "Explains how another person can install, run, or use the project.",
+            "Documents current limitations and possible improvements."
           ]
         }
       }
@@ -73,7 +104,7 @@
       "id": "d29-a4",
       "type": "discover",
       "title": "Presentation Builder",
-      "instruction": "Build the capstone presentation flow.",
+      "instruction": "Build a clear presentation flow for the capstone project.",
       "content": {
         "concept": "A clear presentation connects the problem, approach, evidence, results, limitations, and future work.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -83,9 +114,22 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Problem Statement",
+            "Motivation and Objectives",
+            "Dataset and Preparation",
+            "Methodology and Architecture",
+            "Results and Visualizations",
+            "Demo or Prediction Output",
+            "Limitations",
+            "Future Improvements"
+          ],
+          "required": [
+            "Problem Statement",
+            "Objectives",
+            "Dataset and Preparation",
+            "Methodology and Architecture",
+            "Results and Visualizations",
+            "Demo or Prediction Output"
           ]
         }
       }

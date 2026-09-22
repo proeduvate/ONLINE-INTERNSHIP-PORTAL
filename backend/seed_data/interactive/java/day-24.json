@@ -14,52 +14,115 @@
       "id": "d24-a1",
       "type": "discover",
       "title": "Container Architecture",
-      "instruction": "Explore the parts of a containerized application.",
+      "instruction": "Explore the main parts of a containerized Java application.",
       "content": {
-        "concept": "A container packages an application and its required runtime environment into an isolated, portable execution unit.",
+        "concept": "A container runs an application in an isolated environment created from an image. The image contains the application and the runtime components needed by the application.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Java Application",
+            "Dockerfile",
+            "Docker Image",
+            "Container",
+            "Container Registry"
+          ],
+          "descriptions": [
+            "The Spring Boot application that will run inside the container.",
+            "Instructions describing how to build the application image.",
+            "A packaged, immutable template used to create containers.",
+            "A running instance created from an image.",
+            "A service used to store and distribute container images."
+          ]
+        }
       }
     },
     {
       "id": "d24-a2",
       "type": "discover",
       "title": "Dockerfile Anatomy",
-      "instruction": "Explore the main Dockerfile instructions.",
+      "instruction": "Explore the important instructions in a Java Dockerfile.",
       "content": {
-        "concept": "A Java Dockerfile commonly defines a base image, application artifact, working directory, command, and exposed port.",
+        "concept": "A Java Dockerfile commonly selects a base runtime image, copies the application artifact, defines a working directory when needed, documents the application port, and specifies how the application starts.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "FROM",
+            "WORKDIR",
+            "COPY",
+            "EXPOSE",
+            "ENTRYPOINT"
+          ],
+          "descriptions": [
+            "Selects the base image for the container.",
+            "Sets the working directory for subsequent instructions.",
+            "Copies files from the build context into the image.",
+            "Documents the port the application is expected to use.",
+            "Defines the default command used to start the container."
+          ]
+        }
       }
     },
     {
       "id": "d24-a3",
       "type": "discover",
-      "title": "Image Build Pipeline",
-      "instruction": "Arrange the container build steps.",
+      "title": "Containerization Workflow",
+      "instruction": "Arrange the main steps for containerizing a Spring Boot application.",
       "content": {
-        "concept": "Containerization typically builds an image from a Dockerfile and then starts a container from that image.",
+        "concept": "A typical workflow packages the application, builds an image from the Dockerfile, starts a container, and verifies that the application is accessible.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Build the Spring Boot application JAR",
+            "2. Create the Dockerfile",
+            "3. Build the Docker image",
+            "4. Run a container from the image",
+            "5. Verify the application endpoint"
+          ]
+        }
       }
     },
     {
       "id": "d24-a4",
       "type": "discover",
       "title": "Dockerfile Builder",
-      "instruction": "Compose a Dockerfile for the application.",
+      "instruction": "Compose the essential Dockerfile instructions for a Spring Boot JAR.",
       "content": {
-        "concept": "A Dockerfile describes how to assemble the runtime image and how the Java application should start.",
+        "concept": "A Dockerfile defines the base runtime, places the application artifact into the image, and specifies how the Spring Boot application starts.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "FROM eclipse-temurin:21-jre",
+            "WORKDIR /app",
+            "COPY target/app.jar app.jar",
+            "EXPOSE 8080",
+            "ENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]",
+            "RUN npm install",
+            "CMD [\"python\", \"app.py\"]"
+          ],
+          "required": [
+            "FROM eclipse-temurin:21-jre",
+            "WORKDIR /app",
+            "COPY target/app.jar app.jar",
+            "EXPOSE 8080",
+            "ENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]"
+          ]
+        }
       }
     }
   ],

@@ -14,9 +14,9 @@
       "id": "d25-a1",
       "type": "discover",
       "title": "Big Data Map",
-      "instruction": "Connect big data challenges to solutions.",
+      "instruction": "Connect common big data challenges with the distributed approaches used to address them.",
       "content": {
-        "concept": "Big data systems address scale, speed, and variety using distributed infrastructure.",
+        "concept": "Big data systems use distributed storage and computation to handle datasets that may be too large or complex for a single machine.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Large Data Volume",
+            "High Processing Demand",
+            "Distributed Storage",
+            "Parallel Computation",
+            "Fault Tolerance"
+          ],
+          "descriptions": [
+            "Large datasets can exceed the practical storage or processing capacity of one machine.",
+            "Complex operations may require more computing resources than one machine can provide efficiently.",
+            "Stores data across multiple machines or storage nodes.",
+            "Splits computation so multiple machines can process data concurrently.",
+            "Allows distributed systems to continue operating when individual components fail."
           ]
         }
       }
@@ -35,16 +44,29 @@
       "id": "d25-a2",
       "type": "discover",
       "title": "Distributed Architecture",
-      "instruction": "Explore the parts of a distributed system.",
+      "instruction": "Explore the main components involved in distributed data processing.",
       "content": {
-        "concept": "Distributed systems divide storage and computation across multiple machines.",
+        "concept": "Distributed data processing divides storage and computation across multiple machines coordinated as a system.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "architecture",
-        "family": "lab",
+        "family": "click-map",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "items": [
+            "Driver",
+            "Worker Nodes",
+            "Data Partitions",
+            "Cluster Manager",
+            "Distributed Storage"
+          ],
+          "descriptions": [
+            "Coordinates the application's processing tasks.",
+            "Execute computation tasks on portions of the data.",
+            "Divide a dataset into smaller pieces that can be processed independently.",
+            "Coordinates available computing resources across the cluster.",
+            "Stores large datasets across multiple storage locations or nodes."
+          ]
         }
       }
     },
@@ -52,9 +74,9 @@
       "id": "d25-a3",
       "type": "discover",
       "title": "Spark Workflow",
-      "instruction": "Arrange the stages of a Spark workflow.",
+      "instruction": "Arrange the stages of a basic Spark-style data processing workflow.",
       "content": {
-        "concept": "Spark processes large datasets through distributed transformations and actions.",
+        "concept": "Spark-style processing loads data, applies transformations, and executes actions to produce results.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +84,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Create or Configure Spark Application",
+            "2. Load Distributed Data",
+            "3. Apply Transformations",
+            "4. Build the Processing Plan",
+            "5. Execute an Action",
+            "6. Collect or Store the Result"
           ]
         }
       }
@@ -73,18 +98,18 @@
       "id": "d25-a4",
       "type": "discover",
       "title": "Partitioning Lab",
-      "instruction": "Adjust partitions and observe workload distribution.",
+      "instruction": "Adjust the number of partitions and observe how data is divided for parallel processing.",
       "content": {
-        "concept": "Partitioning divides data into manageable pieces that can be processed in parallel.",
+        "concept": "Partitioning divides a dataset into smaller pieces so distributed workers can process portions of the data in parallel.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "partition-simulator",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 20,
+          "default": 4
         }
       }
     }

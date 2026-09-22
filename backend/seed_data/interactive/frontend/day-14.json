@@ -1,26 +1,98 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 14,
-  "topic": "Day 14 Topic for Frontend",
-  "version": 1,
+  "topic": "Conditions, Loops & Control Flow",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Evaluate conditional expressions",
+    "Trace branching through if/else logic",
+    "Understand iteration using loops"
   ],
   "activities": [
     {
       "id": "d14-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "flow",
+      "title": "Flow Tracer",
+      "instruction": "Step through an if/else statement and watch the executed branch highlight.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Evaluate conditional expressions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Evaluate condition",
+            "2. If condition is true, execute if block",
+            "3. Otherwise, execute else block",
+            "4. Continue after the conditional"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d14-a02",
+      "type": "truth",
+      "title": "Boolean Logic Lab",
+      "instruction": "Change boolean inputs and observe the results of AND, OR, and NOT.",
+      "content": {
+        "concept": "Evaluate logical conditions",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "truth",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "true && true → true",
+            "true && false → false",
+            "true || false → true",
+            "!true → false"
+          ],
+          "answer": "true && true → true"
+        }
+      }
+    },
+    {
+      "id": "d14-a03",
+      "type": "loop",
+      "title": "Loop Visualizer",
+      "instruction": "Run the loop one iteration at a time and observe how the counter changes.",
+      "content": {
+        "concept": "Understand iteration using loops",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "loop",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Initialize counter",
+            "2. Check loop condition",
+            "3. Execute loop body",
+            "4. Update counter",
+            "5. Repeat while condition is true"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d14-a04",
+      "type": "debug",
+      "title": "Control Flow Debugger",
+      "instruction": "Fix the conditional expression so the expected branch executes.",
+      "content": {
+        "concept": "Trace branching through if/else logic",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flow-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
@@ -31,7 +103,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

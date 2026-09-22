@@ -1,26 +1,103 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 21,
-  "topic": "Day 21 Topic for Frontend",
-  "version": 1,
+  "topic": "Asynchronous JavaScript & Promises",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand async flow",
+    "Trace promises",
+    "Handle errors"
   ],
   "activities": [
     {
       "id": "d21-a01",
       "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "title": "Async Execution Order",
+      "instruction": "Arrange synchronous code, promise callbacks and microtasks in the order they execute.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand async flow and why promise callbacks run after the current synchronous code.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "execution-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Synchronous code starts",
+            "2. Promise is created",
+            "3. Synchronous code finishes",
+            "4. Promise callback enters the microtask queue",
+            "5. Microtask executes"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d21-a02",
+      "type": "promise",
+      "title": "Promise State Explorer",
+      "instruction": "Match each situation to the correct Promise state.",
+      "content": {
+        "concept": "Trace the pending, fulfilled and rejected states of a Promise.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "promise-state",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "pending",
+            "fulfilled",
+            "rejected"
+          ],
+          "answer": "fulfilled"
+        }
+      }
+    },
+    {
+      "id": "d21-a03",
+      "type": "async",
+      "title": "Async/Await Flow",
+      "instruction": "Arrange the steps of an async function around an await expression.",
+      "content": {
+        "concept": "Trace how async/await pauses an async function while allowing other JavaScript work to continue.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "async-await-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Call the async function",
+            "2. Execute code before await",
+            "3. Await the Promise",
+            "4. Resume after the Promise settles",
+            "5. Return the result"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d21-a04",
+      "type": "error",
+      "title": "Async Error Handler",
+      "instruction": "Choose where a rejected Promise should be handled using try/catch.",
+      "content": {
+        "concept": "Handle asynchronous failures with try/catch and understand rejected Promises.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "async-error-handler",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "try/catch around await",
+            "Ignore the rejection",
+            "Continue assuming success"
+          ],
+          "answer": "try/catch around await"
+        }
       }
     }
   ],
@@ -31,7 +108,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

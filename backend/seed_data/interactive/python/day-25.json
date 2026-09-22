@@ -14,77 +14,114 @@
       "id": "d25-a1",
       "type": "discover",
       "title": "CI/CD Pipeline",
-      "instruction": "Arrange the pipeline stages from commit to deployment.",
+      "instruction": "Arrange the main pipeline stages from code change to deployment.",
       "content": {
-        "concept": "A CI/CD pipeline can automatically validate code, run tests, build artifacts, and deliver applications.",
+        "concept": "A CI/CD pipeline can automatically validate code, run tests, build artifacts, and deploy successful changes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Developer pushes a code change",
+            "2. CI runner checks out the code",
+            "3. Install dependencies",
+            "4. Run linting, type checks, and tests",
+            "5. Build the application artifact",
+            "6. Deploy after required checks pass",
+            "7. Verify the deployed application"
           ]
         }
       }
     },
     {
       "id": "d25-a2",
-      "type": "discover",
+      "type": "click-map",
       "title": "Pipeline Architecture",
-      "instruction": "Connect the components of a CI/CD system.",
+      "instruction": "Explore each component of a Python CI/CD system.",
       "content": {
-        "concept": "CI/CD combines source control, automated checks, build processes, artifacts, and deployment environments.",
+        "concept": "CI/CD connects source control with automated validation, build processes, artifacts, and deployment environments.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "items": [
+            "Source Repository",
+            "CI Runner",
+            "Quality Checks",
+            "Build Artifact",
+            "Deployment Environment",
+            "Monitoring"
+          ],
+          "descriptions": [
+            "Stores the application source code and triggers workflows when changes are pushed.",
+            "Executes the automated pipeline steps in a clean environment.",
+            "Runs tests, linting, type checking, and other validation tasks.",
+            "The packaged output produced by a successful build.",
+            "The environment where the application is released and runs.",
+            "Provides visibility into the deployed application's health and behavior."
+          ]
         }
       }
     },
     {
       "id": "d25-a3",
       "type": "discover",
-      "title": "Quality Gate Matcher",
-      "instruction": "Match each quality check to its purpose.",
+      "title": "Quality Gate Selector",
+      "instruction": "Choose the check that best detects the described problem.",
       "content": {
-        "concept": "Linting, testing, type checking, and security checks catch different categories of development problems.",
+        "concept": "Different quality checks detect different classes of problems. Tests verify behavior, linters detect code-quality issues, and type checkers analyze type consistency.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "pytest",
+            "Ruff or another linter",
+            "mypy",
+            "Dependency vulnerability scanner"
+          ],
+          "answer": "pytest"
         }
       }
     },
     {
       "id": "d25-a4",
-      "type": "discover",
+      "type": "builder",
       "title": "Pipeline Builder",
-      "instruction": "Build a complete automated Python pipeline.",
+      "instruction": "Build a complete automated Python validation and delivery pipeline.",
       "content": {
-        "concept": "A reliable pipeline defines automated validation and delivery steps that run consistently for code changes.",
+        "concept": "A pipeline should consistently validate changes before allowing them to progress toward packaging and deployment.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "Checkout source code",
+            "Install dependencies",
+            "Run linting",
+            "Run type checks",
+            "Run pytest",
+            "Build the application",
+            "Deploy the artifact",
+            "Verify deployment"
+          ],
+          "required": [
+            "Checkout source code",
+            "Install dependencies",
+            "Run linting",
+            "Run type checks",
+            "Run pytest",
+            "Build the application",
+            "Deploy the artifact",
+            "Verify deployment"
           ]
         }
       }

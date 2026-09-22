@@ -14,19 +14,26 @@
       "id": "d4-a1",
       "type": "discover",
       "title": "JavaScript Syntax Anatomy",
-      "instruction": "Explore the parts of JavaScript statements.",
+      "instruction": "Explore variables, values, operators, expressions, and statements in a JavaScript example.",
       "content": {
-        "concept": "JavaScript uses variables, values, operators, expressions, and statements to describe application behavior.",
+        "concept": "JavaScript uses variables, values, operators, expressions, and statements to represent application data and behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "javascript-anatomy",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "const count",
+            "42",
+            "count + 1",
+            "const result = count + 1"
+          ],
+          "descriptions": [
+            "A variable declaration that creates a binding.",
+            "A numeric value.",
+            "An expression using the addition operator.",
+            "A statement that assigns the evaluated expression to a variable."
           ]
         }
       }
@@ -34,17 +41,23 @@
     {
       "id": "d4-a2",
       "type": "discover",
-      "title": "Logic Selector",
-      "instruction": "Choose the correct control-flow structure.",
+      "title": "Control Flow Explorer",
+      "instruction": "Choose the JavaScript control-flow structure that fits each situation.",
       "content": {
-        "concept": "Conditional statements and loops control which code executes and how many times it runs.",
+        "concept": "Conditional statements make decisions, while loops repeat code while a condition remains satisfied.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "control-flow",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "if → choose between conditions",
+            "for → repeat a known iteration pattern",
+            "while → repeat while a condition is true",
+            "switch → select among multiple cases"
+          ],
+          "answer": "if → choose between conditions"
         }
       }
     },
@@ -52,36 +65,57 @@
       "id": "d4-a3",
       "type": "discover",
       "title": "DOM Architecture",
-      "instruction": "Map the HTML page to the DOM.",
+      "instruction": "Explore how HTML elements are represented as a DOM tree.",
       "content": {
-        "concept": "The DOM represents an HTML document as a tree of objects that JavaScript can inspect and modify.",
+        "concept": "The DOM represents an HTML document as a tree of objects that JavaScript can query, modify, create, and remove.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "dom-tree",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "document",
+            "html",
+            "body",
+            "main",
+            "button"
+          ],
+          "descriptions": [
+            "The entry point representing the loaded document.",
+            "The root HTML element.",
+            "Contains the visible page content.",
+            "Contains the primary page content.",
+            "An interactive element that JavaScript can select and modify."
+          ]
         }
       }
     },
     {
       "id": "d4-a4",
       "type": "discover",
-      "title": "Event Flow Builder",
-      "instruction": "Build an interactive button behavior.",
+      "title": "Event Behavior Builder",
+      "instruction": "Build a button interaction using an event listener and a handler.",
       "content": {
         "concept": "Browser events allow JavaScript to respond to user actions such as clicks, input changes, and keyboard interactions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "event-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "button",
+            "click",
+            "addEventListener",
+            "event handler",
+            "update textContent"
+          ],
+          "required": [
+            "button",
+            "click",
+            "addEventListener",
+            "event handler"
           ]
         }
       }

@@ -14,7 +14,7 @@
       "id": "d4-a1",
       "type": "discover",
       "title": "Explore the DataFrame",
-      "instruction": "Click columns and rows to reveal their structure.",
+      "instruction": "Click each DataFrame component to reveal its role.",
       "content": {
         "concept": "A Pandas DataFrame represents tabular data using labeled rows and columns.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "DataFrame",
+            "Column",
+            "Row",
+            "Index",
+            "Cell"
+          ],
+          "descriptions": [
+            "A two-dimensional Pandas structure for storing tabular data.",
+            "A named vertical collection of values representing a feature or field.",
+            "A horizontal record containing values for one observation.",
+            "The labels used to identify rows in the DataFrame.",
+            "A single value located at the intersection of a row and column."
           ]
         }
       }
@@ -35,16 +44,21 @@
       "id": "d4-a2",
       "type": "discover",
       "title": "Filter the Dataset",
-      "instruction": "Select the condition that filters the required rows.",
+      "instruction": "Select the expression that filters rows based on a condition.",
       "content": {
-        "concept": "Boolean conditions allow specific rows or records to be selected from a DataFrame.",
+        "concept": "Boolean conditions can be applied to a DataFrame to select only records that satisfy a required condition.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "selector-lab",
-        "family": "lab",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "df[df[\"age\"] > 25]",
+            "df[\"age\"]",
+            "df.head()",
+            "df.describe()"
+          ]
         }
       }
     },
@@ -52,9 +66,9 @@
       "id": "d4-a3",
       "type": "discover",
       "title": "Clean the DataFrame",
-      "instruction": "Arrange the cleaning steps in order.",
+      "instruction": "Arrange the common data-cleaning steps in a logical order.",
       "content": {
-        "concept": "Data cleaning can involve handling missing values, duplicates, incorrect types, and inconsistent records.",
+        "concept": "Data cleaning involves inspecting records, handling missing values and duplicates, correcting data types, and validating the resulting dataset.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -62,9 +76,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Inspect the DataFrame",
+            "2. Identify Missing and Invalid Values",
+            "3. Handle Missing Values and Duplicates",
+            "4. Correct Data Types and Formats",
+            "5. Validate the Cleaned Data"
           ]
         }
       }
@@ -73,9 +89,9 @@
       "id": "d4-a4",
       "type": "discover",
       "title": "Build a Data Transformation",
-      "instruction": "Compose operations to transform the dataset.",
+      "instruction": "Assemble the operations needed to transform a dataset.",
       "content": {
-        "concept": "Pandas supports selecting, creating, modifying, sorting, grouping, and aggregating data.",
+        "concept": "Pandas supports selecting, creating, modifying, sorting, grouping, and aggregating data for analysis.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -83,9 +99,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Load the DataFrame",
+            "Select Required Columns",
+            "Filter Rows",
+            "Create or Modify Columns",
+            "Sort or Group the Data",
+            "Calculate Aggregations"
+          ],
+          "required": [
+            "Load the DataFrame",
+            "Select Required Columns",
+            "Filter Rows",
+            "Create or Modify Columns",
+            "Sort or Group the Data",
+            "Calculate Aggregations"
           ]
         }
       }

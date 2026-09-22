@@ -14,39 +14,47 @@
       "id": "d9-a1",
       "type": "discover",
       "title": "Props vs State",
-      "instruction": "Match each data type to its correct React role.",
+      "instruction": "Choose which React concept best describes each data scenario.",
       "content": {
-        "concept": "Props provide data to components, while state stores data that can change during component interaction.",
+        "concept": "Props are values passed into a component by its parent, while state is data managed by a component that can change over time.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "props-state-choice",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "A parent passes a username to a child component → Props",
+            "A counter changes after the user clicks a button → State"
+          ],
+          "answer": "A parent passes a username to a child component → Props"
         }
       }
     },
     {
       "id": "d9-a2",
       "type": "discover",
-      "title": "Data Flow Explorer",
-      "instruction": "Trace how props move through components.",
+      "title": "One-Way Data Flow Explorer",
+      "instruction": "Click each component to trace how props move through the component tree.",
       "content": {
-        "concept": "React commonly follows a one-way data flow from parent components to child components.",
+        "concept": "React commonly uses one-way data flow, where data is passed from parent components to child components through props.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "data-flow",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Parent Component",
+            "Props",
+            "Child Component",
+            "Rendered UI"
+          ],
+          "descriptions": [
+            "Owns or receives the data that needs to be passed down.",
+            "Carries values from the parent to the child component.",
+            "Receives props and uses them while rendering its interface.",
+            "The visible result produced by the component."
           ]
         }
       }
@@ -54,19 +62,19 @@
     {
       "id": "d9-a3",
       "type": "discover",
-      "title": "State Update Lab",
-      "instruction": "Adjust state values and observe the interface change.",
+      "title": "State Update Explorer",
+      "instruction": "Change the state value and observe how the UI value changes.",
       "content": {
-        "concept": "Updating component state causes React to render the affected interface with the new state value.",
+        "concept": "Updating state with its setter function causes React to render the component again using the new state value.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider",
+        "mode": "state-counter",
         "family": "slider",
         "config": {
           "min": 0,
-          "max": 100,
-          "default": 50
+          "max": 10,
+          "default": 0
         }
       }
     },
@@ -74,19 +82,28 @@
       "id": "d9-a4",
       "type": "discover",
       "title": "Interactive Component Builder",
-      "instruction": "Compose a component using props, state, and events.",
+      "instruction": "Build the flow of an interactive React component.",
       "content": {
-        "concept": "Interactive React components combine incoming props, local state, and event handlers.",
+        "concept": "An interactive component receives props, stores changing values in state, responds to events, and renders the updated interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "interactive-component",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Receive props",
+            "Create state",
+            "Attach event handler",
+            "Update state",
+            "Render updated UI"
+          ],
+          "required": [
+            "Receive props",
+            "Create state",
+            "Attach event handler",
+            "Update state",
+            "Render updated UI"
           ]
         }
       }

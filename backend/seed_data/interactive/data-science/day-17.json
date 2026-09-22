@@ -14,9 +14,9 @@
       "id": "d17-a1",
       "type": "discover",
       "title": "Anatomy of a Decision Tree",
-      "instruction": "Explore the nodes and branches of the tree.",
+      "instruction": "Explore the main components of a decision tree.",
       "content": {
-        "concept": "Decision trees make predictions by recursively splitting data according to feature-based conditions.",
+        "concept": "Decision trees make predictions by recursively splitting data according to conditions on input features.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Root Node",
+            "Decision Node",
+            "Branch",
+            "Leaf Node",
+            "Prediction"
+          ],
+          "descriptions": [
+            "The starting point of the decision tree containing the first split.",
+            "A node where a feature-based condition determines the next path.",
+            "A connection representing the outcome of a decision.",
+            "A terminal node where the tree produces a final prediction.",
+            "The class or numerical value produced at a leaf."
           ]
         }
       }
@@ -35,16 +44,31 @@
       "id": "d17-a2",
       "type": "discover",
       "title": "Build a Random Forest",
-      "instruction": "Assemble multiple trees into an ensemble.",
+      "instruction": "Assemble the components of a random forest ensemble.",
       "content": {
-        "concept": "Random forests combine predictions from multiple decision trees to improve robustness and generalization.",
+        "concept": "Random forests combine many decision trees trained with randomized data and feature selections, then aggregate their predictions.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "architecture",
-        "family": "lab",
+        "family": "builder",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "options": [
+            "Training Dataset",
+            "Random Samples",
+            "Multiple Decision Trees",
+            "Independent Tree Training",
+            "Aggregate Predictions",
+            "Final Prediction"
+          ],
+          "required": [
+            "Training Dataset",
+            "Random Samples",
+            "Multiple Decision Trees",
+            "Independent Tree Training",
+            "Aggregate Predictions",
+            "Final Prediction"
+          ]
         }
       }
     },
@@ -52,19 +76,22 @@
       "id": "d17-a3",
       "type": "discover",
       "title": "Compare Ensemble Strategies",
-      "instruction": "Match each strategy with its core idea.",
+      "instruction": "Identify the core idea behind each ensemble strategy.",
       "content": {
-        "concept": "Bagging trains models independently on varied samples, while boosting builds models sequentially to improve previous errors.",
+        "concept": "Bagging trains models independently on varied samples and combines their predictions, while boosting builds models sequentially to focus on previous errors.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Bagging → Train multiple models independently and aggregate predictions",
+            "Boosting → Train models sequentially while focusing on previous errors",
+            "Random Forest → Ensemble of randomized decision trees",
+            "Gradient Boosting → Sequentially build models that improve the current ensemble"
+          ],
+          "answer": "Bagging → Train multiple models independently and aggregate predictions"
         }
       }
     },
@@ -72,18 +99,18 @@
       "id": "d17-a4",
       "type": "discover",
       "title": "Tune Tree Complexity",
-      "instruction": "Adjust tree depth and observe model behavior.",
+      "instruction": "Adjust tree depth and observe how model complexity can affect learning behavior.",
       "content": {
-        "concept": "Tree depth affects model complexity and can influence the balance between underfitting and overfitting.",
+        "concept": "Increasing tree depth can allow a decision tree to capture more detailed patterns but may also increase the risk of overfitting.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "slider",
         "family": "slider",
         "config": {
-          "min": 0,
-          "max": 100,
-          "default": 50
+          "min": 1,
+          "max": 20,
+          "default": 5
         }
       }
     }

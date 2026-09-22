@@ -1,32 +1,37 @@
 {
-  "curriculum": "Full Stack",
+  "curriculum": "Full Stack Development",
   "day": 30,
   "topic": "Capstone Demonstration, Portfolio, UX Case Study, and Future Roadmap",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Present a complete full stack project and explain its technical architecture.",
-    "Document the UI/UX design process and key implementation decisions.",
-    "Identify future improvements and communicate the project's development roadmap."
+    "Understand how to present a full-stack capstone project clearly.",
+    "Explain the architecture and technical decisions behind a project.",
+    "Create a concise UX case study that communicates the design process.",
+    "Identify improvements and future development opportunities."
   ],
   "activities": [
     {
       "id": "d30-a1",
       "type": "discover",
-      "title": "Capstone Story Map",
-      "instruction": "Arrange the key sections of a project presentation.",
+      "title": "Build the Project Story",
+      "instruction": "Arrange the stages in the order you would use to present your capstone project.",
       "content": {
-        "concept": "A strong project presentation connects the problem, users, solution, architecture, implementation, results, and future improvements.",
+        "concept": "A strong project presentation tells a clear story. Start with the problem and target users, explain the solution and key features, show the UX and technical design process, demonstrate the implementation and testing, present the final result, and finish with realistic future improvements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "story-order",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Problem and Target Users",
+            "2. Solution and Key Features",
+            "3. UX Design Process",
+            "4. Technical Architecture",
+            "5. Implementation and Testing",
+            "6. Results and Demonstration",
+            "7. Future Improvements"
           ]
         }
       }
@@ -34,37 +39,66 @@
     {
       "id": "d30-a2",
       "type": "discover",
-      "title": "Technical Architecture Review",
-      "instruction": "Build the architecture diagram for the final project.",
+      "title": "Explain Your Technical Architecture",
+      "instruction": "Select the components that belong in a clear technical architecture explanation.",
       "content": {
-        "concept": "Technical architecture communicates how the frontend, backend, database, external services, and deployment components work together.",
+        "concept": "A technical architecture explains how the major parts of an application communicate. A typical full-stack application has users interacting with a frontend, which communicates with a backend API. The backend contains business logic and communicates with a database and external services. Deployment infrastructure hosts and connects these components in production.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "architecture-builder",
+        "family": "builder",
         "config": {
-          "code": "console.log('Hello World');"
+          "options": [
+            "User",
+            "Frontend",
+            "Backend API",
+            "Business Logic",
+            "Database",
+            "External Services",
+            "Deployment Infrastructure",
+            "Unrelated Project Notes"
+          ],
+          "required": [
+            "User",
+            "Frontend",
+            "Backend API",
+            "Database",
+            "Deployment Infrastructure"
+          ]
         }
       }
     },
     {
       "id": "d30-a3",
       "type": "discover",
-      "title": "UX Case Study Builder",
-      "instruction": "Compose the major sections of a UX case study.",
+      "title": "Create a UX Case Study",
+      "instruction": "Build a case study that explains how your design decisions were made.",
       "content": {
-        "concept": "A UX case study documents the problem, research, design process, iterations, implementation, and resulting user experience.",
+        "concept": "A UX case study documents the reasoning behind a product's design. It should explain the original problem, target users, research findings, user flows and wireframes, important design decisions and iterations, the prototype or implemented interface, and the validation performed through usability and accessibility testing. The focus should be on decisions and evidence rather than simply displaying final screens.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "case-study-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Problem Statement",
+            "Target Users",
+            "User Research",
+            "User Flows and Wireframes",
+            "Design Decisions and Iterations",
+            "Prototype or Implemented UI",
+            "Usability and Accessibility Validation",
+            "Unrelated Source Code Dump"
+          ],
+          "required": [
+            "Problem Statement",
+            "Target Users",
+            "User Research",
+            "User Flows and Wireframes",
+            "Design Decisions and Iterations",
+            "Prototype or Implemented UI"
           ]
         }
       }
@@ -72,17 +106,34 @@
     {
       "id": "d30-a4",
       "type": "discover",
-      "title": "Project Review Checklist",
-      "instruction": "Select the evidence needed for final project review.",
+      "title": "Prepare the Final Project Review",
+      "instruction": "Explore the evidence that should support a professional capstone demonstration.",
       "content": {
-        "concept": "A final review can cover functionality, code quality, UI consistency, accessibility, testing, deployment, documentation, and presentation readiness.",
+        "concept": "A professional capstone review should demonstrate more than a working application. Show the working product, explain the architecture, provide evidence of testing, communicate the UX design process, describe deployment and configuration, provide useful documentation, and identify realistic future improvements. Together, these demonstrate both implementation ability and engineering decision-making.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "review-map",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "Working Demonstration",
+            "Architecture Diagram",
+            "Testing Evidence",
+            "UI/UX Case Study",
+            "Deployment Details",
+            "Documentation",
+            "Future Roadmap"
+          ],
+          "descriptions": [
+            "Demonstrate the main user journey and important features working in the application.",
+            "Show how the frontend, backend, database, authentication, and external services are connected.",
+            "Present relevant unit, integration, end-to-end, accessibility, security, or performance testing evidence.",
+            "Explain the user problem, research, flows, design decisions, iterations, and validation.",
+            "Explain where the application is deployed and how environment variables, services, and production configuration are handled.",
+            "Provide setup instructions, architecture notes, API information, and other information needed to understand or maintain the project.",
+            "Identify practical improvements, additional features, scalability work, or technical enhancements for future versions."
+          ]
         }
       }
     }

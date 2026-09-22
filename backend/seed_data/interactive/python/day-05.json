@@ -16,7 +16,7 @@
       "title": "Function Anatomy",
       "instruction": "Explore the components of a Python function.",
       "content": {
-        "concept": "A Python function contains a name, parameters, a body, and optionally a return value.",
+        "concept": "A function definition contains the def keyword, function name, parameters, an indented body, and optionally a return statement.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "def calculate_total(price, tax):",
+            "    total = price + (price * tax)",
+            "    return total",
+            "calculate_total(100, 0.05)"
+          ],
+          "descriptions": [
+            "Defines a function named calculate_total with two parameters.",
+            "Function body that calculates the result.",
+            "Returns the calculated value to the caller.",
+            "Calls the function with two arguments."
           ]
         }
       }
@@ -35,19 +42,21 @@
       "id": "d5-a2",
       "type": "discover",
       "title": "Function Flow",
-      "instruction": "Trace arguments through a function.",
+      "instruction": "Trace arguments and return values through a function call.",
       "content": {
-        "concept": "Arguments provide input to functions, while return statements send results back to the caller.",
+        "concept": "Arguments are passed to parameters when a function is called. The return statement sends a result back to the caller.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
-        "family": "click-map",
+        "mode": "reorder",
+        "family": "reorder",
         "config": {
-          "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+          "goal": [
+            "1. Define the function",
+            "2. Call the function with arguments",
+            "3. Assign arguments to parameters",
+            "4. Execute the function body",
+            "5. Return the result to the caller"
           ]
         }
       }
@@ -56,9 +65,9 @@
       "id": "d5-a3",
       "type": "discover",
       "title": "Function Builder",
-      "instruction": "Assemble a reusable function.",
+      "instruction": "Assemble a function that calculates a total price.",
       "content": {
-        "concept": "Functions encapsulate reusable logic and reduce repetition within programs.",
+        "concept": "Functions make programs easier to organize by encapsulating reusable operations behind a clear interface.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +75,16 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "def calculate_total(price, tax):",
+            "    return price + (price * tax)",
+            "result = calculate_total(100, 0.05)",
+            "print(result)",
+            "import math"
+          ],
+          "required": [
+            "def calculate_total(price, tax):",
+            "    return price + (price * tax)",
+            "result = calculate_total(100, 0.05)"
           ]
         }
       }
@@ -76,20 +92,23 @@
     {
       "id": "d5-a4",
       "type": "discover",
-      "title": "Parameter Match",
-      "instruction": "Match parameters to their function behavior.",
+      "title": "Parameter Explorer",
+      "instruction": "Identify how different argument styles affect a function call.",
       "content": {
-        "concept": "Parameters can accept required, default, positional, and keyword arguments.",
+        "concept": "Python functions can use required parameters, default values, positional arguments, and keyword arguments.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "greet(\"Maya\") → positional argument",
+            "greet(name=\"Maya\") → keyword argument",
+            "greet() → always invalid",
+            "greet(name = \"Maya\") → variable assignment only"
+          ],
+          "answer": "greet(\"Maya\") → positional argument"
         }
       }
     }

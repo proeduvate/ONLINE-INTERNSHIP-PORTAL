@@ -13,53 +13,110 @@
     {
       "id": "d9-a1",
       "type": "discover",
-      "title": "Collection Map",
-      "instruction": "Connect each collection to its data behavior.",
+      "title": "Collection Behavior Map",
+      "instruction": "Explore how the major collection interfaces organize data.",
       "content": {
-        "concept": "Java collections provide different structures for storing, accessing, ordering, and associating groups of objects.",
+        "concept": "The Java Collections Framework provides interfaces and implementations for common data structures. List preserves an ordered sequence, Set represents unique elements, Map associates keys with values, and Queue models elements waiting to be processed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "collection-behavior-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "List",
+            "Set",
+            "Map",
+            "Queue"
+          ],
+          "descriptions": [
+            "An ordered collection that can contain duplicate elements.",
+            "A collection designed around unique elements.",
+            "Associates keys with values for key-based lookup.",
+            "Represents elements waiting to be processed according to queue behavior."
+          ]
+        }
       }
     },
     {
       "id": "d9-a2",
       "type": "discover",
       "title": "Collection Matcher",
-      "instruction": "Match each requirement with a suitable collection.",
+      "instruction": "Choose a suitable collection for each requirement.",
       "content": {
-        "concept": "Lists preserve ordered elements, sets emphasize uniqueness, and maps associate keys with values.",
+        "concept": "Collection choice depends on requirements such as duplicates, ordering, key-based lookup, and processing order. ArrayList, HashSet, HashMap, and ArrayDeque are common implementations for different needs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "collection-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "ArrayList",
+            "HashSet",
+            "HashMap",
+            "ArrayDeque"
+          ],
+          "answer": "ArrayList"
+        }
       }
     },
     {
       "id": "d9-a3",
       "type": "discover",
       "title": "Generic Type Anatomy",
-      "instruction": "Identify the generic type parameters.",
+      "instruction": "Explore how generic type parameters make collections type-safe.",
       "content": {
-        "concept": "Generics allow classes and methods to operate on specified types while providing compile-time type safety.",
+        "concept": "Generics specify the type of elements a generic class or method can work with. For example, List<String> allows the compiler to enforce that the list is intended for String elements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "generic-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "List",
+            "<String>",
+            "names",
+            "new ArrayList<>()"
+          ],
+          "descriptions": [
+            "The generic collection interface.",
+            "The type argument specifying that elements are Strings.",
+            "The variable storing the List reference.",
+            "Creates an ArrayList using the inferred generic type."
+          ]
+        }
       }
     },
     {
       "id": "d9-a4",
       "type": "discover",
       "title": "Collection Builder",
-      "instruction": "Build the collection required by each scenario.",
+      "instruction": "Build the collection declaration that fits each scenario.",
       "content": {
-        "concept": "Selecting the right collection depends on requirements such as ordering, uniqueness, lookup, and insertion behavior.",
+        "concept": "Selecting a collection requires understanding its behavioral requirements. Use a List for ordered duplicates, a Set for uniqueness, a Map for key-value lookup, and a Queue or Deque when processing order matters.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "collection-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "List<String>",
+            "Set<String>",
+            "Map<Integer, String>",
+            "Queue<String>",
+            "ArrayList<>",
+            "HashSet<>",
+            "HashMap<>",
+            "ArrayDeque<>"
+          ],
+          "required": [
+            "List<String>",
+            "ArrayList<>"
+          ]
+        }
       }
     }
   ],

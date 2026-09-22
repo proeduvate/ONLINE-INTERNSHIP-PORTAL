@@ -14,16 +14,22 @@
       "id": "d14-a1",
       "type": "discover",
       "title": "Classification or Regression",
-      "instruction": "Select the correct problem type for each scenario.",
+      "instruction": "Identify whether each prediction problem is classification or regression.",
       "content": {
-        "concept": "Classification predicts categories, while regression predicts continuous numerical values.",
+        "concept": "Classification predicts discrete categories, while regression predicts continuous numerical values.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "Predict whether a customer will leave → Classification",
+            "Predict house price → Regression",
+            "Predict whether an image contains a cat → Classification",
+            "Predict tomorrow's temperature → Regression"
+          ],
+          "answer": "Predict whether a customer will leave → Classification"
         }
       }
     },
@@ -31,19 +37,22 @@
       "id": "d14-a2",
       "type": "discover",
       "title": "Match Algorithms to Problems",
-      "instruction": "Match each algorithm with a suitable use case.",
+      "instruction": "Match each supervised learning algorithm with a suitable use case.",
       "content": {
-        "concept": "Linear regression, logistic regression, decision trees, and k-nearest neighbors solve different supervised learning tasks.",
+        "concept": "Different supervised algorithms make different assumptions and can be useful for different prediction tasks.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "Supervised: Labeled data",
-            "Unsupervised: Unlabeled data"
-          ]
+            "Linear Regression → Predict a continuous numerical value",
+            "Logistic Regression → Predict a binary class",
+            "Decision Tree → Make rule-based classification or regression predictions",
+            "K-Nearest Neighbors → Predict using nearby training examples"
+          ],
+          "answer": "Linear Regression → Predict a continuous numerical value"
         }
       }
     },
@@ -51,9 +60,9 @@
       "id": "d14-a3",
       "type": "discover",
       "title": "Explore Decision Boundaries",
-      "instruction": "Adjust the model setting and observe the boundary.",
+      "instruction": "Adjust the classification setting and observe how the decision boundary changes.",
       "content": {
-        "concept": "A classifier separates observations into classes using a learned decision boundary.",
+        "concept": "A classification model uses a decision boundary to separate observations into predicted classes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -70,9 +79,9 @@
       "id": "d14-a4",
       "type": "discover",
       "title": "Build a Supervised Model",
-      "instruction": "Assemble the supervised learning workflow.",
+      "instruction": "Assemble the main stages of a supervised learning workflow.",
       "content": {
-        "concept": "Supervised learning uses labeled data to train a model that can make predictions on new observations.",
+        "concept": "Supervised learning uses labeled data to train a model that can make predictions for new observations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -80,9 +89,20 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Labeled Dataset",
+            "Feature and Target Selection",
+            "Train-Test Split",
+            "Model Training",
+            "Model Evaluation",
+            "Prediction on New Data"
+          ],
+          "required": [
+            "Labeled Dataset",
+            "Feature and Target Selection",
+            "Train-Test Split",
+            "Model Training",
+            "Model Evaluation",
+            "Prediction on New Data"
           ]
         }
       }

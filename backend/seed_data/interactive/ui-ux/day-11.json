@@ -16,17 +16,28 @@
       "title": "Figma Workspace Anatomy",
       "instruction": "Explore the main areas of the Figma workspace.",
       "content": {
-        "concept": "Figma organizes design work through tools, canvas, layers, properties, assets, and reusable resources.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Figma organizes design work through the toolbar, canvas, layers panel, properties panel, assets, and reusable resources.",
+        "tip": "Explore each workspace area to understand what type of task it supports."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "figma-workspace-map",
         "family": "anatomy",
         "config": {
           "items": [
-            "<header class='nav'>",
-            "  <h1>Logo</h1>",
-            "</header>"
+            "Toolbar",
+            "Layers Panel",
+            "Canvas",
+            "Properties Panel",
+            "Assets",
+            "Pages"
+          ],
+          "descriptions": [
+            "Contains tools for selecting, drawing, creating frames, text, and shapes.",
+            "Shows the hierarchy of objects and layers.",
+            "Main area where designs are created and arranged.",
+            "Displays properties such as size, position, typography, and fills.",
+            "Provides access to reusable components and assets.",
+            "Organizes different sections of a Figma file."
           ]
         }
       }
@@ -35,19 +46,23 @@
       "id": "d11-a2",
       "type": "discover",
       "title": "Tool Matcher",
-      "instruction": "Match each design task with the correct tool.",
+      "instruction": "Match each design task with the appropriate Figma tool.",
       "content": {
-        "concept": "Figma tools support tasks such as selecting, drawing, creating frames, adding text, and arranging objects.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Figma tools support tasks such as selecting, drawing shapes, creating frames, adding text, and arranging objects.",
+        "tip": "Identify the user's intended design operation before selecting the tool."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "figma-tool-match",
         "family": "compare",
         "config": {
           "choices": [
-            "High Contrast (Accessible)",
-            "Low Contrast (Hard to read)"
-          ]
+            "Frame Tool — Create a screen or layout container",
+            "Text Tool — Add interface text",
+            "Shape Tool — Create visual objects",
+            "Move Tool — Select and reposition objects",
+            "Pen Tool — Create custom vector paths"
+          ],
+          "answer": "Frame Tool — Create a screen or layout container"
         }
       }
     },
@@ -55,19 +70,26 @@
       "id": "d11-a3",
       "type": "discover",
       "title": "Frame Builder",
-      "instruction": "Build a basic mobile interface frame.",
+      "instruction": "Build the basic structure of a mobile application screen.",
       "content": {
-        "concept": "Frames define the boundaries of screens and containers and provide the foundation for structured interface layouts.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Frames define screen boundaries and containers and provide the foundation for structured interface layouts.",
+        "tip": "Start with the frame and organize the major regions inside it."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "mobile-frame-builder",
         "family": "builder",
         "config": {
           "options": [
+            "Mobile Frame",
             "Header",
-            "Sidebar",
-            "Main Content"
+            "Content Area",
+            "Bottom Navigation",
+            "Floating Action Button"
+          ],
+          "required": [
+            "Mobile Frame",
+            "Header",
+            "Content Area"
           ]
         }
       }
@@ -76,19 +98,21 @@
       "id": "d11-a4",
       "type": "discover",
       "title": "Layer Organization Lab",
-      "instruction": "Arrange layers into a clear structure.",
+      "instruction": "Arrange the layers into a logical hierarchy.",
       "content": {
-        "concept": "Well-organized layers make complex designs easier to understand, edit, and maintain.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
+        "concept": "Clear layer organization makes designs easier to understand, edit, collaborate on, and maintain.",
+        "tip": "Group related objects and use meaningful names for important layers."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "layer-organization",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. User Research",
-            "2. Wireframing",
-            "3. Prototyping"
+            "Page",
+            "Screen Frame",
+            "Header",
+            "Content Group",
+            "Button"
           ]
         }
       }

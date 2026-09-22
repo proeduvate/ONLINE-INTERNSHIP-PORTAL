@@ -14,19 +14,26 @@
       "id": "d9-a1",
       "type": "discover",
       "title": "Module Map",
-      "instruction": "Explore how Python modules connect.",
+      "instruction": "Explore how modules and packages organize Python code.",
       "content": {
-        "concept": "Modules allow Python code to be separated into reusable files and imported when needed.",
+        "concept": "A module is typically a Python file containing reusable code. Packages organize related modules into a directory structure.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "main.py",
+            "math_utils.py",
+            "package/",
+            "Third-Party Package"
+          ],
+          "descriptions": [
+            "Application module that imports and uses reusable code.",
+            "Example custom module containing reusable functions.",
+            "Directory used to organize related Python modules.",
+            "External library installed into the project's environment."
           ]
         }
       }
@@ -35,9 +42,9 @@
       "id": "d9-a2",
       "type": "discover",
       "title": "Package Anatomy",
-      "instruction": "Identify the parts of a Python package.",
+      "instruction": "Explore a simple Python project package structure.",
       "content": {
-        "concept": "Packages organize related modules into structured project directories.",
+        "concept": "A project can separate application code into modules and packages so related functionality is easier to maintain and import.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +52,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "project/",
+            "    main.py",
+            "    utils/",
+            "        __init__.py",
+            "        math_utils.py"
+          ],
+          "descriptions": [
+            "Root directory containing the Python project.",
+            "Application entry module.",
+            "Package directory containing related modules.",
+            "Package initialization module; in modern Python, a directory can also function as a namespace package without it.",
+            "Module containing reusable mathematical functions."
           ]
         }
       }
@@ -55,40 +71,44 @@
     {
       "id": "d9-a3",
       "type": "discover",
-      "title": "Import Match",
-      "instruction": "Match import syntax to its result.",
+      "title": "Import Explorer",
+      "instruction": "Choose the import syntax that correctly accesses the required code.",
       "content": {
-        "concept": "Python provides different import forms for accessing modules, functions, classes, and aliases.",
+        "concept": "Python supports importing complete modules, selected names from modules, and modules under aliases.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "import math → import the math module",
+            "from math import sqrt → import sqrt directly",
+            "import numpy as np → import numpy using the alias np",
+            "All of the above"
+          ],
+          "answer": "All of the above"
         }
       }
     },
     {
       "id": "d9-a4",
       "type": "discover",
-      "title": "Environment Builder",
-      "instruction": "Build an isolated project environment.",
+      "title": "Virtual Environment Builder",
+      "instruction": "Assemble the workflow for creating an isolated Python environment.",
       "content": {
-        "concept": "Virtual environments isolate project dependencies and reduce conflicts between Python projects.",
+        "concept": "A virtual environment provides an isolated Python environment for a project so its installed dependencies can be managed separately.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
-        "family": "builder",
+        "mode": "reorder",
+        "family": "reorder",
         "config": {
-          "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+          "goal": [
+            "1. Create the virtual environment",
+            "2. Activate the environment",
+            "3. Install project dependencies",
+            "4. Run the project using the isolated environment"
           ]
         }
       }

@@ -14,7 +14,7 @@
       "id": "d3-a1",
       "type": "discover",
       "title": "Anatomy of a NumPy Array",
-      "instruction": "Explore the array dimensions and elements.",
+      "instruction": "Explore the elements, dimensions, rows, and columns of an array.",
       "content": {
         "concept": "NumPy arrays store numerical data in structured dimensions such as vectors, matrices, and higher-dimensional arrays.",
         "tip": "Interact with the example first. Your progress is saved for this session."
@@ -24,9 +24,20 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Array",
+            "Element",
+            "Row",
+            "Column",
+            "Shape",
+            "Dimension"
+          ],
+          "descriptions": [
+            "A NumPy structure used to store numerical values.",
+            "A single value stored inside the array.",
+            "A horizontal sequence of elements in a two-dimensional array.",
+            "A vertical sequence of elements in a two-dimensional array.",
+            "The size of the array along each dimension.",
+            "The number of axes in the array."
           ]
         }
       }
@@ -35,9 +46,9 @@
       "id": "d3-a2",
       "type": "discover",
       "title": "Array Operation Lab",
-      "instruction": "Adjust values and observe the array result.",
+      "instruction": "Adjust a value and observe how the array operation changes.",
       "content": {
-        "concept": "NumPy supports fast element-wise arithmetic and mathematical operations on arrays.",
+        "concept": "NumPy supports fast element-wise arithmetic and mathematical operations across entire arrays.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -53,10 +64,10 @@
     {
       "id": "d3-a3",
       "type": "discover",
-      "title": "Build an Array",
-      "instruction": "Compose the correct array from the given values.",
+      "title": "Build a NumPy Array",
+      "instruction": "Assemble the steps required to create and transform a numerical array.",
       "content": {
-        "concept": "Arrays can be created, reshaped, indexed, and combined to prepare numerical data for analysis.",
+        "concept": "NumPy arrays can be created, reshaped, indexed, and transformed to prepare numerical data for analysis.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -64,9 +75,18 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Import NumPy",
+            "Create the array",
+            "Inspect the shape",
+            "Index or slice the array",
+            "Apply an array operation"
+          ],
+          "required": [
+            "Import NumPy",
+            "Create the array",
+            "Inspect the shape",
+            "Index or slice the array",
+            "Apply an array operation"
           ]
         }
       }
@@ -75,16 +95,21 @@
       "id": "d3-a4",
       "type": "discover",
       "title": "Vectorization Challenge",
-      "instruction": "Select the operation that processes all values efficiently.",
+      "instruction": "Identify the NumPy operation that processes all array values at once.",
       "content": {
         "concept": "Vectorization applies operations to entire arrays without manually iterating through every element.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
         "mode": "selector-lab",
-        "family": "lab",
+        "family": "compare",
         "config": {
-          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+          "choices": [
+            "arr * 2",
+            "for value in arr: process(value)",
+            "arr + 10",
+            "arr ** 2"
+          ]
         }
       }
     }

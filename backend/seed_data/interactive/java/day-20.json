@@ -13,53 +13,117 @@
     {
       "id": "d20-a1",
       "type": "discover",
-      "title": "Spring Boot Architecture",
-      "instruction": "Explore the layers of a REST application.",
+      "title": "Spring Boot REST Architecture",
+      "instruction": "Explore the main layers of a Spring Boot REST application.",
       "content": {
-        "concept": "A typical Spring Boot REST application separates request handling, business logic, data access, and persistence responsibilities.",
+        "concept": "A typical Spring Boot REST application separates HTTP request handling, business logic, data access, and persistence responsibilities so each layer has a focused role.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Controller",
+            "Service",
+            "Repository",
+            "Database",
+            "HTTP Client"
+          ],
+          "descriptions": [
+            "Receives HTTP requests and maps them to application operations.",
+            "Contains application or business logic.",
+            "Handles data-access operations.",
+            "Stores persistent application data.",
+            "Sends HTTP requests to the REST API."
+          ]
+        }
       }
     },
     {
       "id": "d20-a2",
       "type": "discover",
       "title": "REST Endpoint Anatomy",
-      "instruction": "Explore the parts of a REST endpoint.",
+      "instruction": "Explore the important parts of a REST endpoint.",
       "content": {
-        "concept": "A REST endpoint combines a URL path, HTTP method, request data, controller logic, and response.",
+        "concept": "A REST endpoint combines an HTTP method and URL path with request data, controller handling, and an HTTP response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "HTTP Method",
+            "URL Path",
+            "Request Body",
+            "Controller Method",
+            "HTTP Response"
+          ],
+          "descriptions": [
+            "Defines the operation, such as GET, POST, PUT, PATCH, or DELETE.",
+            "Identifies the API resource being accessed.",
+            "Contains data sent by the client when the operation requires a payload.",
+            "Java method that handles the mapped request.",
+            "Contains the resulting status, headers, and optional response body."
+          ]
+        }
       }
     },
     {
       "id": "d20-a3",
       "type": "discover",
-      "title": "REST Method Selector",
-      "instruction": "Choose the HTTP method for each operation.",
+      "title": "Choose the REST Method",
+      "instruction": "Choose the HTTP method that best matches the requested operation.",
       "content": {
-        "concept": "REST APIs commonly use GET for retrieval, POST for creation, PUT or PATCH for updates, and DELETE for removal.",
+        "concept": "REST APIs commonly use GET to retrieve resources, POST to create resources, PUT or PATCH to update resources, and DELETE to remove resources.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "GET /users/42 to retrieve user 42",
+            "POST /users/42 to retrieve user 42",
+            "DELETE /users/42 to retrieve user 42",
+            "PATCH /users/42 to retrieve user 42"
+          ],
+          "answer": "GET /users/42 to retrieve user 42"
+        }
       }
     },
     {
       "id": "d20-a4",
       "type": "discover",
-      "title": "API Flow Builder",
-      "instruction": "Build a complete request-to-response flow.",
+      "title": "Request-to-Response Builder",
+      "instruction": "Build the flow of a request through a Spring Boot REST API.",
       "content": {
-        "concept": "A Spring Boot request can flow from a controller through service and data layers before returning an HTTP response.",
+        "concept": "A typical Spring Boot API flow starts with an HTTP request, reaches a controller, invokes service logic, accesses data when necessary, and returns an HTTP response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "HTTP Client",
+            "Controller",
+            "Service",
+            "Repository",
+            "Database",
+            "HTTP Response",
+            "Skip the controller and call the database directly from the client"
+          ],
+          "required": [
+            "HTTP Client",
+            "Controller",
+            "Service",
+            "Repository",
+            "Database",
+            "HTTP Response"
+          ]
+        }
       }
     }
   ],

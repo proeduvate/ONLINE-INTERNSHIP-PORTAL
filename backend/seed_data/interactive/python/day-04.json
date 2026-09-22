@@ -14,19 +14,26 @@
       "id": "d4-a1",
       "type": "discover",
       "title": "Collection Map",
-      "instruction": "Connect each collection to its characteristics.",
+      "instruction": "Explore the characteristics of Python's main collection types.",
       "content": {
-        "concept": "Lists, tuples, sets, and dictionaries store and organize data in different ways.",
+        "concept": "Lists are ordered and mutable, tuples are ordered and immutable, sets store unique elements, and dictionaries store key-value pairs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
+        "mode": "click-map",
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "List",
+            "Tuple",
+            "Set",
+            "Dictionary"
+          ],
+          "descriptions": [
+            "Ordered and mutable collection that can contain duplicate values.",
+            "Ordered and immutable collection that can contain duplicate values.",
+            "Collection of unique hashable elements with no guaranteed positional indexing.",
+            "Mutable mapping of keys to values."
           ]
         }
       }
@@ -35,9 +42,9 @@
       "id": "d4-a2",
       "type": "discover",
       "title": "Collection Anatomy",
-      "instruction": "Explore the structure of each collection.",
+      "instruction": "Explore how each collection represents data.",
       "content": {
-        "concept": "Collections differ in ordering, mutability, uniqueness, and access patterns.",
+        "concept": "Python collection syntax communicates how data is grouped and accessed.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +52,16 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "numbers = [10, 20, 30]",
+            "coordinates = (10, 20)",
+            "tags = {\"python\", \"web\"}",
+            "user = {\"name\": \"Alex\", \"age\": 20}"
+          ],
+          "descriptions": [
+            "List containing ordered values.",
+            "Tuple containing fixed-position values.",
+            "Set containing unique elements.",
+            "Dictionary containing key-value pairs."
           ]
         }
       }
@@ -55,20 +69,23 @@
     {
       "id": "d4-a3",
       "type": "discover",
-      "title": "Collection Match",
-      "instruction": "Match each scenario to a collection type.",
+      "title": "Collection Selector",
+      "instruction": "Choose the collection that best fits the scenario.",
       "content": {
-        "concept": "Choosing the right collection depends on how the data will be stored and accessed.",
+        "concept": "The appropriate collection depends on whether you need ordering, mutability, uniqueness, or key-based access.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "compare",
         "family": "compare",
         "config": {
           "choices": [
-            "List: [1, 2, 3] (Mutable)",
-            "Tuple: (1, 2, 3) (Immutable)"
-          ]
+            "list",
+            "tuple",
+            "set",
+            "dictionary"
+          ],
+          "answer": "set"
         }
       }
     },
@@ -76,9 +93,9 @@
       "id": "d4-a4",
       "type": "discover",
       "title": "Collection Builder",
-      "instruction": "Build the collection for each requirement.",
+      "instruction": "Assemble a collection for the required data structure.",
       "content": {
-        "concept": "Collection operations allow programs to add, remove, search, and organize data efficiently.",
+        "concept": "Collection operations such as append, remove, membership testing, and key lookup help programs manage groups of values.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -86,9 +103,16 @@
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "students = [\"Asha\", \"Ravi\", \"Maya\"]",
+            "students.append(\"Arun\")",
+            "unique_ids = {101, 102, 103}",
+            "user = {\"name\": \"Maya\", \"age\": 21}",
+            "user[\"age\"]",
+            "students.remove(\"Ravi\")"
+          ],
+          "required": [
+            "students = [\"Asha\", \"Ravi\", \"Maya\"]",
+            "students.append(\"Arun\")"
           ]
         }
       }

@@ -1,94 +1,116 @@
 {
   "curriculum": "Python",
-  "day": 23,
-  "topic": "Security, Authentication, and Secure Python Applications",
+  "day": 22,
+  "topic": "Performance Optimization and Profiling",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Identify common security risks in Python applications.",
-    "Understand authentication and authorization workflows.",
-    "Apply secure practices for passwords, secrets, and user input."
+    "Identify performance bottlenecks in Python programs.",
+    "Use profiling concepts to measure execution time and resource usage.",
+    "Choose appropriate optimization techniques based on measured results."
   ],
   "activities": [
     {
-      "id": "d23-a1",
+      "id": "d22-a1",
       "type": "discover",
-      "title": "Security Threat Map",
-      "instruction": "Connect each threat to its affected application layer.",
+      "title": "Optimization Workflow",
+      "instruction": "Arrange the optimization workflow in the correct order.",
       "content": {
-        "concept": "Application security involves protecting inputs, authentication, authorization, data, dependencies, and secrets.",
+        "concept": "Effective optimization starts with measurement, identifies the actual bottleneck, applies a targeted change, and measures again to verify the result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map",
-        "family": "click-map",
-        "config": {
-          "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
-          ]
-        }
-      }
-    },
-    {
-      "id": "d23-a2",
-      "type": "discover",
-      "title": "Authentication Flow",
-      "instruction": "Arrange the authentication steps.",
-      "content": {
-        "concept": "Authentication verifies identity before an application grants access to protected resources.",
-        "tip": "Interact with the example first. Your progress is saved for this session."
-      },
-      "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Measure the current performance",
+            "2. Identify the bottleneck",
+            "3. Choose a targeted optimization",
+            "4. Change the implementation",
+            "5. Measure again",
+            "6. Compare the results"
           ]
         }
       }
     },
     {
-      "id": "d23-a3",
+      "id": "d22-a2",
       "type": "discover",
-      "title": "Secure Input Lab",
-      "instruction": "Select the safe handling method for each input.",
+      "title": "Complexity Explorer",
+      "instruction": "Choose the complexity that best matches the described algorithm.",
       "content": {
-        "concept": "Untrusted input should be validated and safely handled before it reaches application logic or external systems.",
+        "concept": "Big-O notation describes how an algorithm's resource requirements grow as input size increases. It helps identify algorithms that may become expensive at scale.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "O(1)",
+            "O(log n)",
+            "O(n)",
+            "O(n²)"
+          ],
+          "answer": "O(n)"
         }
       }
     },
     {
-      "id": "d23-a4",
-      "type": "discover",
-      "title": "Access Control Builder",
-      "instruction": "Build the authentication and authorization layers.",
+      "id": "d22-a3",
+      "type": "anatomy",
+      "title": "Profiler Metrics",
+      "instruction": "Click each profiling metric to understand what it tells you.",
       "content": {
-        "concept": "Authentication identifies users, while authorization determines which protected actions or resources they can access.",
+        "concept": "Profilers help locate expensive parts of a program by reporting information such as function call counts and execution time.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "anatomy",
+        "family": "anatomy",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "items": [
+            "ncalls",
+            "tottime",
+            "cumtime",
+            "function"
+          ],
+          "descriptions": [
+            "Shows how many times a function was called.",
+            "Shows the total time spent inside the function itself, excluding time in called functions.",
+            "Shows cumulative time spent in the function and functions it called.",
+            "Identifies the function associated with the profiling measurement."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Optimization Selector",
+      "instruction": "Choose the optimization that directly addresses the measured bottleneck.",
+      "content": {
+        "concept": "Optimization should be driven by profiling evidence. For example, repeated linear searches may benefit from a set or dictionary when appropriate, while excessive repeated computation may benefit from caching.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Replace repeated membership checks in a large collection with a set",
+            "Add random optimizations without measuring",
+            "Increase the number of print statements",
+            "Rewrite unrelated functions"
+          ],
+          "answer": "Replace repeated membership checks in a large collection with a set"
         }
       }
     }
   ],
-  "assessmentRef": "assessment-day-23.json",
-  "practicalTaskRef": "practical-day-23.json",
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

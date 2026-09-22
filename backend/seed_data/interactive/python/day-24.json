@@ -12,21 +12,32 @@
   "activities": [
     {
       "id": "d24-a1",
-      "type": "discover",
+      "type": "click-map",
       "title": "Container Anatomy",
-      "instruction": "Explore the layers of a containerized application.",
+      "instruction": "Explore the components involved in running a Python application in a container.",
       "content": {
-        "concept": "A container packages an application with its required runtime, dependencies, configuration, and filesystem environment.",
+        "concept": "A container image packages application code and its runtime dependencies into a reproducible filesystem environment. A running container is an instance of that image.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
-        "family": "anatomy",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "Base Image",
+            "Python Dependencies",
+            "Application Code",
+            "Environment Variables",
+            "Container Port",
+            "Startup Command"
+          ],
+          "descriptions": [
+            "Provides the starting filesystem and runtime environment, such as a Python base image.",
+            "Packages listed in requirements.txt or another dependency specification are installed into the image.",
+            "The Python source files and application assets are copied into the image.",
+            "Configuration values can be supplied to the running container without hard-coding them into the image.",
+            "The application listens on a port inside the container that can be mapped to a host or platform port.",
+            "Defines the command used to start the application when the container runs."
           ]
         }
       }
@@ -35,40 +46,54 @@
       "id": "d24-a2",
       "type": "discover",
       "title": "Dockerfile Sequencer",
-      "instruction": "Arrange the Dockerfile instructions correctly.",
+      "instruction": "Arrange the major Dockerfile steps for a Python application.",
       "content": {
-        "concept": "A Dockerfile describes how an application image is built from a base image and a sequence of instructions.",
+        "concept": "A Dockerfile commonly starts from a base image, establishes a working directory, installs dependencies, copies application code, and defines how the application starts.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "reorder",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+            "1. Choose a Python base image",
+            "2. Set the working directory",
+            "3. Copy the dependency file",
+            "4. Install Python dependencies",
+            "5. Copy application source code",
+            "6. Define the startup command"
           ]
         }
       }
     },
     {
       "id": "d24-a3",
-      "type": "discover",
+      "type": "builder",
       "title": "Container Builder",
-      "instruction": "Assemble a deployable Python container.",
+      "instruction": "Assemble the essential parts of a Python Docker image.",
       "content": {
-        "concept": "A Python container typically includes a base image, dependency installation, application code, configuration, and a startup command.",
+        "concept": "A useful Python image needs a suitable runtime, dependencies, application code, and a command that starts the service.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "builder",
         "family": "builder",
         "config": {
           "options": [
-            "import math",
-            "def calc():",
-            "return 0"
+            "FROM python:3.12-slim",
+            "WORKDIR /app",
+            "COPY requirements.txt .",
+            "RUN pip install --no-cache-dir -r requirements.txt",
+            "COPY . .",
+            "CMD [\"python\", \"app.py\"]"
+          ],
+          "required": [
+            "FROM python:3.12-slim",
+            "WORKDIR /app",
+            "COPY requirements.txt .",
+            "RUN pip install --no-cache-dir -r requirements.txt",
+            "COPY . .",
+            "CMD [\"python\", \"app.py\"]"
           ]
         }
       }
@@ -76,17 +101,23 @@
     {
       "id": "d24-a4",
       "type": "discover",
-      "title": "Container Configuration Lab",
-      "instruction": "Select the correct container configuration.",
+      "title": "Container Configuration Selector",
+      "instruction": "Choose the configuration that correctly separates application settings from the image.",
       "content": {
-        "concept": "Environment variables and exposed ports allow containerized applications to receive configuration and communicate with other services.",
+        "concept": "Runtime configuration such as database URLs, API keys, and environment-specific settings should generally be supplied through environment variables or a secrets mechanism rather than hard-coded into the image.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "choices": [
+            "Read DATABASE_URL from an environment variable",
+            "Hard-code a production database password in Dockerfile",
+            "Commit an API key directly into the image source",
+            "Store environment-specific secrets in application source code"
+          ],
+          "answer": "Read DATABASE_URL from an environment variable"
         }
       }
     }

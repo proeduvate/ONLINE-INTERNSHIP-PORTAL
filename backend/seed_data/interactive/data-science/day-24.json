@@ -14,9 +14,9 @@
       "id": "d24-a1",
       "type": "discover",
       "title": "Pipeline Overview",
-      "instruction": "Explore how data moves through a pipeline.",
+      "instruction": "Explore the major stages through which data moves from source to destination.",
       "content": {
-        "concept": "A data pipeline moves raw data through ingestion, transformation, storage, and consumption stages.",
+        "concept": "A data pipeline moves data from sources through ingestion and transformation to storage and downstream consumption.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -24,9 +24,18 @@
         "family": "click-map",
         "config": {
           "items": [
-            "Header Area",
-            "Main Content",
-            "Footer"
+            "Data Source",
+            "Ingestion",
+            "Transformation",
+            "Storage",
+            "Analytics or ML"
+          ],
+          "descriptions": [
+            "Provides raw data such as databases, files, APIs, or sensors.",
+            "Collects or transfers data into the pipeline.",
+            "Cleans, validates, joins, aggregates, or reshapes the data.",
+            "Stores processed data for later use.",
+            "Consumes prepared data for reporting, analysis, or machine learning."
           ]
         }
       }
@@ -35,9 +44,9 @@
       "id": "d24-a2",
       "type": "discover",
       "title": "ETL Anatomy",
-      "instruction": "Identify each ETL stage.",
+      "instruction": "Identify what happens during extraction, transformation, and loading.",
       "content": {
-        "concept": "ETL extracts data from sources, transforms it, and loads it into a destination.",
+        "concept": "ETL extracts data from source systems, transforms it into a useful format, and loads it into a target destination.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,9 +54,18 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "import pandas as pd",
-            "df = pd.read_csv('data.csv')",
-            "df.describe()"
+            "Extract",
+            "Transform",
+            "Load",
+            "Source System",
+            "Target System"
+          ],
+          "descriptions": [
+            "Retrieve data from one or more source systems.",
+            "Clean, validate, combine, or reshape the extracted data.",
+            "Write the transformed data to its destination.",
+            "The original location from which data is collected.",
+            "The database, warehouse, lake, or other destination receiving the data."
           ]
         }
       }
@@ -56,9 +74,9 @@
       "id": "d24-a3",
       "type": "discover",
       "title": "Build the Pipeline",
-      "instruction": "Arrange components into a working pipeline.",
+      "instruction": "Arrange the components needed for a basic data preparation pipeline.",
       "content": {
-        "concept": "Pipeline components work together to automate reliable data movement and preparation.",
+        "concept": "A reliable pipeline connects ingestion, validation, transformation, storage, and downstream consumption.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -66,9 +84,19 @@
         "family": "builder",
         "config": {
           "options": [
-            "X_train, X_test",
-            "y_train, y_test",
-            "train_test_split"
+            "Data Source",
+            "Extract Data",
+            "Validate Data",
+            "Transform Data",
+            "Load Processed Data",
+            "Analytics or ML Application"
+          ],
+          "required": [
+            "Data Source",
+            "Extract Data",
+            "Validate Data",
+            "Transform Data",
+            "Load Processed Data"
           ]
         }
       }
@@ -77,9 +105,9 @@
       "id": "d24-a4",
       "type": "discover",
       "title": "ETL Sequence",
-      "instruction": "Order the ETL operations correctly.",
+      "instruction": "Order the core ETL operations correctly.",
       "content": {
-        "concept": "Correct sequencing ensures data is available in the required form for downstream systems.",
+        "concept": "The ETL process follows a logical flow from extracting source data through transformation to loading the processed result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -87,9 +115,12 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Data Collection",
-            "2. Data Cleaning",
-            "3. Model Training"
+            "1. Identify Data Sources",
+            "2. Extract Data",
+            "3. Validate Extracted Data",
+            "4. Transform and Clean Data",
+            "5. Load Processed Data",
+            "6. Make Data Available for Analytics or Machine Learning"
           ]
         }
       }

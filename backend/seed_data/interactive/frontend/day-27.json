@@ -1,26 +1,112 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 27,
-  "topic": "Day 27 Topic for Frontend",
-  "version": 1,
+  "topic": "React Forms & API Integration",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Build forms",
+    "Handle submission",
+    "Render API data"
   ],
   "activities": [
     {
       "id": "d27-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "form",
+      "title": "Controlled Form Lab",
+      "instruction": "Fill the form and observe how each input maps to React state.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Build controlled React forms where input values are managed by component state.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "react-form",
+        "family": "form",
+        "config": {
+          "fields": [
+            "name",
+            "email",
+            "domain"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a02",
+      "type": "submit",
+      "title": "Form Submission Flow",
+      "instruction": "Arrange validation, submit handling, API request and loading-state steps.",
+      "content": {
+        "concept": "Handle form submission by validating input, preventing unwanted browser behavior and managing the request state.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "submit-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. User submits the form",
+            "2. Validate the form data",
+            "3. Prevent default browser submission",
+            "4. Send the API request",
+            "5. Show loading or result state"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a03",
+      "type": "api-ui",
+      "title": "API Data to UI",
+      "instruction": "Map fields from an API response to the correct React UI elements.",
+      "content": {
+        "concept": "Render API data by mapping response fields to appropriate React components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "api-ui-mapping",
+        "family": "builder",
+        "config": {
+          "options": [
+            "user.name → Heading",
+            "user.email → Text",
+            "user.avatar → Image",
+            "user.role → Badge"
+          ],
+          "required": [
+            "user.name → Heading",
+            "user.email → Text"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a04",
+      "type": "build",
+      "title": "Mini Dashboard",
+      "instruction": "Assemble a small dashboard using a form, loading state, API response and rendered data.",
+      "content": {
+        "concept": "Combine React forms, submission handling and API data rendering into a complete UI flow.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dashboard-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "FilterForm",
+            "SubmitButton",
+            "LoadingIndicator",
+            "DataCard",
+            "EmptyState",
+            "ErrorMessage"
+          ],
+          "required": [
+            "FilterForm",
+            "SubmitButton",
+            "DataCard"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +117,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

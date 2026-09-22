@@ -1,26 +1,123 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 13,
-  "topic": "Day 13 Topic for Frontend",
-  "version": 1,
+  "topic": "JavaScript Fundamentals",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Recognize JavaScript values and variables",
+    "Use arithmetic, comparison, and logical operators",
+    "Inspect and distinguish common JavaScript data types"
   ],
   "activities": [
     {
       "id": "d13-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "inspect",
+      "title": "Value Inspector",
+      "instruction": "Click each value to inspect its JavaScript type and representation.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Recognize JavaScript values and variables",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "js-values",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "42",
+            "\"Hello\"",
+            "true",
+            "null",
+            "[1, 2, 3]",
+            "{ name: \"Alex\" }"
+          ],
+          "descriptions": [
+            "A numeric value.",
+            "A string value.",
+            "A boolean value.",
+            "An intentional absence of an object value.",
+            "An array containing multiple values.",
+            "An object containing a named property."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a02",
+      "type": "operator",
+      "title": "Operator Playground",
+      "instruction": "Change the operands and operator and observe the resulting value.",
+      "content": {
+        "concept": "Use JavaScript operators",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "operators",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "10 + 5 → 15",
+            "10 - 5 → 5",
+            "10 * 5 → 50",
+            "10 > 5 → true",
+            "10 === 5 → false"
+          ],
+          "answer": "10 + 5 → 15"
+        }
+      }
+    },
+    {
+      "id": "d13-a03",
+      "type": "type-check",
+      "title": "Type Check",
+      "instruction": "Classify each JavaScript value by its data type.",
+      "content": {
+        "concept": "Inspect and distinguish JavaScript data types",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "types",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "\"Frontend\" → string",
+            "25 → number",
+            "false → boolean",
+            "null → null",
+            "{ id: 1 } → object",
+            "[1, 2] → object"
+          ],
+          "answer": "\"Frontend\" → string"
+        }
+      }
+    },
+    {
+      "id": "d13-a04",
+      "type": "guided-code",
+      "title": "Variable Builder",
+      "instruction": "Choose const or let, provide a variable name and assign a value.",
+      "content": {
+        "concept": "Recognize JavaScript values and variables",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "var-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "const",
+            "let",
+            "userName",
+            "score",
+            "\"Sakthi\"",
+            "100"
+          ],
+          "required": [
+            "const",
+            "userName",
+            "\"Sakthi\""
+          ]
+        }
       }
     }
   ],
@@ -31,7 +128,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

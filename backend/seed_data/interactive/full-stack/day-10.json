@@ -14,16 +14,27 @@
       "id": "d10-a1",
       "type": "discover",
       "title": "Routing Architecture",
-      "instruction": "Map routes to their corresponding application views.",
+      "instruction": "Click each route to see how it maps to a React view.",
       "content": {
-        "concept": "Client-side routing maps application URLs to React components without requiring a full page reload.",
+        "concept": "Client-side routing maps URL paths to React components and allows navigation between views without performing a complete browser page reload.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture",
-        "family": "lab",
+        "mode": "route-map",
+        "family": "click-map",
         "config": {
-          "code": "console.log('Hello World');"
+          "items": [
+            "/",
+            "/about",
+            "/dashboard",
+            "/profile"
+          ],
+          "descriptions": [
+            "Maps to the application's home page.",
+            "Maps to an About component or page.",
+            "Maps to a dashboard view.",
+            "Maps to a profile view."
+          ]
         }
       }
     },
@@ -31,19 +42,28 @@
       "id": "d10-a2",
       "type": "discover",
       "title": "Controlled Form Builder",
-      "instruction": "Build a form using React-controlled inputs.",
+      "instruction": "Build the flow of a controlled React form.",
       "content": {
-        "concept": "Controlled React inputs use component state as the source of truth for form values.",
+        "concept": "A controlled input gets its current value from React state and updates that state when the user changes the input.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "controlled-form",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Create form state",
+            "Bind input value to state",
+            "Handle input change",
+            "Update state",
+            "Handle form submission"
+          ],
+          "required": [
+            "Create form state",
+            "Bind input value to state",
+            "Handle input change",
+            "Update state",
+            "Handle form submission"
           ]
         }
       }
@@ -52,19 +72,22 @@
       "id": "d10-a3",
       "type": "discover",
       "title": "API Integration Flow",
-      "instruction": "Arrange the steps of a React API request.",
+      "instruction": "Arrange the steps of a React API request and response cycle.",
       "content": {
-        "concept": "Frontend API integration sends requests, handles responses, updates state, and renders the resulting data.",
+        "concept": "Frontend API integration typically involves sending a request, waiting for the response, processing the returned data, updating state, and rendering the result.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
+        "mode": "api-flow",
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Trigger API request",
+            "2. Send request to backend",
+            "3. Receive API response",
+            "4. Parse response data",
+            "5. Update React state",
+            "6. Render the result"
           ]
         }
       }
@@ -72,17 +95,21 @@
     {
       "id": "d10-a4",
       "type": "discover",
-      "title": "Response Handling Lab",
-      "instruction": "Select the correct UI behavior for each API response.",
+      "title": "Response State Explorer",
+      "instruction": "Choose the appropriate UI state for each API situation.",
       "content": {
-        "concept": "A frontend should handle successful responses, loading states, validation failures, and server errors appropriately.",
+        "concept": "A robust API-connected interface should represent loading, successful responses, validation failures, and server errors appropriately.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "response-state",
+        "family": "compare",
         "config": {
-          "code": "console.log('Hello World');"
+          "choices": [
+            "Request is still running → Show a loading state",
+            "Request is still running → Show the final data immediately"
+          ],
+          "answer": "Request is still running → Show a loading state"
         }
       }
     }

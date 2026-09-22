@@ -1,37 +1,118 @@
 {
-  "curriculum": "Frontend",
-  "day": 23,
-  "topic": "Day 23 Topic for Frontend",
-  "version": 1,
+  "curriculum": "Frontend Development",
+  "day": 22,
+  "topic": "REST APIs & Fetch",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand requests/responses",
+    "Use fetch",
+    "Handle API states"
   ],
   "activities": [
     {
-      "id": "d23-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "id": "d22-a01",
+      "type": "request",
+      "title": "Request Builder",
+      "instruction": "Build a REST request by selecting the HTTP method, endpoint, query parameters and headers.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand how an HTTP request is composed from a method, URL, headers and optional body or query parameters.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "request-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "GET",
+            "POST",
+            "/api/users",
+            "?page=1",
+            "Authorization header",
+            "JSON body"
+          ],
+          "required": [
+            "GET",
+            "/api/users"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a02",
+      "type": "response",
+      "title": "Response Inspector",
+      "instruction": "Identify the status code, headers and JSON body in a simulated API response.",
+      "content": {
+        "concept": "Understand the main parts of an HTTP response and what status codes communicate.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "response-inspector",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Status code: 200",
+            "Content-Type header",
+            "JSON response body"
+          ],
+          "descriptions": [
+            "Indicates that the request completed successfully.",
+            "Describes the format of the response content.",
+            "Contains structured data returned by the API."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a03",
+      "type": "fetch",
+      "title": "Fetch Flow",
+      "instruction": "Arrange the steps required to fetch JSON data and render it in the UI.",
+      "content": {
+        "concept": "Use fetch to request data, convert the response to JSON and update the interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "fetch-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Call fetch(url)",
+            "2. Receive the Response",
+            "3. Check the response status",
+            "4. Call response.json()",
+            "5. Render the data"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a04",
+      "type": "debug",
+      "title": "API Debugger",
+      "instruction": "Inspect a failed request and identify whether the method, endpoint or response handling is incorrect.",
+      "content": {
+        "concept": "Debug common API request and response problems.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "api-debug",
+        "family": "debug",
+        "config": {
+          "target": 1
+        }
       }
     }
   ],
-  "assessmentRef": "assessment-day-23.json",
-  "practicalTaskRef": "practical-day-23.json",
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

@@ -1,43 +1,52 @@
 {
   "curriculum": "Python",
-  "day": 19,
-  "topic": "Python Automation and Web Scraping",
+  "day": 18,
+  "topic": "Concurrency and Async Programming",
   "version": 1,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Identify common tasks suitable for Python automation.",
-    "Understand HTTP requests and HTML parsing for data extraction.",
-    "Design a basic automation workflow with validation and error handling."
+    "Distinguish synchronous execution from asynchronous execution.",
+    "Use async and await for I/O-bound operations.",
+    "Understand tasks, event loops, and concurrency trade-offs."
   ],
   "activities": [
     {
-      "id": "d19-a1",
-      "type": "discover",
-      "title": "Automation Pipeline",
-      "instruction": "Arrange the automation workflow from start to finish.",
+      "id": "d18-a1",
+      "type": "click-map",
+      "title": "Async Execution Model",
+      "instruction": "Explore the components that make asynchronous execution possible.",
       "content": {
-        "concept": "Automation commonly involves collecting input, processing data, validating results, and producing an output.",
+        "concept": "Python's asyncio model uses an event loop to coordinate coroutines and tasks, allowing other work to progress while an operation is awaiting I/O.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order",
-        "family": "reorder",
+        "mode": "click-map",
+        "family": "click-map",
         "config": {
-          "goal": [
-            "1. Import modules",
-            "2. Define functions",
-            "3. Execute main logic"
+          "items": [
+            "Coroutine",
+            "async",
+            "await",
+            "Task",
+            "Event Loop"
+          ],
+          "descriptions": [
+            "A coroutine is an awaitable computation defined with async def.",
+            "The async keyword defines a coroutine function.",
+            "await suspends the current coroutine until the awaited operation can continue.",
+            "A Task schedules a coroutine to run concurrently with other tasks.",
+            "The event loop coordinates and runs asynchronous tasks and callbacks."
           ]
         }
       }
     },
     {
-      "id": "d19-a2",
-      "type": "discover",
-      "title": "Web Request Anatomy",
-      "instruction": "Explore the parts of an HTTP request.",
+      "id": "d18-a2",
+      "type": "anatomy",
+      "title": "Async Syntax Anatomy",
+      "instruction": "Click each part of the async function to inspect its role.",
       "content": {
-        "concept": "A web request contains components such as a URL, method, headers, parameters, and optional body data.",
+        "concept": "async def creates a coroutine function, while await allows the coroutine to suspend during an asynchronous operation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -45,54 +54,68 @@
         "family": "anatomy",
         "config": {
           "items": [
-            "def process_data(input_val):",
-            "    return input_val * 2",
-            "print(process_data(5))"
+            "async def fetch_data():",
+            "    response = await client.get(url)",
+            "    return response"
+          ],
+          "descriptions": [
+            "Defines fetch_data as a coroutine function.",
+            "await pauses this coroutine while the asynchronous HTTP operation is waiting for completion.",
+            "Returns the completed response to the caller."
           ]
         }
       }
     },
     {
-      "id": "d19-a3",
+      "id": "d18-a3",
       "type": "discover",
-      "title": "HTML Selector Lab",
-      "instruction": "Select elements that contain the required data.",
+      "title": "Concurrent Task Flow",
+      "instruction": "Arrange the steps for running multiple asynchronous tasks.",
       "content": {
-        "concept": "HTML parsers can locate elements using tags, attributes, and CSS-style selectors.",
+        "concept": "Multiple I/O-bound coroutines can be scheduled as tasks so the event loop can make progress on another task while one is waiting.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab",
-        "family": "lab",
+        "mode": "reorder",
+        "family": "reorder",
         "config": {
-          "code": "x = 10\ny = 20\nprint(x + y)"
+          "goal": [
+            "1. Define asynchronous operations",
+            "2. Create or schedule tasks",
+            "3. Event loop runs the tasks",
+            "4. A task awaits I/O",
+            "5. Event loop runs another ready task",
+            "6. Awaited task resumes when its I/O completes"
+          ]
         }
       }
     },
     {
-      "id": "d19-a4",
+      "id": "d18-a4",
       "type": "discover",
-      "title": "Automation Builder",
-      "instruction": "Compose a reliable automation workflow.",
+      "title": "Concurrency Strategy",
+      "instruction": "Choose the execution approach that fits the scenario.",
       "content": {
-        "concept": "A robust automation script combines fetching, extraction, validation, error handling, and output steps.",
+        "concept": "Async programming is particularly useful for I/O-bound workloads. CPU-heavy work generally requires different concurrency or parallelism strategies.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
-        "family": "builder",
+        "mode": "compare",
+        "family": "compare",
         "config": {
-          "options": [
-            "import math",
-            "def calc():",
-            "return 0"
-          ]
+          "choices": [
+            "asyncio with concurrent HTTP requests",
+            "A simple sequential loop",
+            "asyncio for intensive CPU calculations",
+            "No concurrency model is needed"
+          ],
+          "answer": "asyncio with concurrent HTTP requests"
         }
       }
     }
   ],
-  "assessmentRef": "assessment-day-19.json",
-  "practicalTaskRef": "practical-day-19.json",
+  "assessmentRef": "assessment-day-18.json",
+  "practicalTaskRef": "practical-day-18.json",
   "progression": {
     "nextActivityLockedUntilComplete": true,
     "nextDayLockedUntilComplete": true

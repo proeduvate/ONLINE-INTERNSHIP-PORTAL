@@ -1,26 +1,135 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 4,
-  "topic": "Day 4 Topic for Frontend",
-  "version": 1,
+  "topic": "HTML Media, Links, Lists & Tables",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Use links and media elements correctly",
+    "Choose appropriate ordered and unordered list structures",
+    "Present structured tabular data using HTML tables"
   ],
   "activities": [
     {
       "id": "d04-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "explore",
+      "title": "Media Explorer",
+      "instruction": "Explore image, audio, and video elements and identify their appropriate HTML elements.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Use links and media elements correctly",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "media-explore",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "<img>",
+            "<audio>",
+            "<video>",
+            "<source>"
+          ],
+          "descriptions": [
+            "Embeds an image into the page.",
+            "Embeds audio content.",
+            "Embeds video content.",
+            "Provides a media source for audio or video."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d04-a02",
+      "type": "link-builder",
+      "title": "Link Builder",
+      "instruction": "Build a meaningful link using a destination URL and descriptive link text.",
+      "content": {
+        "concept": "Use links correctly",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "link-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<a>",
+            "href=\"https://example.com\"",
+            "Visit our documentation",
+            "</a>"
+          ],
+          "required": [
+            "<a>",
+            "href=\"https://example.com\"",
+            "Visit our documentation",
+            "</a>"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d04-a03",
+      "type": "arrange",
+      "title": "List Arranger",
+      "instruction": "Choose and arrange list items for a task where sequence matters.",
+      "content": {
+        "concept": "Choose appropriate ordered and unordered list structures",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "list-arrange",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Open the website",
+            "2. Choose a product",
+            "3. Add the product to the cart",
+            "4. Complete checkout"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d04-a04",
+      "type": "table-builder",
+      "title": "Table Builder",
+      "instruction": "Construct a table with a header row and data rows to represent structured information.",
+      "content": {
+        "concept": "Present structured tabular data",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "table-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<table>",
+            "<thead>",
+            "<tr>",
+            "<th>Product</th>",
+            "<th>Price</th>",
+            "</tr>",
+            "</thead>",
+            "<tbody>",
+            "<td>Keyboard</td>",
+            "<td>$30</td>",
+            "</tbody>",
+            "</table>"
+          ],
+          "required": [
+            "<table>",
+            "<thead>",
+            "<tr>",
+            "<th>Product</th>",
+            "<th>Price</th>",
+            "</tr>",
+            "</thead>",
+            "<tbody>",
+            "<td>Keyboard</td>",
+            "<td>$30</td>",
+            "</tbody>",
+            "</table>"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +140,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

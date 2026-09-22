@@ -1,26 +1,116 @@
 {
-  "curriculum": "Frontend",
+  "curriculum": "Frontend Development",
   "day": 25,
-  "topic": "Day 25 Topic for Frontend",
-  "version": 1,
+  "topic": "React State & Event Handling",
+  "version": 2,
   "learningMode": "interactive_deck",
   "learningObjectives": [
-    "Objective 1",
-    "Objective 2",
-    "Objective 3"
+    "Understand state",
+    "Update from events",
+    "Build controlled UI"
   ],
   "activities": [
     {
       "id": "d25-a01",
-      "type": "discover",
-      "title": "Activity 1",
-      "instruction": "Instruction for activity 1",
+      "type": "state",
+      "title": "State Transition Explorer",
+      "instruction": "Trigger UI events and observe how state changes cause the interface to update.",
       "content": {
-        "concept": "Concept 1",
-        "tip": "Tip for activity 1"
+        "concept": "Understand state as data that React tracks and uses to determine the rendered UI.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "state-transition",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Initial state",
+            "User event",
+            "State update",
+            "Re-rendered UI"
+          ],
+          "descriptions": [
+            "The component begins with its current state value.",
+            "The user performs an action such as clicking a button.",
+            "The event handler requests a state update.",
+            "React renders the UI using the new state."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d25-a02",
+      "type": "events",
+      "title": "React Event Handler",
+      "instruction": "Match UI events with the handler that should respond to them.",
+      "content": {
+        "concept": "Update React state in response to user events such as click and change.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "react-events",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "onClick → button press",
+            "onChange → input value change",
+            "onSubmit → form submission"
+          ],
+          "answer": "onChange → input value change"
+        }
+      }
+    },
+    {
+      "id": "d25-a03",
+      "type": "controlled",
+      "title": "Controlled Input",
+      "instruction": "Arrange the data flow of a controlled React input.",
+      "content": {
+        "concept": "Build controlled UI by keeping the input value in React state and updating it through an event handler.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "controlled-input",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. User types into the input",
+            "2. onChange receives the new value",
+            "3. State is updated",
+            "4. Component re-renders",
+            "5. Input displays the state value"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d25-a04",
+      "type": "build",
+      "title": "Interactive Counter",
+      "instruction": "Build a counter by selecting the state value and event-driven update controls.",
+      "content": {
+        "concept": "Combine React state and event handlers to create interactive UI behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "counter-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "useState(0)",
+            "Increment button",
+            "Decrement button",
+            "Reset button",
+            "setCount(count + 1)",
+            "setCount(count - 1)",
+            "setCount(0)"
+          ],
+          "required": [
+            "useState(0)",
+            "Increment button",
+            "setCount(count + 1)"
+          ]
+        }
       }
     }
   ],
@@ -31,7 +121,7 @@
     "nextDayLockedUntilComplete": true
   },
   "separation": {
-    "learning": "Teach the concept through an interactive experience.",
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
     "assessment": "Stored separately and completed after learning.",
     "practical": "Stored separately and completed after assessment."
   }

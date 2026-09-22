@@ -13,53 +13,104 @@
     {
       "id": "d27-a1",
       "type": "discover",
-      "title": "Observability Map",
-      "instruction": "Connect logs, metrics, and traces.",
+      "title": "Observability Signals",
+      "instruction": "Explore the main signals used to understand application behavior.",
       "content": {
-        "concept": "Observability combines signals such as logs, metrics, and traces to help understand application behavior.",
+        "concept": "Observability commonly combines logs, metrics, and traces. Each signal provides a different view of what the application is doing and helps investigate production behavior.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Logs",
+            "Metrics",
+            "Traces",
+            "Alerts"
+          ],
+          "descriptions": [
+            "Detailed timestamped records of application events.",
+            "Numerical measurements such as latency, request rate, and resource usage.",
+            "Records that help follow a request across components or services.",
+            "Notifications generated when configured conditions indicate a potential problem."
+          ]
+        }
       }
     },
     {
       "id": "d27-a2",
       "type": "discover",
-      "title": "Log Level Selector",
-      "instruction": "Choose the appropriate log level.",
+      "title": "Log Level Selection",
+      "instruction": "Choose the most appropriate log level for the scenario.",
       "content": {
-        "concept": "Log levels such as DEBUG, INFO, WARN, and ERROR communicate different levels of application information and problems.",
+        "concept": "Common logging levels communicate different degrees of detail and severity. DEBUG is useful for detailed diagnostic information, INFO for normal application events, WARN for concerning conditions, and ERROR for failures.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Application startup completed successfully → INFO",
+            "Detailed variable values needed during development debugging → ERROR",
+            "Database connection failure → DEBUG",
+            "Potentially recoverable configuration problem → INFO"
+          ],
+          "answer": "Application startup completed successfully → INFO"
+        }
       }
     },
     {
       "id": "d27-a3",
       "type": "discover",
-      "title": "Monitoring Dashboard",
-      "instruction": "Select the metrics for each scenario.",
+      "title": "Monitoring Metrics",
+      "instruction": "Explore which metrics reveal application health.",
       "content": {
-        "concept": "Metrics such as request rate, latency, error rate, and resource usage help reveal application performance and health.",
+        "concept": "Request rate, latency, error rate, and resource utilization provide quantitative signals about application traffic, responsiveness, failures, and infrastructure health.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Request Rate",
+            "Latency",
+            "Error Rate",
+            "CPU and Memory Usage"
+          ],
+          "descriptions": [
+            "Measures how many requests the application receives over time.",
+            "Measures how long requests take to complete.",
+            "Measures the proportion or number of failed requests.",
+            "Shows resource consumption that may indicate capacity or performance problems."
+          ]
+        }
       }
     },
     {
       "id": "d27-a4",
       "type": "discover",
       "title": "Incident Investigation",
-      "instruction": "Arrange the troubleshooting workflow.",
+      "instruction": "Arrange a practical workflow for investigating a production issue.",
       "content": {
-        "concept": "Production diagnosis can combine alerts, metrics, logs, and traces to identify the source and impact of a problem.",
+        "concept": "Troubleshooting combines alerts, metrics, logs, and traces to establish when a problem started, understand its impact, identify its likely cause, and verify the resolution.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Detect or receive an alert",
+            "2. Check relevant metrics and determine the impact",
+            "3. Inspect logs and traces for the affected requests",
+            "4. Identify and investigate the likely cause",
+            "5. Apply or deploy a fix",
+            "6. Verify that the system has recovered"
+          ]
+        }
       }
     }
   ],

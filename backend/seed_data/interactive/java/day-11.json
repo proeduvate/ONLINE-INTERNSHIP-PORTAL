@@ -13,53 +13,119 @@
     {
       "id": "d11-a1",
       "type": "discover",
-      "title": "I/O Class Map",
-      "instruction": "Match each I/O class to its purpose.",
+      "title": "Java I/O Class Map",
+      "instruction": "Explore the purpose of common Java file-processing classes.",
       "content": {
-        "concept": "Java I/O provides streams and readers/writers for moving data between applications and files.",
+        "concept": "Java provides multiple APIs for file processing. Traditional I/O includes byte streams and character readers/writers, while NIO provides modern APIs such as Path and Files for working with files and directories.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "io-class-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "InputStream",
+            "OutputStream",
+            "Reader",
+            "Writer",
+            "Path",
+            "Files"
+          ],
+          "descriptions": [
+            "Base abstraction for reading raw byte data.",
+            "Base abstraction for writing raw byte data.",
+            "Base abstraction for reading character data.",
+            "Base abstraction for writing character data.",
+            "Represents the location of a file or directory.",
+            "Provides convenient operations for reading, writing, copying, moving, and managing files and directories."
+          ]
+        }
       }
     },
     {
       "id": "d11-a2",
       "type": "discover",
       "title": "File Reading Anatomy",
-      "instruction": "Explore the parts of a file-reading workflow.",
+      "instruction": "Explore the parts of a modern Java file-reading workflow.",
       "content": {
-        "concept": "File reading commonly involves a Path, an input mechanism, data processing, and resource cleanup.",
+        "concept": "A file-reading operation commonly identifies a Path, uses a suitable Files method or stream, processes the data, and ensures resources are closed when a stream is opened.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "file-reading-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Path",
+            "Files",
+            "BufferedReader",
+            "readLine()",
+            "try-with-resources"
+          ],
+          "descriptions": [
+            "Represents the location of the file.",
+            "Provides file operations such as newBufferedReader and readString.",
+            "Reads character data efficiently from a character input stream.",
+            "Reads the next line of text from the reader.",
+            "Automatically closes the reader when the try block finishes."
+          ]
+        }
       }
     },
     {
       "id": "d11-a3",
       "type": "discover",
-      "title": "NIO Workflow",
-      "instruction": "Arrange the file-processing steps in order.",
+      "title": "NIO File Workflow",
+      "instruction": "Arrange a safe NIO file-processing workflow.",
       "content": {
-        "concept": "NIO uses Path and Files APIs to simplify modern file and directory operations.",
+        "concept": "The NIO API centers file operations around Path and Files. A typical workflow identifies a path, verifies or accesses the file, performs the operation, processes the data, and handles possible I/O failures.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "nio-file-workflow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create or obtain a Path",
+            "2. Check or identify the target file",
+            "3. Use a Files operation",
+            "4. Process the file data",
+            "5. Handle possible IOException"
+          ]
+        }
       }
     },
     {
       "id": "d11-a4",
       "type": "discover",
-      "title": "Safe Resource Handling",
-      "instruction": "Build a safe resource-handling pattern.",
+      "title": "Try-with-Resources Builder",
+      "instruction": "Build a safe resource-handling structure for reading a file.",
       "content": {
-        "concept": "Try-with-resources automatically closes resources and helps prevent resource leaks.",
+        "concept": "Try-with-resources automatically closes objects that implement AutoCloseable. This reduces resource leaks and makes file and stream handling safer and easier to maintain.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "try-with-resources-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "try",
+            "(BufferedReader reader = Files.newBufferedReader(path))",
+            "{",
+            "String line = reader.readLine();",
+            "}",
+            "catch (IOException e)",
+            "{",
+            "e.printStackTrace();",
+            "}"
+          ],
+          "required": [
+            "try",
+            "(BufferedReader reader = Files.newBufferedReader(path))",
+            "String line = reader.readLine();",
+            "catch (IOException e)"
+          ]
+        }
       }
     }
   ],

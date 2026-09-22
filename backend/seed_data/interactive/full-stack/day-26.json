@@ -14,19 +14,24 @@
       "id": "d26-a1",
       "type": "discover",
       "title": "Testing Pyramid",
-      "instruction": "Explore the layers of the testing pyramid.",
+      "instruction": "Explore the levels of the testing pyramid and what each level validates.",
       "content": {
-        "concept": "The testing pyramid organizes tests by scope, with smaller focused tests supporting broader integration and end-to-end tests.",
+        "concept": "Unit tests focus on small isolated pieces of logic, integration tests verify interactions between components, and end-to-end tests validate complete user journeys. The testing pyramid generally emphasizes more focused tests and fewer broad end-to-end tests.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy",
+        "mode": "testing-pyramid",
         "family": "anatomy",
         "config": {
           "items": [
-            "function init() {",
-            "  console.log('Started');",
-            "}"
+            "Unit Tests",
+            "Integration Tests",
+            "End-to-End Tests"
+          ],
+          "descriptions": [
+            "Test small units of logic in isolation, such as a validation function or utility.",
+            "Test multiple connected parts working together, such as an API route and database layer.",
+            "Test a complete user journey through the application, such as signing in and completing a purchase."
           ]
         }
       }
@@ -35,19 +40,20 @@
       "id": "d26-a2",
       "type": "discover",
       "title": "Test Type Match",
-      "instruction": "Match scenarios with the appropriate test type.",
+      "instruction": "Choose the test type that best fits the scenario.",
       "content": {
-        "concept": "Unit tests isolate small pieces of logic, integration tests verify connected components, and end-to-end tests validate complete user flows.",
+        "concept": "The appropriate test depends on the scope of behavior being verified: isolated logic suggests unit testing, connected components suggest integration testing, and complete workflows suggest end-to-end testing.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match",
+        "mode": "test-type-compare",
         "family": "compare",
         "config": {
           "choices": [
-            "React (Component-based)",
-            "Vanilla JS (Imperative)"
-          ]
+            "Test whether a password validation function rejects a short password",
+            "Test the complete registration flow from form submission to account creation"
+          ],
+          "answer": "Test whether a password validation function rejects a short password"
         }
       }
     },
@@ -55,9 +61,9 @@
       "id": "d26-a3",
       "type": "discover",
       "title": "Test Execution Flow",
-      "instruction": "Arrange the stages of a test workflow.",
+      "instruction": "Arrange the stages of a typical automated test workflow.",
       "content": {
-        "concept": "A testing workflow typically defines test cases, prepares data, executes tests, evaluates results, and reports failures.",
+        "concept": "A test workflow defines what should be verified, prepares the required environment or data, executes the test, evaluates the result, and reports failures for investigation.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
@@ -65,9 +71,11 @@
         "family": "reorder",
         "config": {
           "goal": [
-            "1. Setup project",
-            "2. Write code",
-            "3. Deploy"
+            "1. Define test case and expected result",
+            "2. Prepare test data and environment",
+            "3. Execute the test",
+            "4. Compare actual result with expected result",
+            "5. Report and investigate failures"
           ]
         }
       }
@@ -76,19 +84,28 @@
       "id": "d26-a4",
       "type": "discover",
       "title": "Test Suite Builder",
-      "instruction": "Build a test strategy for a full stack feature.",
+      "instruction": "Build a balanced test strategy for a full stack feature.",
       "content": {
-        "concept": "A balanced test suite validates frontend behavior, backend logic, API integration, and critical user journeys.",
+        "concept": "A full stack feature can require multiple testing layers: isolated logic tests, integration tests for connected systems, and end-to-end tests for critical user journeys.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build",
+        "mode": "test-suite-builder",
         "family": "builder",
         "config": {
           "options": [
-            "<html>",
-            "<body>",
-            "</html>"
+            "Unit tests for frontend logic",
+            "Unit tests for backend services",
+            "API integration tests",
+            "Database integration tests",
+            "End-to-end critical user flow",
+            "Only manual testing"
+          ],
+          "required": [
+            "Unit tests for frontend logic",
+            "Unit tests for backend services",
+            "API integration tests",
+            "End-to-end critical user flow"
           ]
         }
       }
