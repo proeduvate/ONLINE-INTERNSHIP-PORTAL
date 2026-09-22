@@ -83,7 +83,7 @@ def get_intern_tasks_with_unlock_status(
             "ai_feedback": sub.ai_feedback if sub else None,
             "mentor_feedback": sub.mentor_feedback if sub else None,
             "submitted_at": sub.submitted_at if sub else None,
-            "started_at": sub.started_at if sub else None
+            "started_at": None
         })
         
         # Next task unlock status depends on whether this task was submitted/approved
@@ -132,15 +132,13 @@ def start_task(
     if existing:
         if existing.status == "not_started":
             existing.status = "in_progress"
-            existing.started_at = datetime.utcnow()
             db.commit()
         return {"message": "Task already started", "status": existing.status}
         
     new_sub = models.Submission(
         intern_id=current_user.id,
         task_id=task_id,
-        status="in_progress",
-        started_at=datetime.utcnow()
+        status="in_progress"
     )
     db.add(new_sub)
     db.commit()
