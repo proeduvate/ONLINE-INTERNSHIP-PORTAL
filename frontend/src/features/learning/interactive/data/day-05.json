@@ -21,14 +21,9 @@
       },
       "interaction": {
         "mode": "css-before",
-        "family": "tabs-preview",
+        "family": "lab",
         "config": {
-          "tabs": [
-            "before",
-            "after",
-            "layers",
-            "cover"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -43,14 +38,9 @@
       },
       "interaction": {
         "mode": "selector-lab",
-        "family": "target-match",
+        "family": "lab",
         "config": {
-          "target": ".profile .name",
-          "choices": [
-            ".profile .name",
-            "input[type=\"email\"]",
-            "#submit"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -65,8 +55,13 @@
       },
       "interaction": {
         "mode": "css-live",
-        "family": "slider-controls",
-        "config": {}
+        "family": "live-preview",
+        "config": {
+          "items": [
+            "Preview Connect",
+            "Preview styles"
+          ]
+        }
       }
     },
     {
@@ -80,13 +75,9 @@
       },
       "interaction": {
         "mode": "css-rule",
-        "family": "generic-builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "Structure",
-            "Content",
-            "Action"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }

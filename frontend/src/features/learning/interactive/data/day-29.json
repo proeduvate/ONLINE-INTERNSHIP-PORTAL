@@ -21,14 +21,9 @@
       },
       "interaction": {
         "mode": "bug-hunt",
-        "family": "audit",
+        "family": "debug",
         "config": {
-          "list": [
-            "Large render",
-            "Missing label",
-            "Unused request",
-            "Heavy asset"
-          ]
+          "target": 100
         }
       }
     },
@@ -43,13 +38,11 @@
       },
       "interaction": {
         "mode": "performance",
-        "family": "audit",
+        "family": "form",
         "config": {
-          "list": [
-            "Large render",
-            "Missing label",
-            "Unused request",
-            "Heavy asset"
+          "fields": [
+            "email",
+            "password"
           ]
         }
       }
@@ -65,8 +58,10 @@
       },
       "interaction": {
         "mode": "lazy",
-        "family": "responsive-slider",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -80,14 +75,9 @@
       },
       "interaction": {
         "mode": "audit",
-        "family": "audit",
+        "family": "lab",
         "config": {
-          "list": [
-            "Large render",
-            "Missing label",
-            "Unused request",
-            "Heavy asset"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }

@@ -20,7 +20,28 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Collection",
+            "Data Preparation",
+            "Model Development",
+            "Model Training",
+            "Model Deployment",
+            "Monitoring",
+            "Retraining"
+          ],
+          "descriptions": [
+            "Collect and store data required by the ML system.",
+            "Clean, validate, transform, and prepare data for modeling.",
+            "Develop and experiment with machine learning solutions.",
+            "Train the model using prepared data and selected configurations.",
+            "Make the trained model available for real-world predictions.",
+            "Track system health, data quality, predictions, and model behavior.",
+            "Update the model using new data or improved configurations when needed."
+          ]
+        }
       }
     },
     {
@@ -33,7 +54,21 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Data Source",
+            "Data Ingestion",
+            "Data Storage",
+            "Feature Processing",
+            "Model Training",
+            "Model Registry",
+            "Model Serving",
+            "Monitoring",
+            "Retraining Pipeline"
+          ]
+        }
       }
     },
     {
@@ -46,7 +81,20 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "API Response Time",
+            "Prediction Distribution",
+            "Input Data Quality",
+            "Model Accuracy",
+            "Data Drift",
+            "Server Health",
+            "UI Font Size",
+            "Unused Files"
+          ]
+        }
       }
     },
     {
@@ -59,7 +107,20 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Detect a model or data issue",
+            "2. Collect new or updated data",
+            "3. Validate and preprocess the data",
+            "4. Train the updated model",
+            "5. Evaluate the updated model",
+            "6. Register the validated model",
+            "7. Deploy the updated model",
+            "8. Monitor the new production version"
+          ]
+        }
       }
     }
   ],

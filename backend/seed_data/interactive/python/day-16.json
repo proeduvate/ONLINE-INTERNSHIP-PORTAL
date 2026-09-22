@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Import modules",
+            "2. Define functions",
+            "3. Execute main logic"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def process_data(input_val):",
+            "    return input_val * 2",
+            "print(process_data(5))"
+          ]
+        }
       }
     },
     {
@@ -46,7 +62,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "import math",
+            "def calc():",
+            "return 0"
+          ]
+        }
       }
     },
     {
@@ -59,7 +83,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "List: [1, 2, 3] (Mutable)",
+            "Tuple: (1, 2, 3) (Immutable)"
+          ]
+        }
       }
     }
   ],

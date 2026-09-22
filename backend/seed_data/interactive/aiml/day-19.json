@@ -20,7 +20,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Client Application",
+            "REST API Endpoint",
+            "Request Validation",
+            "Preprocessing",
+            "ML Model",
+            "Prediction Response"
+          ]
+        }
       }
     },
     {
@@ -33,7 +44,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Endpoint",
+            "HTTP Method",
+            "Headers",
+            "Request Body",
+            "Response"
+          ],
+          "descriptions": [
+            "The URL path that identifies the API resource or operation.",
+            "Specifies the action being requested, such as GET or POST.",
+            "Provide metadata such as content type or authentication information.",
+            "Contains the input data sent to the prediction service.",
+            "Contains the result returned by the API after processing the request."
+          ]
+        }
       }
     },
     {
@@ -46,7 +74,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Client sends prediction request",
+            "2. API receives the request",
+            "3. Validate the input data",
+            "4. Preprocess the input",
+            "5. Run the trained ML model",
+            "6. Generate the prediction response",
+            "7. Return the response to the client"
+          ]
+        }
       }
     },
     {
@@ -59,7 +99,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Model Artifact",
+            "API Server",
+            "Dependencies",
+            "Container",
+            "Cloud Infrastructure"
+          ]
+        }
       }
     }
   ],

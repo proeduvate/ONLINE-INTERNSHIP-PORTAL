@@ -21,8 +21,13 @@
       },
       "interaction": {
         "mode": "validate",
-        "family": "input-validate",
-        "config": {}
+        "family": "form",
+        "config": {
+          "fields": [
+            "email",
+            "password"
+          ]
+        }
       }
     },
     {
@@ -36,13 +41,11 @@
       },
       "interaction": {
         "mode": "rules",
-        "family": "target-match",
+        "family": "form",
         "config": {
-          "target": "input[type=\"email\"]",
-          "choices": [
-            "required",
-            "minLength",
-            "pattern"
+          "fields": [
+            "email",
+            "password"
           ]
         }
       }
@@ -58,14 +61,9 @@
       },
       "interaction": {
         "mode": "feedback",
-        "family": "target-match",
+        "family": "lab",
         "config": {
-          "target": "input[type=\"email\"]",
-          "choices": [
-            "“Invalid”",
-            "“Enter at least 8 characters”",
-            "“Error”"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -80,8 +78,10 @@
       },
       "interaction": {
         "mode": "validation-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

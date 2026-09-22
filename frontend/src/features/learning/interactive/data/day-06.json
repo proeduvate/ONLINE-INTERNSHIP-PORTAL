@@ -21,13 +21,12 @@
       },
       "interaction": {
         "mode": "box-inspect",
-        "family": "tabs-preview",
+        "family": "anatomy",
         "config": {
-          "tabs": [
-            "before",
-            "after",
-            "layers",
-            "cover"
+          "items": [
+            "function init() {",
+            "  console.log('Started');",
+            "}"
           ]
         }
       }
@@ -43,8 +42,12 @@
       },
       "interaction": {
         "mode": "box-slider",
-        "family": "slider-controls",
-        "config": {}
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     },
     {
@@ -61,8 +64,8 @@
         "family": "compare",
         "config": {
           "choices": [
-            "content-box",
-            "border-box"
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
           ]
         }
       }
@@ -78,8 +81,10 @@
       },
       "interaction": {
         "mode": "box-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

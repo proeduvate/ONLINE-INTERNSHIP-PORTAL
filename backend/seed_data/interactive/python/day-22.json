@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Import modules",
+            "2. Define functions",
+            "3. Execute main logic"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,13 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     },
     {
@@ -46,7 +60,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def process_data(input_val):",
+            "    return input_val * 2",
+            "print(process_data(5))"
+          ]
+        }
       }
     },
     {
@@ -59,7 +81,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "code": "x = 10\ny = 20\nprint(x + y)"
+        }
       }
     }
   ],

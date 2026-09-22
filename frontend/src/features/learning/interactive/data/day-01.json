@@ -21,14 +21,12 @@
       },
       "interaction": {
         "mode": "html-discover",
-        "family": "selection-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "DOCTYPE",
-            "HEAD",
-            "HEADER",
-            "MAIN",
-            "FOOTER"
+            "Example A",
+            "Example B",
+            "Example C"
           ]
         }
       }
@@ -44,12 +42,12 @@
       },
       "interaction": {
         "mode": "html-anatomy",
-        "family": "selection-anatomy",
+        "family": "anatomy",
         "config": {
           "items": [
-            "<h1>",
-            "My Portfolio",
-            "</h1>"
+            "Recognize",
+            "document",
+            "structure"
           ]
         }
       }
@@ -86,13 +84,12 @@
       },
       "interaction": {
         "mode": "html-skeleton",
-        "family": "builder-ordered",
+        "family": "builder",
         "config": {
-          "items": [
-            "<!DOCTYPE html>",
-            "<html>",
-            "<head>",
-            "<body>"
+          "options": [
+            "Define Example A",
+            "Set Example B",
+            "Return Example C"
           ]
         }
       }

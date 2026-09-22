@@ -20,7 +20,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Collect raw text",
+            "2. Normalize the text",
+            "3. Tokenize the text",
+            "4. Handle stop words",
+            "5. Transform text into numerical features",
+            "6. Provide the processed data to the ML model"
+          ]
+        }
       }
     },
     {
@@ -33,7 +44,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Sentence",
+            "Word Token",
+            "Subword Token",
+            "Punctuation",
+            "Token Sequence"
+          ],
+          "descriptions": [
+            "A complete unit of text that can be divided into smaller tokens.",
+            "A token representing an individual word.",
+            "A smaller token representing part of a word.",
+            "A token representing punctuation marks such as commas or periods.",
+            "An ordered collection of tokens produced from the input text."
+          ]
+        }
       }
     },
     {
@@ -46,7 +74,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Sentiment Analysis",
+            "Text Classification",
+            "Machine Translation",
+            "Text Summarization",
+            "Information Extraction"
+          ]
+        }
       }
     },
     {
@@ -59,7 +97,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     }
   ],

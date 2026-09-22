@@ -21,8 +21,14 @@
       },
       "interaction": {
         "mode": "grid-builder",
-        "family": "grid-builder",
-        "config": {}
+        "family": "builder",
+        "config": {
+          "options": [
+            "<html>",
+            "<body>",
+            "</html>"
+          ]
+        }
       }
     },
     {
@@ -36,8 +42,10 @@
       },
       "interaction": {
         "mode": "grid-areas",
-        "family": "grid-builder",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -51,8 +59,10 @@
       },
       "interaction": {
         "mode": "grid-responsive",
-        "family": "responsive-slider",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -66,8 +76,10 @@
       },
       "interaction": {
         "mode": "grid-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

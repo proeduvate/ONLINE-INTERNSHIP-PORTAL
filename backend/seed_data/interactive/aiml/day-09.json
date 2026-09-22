@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Unlabeled Data",
+            "Feature Space",
+            "Similarity",
+            "Clusters",
+            "Discovered Patterns"
+          ],
+          "descriptions": [
+            "Data without predefined target labels.",
+            "A representation of data points using their features.",
+            "A measure of how similar or different data points are.",
+            "Groups of data points with similar characteristics.",
+            "Patterns or structures discovered from the data."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Select data points",
+            "Measure similarity",
+            "Group similar points",
+            "Assign cluster labels",
+            "Interpret the clusters"
+          ]
+        }
       }
     },
     {
@@ -46,7 +73,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 2,
+          "max": 10
+        }
       }
     },
     {
@@ -59,7 +91,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Customer Segmentation",
+            "Document Grouping",
+            "Image Segmentation",
+            "Anomaly Exploration",
+            "Exploratory Data Analysis"
+          ]
+        }
       }
     }
   ],

@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "state",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,8 +38,10 @@
       },
       "interaction": {
         "mode": "react-events",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -51,8 +55,10 @@
       },
       "interaction": {
         "mode": "controlled",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -66,8 +72,10 @@
       },
       "interaction": {
         "mode": "counter",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     }
   ],

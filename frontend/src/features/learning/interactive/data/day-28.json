@@ -21,13 +21,9 @@
       },
       "interaction": {
         "mode": "routes",
-        "family": "router",
+        "family": "lab",
         "config": {
-          "routes": [
-            "/home",
-            "/internships",
-            "/intern/42"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -42,13 +38,9 @@
       },
       "interaction": {
         "mode": "navigation",
-        "family": "router",
+        "family": "lab",
         "config": {
-          "routes": [
-            "/home",
-            "/internships",
-            "/intern/42"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -63,13 +55,9 @@
       },
       "interaction": {
         "mode": "params",
-        "family": "router",
+        "family": "lab",
         "config": {
-          "routes": [
-            "/home",
-            "/internships",
-            "/intern/42"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -84,14 +72,9 @@
       },
       "interaction": {
         "mode": "architecture",
-        "family": "builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "UI",
-            "State",
-            "Services",
-            "API"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }

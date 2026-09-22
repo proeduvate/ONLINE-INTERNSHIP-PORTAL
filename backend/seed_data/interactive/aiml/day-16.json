@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Input Layer",
+            "Dense Layer",
+            "Activation Function",
+            "Output Layer",
+            "Model"
+          ],
+          "descriptions": [
+            "Receives the input features supplied to the neural network.",
+            "A fully connected layer that transforms inputs using learned weights and biases.",
+            "Transforms layer outputs and helps the network learn nonlinear relationships.",
+            "Produces the final prediction from the network.",
+            "Combines the configured layers into a trainable neural network."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Input Layer",
+            "Dense Layer",
+            "ReLU Activation",
+            "Output Layer",
+            "Connect Layers"
+          ]
+        }
       }
     },
     {
@@ -46,7 +73,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Layer",
+            "Activation Function",
+            "Loss Function",
+            "Optimizer",
+            "Metric"
+          ]
+        }
       }
     },
     {
@@ -59,7 +96,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Load a batch of training data",
+            "2. Perform a forward pass",
+            "3. Calculate the loss",
+            "4. Compute parameter updates",
+            "5. Update model weights",
+            "6. Repeat for subsequent batches and epochs"
+          ]
+        }
       }
     }
   ],

@@ -20,7 +20,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "lab",
+        "config": {
+          "code": "// sandbox"
+        }
       }
     },
     {
@@ -33,7 +37,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Initialize browser",
+            "Process sends",
+            "Output request"
+          ]
+        }
       }
     },
     {
@@ -46,7 +58,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Standard structures",
+            "Optimized structures"
+          ]
+        }
       }
     },
     {
@@ -59,7 +78,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "requests",
+            "contain",
+            "methods"
+          ]
+        }
       }
     }
   ],

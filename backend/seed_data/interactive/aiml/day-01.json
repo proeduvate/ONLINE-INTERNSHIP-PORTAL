@@ -20,7 +20,20 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Artificial Intelligence",
+            "Machine Learning",
+            "Deep Learning"
+          ],
+          "descriptions": [
+            "The broad field of creating systems that perform tasks requiring human-like intelligence.",
+            "A subset of AI where systems learn patterns from data to make predictions or decisions.",
+            "A subset of machine learning that uses multi-layer neural networks to learn complex patterns."
+          ]
+        }
       }
     },
     {
@@ -29,11 +42,22 @@
       "title": "Spot the AI",
       "instruction": "Select the examples that use AI or machine learning.",
       "content": {
-        "concept": "AI and ML power applications such as recommendations, image recognition, and voice assistants.",
+        "concept": "AI and ML power applications such as recommendations, image recognition, fraud detection, and voice assistants.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Movie recommendation system",
+            "Image recognition",
+            "Voice assistant",
+            "Rule-based calculator",
+            "Fraud detection",
+            "Basic file storage"
+          ]
+        }
       }
     },
     {
@@ -46,7 +70,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Collect data",
+            "2. Prepare and clean data",
+            "3. Train the model",
+            "4. Evaluate the model",
+            "5. Make predictions"
+          ]
+        }
       }
     },
     {
@@ -59,7 +93,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Supervised Learning",
+            "Unsupervised Learning",
+            "Reinforcement Learning"
+          ]
+        }
       }
     }
   ],

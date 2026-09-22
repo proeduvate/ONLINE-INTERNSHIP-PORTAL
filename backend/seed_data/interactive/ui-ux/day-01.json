@@ -20,7 +20,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "User Experience (UX): Optimizing user journeys & problem-solving",
+            "User Interface (UI): Designing visual layouts, colors, and typography"
+          ]
+        }
       }
     },
     {
@@ -33,7 +40,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "1. Research & Discover",
+            "2. Define the Problem",
+            "3. Ideate Solutions",
+            "4. Prototype & Test"
+          ]
+        }
       }
     },
     {
@@ -46,7 +62,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Clear buttons, readable text, simple navigation",
+            "Cluttered layout, hidden menus, tiny fonts"
+          ]
+        }
       }
     },
     {
@@ -59,7 +82,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Consistency: Buttons look the same everywhere",
+            "Feedback: Loading spinner when submitting"
+          ]
+        }
       }
     }
   ],

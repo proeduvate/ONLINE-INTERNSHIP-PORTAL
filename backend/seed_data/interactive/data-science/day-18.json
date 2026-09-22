@@ -20,7 +20,13 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     },
     {
@@ -33,7 +39,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Header Area",
+            "Main Content",
+            "Footer"
+          ]
+        }
       }
     },
     {
@@ -46,7 +60,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Data Collection",
+            "2. Data Cleaning",
+            "3. Model Training"
+          ]
+        }
       }
     },
     {
@@ -59,7 +81,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+        }
       }
     }
   ],

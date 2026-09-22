@@ -20,7 +20,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -33,7 +37,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
+          ]
+        }
       }
     },
     {
@@ -46,7 +57,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Setup project",
+            "2. Write code",
+            "3. Deploy"
+          ]
+        }
       }
     },
     {
@@ -59,7 +78,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<html>",
+            "<body>",
+            "</html>"
+          ]
+        }
       }
     }
   ],

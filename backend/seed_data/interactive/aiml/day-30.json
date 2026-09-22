@@ -14,52 +14,116 @@
       "id": "d30-a1",
       "type": "discover",
       "title": "Trace the Complete AI System",
-      "instruction": "Follow the data from user input to final prediction.",
+      "instruction": "Explore how data moves from user input to the final prediction.",
       "content": {
         "concept": "An end-to-end AI application connects the user interface, backend, data pipeline, model, and prediction response.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "User Input",
+            "Frontend",
+            "Backend API",
+            "Data Validation",
+            "Preprocessing",
+            "AI Model",
+            "Prediction",
+            "Final Response"
+          ],
+          "descriptions": [
+            "The information or request provided by the user.",
+            "Collects user input and displays the application interface.",
+            "Receives requests and coordinates the AI processing workflow.",
+            "Checks whether the incoming data is valid and complete.",
+            "Transforms input data into the format required by the model.",
+            "Processes the prepared features to generate an output.",
+            "The result produced by the trained AI model.",
+            "The processed prediction returned and presented to the user."
+          ]
+        }
       }
     },
     {
       "id": "d30-a2",
       "type": "discover",
       "title": "Assemble the Capstone Architecture",
-      "instruction": "Build the complete system architecture.",
+      "instruction": "Build the complete architecture of the AI capstone.",
       "content": {
         "concept": "A production-oriented AI solution combines application, API, data, model, deployment, and monitoring components.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "User Interface",
+            "Backend API",
+            "Authentication",
+            "Data Storage",
+            "Data Preprocessing",
+            "AI Model",
+            "Prediction Service",
+            "Deployment Environment",
+            "Monitoring"
+          ]
+        }
       }
     },
     {
       "id": "d30-a3",
       "type": "discover",
       "title": "Review Technical Decisions",
-      "instruction": "Match each project decision with its purpose.",
+      "instruction": "Match each project decision with the purpose it supports.",
       "content": {
         "concept": "Model selection, preprocessing, evaluation, deployment, and architecture choices should be connected to project requirements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Model Selection",
+            "Feature Engineering",
+            "Data Preprocessing",
+            "Evaluation Metric",
+            "API Architecture",
+            "Deployment Strategy",
+            "Monitoring Strategy",
+            "Security Controls"
+          ]
+        }
       }
     },
     {
       "id": "d30-a4",
       "type": "discover",
       "title": "Plan Future Enhancements",
-      "instruction": "Select practical improvements for the next version.",
+      "instruction": "Assemble a realistic improvement plan for the next version.",
       "content": {
         "concept": "Future AI improvements can target data quality, model performance, scalability, user experience, monitoring, and new capabilities.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Collect More Representative Data",
+            "Improve Data Quality",
+            "Tune or Replace the Model",
+            "Improve Model Evaluation",
+            "Optimize Inference Performance",
+            "Add Monitoring and Alerts",
+            "Improve User Experience",
+            "Scale the Backend",
+            "Add New AI Capabilities"
+          ]
+        }
       }
     }
   ],

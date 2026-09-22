@@ -21,12 +21,11 @@
       },
       "interaction": {
         "mode": "media-explore",
-        "family": "tabs-preview",
+        "family": "live-preview",
         "config": {
-          "tabs": [
-            "image",
-            "audio",
-            "video"
+          "items": [
+            "Preview Example A",
+            "Preview Example B"
           ]
         }
       }
@@ -42,13 +41,12 @@
       },
       "interaction": {
         "mode": "link-builder",
-        "family": "generic-builder",
+        "family": "builder",
         "config": {
           "options": [
-            "URL",
-            "Accessible text",
-            "New tab",
-            "Safe rel"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }
@@ -64,13 +62,12 @@
       },
       "interaction": {
         "mode": "list-arrange",
-        "family": "reorder-list",
+        "family": "reorder",
         "config": {
           "goal": [
-            "Header",
-            "Nav",
-            "Main",
-            "Footer"
+            "1. Setup project",
+            "2. Write code",
+            "3. Deploy"
           ]
         }
       }
@@ -86,13 +83,12 @@
       },
       "interaction": {
         "mode": "table-builder",
-        "family": "generic-builder",
+        "family": "builder",
         "config": {
           "options": [
-            "Header row",
-            "Name column",
-            "Score column",
-            "Data row"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }

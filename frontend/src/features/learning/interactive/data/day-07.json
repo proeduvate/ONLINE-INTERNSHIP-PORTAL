@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "type-mixer",
-        "family": "slider-controls",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,8 +38,10 @@
       },
       "interaction": {
         "mode": "palette",
-        "family": "slider-controls",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -51,14 +55,9 @@
       },
       "interaction": {
         "mode": "background",
-        "family": "tabs-preview",
+        "family": "lab",
         "config": {
-          "tabs": [
-            "before",
-            "after",
-            "layers",
-            "cover"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -76,8 +75,8 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Strategy A",
-            "Strategy B"
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
           ]
         }
       }

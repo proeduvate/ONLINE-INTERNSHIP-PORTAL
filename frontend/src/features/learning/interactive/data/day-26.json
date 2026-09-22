@@ -21,14 +21,9 @@
       },
       "interaction": {
         "mode": "useeffect",
-        "family": "timeline",
+        "family": "lab",
         "config": {
-          "labels": [
-            "Start",
-            "Execute",
-            "Pause / resolve",
-            "Continue"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -43,14 +38,9 @@
       },
       "interaction": {
         "mode": "dependency",
-        "family": "timeline",
+        "family": "lab",
         "config": {
-          "labels": [
-            "Start",
-            "Execute",
-            "Pause / resolve",
-            "Continue"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -65,14 +55,9 @@
       },
       "interaction": {
         "mode": "custom-hook",
-        "family": "compose-architecture",
+        "family": "lab",
         "config": {
-          "blocks": [
-            "State",
-            "Effect",
-            "UI",
-            "Service"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -87,8 +72,10 @@
       },
       "interaction": {
         "mode": "hook-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

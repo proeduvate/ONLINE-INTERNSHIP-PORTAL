@@ -20,7 +20,22 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "List",
+            "Tuple",
+            "Set",
+            "Dictionary"
+          ],
+          "descriptions": [
+            "An ordered and mutable collection that can contain duplicate values.",
+            "An ordered and immutable collection that can contain duplicate values.",
+            "An unordered collection of unique values.",
+            "A collection that stores values using key-value pairs."
+          ]
+        }
       }
     },
     {
@@ -33,7 +48,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "List",
+            "Tuple",
+            "Set",
+            "Dictionary"
+          ]
+        }
       }
     },
     {
@@ -46,7 +70,22 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Index 0",
+            "Index 1",
+            "Index 2",
+            "Index -1"
+          ],
+          "descriptions": [
+            "Accesses the first element of a sequence.",
+            "Accesses the second element of a sequence.",
+            "Accesses the third element of a sequence.",
+            "Accesses the last element of a sequence."
+          ]
+        }
       }
     },
     {
@@ -59,7 +98,39 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Collect raw data",
+            "2. Organize the data",
+            "3. Clean invalid or missing values",
+            "4. Transform the data",
+            "5. Store or pass the processed data"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a5",
+      "type": "discover",
+      "title": "ML Data Builder",
+      "instruction": "Build a structured dataset from individual feature values.",
+      "content": {
+        "concept": "Machine learning data is commonly organized into records containing features and, when available, target labels.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Feature: age",
+            "Feature: income",
+            "Feature: experience",
+            "Target: approved"
+          ]
+        }
       }
     }
   ],

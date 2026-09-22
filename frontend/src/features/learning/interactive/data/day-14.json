@@ -21,13 +21,12 @@
       },
       "interaction": {
         "mode": "flow",
-        "family": "timeline",
+        "family": "flow",
         "config": {
-          "labels": [
+          "nodes": [
             "Start",
-            "Execute",
-            "Pause / resolve",
-            "Continue"
+            "Condition",
+            "End"
           ]
         }
       }
@@ -43,8 +42,14 @@
       },
       "interaction": {
         "mode": "truth",
-        "family": "boolean-logic",
-        "config": {}
+        "family": "flow",
+        "config": {
+          "nodes": [
+            "Start",
+            "Condition",
+            "End"
+          ]
+        }
       }
     },
     {
@@ -58,14 +63,12 @@
       },
       "interaction": {
         "mode": "loop",
-        "family": "timeline",
+        "family": "flow",
         "config": {
-          "labels": [
-            "init i=0",
-            "check i<3",
-            "run body",
-            "i++",
-            "repeat"
+          "nodes": [
+            "Start",
+            "Condition",
+            "End"
           ]
         }
       }
@@ -81,8 +84,10 @@
       },
       "interaction": {
         "mode": "flow-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

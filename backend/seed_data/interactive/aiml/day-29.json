@@ -14,52 +14,124 @@
       "id": "d29-a1",
       "type": "discover",
       "title": "Build the Testing Strategy",
-      "instruction": "Arrange tests across the AI application layers.",
+      "instruction": "Explore the testing layers required for an AI capstone.",
       "content": {
         "concept": "AI projects benefit from testing data validation, preprocessing, model behavior, APIs, and end-to-end workflows.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Validation Tests",
+            "Preprocessing Tests",
+            "Model Tests",
+            "API Tests",
+            "Integration Tests",
+            "End-to-End Tests"
+          ],
+          "descriptions": [
+            "Verify that input data is complete, valid, and within expected ranges.",
+            "Check that cleaning and feature transformations produce the expected outputs.",
+            "Evaluate model predictions, metrics, and behavior on representative inputs.",
+            "Verify request validation, response formats, status codes, and error handling.",
+            "Check that application components communicate correctly with each other.",
+            "Validate the complete workflow from user input through AI processing to the final result."
+          ]
+        }
       }
     },
     {
       "id": "d29-a2",
       "type": "discover",
       "title": "Explore Documentation Anatomy",
-      "instruction": "Identify the purpose of each documentation section.",
+      "instruction": "Identify the purpose of each technical documentation section.",
       "content": {
         "concept": "Useful AI documentation explains the problem, data, model, architecture, setup, usage, and limitations.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Problem Statement",
+            "System Architecture",
+            "Dataset",
+            "Model",
+            "Setup Instructions",
+            "API or Usage Guide",
+            "Testing Results",
+            "Limitations",
+            "Future Improvements"
+          ],
+          "descriptions": [
+            "Explains the problem the capstone is designed to solve.",
+            "Shows how the frontend, backend, data pipeline, and AI components interact.",
+            "Describes the data source, structure, preprocessing, and relevant characteristics.",
+            "Documents the selected algorithm, training approach, and evaluation metrics.",
+            "Explains the dependencies, environment, and steps required to run the project.",
+            "Shows how users or developers interact with the completed system.",
+            "Summarizes tests performed and the observed results.",
+            "Documents known constraints, failure cases, and areas where the system may not perform reliably.",
+            "Describes realistic ways the project could be extended or improved."
+          ]
+        }
       }
     },
     {
       "id": "d29-a3",
       "type": "discover",
       "title": "Sequence the Presentation",
-      "instruction": "Arrange the presentation sections logically.",
+      "instruction": "Arrange the presentation sections into a logical technical story.",
       "content": {
         "concept": "A technical presentation can progress from problem and solution to architecture, implementation, results, and future improvements.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Problem Statement",
+            "Project Objectives",
+            "Proposed Solution",
+            "System Architecture",
+            "Implementation and AI Approach",
+            "Demo or Workflow",
+            "Results and Evaluation",
+            "Challenges and Limitations",
+            "Future Improvements"
+          ]
+        }
       }
     },
     {
       "id": "d29-a4",
       "type": "discover",
       "title": "Validate Project Readiness",
-      "instruction": "Select the items required before the final demo.",
+      "instruction": "Select the items that should be checked before the final demonstration.",
       "content": {
         "concept": "A capstone should be checked for functionality, reproducibility, documentation, error handling, and demonstration readiness.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Core features work correctly",
+            "AI model produces expected outputs",
+            "API and integration tests pass",
+            "Error handling has been tested",
+            "Setup instructions are documented",
+            "Demo data and workflow are ready",
+            "Known limitations are documented",
+            "Project dependencies are verified",
+            "Unused temporary files are present"
+          ]
+        }
       }
     }
   ],

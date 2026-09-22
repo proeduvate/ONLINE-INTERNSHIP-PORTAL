@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "props",
-        "family": "props-editor",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,14 +38,9 @@
       },
       "interaction": {
         "mode": "compose",
-        "family": "compose-architecture",
+        "family": "lab",
         "config": {
-          "blocks": [
-            "State",
-            "Effect",
-            "UI",
-            "Service"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -58,8 +55,10 @@
       },
       "interaction": {
         "mode": "children",
-        "family": "children-editor",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -73,8 +72,10 @@
       },
       "interaction": {
         "mode": "props-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

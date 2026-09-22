@@ -21,17 +21,9 @@
       },
       "interaction": {
         "mode": "flex-layout",
-        "family": "flex-builder",
+        "family": "lab",
         "config": {
-          "dirs": [
-            "row",
-            "column"
-          ],
-          "aligns": [
-            "start",
-            "center",
-            "end"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -46,16 +38,12 @@
       },
       "interaction": {
         "mode": "flex-order",
-        "family": "flex-builder",
+        "family": "reorder",
         "config": {
-          "dirs": [
-            "row",
-            "column"
-          ],
-          "aligns": [
-            "start",
-            "center",
-            "end"
+          "goal": [
+            "1. Setup project",
+            "2. Write code",
+            "3. Deploy"
           ]
         }
       }
@@ -71,8 +59,10 @@
       },
       "interaction": {
         "mode": "flex-gap",
-        "family": "slider-controls",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -89,9 +79,9 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Content",
-            "Action"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }

@@ -20,7 +20,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Classification",
+            "Regression"
+          ]
+        }
       }
     },
     {
@@ -33,7 +40,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Input Features",
+            "Training Data",
+            "Supervised Model",
+            "Target Label",
+            "Prediction"
+          ],
+          "descriptions": [
+            "The measurable variables provided to the model.",
+            "Examples containing features and known target outputs.",
+            "The learned function that maps features to a target.",
+            "The known output used to train the model.",
+            "The output estimated for new input data."
+          ]
+        }
       }
     },
     {
@@ -42,11 +66,20 @@
       "title": "Algorithm Match",
       "instruction": "Match each problem with a suitable supervised algorithm.",
       "content": {
-        "concept": "Linear regression, logistic regression, decision trees, and nearest-neighbor methods can solve different supervised tasks.",
+        "concept": "Different supervised algorithms are suited to different prediction tasks and data patterns.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Linear Regression",
+            "Logistic Regression",
+            "Decision Tree",
+            "K-Nearest Neighbors"
+          ]
+        }
       }
     },
     {
@@ -59,7 +92,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Input Features",
+            "Trained Model",
+            "Feature Processing",
+            "Prediction",
+            "Target Output"
+          ]
+        }
       }
     }
   ],

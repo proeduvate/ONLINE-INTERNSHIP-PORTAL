@@ -16,11 +16,19 @@
       "title": "Dataset Split Map",
       "instruction": "Arrange data into training, validation, and test sets.",
       "content": {
-        "concept": "Dataset splitting separates model learning, tuning, and final evaluation.",
+        "concept": "Dataset splitting separates model learning, tuning, and final evaluation to measure how well a model generalizes.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Training set - Learn model parameters",
+            "2. Validation set - Tune model choices",
+            "3. Test set - Perform final evaluation"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Input Features",
+            "Model",
+            "Prediction",
+            "Loss",
+            "Parameter Update"
+          ],
+          "descriptions": [
+            "The input variables provided to the model.",
+            "The mathematical function containing learned parameters.",
+            "The output produced by the model.",
+            "A measure of how different the prediction is from the expected target.",
+            "The process of adjusting model parameters to reduce prediction error."
+          ]
+        }
       }
     },
     {
@@ -46,7 +71,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Underfitting",
+            "Good generalization",
+            "Overfitting"
+          ]
+        }
       }
     },
     {
@@ -59,7 +92,34 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": "d6-a5",
+      "type": "discover",
+      "title": "Generalization Check",
+      "instruction": "Compare training and validation performance to diagnose model behavior.",
+      "content": {
+        "concept": "Comparing performance across datasets helps identify whether a model generalizes beyond the examples used for learning.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "High training score + low validation score",
+            "Low training score + low validation score",
+            "High training score + high validation score",
+            "Training score and validation score are similar"
+          ]
+        }
       }
     }
   ],

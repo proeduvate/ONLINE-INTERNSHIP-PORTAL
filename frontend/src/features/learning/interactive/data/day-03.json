@@ -24,10 +24,9 @@
         "family": "builder",
         "config": {
           "options": [
-            "Label",
-            "Email",
-            "Password",
-            "Submit"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }
@@ -43,13 +42,11 @@
       },
       "interaction": {
         "mode": "input-match",
-        "family": "target-match",
+        "family": "compare",
         "config": {
-          "target": "input[type=\"email\"]",
           "choices": [
-            ".profile .name",
-            "input[type=\"email\"]",
-            "#submit"
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
           ]
         }
       }
@@ -65,8 +62,13 @@
       },
       "interaction": {
         "mode": "form-predict",
-        "family": "json-parser",
-        "config": {}
+        "family": "form",
+        "config": {
+          "fields": [
+            "email",
+            "password"
+          ]
+        }
       }
     },
     {
@@ -80,12 +82,11 @@
       },
       "interaction": {
         "mode": "form-code",
-        "family": "generic-builder",
+        "family": "form",
         "config": {
-          "options": [
-            "Structure",
-            "Content",
-            "Action"
+          "fields": [
+            "email",
+            "password"
           ]
         }
       }

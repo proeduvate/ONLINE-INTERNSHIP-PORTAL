@@ -21,8 +21,13 @@
       },
       "interaction": {
         "mode": "react-form",
-        "family": "input-validate",
-        "config": {}
+        "family": "form",
+        "config": {
+          "fields": [
+            "email",
+            "password"
+          ]
+        }
       }
     },
     {
@@ -36,13 +41,11 @@
       },
       "interaction": {
         "mode": "submit",
-        "family": "timeline",
+        "family": "form",
         "config": {
-          "labels": [
-            "Start",
-            "Execute",
-            "Pause / resolve",
-            "Continue"
+          "fields": [
+            "email",
+            "password"
           ]
         }
       }
@@ -58,8 +61,10 @@
       },
       "interaction": {
         "mode": "api-ui",
-        "family": "async-status",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -73,13 +78,9 @@
       },
       "interaction": {
         "mode": "dashboard",
-        "family": "builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "Header",
-            "Content",
-            "Action"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }

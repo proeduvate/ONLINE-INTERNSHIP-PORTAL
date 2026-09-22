@@ -20,20 +20,36 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Develop and configure the AI application",
+            "Run tests and validate the model",
+            "Package the application and model",
+            "Deploy to the target environment",
+            "Verify the production service",
+            "Monitor application and model behavior"
+          ]
+        }
       }
     },
     {
       "id": "d28-a2",
       "type": "discover",
       "title": "Explore Performance Factors",
-      "instruction": "Adjust the factors and observe their effect.",
+      "instruction": "Adjust a performance factor and observe how it can affect the AI service.",
       "content": {
         "concept": "Latency, memory usage, model size, and request volume influence AI application performance.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     },
     {
@@ -46,20 +62,46 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Application Logs",
+            "Health Checks",
+            "API Latency Metrics",
+            "Error Rate Tracking",
+            "CPU and Memory Metrics",
+            "Model Performance Metrics",
+            "Data Drift Detection",
+            "Alerts and Notifications"
+          ]
+        }
       }
     },
     {
       "id": "d28-a4",
       "type": "discover",
       "title": "Choose Optimization Strategies",
-      "instruction": "Select the strategy that addresses each bottleneck.",
+      "instruction": "Select the strategy that addresses each performance bottleneck.",
       "content": {
         "concept": "Caching, batching, efficient preprocessing, and model optimization can reduce inference cost and latency.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Caching",
+            "Batch Processing",
+            "Efficient Preprocessing",
+            "Model Quantization",
+            "Model Compression",
+            "Asynchronous Processing",
+            "Connection Pooling",
+            "Horizontal Scaling"
+          ]
+        }
       }
     }
   ],

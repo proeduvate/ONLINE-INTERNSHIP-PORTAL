@@ -21,8 +21,14 @@
       },
       "interaction": {
         "mode": "request",
-        "family": "async-status",
-        "config": {}
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Process",
+            "End"
+          ]
+        }
       }
     },
     {
@@ -36,8 +42,10 @@
       },
       "interaction": {
         "mode": "response",
-        "family": "async-status",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -73,8 +81,10 @@
       },
       "interaction": {
         "mode": "api-debug",
-        "family": "async-status",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

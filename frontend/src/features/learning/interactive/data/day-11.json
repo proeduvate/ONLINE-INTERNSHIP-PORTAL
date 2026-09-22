@@ -21,14 +21,12 @@
       },
       "interaction": {
         "mode": "position-map",
-        "family": "selection-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "static",
-            "relative",
-            "absolute",
-            "fixed",
-            "sticky"
+            "Header Area",
+            "Main Content",
+            "Footer"
           ]
         }
       }
@@ -44,8 +42,10 @@
       },
       "interaction": {
         "mode": "anchor",
-        "family": "anchor-builder",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -59,8 +59,10 @@
       },
       "interaction": {
         "mode": "sticky",
-        "family": "sticky-scroll",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -74,8 +76,10 @@
       },
       "interaction": {
         "mode": "position-debug",
-        "family": "debug-slider",
-        "config": {}
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
       }
     }
   ],

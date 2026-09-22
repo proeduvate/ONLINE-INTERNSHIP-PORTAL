@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "json",
-        "family": "json-parser",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,8 +38,14 @@
       },
       "interaction": {
         "mode": "storage",
-        "family": "storage",
-        "config": {}
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
       }
     },
     {
@@ -51,8 +59,14 @@
       },
       "interaction": {
         "mode": "session",
-        "family": "storage",
-        "config": {}
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
       }
     },
     {
@@ -66,8 +80,14 @@
       },
       "interaction": {
         "mode": "persistence",
-        "family": "storage",
-        "config": {}
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
       }
     }
   ],

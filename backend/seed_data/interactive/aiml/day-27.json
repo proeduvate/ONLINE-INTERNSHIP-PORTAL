@@ -20,7 +20,26 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Endpoint",
+            "HTTP Method",
+            "Headers",
+            "Request Body",
+            "Input Features",
+            "Prediction Response"
+          ],
+          "descriptions": [
+            "The API path that receives the prediction request.",
+            "Specifies the HTTP action used to send the request, typically POST for predictions.",
+            "Contains metadata such as content type and authentication information.",
+            "Contains the structured data sent to the prediction endpoint.",
+            "The values supplied to the model for generating a prediction.",
+            "Contains the model output and any relevant response metadata."
+          ]
+        }
       }
     },
     {
@@ -33,33 +52,71 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Client Request",
+            "POST Prediction Endpoint",
+            "Validate Input",
+            "Preprocess Features",
+            "Load Trained Model",
+            "Run Inference",
+            "Format Prediction",
+            "Return JSON Response"
+          ]
+        }
       }
     },
     {
       "id": "d27-a3",
       "type": "discover",
       "title": "Match API Errors",
-      "instruction": "Match each error with its likely cause.",
+      "instruction": "Match each error type with its likely cause.",
       "content": {
         "concept": "Invalid input, incorrect feature shapes, missing models, and server errors can break prediction APIs.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "400 Bad Request",
+            "401 Unauthorized",
+            "404 Not Found",
+            "422 Validation Error",
+            "500 Internal Server Error",
+            "Feature Shape Mismatch",
+            "Model File Not Found",
+            "Invalid JSON"
+          ]
+        }
       }
     },
     {
       "id": "d27-a4",
       "type": "discover",
       "title": "Test the Endpoint",
-      "instruction": "Select the valid test request for each scenario.",
+      "instruction": "Select the valid test request for each prediction scenario.",
       "content": {
         "concept": "API testing verifies input validation, prediction behavior, response structure, and error handling.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Valid JSON with all required features",
+            "Missing required feature",
+            "Incorrect feature data type",
+            "Extra unsupported field",
+            "Empty request body",
+            "Malformed JSON",
+            "Valid request with expected response structure"
+          ]
+        }
       }
     }
   ],

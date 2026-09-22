@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def calculate_total(price, tax):",
+            "    return price + (price * tax)",
+            "print(calculate_total(100, 0.05))"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "x = 42  (Integer)",
+            "x = \"42\" (String)"
+          ]
+        }
       }
     },
     {
@@ -46,7 +61,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "user_age",
+            "=",
+            "25"
+          ]
+        }
       }
     },
     {
@@ -59,7 +82,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "code": "result = 10 + 5\nprint(result)\n\n# Try changing + to -, *, or /"
+        }
       }
     }
   ],

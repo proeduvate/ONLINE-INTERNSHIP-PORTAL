@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "transition",
-        "family": "slider-controls",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,8 +38,13 @@
       },
       "interaction": {
         "mode": "transform",
-        "family": "slider-controls",
-        "config": {}
+        "family": "form",
+        "config": {
+          "fields": [
+            "email",
+            "password"
+          ]
+        }
       }
     },
     {
@@ -51,8 +58,10 @@
       },
       "interaction": {
         "mode": "keyframes",
-        "family": "motion-keyframes",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -66,8 +75,10 @@
       },
       "interaction": {
         "mode": "motion-access",
-        "family": "motion-keyframes",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     }
   ],

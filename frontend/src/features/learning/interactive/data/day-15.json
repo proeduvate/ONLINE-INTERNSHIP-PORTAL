@@ -21,12 +21,12 @@
       },
       "interaction": {
         "mode": "function-builder",
-        "family": "generic-builder",
+        "family": "builder",
         "config": {
           "options": [
-            "Structure",
-            "Content",
-            "Action"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }
@@ -42,8 +42,10 @@
       },
       "interaction": {
         "mode": "scope",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -57,14 +59,9 @@
       },
       "interaction": {
         "mode": "callback",
-        "family": "timeline",
+        "family": "lab",
         "config": {
-          "labels": [
-            "Start",
-            "Execute",
-            "Pause / resolve",
-            "Continue"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -79,8 +76,10 @@
       },
       "interaction": {
         "mode": "closure",
-        "family": "counter",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     }
   ],

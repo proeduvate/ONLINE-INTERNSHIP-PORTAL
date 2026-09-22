@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Pixel",
+            "Red Channel",
+            "Green Channel",
+            "Blue Channel",
+            "Image Dimensions"
+          ],
+          "descriptions": [
+            "A small unit of an image containing a numerical color value.",
+            "Represents the intensity of red at each pixel.",
+            "Represents the intensity of green at each pixel.",
+            "Represents the intensity of blue at each pixel.",
+            "Define the height and width of the image."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     },
     {
@@ -46,7 +68,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Input Image",
+            "Convolution Layer",
+            "ReLU Activation",
+            "Pooling Layer",
+            "Flatten Layer",
+            "Dense Layer",
+            "Output Layer"
+          ]
+        }
       }
     },
     {
@@ -59,7 +93,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Input image",
+            "2. Preprocess the image",
+            "3. Apply convolution filters",
+            "4. Apply activation and pooling",
+            "5. Extract high-level features",
+            "6. Classify the image"
+          ]
+        }
       }
     }
   ],

@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "DataFrame",
+            "Column",
+            "Row",
+            "Index",
+            "Cell"
+          ],
+          "descriptions": [
+            "A two-dimensional labeled data structure used to organize tabular data.",
+            "A named vertical collection of values representing a feature or variable.",
+            "A horizontal record containing values for one observation.",
+            "A label used to identify and access rows.",
+            "A single value located at the intersection of a row and column."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Select a column",
+            "Select multiple columns",
+            "Select rows by index",
+            "Select rows with loc",
+            "Select rows with iloc"
+          ]
+        }
       }
     },
     {
@@ -46,7 +73,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     },
     {
@@ -59,7 +91,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Load the dataset",
+            "2. Inspect the data",
+            "3. Handle missing or invalid values",
+            "4. Filter and transform data",
+            "5. Analyze the prepared dataset"
+          ]
+        }
       }
     }
   ],

@@ -21,8 +21,12 @@
       },
       "interaction": {
         "mode": "responsive-resize",
-        "family": "slider-controls",
-        "config": {}
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     },
     {
@@ -36,8 +40,10 @@
       },
       "interaction": {
         "mode": "breakpoint",
-        "family": "responsive-slider",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -54,8 +60,8 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Strategy A",
-            "Strategy B"
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
           ]
         }
       }
@@ -74,9 +80,9 @@
         "family": "builder",
         "config": {
           "options": [
-            "Header",
-            "Content",
-            "Action"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }

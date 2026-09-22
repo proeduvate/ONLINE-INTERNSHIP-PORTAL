@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Text Generation",
+            "Image Generation",
+            "Audio Generation",
+            "Code Generation",
+            "Video Generation"
+          ],
+          "descriptions": [
+            "Creates or completes natural language text from learned patterns.",
+            "Creates or transforms images based on learned visual patterns and instructions.",
+            "Generates speech, music, or other forms of audio content.",
+            "Generates, completes, or transforms computer code.",
+            "Creates or transforms video content using learned patterns."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Predict house price",
+            "Classify an email as spam",
+            "Generate a product description",
+            "Create an image from a prompt",
+            "Predict customer churn",
+            "Generate source code"
+          ]
+        }
       }
     },
     {
@@ -46,7 +74,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Chatbot → Text Generation",
+            "Image Creator → Image Generation",
+            "Coding Assistant → Code Generation",
+            "Document Summarizer → Text Transformation",
+            "Voice Generator → Audio Generation"
+          ]
+        }
       }
     },
     {
@@ -59,7 +97,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "User Input",
+            "Prompt Processing",
+            "Generative AI Model",
+            "Model Inference",
+            "Response Processing",
+            "Application Interface"
+          ]
+        }
       }
     }
   ],

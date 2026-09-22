@@ -20,7 +20,28 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Knowledge Documents",
+            "Document Chunks",
+            "Embeddings",
+            "Vector Store",
+            "Retriever",
+            "LLM",
+            "Generated Answer"
+          ],
+          "descriptions": [
+            "Source information that contains the knowledge used by the application.",
+            "Smaller sections of documents created to support efficient retrieval.",
+            "Numerical representations that capture semantic meaning of text.",
+            "Stores embeddings and supports similarity-based searches.",
+            "Finds relevant document chunks based on the user's query.",
+            "Uses the question and retrieved context to generate a response.",
+            "The final response generated using the retrieved knowledge."
+          ]
+        }
       }
     },
     {
@@ -33,7 +54,20 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Source Documents",
+            "Document Chunking",
+            "Embedding Model",
+            "Vector Store",
+            "Retriever",
+            "User Query",
+            "LLM",
+            "Generated Response"
+          ]
+        }
       }
     },
     {
@@ -46,7 +80,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Receive the user question",
+            "Convert the question into an embedding",
+            "Search the vector store for relevant chunks",
+            "Retrieve the most relevant context",
+            "Combine the question with retrieved context",
+            "Send the augmented prompt to the LLM",
+            "Generate the final answer"
+          ]
+        }
       }
     },
     {
@@ -59,7 +105,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Document Store",
+            "Chunking",
+            "Embedding Model",
+            "Vector Store",
+            "Retriever",
+            "LLM",
+            "Prompt Template"
+          ]
+        }
       }
     }
   ],

@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Inspect the dataset",
+            "2. Handle missing values",
+            "3. Remove duplicates",
+            "4. Detect and handle outliers",
+            "5. Transform and scale features"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Missing values",
+            "Duplicate records",
+            "Inconsistent formats",
+            "Outliers",
+            "No data quality issue"
+          ]
+        }
       }
     },
     {
@@ -46,11 +66,39 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     },
     {
       "id": "d4-a4",
+      "type": "discover",
+      "title": "Missing Value Strategy",
+      "instruction": "Choose an appropriate strategy for each missing-value scenario.",
+      "content": {
+        "concept": "Missing values can be handled by deletion, statistical imputation, or domain-specific replacement depending on the dataset.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Remove the record",
+            "Fill with mean",
+            "Fill with median",
+            "Fill with mode",
+            "Use a domain-specific value"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a5",
       "type": "discover",
       "title": "Feature Engineering Builder",
       "instruction": "Combine raw fields to construct useful machine learning features.",
@@ -59,7 +107,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "total_spend = price × quantity",
+            "age_group = age category",
+            "experience_ratio = experience / age",
+            "days_since_signup = today - signup_date"
+          ]
+        }
       }
     }
   ],

@@ -14,13 +14,34 @@
       "id": "d25-a1",
       "type": "discover",
       "title": "Problem-to-Solution Map",
-      "instruction": "Connect a real-world problem to its AI solution components.",
+      "instruction": "Explore how a real-world problem connects to AI solution components.",
       "content": {
         "concept": "A strong AI project begins by connecting a clearly defined problem to measurable requirements and suitable technical components.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Problem Statement",
+            "Users",
+            "Requirements",
+            "Data",
+            "AI Approach",
+            "System Components",
+            "Success Metrics"
+          ],
+          "descriptions": [
+            "Clearly defines the real-world problem the project aims to address.",
+            "Identifies the people or systems that will use or be affected by the solution.",
+            "Describes the functional and technical needs of the project.",
+            "Identifies the information required to develop and operate the AI system.",
+            "Defines the ML, deep learning, or generative AI technique suited to the problem.",
+            "Describes the application, API, model, storage, and other technical parts.",
+            "Defines measurable criteria used to evaluate whether the solution works."
+          ]
+        }
       }
     },
     {
@@ -33,7 +54,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Classification",
+            "Regression",
+            "Clustering",
+            "Computer Vision",
+            "Natural Language Processing",
+            "Generative AI",
+            "Retrieval-Augmented Generation"
+          ]
+        }
       }
     },
     {
@@ -46,7 +79,21 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "User Interface",
+            "Backend API",
+            "Authentication",
+            "Data Ingestion",
+            "Data Storage",
+            "Preprocessing",
+            "AI Model",
+            "Prediction or Generation",
+            "Monitoring"
+          ]
+        }
       }
     },
     {
@@ -59,7 +106,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Define the problem and requirements",
+            "Collect and prepare the data",
+            "Select and develop the AI approach",
+            "Build the application and integrate the model",
+            "Evaluate the system",
+            "Deploy and monitor the solution",
+            "Prepare the final demonstration"
+          ]
+        }
       }
     }
   ],

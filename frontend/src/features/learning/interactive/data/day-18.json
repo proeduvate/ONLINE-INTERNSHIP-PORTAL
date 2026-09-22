@@ -21,14 +21,12 @@
       },
       "interaction": {
         "mode": "event-map",
-        "family": "selection-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "click",
-            "input",
-            "submit",
-            "focus",
-            "change"
+            "Header Area",
+            "Main Content",
+            "Footer"
           ]
         }
       }
@@ -44,8 +42,10 @@
       },
       "interaction": {
         "mode": "listener",
-        "family": "event-log",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -59,13 +59,12 @@
       },
       "interaction": {
         "mode": "bubble",
-        "family": "bubble-events",
+        "family": "flow",
         "config": {
           "nodes": [
-            "Button",
-            "Card",
-            "Section",
-            "App"
+            "Start",
+            "Condition",
+            "End"
           ]
         }
       }
@@ -81,8 +80,14 @@
       },
       "interaction": {
         "mode": "delegate",
-        "family": "event-log",
-        "config": {}
+        "family": "flow",
+        "config": {
+          "nodes": [
+            "Start",
+            "Condition",
+            "End"
+          ]
+        }
       }
     }
   ],

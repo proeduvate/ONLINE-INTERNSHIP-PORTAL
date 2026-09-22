@@ -20,7 +20,26 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Fairness",
+            "Transparency",
+            "Privacy",
+            "Safety",
+            "Accountability",
+            "Reliability"
+          ],
+          "descriptions": [
+            "Reduce unjustified differences in how an AI system treats people or groups.",
+            "Make relevant information about an AI system's behavior and limitations understandable.",
+            "Protect personal and sensitive information throughout the AI lifecycle.",
+            "Reduce harmful, unsafe, or unintended behavior from the AI system.",
+            "Define who is responsible for system decisions, outcomes, and oversight.",
+            "Ensure the system performs consistently and handles errors appropriately."
+          ]
+        }
       }
     },
     {
@@ -33,7 +52,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Bias",
+            "Privacy Risk",
+            "Unsafe Output",
+            "Lack of Transparency",
+            "Data Leakage",
+            "Incorrect Prediction",
+            "No Significant Risk"
+          ]
+        }
       }
     },
     {
@@ -46,7 +77,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Collect and select data",
+            "Label or annotate data",
+            "Preprocess and transform data",
+            "Train the model",
+            "Evaluate model behavior",
+            "Deploy the AI system",
+            "Monitor real-world outcomes"
+          ]
+        }
       }
     },
     {
@@ -59,7 +102,20 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "User Input",
+            "Input Validation",
+            "Access Control",
+            "AI Model",
+            "Output Safety Checks",
+            "Human Review",
+            "Monitoring",
+            "Audit Logs"
+          ]
+        }
       }
     }
   ],

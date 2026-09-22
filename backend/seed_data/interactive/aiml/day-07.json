@@ -20,7 +20,22 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "True Positive",
+            "True Negative",
+            "False Positive",
+            "False Negative"
+          ],
+          "descriptions": [
+            "The model predicts positive and the actual outcome is positive.",
+            "The model predicts negative and the actual outcome is negative.",
+            "The model predicts positive but the actual outcome is negative.",
+            "The model predicts negative but the actual outcome is positive."
+          ]
+        }
       }
     },
     {
@@ -29,11 +44,16 @@
       "title": "Metric Explorer",
       "instruction": "Adjust prediction outcomes and observe metric changes.",
       "content": {
-        "concept": "Classification metrics summarize different aspects of model prediction performance.",
+        "concept": "Accuracy measures overall correctness, while precision, recall, and F1-score focus on different types of classification performance.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     },
     {
@@ -46,7 +66,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Accuracy",
+            "Precision",
+            "Recall",
+            "F1-score"
+          ]
+        }
       }
     },
     {
@@ -59,7 +88,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Generate model predictions",
+            "Compare predictions with actual outcomes",
+            "Create the confusion matrix",
+            "Calculate evaluation metrics",
+            "Interpret model performance"
+          ]
+        }
       }
     }
   ],

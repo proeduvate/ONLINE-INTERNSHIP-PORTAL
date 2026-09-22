@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "<header class='nav'>",
+            "  <h1>Logo</h1>",
+            "</header>"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "High Contrast (Accessible)",
+            "Low Contrast (Hard to read)"
+          ]
+        }
       }
     },
     {
@@ -46,7 +61,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header",
+            "Sidebar",
+            "Main Content"
+          ]
+        }
       }
     },
     {
@@ -59,7 +82,13 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     }
   ],

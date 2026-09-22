@@ -21,15 +21,9 @@
       },
       "interaction": {
         "mode": "accessibility",
-        "family": "selection-map",
+        "family": "lab",
         "config": {
-          "items": [
-            "Name",
-            "Focus",
-            "Contrast",
-            "Keyboard",
-            "Structure"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -44,15 +38,9 @@
       },
       "interaction": {
         "mode": "aria",
-        "family": "selection-map",
+        "family": "lab",
         "config": {
-          "items": [
-            "aria-label",
-            "role",
-            "button name",
-            "heading level",
-            "focus"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -67,14 +55,9 @@
       },
       "interaction": {
         "mode": "security",
-        "family": "audit",
+        "family": "lab",
         "config": {
-          "list": [
-            "Escape user HTML",
-            "Keep secrets server-side",
-            "Validate external input",
-            "Use safe URLs"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -89,14 +72,9 @@
       },
       "interaction": {
         "mode": "deploy",
-        "family": "reorder-list",
+        "family": "lab",
         "config": {
-          "goal": [
-            "Build",
-            "Test",
-            "Configure",
-            "Deploy"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }

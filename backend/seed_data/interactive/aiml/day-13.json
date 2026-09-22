@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Bar Chart",
+            "Line Chart",
+            "Scatter Plot",
+            "Histogram",
+            "Box Plot"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,26 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Title",
+            "X-Axis",
+            "Y-Axis",
+            "Data Points",
+            "Legend",
+            "Axis Labels"
+          ],
+          "descriptions": [
+            "Describes what the visualization represents.",
+            "Shows the variable or categories along the horizontal axis.",
+            "Shows the measured values along the vertical axis.",
+            "Represent individual observations or values in the visualization.",
+            "Explains the meaning of different data series or groups.",
+            "Identify the variables or units represented on the axes."
+          ]
+        }
       }
     },
     {
@@ -46,7 +75,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 5,
+          "max": 30
+        }
       }
     },
     {
@@ -59,7 +93,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Load and inspect the dataset",
+            "2. Select relevant data",
+            "3. Choose a suitable chart",
+            "4. Configure labels, axes, and other elements",
+            "5. Interpret the visualization"
+          ]
+        }
       }
     }
   ],

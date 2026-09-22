@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "import pandas as pd",
+            "df = pd.read_csv('data.csv')",
+            "df.describe()"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Data Collection",
+            "2. Data Cleaning",
+            "3. Model Training"
+          ]
+        }
       }
     },
     {
@@ -46,7 +62,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Supervised: Labeled data",
+            "Unsupervised: Unlabeled data"
+          ]
+        }
       }
     },
     {
@@ -59,7 +82,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+        }
       }
     }
   ],

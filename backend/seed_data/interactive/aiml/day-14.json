@@ -20,7 +20,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Relevant Feature",
+            "Redundant Feature",
+            "Irrelevant Feature",
+            "Target Variable",
+            "Model Prediction"
+          ],
+          "descriptions": [
+            "An input that provides useful information for predicting the target.",
+            "An input that contains information already represented by other features.",
+            "An input that provides little or no useful predictive information.",
+            "The output variable the model is designed to predict.",
+            "The output produced by the trained model using selected features."
+          ]
+        }
       }
     },
     {
@@ -33,7 +50,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Age",
+            "Annual Income",
+            "Purchase History",
+            "Customer ID",
+            "Random Noise",
+            "Unrelated Text"
+          ]
+        }
       }
     },
     {
@@ -46,7 +74,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 100
+        }
       }
     },
     {
@@ -59,7 +92,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Select relevant features",
+            "2. Choose hyperparameters",
+            "3. Train the model",
+            "4. Validate model performance",
+            "5. Compare results and refine the configuration"
+          ]
+        }
       }
     }
   ],

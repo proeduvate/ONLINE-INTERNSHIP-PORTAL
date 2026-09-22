@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Header Area",
+            "Main Content",
+            "Footer"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "import pandas as pd",
+            "df = pd.read_csv('data.csv')",
+            "df.describe()"
+          ]
+        }
       }
     },
     {
@@ -46,7 +62,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Supervised: Labeled data",
+            "Unsupervised: Unlabeled data"
+          ]
+        }
       }
     },
     {
@@ -59,7 +82,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "X_train, X_test",
+            "y_train, y_test",
+            "train_test_split"
+          ]
+        }
       }
     }
   ],

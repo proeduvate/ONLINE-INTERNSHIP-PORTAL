@@ -24,8 +24,8 @@
         "family": "compare",
         "config": {
           "choices": [
-            "Strategy A",
-            "Strategy B"
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
           ]
         }
       }
@@ -41,14 +41,12 @@
       },
       "interaction": {
         "mode": "semantic-map",
-        "family": "selection-map",
+        "family": "click-map",
         "config": {
           "items": [
-            "header",
-            "nav",
-            "main",
-            "section",
-            "footer"
+            "Header Area",
+            "Main Content",
+            "Footer"
           ]
         }
       }
@@ -64,13 +62,12 @@
       },
       "interaction": {
         "mode": "semantic-order",
-        "family": "reorder-list",
+        "family": "reorder",
         "config": {
           "goal": [
-            "Header",
-            "Nav",
-            "Main",
-            "Footer"
+            "1. Setup project",
+            "2. Write code",
+            "3. Deploy"
           ]
         }
       }
@@ -86,12 +83,12 @@
       },
       "interaction": {
         "mode": "semantic-builder",
-        "family": "generic-builder",
+        "family": "builder",
         "config": {
           "options": [
-            "Structure",
-            "Content",
-            "Action"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }

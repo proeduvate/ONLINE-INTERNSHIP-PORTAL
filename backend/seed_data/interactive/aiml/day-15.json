@@ -20,7 +20,26 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Input Layer",
+            "Hidden Layer",
+            "Output Layer",
+            "Weight",
+            "Bias",
+            "Activation Function"
+          ],
+          "descriptions": [
+            "Receives the input features provided to the neural network.",
+            "Processes intermediate representations through connected neurons.",
+            "Produces the final prediction or output of the network.",
+            "A learned value that controls the influence of an input connection.",
+            "A learned value added to a neuron's weighted input.",
+            "Transforms the neuron's weighted sum to introduce nonlinear behavior."
+          ]
+        }
       }
     },
     {
@@ -33,7 +52,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Input Layer",
+            "Hidden Layer 1",
+            "Hidden Layer 2",
+            "Output Layer",
+            "Connect Neurons",
+            "Connect Layers"
+          ]
+        }
       }
     },
     {
@@ -46,7 +76,12 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": -10,
+          "max": 10
+        }
       }
     },
     {
@@ -59,7 +94,18 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Provide input features",
+            "2. Multiply inputs by weights",
+            "3. Add the bias",
+            "4. Apply the activation function",
+            "5. Pass the result to the next layer",
+            "6. Produce the final output"
+          ]
+        }
       }
     }
   ],

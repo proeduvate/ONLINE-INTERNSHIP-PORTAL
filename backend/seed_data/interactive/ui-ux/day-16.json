@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Header Area",
+            "Main Content",
+            "Footer"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,13 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
       }
     },
     {
@@ -46,7 +60,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "lab",
+        "config": {
+          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+        }
       }
     },
     {
@@ -59,7 +77,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "code": "/* Write CSS here */\nbody { font-family: sans-serif; }"
+        }
       }
     }
   ],

@@ -20,20 +20,42 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Element",
+            "Index",
+            "Row",
+            "Column",
+            "Dimension"
+          ],
+          "descriptions": [
+            "An individual value stored in the NumPy array.",
+            "The zero-based position used to access an element.",
+            "A horizontal collection of elements in a multidimensional array.",
+            "A vertical collection of elements in a multidimensional array.",
+            "An axis along which array data is organized."
+          ]
+        }
       }
     },
     {
       "id": "d11-a2",
       "type": "discover",
       "title": "Shape Explorer",
-      "instruction": "Change the dimensions and observe the array shape.",
+      "instruction": "Change the array dimensions and observe the resulting shape.",
       "content": {
         "concept": "An array's shape describes the size of each dimension and determines how data is organized.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 5
+        }
       }
     },
     {
@@ -46,7 +68,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "arr[0]",
+            "arr[1]",
+            "arr[-1]",
+            "arr[1:4]",
+            "arr[:3]"
+          ]
+        }
       }
     },
     {
@@ -59,7 +91,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Create array A",
+            "Create array B",
+            "Add A + B",
+            "Multiply A × 2",
+            "Calculate the result"
+          ]
+        }
       }
     }
   ],

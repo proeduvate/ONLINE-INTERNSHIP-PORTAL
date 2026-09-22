@@ -21,8 +21,10 @@
       },
       "interaction": {
         "mode": "array",
-        "family": "array-methods",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -36,8 +38,10 @@
       },
       "interaction": {
         "mode": "methods",
-        "family": "array-methods",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -51,8 +55,10 @@
       },
       "interaction": {
         "mode": "object",
-        "family": "array-methods",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     },
     {
@@ -66,8 +72,10 @@
       },
       "interaction": {
         "mode": "modern",
-        "family": "array-methods",
-        "config": {}
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
       }
     }
   ],

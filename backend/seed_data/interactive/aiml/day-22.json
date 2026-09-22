@@ -20,7 +20,26 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "User Prompt",
+            "Tokenization",
+            "LLM",
+            "Model Parameters",
+            "Generated Tokens",
+            "AI Response"
+          ],
+          "descriptions": [
+            "The instruction or input provided by the user.",
+            "Converts the input text into tokens that the model can process.",
+            "The language model that processes the input and predicts output tokens.",
+            "Learned numerical values that influence how the model processes information.",
+            "Tokens generated sequentially based on the input and model behavior.",
+            "The generated text presented to the user."
+          ]
+        }
       }
     },
     {
@@ -33,7 +52,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anatomy"
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Task",
+            "Context",
+            "Constraints",
+            "Examples",
+            "Output Format"
+          ],
+          "descriptions": [
+            "Clearly states what the model needs to do.",
+            "Provides relevant background information for the task.",
+            "Defines limits such as length, scope, style, or required conditions.",
+            "Provides sample inputs or outputs to demonstrate the expected behavior.",
+            "Specifies how the response should be structured or presented."
+          ]
+        }
       }
     },
     {
@@ -46,20 +82,35 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Define the task",
+            "Add relevant context",
+            "Specify constraints",
+            "Provide an example",
+            "Define the output format"
+          ]
+        }
       }
     },
     {
       "id": "d22-a4",
       "type": "discover",
       "title": "Prompt Refinement Lab",
-      "instruction": "Adjust prompt constraints and observe the expected output change.",
+      "instruction": "Adjust prompt constraints and observe how the expected response changes.",
       "content": {
         "concept": "Prompt constraints can guide the format, scope, style, and structure of generated responses.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
       }
     }
   ],

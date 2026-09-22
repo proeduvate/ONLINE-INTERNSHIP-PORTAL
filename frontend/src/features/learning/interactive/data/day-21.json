@@ -43,8 +43,14 @@
       },
       "interaction": {
         "mode": "promise",
-        "family": "async-status",
-        "config": {}
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Process",
+            "End"
+          ]
+        }
       }
     },
     {
@@ -58,8 +64,14 @@
       },
       "interaction": {
         "mode": "async",
-        "family": "async-status",
-        "config": {}
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Process",
+            "End"
+          ]
+        }
       }
     },
     {
@@ -73,8 +85,14 @@
       },
       "interaction": {
         "mode": "async-error",
-        "family": "async-status",
-        "config": {}
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Process",
+            "End"
+          ]
+        }
       }
     }
   ],

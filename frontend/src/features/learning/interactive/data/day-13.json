@@ -21,15 +21,9 @@
       },
       "interaction": {
         "mode": "js-values",
-        "family": "values-typeof",
+        "family": "lab",
         "config": {
-          "vals": [
-            "\"hello\"",
-            "42",
-            "true",
-            "null",
-            "{ }"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -44,15 +38,9 @@
       },
       "interaction": {
         "mode": "operators",
-        "family": "values-typeof",
+        "family": "lab",
         "config": {
-          "vals": [
-            "\"hello\"",
-            "42",
-            "true",
-            "null",
-            "{ }"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -67,15 +55,9 @@
       },
       "interaction": {
         "mode": "types",
-        "family": "values-typeof",
+        "family": "lab",
         "config": {
-          "vals": [
-            "\"hello\"",
-            "42",
-            "true",
-            "null",
-            "{ }"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -90,12 +72,12 @@
       },
       "interaction": {
         "mode": "var-builder",
-        "family": "generic-builder",
+        "family": "builder",
         "config": {
           "options": [
-            "Structure",
-            "Content",
-            "Action"
+            "<html>",
+            "<body>",
+            "</html>"
           ]
         }
       }

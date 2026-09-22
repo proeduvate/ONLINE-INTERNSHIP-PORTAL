@@ -16,11 +16,24 @@
       "title": "ML Problem Map",
       "instruction": "Explore the map to connect real-world problems with ML task types.",
       "content": {
-        "concept": "Classification predicts categories, regression predicts numerical values, and clustering discovers groups.",
+        "concept": "Classification predicts categories, regression predicts numerical values, and clustering discovers groups in unlabeled data.",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Classification",
+            "Regression",
+            "Clustering"
+          ],
+          "descriptions": [
+            "Predicts a discrete category such as spam or not spam.",
+            "Predicts a continuous numerical value such as house price.",
+            "Groups similar data points without predefined labels."
+          ]
+        }
       }
     },
     {
@@ -33,7 +46,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Linear Regression",
+            "Decision Tree",
+            "K-Nearest Neighbors",
+            "K-Means Clustering"
+          ]
+        }
       }
     },
     {
@@ -46,7 +68,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Start",
+            "Age > 30?",
+            "Income > 50000?",
+            "Approve",
+            "Reject"
+          ]
+        }
       }
     },
     {
@@ -59,7 +91,35 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "slider"
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": "d5-a5",
+      "type": "discover",
+      "title": "Choose the Algorithm",
+      "instruction": "Select an appropriate algorithm for each machine learning scenario.",
+      "content": {
+        "concept": "Algorithm selection depends on the target type, available data, problem structure, and modeling requirements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Linear Regression",
+            "Logistic Regression",
+            "Decision Tree",
+            "K-Nearest Neighbors",
+            "K-Means"
+          ]
+        }
       }
     }
   ],

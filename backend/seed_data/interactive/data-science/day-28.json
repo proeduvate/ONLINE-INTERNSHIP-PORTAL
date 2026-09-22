@@ -20,7 +20,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "match"
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Supervised: Labeled data",
+            "Unsupervised: Unlabeled data"
+          ]
+        }
       }
     },
     {
@@ -33,7 +40,11 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "lab",
+        "config": {
+          "code": "import numpy as np\narr = np.array([1, 2, 3])\nprint(arr)"
+        }
       }
     },
     {
@@ -46,7 +57,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "build"
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "X_train, X_test",
+            "y_train, y_test",
+            "train_test_split"
+          ]
+        }
       }
     },
     {
@@ -59,7 +78,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Data Collection",
+            "2. Data Cleaning",
+            "3. Model Training"
+          ]
+        }
       }
     }
   ],

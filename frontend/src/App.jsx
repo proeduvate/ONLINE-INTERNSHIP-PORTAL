@@ -28,7 +28,9 @@ function DevDomainSwitcher() {
         <option value="">Actual DB Domain</option>
         <option value="Frontend">Frontend</option>
         <option value="Full Stack">Full Stack</option>
-        <option value="AI/ML">AI/ML</option>
+        <option value="UI/UX">UI/UX</option>
+        <option value="Data Science">Data Science</option>
+        <option value="AIML">AI/ML</option>
         <option value="Python">Python</option>
         <option value="Java">Java</option>
         <option value="Pending Assignment">Pending Assignment</option>

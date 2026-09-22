@@ -43,13 +43,9 @@
       },
       "interaction": {
         "mode": "dom-change",
-        "family": "generic-builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "Structure",
-            "Content",
-            "Action"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -64,13 +60,9 @@
       },
       "interaction": {
         "mode": "dom-create",
-        "family": "generic-builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "Structure",
-            "Content",
-            "Action"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     },
@@ -85,13 +77,9 @@
       },
       "interaction": {
         "mode": "dom-code",
-        "family": "generic-builder",
+        "family": "lab",
         "config": {
-          "options": [
-            "Structure",
-            "Content",
-            "Action"
-          ]
+          "code": "console.log('Hello World');"
         }
       }
     }
