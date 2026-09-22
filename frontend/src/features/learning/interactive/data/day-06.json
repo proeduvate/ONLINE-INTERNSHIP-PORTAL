@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "box-inspect"
+        "mode": "box-inspect",
+        "family": "tabs-preview",
+        "config": {
+          "tabs": [
+            "before",
+            "after",
+            "layers",
+            "cover"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "box-slider"
+        "mode": "box-slider",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -46,7 +57,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "box-compare"
+        "mode": "box-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "content-box",
+            "border-box"
+          ]
+        }
       }
     },
     {
@@ -59,7 +77,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "box-debug"
+        "mode": "box-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

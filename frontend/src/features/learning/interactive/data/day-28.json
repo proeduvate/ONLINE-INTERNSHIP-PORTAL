@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "routes"
+        "mode": "routes",
+        "family": "router",
+        "config": {
+          "routes": [
+            "/home",
+            "/internships",
+            "/intern/42"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "navigation"
+        "mode": "navigation",
+        "family": "router",
+        "config": {
+          "routes": [
+            "/home",
+            "/internships",
+            "/intern/42"
+          ]
+        }
       }
     },
     {
@@ -46,7 +62,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "params"
+        "mode": "params",
+        "family": "router",
+        "config": {
+          "routes": [
+            "/home",
+            "/internships",
+            "/intern/42"
+          ]
+        }
       }
     },
     {
@@ -59,7 +83,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "architecture"
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "UI",
+            "State",
+            "Services",
+            "API"
+          ]
+        }
       }
     }
   ],

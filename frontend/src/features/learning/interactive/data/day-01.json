@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-discover"
+        "mode": "html-discover",
+        "family": "selection-map",
+        "config": {
+          "items": [
+            "DOCTYPE",
+            "HEAD",
+            "HEADER",
+            "MAIN",
+            "FOOTER"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-anatomy"
+        "mode": "html-anatomy",
+        "family": "selection-anatomy",
+        "config": {
+          "items": [
+            "<h1>",
+            "My Portfolio",
+            "</h1>"
+          ]
+        }
       }
     },
     {
@@ -46,7 +64,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-live"
+        "mode": "html-live",
+        "family": "live-preview",
+        "config": {
+          "items": [
+            "h1",
+            "h2",
+            "p"
+          ]
+        }
       }
     },
     {
@@ -59,7 +85,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "html-skeleton"
+        "mode": "html-skeleton",
+        "family": "builder-ordered",
+        "config": {
+          "items": [
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "<body>"
+          ]
+        }
       }
     }
   ],

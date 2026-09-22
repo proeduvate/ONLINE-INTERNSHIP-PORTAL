@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "grid-builder"
+        "mode": "grid-builder",
+        "family": "grid-builder",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "grid-areas"
+        "mode": "grid-areas",
+        "family": "grid-builder",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "grid-responsive"
+        "mode": "grid-responsive",
+        "family": "responsive-slider",
+        "config": {}
       }
     },
     {
@@ -59,7 +65,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "grid-debug"
+        "mode": "grid-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

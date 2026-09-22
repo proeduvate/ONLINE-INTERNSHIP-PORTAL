@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "validate"
+        "mode": "validate",
+        "family": "input-validate",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "rules"
+        "mode": "rules",
+        "family": "target-match",
+        "config": {
+          "target": "input[type=\"email\"]",
+          "choices": [
+            "required",
+            "minLength",
+            "pattern"
+          ]
+        }
       }
     },
     {
@@ -46,7 +57,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "feedback"
+        "mode": "feedback",
+        "family": "target-match",
+        "config": {
+          "target": "input[type=\"email\"]",
+          "choices": [
+            "“Invalid”",
+            "“Enter at least 8 characters”",
+            "“Error”"
+          ]
+        }
       }
     },
     {
@@ -59,7 +79,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "validation-debug"
+        "mode": "validation-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

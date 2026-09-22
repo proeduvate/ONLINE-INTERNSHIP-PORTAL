@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "position-map"
+        "mode": "position-map",
+        "family": "selection-map",
+        "config": {
+          "items": [
+            "static",
+            "relative",
+            "absolute",
+            "fixed",
+            "sticky"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "anchor"
+        "mode": "anchor",
+        "family": "anchor-builder",
+        "config": {}
       }
     },
     {
@@ -46,7 +58,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "sticky"
+        "mode": "sticky",
+        "family": "sticky-scroll",
+        "config": {}
       }
     },
     {
@@ -59,7 +73,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "position-debug"
+        "mode": "position-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

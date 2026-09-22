@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "json"
+        "mode": "json",
+        "family": "json-parser",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "storage"
+        "mode": "storage",
+        "family": "storage",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "session"
+        "mode": "session",
+        "family": "storage",
+        "config": {}
       }
     },
     {
@@ -59,7 +65,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "persistence"
+        "mode": "persistence",
+        "family": "storage",
+        "config": {}
       }
     }
   ],

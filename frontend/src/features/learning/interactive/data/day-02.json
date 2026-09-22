@@ -20,7 +20,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-compare"
+        "mode": "semantic-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Strategy A",
+            "Strategy B"
+          ]
+        }
       }
     },
     {
@@ -33,7 +40,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-map"
+        "mode": "semantic-map",
+        "family": "selection-map",
+        "config": {
+          "items": [
+            "header",
+            "nav",
+            "main",
+            "section",
+            "footer"
+          ]
+        }
       }
     },
     {
@@ -46,7 +63,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-order"
+        "mode": "semantic-order",
+        "family": "reorder-list",
+        "config": {
+          "goal": [
+            "Header",
+            "Nav",
+            "Main",
+            "Footer"
+          ]
+        }
       }
     },
     {
@@ -59,7 +85,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "semantic-builder"
+        "mode": "semantic-builder",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

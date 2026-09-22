@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "react-form"
+        "mode": "react-form",
+        "family": "input-validate",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "submit"
+        "mode": "submit",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Execute",
+            "Pause / resolve",
+            "Continue"
+          ]
+        }
       }
     },
     {
@@ -46,7 +57,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "api-ui"
+        "mode": "api-ui",
+        "family": "async-status",
+        "config": {}
       }
     },
     {
@@ -59,7 +72,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "dashboard"
+        "mode": "dashboard",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

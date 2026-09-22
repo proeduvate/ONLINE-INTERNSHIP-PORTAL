@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "bug-hunt"
+        "mode": "bug-hunt",
+        "family": "audit",
+        "config": {
+          "list": [
+            "Large render",
+            "Missing label",
+            "Unused request",
+            "Heavy asset"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "performance"
+        "mode": "performance",
+        "family": "audit",
+        "config": {
+          "list": [
+            "Large render",
+            "Missing label",
+            "Unused request",
+            "Heavy asset"
+          ]
+        }
       }
     },
     {
@@ -46,7 +64,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "lazy"
+        "mode": "lazy",
+        "family": "responsive-slider",
+        "config": {}
       }
     },
     {
@@ -59,7 +79,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "audit"
+        "mode": "audit",
+        "family": "audit",
+        "config": {
+          "list": [
+            "Large render",
+            "Missing label",
+            "Unused request",
+            "Heavy asset"
+          ]
+        }
       }
     }
   ],

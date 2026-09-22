@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "js-values"
+        "mode": "js-values",
+        "family": "values-typeof",
+        "config": {
+          "vals": [
+            "\"hello\"",
+            "42",
+            "true",
+            "null",
+            "{ }"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "operators"
+        "mode": "operators",
+        "family": "values-typeof",
+        "config": {
+          "vals": [
+            "\"hello\"",
+            "42",
+            "true",
+            "null",
+            "{ }"
+          ]
+        }
       }
     },
     {
@@ -46,7 +66,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "types"
+        "mode": "types",
+        "family": "values-typeof",
+        "config": {
+          "vals": [
+            "\"hello\"",
+            "42",
+            "true",
+            "null",
+            "{ }"
+          ]
+        }
       }
     },
     {
@@ -59,7 +89,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "var-builder"
+        "mode": "var-builder",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

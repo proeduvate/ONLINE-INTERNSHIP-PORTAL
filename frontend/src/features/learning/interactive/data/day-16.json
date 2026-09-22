@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "array"
+        "mode": "array",
+        "family": "array-methods",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "methods"
+        "mode": "methods",
+        "family": "array-methods",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "object"
+        "mode": "object",
+        "family": "array-methods",
+        "config": {}
       }
     },
     {
@@ -59,7 +65,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "modern"
+        "mode": "modern",
+        "family": "array-methods",
+        "config": {}
       }
     }
   ],

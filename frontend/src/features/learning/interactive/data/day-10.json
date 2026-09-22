@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "responsive-resize"
+        "mode": "responsive-resize",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "breakpoint"
+        "mode": "breakpoint",
+        "family": "responsive-slider",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "responsive-compare"
+        "mode": "responsive-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Strategy A",
+            "Strategy B"
+          ]
+        }
       }
     },
     {
@@ -59,7 +70,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "responsive-build"
+        "mode": "responsive-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

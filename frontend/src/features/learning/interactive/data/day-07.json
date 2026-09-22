@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "type-mixer"
+        "mode": "type-mixer",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "palette"
+        "mode": "palette",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "background"
+        "mode": "background",
+        "family": "tabs-preview",
+        "config": {
+          "tabs": [
+            "before",
+            "after",
+            "layers",
+            "cover"
+          ]
+        }
       }
     },
     {
@@ -59,7 +72,14 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "type-compare"
+        "mode": "type-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Strategy A",
+            "Strategy B"
+          ]
+        }
       }
     }
   ],

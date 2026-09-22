@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "props"
+        "mode": "props",
+        "family": "props-editor",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "compose"
+        "mode": "compose",
+        "family": "compose-architecture",
+        "config": {
+          "blocks": [
+            "State",
+            "Effect",
+            "UI",
+            "Service"
+          ]
+        }
       }
     },
     {
@@ -46,7 +57,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "children"
+        "mode": "children",
+        "family": "children-editor",
+        "config": {}
       }
     },
     {
@@ -59,7 +72,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "props-debug"
+        "mode": "props-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

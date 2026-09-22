@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "event-map"
+        "mode": "event-map",
+        "family": "selection-map",
+        "config": {
+          "items": [
+            "click",
+            "input",
+            "submit",
+            "focus",
+            "change"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "listener"
+        "mode": "listener",
+        "family": "event-log",
+        "config": {}
       }
     },
     {
@@ -46,7 +58,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "bubble"
+        "mode": "bubble",
+        "family": "bubble-events",
+        "config": {
+          "nodes": [
+            "Button",
+            "Card",
+            "Section",
+            "App"
+          ]
+        }
       }
     },
     {
@@ -59,7 +80,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "delegate"
+        "mode": "delegate",
+        "family": "event-log",
+        "config": {}
       }
     }
   ],

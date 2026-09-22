@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "css-before"
+        "mode": "css-before",
+        "family": "tabs-preview",
+        "config": {
+          "tabs": [
+            "before",
+            "after",
+            "layers",
+            "cover"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "selector-lab"
+        "mode": "selector-lab",
+        "family": "target-match",
+        "config": {
+          "target": ".profile .name",
+          "choices": [
+            ".profile .name",
+            "input[type=\"email\"]",
+            "#submit"
+          ]
+        }
       }
     },
     {
@@ -46,7 +64,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "css-live"
+        "mode": "css-live",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -59,7 +79,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "css-rule"
+        "mode": "css-rule",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

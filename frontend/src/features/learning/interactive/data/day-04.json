@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "media-explore"
+        "mode": "media-explore",
+        "family": "tabs-preview",
+        "config": {
+          "tabs": [
+            "image",
+            "audio",
+            "video"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "link-builder"
+        "mode": "link-builder",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "URL",
+            "Accessible text",
+            "New tab",
+            "Safe rel"
+          ]
+        }
       }
     },
     {
@@ -46,7 +63,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "list-arrange"
+        "mode": "list-arrange",
+        "family": "reorder-list",
+        "config": {
+          "goal": [
+            "Header",
+            "Nav",
+            "Main",
+            "Footer"
+          ]
+        }
       }
     },
     {
@@ -59,7 +85,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "table-builder"
+        "mode": "table-builder",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Header row",
+            "Name column",
+            "Score column",
+            "Data row"
+          ]
+        }
       }
     }
   ],

@@ -20,7 +20,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "function-builder"
+        "mode": "function-builder",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     },
     {
@@ -33,7 +41,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "scope"
+        "mode": "scope",
+        "family": "counter",
+        "config": {}
       }
     },
     {
@@ -46,7 +56,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "callback"
+        "mode": "callback",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Execute",
+            "Pause / resolve",
+            "Continue"
+          ]
+        }
       }
     },
     {
@@ -59,7 +78,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "closure"
+        "mode": "closure",
+        "family": "counter",
+        "config": {}
       }
     }
   ],

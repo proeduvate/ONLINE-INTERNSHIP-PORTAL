@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "request"
+        "mode": "request",
+        "family": "async-status",
+        "config": {}
       }
     },
     {
@@ -33,20 +35,31 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "response"
+        "mode": "response",
+        "family": "async-status",
+        "config": {}
       }
     },
     {
       "id": "d22-a03",
       "type": "fetch",
       "title": "Fetch Flow",
-      "instruction": "Step through fetch \u2192 response \u2192 json \u2192 UI update.",
+      "instruction": "Step through fetch → response → json → UI update.",
       "content": {
         "concept": "Handle API states",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "fetch"
+        "mode": "fetch",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "fetch()",
+            "response",
+            "response.json()",
+            "render UI"
+          ]
+        }
       }
     },
     {
@@ -59,7 +72,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "api-debug"
+        "mode": "api-debug",
+        "family": "async-status",
+        "config": {}
       }
     }
   ],

@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "dom-tree"
+        "mode": "dom-tree",
+        "family": "tree",
+        "config": {
+          "nodes": [
+            "document",
+            "main",
+            "section",
+            "button"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "dom-change"
+        "mode": "dom-change",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     },
     {
@@ -46,7 +63,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "dom-create"
+        "mode": "dom-create",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     },
     {
@@ -59,7 +84,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "dom-code"
+        "mode": "dom-code",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

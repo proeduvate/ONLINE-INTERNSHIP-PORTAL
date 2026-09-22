@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "transition"
+        "mode": "transition",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -33,7 +35,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "transform"
+        "mode": "transform",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -46,7 +50,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "keyframes"
+        "mode": "keyframes",
+        "family": "motion-keyframes",
+        "config": {}
       }
     },
     {
@@ -59,7 +65,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "motion-access"
+        "mode": "motion-access",
+        "family": "motion-keyframes",
+        "config": {}
       }
     }
   ],

@@ -20,7 +20,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flex-layout"
+        "mode": "flex-layout",
+        "family": "flex-builder",
+        "config": {
+          "dirs": [
+            "row",
+            "column"
+          ],
+          "aligns": [
+            "start",
+            "center",
+            "end"
+          ]
+        }
       }
     },
     {
@@ -33,7 +45,19 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flex-order"
+        "mode": "flex-order",
+        "family": "flex-builder",
+        "config": {
+          "dirs": [
+            "row",
+            "column"
+          ],
+          "aligns": [
+            "start",
+            "center",
+            "end"
+          ]
+        }
       }
     },
     {
@@ -46,7 +70,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flex-gap"
+        "mode": "flex-gap",
+        "family": "slider-controls",
+        "config": {}
       }
     },
     {
@@ -59,7 +85,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flex-build"
+        "mode": "flex-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

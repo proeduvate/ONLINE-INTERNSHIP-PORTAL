@@ -20,7 +20,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "state"
+        "mode": "state",
+        "family": "counter",
+        "config": {}
       }
     },
     {
@@ -33,20 +35,24 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "react-events"
+        "mode": "react-events",
+        "family": "counter",
+        "config": {}
       }
     },
     {
       "id": "d25-a03",
       "type": "controlled",
       "title": "Controlled Input",
-      "instruction": "Type into an input and trace value \u2192 state \u2192 render.",
+      "instruction": "Type into an input and trace value → state → render.",
       "content": {
         "concept": "Build controlled UI",
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "controlled"
+        "mode": "controlled",
+        "family": "counter",
+        "config": {}
       }
     },
     {
@@ -59,7 +65,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "counter"
+        "mode": "counter",
+        "family": "counter",
+        "config": {}
       }
     }
   ],

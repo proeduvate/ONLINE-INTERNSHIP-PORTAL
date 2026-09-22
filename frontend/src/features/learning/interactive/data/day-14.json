@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flow"
+        "mode": "flow",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Execute",
+            "Pause / resolve",
+            "Continue"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "truth"
+        "mode": "truth",
+        "family": "boolean-logic",
+        "config": {}
       }
     },
     {
@@ -46,7 +57,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "loop"
+        "mode": "loop",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "init i=0",
+            "check i<3",
+            "run body",
+            "i++",
+            "repeat"
+          ]
+        }
       }
     },
     {
@@ -59,7 +80,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "flow-debug"
+        "mode": "flow-debug",
+        "family": "debug-slider",
+        "config": {}
       }
     }
   ],

@@ -20,7 +20,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "form-builder"
+        "mode": "form-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Label",
+            "Email",
+            "Password",
+            "Submit"
+          ]
+        }
       }
     },
     {
@@ -33,7 +42,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "input-match"
+        "mode": "input-match",
+        "family": "target-match",
+        "config": {
+          "target": "input[type=\"email\"]",
+          "choices": [
+            ".profile .name",
+            "input[type=\"email\"]",
+            "#submit"
+          ]
+        }
       }
     },
     {
@@ -46,7 +64,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "form-predict"
+        "mode": "form-predict",
+        "family": "json-parser",
+        "config": {}
       }
     },
     {
@@ -59,7 +79,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "form-code"
+        "mode": "form-code",
+        "family": "generic-builder",
+        "config": {
+          "options": [
+            "Structure",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],

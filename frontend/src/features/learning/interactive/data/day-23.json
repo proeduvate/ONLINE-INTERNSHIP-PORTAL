@@ -20,7 +20,17 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "component-tree"
+        "mode": "component-tree",
+        "family": "tree",
+        "config": {
+          "nodes": [
+            "App",
+            "Header",
+            "Main",
+            "Card",
+            "Button"
+          ]
+        }
       }
     },
     {
@@ -33,7 +43,9 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "jsx"
+        "mode": "jsx",
+        "family": "jsx-editor",
+        "config": {}
       }
     },
     {
@@ -46,7 +58,16 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "render"
+        "mode": "render",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Component call",
+            "JSX result",
+            "reconcile",
+            "DOM update"
+          ]
+        }
       }
     },
     {
@@ -59,7 +80,15 @@
         "tip": "Interact with the example first. Your progress is saved for this session."
       },
       "interaction": {
-        "mode": "component-build"
+        "mode": "component-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header",
+            "Content",
+            "Action"
+          ]
+        }
       }
     }
   ],
