@@ -51,7 +51,7 @@ api_router.include_router(users.router, prefix="/users", tags=["users"])
 
 # Core Features
 api_router.include_router(meetings.router)
-if certificates:
+if certificates and hasattr(certificates, "router"):
     api_router.include_router(certificates.router, prefix="/certificates", tags=["certificates"])
 
     # Standalone QR Code Verification Route (/verify/{certificate_id})

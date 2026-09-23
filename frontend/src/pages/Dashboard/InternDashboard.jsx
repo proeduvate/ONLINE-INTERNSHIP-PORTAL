@@ -22,21 +22,21 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("Social Media");
+  const [internDomain, setInternDomain] = useState("Full Stack Development");
   const [certViewMode, setCertViewMode] = useState("pdf");
 
   const [certData, setCertData] = useState({
-    internName: "MAGHALAKSHMI. P",
-    domain: "Social Media",
-    startDate: "March 14, 2026",
-    endDate: "June 14, 2026",
-    duration: "3 MONTHS",
+    internName: "JOHN DOE",
+    domain: "Full Stack Development",
+    startDate: "August 18, 2026",
+    endDate: "September 18, 2026",
+    duration: "1 Month",
     mode: "ONLINE",
     certId: "PRO-INT-26-839",
     grade: "A+",
     score: 95,
     pdf_url: null,
-    issueDate: "13 SEPTEMBER 2026"
+    issueDate: "18 SEPTEMBER 2026"
   });
 
   useEffect(() => {
@@ -49,9 +49,10 @@ export default function InternDashboard() {
             ...prev,
             internName: res.data.intern_name || prev.internName,
             domain: res.data.domain || prev.domain,
+            duration: res.data.duration || prev.duration,
             grade: res.data.grade || "A+",
             score: res.data.score || 95,
-            certId: res.data.certificate_id || prev.certId,
+            certId: res.data.certificate_id || res.data.certId || prev.certId,
             pdf_url: res.data.pdf_url || res.data.public_url,
             issueDate: res.data.issue_date || prev.issueDate
           }));

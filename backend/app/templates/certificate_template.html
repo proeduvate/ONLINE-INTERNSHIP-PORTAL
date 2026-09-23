@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+      @frame recipient_frame {
+        left: 29.7mm; width: 237.6mm; top: 76mm; height: 20mm;
+      }
+      @frame body_frame {
+        left: 35.6mm; width: 225.7mm; top: 98mm; height: 42mm;
+      }
+      @frame details_frame {
+        left: 72.7mm; width: 80mm; top: 154mm; height: 35mm;
+      }
+      @frame qr_frame {
+        left: 242mm; width: 35mm; top: 145mm; height: 35mm;
+      }
+      @frame issue_date_frame {
+        left: 190mm; width: 100mm; top: 195mm; height: 10mm;
+      }
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 297mm;
+      height: 210mm;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      position: relative;
+      background: url('{{ background_image_path }}') no-repeat center center;
+      background-size: cover;
+    }
+
+    .recipient-container {
+      position: absolute;
+      top: 38%;
+      left: 10%;
+      width: 80%;
+      text-align: center;
+    }
+    .intern-name {
+      font-size: 26pt;
+      font-weight: bold;
+      color: #0b63c5;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .body-copy {
+      position: absolute;
+      top: 48%;
+      left: 12%;
+      width: 76%;
+      text-align: center;
+      color: #334155;
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+    .body-copy strong {
+      color: #0f172a;
+    }
+
+    .details-values {
+      position: absolute;
+      top: 73.5%;
+      left: 24.5%;
+      font-size: 8.5pt;
+      line-height: 1.85;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .cert-id {
+      color: #0b63c5;
+    }
+
+    .qr-code {
+      position: absolute;
+      bottom: 12%;
+      right: 7%;
+      width: 23mm;
+      height: 23mm;
+      text-align: center;
+    }
+    .qr-code img {
+      width: 100%;
+      height: 100%;
+      max-width: 85px;
+      max-height: 85px;
+    }
+
+    .issue-date {
+      position: absolute;
+      bottom: 3.5%;
+      right: 5%;
+      font-size: 7.5pt;
+      font-weight: bold;
+      color: #475569;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="recipient-container" id="recipient_frame">
+    <div class="intern-name">{{ intern_name }}</div>
+  </div>
+
+  <div class="body-copy" id="body_frame">
+    <p>was associated with <strong>ProEduvate</strong> as a <strong>{{ domain }} Intern</strong> from <strong>{{ start_date }}</strong>, to <strong>{{ end_date }}</strong>.</p>
+    <p>During this period, practical exposure to <strong>{{ domain }} concepts</strong> was gained, exhibiting a genuine interest in learning and a professional attitude in all activities assigned during the internship.</p>
+  </div>
+
+  <div class="details-values" id="details_frame">
+    <div>{{ intern_name }}</div>
+    <div>{{ domain }}</div>
+    <div>{{ duration }}</div>
+    <div>ONLINE</div>
+    <div class="cert-id">{{ cert_id }}</div>
+  </div>
+
+  <div class="qr-code" id="qr_frame">
+    <img src="{{ qr_data_uri }}" alt="Verification QR">
+  </div>
+
+  <div class="issue-date" id="issue_date_frame">
+    DATE OF ISSUE: {{ issue_date }}
+  </div>
+</body>
+</html>
+

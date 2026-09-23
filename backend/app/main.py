@@ -1977,6 +1977,67 @@ def certificate_info(
     }
 
 
+@app.get("/api/certificates/download/{cert_identifier}")
+@app.get("/api/v1/certificates/download/{cert_identifier}")
+@app.get("/certificates/download/{cert_identifier}")
+def download_certificate_by_id(
+    cert_identifier: str, 
+    db: Session = Depends(database.get_db)
+):
+    import io
+    from datetime import datetime, timedelta
+    from fastapi.responses import StreamingResponse
+    try:
+        from app.services.html_certificate_service import HTMLCertificateService
+    except Exception:
+        from services.html_certificate_service import HTMLCertificateService
+        
+    service = HTMLCertificateService()
+
+    intern = None
+    cert_record = None
+
+    if cert_identifier.isdigit():
+        intern = db.query(models.User).filter(models.User.id == int(cert_identifier)).first()
+
+    if not intern:
+        cert_record = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_identifier).first()
+        if cert_record:
+            intern = db.query(models.User).filter(models.User.id == cert_record.intern_id).first()
+
+    intern_name = (intern.name if intern else (cert_record.intern_name if cert_record else "MAGHALAKSHMI. P")).upper()
+    domain_name = (intern.domain.name if (intern and intern.domain) else (cert_record.domain if cert_record else "Software Engineering"))
+    score = (cert_record.final_score if cert_record and cert_record.final_score is not None else 92)
+    grade = (cert_record.grade if cert_record and cert_record.grade else ("A+" if score >= 90 else "A"))
+    cert_id = cert_identifier if not cert_identifier.isdigit() else f"PRO-INT-26-{int(cert_identifier):04d}"
+
+    start_date = (intern.start_date if intern and intern.start_date else datetime.utcnow() - timedelta(days=30))
+    end_date = (intern.end_date if intern and intern.end_date else start_date + timedelta(days=30))
+    issued_date = (cert_record.issued_date.strftime('%d %B %Y').upper() if cert_record and cert_record.issued_date else datetime.utcnow().strftime('%d %B %Y').upper())
+
+    cert_data = {
+        'intern_name': intern_name,
+        'domain': domain_name,
+        'duration': '1 Month',
+        'start_date': start_date.strftime('%B %d, %Y') if hasattr(start_date, 'strftime') else str(start_date),
+        'end_date': end_date.strftime('%B %d, %Y') if hasattr(end_date, 'strftime') else str(end_date),
+        'issued_date': issued_date,
+        'issue_date': issued_date,
+        'certificate_id': cert_id,
+        'cert_id': cert_id,
+        'score': score,
+        'grade': grade
+    }
+    
+    pdf_bytes = service.generate_certificate_pdf(cert_data)
+    
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=Certificate_{cert_id}.pdf"}
+    )
+
+
 @app.get("/certificate/download")
 def download_certificate(
     db: Session = Depends(database.get_db),
