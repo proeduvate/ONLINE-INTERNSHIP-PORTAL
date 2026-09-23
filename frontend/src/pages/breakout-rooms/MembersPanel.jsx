@@ -123,8 +123,8 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
               {dmTarget.avatar}
             </div>
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: '#313338' }}>{dmTarget.name}</div>
-              <div style={{ fontSize: '10px', color: '#5c5e66' }}>Private message</div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{dmTarget.name}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Private message</div>
             </div>
           </div>
           <button className="br-icon-btn" onClick={onClose}><X size={18} /></button>
@@ -133,8 +133,8 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
         <div className="br-chat-panel">
           <div className="br-chat-messages">
             {dmMessages.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#80848e', fontSize: '13px', marginTop: '40px' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><MessageCircle size={32} color="#80848e" /></div>
+              <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', marginTop: '40px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><MessageCircle size={32} color="var(--text-muted)" /></div>
                 Start a private conversation with <b>{dmTarget.name}</b>
               </div>
             ) : dmMessages.map(msg => (
@@ -187,24 +187,24 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
           zIndex: 100, borderRadius: '0 0 8px 8px'
         }}>
           <div style={{
-            backgroundColor: '#fff', borderRadius: '12px', padding: '24px',
+            backgroundColor: 'var(--bg-surface)', borderRadius: '12px', padding: '24px',
             width: '260px', textAlign: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.2)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><AlertTriangle size={32} color="#da373c" /></div>
-            <div style={{ fontWeight: 700, fontSize: '15px', color: '#313338', marginBottom: '6px' }}>
+            <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '6px' }}>
               Kick {kickTarget.name}?
             </div>
-            <div style={{ fontSize: '12px', color: '#5c5e66', marginBottom: '20px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
               This will remove them from the meeting.
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 onClick={() => setKickTarget(null)}
-                style={{ flex: 1, padding: '8px', border: '1px solid #d1d5db', borderRadius: '8px', backgroundColor: '#fff', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}
+                style={{ flex: 1, padding: '8px', border: '1px solid #d1d5db', borderRadius: '8px', backgroundColor: 'var(--bg-surface)', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}
               >Cancel</button>
               <button
                 onClick={() => handleKick(kickTarget.id)}
-                style={{ flex: 1, padding: '8px', border: 'none', borderRadius: '8px', backgroundColor: '#da373c', color: '#fff', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}
+                style={{ flex: 1, padding: '8px', border: 'none', borderRadius: '8px', backgroundColor: '#da373c', color: 'var(--bg-surface)', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}
               >Kick</button>
             </div>
           </div>
@@ -218,7 +218,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
 
       <div style={{ padding: '12px 16px 0' }}>
         <div className="br-chat-input" style={{ padding: '8px' }}>
-          <Search size={16} color="#80848e" />
+          <Search size={16} color="var(--text-muted)" />
           <input
             type="text"
             placeholder="Search members"
@@ -238,8 +238,8 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
             <div className={`br-status-dot ${mentor.online ? 'online' : 'idle'}`} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <span style={{ fontSize: '14px', fontWeight: '500', color: '#313338' }}>{mentor.name}</span>
-            <span style={{ fontSize: '11px', color: '#5c5e66' }}>{mentor.room || 'Mentor'}</span>
+            <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--text-primary)' }}>{mentor.name}</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{mentor.room || 'Mentor'}</span>
           </div>
         </div>
 
@@ -262,8 +262,8 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
                 <div className={`br-status-dot ${intern.online ? 'online' : 'idle'}`} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '14px', fontWeight: '500', color: '#313338' }}>{intern.name}</span>
-                <span style={{ fontSize: '11px', color: '#5c5e66' }}>{intern.room}</span>
+                <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--text-primary)' }}>{intern.name}</span>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{intern.room}</span>
               </div>
             </div>
 

@@ -30,9 +30,9 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
         {days.map(day => {
           const status = getDayStatus(day);
           
-          const bg = status === "completed" ? "#f0fdf4" : (status === "missed" ? "var(--bg-surface-elevated, #f8fafc)" : (status === "current" ? "#fef3c7" : "var(--bg-surface, #ffffff)"));
-          const borderColor = status === "completed" ? "#bbf7d0" : (status === "missed" ? "var(--border-color, #e2e8f0)" : (status === "current" ? "#fde68a" : "var(--border-color, #e2e8f0)"));
-          const iconColor = status === "completed" ? "#16a34a" : (status === "missed" ? "#94a3b8" : (status === "current" ? "#d97706" : "#cbd5e1"));
+          const bg = status === "completed" ? "var(--success-bg, #f0fdf4)" : (status === "missed" ? "var(--bg-surface-elevated, #f8fafc)" : (status === "current" ? "var(--warning-bg, #fef3c7)" : "var(--bg-surface, #ffffff)"));
+          const borderColor = status === "completed" ? "var(--success-border, #bbf7d0)" : (status === "missed" ? "var(--border-color, #e2e8f0)" : (status === "current" ? "var(--warning-border, #fde68a)" : "var(--border-color, #e2e8f0)"));
+          const iconColor = status === "completed" ? "var(--success-color, #16a34a)" : (status === "missed" ? "var(--text-muted, #94a3b8)" : (status === "current" ? "var(--warning-color, #d97706)" : "var(--text-muted, #cbd5e1)"));
           
           return (
             <div key={day} style={{ background: bg, border: `1px solid ${borderColor}`, borderRadius: "4px", padding: "6px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px" }}>
@@ -48,10 +48,10 @@ const DailyScenarioCalendar = ({ onStartScenario }) => {
         })}
       </div>
       
-      <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "4px", fontSize: "0.65rem", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Check size={10} strokeWidth={3} color="#16a34a" /> Done</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><CircleDot size={10} strokeWidth={3} color="#d97706" /> Present</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Circle size={10} strokeWidth={3} color="#94a3b8" /> Missed</span>
+      <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "4px", fontSize: "0.65rem", fontWeight: 700, color: "var(--text-muted)" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Check size={10} strokeWidth={3} color="var(--success)" /> Done</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><CircleDot size={10} strokeWidth={3} color="var(--warning)" /> Present</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Circle size={10} strokeWidth={3} color="var(--text-muted)" /> Missed</span>
       </div>
     </div>
   );

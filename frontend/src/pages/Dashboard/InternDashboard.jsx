@@ -671,24 +671,24 @@ export default function InternDashboard() {
                       {/* Module Progress */}
                       <div>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#334155" }}>Module Progress</span>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#2563eb" }}>65%</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary, #334155)" }}>Module Progress</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "var(--brand-primary, #2563eb)" }}>65%</span>
                         </div>
-                        <div style={{ height: "6px", background: "#f1f5f9", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: "65%", height: "100%", background: "#2563eb", borderRadius: "3px" }}></div>
+                        <div style={{ height: "6px", background: "var(--progress-track, #f1f5f9)", borderRadius: "3px", overflow: "hidden" }}>
+                          <div style={{ width: "65%", height: "100%", background: "var(--brand-primary, #2563eb)", borderRadius: "3px" }}></div>
                         </div>
                       </div>
 
                       {/* Tasks Checklist */}
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#16a34a", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--success-dark, #16a34a)", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Check size={12} />
                           </div>
-                          <span style={{ fontSize: "0.85rem", color: "#334155", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #334155)", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#f1f5f9", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--bg-surface-elevated, #f1f5f9)", color: "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Play size={10} fill="currentColor" />
                           </div>
                           <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>JSX Syntax & Rules</span>
@@ -874,24 +874,24 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   {/* Hero Banner */}
                   <div style={{ 
-                    background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)", 
+                    background: "var(--gradient-soft-blue, linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%))", 
                     borderRadius: "12px", 
                     padding: "16px 24px", 
                     display: "flex", 
                     justifyContent: "space-between", 
                     alignItems: "center",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
-                    border: "1px solid #bae6fd"
+                    boxShadow: "var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.04))",
+                    border: "1px solid var(--border-color, #bae6fd)"
                   }}>
                     <div>
-                      <div style={{ fontSize: "11px", fontWeight: "700", color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.5px" }}>Test Your Knowledge</div>
+                      <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--brand-primary, #0284c7)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Test Your Knowledge</div>
                       <h2 style={{ fontSize: "20px", fontWeight: "800", color: "var(--text-primary, #0f172a)", margin: "2px 0 0 0" }}>Assessments</h2>
-                      <p style={{ color: "#334155", fontSize: "13px", margin: "2px 0 0 0" }}>
+                      <p style={{ color: "var(--text-secondary, #334155)", fontSize: "13px", margin: "2px 0 0 0" }}>
                         Reinforce what you've learned. Track your understanding and prepare for real-world challenges.
                       </p>
                     </div>
                     <div>
-                      <button className="btn btn-secondary" onClick={() => navigate("/intern/learning")} style={{ background: "white", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-color, #cbd5e1)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}>
+                      <button className="btn btn-secondary" onClick={() => navigate("/intern/learning")} style={{ background: "var(--bg-surface, #ffffff)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-color, #cbd5e1)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}>
                         <ArrowLeft size={14} style={{ marginRight: "4px", verticalAlign: "middle" }}/> Back
                       </button>
                     </div>
@@ -1214,13 +1214,13 @@ export default function InternDashboard() {
               </div>
               
               <div style={{ position: "relative", zIndex: 2, flex: 1 }}>
-                <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1e40af", display: "block", marginBottom: "4px" }}>
+                <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--brand-300, #1e40af)", display: "block", marginBottom: "4px" }}>
                   DAY {currentDay} OF 30
                 </span>
                 <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 6px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
                   {curriculumData.find(c => c.day === currentDay)?.topic || curriculumData[0].topic}
                 </h1>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "#334155" }}>
+                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary, #334155)" }}>
                   {curriculumData.find(c => c.day === currentDay)?.desc || curriculumData[0].desc}
                 </p>
               </div>
@@ -1319,8 +1319,8 @@ export default function InternDashboard() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                     {["Understanding component rendering", "Setting up standard project", "Creating first components", "Next steps in the module"].map((item, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <CheckCircle size={16} color="#16a34a" />
-                        <span style={{ fontSize: "13px", color: "#334155" }}>{item}</span>
+                        <CheckCircle size={16} color="var(--success, #16a34a)" />
+                        <span style={{ fontSize: "13px", color: "var(--text-primary, #0f172a)" }}>{item}</span>
                       </div>
                     ))}
                   </div>
@@ -1332,7 +1332,7 @@ export default function InternDashboard() {
                     <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
                       <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
                     </h4>
-                    <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>Auto-saved</span>
+                    <span style={{ fontSize: "11px", color: "var(--text-muted, #94a3b8)", fontWeight: 600 }}>Auto-saved</span>
                   </div>
                   <textarea 
                     placeholder="Jot down important takeaways, questions, or ideas from this module..."
@@ -1344,7 +1344,7 @@ export default function InternDashboard() {
                       border: "1px solid var(--border-color, #e2e8f0)",
                       backgroundColor: "var(--bg-surface-elevated, #f8fafc)",
                       fontSize: "14px",
-                      color: "#334155",
+                      color: "var(--text-primary, #0f172a)",
                       resize: "vertical",
                       fontFamily: "inherit",
                       outline: "none",
@@ -1352,7 +1352,7 @@ export default function InternDashboard() {
                       boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#93c5fd";
+                      e.target.style.borderColor = "var(--border-brand, #93c5fd)";
                       e.target.style.backgroundColor = "var(--bg-surface, #ffffff)";
                       e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
                     }}
@@ -1364,14 +1364,14 @@ export default function InternDashboard() {
                   />
                 </div>
 
-                  </div>
-                )}
+              </div>
+            )}
 
                 {activeLearningTab === "Live Meetings" && (
                   <div style={{ marginTop: "8px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: 0 }}>Upcoming Meetings</h3>
-                    <Badge variant="outline" style={{ color: "#3b82f6", borderColor: "var(--border-blue-light, #bfdbfe)", background: "#eff6ff" }}>2 Upcoming</Badge>
+                    <Badge variant="outline" style={{ color: "var(--brand-primary, #3b82f6)", borderColor: "var(--border-blue-light, #bfdbfe)", background: "var(--brand-bg, #eff6ff)" }}>2 Upcoming</Badge>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {/* Event 1 */}
@@ -1394,7 +1394,7 @@ export default function InternDashboard() {
                           </div>
                         </div>
                       </div>
-                      <button onClick={handleJoinMeeting} style={{ background: "#2563eb", color: "var(--bg-surface, #ffffff)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
+                      <button onClick={handleJoinMeeting} style={{ background: "var(--brand-primary, #2563eb)", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
                         Join Zoom
                       </button>
                     </div>
@@ -1403,23 +1403,23 @@ export default function InternDashboard() {
                     <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                         <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", padding: "10px 16px", textAlign: "center", border: "1px solid var(--border-color, #e2e8f0)", opacity: 0.7 }}>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" }}>Tomorrow</span>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #94a3b8)", textTransform: "uppercase" }}>Tomorrow</span>
                           <span style={{ display: "block", fontSize: "18px", fontWeight: 900, color: "var(--text-muted, #64748b)" }}>2:00</span>
-                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#94a3b8" }}>PM</span>
+                          <span style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #94a3b8)" }}>PM</span>
                         </div>
                         <div>
-                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "#334155" }}>Weekly Architecture Review</h4>
+                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>Weekly Architecture Review</h4>
                           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                              <User size={14} color="#94a3b8" />
-                              <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>David Chen</span>
+                              <User size={14} color="var(--text-muted, #94a3b8)" />
+                              <span style={{ fontSize: "13px", color: "var(--text-muted, #94a3b8)", fontWeight: 600 }}>David Chen</span>
                             </div>
                             <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--border-color, #cbd5e1)" }} />
-                            <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 600 }}>45 min session</span>
+                            <span style={{ fontSize: "13px", color: "var(--text-muted, #94a3b8)", fontWeight: 600 }}>45 min session</span>
                           </div>
                         </div>
                       </div>
-                      <button style={{ background: "#f1f5f9", color: "var(--text-muted, #64748b)", border: "1px solid var(--border-color, #e2e8f0)", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "not-allowed" }}>
+                      <button style={{ background: "var(--bg-surface-elevated, #f1f5f9)", color: "var(--text-muted, #64748b)", border: "1px solid var(--border-color, #e2e8f0)", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "not-allowed" }}>
                         Starts Tomorrow
                       </button>
                     </div>
@@ -1445,8 +1445,8 @@ export default function InternDashboard() {
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", background: "#eff6ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Target size={20} color="#2563eb" />
+                      <div style={{ width: "40px", height: "40px", background: "var(--brand-bg, #eff6ff)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Target size={20} color="var(--brand-primary, #2563eb)" />
                       </div>
                       <div>
                         <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
@@ -1454,13 +1454,13 @@ export default function InternDashboard() {
                       </div>
                     </div>
                   </div>
-                  <p style={{ margin: 0, fontSize: "13px", color: "#475569", lineHeight: 1.5 }}>
+                  <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #475569)", lineHeight: 1.5 }}>
                     Ready to complete today's module? Take the MCQ and Coding test now.
                   </p>
                   <button 
                     className="btn btn-primary" 
                     onClick={() => navigate("/intern/learning/assessment")} 
-                    style={{ width: "100%", padding: "12px", borderRadius: "8px", fontWeight: "bold", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", background: "var(--text-primary, #0f172a)", border: "none" }}
+                    style={{ width: "100%", padding: "12px", borderRadius: "8px", fontWeight: "bold", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "#ffffff", border: "none" }}
                   >
                     Start Assessment &rarr;
                   </button>
@@ -1468,15 +1468,15 @@ export default function InternDashboard() {
 
                 {/* Mentor Feedback Card */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "80px", background: "radial-gradient(circle at top right, #dbeafe, transparent)", opacity: 0.6 }}></div>
+                  <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "80px", background: "radial-gradient(circle at top right, rgba(59,155,255,0.15), transparent)", opacity: 0.6 }}></div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
-                    <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border-blue-light, #bfdbfe)" }}>
-                      <User size={14} color="#2563eb" />
+                    <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "var(--brand-bg, #eff6ff)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border-brand, #bfdbfe)" }}>
+                      <User size={14} color="var(--brand-primary, #2563eb)" />
                     </div>
                     <h4 style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Mentor Tip</h4>
                   </div>
-                  <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "10px", borderLeft: "3px solid #2563eb", position: "relative", zIndex: 1 }}>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#334155", fontStyle: "italic", lineHeight: 1.5 }}>
+                  <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "10px", borderLeft: "3px solid var(--brand-primary, #2563eb)", position: "relative", zIndex: 1 }}>
+                    <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #334155)", fontStyle: "italic", lineHeight: 1.5 }}>
                       "Focus on understanding how state affects rendering before moving to complex hooks."
                     </p>
                   </div>
@@ -1489,19 +1489,19 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Upcoming Milestone Card */}
-                <div style={{ background: "var(--warning-bg, #fffbeb)", padding: "16px", borderRadius: "12px", border: "1px solid #fde68a", boxShadow: "0 2px 8px rgba(217, 119, 6, 0.03)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", right: "-10px", top: "-10px", opacity: 0.1 }}>
-                    <Calendar size={60} color="#d97706" />
+                <div style={{ background: "var(--warning-bg, #fffbeb)", padding: "16px", borderRadius: "12px", border: "1px solid var(--warning-border, #fde68a)", boxShadow: "0 2px 8px rgba(217, 119, 6, 0.03)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", right: "-10px", top: "-10px", opacity: 0.15 }}>
+                    <Calendar size={60} color="var(--warning)" />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", position: "relative", zIndex: 1 }}>
-                    <div style={{ background: "#fef08a", padding: "4px", borderRadius: "6px" }}>
-                      <Calendar size={14} color="#d97706" />
+                    <div style={{ background: "var(--warning-surface, #fef08a)", padding: "4px", borderRadius: "6px" }}>
+                      <Calendar size={14} color="var(--warning)" />
                     </div>
-                    <h4 style={{ margin: 0, fontSize: "14px", color: "#92400e", fontWeight: 800 }}>Upcoming Milestone</h4>
+                    <h4 style={{ margin: 0, fontSize: "14px", color: "var(--warning)", fontWeight: 800 }}>Upcoming Milestone</h4>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px", position: "relative", zIndex: 1 }}>
-                    <span style={{ fontSize: "13px", color: "#92400e", fontWeight: 800 }}>Midterm Assessment</span>
-                    <span style={{ fontSize: "11px", color: "#b45309", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+                    <span style={{ fontSize: "13px", color: "var(--warning)", fontWeight: 800 }}>Midterm Assessment</span>
+                    <span style={{ fontSize: "11px", color: "var(--warning)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
                       <Clock size={12} /> Due in 5 days (Day 15)
                     </span>
                   </div>
@@ -1510,21 +1510,18 @@ export default function InternDashboard() {
                 {/* Need Help Card */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px", position: "relative", overflow: "hidden" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <MessageCircle size={16} color="#475569" />
+                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--bg-surface-elevated, #f1f5f9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <MessageCircle size={16} color="var(--text-secondary, #475569)" />
                     </div>
                     <div>
                       <h4 style={{ margin: "0 0 2px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Need Help?</h4>
                       <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Stuck somewhere?</p>
                     </div>
                   </div>
-                  <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "#334155", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "#eff6ff"; e.currentTarget.style.color = "#2563eb"; e.currentTarget.style.borderColor = "var(--border-blue-light, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "#334155"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
+                  <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #334155)", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--brand-bg, #eff6ff)"; e.currentTarget.style.color = "var(--brand-primary, #2563eb)"; e.currentTarget.style.borderColor = "var(--border-brand, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "var(--text-primary, #334155)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
                     Message Mentor &rarr;
                   </button>
                 </div>
-
-                {/* Motivational Quote Card */}
-
 
               </div>
               )}
@@ -1607,15 +1604,10 @@ export default function InternDashboard() {
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
             {/* Top Hero Banner */}
-            <div style={{
-              background: "linear-gradient(135deg, #dbeafe 0%, var(--border-blue-light, #bfdbfe) 50%, #93c5fd 100%)",
+            <div className="hero-banner-card" style={{
               borderRadius: "12px",
               padding: "14px 20px",
-              color: "var(--text-primary, #0f172a)",
               position: "relative",
-              overflow: "hidden",
-              boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
-              border: "1px solid var(--border-blue-light, #bfdbfe)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center"
@@ -1628,23 +1620,23 @@ export default function InternDashboard() {
               
               {/* "Learn Build Grow" Watermark */}
               <div style={{ position: "absolute", right: "160px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block" }}>Learn</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
               </div>
 
               <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
                 <div style={{ width: "44px", height: "44px", background: "var(--bg-surface, #ffffff)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
-                  <Ticket size={22} color="#2563eb" />
+                  <Ticket size={22} color="var(--primary-color, #2563eb)" />
                 </div>
                 <div>
-                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--primary-dark, #1d4ed8)", display: "block", marginBottom: "2px" }}>
                     Support & Ticketing Hub
                   </span>
                   <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
                     Support & Help Center
                   </h1>
-                  <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
+                  <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #334155)", maxWidth: "600px", lineHeight: "1.4" }}>
                     File tickets for curriculum questions, environment bugs, or platform assistance.
                   </p>
                 </div>
@@ -1669,7 +1661,7 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Filter Pills */}
-                <div style={{ display: "flex", gap: "8px", background: "#f1f5f9", padding: "4px", borderRadius: "8px" }}>
+                <div style={{ display: "flex", gap: "8px", background: "var(--bg-surface-elevated, #f1f5f9)", padding: "4px", borderRadius: "8px" }}>
                   {["All", "Active", "Resolved"].map(tab => (
                     <button
                       key={tab}
@@ -1708,14 +1700,14 @@ export default function InternDashboard() {
                         padding: "16px 20px", 
                         cursor: "pointer", 
                         borderRadius: "10px",
-                        border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)", 
+                        border: selectedTicket?.id === ticket.id ? "2px solid var(--brand-primary, #3b82f6)" : "1px solid var(--border-color)", 
                         transition: "all 0.2s ease",
-                        backgroundColor: selectedTicket?.id === ticket.id ? "#eff6ff" : "var(--card-bg)"
+                        backgroundColor: selectedTicket?.id === ticket.id ? "var(--brand-bg, #eff6ff)" : "var(--card-bg)"
                       }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "#1e40af", fontWeight: 700, backgroundColor: "#dbeafe", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "11px", color: "var(--brand-primary, #1e40af)", fontWeight: 700, backgroundColor: "var(--brand-bg, #dbeafe)", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
                           <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -1723,8 +1715,8 @@ export default function InternDashboard() {
                             <Clock size={14} /> {ticket.date}
                           </span>
                           <span className="badge" style={{ 
-                            backgroundColor: ticket.status === "Resolved" ? "#dcfce7" : ticket.status === "Pending" ? "#eff6ff" : "#fef3c7", 
-                            color: ticket.status === "Resolved" ? "#15803d" : ticket.status === "Pending" ? "#1d4ed8" : "#b45309",
+                            backgroundColor: ticket.status === "Resolved" ? "var(--success-bg, #dcfce7)" : ticket.status === "Pending" ? "var(--brand-bg, #eff6ff)" : "var(--warning-bg, #fef3c7)", 
+                            color: ticket.status === "Resolved" ? "var(--success, #15803d)" : ticket.status === "Pending" ? "var(--brand-primary, #1d4ed8)" : "var(--warning, #b45309)",
                             padding: "4px 12px",
                             borderRadius: "20px",
                             fontWeight: "700",
@@ -1739,7 +1731,7 @@ export default function InternDashboard() {
                         <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
                           <div>
                             <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>Mentor & Admin Response</div>
-                            <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid #3b82f6", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                            <div style={{ backgroundColor: "var(--bg-surface-elevated, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid var(--brand-primary, #3b82f6)", border: "1px solid var(--border-color, #cbd5e1)" }}>
                               <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: "1.6", whiteSpace: "pre-line" }}>{ticket.adminReply}</p>
                             </div>
                           </div>
@@ -1755,20 +1747,20 @@ export default function InternDashboard() {
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, minHeight: "650px", display: "flex", flexDirection: "column", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+          <div className="card" style={{ margin: 0, padding: 0, flex: 1, height: "100%", minHeight: "650px", display: "flex", flexDirection: "column", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
-            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--bg-surface-elevated, #0f172a)", borderBottom: "1px solid var(--border-color)", borderRadius: "12px 12px 0 0" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
                 DS
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--card-bg)", fontWeight: 600 }}>Dr. Sakthi</h3>
-                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Mentor • Online</p>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-primary, #ffffff)", fontWeight: 600 }}>Dr. Sakthi</h3>
+                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #94a3b8)" }}>Mentor • Online</p>
               </div>
             </div>
 
             {/* Chat Body */}
-            <div style={{ flex: 1, backgroundColor: "var(--bg-light)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", position: "relative" }}>
+            <div style={{ flex: 1, backgroundColor: "var(--card-bg)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", position: "relative" }}>
               
               {/* Generative Background Image Overlay */}
               <div style={{ 
@@ -1787,8 +1779,8 @@ export default function InternDashboard() {
               {chatMessages.map((msg, i) => (
                 <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px", zIndex: 2 }}>
                   <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--primary-dark)" : "var(--card-bg)", 
-                    color: msg.sender === "You" ? "var(--card-bg)" : "var(--text-darker)", 
+                    backgroundColor: msg.sender === "You" ? "var(--brand-primary, #1d4ed8)" : "var(--bg-surface-elevated, #ffffff)", 
+                    color: msg.sender === "You" ? "#ffffff" : "var(--text-primary, #0f172a)", 
                     padding: "10px 14px 22px 14px", 
                     borderRadius: "12px", 
                     borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
@@ -1799,7 +1791,7 @@ export default function InternDashboard() {
                     border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
+                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "rgba(255,255,255,0.7)" : "var(--text-muted, #94a3b8)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
                       {msg.time} {msg.sender === "You" && <CheckCheck size={12} />}
                     </span>
                   </div>
@@ -1808,15 +1800,15 @@ export default function InternDashboard() {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--card-bg)", margin: 0, borderTop: "1px solid var(--border-color)" }}>
+            <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--bg-surface-elevated, #ffffff)", margin: 0, borderTop: "1px solid var(--border-color)", borderRadius: "0 0 12px 12px" }}>
               <input 
                 type="text" 
                 placeholder="Type your message..." 
                 value={inputMsg} 
                 onChange={(e) => setInputMsg(e.target.value)} 
-                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
+                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-surface, #f1f5f9)", fontSize: "14px", outline: "none", color: "var(--text-primary, #0f172a)" }} 
               />
-              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--primary-darker)"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "var(--primary-dark)"}>
+              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "all 0.2s" }}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
@@ -1847,31 +1839,28 @@ export default function InternDashboard() {
         return (
           <div style={{ paddingBottom: "40px", display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Ultra-Compact Catchy Airdrop Banner */}
-            <div style={{
-              background: "linear-gradient(135deg, #cce3fd 0%, #7ab6e8 100%)",
+            <div className="hero-banner-card" style={{
               borderRadius: "12px",
               padding: "16px 20px",
-              color: "var(--text-primary, #0f172a)",
               display: "flex",
               alignItems: "center",
-              gap: "20px",
-              boxShadow: "0 4px 12px rgba(122, 182, 232, 0.3)"
+              gap: "20px"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(255,255,255,0.5)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Gift size={18} color="#1e3a8a" />
+                <div style={{ width: "36px", height: "36px", background: "var(--bg-surface-glass, rgba(255,255,255,0.5))", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Gift size={18} color="var(--primary-dark, #1e3a8a)" />
                 </div>
-                <h2 style={{ fontSize: "18px", fontWeight: 800, margin: 0, letterSpacing: "-0.5px" }}>
-                  Expect the <span style={{ color: "#1e3a8a" }}>Unexpected.</span>
+                <h2 style={{ fontSize: "18px", fontWeight: 800, margin: 0, letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
+                  Expect the <span style={{ color: "var(--primary-dark, #1e3a8a)" }}>Unexpected.</span>
                 </h2>
               </div>
               
-              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-primary, #1e293b)", lineHeight: "1.4", flex: 1, fontWeight: 500, borderLeft: "1px solid rgba(255,255,255,0.4)", paddingLeft: "20px" }}>
+              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #1e293b)", lineHeight: "1.4", flex: 1, fontWeight: 500, borderLeft: "1px solid var(--border-color, rgba(255,255,255,0.4))", paddingLeft: "20px" }}>
                 Airdrops are spontaneous challenges. Showcase your mastery and skyrocket your score!
               </p>
 
               <div style={{ 
-                background: "rgba(255,255,255,0.3)", 
+                background: "var(--bg-surface-glass, rgba(255,255,255,0.3))", 
                 padding: "6px 12px", 
                 borderRadius: "8px", 
                 display: "flex",
@@ -1880,7 +1869,7 @@ export default function InternDashboard() {
                 flexShrink: 0,
                 maxWidth: "280px"
               }}>
-                <Quote size={14} color="#1e3a8a" style={{ opacity: 0.6, flexShrink: 0 }} />
+                <Quote size={14} color="var(--primary-dark, #1e3a8a)" style={{ opacity: 0.6, flexShrink: 0 }} />
                 <span style={{ fontSize: "12px", fontStyle: "italic", fontWeight: 600, color: "var(--text-primary, #1e293b)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   "{selectedQuote}"
                 </span>
@@ -2007,42 +1996,43 @@ export default function InternDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
-                <button onClick={() => navigate("/intern/progress")} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
+                <button onClick={() => navigate("/intern/progress")} style={{ background: "none", border: "none", color: "var(--text-secondary, #475569)", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "var(--text-secondary, #475569)"}>
                   <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
                 </button>
               </div>
 
               {/* Premium Completion Banner - Theme Aligned */}
               <div style={{
-                background: "var(--gradient-primary, linear-gradient(135deg, #0875E1, #0B82F6))",
+                background: "var(--bg-surface-elevated, var(--card-blue-tinted, #ffffff))",
                 borderRadius: "20px",
                 padding: "24px 32px",
-                color: "var(--bg-surface, #ffffff)",
+                color: "var(--text-primary, #0f172a)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                boxShadow: "var(--shadow-lg, 0 10px 15px -3px rgba(8, 27, 53, 0.1))",
+                boxShadow: "var(--shadow-sm)",
                 position: "relative",
                 overflow: "hidden",
+                border: "1px solid var(--border-color, #e2e8f0)",
                 flexShrink: 0
               }}>
-                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
+                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, var(--glow-overlay, rgba(255, 255, 255, 0.05)) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
                 <div style={{ position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "rgba(255,255,255,0.9)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "rgba(255,255,255,0.2)", padding: "4px 10px", borderRadius: "10px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--text-secondary, #475569)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "var(--bg-surface, rgba(0,0,0,0.05))", padding: "4px 10px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                     Mission Accomplished <Rocket size={12} />
                   </span>
-                  <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--bg-surface, #ffffff)" }}>
+                  <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
                     Boom! You did it, Dhanush!
                   </h2>
-                  <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255,255,255,0.9)", lineHeight: "1.4", maxWidth: "600px" }}>
+                  <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-secondary, #475569)", lineHeight: "1.4", maxWidth: "600px" }}>
                     Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
                   </p>
                 </div>
 
-                <div style={{ background: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid rgba(255, 255, 255, 0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.8)", display: "block" }}>Performance</span>
-                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--bg-surface, #ffffff)" }}>91%</span>
-                  <span style={{ fontSize: "0.75rem", background: "#dcfce7", color: "#166534", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid #bbf7d0" }}>Excellent</span>
+                <div style={{ background: "var(--bg-surface, rgba(0, 0, 0, 0.02))", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", textAlign: "center", position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary, #475569)", display: "block" }}>Performance</span>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--text-primary, #0f172a)" }}>91%</span>
+                  <span style={{ fontSize: "0.75rem", background: "var(--success-bg, #dcfce7)", color: "var(--success, #166534)", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid var(--success-border, #bbf7d0)" }}>Excellent</span>
                 </div>
               </div>
 
@@ -2063,7 +2053,7 @@ export default function InternDashboard() {
                     border: "1px solid var(--border-color, #e2e8f0)",
                     borderRadius: "12px",
                     padding: "24px 32px",
-                    background: "linear-gradient(180deg, #ffffff 0%, var(--surface-soft, #F8FBFF) 100%)",
+                    background: "linear-gradient(180deg, #ffffff 0%, #F8FBFF 100%)",
                     textAlign: "center",
                     position: "relative",
                     boxShadow: "0 20px 25px -5px rgba(8, 27, 53, 0.05), 0 8px 10px -6px rgba(8, 27, 53, 0.01)",
@@ -2072,48 +2062,48 @@ export default function InternDashboard() {
                     justifyContent: "space-between"
                   }}>
                     {/* Corner accents */}
-                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderLeft: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid var(--brand-primary, #0B82F6)", borderRight: "2px solid var(--brand-primary, #0B82F6)", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid #0B82F6", borderLeft: "2px solid #0B82F6", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid #0B82F6", borderRight: "2px solid #0B82F6", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid #0B82F6", borderLeft: "2px solid #0B82F6", opacity: 0.3 }}></div>
+                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid #0B82F6", borderRight: "2px solid #0B82F6", opacity: 0.3 }}></div>
 
                     {/* Logo Area */}
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
-                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #081B35)", letterSpacing: "-0.5px" }}>ProEduvate</span>
+                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#0B82F6", color: "#ffffff", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
+                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "#081B35", letterSpacing: "-0.5px" }}>ProEduvate</span>
                     </div>
 
                     <div>
-                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "#7890AA", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
                         Certificate of Internship
                       </span>
 
-                      <p style={{ fontSize: "0.9rem", color: "var(--text-secondary, #45617F)", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
+                      <p style={{ fontSize: "0.9rem", color: "#45617F", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
 
-                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "var(--brand-primary, #0B82F6)", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
+                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "#0B82F6", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
                         Sadie Sink
                       </h1>
 
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #45617F)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                        has successfully completed the 30-day Internship Program in <strong style={{ color: "var(--text-primary, #081B35)" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
+                      <p style={{ fontSize: "0.85rem", color: "#45617F", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
+                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
                       </p>
                     </div>
 
                     {/* Dates & Signatures Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
                       <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary, #081B35)", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
-                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#081B35", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
+                        <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
                       </div>
 
                       <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: "1px solid var(--border-strong, #C7D8EA)", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "var(--text-primary, #081B35)" }}>Arun Prakash</div>
-                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #7890AA)", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
+                        <div style={{ borderBottom: "1px solid #C7D8EA", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "#081B35" }}>Arun Prakash</div>
+                        <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
                       </div>
 
                       <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                        <div style={{ width: "40px", height: "40px", background: "var(--bg-surface, #ffffff)", border: "1px dashed var(--border-strong, #C7D8EA)", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "var(--text-placeholder, #9DB0C5)" }}>QR</div>
-                        <span style={{ fontSize: "0.55rem", color: "var(--text-muted, #7890AA)", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
+                        <div style={{ width: "40px", height: "40px", background: "#ffffff", border: "1px dashed #C7D8EA", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "#9DB0C5" }}>QR</div>
+                        <span style={{ fontSize: "0.55rem", color: "#7890AA", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
                       </div>
                     </div>
                   </div>
@@ -2128,7 +2118,7 @@ export default function InternDashboard() {
                       <Download size={16} /> Download PDF
                     </button>
 
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--surface-blue, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-default, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--border-default, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--surface-blue, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
+                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface-elevated, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-color, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--surface-hover, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
                       <Share2 size={16} /> Share on LinkedIn
                     </button>
 
@@ -2149,7 +2139,7 @@ export default function InternDashboard() {
             {/* Top 4 Metrics Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
               <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Calendar size={24} />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -2215,41 +2205,41 @@ export default function InternDashboard() {
                     <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
                     <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
                   </div>
-                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "#334155", fontWeight: 600 }}>Overall Progress ▾</div>
+                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "var(--text-primary, #334155)", fontWeight: 600 }}>Overall Progress ▾</div>
                 </div>
 
                 <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
                   <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                        <stop offset="0%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0" />
                       </linearGradient>
                     </defs>
-                    <line x1="0" y1="160" x2="600" y2="160" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="120" x2="600" y2="120" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="80" x2="600" y2="80" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="40" x2="600" y2="40" stroke="#f1f5f9" strokeWidth="1" />
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="#f1f5f9" strokeWidth="1" />
+                    <line x1="0" y1="160" x2="600" y2="160" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                    <line x1="0" y1="120" x2="600" y2="120" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                    <line x1="0" y1="80" x2="600" y2="80" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                    <line x1="0" y1="40" x2="600" y2="40" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                    <line x1="0" y1="0" x2="600" y2="0" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
 
                     <polygon points="0,180 100,150 200,120 300,100 400,80 500,50 600,20 600,200 0,200" fill="url(#progressGradFull)" />
-                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="#2563eb" strokeWidth="3" fill="none" />
+                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="var(--brand-primary, #2563eb)" strokeWidth="3" fill="none" />
                     
-                    <circle cx="0" cy="180" r="5" fill="#2563eb" />
-                    <circle cx="100" cy="150" r="5" fill="#2563eb" />
-                    <circle cx="200" cy="120" r="8" fill="#2563eb" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
+                    <circle cx="0" cy="180" r="5" fill="var(--brand-primary, #2563eb)" />
+                    <circle cx="100" cy="150" r="5" fill="var(--brand-primary, #2563eb)" />
+                    <circle cx="200" cy="120" r="8" fill="var(--brand-primary, #2563eb)" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
                     <circle cx="300" cy="100" r="4" fill="var(--border-color, #cbd5e1)" />
                     <circle cx="400" cy="80" r="4" fill="var(--border-color, #cbd5e1)" />
                     <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
                     <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
                   </svg>
-                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "#2563eb", color: "var(--bg-surface, #ffffff)", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
+                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
                     <div style={{ marginBottom: "2px" }}>Day 12</div>
                     <div style={{ fontSize: "1rem" }}>40% Complete</div>
                   </div>
                   
                   {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
+                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)" }}>
                     <span>100%</span>
                     <span>75%</span>
                     <span>50%</span>
@@ -2261,7 +2251,7 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
                   <span>Day 1</span>
                   <span>Day 5</span>
-                  <span style={{ color: "#2563eb", fontWeight: 700 }}>Day 12</span>
+                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day 12</span>
                   <span>Day 15</span>
                   <span>Day 20</span>
                   <span>Day 25</span>
@@ -2288,12 +2278,12 @@ export default function InternDashboard() {
                     { name: "Problem Solving", val: 70 }
                   ].map(skill => (
                     <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <Star size={14} />
                       </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#334155", width: "120px" }}>{skill.name}</span>
-                      <div style={{ flex: 1, background: "#f1f5f9", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${skill.val}%`, background: "#2563eb", height: "100%", borderRadius: "4px" }}></div>
+                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", width: "120px" }}>{skill.name}</span>
+                      <div style={{ flex: 1, background: "var(--progress-track, #f1f5f9)", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
+                        <div style={{ width: `${skill.val}%`, background: "var(--brand-primary, #2563eb)", height: "100%", borderRadius: "4px" }}></div>
                       </div>
                       <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
                     </div>
@@ -2307,8 +2297,8 @@ export default function InternDashboard() {
                 
                 <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="#f1f5f9" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="#2563eb" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                     <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>87%</span>
@@ -2318,22 +2308,22 @@ export default function InternDashboard() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2563eb" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem" }}>85</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>85</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#a855f7" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem" }}>88</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>88</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#10b981" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem" }}>90</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>90</strong>
                   </div>
                 </div>
                 
-                <div style={{ marginTop: "24px", padding: "12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                  <TrendingUp size={20} color="#16a34a" />
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#166534", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
+                <div style={{ marginTop: "24px", padding: "12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                  <TrendingUp size={20} color="var(--success, #16a34a)" />
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
                 </div>
               </div>
             </div>
@@ -2404,26 +2394,26 @@ export default function InternDashboard() {
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Achievements</h3>
-                  <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All →</span>
+                  <span style={{ fontSize: "0.9rem", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}>View All →</span>
                 </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Consistent Learner</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Completed 5 days in a row</p>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#f5f3ff", color: "#8b5cf6", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--assessment-bg, #f5f3ff)", color: "var(--assessment, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>First Submission</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Submitted your first task</p>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#f0fdf4", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--success-bg, #f0fdf4)", color: "var(--success, #10b981)", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Quiz Master</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Scored 90%+ in a quiz</p>
@@ -2435,14 +2425,14 @@ export default function InternDashboard() {
               {/* Certificate Card */}
               <div style={{
                 background: isInternshipCompleted 
-                  ? "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)" 
-                  : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
+                  ? "var(--gradient-soft-blue, linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%))" 
+                  : "var(--bg-surface-elevated, linear-gradient(135deg, #f8fafc, #f1f5f9))",
                 borderRadius: "16px",
                 padding: "20px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                border: isInternshipCompleted ? "1px solid #bfdbfe" : "1px solid var(--border-color, #e2e8f0)",
+                border: isInternshipCompleted ? "1px solid var(--border-brand, #bfdbfe)" : "1px solid var(--border-color, #e2e8f0)",
                 color: "var(--text-primary, #0f172a)",
                 position: "relative",
                 overflow: "hidden",
@@ -2452,17 +2442,17 @@ export default function InternDashboard() {
                   <div>
                     <div style={{ 
                       width: "44px", height: "44px", borderRadius: "12px", 
-                      background: isInternshipCompleted ? "#ffffff" : "var(--border-color, #e2e8f0)", 
-                      color: isInternshipCompleted ? "#2563eb" : "#94a3b8", 
+                      background: isInternshipCompleted ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)", 
+                      color: isInternshipCompleted ? "var(--brand-primary, #2563eb)" : "var(--text-muted, #94a3b8)", 
                       display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px",
                       boxShadow: isInternshipCompleted ? "0 2px 6px rgba(37, 99, 235, 0.1)" : "none"
                     }}>
-                      {isInternshipCompleted ? <Award size={24} color="#2563eb" /> : <Lock size={22} />}
+                      {isInternshipCompleted ? <Award size={24} color="var(--brand-primary, #2563eb)" /> : <Lock size={22} />}
                     </div>
-                    <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: 800, color: "#1e3a8a" }}>
+                    <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: 800, color: "var(--text-primary, #1e3a8a)" }}>
                       {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
                     </h3>
-                    <p style={{ margin: "0 0 16px 0", fontSize: "0.82rem", lineHeight: "1.5", color: "#3b82f6" }}>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "0.82rem", lineHeight: "1.5", color: "var(--brand-primary, #3b82f6)" }}>
                       {isInternshipCompleted 
                         ? "Your official verified internship certificate is ready for download." 
                         : "Complete all 30 days of your internship to unlock."}
@@ -2474,8 +2464,8 @@ export default function InternDashboard() {
                     onClick={() => navigate("/intern/progress/certificate")}
                     style={{
                       width: "100%",
-                      background: isInternshipCompleted ? "#2563eb" : "var(--border-color, #e2e8f0)",
-                      color: isInternshipCompleted ? "#ffffff" : "#94a3b8",
+                      background: isInternshipCompleted ? "var(--brand-primary, #2563eb)" : "var(--border-color, #e2e8f0)",
+                      color: isInternshipCompleted ? "#ffffff" : "var(--text-muted, #94a3b8)",
                       border: "none",
                       padding: "10px 16px",
                       borderRadius: "10px",
@@ -2507,13 +2497,13 @@ export default function InternDashboard() {
 
   if (activeTab === "Learning" && activeLearningTab === "AI Client") {
     return (
-      <div style={{ height: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", alignItems: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+      <div style={{ height: "100vh", width: "100vw", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-color, #e2e8f0)", backgroundColor: "var(--card-bg, #ffffff)", display: "flex", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
           <button 
             onClick={() => navigate("/intern/learning/reading-materials")}
-            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "#334155", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
-            onMouseOver={(e) => e.currentTarget.style.color = "#2563eb"}
-            onMouseOut={(e) => e.currentTarget.style.color = "#334155"}
+            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary, #334155)", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
+            onMouseOver={(e) => e.currentTarget.style.color = "var(--brand-primary, #2563eb)"}
+            onMouseOut={(e) => e.currentTarget.style.color = "var(--text-secondary, #334155)"}
           >
             <ArrowLeft size={16} /> Back to Learning Page
           </button>
@@ -2526,7 +2516,7 @@ export default function InternDashboard() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", height: (isMeetingActive && !isMeetingMinimized) ? "100vh" : "auto", overflow: (isMeetingActive && !isMeetingMinimized) ? "hidden" : "auto", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
       <header style={{ 
         height: "72px", 
@@ -2552,7 +2542,7 @@ export default function InternDashboard() {
             </svg>
           </div>
           <div>
-            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#1e3a8a", letterSpacing: "-0.5px", lineHeight: "1" }}>
+            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--text-primary, #1e3a8a)", letterSpacing: "-0.5px", lineHeight: "1" }}>
               ProEduvate
             </h2>
             <span style={{ fontSize: "10.5px", fontWeight: 600, color: "var(--text-muted, #64748b)", letterSpacing: "0.2px", display: "block", marginTop: "2px" }}>
@@ -2587,8 +2577,8 @@ export default function InternDashboard() {
                     border: "none",
                     fontSize: "12.5px",
                     fontWeight: isActive ? "700" : "500",
-                    backgroundColor: isActive ? "#2563eb" : "transparent",
-                    color: isActive ? "var(--bg-surface, #ffffff)" : "#475569",
+                    backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
+                    color: isActive ? "#ffffff" : "var(--text-secondary, #475569)",
                     boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
                     cursor: "pointer",
                     transition: "all 0.2s ease"
@@ -2604,17 +2594,16 @@ export default function InternDashboard() {
 
         {/* Right User Actions & Profile */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Theme Toggle 
+          {/* Theme Toggle */}
           <div onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s ease" }} title="Toggle Theme">
             {theme === 'light' ? <Moon size={18} color="var(--text-gray, #64748b)" /> : <Sun size={18} color="var(--text-gray, #94a3b8)" />}
           </div>
-          */}
 
           {/* Bell Notifications */}
           <div style={{ position: 'relative', cursor: 'pointer' }}>
             <div onClick={() => setShowNotifications(!showNotifications)} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Bell size={18} color="var(--text-muted, #64748b)" />
-              <div style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%', border: "2px solid #ffffff" }}></div>
+              <div style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', backgroundColor: 'var(--error, #ef4444)', borderRadius: '50%', border: "2px solid var(--card-bg, #ffffff)" }}></div>
             </div>
             
             {showNotifications && (
@@ -2653,7 +2642,7 @@ export default function InternDashboard() {
             </div>
             
             {isProfileDropdownOpen && (
-              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "var(--card-bg, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
                 <button 
                   onClick={() => { setActiveTab("Profile"); navigate("/intern/profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #0f172a)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
@@ -2662,7 +2651,7 @@ export default function InternDashboard() {
                 </button>
                 <button 
                   onClick={handleLogout}
-                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "var(--error, #dc2626)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
                   <LogOut size={16} /> Logout
                 </button>
@@ -2673,10 +2662,10 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px 32px 24px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: (isMeetingActive && !isMeetingMinimized) ? "0" : "16px 24px 32px 24px", width: "100%", boxSizing: "border-box" }}>
 
         {/* Content Box */}
-        <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: "500px", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
+        <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: "500px", borderRadius: (isMeetingActive && !isMeetingMinimized) ? "0" : "16px", overflow: "hidden", border: (isMeetingActive && !isMeetingMinimized) ? "none" : "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>
           <BreakoutRoomsApp 
             isIntern={true} 
             onLeaveMeeting={handleEndMeeting} 
@@ -2750,7 +2739,7 @@ export default function InternDashboard() {
       {showThankYouModal && (
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
           <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "40px", maxWidth: "460px", width: "100%", textAlign: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
-            <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
+            <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--success-bg, #dcfce7)", color: "var(--success, #16a34a)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
               <PartyPopper size={40} />
             </div>
             <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", margin: "0 0 12px 0" }}>Thank You for Attending!</h2>
@@ -2895,7 +2884,7 @@ export default function InternDashboard() {
                 <Gift size={24} color="#2563eb" />
                 <h3 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Bonus Airdrop Challenge</h3>
               </div>
-              <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "#fee2e2" : "#f1f5f9", color: airdropTimeLeft <= 10 ? "#ef4444" : "#475569", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "var(--error-bg, #fee2e2)" : "var(--bg-surface-elevated, #f1f5f9)", color: airdropTimeLeft <= 10 ? "var(--error, #ef4444)" : "var(--text-secondary, #475569)", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                 <Clock size={16} /> {airdropTimeLeft}s
               </div>
             </div>

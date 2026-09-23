@@ -479,15 +479,10 @@ export default function DailyScenario({ onBackToDashboard }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
       
       {/* Hero Banner Header */}
-      <div style={{
-        background: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)",
+      <div className="hero-banner-card" style={{
         borderRadius: "12px",
         padding: "14px 20px",
-        color: "var(--text-primary, #0f172a)",
-        position: "relative",
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
-        border: "1px solid #bfdbfe"
+        position: "relative"
       }}>
         {/* Mountain Silhouette Background SVG */}
         <svg style={{ position: "absolute", right: "0", bottom: 0, height: "100%", width: "50%", opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
@@ -497,23 +492,23 @@ export default function DailyScenario({ onBackToDashboard }) {
         
         {/* "Learn Build Grow" Watermark */}
         <div style={{ position: "absolute", right: "24px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
-          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
-          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
-          <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block" }}>Learn</span>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
+          <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
         </div>
 
         <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
           <div style={{ width: "44px", height: "44px", background: "var(--bg-surface, #ffffff)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
-            <Briefcase size={22} color="#2563eb" />
+            <Briefcase size={22} color="var(--primary-color, #2563eb)" />
           </div>
           <div>
-            <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
+            <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--primary-dark, #1d4ed8)", display: "block", marginBottom: "2px" }}>
               Day {selectedDay} of 30 &bull; Workplace Simulation
             </span>
             <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
               Real-World Workplace Simulation
             </h1>
-            <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
+            <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #334155)", maxWidth: "600px", lineHeight: "1.4" }}>
               Analyze realistic engineering situations, choose your technical path, and receive instant feedback.
             </p>
           </div>
@@ -529,7 +524,7 @@ export default function DailyScenario({ onBackToDashboard }) {
           {!isDayUnlocked(selectedDay) ? (
             /* Locked Day Card */
             <div className="card" style={{ textAlign: "center", padding: "50px 24px", backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid var(--border-color)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-              <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", margin: "0 auto 20px auto" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", justifyContent: "center", alignItems: "center", margin: "0 auto 20px auto" }}>
                 <Lock size={32} />
               </div>
               <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-dark)", margin: "0 0 10px 0" }}>
@@ -539,9 +534,9 @@ export default function DailyScenario({ onBackToDashboard }) {
                 Daily workplace simulations unlock automatically every night at <b>12:00 AM Midnight</b>.
               </p>
 
-              <div style={{ display: "inline-block", backgroundColor: "#eff6ff", padding: "12px 24px", borderRadius: "10px", border: "1px solid #bfdbfe", marginBottom: "24px" }}>
-                <span style={{ fontSize: "13px", color: "#1e40af", fontWeight: 600 }}>Unlocks in: </span>
-                <span style={{ fontFamily: "monospace", fontSize: "16px", fontWeight: "800", color: "#1d4ed8" }}>{getTimeUntilMidnight()}</span>
+              <div style={{ display: "inline-block", backgroundColor: "var(--brand-bg, #eff6ff)", padding: "12px 24px", borderRadius: "10px", border: "1px solid var(--border-brand, #bfdbfe)", marginBottom: "24px" }}>
+                <span style={{ fontSize: "13px", color: "var(--brand-primary, #1e40af)", fontWeight: 600 }}>Unlocks in: </span>
+                <span style={{ fontFamily: "monospace", fontSize: "16px", fontWeight: "800", color: "var(--brand-primary, #1d4ed8)" }}>{getTimeUntilMidnight()}</span>
               </div>
 
               <div>
@@ -560,9 +555,9 @@ export default function DailyScenario({ onBackToDashboard }) {
               
               {/* Demo Mode Notice Banner */}
               {isDemoBypass && selectedDay > 1 && (
-                <div style={{ backgroundColor: "#eff6ff", border: "1px solid #93c5fd", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", color: "#1e40af", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ backgroundColor: "var(--brand-bg, #eff6ff)", border: "1px solid var(--border-brand, #93c5fd)", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", color: "var(--brand-primary, #1e40af)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>[NOTICE] <b>Demo Mode Active:</b> Previewing Day {selectedDay}. (Normally unlocks at 12:00 AM Midnight).</span>
-                  <button onClick={() => setIsDemoBypass(false)} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: "700", cursor: "pointer", textDecoration: "underline", fontSize: "12px" }}>
+                  <button onClick={() => setIsDemoBypass(false)} style={{ background: "none", border: "none", color: "var(--brand-primary, #2563eb)", fontWeight: "700", cursor: "pointer", textDecoration: "underline", fontSize: "12px" }}>
                     Re-enable Lock
                   </button>
                 </div>
@@ -574,7 +569,7 @@ export default function DailyScenario({ onBackToDashboard }) {
                   <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "700", color: "var(--text-dark)" }}>
                     {currentScenario.title}
                   </h3>
-                  <span style={{ fontSize: "12px", background: "#f1f5f9", padding: "4px 10px", borderRadius: "20px", color: "#475569", fontWeight: "600" }}>
+                  <span style={{ fontSize: "12px", background: "var(--bg-surface-elevated, #f1f5f9)", padding: "4px 10px", borderRadius: "20px", color: "var(--text-secondary, #475569)", fontWeight: "600" }}>
                     {currentScenario.subtitle}
                   </span>
                 </div>
@@ -582,15 +577,14 @@ export default function DailyScenario({ onBackToDashboard }) {
 
               {/* SITUATION Callout Card */}
               <div style={{
-                backgroundColor: "#f0f9ff",
-                borderLeft: "4px solid #0284c7",
+                backgroundColor: "var(--bg-surface-elevated, var(--card-bg, #ffffff))",
+                borderLeft: "4px solid var(--brand-primary, #0284c7)",
                 borderRadius: "0 12px 12px 0",
                 padding: "20px 24px",
-                borderTop: "1px solid #e0f2fe",
-                borderRight: "1px solid #e0f2fe",
-                borderBottom: "1px solid #e0f2fe"
+                border: "1px solid var(--border-color, #e2e8f0)",
+                borderLeft: "4px solid var(--brand-primary, #0284c7)"
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "800", color: "#0284c7", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "800", color: "var(--brand-primary, #0284c7)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
                   <Briefcase size={16} /> SITUATION BRIEFING
                 </div>
                 <p style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", lineHeight: "1.65", fontWeight: 400 }}>
@@ -620,8 +614,8 @@ export default function DailyScenario({ onBackToDashboard }) {
                             gap: "14px",
                             padding: "16px 20px",
                             borderRadius: "12px",
-                            border: isSelected ? "2px solid #3b82f6" : "1px solid var(--border-color)",
-                            backgroundColor: isSelected ? "#eff6ff" : "var(--card-bg)",
+                            border: isSelected ? "2px solid var(--brand-primary, #3b82f6)" : "1px solid var(--border-color)",
+                            backgroundColor: isSelected ? "var(--brand-bg, #eff6ff)" : "var(--card-bg)",
                             cursor: "pointer",
                             transition: "all 0.2s ease",
                             boxShadow: isSelected ? "0 2px 8px rgba(59, 130, 246, 0.15)" : "none"
@@ -632,9 +626,9 @@ export default function DailyScenario({ onBackToDashboard }) {
                             name={`scenario-day-${selectedDay}`}
                             checked={isSelected}
                             onChange={() => setSelectedOptionId(option.id)}
-                            style={{ marginTop: "3px", accentColor: "#2563eb", width: "18px", height: "18px", cursor: "pointer" }}
+                            style={{ marginTop: "3px", accentColor: "var(--brand-primary, #2563eb)", width: "18px", height: "18px", cursor: "pointer" }}
                           />
-                          <span style={{ fontSize: "14px", color: isSelected ? "#1e40af" : "var(--text-color)", fontWeight: isSelected ? 600 : 400, lineHeight: "1.5", flex: 1 }}>
+                          <span style={{ fontSize: "14px", color: isSelected ? "var(--brand-primary, #1e40af)" : "var(--text-color)", fontWeight: isSelected ? 600 : 400, lineHeight: "1.5", flex: 1 }}>
                             {option.text}
                           </span>
                         </div>
@@ -667,20 +661,20 @@ export default function DailyScenario({ onBackToDashboard }) {
                   <div style={{
                     padding: "16px 20px",
                     borderRadius: "12px",
-                    backgroundColor: chosenOption?.isCorrect ? "#f0fdf4" : chosenOption?.feedbackType === "warning" ? "#fffbeb" : "#fef2f2",
+                    backgroundColor: chosenOption?.isCorrect ? "var(--success-bg, #f0fdf4)" : chosenOption?.feedbackType === "warning" ? "var(--warning-bg, #fffbeb)" : "var(--error-bg, #fef2f2)",
                     border: "1px solid",
-                    borderColor: chosenOption?.isCorrect ? "#86efac" : chosenOption?.feedbackType === "warning" ? "#fde68a" : "#fca5a5",
+                    borderColor: chosenOption?.isCorrect ? "var(--success-border, #86efac)" : chosenOption?.feedbackType === "warning" ? "var(--warning-border, #fde68a)" : "var(--error-border, #fca5a5)",
                     display: "flex",
                     alignItems: "center",
                     gap: "12px"
                   }}>
-                    {chosenOption?.isCorrect ? <CheckCircle2 size={24} color="#16a34a" /> : chosenOption?.feedbackType === "warning" ? <AlertTriangle size={24} color="#d97706" /> : <XCircle size={24} color="#dc2626" />}
+                    {chosenOption?.isCorrect ? <CheckCircle2 size={24} color="var(--success, #16a34a)" /> : chosenOption?.feedbackType === "warning" ? <AlertTriangle size={24} color="var(--warning, #d97706)" /> : <XCircle size={24} color="var(--error, #dc2626)" />}
                     <div>
                       <h4 style={{
                         margin: 0,
                         fontSize: "16px",
                         fontWeight: "800",
-                        color: chosenOption?.isCorrect ? "#15803d" : chosenOption?.feedbackType === "warning" ? "#b45309" : "#b91c1c"
+                        color: chosenOption?.isCorrect ? "var(--success, #15803d)" : chosenOption?.feedbackType === "warning" ? "var(--warning, #b45309)" : "var(--error, #b91c1c)"
                       }}>
                         {chosenOption?.feedbackTitle || "DECISION SUBMITTED"}
                       </h4>
@@ -727,7 +721,7 @@ export default function DailyScenario({ onBackToDashboard }) {
                     alignItems: "center",
                     gap: "12px"
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#16a34a", fontWeight: "700", fontSize: "15px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success, #16a34a)", fontWeight: "700", fontSize: "15px" }}>
                       <CheckCircle size={20} /> Day {selectedDay} Simulation Complete
                     </div>
                     
@@ -775,42 +769,42 @@ export default function DailyScenario({ onBackToDashboard }) {
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
                   <span>Completed Scenarios</span>
-                  <span style={{ color: "#2563eb" }}>{completedCount} / 30</span>
+                  <span style={{ color: "var(--brand-primary, #2563eb)" }}>{completedCount} / 30</span>
                 </div>
-                <div style={{ height: "8px", width: "100%", background: "#f1f5f9", borderRadius: "4px", overflow: "hidden" }}>
+                <div style={{ height: "8px", width: "100%", background: "var(--bg-surface-elevated, #f1f5f9)", borderRadius: "4px", overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${(completedCount / 30) * 100}%`, background: "linear-gradient(to right, #3b82f6, #6366f1)", borderRadius: "4px" }}></div>
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "4px" }}>
-                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Current Day</div>
                   <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--text-primary, #0f172a)", marginTop: "2px" }}>Day {selectedDay}</div>
                 </div>
-                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)" }}>
                   <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>Streak</div>
-                  <div style={{ fontSize: "18px", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>{completedCount} Days</div>
+                  <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--success, #16a34a)", marginTop: "2px" }}>{completedCount} Days</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Guidance Card */}
-          <div className="card" style={{ padding: "20px", background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
-            <h4 style={{ margin: "0 0 10px 0", color: "#15803d", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+          <div className="card" style={{ padding: "20px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "var(--success, #15803d)", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
               <Lightbulb size={18} /> Workplace Engineering Tip
             </h4>
-            <p style={{ margin: 0, fontSize: "13px", color: "#166534", lineHeight: "1.6" }}>
+            <p style={{ margin: 0, fontSize: "13px", color: "var(--success, #166534)", lineHeight: "1.6" }}>
               Real-world engineering decisions involve trade-offs between speed, maintainability, and user experience. Always evaluate long-term impacts before writing code.
             </p>
           </div>
 
           {/* Rules & Guidelines Card */}
-          <div className="card" style={{ padding: "20px", background: "#fffbeb", border: "1px solid #fde68a" }}>
-            <h4 style={{ margin: "0 0 12px 0", color: "#b45309", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
-              <ShieldAlert size={18} color="#b45309" /> Simulation Rules
+          <div className="card" style={{ padding: "20px", background: "var(--warning-bg, #fffbeb)", border: "1px solid var(--warning-border, #fde68a)" }}>
+            <h4 style={{ margin: "0 0 12px 0", color: "var(--warning, #b45309)", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+              <ShieldAlert size={18} color="var(--warning, #b45309)" /> Simulation Rules
             </h4>
-            <ul style={{ margin: 0, paddingLeft: "18px", color: "#92400e", fontSize: "13px", lineHeight: "1.6" }}>
+            <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--warning, #92400e)", fontSize: "13px", lineHeight: "1.6" }}>
               <li><b>Daily Rhythm:</b> 1 scenario unlocks per day at 12:00 AM Midnight.</li>
               <li><b>Instant Feedback:</b> Detailed explanation follows every submitted decision.</li>
               <li><b>Impact:</b> Choices shape the scenario context for upcoming days.</li>

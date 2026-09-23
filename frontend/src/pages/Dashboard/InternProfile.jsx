@@ -38,8 +38,8 @@ export default function InternProfile() {
           style={{ 
             display: "flex", alignItems: "center", gap: "12px", padding: "12px", 
             borderRadius: "10px", border: "none", cursor: "pointer", fontSize: "0.95rem", fontWeight: 600,
-            background: activeSettingsTab === "personal" ? "#eff6ff" : "transparent",
-            color: activeSettingsTab === "personal" ? "#2563eb" : "#475569",
+            background: activeSettingsTab === "personal" ? "var(--brand-bg, #eff6ff)" : "transparent",
+            color: activeSettingsTab === "personal" ? "var(--brand-primary, #2563eb)" : "var(--text-secondary, #475569)",
             transition: "all 0.2s"
           }}
         >
@@ -51,8 +51,8 @@ export default function InternProfile() {
           style={{ 
             display: "flex", alignItems: "center", gap: "12px", padding: "12px", 
             borderRadius: "10px", border: "none", cursor: "pointer", fontSize: "0.95rem", fontWeight: 600,
-            background: activeSettingsTab === "security" ? "#eff6ff" : "transparent",
-            color: activeSettingsTab === "security" ? "#2563eb" : "#475569",
+            background: activeSettingsTab === "security" ? "var(--brand-bg, #eff6ff)" : "transparent",
+            color: activeSettingsTab === "security" ? "var(--brand-primary, #2563eb)" : "var(--text-secondary, #475569)",
             transition: "all 0.2s"
           }}
         >
@@ -64,8 +64,8 @@ export default function InternProfile() {
           style={{ 
             display: "flex", alignItems: "center", gap: "12px", padding: "12px", 
             borderRadius: "10px", border: "none", cursor: "pointer", fontSize: "0.95rem", fontWeight: 600,
-            background: activeSettingsTab === "notifications" ? "#eff6ff" : "transparent",
-            color: activeSettingsTab === "notifications" ? "#2563eb" : "#475569",
+            background: activeSettingsTab === "notifications" ? "var(--brand-bg, #eff6ff)" : "transparent",
+            color: activeSettingsTab === "notifications" ? "var(--brand-primary, #2563eb)" : "var(--text-secondary, #475569)",
             transition: "all 0.2s"
           }}
         >
@@ -84,22 +84,22 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your personal details and how they appear on your profile.</p>
             </div>
 
-            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               {/* Avatar Section */}
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
-                  <img src={profileImage} alt="Profile" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }} />
-                  <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--surface-blue, #EFF7FF)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                  <img src={profileImage} alt="Profile" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid var(--border-color, #e2e8f0)", objectFit: "cover" }} />
+                  <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f1f5f9)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary, #475569)", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
                     <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
-                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--surface-blue, #EFF7FF)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
-                    <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
+                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--bg-surface-elevated, #f1f5f9)", border: "1px solid var(--border-color, #cbd5e1)", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
+                    <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--error, #ef4444)", cursor: "pointer" }}>Remove</button>
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
+                  <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-muted, #94a3b8)" }}>JPG, GIF or PNG. Max size of 5MB.</p>
                 </div>
               </div>
 
@@ -107,65 +107,65 @@ export default function InternProfile() {
               <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>First Name</label>
+                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Last Name</label>
+                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "16px" }}>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
-                    <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <Mail size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>GitHub ID</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>GitHub ID</label>
                     <div style={{ position: "relative" }}>
-                      <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <Code2 size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Institution</label>
                     <div style={{ position: "relative" }}>
-                      <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <Building2 size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
-                      <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <Briefcase size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Location</label>
                     <div style={{ position: "relative" }}>
-                      <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <MapPin size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "20px" }}>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }}></textarea>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Bio</label>
+                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none", background: "transparent" }}></textarea>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
-                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid var(--border-color, #e2e8f0)", paddingTop: "16px" }}>
+                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-secondary, #475569)", cursor: "pointer" }}>Cancel</button>
+                  <button type="submit" style={{ background: "var(--brand-primary, #2563eb)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                     <Save size={16} /> Save Changes
                   </button>
                 </div>
@@ -182,38 +182,38 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and secure your account.</p>
             </div>
 
-            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
               <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155" }}>Current Password</label>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)" }}>Current Password</label>
                       <button 
                         type="button" 
                         onClick={handleForgotPassword}
-                        style={{ background: "none", border: "none", padding: 0, fontSize: "0.8rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}
+                        style={{ background: "none", border: "none", padding: 0, fontSize: "0.8rem", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}
                       >
                         Forgot Password?
                       </button>
                     </div>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
                     
                     {resetEmailSent && (
-                      <div style={{ marginTop: "8px", padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div style={{ marginTop: "8px", padding: "8px 12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "6px", color: "var(--success, #166534)", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
                         <Mail size={14} /> Password reset link sent to your email!
                       </div>
                     )}
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "8px" }}>New Password</label>
+                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>Confirm New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "8px" }}>Confirm New Password</label>
+                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
                   </div>
-                  <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
+                  <button type="submit" style={{ background: "var(--brand-primary, #2563eb)", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
                     Update Password
                   </button>
                 </div>
@@ -232,7 +232,7 @@ export default function InternProfile() {
               <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Choose how you receive updates and alerts.</p>
             </div>
 
-            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
+            <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Email Notifications</h4>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -241,21 +241,21 @@ export default function InternProfile() {
                     <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Weekly Summary</h5>
                     <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Receive a weekly email summarizing your progress.</p>
                   </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
+                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Mentor Messages</h5>
                     <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Get notified when a mentor replies to your ticket.</p>
                   </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
+                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>New Airdrops</h5>
                     <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Alerts when a new bonus challenge is available.</p>
                   </div>
-                  <input type="checkbox" style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
+                  <input type="checkbox" style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
                 </div>
               </div>
             </div>

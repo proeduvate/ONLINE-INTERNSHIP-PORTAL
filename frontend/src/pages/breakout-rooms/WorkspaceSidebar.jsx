@@ -36,7 +36,7 @@ export default function WorkspaceSidebar({
             >
               <Volume2 size={18} /> {room.name}
               {isIntern && activeRoom === room.id && (
-                <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#f59e0b', color: '#fff', padding: '1px 5px', borderRadius: '8px' }}>You</span>
+                <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#f59e0b', color: 'var(--bg-surface)', padding: '1px 5px', borderRadius: '8px' }}>You</span>
               )}
             </div>
             {getRoomParticipants(room.id).map(p => (
@@ -59,7 +59,7 @@ export default function WorkspaceSidebar({
             >
               <Volume2 size={18} /> {room.name} {(room.isLocked || room.type === 'locked') && ' (Locked)'}
               {isIntern && activeRoom === room.id && (
-                <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#10b981', color: '#fff', padding: '1px 5px', borderRadius: '8px' }}>You</span>
+                <span style={{ marginLeft: 'auto', fontSize: '10px', backgroundColor: '#10b981', color: 'var(--bg-surface)', padding: '1px 5px', borderRadius: '8px' }}>You</span>
               )}
             </div>
             {getRoomParticipants(room.id).map(p => (
@@ -79,7 +79,7 @@ export default function WorkspaceSidebar({
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '13px', fontWeight: 'bold' }}>{isIntern ? 'You' : 'Ananya'}</span>
-            <span style={{ fontSize: '11px', color: '#5c5e66' }}>{isIntern ? 'Intern' : 'Mentor'}</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{isIntern ? 'Intern' : 'Mentor'}</span>
           </div>
         </div>
         <div className="br-user-controls">

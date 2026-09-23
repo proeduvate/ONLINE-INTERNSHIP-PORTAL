@@ -48,7 +48,7 @@ export default function MeetingArea({
           {onMinimize && (
             <button 
               onClick={onMinimize} 
-              style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "6px 12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "#475569", whiteSpace: "nowrap" }}
+              style={{ background: "var(--bg-surface)", border: "1px solid #e2e8f0", padding: "6px 12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap" }}
               title="Return to Dashboard (Keeps meeting active)"
             >
               <ArrowLeft size={16} /> Back
@@ -66,7 +66,7 @@ export default function MeetingArea({
           )}
         </div>
         <div className="br-header-right">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#5c5e66' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
             <Users size={18} /> {participants.length}
           </div>
           {!isIntern && (
@@ -85,8 +85,8 @@ export default function MeetingArea({
           {participants.map((p) => (
             <div key={p.id} className={`br-video-tile ${p.micOn ? 'speaking' : ''}`}>
               {p.camOn ? (
-                <div style={{ width: '100%', height: '100%', backgroundColor: '#313338', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: '#fff' }}>[Video Feed]</span>
+                <div style={{ width: '100%', height: '100%', backgroundColor: '#1e1f22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ color: '#ffffff' }}>[Video Feed]</span>
                 </div>
               ) : (
                 <div className="br-video-avatar">{p.avatar}</div>
@@ -137,7 +137,7 @@ export default function MeetingArea({
         <button className={`br-control-btn ${rightPanelMode === 'chat' ? 'active' : ''}`} onClick={() => setRightPanelMode(rightPanelMode === 'chat' ? 'closed' : 'chat')}>
           <MessageSquare size={20} />
         </button>
-        <div style={{ width: '1px', height: '32px', backgroundColor: '#d3d4d5', margin: '0 8px' }}></div>
+        <div style={{ width: '1px', height: '32px', backgroundColor: 'var(--border-color)', margin: '0 8px' }}></div>
         <button className="br-control-btn danger" style={{ borderRadius: '8px', width: 'auto', padding: '0 16px', gap: '8px' }} onClick={onLeave}>
           <LogOut size={20} /> Leave
         </button>

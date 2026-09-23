@@ -141,67 +141,233 @@
 }
 
 [data-theme="dark"] {
-  --bg-page: #09090b; /* Zinc 950 */
-  --background-color: var(--bg-page);
-  --background: var(--bg-page);
-  --bg-surface: #18181b; /* Zinc 900 */
-  --bg-surface-elevated: #27272a; /* Zinc 800 */
-  --bg-surface-glass: rgba(24, 24, 27, 0.8);
-  
-  --button-primary-bg: #3b82f6; /* Blue 500 */
-  --button-primary-text: #ffffff;
-  --button-secondary-bg: #27272a; /* Zinc 800 */
-  --button-secondary-text: #f4f4f5; /* Zinc 100 */
-  
-  --primary-color: #3b82f6; /* Blue 500 */
-  --primary-color-hover: #60a5fa; /* Blue 400 */
-  --secondary-color: #18181b; 
-  --secondary-color-hover: #27272a;
-  
-  --accent-color: #8b5cf6; /* Violet 500 */
-  --accent-color-hover: #a78bfa; /* Violet 400 */
 
-  --text-primary: #fafafa; /* Zinc 50 */
-  --text-secondary: #a1a1aa; /* Zinc 400 */
-  --text-tertiary: #71717a; /* Zinc 500 */
-  --text-muted: #71717a;
-  
-  --border-color: #27272a; /* Zinc 800 */
-  --border-color-hover: #3f3f46; /* Zinc 700 */
+  /* ─────────────────────────
+     PROEDUVATE BRAND (Vibrant, Glowing & Catchy)
+  ───────────────────────── */
 
-  --success-color: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.15);
-  
-  --warning-color: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.15);
-  
-  --error-color: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.15);
+  --brand-primary: #3B9BFF;
+  --brand-hover: #5DB0FF;
+  --brand-active: #0B82F6;
 
-  --info-color: #3b82f6;
-  --info-bg: rgba(59, 130, 246, 0.15);
+  --brand-300: #93C5FD;
+  --brand-400: #60A5FA;
+  --brand-500: #3B9BFF;
+  --brand-600: #0B82F6;
+
+  --brand-bg: #0C2847;
+  --brand-surface: #10335A;
+
+
+  /* ─────────────────────────
+     DARK FOUNDATION (Deep Obsidian Slate & Layered Surfaces)
+  ───────────────────────── */
+
+  --background-deep: #030712;
+  --background: #070F1E;
+
+  --surface-primary: #0D192B;
+  --surface-secondary: #13233A;
+  --surface-hover: #1A2F4C;
+  --surface-selected: #183659;
+  --surface-brand: #0E2B4B;
+
+
+  /* ─────────────────────────
+     TEXT (Stark Contrast & High Legibility)
+  ───────────────────────── */
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-disabled: #475569;
+  --text-placeholder: #64748B;
+  --text-inverse: #030712;
+
+
+  /* ─────────────────────────
+     BORDERS (Delicate Micro-Borders & Glow)
+  ───────────────────────── */
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: #1E3654;
+  --border-strong: #2B4C74;
+  --border-brand: rgba(59, 155, 255, 0.4);
+
+
+  /* ─────────────────────────
+     SUCCESS (Glowing Emerald)
+  ───────────────────────── */
+
+  --success: #34D399;
+  --success-dark: #10B981;
+  --success-bg: #064E3B;
+  --success-surface: #065F46;
+  --success-border: #059669;
+
+
+  /* ─────────────────────────
+     WARNING (Glowing Amber)
+  ───────────────────────── */
+
+  --warning: #FBBF24;
+  --warning-dark: #F59E0B;
+  --warning-bg: #78350F;
+  --warning-surface: #92400E;
+  --warning-border: #B45309;
+
+
+  /* ─────────────────────────
+     ERROR (Glowing Crimson)
+  ───────────────────────── */
+
+  --error: #F87171;
+  --error-dark: #EF4444;
+  --error-bg: #7F1D1D;
+  --error-surface: #991B1B;
+  --error-border: #DC2626;
+
+
+  /* ─────────────────────────
+     INFO (Glowing Cyan)
+  ───────────────────────── */
+
+  --info: #38BDF8;
+  --info-dark: #0284C7;
+  --info-bg: #0C4A6E;
+  --info-surface: #075985;
+  --info-border: #0284C7;
+
+
+  /* ─────────────────────────
+     AI (Glowing Violet)
+  ───────────────────────── */
+
+  --ai: #C084FC;
+  --ai-primary: #A855F7;
+  --ai-bg: #3B0764;
+  --ai-surface: #581C87;
+  --ai-border: #7E22CE;
+
+
+  /* ─────────────────────────
+     ASSESSMENT
+  ───────────────────────── */
+
+  --assessment: #818CF8;
+  --assessment-primary: #6366F1;
+  --assessment-bg: #1E1B4B;
+  --assessment-surface: #312E81;
+  --assessment-border: #4338CA;
+
+
+  /* ─────────────────────────
+     ACHIEVEMENT
+  ───────────────────────── */
+
+  --achievement: #FBBF24;
+  --achievement-dark: #F59E0B;
+  --achievement-bg: #451A03;
+  --achievement-surface: #78350F;
+  --achievement-border: #B45309;
+
+
+  /* ─────────────────────────
+     LEARNING
+  ───────────────────────── */
+
+  --learning: #3898FF;
+  --learning-bg: #0C2847;
+
+
+  /* ─────────────────────────
+     PRACTICE
+  ───────────────────────── */
+
+  --practice: #60A5FA;
+  --practice-bg: #0F335A;
+
+
+  /* ─────────────────────────
+     PROGRESS
+  ───────────────────────── */
+
+  --progress-track: #152B46;
+  --progress-fill: #3B9BFF;
+  --progress-complete: #34D399;
+  --progress-locked: #475569;
+
+
+  /* ─────────────────────────
+     CODE EDITOR
+  ───────────────────────── */
+
+  --code-background: #030712;
+  --code-surface: #070F1E;
+  --code-panel: #0D192B;
+  --code-border: #1E3654;
+  --code-text: #F8FAFC;
+
+  --gradient-primary: linear-gradient(135deg, #0B82F6 0%, #3B9BFF 100%);
+  --gradient-secondary: linear-gradient(135deg, #071325 0%, #0E294A 50%, #153C6C 100%);
+  --gradient-tertiary: linear-gradient(135deg, #0A1F38 0%, #0F335C 100%);
+  --gradient-soft-blue: linear-gradient(135deg, #0C2036 0%, #102A47 100%);
+  --gradient-hero: linear-gradient(135deg, #030712 0%, #071525 50%, #0B2D52 100%);
+
+  --shadow-glow: 0 0 25px rgba(59, 155, 255, 0.22), 0 8px 30px rgba(0, 0, 0, 0.45);
+
+  /* --- Compatibility Mappings for Existing Aliases --- */
+  --bg-page: var(--background);
+  --background-color: var(--background);
+  --bg-surface: var(--surface-primary);
+  --bg-surface-elevated: var(--surface-secondary);
+  --bg-surface-glass: rgba(13, 25, 43, 0.85);
+  
+  --button-primary-bg: var(--brand-primary);
+  --button-primary-text: var(--text-inverse);
+  --button-secondary-bg: var(--surface-secondary);
+  --button-secondary-text: var(--text-primary);
+  
+  --primary-color: var(--brand-primary);
+  --primary-color-hover: var(--brand-hover);
+  --secondary-color: var(--surface-primary);
+  --secondary-color-hover: var(--surface-hover);
+  
+  --accent-color: var(--ai-primary);
+  --accent-color-hover: var(--ai);
+
+  --text-tertiary: var(--text-muted);
+  
+  --border-color: var(--border-default);
+  --border-color-hover: var(--border-strong);
+
+  --success-color: var(--success);
+  --warning-color: var(--warning);
+  --error-color: var(--error);
+  --info-color: var(--info);
 
   /* Professional Dark Theme Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-elevated: var(--shadow-glow);
 
   /* Dashboard specific aliases for Dark Theme */
-  --primary-dark: #3b82f6;
-  --primary-darker: #2563eb;
-  --primary-darkest: #1d4ed8;
-  --text-dark: #e4e4e7;
-  --text-darker: #fafafa;
-  --text-gray: #a1a1aa;
-  --text-slate-light: #71717a;
-  --bg-light: #18181b;
-  --bg-gray-lighter: #27272a;
-  --bg-blue-light: rgba(59, 130, 246, 0.1); 
-  --border-blue-light: rgba(59, 130, 246, 0.2);
-  --border-gray-dark: #27272a;
+  --primary-dark: var(--brand-primary);
+  --primary-darker: var(--brand-active);
+  --primary-darkest: var(--brand-active);
+  --text-dark: var(--text-primary);
+  --text-darker: var(--text-primary);
+  --text-gray: var(--text-secondary);
+  --text-slate-light: var(--text-muted);
+  --bg-light: var(--surface-primary);
+  --bg-gray-lighter: var(--surface-secondary);
+  --bg-blue-light: var(--surface-brand);
+  --border-blue-light: var(--border-strong);
+  --border-gray-dark: var(--border-subtle);
   
   /* Additional overrides */
-  --card-bg: #18181b;
+  --card-bg: var(--surface-primary);
 }
+
 
