@@ -1057,10 +1057,11 @@ def create_submission(
         if previous_task:
             prev_submission = db.query(models.Submission).filter(
                 models.Submission.intern_id == current_user.id,
-                models.Submission.task_id == previous_task.id
-            ).first()
+                models.Submission.task_id == previous_task.id,
+                models.Submission.status.in_(["submitted", "approved"])
+            ).order_by(models.Submission.id.desc()).first()
 
-        if not prev_submission or prev_submission.status not in ["submitted", "approved"]:
+        if not prev_submission:
             raise HTTPException(
                 status_code=403,
                 detail="This task is locked until the previous day's task has been completed and submitted"
@@ -1196,7 +1197,6 @@ def create_submission(
             }) if runtime_result else ai_eval_result["feedback"]
             
         existing.status = "submitted"
-        existing.filename = file_name
         existing.submitted_at = datetime.utcnow()
         existing.attendance_marked = True
         db.add(existing)
@@ -1214,7 +1214,6 @@ def create_submission(
                 "ai_analysis": ai_eval_result,
                 "runtime_evaluation": runtime_result
             }) if runtime_result else ai_eval_result["feedback"],
-            filename=file_name,
             attendance_marked=True
         )
         db.add(new_sub)

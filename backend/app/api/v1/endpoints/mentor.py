@@ -9,6 +9,8 @@ from pydantic import BaseModel
 from app.db.session import get_db
 from app import models
 from app.dependencies.auth import get_current_user
+from app.services.scoring_service import calculate_final_grade
+from app.schemas.scoring import MentorEvaluationUpdate
 
 router = APIRouter(prefix="/mentor", tags=["Mentor Dashboard"])
 
@@ -121,6 +123,19 @@ def get_mentor_interns(db: Session = Depends(get_db), current_user: models.User 
             "weakAreas": weak_areas,
             "batch": i.batch.name if i.batch else "Batch A"
         })
+        
+        evaluation = calculate_final_grade(db, i)
+        if evaluation:
+            result[-1]["final_evaluation"] = {
+                "mcq_final_mark": evaluation.mcq_final_mark,
+                "code_final_mark": evaluation.code_final_mark,
+                "airdrop_final_mark": evaluation.airdrop_final_mark,
+                "mentor_evaluation_mark": evaluation.mentor_evaluation_mark,
+                "final_score": evaluation.final_score,
+                "grade": evaluation.grade,
+                "is_completed": evaluation.is_completed
+            }
+        
     return result
 
 @router.get("/submissions")
@@ -219,3 +234,29 @@ def create_mentor_meeting(meeting: MeetingCreate, db: Session = Depends(get_db),
         "time": meeting.time,
         "status": "Scheduled"
     }
+
+@router.put("/interns/{intern_id}/mentor-evaluation")
+def update_mentor_evaluation(intern_id: int, eval_data: MentorEvaluationUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if current_user.role != models.UserRole.MENTOR:
+        raise HTTPException(status_code=403, detail="Only mentors can submit final evaluations")
+
+    intern = db.query(models.User).filter(models.User.id == intern_id, models.User.role == models.UserRole.INTERN).first()
+    if not intern:
+        raise HTTPException(status_code=404, detail="Intern not found")
+        
+    # Check if mentor is authorized (optional, assuming they are if they have the ID)
+    if intern.mentor_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to evaluate this intern")
+        
+    evaluation = db.query(models.FinalEvaluation).filter(models.FinalEvaluation.intern_id == intern.id).first()
+    if not evaluation:
+        evaluation = models.FinalEvaluation(intern_id=intern.id)
+        db.add(evaluation)
+        
+    evaluation.mentor_evaluation_mark = eval_data.mentor_evaluation_mark
+    db.commit()
+    
+    # Recalculate with the new mark
+    calculate_final_grade(db, intern, force_recalculate=True)
+    return {"message": "Mentor evaluation submitted successfully"}
+

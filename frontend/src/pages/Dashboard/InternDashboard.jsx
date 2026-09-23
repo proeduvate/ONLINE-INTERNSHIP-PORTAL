@@ -2416,7 +2416,8 @@ export default function InternDashboard() {
                         const dayNum = idx + 1;
                         const x = ((dayNum - 1) / (maxDays - 1)) * 600;
                         const score = sub.final_score || 0;
-                        const y = 160 - (score / 100) * 160;
+                        const boundedScore = Math.min(100, score);
+                        const y = 160 - (boundedScore / 100) * 160;
                         return { x, y, label: `Day ${dayNum}`, value: score };
                       });
                       if (points[0].x !== 0) {

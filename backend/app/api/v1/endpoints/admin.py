@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 from app import models
 from app.db import session as database
 from app.dependencies.auth import get_current_user
+from app.services.scoring_service import calculate_final_grade, bulk_calculate_final_grades
+from app.schemas.scoring import FinalEvaluationResponse
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -74,3 +76,42 @@ def get_admin_dashboard_stats(
         "avg_performance": avg_performance,
         "batch_progress": batch_progress
     }
+
+@router.get("/final-evaluations", response_model=List[FinalEvaluationResponse])
+def get_final_evaluations(db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_user)):
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access Denied: Only Admins and Mentors can view final evaluations"
+        )
+    
+    interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+    results = []
+    
+    # Use the bulk calculation method to avoid N+1 queries
+    evaluations = bulk_calculate_final_grades(db, interns)
+    
+    # Create a map for quick lookup
+    evals_by_intern = {ev.intern_id: ev for ev in evaluations if ev}
+    
+    for intern in interns:
+        evaluation = evals_by_intern.get(intern.id)
+        # Only show interns who have completed their 30-day requirement
+        if evaluation and evaluation.is_completed:
+            results.append({
+                "intern_id": intern.id,
+                "intern_name": intern.name,
+                "mcq_final_mark": evaluation.mcq_final_mark,
+                "code_final_mark": evaluation.code_final_mark,
+                "airdrop_final_mark": evaluation.airdrop_final_mark,
+                "mentor_evaluation_mark": evaluation.mentor_evaluation_mark,
+                "final_score": evaluation.final_score,
+                "grade": evaluation.grade,
+                "is_completed": evaluation.is_completed
+            })
+            
+    # Sort results by final score descending
+    results.sort(key=lambda x: x.get("final_score") or 0, reverse=True)
+    
+    return results
+

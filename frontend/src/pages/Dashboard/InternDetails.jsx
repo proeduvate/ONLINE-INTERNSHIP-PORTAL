@@ -1,4 +1,4 @@
-﻿import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, Award, Lock, Target, Zap, Users, Activity, FileCode, Database, Image, Folder, ExternalLink, Download, Copy, X } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";

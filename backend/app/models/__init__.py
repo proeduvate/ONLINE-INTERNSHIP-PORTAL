@@ -644,3 +644,38 @@ class DomainCodeAssessment(Base):
     requirements = Column(Text, nullable=True)  # JSON list of requirement strings
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+#    30-DAY FINAL EVALUATION MODELS
+# ==========================================
+
+class FinalGradeConfig(Base):
+    __tablename__ = "final_grade_config"
+
+    id = Column(Integer, primary_key=True, index=True)
+    mcq_weight = Column(Float, default=20.0)
+    code_weight = Column(Float, default=35.0)
+    airdrop_weight = Column(Float, default=15.0)
+    mentor_weight = Column(Float, default=30.0)
+    grade_ranges_json = Column(Text, default='{"A+": 90, "A": 80, "B+": 70, "B": 60, "C": 50}')
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class FinalEvaluation(Base):
+    __tablename__ = "final_evaluations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    
+    mcq_final_mark = Column(Float, nullable=True)
+    code_final_mark = Column(Float, nullable=True)
+    airdrop_final_mark = Column(Float, nullable=True)
+    mentor_evaluation_mark = Column(Float, nullable=True) # Max 30
+    
+    final_score = Column(Float, nullable=True) # Out of 100
+    grade = Column(String(5), nullable=True)
+    
+    is_completed = Column(Boolean, default=False)
+    calculated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    intern = relationship("User", foreign_keys=[intern_id])
