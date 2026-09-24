@@ -21,80 +21,311 @@ function InteractiveLab({ interaction, onComplete }) {
   const [input, setInput] = useState('');
   const [status, setStatus] = useState('idle');
   const [added, setAdded] = useState([]);
+  const [order, setOrder] = useState([]);
+  const [explored, setExplored] = useState(new Set());
+
+  useEffect(() => {
+    setSelected(null);
+    setValue(50);
+    setChosen([]);
+    setStep(0);
+    setInput('');
+    setStatus('idle');
+    setAdded([]);
+    setExplored(new Set());
+    if (interaction?.family === 'reorder') {
+      setOrder([...(interaction.config?.goal || ['Step 1', 'Step 2', 'Step 3'])].reverse());
+    } else {
+      setOrder([]);
+    }
+  }, [interaction]);
 
   const { mode, family, config } = interaction;
   const finish = () => onComplete();
 
-  if (family === 'click-map') {
+  if (family === 'click-map' || family === 'anatomy') {
     const parts = config?.items || ['Target A', 'Target B', 'Target C'];
     const descriptions = config?.descriptions || [];
-    return <div className="lab-content"><div className="mini-stage map-stage">{parts.map((x, i) => <button key={x} className={selected === i ? 'picked' : ''} onClick={() => setSelected(i)}>{x}</button>)}</div>{selected !== null && <div className="feedback"><b>{parts[selected]}</b><span>{descriptions[selected] || 'Explore the selected element.'}</span></div>}<CompleteButton disabled={selected === null} onClick={finish} /></div>;
-  }
-
-  if (family === 'anatomy') {
-    const parts = config?.items || ['Part A', 'Part B', 'Part C'];
-    const descriptions = config?.descriptions || [];
-    return <div className="lab-content"><div className="code anatomy-code">{parts.map((x, i) => <button key={x} className={selected === i ? 'picked' : ''} onClick={() => setSelected(i)}>{x}</button>)}</div>{selected !== null && <div className="feedback"><b>{parts[selected]}</b><span>{descriptions[selected] || 'Inspect the component.'}</span></div>}<CompleteButton disabled={selected === null} onClick={finish} /></div>;
+    const isCorrect = explored.size === parts.length;
+    return (
+      <div className="lab-content">
+        <div className={family === 'click-map' ? "mini-stage map-stage" : "code anatomy-code"}>
+          {parts.map((x, i) => (
+            <button key={x} className={selected === i ? 'picked' : ''} onClick={() => { setSelected(i); setExplored(new Set([...explored, i])); }}>
+              {x}
+            </button>
+          ))}
+        </div>
+        {selected !== null && (
+          <div className="feedback">
+            <b>{parts[selected]}</b>
+            <span>{descriptions[selected] || 'Explore the selected element.'}</span>
+          </div>
+        )}
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Exploration complete!' : `Explore all ${parts.length} items to continue.`}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'compare') {
     const choices = config?.choices || ['Option A', 'Option B'];
-    return <div className="lab-content"><div className="compare-grid">{choices.map((x, i) => <button key={x} className={selected === i ? 'compare-picked' : ''} onClick={() => setSelected(i)}><span>{x}</span></button>)}</div><CompleteButton disabled={selected === null} onClick={finish} /></div>;
+    const answer = config?.answer;
+    const isCorrect = answer ? choices[selected] === answer : selected !== null;
+    return (
+      <div className="lab-content">
+        <div className="compare-grid">
+          {choices.map((x, i) => (
+            <button key={x} className={selected === i ? 'compare-picked' : ''} onClick={() => setSelected(i)}>
+              <span>{x}</span>
+            </button>
+          ))}
+        </div>
+        <div className={isCorrect && selected !== null ? 'success' : 'feedback'}>
+          {selected === null ? 'Select an option.' : isCorrect ? 'Correct!' : 'Incorrect, try again.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'reorder') {
     const goal = config?.goal || ['Step 1', 'Step 2', 'Step 3'];
-    const current = goal.slice();
-    const ok = true; // Simplified for demo
-    return <div className="lab-content"><div className="reorder-list">{current.map((x, i) => <div className="reorder-row" key={x}><span>{i + 1}</span><b>{x}</b></div>)}</div><div className="feedback">Organize items logically.</div><CompleteButton disabled={false} onClick={finish} /></div>;
+    const current = order.length ? order : goal.slice().reverse();
+    
+    const moveUp = (idx) => {
+      if (idx === 0) return;
+      const newOrder = [...current];
+      [newOrder[idx - 1], newOrder[idx]] = [newOrder[idx], newOrder[idx - 1]];
+      setOrder(newOrder);
+    };
+    
+    const moveDown = (idx) => {
+      if (idx === current.length - 1) return;
+      const newOrder = [...current];
+      [newOrder[idx + 1], newOrder[idx]] = [newOrder[idx], newOrder[idx + 1]];
+      setOrder(newOrder);
+    };
+
+    const isCorrect = JSON.stringify(current) === JSON.stringify(goal);
+
+    return (
+      <div className="lab-content">
+        <div className="reorder-list">
+          {current.map((x, i) => (
+            <div className="reorder-row" key={x} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>{i + 1}</span>
+              <b style={{ flex: 1 }}>{x.replace(/^\d+\.\s*/, '')}</b>
+              <button onClick={() => moveUp(i)} disabled={i === 0} style={{ padding: '2px 8px', cursor: i === 0 ? 'not-allowed' : 'pointer' }}>↑</button>
+              <button onClick={() => moveDown(i)} disabled={i === current.length - 1} style={{ padding: '2px 8px', cursor: i === current.length - 1 ? 'not-allowed' : 'pointer' }}>↓</button>
+            </div>
+          ))}
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Correctly ordered!' : 'Organize items logically.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'builder') {
     const options = config?.options || ['Block 1', 'Block 2', 'Block 3'];
-    return <div className="lab-content"><div className="builder-preview">{added.length ? added.map(x => <span className="builder-chip" key={x}>{x}</span>) : <span className="muted">Your composition appears here</span>}</div><div className="token-bank">{options.map(x => <button key={x} className={added.includes(x) ? 'picked' : ''} onClick={() => setAdded(a => a.includes(x) ? a.filter(v => v !== x) : [...a, x])}>{x}</button>)}</div><CompleteButton disabled={added.length < 1} onClick={finish} /></div>;
+    const required = config?.required || [];
+    const isCorrect = required.length 
+      ? JSON.stringify(added) === JSON.stringify(required) 
+      : added.length > 0;
+
+    return (
+      <div className="lab-content">
+        <div className="builder-preview">
+          {added.length ? added.map((x, i) => <span className="builder-chip" key={`${x}-${i}`}>{x}</span>) : <span className="muted">Your composition appears here</span>}
+        </div>
+        <div className="token-bank">
+          {options.map(x => (
+            <button key={x} className={added.includes(x) ? 'picked' : ''} onClick={() => setAdded(a => a.includes(x) ? a.filter(v => v !== x) : [...a, x])}>
+              {x}
+            </button>
+          ))}
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Correct composition!' : 'Build the correct structure.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'slider') {
-    return <div className="lab-content"><div className="control-grid"><label>Value<input type="range" min={config?.min || 0} max={config?.max || 100} value={value} onChange={e => setValue(+e.target.value)} /><strong>{value}</strong></label></div><div className="preview-card" style={{ padding: `${8 + value / 3}px` }}><Pill>LIVE PREVIEW</Pill><p>Change the controls and watch the visual result update.</p></div><CompleteButton disabled={value === 50} onClick={finish} /></div>;
+    const target = config?.target;
+    const isCorrect = target !== undefined ? value === target : value !== 50;
+    return (
+      <div className="lab-content">
+        <div className="control-grid">
+          <label>Value<input type="range" min={config?.min || 0} max={config?.max || 100} value={value} onChange={e => setValue(+e.target.value)} /><strong>{value}</strong></label>
+        </div>
+        <div className="preview-card" style={{ padding: `${8 + value / 3}px` }}>
+          <Pill>LIVE PREVIEW</Pill>
+          <p>Change the controls and watch the visual result update.</p>
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Value set successfully!' : 'Adjust the value.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'live-preview') {
     const parts = config?.items || ['Variant 1', 'Variant 2'];
-    return <div className="lab-content"><div className="segmented">{parts.map((t, i) => <button key={t} className={selected === i ? 'picked' : ''} onClick={() => setSelected(i)}>{t}</button>)}</div><div className="browser-preview">{parts[selected || 0]} Preview</div><CompleteButton disabled={selected === null} onClick={finish} /></div>;
+    const isCorrect = explored.size === parts.length;
+    return (
+      <div className="lab-content">
+        <div className="segmented">
+          {parts.map((t, i) => (
+            <button key={t} className={selected === i ? 'picked' : ''} onClick={() => { setSelected(i); setExplored(new Set([...explored, i])); }}>
+              {t}
+            </button>
+          ))}
+        </div>
+        <div className="browser-preview">{parts[selected || 0]} Preview</div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Exploration complete!' : `Explore all ${parts.length} variants.`}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'simulator') {
-    return <div className="lab-content"><div className="api-card"><div className="status-dot" data-state={status} /><strong>{status.toUpperCase()}</strong><p>Simulated state lifecycle.</p></div><div className="token-bank"><button onClick={() => setStatus('pending')}>Start</button><button onClick={() => setStatus('fulfilled')}>Success</button></div><CompleteButton disabled={status === 'idle'} onClick={finish} /></div>;
+    const target = config?.target || 'fulfilled';
+    const isCorrect = status === target;
+    return (
+      <div className="lab-content">
+        <div className="api-card">
+          <div className="status-dot" data-state={status} />
+          <strong>{status.toUpperCase()}</strong>
+          <p>Simulated state lifecycle.</p>
+        </div>
+        <div className="token-bank">
+          <button onClick={() => setStatus('pending')}>Start</button>
+          <button onClick={() => setStatus('fulfilled')}>Success</button>
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Simulation complete!' : `Reach the ${target} state.`}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
-  if (family === 'timeline') {
-    const labels = config?.labels || ['Start', 'End'];
-    return <div className="lab-content"><div className="timeline">{labels.map((x, i) => <button key={x} className={step === i ? 'step-active' : ''} onClick={() => setStep(i)}><span>{i + 1}</span>{x}</button>)}</div><div className="feedback">Advance one step at a time.</div><CompleteButton disabled={step !== labels.length - 1} onClick={finish} /></div>;
+  if (family === 'timeline' || family === 'flow') {
+    const items = config?.labels || config?.nodes || ['Start', 'End'];
+    const isCorrect = step === items.length - 1;
+    return (
+      <div className="lab-content">
+        <div className={family === 'timeline' ? "timeline" : "event-path"}>
+          {items.map((x, i) => (
+            <button key={x} className={(family === 'timeline' ? step === i : step >= i) ? 'step-active' : ''} onClick={() => setStep(i)}>
+              {family === 'timeline' ? <span>{i + 1}</span> : null}
+              {x}
+            </button>
+          ))}
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Sequence complete!' : 'Advance to the end.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'debug') {
-    return <div className="lab-content"><div className="debug-console"><code>expected: {config?.target || 100}</code><code>actual: {value}</code></div><label className="range-label">Fix value<input type="range" min="0" max="200" value={value} onChange={e => setValue(+e.target.value)} /><strong>{value}</strong></label><CompleteButton disabled={value !== (config?.target || 100)} onClick={finish} /></div>;
-  }
-
-  if (family === 'flow') {
-    const nodes = config?.nodes || ['Start', 'Condition', 'End'];
-    return <div className="lab-content"><div className="event-path">{nodes.map((n, i) => <button key={n} className={step >= i ? 'step-active' : ''} onClick={() => setStep(i)}>{n}</button>)}</div><div className="feedback">Trace the flow path.</div><CompleteButton disabled={step < nodes.length - 1} onClick={finish} /></div>;
+    const target = config?.target || 100;
+    const isCorrect = value === target;
+    return (
+      <div className="lab-content">
+        <div className="debug-console">
+          <code>expected: {target}</code>
+          <code>actual: {value}</code>
+        </div>
+        <label className="range-label">
+          Fix value
+          <input type="range" min="0" max="200" value={value} onChange={e => setValue(+e.target.value)} />
+          <strong>{value}</strong>
+        </label>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Bug fixed!' : 'Adjust the value to match the expected output.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'tree') {
     const nodes = config?.nodes || ['Root', 'Child A', 'Child B'];
-    return <div className="lab-content"><div className="tree">{nodes.map((n, i) => <button key={n} style={{ marginLeft: i * 18 }} className={selected === i ? 'picked' : ''} onClick={() => setSelected(i)}>↳ {n}</button>)}</div><CompleteButton disabled={selected === null} onClick={finish} /></div>;
+    const isCorrect = explored.size === nodes.length;
+    return (
+      <div className="lab-content">
+        <div className="tree">
+          {nodes.map((n, i) => (
+            <button key={n} style={{ marginLeft: i * 18 }} className={selected === i ? 'picked' : ''} onClick={() => { setSelected(i); setExplored(new Set([...explored, i])); }}>
+              ↳ {n}
+            </button>
+          ))}
+        </div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Tree fully explored!' : `Explore all ${nodes.length} nodes.`}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'form') {
-    return <div className="lab-content"><label className="field">Input<input value={input} onChange={e => setInput(e.target.value)} placeholder="Type here..." /></label><div className={input ? 'success' : 'feedback'}>{input ? 'Valid input.' : 'Edit the field.'}</div><CompleteButton disabled={!input} onClick={finish} /></div>;
+    const target = config?.target;
+    const isCorrect = target ? input === target : input.length > 0;
+    return (
+      <div className="lab-content">
+        <label className="field">
+          Input
+          <input value={input} onChange={e => setInput(e.target.value)} placeholder="Type here..." />
+        </label>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Valid input!' : target ? `Input must exactly match: ${target}` : 'Edit the field.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
   if (family === 'lab') {
-    return <div className="lab-content"><textarea className="code-input" value={input || config?.code} onChange={e => setInput(e.target.value)} spellCheck="false" /><div className="json-preview">Interactive Lab Session</div><CompleteButton disabled={!input} onClick={finish} /></div>;
+    const target = config?.target;
+    const isCorrect = target ? input.includes(target) : input.length > 0;
+    return (
+      <div className="lab-content">
+        <textarea className="code-input" value={input || config?.code} onChange={e => setInput(e.target.value)} spellCheck="false" />
+        <div className="json-preview">Interactive Lab Session</div>
+        <div className={isCorrect ? 'success' : 'feedback'}>
+          {isCorrect ? 'Lab complete!' : 'Complete the required exercise.'}
+        </div>
+        <CompleteButton disabled={!isCorrect} onClick={finish} />
+      </div>
+    );
   }
 
-  return <div className="lab-content"><div className="stage"><Pill>INTERACTIVE</Pill><h3>{mode?.replaceAll('-', ' ')}</h3><p>Manipulate the example to learn the concept.</p></div><button onClick={finish}>Complete exploration</button></div>;
+  return (
+    <div className="lab-content">
+      <div className="stage">
+        <Pill>INTERACTIVE</Pill>
+        <h3>{mode?.replaceAll('-', ' ')}</h3>
+        <p>Manipulate the example to learn the concept.</p>
+      </div>
+      <button className="complete-btn" onClick={finish}>Complete exploration</button>
+    </div>
+  );
 }
 
 function Activity({ activity, done, locked, onComplete }) {
@@ -140,6 +371,9 @@ export default function InteractiveLearningDashboard() {
 
         // Sort by day
         curriculumList.sort((a, b) => a.day - b.day);
+
+        // Deduplicate by day
+        curriculumList = Array.from(new Map(curriculumList.map(c => [c.day, c])).values());
 
         // Fallback to static if empty for demo purposes
         if (curriculumList.length === 0) {
