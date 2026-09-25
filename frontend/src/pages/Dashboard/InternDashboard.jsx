@@ -12,6 +12,7 @@ import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
+import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
 export default function InternDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -357,6 +358,8 @@ export default function InternDashboard() {
           setActiveLearningTab("AI Client");
         } else if (parts[3] === "reading-materials") {
           setActiveLearningTab("Reading Materials");
+        } else if (parts[3] === "interactive") {
+          setActiveLearningTab("Interactive Learning");
         }
       } else if (tabName === "Tickets") {
         if (parts[3] === "new") {
@@ -1235,7 +1238,7 @@ export default function InternDashboard() {
             <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
               
               {/* Left Column: Main Learning Interface */}
-              <div style={{ flex: activeLearningTab === "AI Client" ? "1" : "2.2", width: activeLearningTab === "AI Client" ? "100%" : "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ flex: (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning") ? "1" : "2.2", width: (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning") ? "100%" : "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
                 
                 {/* Navigation Tabs */}
                 <div style={{ display: "flex", gap: "16px", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px", marginBottom: "8px", flexShrink: 0 }}>
@@ -1250,6 +1253,10 @@ export default function InternDashboard() {
                   <button onClick={() => navigate("/intern/learning/ai-client")} style={{ background: "none", border: "none", color: activeLearningTab === "AI Client" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <Bot size={16} /> AI Client Review
                     {activeLearningTab === "AI Client" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
+                  </button>
+                  <button onClick={() => navigate("/intern/learning/interactive")} style={{ background: "none", border: "none", color: activeLearningTab === "Interactive Learning" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                    <Play size={16} /> Interactive Learning
+                    {activeLearningTab === "Interactive Learning" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
                 </div>
 
@@ -1434,11 +1441,17 @@ export default function InternDashboard() {
                   </div>
                 )}
 
+                {activeLearningTab === "Interactive Learning" && (
+                  <div style={{ marginTop: "8px" }}>
+                    <InteractiveLearningDashboard />
+                  </div>
+                )}
+
 
               </div>
 
               {/* Right Column: Sidebar */}
-              {activeLearningTab !== "AI Client" && (
+              {(activeLearningTab !== "AI Client" && activeLearningTab !== "Interactive Learning") && (
                 <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
                 
                 {/* Assessment Card */}
@@ -2495,10 +2508,11 @@ export default function InternDashboard() {
     }
   };
 
-  if (activeTab === "Learning" && activeLearningTab === "AI Client") {
+  if (activeTab === "Learning" && (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning")) {
+    const isInteractive = activeLearningTab === "Interactive Learning";
     return (
-      <div style={{ height: "100vh", width: "100vw", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-color, #e2e8f0)", backgroundColor: "var(--card-bg, #ffffff)", display: "flex", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+      <div style={{ height: "100vh", width: "100vw", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ padding: "16px 24px", flexShrink: 0, borderBottom: "1px solid var(--border-color, #e2e8f0)", backgroundColor: "var(--card-bg, #ffffff)", display: "flex", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", zIndex: 10 }}>
           <button 
             onClick={() => navigate("/intern/learning/reading-materials")}
             style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary, #334155)", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
@@ -2508,8 +2522,8 @@ export default function InternDashboard() {
             <ArrowLeft size={16} /> Back to Learning Page
           </button>
         </div>
-        <div style={{ padding: "16px 24px", flex: 1, overflow: "hidden" }}>
-           <AIClientReview />
+        <div style={{ padding: isInteractive ? "0" : "16px 24px", flex: "1 1 0%", minHeight: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+           {isInteractive ? <InteractiveLearningDashboard /> : <AIClientReview />}
         </div>
       </div>
     );

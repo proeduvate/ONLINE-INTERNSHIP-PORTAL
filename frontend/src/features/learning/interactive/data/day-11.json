@@ -1,0 +1,97 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 11,
+  "topic": "CSS Positioning & Layout",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand position modes",
+    "Anchor elements",
+    "Use sticky positioning"
+  ],
+  "activities": [
+    {
+      "id": "d11-a01",
+      "type": "position-map",
+      "title": "Position Map",
+      "instruction": "Switch static, relative, absolute and fixed to see the reference frame change.",
+      "content": {
+        "concept": "Understand position modes",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "position-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Header Area",
+            "Main Content",
+            "Footer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d11-a02",
+      "type": "anchor",
+      "title": "Anchor Challenge",
+      "instruction": "Move a badge around a card using top/right/bottom/left controls.",
+      "content": {
+        "concept": "Anchor elements",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anchor",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d11-a03",
+      "type": "sticky",
+      "title": "Sticky Demo",
+      "instruction": "Scroll the mini-document and observe where sticky positioning takes effect.",
+      "content": {
+        "concept": "Use sticky positioning",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "sticky",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d11-a04",
+      "type": "debug",
+      "title": "Position Debugger",
+      "instruction": "Fix a badge that is positioned relative to the wrong ancestor.",
+      "content": {
+        "concept": "Understand position modes",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "position-debug",
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-11.json",
+  "practicalTaskRef": "practical-day-11.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

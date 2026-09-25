@@ -1,0 +1,98 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 17,
+  "topic": "DOM Manipulation",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand the DOM tree",
+    "Select elements",
+    "Change content"
+  ],
+  "activities": [
+    {
+      "id": "d17-a01",
+      "type": "dom-tree",
+      "title": "DOM Tree Explorer",
+      "instruction": "Click nodes in the tree to inspect their relationship.",
+      "content": {
+        "concept": "Understand the DOM tree",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-tree",
+        "family": "tree",
+        "config": {
+          "nodes": [
+            "document",
+            "main",
+            "section",
+            "button"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a02",
+      "type": "change",
+      "title": "Content Changer",
+      "instruction": "Edit text and attributes and apply the changes to the preview.",
+      "content": {
+        "concept": "Select elements",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-change",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d17-a03",
+      "type": "create",
+      "title": "Element Creator",
+      "instruction": "Create a new list item and append it to the DOM.",
+      "content": {
+        "concept": "Change content",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-create",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d17-a04",
+      "type": "guided-code",
+      "title": "DOM Code Runner",
+      "instruction": "Choose a selector and property to generate the matching DOM statement.",
+      "content": {
+        "concept": "Understand the DOM tree",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "dom-code",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-17.json",
+  "practicalTaskRef": "practical-day-17.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}
