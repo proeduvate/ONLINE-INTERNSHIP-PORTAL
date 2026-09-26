@@ -45,4 +45,7 @@ qrcode
 reportlab
 pillow
 httpx
+google-api-python-client
+google-auth
+
 
