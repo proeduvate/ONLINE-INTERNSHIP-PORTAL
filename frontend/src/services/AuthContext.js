@@ -13,13 +13,13 @@ export const AuthProvider = ({ children }) => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    let response = await fetch(`${API_BASE}/users/profile`, {
+                    let response = await fetch(`${API_BASE}/api/users/profile`, {
                         headers: {
                             'Authorization': `Bearer ${authToken}`
                         }
                     });
                     if (!response.ok) {
-                        response = await fetch(`${API_BASE}/profile`, {
+                        response = await fetch(`${API_BASE}/api/auth/me`, {
                             headers: {
                                 'Authorization': `Bearer ${authToken}`
                             }
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            let response = await fetch(`${API_BASE}/auth/login`, {
+            let response = await fetch(`${API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
-                response = await fetch(`${API_BASE}/login`, {
+                response = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
