@@ -96,6 +96,8 @@ app.include_router(meetings.router, prefix="/api/v1/meetings", tags=["Meetings"]
 app.include_router(meetings.router, prefix="/meetings", tags=["Meetings"])
 app.include_router(certificates.router)
 app.include_router(tasks.router)
+app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(tasks.router, prefix="/api")
 from routers import notifications
 app.include_router(notifications.router)
 
