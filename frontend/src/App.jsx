@@ -62,6 +62,14 @@ function App() {
               }
             />
             <Route
+              path="/intern/:tab"
+              element={
+                <ProtectedRoute roles={["intern"]}>
+                  <InternDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/intern/learning/normal"
               element={
                 <ProtectedRoute roles={["intern"]}>
@@ -86,6 +94,14 @@ function App() {
               }
             />
             <Route
+              path="/mentor/:tab"
+              element={
+                <ProtectedRoute roles={["mentor"]}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/mentor/breakout-rooms"
               element={
                 <ProtectedRoute roles={["mentor"]}>
@@ -103,6 +119,14 @@ function App() {
             />
             <Route
               path="/admin"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:tab"
               element={
                 <ProtectedRoute roles={["admin"]}>
                   <AdminDashboard />

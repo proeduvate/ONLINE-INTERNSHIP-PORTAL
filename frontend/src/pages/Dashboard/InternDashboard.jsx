@@ -8,6 +8,7 @@ import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
 import AIClientReview from "./AIClientReview";
 import AdminLeaderboard from "./AdminLeaderboard";
+import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import { Card, CardHeader, CardContent } from "../../components/ui/Card";
@@ -54,6 +55,8 @@ export default function InternDashboard() {
           setActiveLearningTab("Live Meetings");
         } else if (parts[3] === "ai-client") {
           setActiveLearningTab("AI Client");
+        } else if (parts[3] === "interactive" || parts[3] === "interactive-labs") {
+          setActiveLearningTab("Interactive Learning");
         } else if (parts[3] === "reading-materials") {
           setActiveLearningTab("Reading Materials");
         }
@@ -1358,7 +1361,7 @@ export default function InternDashboard() {
         }
 
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingBottom: "40px", fontFamily: "Inter, sans-serif" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingBottom: "40px", fontFamily: "Inter, sans-serif", height: "calc(100vh - 96px)", overflowY: "auto", overflowX: "hidden", boxSizing: "border-box", paddingRight: "8px" }}>
             <div className="hero-banner-card" style={{
               borderRadius: "16px",
               padding: "20px 24px",
@@ -1401,13 +1404,17 @@ export default function InternDashboard() {
             <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
 
               {/* Left Column: Main Learning Interface */}
-              <div style={{ flex: activeLearningTab === "AI Client" ? "1" : "2.2", width: activeLearningTab === "AI Client" ? "100%" : "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ flex: (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning") ? "1" : "2.2", width: (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning") ? "100%" : "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
 
                 {/* Navigation Tabs */}
                 <div style={{ display: "flex", gap: "16px", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px", marginBottom: "8px", flexShrink: 0 }}>
                   <button onClick={() => setActiveLearningTab("Reading Materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <BookOpen size={16} /> Reading Materials
                     {activeLearningTab === "Reading Materials" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
+                  </button>
+                  <button onClick={() => setActiveLearningTab("Interactive Learning")} style={{ background: "none", border: "none", color: activeLearningTab === "Interactive Learning" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                    <Sparkles size={16} /> Interactive Deck & Labs
+                    {activeLearningTab === "Interactive Learning" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
                   <button onClick={() => setActiveLearningTab("Live Meetings")} style={{ background: "none", border: "none", color: activeLearningTab === "Live Meetings" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <Calendar size={16} /> Live Meetings
@@ -1421,6 +1428,22 @@ export default function InternDashboard() {
 
                 {activeLearningTab === "Reading Materials" && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+                    {/* Interactive Learning Callout Banner */}
+                    <div style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)", borderRadius: "16px", padding: "18px 24px", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 10px 25px rgba(49, 46, 129, 0.25)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                        <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "rgba(255, 255, 255, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>
+                          <Sparkles size={24} color="#60a5fa" />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", fontWeight: 800, color: "#ffffff" }}>Interactive Learning Deck & Hands-On Labs</h4>
+                          <p style={{ margin: 0, fontSize: "13px", color: "#cbd5e1" }}>Experience step-by-step interactive widgets, architecture diagrams, and real-time code labs.</p>
+                        </div>
+                      </div>
+                      <button onClick={() => setActiveLearningTab("Interactive Learning")} style={{ background: "#3b82f6", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "10px", fontSize: "13px", fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap", boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)", transition: "all 0.2s" }}>
+                        Launch Interactive Deck &rarr;
+                      </button>
+                    </div>
 
                     {/* Document Viewer Mockup */}
                     <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", overflow: "hidden", position: "relative", boxShadow: "0 8px 30px rgba(0,0,0,0.05)", border: "1px solid var(--border-color, #e2e8f0)" }}>
@@ -1600,11 +1623,17 @@ export default function InternDashboard() {
                   </div>
                 )}
 
+                {activeLearningTab === "Interactive Learning" && (
+                  <div style={{ marginTop: "8px" }}>
+                    <InteractiveLearningDashboard />
+                  </div>
+                )}
+
 
               </div>
 
               {/* Right Column: Sidebar */}
-              {activeLearningTab !== "AI Client" && (
+              {activeLearningTab !== "AI Client" && activeLearningTab !== "Interactive Learning" && (
                 <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
 
                   {/* Assessment Card */}
@@ -2895,7 +2924,7 @@ export default function InternDashboard() {
       </header>
 
       {/* Main Workspace Content (Full Width) */}
-      <main style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
+      <main style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", padding: "12px 20px", width: "100%", boxSizing: "border-box" }}>
 
         {/* Content Box */}
         <div style={{ display: (isMeetingActive && !isMeetingMinimized) ? "flex" : "none", flex: 1, minHeight: 0, borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-sm)" }}>

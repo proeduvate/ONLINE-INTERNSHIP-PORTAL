@@ -24,7 +24,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
 # 1. Import the meetings router module
-from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates, batch_analytics, facts, leaderboard, simulation, tickets
+from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates, batch_analytics, facts, leaderboard, simulation, tickets, admin, mcq, mentor, questions, interactive_learning, normal_learning
 
 
 try:
@@ -86,33 +86,64 @@ app = FastAPI(
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
+
 app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
+app.include_router(submissions.router, prefix="/api/v1/submissions", tags=["Submissions"])
+
 app.include_router(airdrops.router, tags=["Airdrops"])
+app.include_router(airdrops.router, prefix="/api/v1", tags=["Airdrops"])
+
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
+
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api/v1", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="", tags=["Onboarding"])
+
 # Meetings uses a custom prefix internally for WS, but we'll register the router
 app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
 app.include_router(meetings.router, prefix="/api/v1/meetings", tags=["Meetings"])
 app.include_router(meetings.router, prefix="/meetings", tags=["Meetings"])
+
 app.include_router(certificates.router)
+app.include_router(certificates.router, prefix="/api/v1")
+
 app.include_router(tasks.router)
 app.include_router(tasks.router, prefix="/api/v1")
 app.include_router(tasks.router, prefix="/api")
+
 from routers import notifications
 app.include_router(notifications.router)
+app.include_router(notifications.router, prefix="/api/v1")
 
 app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
-app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
-app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
-app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
-app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
+app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
 
-
-app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
 app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
+app.include_router(facts.router, prefix="/api/v1", tags=["Facts"])
+
 app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
+app.include_router(leaderboard.router, prefix="/api/v1", tags=["Leaderboard"])
+
 app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
+app.include_router(simulation.router, prefix="/api/v1", tags=["Simulation"])
+
 app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
+app.include_router(tickets.router, prefix="/api/v1", tags=["Tickets"])
+
+app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
+app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])
+app.include_router(mentor.router, prefix="/api/v1", tags=["Mentor Dashboard"])
+
+app.include_router(questions.router, prefix="/api/v1", tags=["Questions"])
+app.include_router(questions.router, prefix="/api", tags=["Questions"])
+
+app.include_router(interactive_learning.router, prefix="/api/v1/learning/interactive", tags=["Interactive Learning"])
+app.include_router(interactive_learning.router, prefix="/api/learning/interactive", tags=["Interactive Learning"])
+
+app.include_router(normal_learning.router, prefix="/api/v1/learning/normal", tags=["Normal Learning"])
+app.include_router(normal_learning.router, prefix="/api/learning/normal", tags=["Normal Learning"])
 
 
 # CORS configuration
@@ -130,7 +161,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 Hours
 
-pwd_context = CryptContext(schemes=["bcrypt", "pbkdf2_sha256"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 # Ensure DB tables exist on startup
@@ -224,17 +255,19 @@ scheduler.start()
 # ==========================================
 
 @app.post("/api/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     existing = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    role_val = user_in.role.value if hasattr(user_in.role, 'value') else user_in.role
     hashed_password = pwd_context.hash(user_in.password)
     user = models.User(
         email=user_in.email,
-        full_name=user_in.full_name,
+        name=user_in.name,
         hashed_password=hashed_password,
-        role=user_in.role or "intern"
+        role=models.UserRole(role_val)
     )
     db.add(user)
     db.commit()
@@ -243,22 +276,36 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/api/auth/login")
+@app.post("/api/v1/auth/login")
 def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == login_in.email).first()
-    import passlib.exc
-    try:
-        if not user or not pwd_context.verify(login_in.password, user.hashed_password):
-            raise HTTPException(status_code=401, detail="Invalid email or password")
-    except passlib.exc.UnknownHashError:
-        # If the hash in the DB is plain text or invalid, we can just check it manually for demo purposes
-        if not user or user.hashed_password != login_in.password:
-            raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    is_valid = False
+    if user.hashed_password == login_in.password:
+        is_valid = True
+    else:
+        try:
+            is_valid = pwd_context.verify(login_in.password, user.hashed_password)
+        except Exception:
+            is_valid = False
 
-    token = create_access_token({"sub": str(user.id), "role": user.role})
-    return {"access_token": token, "token_type": "bearer", "user": schemas.UserResponse.from_orm(user)}
+    if not is_valid:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    user_role_str = user.role.value if hasattr(user.role, 'value') else str(user.role)
+    token = create_access_token({"sub": str(user.id), "role": user_role_str})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "role": user_role_str,
+        "user": schemas.UserResponse.from_orm(user)
+    }
 
 
 @app.get("/api/auth/me", response_model=schemas.UserResponse)
+@app.get("/api/v1/auth/me", response_model=schemas.UserResponse)
 def get_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
@@ -268,11 +315,13 @@ def get_me(current_user: models.User = Depends(get_current_user)):
 # ==========================================
 
 @app.get("/api/tasks", response_model=List[schemas.TaskResponse])
+@app.get("/api/v1/tasks", response_model=List[schemas.TaskResponse])
 def get_tasks(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     return db.query(models.Task).all()
 
 
 @app.post("/api/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
 def create_task(
     task_in: schemas.TaskCreate, 
     db: Session = Depends(get_db), 
@@ -286,6 +335,7 @@ def create_task(
 
 
 @app.get("/api/tasks/{task_id}", response_model=schemas.TaskResponse)
+@app.get("/api/v1/tasks/{task_id}", response_model=schemas.TaskResponse)
 def get_task(task_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task:

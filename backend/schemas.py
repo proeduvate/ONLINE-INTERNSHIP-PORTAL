@@ -48,7 +48,7 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     role: UserRole
-    created_at: datetime
+    created_at: Optional[datetime] = None
     intern_id: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
@@ -124,6 +124,8 @@ class SubmissionCreate(BaseModel):
     task_id: int
     code_submission: Optional[str] = None
     mcq_answers: Optional[str] = None   # JSON string representing answers
+    language: Optional[str] = None
+    filename: Optional[str] = None
 
 class SubmissionEvaluate(BaseModel):
     mentor_score: int

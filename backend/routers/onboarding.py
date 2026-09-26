@@ -273,7 +273,7 @@ def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depen
 
 @router.post("/{application_id}/create-account")
 def create_account(application_id: str, db: Session = Depends(get_db)):
-    from app.core.security import pwd_context
+    from main import pwd_context
     from datetime import datetime
 
     app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)

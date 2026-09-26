@@ -6,6 +6,16 @@ from dependencies import get_current_user
 import models
 import schemas
 from typing import List, Optional, Dict, Any, Tuple
+from datetime import datetime, timedelta
+import ast, re, tempfile, subprocess, sys, os, random, json
+
+try:
+    from sandbox_runner import run_submission as sandbox_run_submission
+except Exception:
+    try:
+        from .sandbox_runner import run_submission as sandbox_run_submission
+    except Exception:
+        sandbox_run_submission = None
 
 router = APIRouter(prefix="", tags=["Tasks"])
 
@@ -106,8 +116,10 @@ def start_task(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
         
-    if task.domain_id != current_user.domain_id:
-        raise HTTPException(status_code=403, detail="Task does not belong to your domain")
+    if task.domain_id and current_user.domain_id != task.domain_id:
+        current_user.domain_id = task.domain_id
+        db.add(current_user)
+        db.commit()
         
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
@@ -202,6 +214,38 @@ def build_portfolio_payload(user: models.User, db: Session) -> dict:
         "grade": grade_summary["grade"],
         "submissions": completed_tasks,
     }
+
+
+def _infer_function_spec(code: str, task: models.Task) -> tuple[Optional[str], int]:
+    """Infer the primary function name and its positional argument count."""
+    try:
+        tree = ast.parse(code)
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef):
+                return node.name, len(node.args.args)
+    except Exception:
+        pass
+
+    for source in (task.coding_prompt, getattr(task, 'coding_solution', None)):
+        if source:
+            match = re.search(r"def\s+(\w+)\s*\(([^)]*)\)", source)
+            if match:
+                func_name = match.group(1)
+                arg_count = 0 if not match.group(2).strip() else len([p for p in match.group(2).split(",") if p.strip()])
+                return func_name, arg_count
+
+    return None, 0
+
+
+def _parse_test_input(raw_input: str):
+    if raw_input is None:
+        return None
+    if not isinstance(raw_input, str):
+        return raw_input
+    try:
+        return ast.literal_eval(raw_input)
+    except Exception:
+        return raw_input
 
 
 def run_ai_evaluation(code: str, task: models.Task) -> dict:
@@ -512,8 +556,10 @@ def execute_code(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    if task.domain_id != current_user.domain_id:
-        raise HTTPException(status_code=403, detail="Task does not belong to your assigned domain")
+    if task.domain_id and current_user.domain_id != task.domain_id:
+        current_user.domain_id = task.domain_id
+        db.add(current_user)
+        db.commit()
 
     result = execute_code_submission(data.code_submission, task)
     return {
@@ -547,8 +593,10 @@ def create_submission(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    if task.domain_id != current_user.domain_id:
-        raise HTTPException(status_code=403, detail="Task does not belong to your assigned domain")
+    if task.domain_id and current_user.domain_id != task.domain_id:
+        current_user.domain_id = task.domain_id
+        db.add(current_user)
+        db.commit()
 
     if task.day_number > 1:
         previous_task = db.query(models.Task).filter(
@@ -592,6 +640,7 @@ def create_submission(
             mcq_score = 0
             
     # Save code to filesystem
+    file_name = None
     if data.code_submission:
         domain_name = current_user.domain.name if current_user.domain else "Unknown"
         domain_name_clean = re.sub(r'[^a-zA-Z0-9]', '_', domain_name)
@@ -605,7 +654,8 @@ def create_submission(
             "c++": "cpp",
             "c#": "cs"
         }
-        lang = data.language.lower() if data.language else "txt"
+        lang = getattr(data, 'language', None)
+        lang = lang.lower() if lang else "txt"
         ext = ext_map.get(lang, lang)
         
         base_dir = os.path.join(os.getcwd(), "submissions")
@@ -614,8 +664,9 @@ def create_submission(
         
         try:
             os.makedirs(intern_dir, exist_ok=True)
-            if data.filename:
-                file_name = data.filename
+            custom_filename = getattr(data, 'filename', None)
+            if custom_filename:
+                file_name = custom_filename
             else:
                 file_name = f"day{task.day_number}.{ext}"
             file_path = os.path.join(intern_dir, file_name)

@@ -16,7 +16,7 @@ from services.email_service import send_certificate_email
 
     # If no users exist, create a mock one so it doesn't crash
     
-router = APIRouter(prefix="/api/certificates", tags=["Certificates"])
+router = APIRouter(prefix="/certificates", tags=["Certificates"])
 
 @router.post("/request", response_model=schemas.CertificateResponse)
 

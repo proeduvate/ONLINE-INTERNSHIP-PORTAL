@@ -146,6 +146,7 @@ class Submission(Base):
     
     submitted_at = Column(DateTime(timezone=True), server_default=func.now())
     attendance_marked = Column(Boolean, default=False)
+    filename = Column(String(255), nullable=True)
     
     # Relationships
     intern = relationship("User", back_populates="submissions")
@@ -604,3 +605,118 @@ class GitHubRepositoryRequest(Base):
     @property
     def task_title(self):
         return self.task.title if self.task else f"Task {self.task_id}"
+
+
+# ==========================================
+#    30-DAY MCQ SYSTEM MODELS
+# ==========================================
+
+class MCQAttemptStatus(str, enum.Enum):
+    IN_PROGRESS = "in_progress"
+    SUBMITTED = "submitted"
+
+class MCQAttempt(Base):
+    __tablename__ = "mcq_attempts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    day = Column(Integer, nullable=False)
+    topic = Column(String(200), nullable=False)
+    status = Column(Enum(MCQAttemptStatus), default=MCQAttemptStatus.IN_PROGRESS)
+    
+    selected_question_ids = Column(Text, nullable=False) # JSON list of IDs
+    submitted_answers = Column(Text, nullable=True) # JSON dict mapping ID -> Answer
+    
+    total_questions = Column(Integer, default=10)
+    correct_answers = Column(Integer, default=0)
+    wrong_answers = Column(Integer, default=0)
+    score = Column(Integer, default=0)
+    percentage = Column(Float, default=0.0)
+    
+    started_at = Column(DateTime, default=datetime.utcnow)
+    submitted_at = Column(DateTime, nullable=True)
+
+    # Relationship
+    intern = relationship("User", foreign_keys=[intern_id])
+
+
+# ==========================================
+#    DOMAIN-AWARE QUESTION BANK MODELS
+# ==========================================
+
+class DomainMCQQuestion(Base):
+    """Stores MCQ questions for each domain and day.
+    Seeded from question_bank/dayXX_*.json files.
+    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
+    """
+    __tablename__ = "domain_mcq_questions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain_name = Column(String(100), nullable=False, index=True)
+    day_number = Column(Integer, nullable=False, index=True)
+    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "Q-D1-001"
+    topic = Column(String(200), nullable=True)
+
+    question_text = Column(Text, nullable=False)
+    option_a = Column(Text, nullable=False)
+    option_b = Column(Text, nullable=False)
+    option_c = Column(Text, nullable=True)
+    option_d = Column(Text, nullable=True)
+    correct_answer = Column(String(5), nullable=False)  # "A", "B", "C", or "D"
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class DomainCodeAssessment(Base):
+    """Stores code challenge prompts for each domain and day.
+    Seeded from code_assessment_bank/<domain>/dayXX_*.json files.
+    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
+    """
+    __tablename__ = "domain_code_assessments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    domain_name = Column(String(100), nullable=False, index=True)
+    day_number = Column(Integer, nullable=False, index=True)
+    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "CODE-D1-Q001"
+    topic = Column(String(200), nullable=True)
+
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    requirements = Column(Text, nullable=True)  # JSON list of requirement strings
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+#    30-DAY FINAL EVALUATION MODELS
+# ==========================================
+
+class FinalGradeConfig(Base):
+    __tablename__ = "final_grade_config"
+
+    id = Column(Integer, primary_key=True, index=True)
+    mcq_weight = Column(Float, default=20.0)
+    code_weight = Column(Float, default=35.0)
+    airdrop_weight = Column(Float, default=15.0)
+    mentor_weight = Column(Float, default=30.0)
+    grade_ranges_json = Column(Text, default='{"A+": 90, "A": 80, "B+": 70, "B": 60, "C": 50}')
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class FinalEvaluation(Base):
+    __tablename__ = "final_evaluations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    
+    mcq_final_mark = Column(Float, nullable=True)
+    code_final_mark = Column(Float, nullable=True)
+    airdrop_final_mark = Column(Float, nullable=True)
+    mentor_evaluation_mark = Column(Float, nullable=True) # Max 30
+    
+    final_score = Column(Float, nullable=True) # Out of 100
+    grade = Column(String(5), nullable=True)
+    
+    is_completed = Column(Boolean, default=False)
+    calculated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    intern = relationship("User", foreign_keys=[intern_id])
