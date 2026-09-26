@@ -236,4 +236,6 @@ backend/google-credentials.json
 # Custom ignores
 scratch_move*.py
 backend/analytics.db
+backend/app/internship_portal.db
+*.db
 

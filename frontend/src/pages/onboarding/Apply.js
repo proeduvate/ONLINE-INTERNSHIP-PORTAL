@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import api from '../../api/axios';
 import './Onboarding.css';
 
@@ -24,22 +24,6 @@ export default function Apply() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [applicationId, setApplicationId] = useState(null);
-    const [domainOptions, setDomainOptions] = useState([]);
-
-    useEffect(() => {
-        const fetchDomains = async () => {
-            try {
-                const response = await fetch("http://127.0.0.1:8000/api/v1/onboarding/domains");
-                if (response.ok) {
-                    const data = await response.json();
-                    setDomainOptions(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch domains", error);
-            }
-        };
-        fetchDomains();
-    }, []);
 
     const validateStep = () => {
         if (step === 1) {
@@ -272,9 +256,9 @@ export default function Apply() {
                                 <label>Internship Domain *</label>
                                 <select required className="form-control" name="domain" value={formData.domain} onChange={handleChange}>
                                     <option value="">Select Domain ▼</option>
-                                    {domainOptions.map((dom) => (
-                                        <option key={dom.id} value={dom.name}>{dom.name}</option>
-                                    ))}
+                                    <option value="Full Stack Development">Full Stack Development</option>
+                                    <option value="AI / ML">AI / ML</option>
+                                    <option value="Data Science">Data Science</option>
                                 </select>
                             </div>
                             <div className="flex justify-between" style={{ marginTop: '30px' }}>

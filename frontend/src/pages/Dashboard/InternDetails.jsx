@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, FileCode, Database, Image, Folder, ExternalLink, Download, Copy, X } from "lucide-react";
+import { LayoutDashboard, FileText, ArrowLeft, ThumbsUp, AlertCircle, Calendar, CheckCircle, Star, Clock, TrendingUp, Award, Lock, Target, Zap, Users, Activity, FileCode, Database, Image, Folder, ExternalLink, Download, Copy, X } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { PageContainer } from "../../components/layout/PageContainer";
 import "../../styles/Dashboard.css";
@@ -8,14 +8,14 @@ import "../../styles/Dashboard.css";
 export default function InternDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Overview");
 
   // File preview modal states
   const [activeSubmission, setActiveSubmission] = useState(null);
   const [activeFileIndex, setActiveFileIndex] = useState(0);
   const [copyStatus, setCopyStatus] = useState("");
-  const [, setIsDownloadMenuOpen] = useState(false);
+  const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 
   // Mock specific intern data based on the id
   const intern = {
@@ -317,9 +317,20 @@ CREATE TABLE submission_files (
     return <FileText size={16} color="var(--text-muted, #64748b)" />;
   };
 
+  const getPillClass = (type) => {
+    if (type === 'code') return 'file-pill-code';
+    if (type === 'document') return 'file-pill-doc';
+    if (type === 'archive') return 'file-pill-archive';
+    if (type === 'image') return 'file-pill-image';
+    return '';
+  };
 
-
-
+  const handleOpenFileViewer = (sub, fileIdx = 0) => {
+    setActiveSubmission(sub);
+    setActiveFileIndex(fileIdx);
+    setCopyStatus("");
+    setIsDownloadMenuOpen(false);
+  };
 
   const handleCopyCode = (text) => {
     navigator.clipboard.writeText(text);

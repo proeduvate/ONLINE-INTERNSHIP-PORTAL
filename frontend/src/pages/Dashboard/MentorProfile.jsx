@@ -1,9 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, Save } from "lucide-react";
+import { useAuth } from "../../services/AuthContext";
 
 export default function MentorProfile() {
+  const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  
+  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Mentor'}&backgroundColor=ecfdf5`);
+  const fileInputRef = useRef(null);
+
+  const [profileData, setProfileData] = useState({
+    domain: "Artificial Intelligence",
+    institution: "IIT Madras",
+    role: "AI Mentor & Researcher",
+    location: "Chennai, India",
+    bio: "Passionate AI researcher and educator with 8+ years of experience in Machine Learning, Deep Learning, and NLP. Mentoring the next generation of AI engineers at ProEduvate."
+  });
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`mentor_profile_${user?.id}`);
+    if (saved) {
+      setProfileData(JSON.parse(saved));
+    }
+  }, [user]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setProfileImage(url);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setProfileImage(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Mentor'}&backgroundColor=ecfdf5`);
+  };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    localStorage.setItem(`mentor_profile_${user?.id}`, JSON.stringify(profileData));
+    alert("Profile saved successfully!");
+  };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -74,33 +117,34 @@ export default function MentorProfile() {
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
                   <img
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5"
+                    src={profileImage}
                     alt="Profile"
                     style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }}
                   />
-                  <button style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                  <button onClick={() => fileInputRef.current?.click()} type="button" style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
-                    <button style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
-                    <button style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
+                    <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
+                    <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
+                    <button type="button" onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
                   </div>
                   <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
                 </div>
               </div>
 
               {/* Form Grid */}
-              <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+              <form onSubmit={handleSaveProfile}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Ananya" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" defaultValue={user?.name?.split(' ')[0] || ""} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Menon" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" defaultValue={user?.name?.split(' ').slice(1).join(' ') || ""} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -108,47 +152,47 @@ export default function MentorProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="ananya@proedu.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="email" defaultValue={user?.email || ""} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Domain / Specialization</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Artificial Intelligence" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" name="domain" value={profileData.domain} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="IIT Madras" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" name="institution" value={profileData.institution} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="AI Mentor & Researcher" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" name="role" value={profileData.role} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
                     <div style={{ position: "relative" }}>
                       <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Chennai, India" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" name="location" value={profileData.location} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "20px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate AI researcher and educator with 8+ years of experience in Machine Learning, Deep Learning, and NLP. Mentoring the next generation of AI engineers at ProEduvate." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }} />
+                  <textarea rows="2" name="bio" value={profileData.bio} onChange={handleProfileChange} style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }} />
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>

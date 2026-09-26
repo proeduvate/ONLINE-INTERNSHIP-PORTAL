@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import api from '../../api/axios';
 
 export default function AdminAnalytics({ usersList }) {
-  const interns = usersList.filter(user => user.role === 'Intern');
+  const interns = usersList.filter(user => user.role && user.role.toLowerCase() === 'intern');
   
   const colleges = useMemo(() => [...new Set(interns.map(i => i.college).filter(Boolean))], [interns]);
   const domains = useMemo(() => [...new Set(interns.map(i => i.domain).filter(Boolean))], [interns]);
@@ -20,40 +21,37 @@ export default function AdminAnalytics({ usersList }) {
   }, [interns, selectedCollege, selectedDomain]);
 
   React.useEffect(() => {
-    if (selectedInternId && !filteredInterns.find(i => i.id === selectedInternId)) {
+    if (filteredInterns.length > 0) {
+      if (selectedInternId && !filteredInterns.find(i => String(i.id) === String(selectedInternId))) {
+        setSelectedInternId('');
+      }
+    } else {
       setSelectedInternId('');
     }
   }, [filteredInterns, selectedInternId]);
 
-  // Generate some dummy timeseries data based on the intern ID
-  const chartData = useMemo(() => {
-    if (!selectedInternId) return [];
-    
-    // Seed for pseudo-random data based on ID to keep it consistent
-    let seed = 0;
-    for (let i = 0; i < selectedInternId.length; i++) {
-      seed += selectedInternId.charCodeAt(i);
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    if (!selectedInternId) {
+      setChartData([]);
+      return;
     }
-    
-    const data = [];
-    const startDate = new Date('2026-08-20');
-    for (let i = 0; i < 10; i++) {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-      const dateString = date.toISOString().split('T')[0];
-      
-      const codingScore = 60 + Math.sin(seed + i) * 20;
-      const finalScore = 65 + Math.cos(seed + i * 1.5) * 25;
-      const mcqScore = 70 + Math.sin(seed + i * 0.8) * 15;
-      
-      data.push({
-        date: dateString,
-        CodingScore: Math.round(codingScore),
-        FinalScore: Math.round(finalScore),
-        MCQScore: Math.round(mcqScore)
+    api.get(`/analytics/daily-questions/intern/${selectedInternId}`)
+      .then(res => {
+        // Map the backend data to match what the chart expects (date, CodingScore, FinalScore, MCQScore)
+        const mappedData = res.data.map(item => ({
+          date: item.date,
+          CodingScore: item.coding_score,
+          MCQScore: item.mcq_score,
+          FinalScore: item.final_score
+        }));
+        setChartData(mappedData);
+      })
+      .catch(err => {
+        console.error("Failed to fetch analytics data", err);
+        setChartData([]);
       });
-    }
-    return data;
   }, [selectedInternId]);
 
   return (
@@ -131,66 +129,72 @@ export default function AdminAnalytics({ usersList }) {
         </div>
 
         {selectedInternId ? (
-          <div style={{ height: '400px', width: '100%' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey="date" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#9ca3af', fontSize: 12 }} 
-                  dy={10}
-                />
-                <YAxis 
-                  domain={[0, 100]} 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#9ca3af', fontSize: 12 }}
-                  dx={-10}
-                />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
-                />
-                <Legend 
-                  wrapperStyle={{ paddingTop: '20px' }}
-                  iconType="circle"
-                />
-                <Line 
-                  type="monotone" 
-                  name="Coding Score"
-                  dataKey="CodingScore" 
-                  stroke="#f59e0b" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={{ r: 4, fill: '#fff', stroke: '#f59e0b', strokeWidth: 2 }}
-                  activeDot={{ r: 6 }}
-                />
-                <Line 
-                  type="monotone" 
-                  name="Final Score"
-                  dataKey="FinalScore" 
-                  stroke="#3b82f6" 
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: '#fff', stroke: '#3b82f6', strokeWidth: 2 }}
-                  activeDot={{ r: 6 }}
-                />
-                <Line 
-                  type="monotone" 
-                  name="MCQ Score"
-                  dataKey="MCQScore" 
-                  stroke="#10b981" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={{ r: 4, fill: '#fff', stroke: '#10b981', strokeWidth: 2 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          chartData.length > 0 ? (
+            <div style={{ height: '400px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#9ca3af', fontSize: 12 }} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    domain={[0, 100]} 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#9ca3af', fontSize: 12 }}
+                    dx={-10}
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ paddingTop: '20px' }}
+                    iconType="circle"
+                  />
+                  <Line 
+                    type="monotone" 
+                    name="Coding Score"
+                    dataKey="CodingScore" 
+                    stroke="#f59e0b" 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={{ r: 4, fill: '#fff', stroke: '#f59e0b', strokeWidth: 2 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    name="Final Score"
+                    dataKey="FinalScore" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: '#fff', stroke: '#3b82f6', strokeWidth: 2 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    name="MCQ Score"
+                    dataKey="MCQScore" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={{ r: 4, fill: '#fff', stroke: '#10b981', strokeWidth: 2 }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', backgroundColor: '#f9fafb', borderRadius: '8px', border: '1px dashed #d1d5db' }}>
+              No analytics data available for this intern yet.
+            </div>
+          )
         ) : (
           <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
             Please select an intern to view their performance analytics.

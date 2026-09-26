@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Code, Send, User, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import WebIDE from '../../components/WebIDE/WebIDE';
 
