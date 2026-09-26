@@ -82,6 +82,7 @@ class AirdropCreate(BaseModel):
     start_mode: StartMode = Field(..., description="fixed or flexible")
     time_limit: int = Field(..., description="Duration in seconds")
     start_time: Optional[datetime] = Field(None, description="Required for fixed start")
+    end_time: Optional[datetime] = Field(None, description="End time for fixed start window")
     bonus_points: int = Field(100, description="Deprecated, use points_distribution")
     points_distribution: str = Field(..., description="Comma separated points (e.g. 100,50,25)")
     winner_count: int = Field(..., description="Number of exact winners")
@@ -128,6 +129,7 @@ class AirdropResponse(BaseModel):
     start_mode: str
     time_limit: int
     start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
     start_time_ist: Optional[str] = None
     points_distribution: str
     winner_count: int

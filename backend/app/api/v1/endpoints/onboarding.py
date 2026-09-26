@@ -6,7 +6,7 @@ from app import schemas
 from typing import List
 
 router = APIRouter(
-    prefix="/api/v1/onboarding",
+    prefix="/onboarding",
     tags=["Onboarding"]
 )
 

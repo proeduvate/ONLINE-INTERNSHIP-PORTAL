@@ -41,6 +41,7 @@ def create_airdrop(
         start_mode=data.start_mode.value,
         time_limit=data.time_limit,
         start_time=data.start_time,
+        end_time=data.end_time,
         points_distribution=data.points_distribution,
         winner_count=data.winner_count,
         created_by=current_user.id,
@@ -205,6 +206,8 @@ def handle_airdrop_action(
         if airdrop.start_mode == schemas_airdrops.StartMode.FIXED.value:
             if not airdrop.start_time or now < airdrop.start_time:
                 raise HTTPException(status_code=400, detail="Fixed start time has not been reached yet")
+            if airdrop.end_time and now > airdrop.end_time:
+                raise HTTPException(status_code=400, detail="Fixed end time has passed")
             
         existing = db.query(models.AirdropAttempt).filter(
             models.AirdropAttempt.airdrop_id == airdrop.id,
@@ -235,15 +238,11 @@ def handle_airdrop_action(
         if not attempt or attempt.status != "started":
             raise HTTPException(status_code=400, detail="Invalid or non-existent attempt")
             
-        # For Flexible, strict enforcement. For Fixed, use a small grace period just in case.
+        # For both Flexible and Fixed, time allowed is time_limit seconds after started_at
         time_diff = (now - attempt.started_at).total_seconds()
         is_late = False
-        if airdrop.start_mode == schemas_airdrops.StartMode.FLEXIBLE.value:
-            if time_diff > (airdrop.time_limit + 5):
-                is_late = True
-        else:
-            if airdrop.start_time and (now - airdrop.start_time).total_seconds() > (airdrop.time_limit + 5):
-                is_late = True
+        if time_diff > (airdrop.time_limit + 5):
+            is_late = True
                 
         attempt.completed_at = now
         attempt.submitted_answer = json.dumps(data.answer) if data.answer is not None else None
@@ -375,6 +374,7 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
         "start_mode": airdrop.start_mode,
         "time_limit": airdrop.time_limit,
         "start_time": airdrop.start_time,
+        "end_time": airdrop.end_time,
         "start_time_ist": _format_ist(airdrop.start_time),
         "points_distribution": airdrop.points_distribution,
         "winner_count": airdrop.winner_count,

@@ -1,0 +1,557 @@
+{
+  "day": 5,
+  "topic": "CSS Fundamentals and Selectors",
+  "total_questions": 50,
+  "questions": [
+    {
+      "id": "Q-D5-001",
+      "question": "What does CSS stand for?",
+      "options": {
+        "A": "Computer Style Sheets",
+        "B": "Cascading Style Sheets",
+        "C": "Creative Styling System",
+        "D": "Colorful Style Syntax"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-002",
+      "question": "What is the main purpose of CSS?",
+      "options": {
+        "A": "To structure webpage content",
+        "B": "To store database records",
+        "C": "To style and design webpage elements",
+        "D": "To execute server-side code"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-003",
+      "question": "Which HTML element is used to connect an external CSS file?",
+      "options": {
+        "A": "<link>",
+        "B": "<css>",
+        "C": "<style>",
+        "D": "<script>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-004",
+      "question": "Which attribute specifies the location of an external stylesheet?",
+      "options": {
+        "A": "src",
+        "B": "href",
+        "C": "link",
+        "D": "path"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-005",
+      "question": "Which HTML attribute is used for inline CSS?",
+      "options": {
+        "A": "class",
+        "B": "css",
+        "C": "style",
+        "D": "design"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-006",
+      "question": "Which HTML element contains internal CSS?",
+      "options": {
+        "A": "<css>",
+        "B": "<style>",
+        "C": "<design>",
+        "D": "<script>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-007",
+      "question": "Which file extension is commonly used for CSS files?",
+      "options": {
+        "A": ".html",
+        "B": ".js",
+        "C": ".css",
+        "D": ".style"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-008",
+      "question": "Which is the correct CSS syntax?",
+      "options": {
+        "A": "p = color: red;",
+        "B": "p { color: red; }",
+        "C": "p: color = red;",
+        "D": "{p: red;color}"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-009",
+      "question": "In CSS, what separates a property from its value?",
+      "options": {
+        "A": "Comma",
+        "B": "Colon",
+        "C": "Period",
+        "D": "Slash"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-010",
+      "question": "Which symbol ends a CSS declaration?",
+      "options": {
+        "A": ":",
+        "B": ".",
+        "C": ";",
+        "D": "#"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-011",
+      "question": "Which symbol is used to select an element by its class?",
+      "options": {
+        "A": "#",
+        "B": ".",
+        "C": "*",
+        "D": "@"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-012",
+      "question": "Which symbol is used to select an element by its id?",
+      "options": {
+        "A": ".",
+        "B": "*",
+        "C": "#",
+        "D": "$"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-013",
+      "question": "Which selector targets all elements on a webpage?",
+      "options": {
+        "A": "#",
+        "B": ".",
+        "C": "*",
+        "D": "&"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-014",
+      "question": "What does the following selector target: `p`?",
+      "options": {
+        "A": "All elements with class p",
+        "B": "The element with id p",
+        "C": "All paragraph elements",
+        "D": "All elements named paragraph"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-015",
+      "question": "What does `.card` select?",
+      "options": {
+        "A": "The element with id card",
+        "B": "All elements with class card",
+        "C": "All card HTML elements",
+        "D": "The first card element only"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-016",
+      "question": "What does `#header` select?",
+      "options": {
+        "A": "All elements with class header",
+        "B": "The element with id header",
+        "C": "All header elements",
+        "D": "The first heading element"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-017",
+      "question": "Which selector targets both `h1` and `h2` elements?",
+      "options": {
+        "A": "h1 h2",
+        "B": "h1 + h2",
+        "C": "h1, h2",
+        "D": "h1 > h2"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-018",
+      "question": "What is the purpose of a grouping selector?",
+      "options": {
+        "A": "To select elements inside another element",
+        "B": "To apply the same styles to multiple selectors",
+        "C": "To select only one unique element",
+        "D": "To disable CSS inheritance"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-019",
+      "question": "Which selector selects all paragraph elements inside a div?",
+      "options": {
+        "A": "div + p",
+        "B": "div > p",
+        "C": "div p",
+        "D": "div, p"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-020",
+      "question": "Which selector selects only direct child paragraphs of a div?",
+      "options": {
+        "A": "div p",
+        "B": "div > p",
+        "C": "div + p",
+        "D": "div ~ p"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-021",
+      "question": "Which CSS combinator selects the immediately following sibling?",
+      "options": {
+        "A": " ",
+        "B": ">",
+        "C": "+",
+        "D": "~"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-022",
+      "question": "Which CSS combinator selects all following siblings of an element?",
+      "options": {
+        "A": "~",
+        "B": "+",
+        "C": ">",
+        "D": "#"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-023",
+      "question": "What does `ul > li` select?",
+      "options": {
+        "A": "Every li anywhere inside ul",
+        "B": "Only direct li children of ul",
+        "C": "Every ul inside li",
+        "D": "The first li in the document"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-024",
+      "question": "Which selector selects inputs with `type=\"text\"`?",
+      "options": {
+        "A": "input.text",
+        "B": "input#text",
+        "C": "input[type=\"text\"]",
+        "D": "input:text"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-025",
+      "question": "What type of selector is `[disabled]`?",
+      "options": {
+        "A": "Class selector",
+        "B": "Attribute selector",
+        "C": "ID selector",
+        "D": "Element selector"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-026",
+      "question": "Which selector targets links when the mouse pointer is over them?",
+      "options": {
+        "A": "a::over",
+        "B": "a:hover",
+        "C": "a:mouse",
+        "D": "a::hover"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-027",
+      "question": "Which pseudo-class applies styles when an input receives keyboard focus?",
+      "options": {
+        "A": ":active",
+        "B": ":visited",
+        "C": ":focus",
+        "D": ":checked"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-028",
+      "question": "Which pseudo-class selects the first child of its parent?",
+      "options": {
+        "A": ":first-child",
+        "B": ":first-element",
+        "C": ":child-one",
+        "D": ":begin"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-029",
+      "question": "Which pseudo-class selects an element based on its position among siblings?",
+      "options": {
+        "A": ":position",
+        "B": ":nth-child()",
+        "C": ":sibling-index()",
+        "D": ":child-position"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-030",
+      "question": "What does `li:nth-child(2)` select?",
+      "options": {
+        "A": "Every second list element in the document",
+        "B": "The second li child of its parent",
+        "C": "The last li child",
+        "D": "All li elements with class 2"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-031",
+      "question": "Which pseudo-class selects links that have already been visited?",
+      "options": {
+        "A": ":visited",
+        "B": ":used",
+        "C": ":opened",
+        "D": ":history"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-032",
+      "question": "Which pseudo-class selects a checkbox that is selected?",
+      "options": {
+        "A": ":selected",
+        "B": ":chosen",
+        "C": ":checked",
+        "D": ":active"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-033",
+      "question": "Which pseudo-element inserts content before an element's content?",
+      "options": {
+        "A": "::start",
+        "B": "::before",
+        "C": ":before-content",
+        "D": "::first"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-034",
+      "question": "Which pseudo-element inserts content after an element's content?",
+      "options": {
+        "A": "::after",
+        "B": "::end",
+        "C": ":after-content",
+        "D": "::last"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-035",
+      "question": "Which pseudo-element styles the first letter of text?",
+      "options": {
+        "A": "::first-character",
+        "B": "::letter",
+        "C": "::first-letter",
+        "D": ":first-letter-only"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-036",
+      "question": "Which pseudo-element styles the first line of a text block?",
+      "options": {
+        "A": "::first-line",
+        "B": "::line-one",
+        "C": ":first-row",
+        "D": "::text-line"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-037",
+      "question": "How are CSS comments written?",
+      "options": {
+        "A": "// comment",
+        "B": "<!-- comment -->",
+        "C": "/* comment */",
+        "D": "# comment"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-038",
+      "question": "Which CSS rule changes the text color?",
+      "options": {
+        "A": "font-color",
+        "B": "text-color",
+        "C": "color",
+        "D": "foreground"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-039",
+      "question": "Which CSS property changes the background color?",
+      "options": {
+        "A": "color-background",
+        "B": "background-color",
+        "C": "bg-color",
+        "D": "background-style"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-040",
+      "question": "Which selector has the highest specificity?",
+      "options": {
+        "A": "Element selector",
+        "B": "Class selector",
+        "C": "ID selector",
+        "D": "Universal selector"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-041",
+      "question": "Which selector has the lowest specificity?",
+      "options": {
+        "A": "ID selector",
+        "B": "Class selector",
+        "C": "Inline style",
+        "D": "Universal selector"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D5-042",
+      "question": "What does CSS inheritance mean?",
+      "options": {
+        "A": "Child elements can receive certain styles from parent elements",
+        "B": "All elements receive every CSS property automatically",
+        "C": "CSS files are copied into HTML files",
+        "D": "Styles are inherited only from external websites"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-043",
+      "question": "Which selector targets every element that has both classes `box` and `active`?",
+      "options": {
+        "A": ".box .active",
+        "B": ".box, .active",
+        "C": ".box.active",
+        "D": "#box.active"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-044",
+      "question": "What does `.menu li` select?",
+      "options": {
+        "A": "Only the menu element",
+        "B": "All li elements inside an element with class menu",
+        "C": "All elements with both menu and li classes",
+        "D": "Only direct children of the body"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-045",
+      "question": "Which selector selects elements whose class attribute contains the word `button`?",
+      "options": {
+        "A": "[class=\"button\"]",
+        "B": "[class~=\"button\"]",
+        "C": "[class#=\"button\"]",
+        "D": "[class+=\"button\"]"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-046",
+      "question": "Which selector selects elements whose class attribute starts with `btn`?",
+      "options": {
+        "A": "[class^=\"btn\"]",
+        "B": "[class$=\"btn\"]",
+        "C": "[class*=\"btn\"]",
+        "D": "[class~=\"btn\"]"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D5-047",
+      "question": "Which selector selects elements whose class attribute ends with `primary`?",
+      "options": {
+        "A": "[class^=\"primary\"]",
+        "B": "[class*=\"primary\"]",
+        "C": "[class$=\"primary\"]",
+        "D": "[class~=\"primary\"]"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-048",
+      "question": "What is the purpose of `!important` in CSS?",
+      "options": {
+        "A": "It comments out a declaration",
+        "B": "It gives a declaration stronger priority in the cascade",
+        "C": "It makes the property responsive",
+        "D": "It removes inheritance"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D5-049",
+      "question": "Which style normally has the highest priority among these options?",
+      "options": {
+        "A": "External stylesheet rule",
+        "B": "Internal stylesheet rule",
+        "C": "Inline style",
+        "D": "Universal selector rule"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D5-050",
+      "question": "What is the main advantage of using an external CSS file?",
+      "options": {
+        "A": "It allows HTML and styles to be reused and maintained separately",
+        "B": "It prevents all CSS conflicts automatically",
+        "C": "It removes the need for HTML",
+        "D": "It can only style one element"
+      },
+      "correct_answer": "A"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List, Optional
+from app.api.deps import get_db, get_current_user
+from app import models, schemas
+from app.core.security import pwd_context
+
+router = APIRouter(prefix="", tags=["Users"])
+
+@router.get("/", response_model=List[schemas.UserResponse])
+def get_users(
+    role: Optional[str] = None, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    List all users (Admin/Mentor filtered)
+    """
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized access"
+        )
+        
+    query = db.query(models.User)
+    if role:
+        query = query.filter(models.User.role == role)
+        
+    if current_user.role == models.UserRole.MENTOR and role == "intern":
+        query = query.filter(models.User.mentor_id == current_user.id)
+        
+    users = query.all()
+    return users
+
+@router.get("/profile", response_model=schemas.UserResponse)
+def get_current_profile(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Get profile of currently logged-in user
+    """
+    return current_user
+
+@router.put("/profile", response_model=schemas.UserResponse)
+def update_current_profile(
+    profile_data: schemas.UserProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Update profile of currently logged-in user
+    """
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if profile_data.name is not None:
+        user.name = profile_data.name
+    if profile_data.college is not None:
+        user.college = profile_data.college
+    if profile_data.github_repo_url is not None:
+        user.github_repo_url = profile_data.github_repo_url
+    if profile_data.email is not None and profile_data.email != user.email:
+        existing = db.query(models.User).filter(models.User.email == profile_data.email).first()
+        if existing and existing.id != user.id:
+            raise HTTPException(status_code=400, detail="Email already in use")
+        user.email = profile_data.email
+    if profile_data.password and profile_data.password.strip():
+        user.hashed_password = pwd_context.hash(profile_data.password)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+@router.put("/profile/{user_id}", response_model=schemas.UserResponse)
+def update_user_profile_by_id(
+    user_id: int,
+    profile_data: schemas.UserProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Update profile by user ID (Admin or Self)
+    """
+    if current_user.role != models.UserRole.ADMIN and current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Unauthorized to update this profile")
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if profile_data.name is not None:
+        user.name = profile_data.name
+    if profile_data.college is not None:
+        user.college = profile_data.college
+    if profile_data.github_repo_url is not None:
+        user.github_repo_url = profile_data.github_repo_url
+    if profile_data.email is not None and profile_data.email != user.email:
+        existing = db.query(models.User).filter(models.User.email == profile_data.email).first()
+        if existing and existing.id != user.id:
+            raise HTTPException(status_code=400, detail="Email already in use")
+        user.email = profile_data.email
+    if profile_data.password and profile_data.password.strip():
+        user.hashed_password = pwd_context.hash(profile_data.password)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+@router.delete("/{user_id}")
+def delete_user(
+    user_id: int, 
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admin can delete users"
+        )
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted successfully"}

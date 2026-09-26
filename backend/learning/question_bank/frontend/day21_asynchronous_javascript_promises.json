@@ -1,0 +1,557 @@
+{
+    "day": 21,
+    "topic": "Asynchronous JavaScript and Promises",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D21-001",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 1 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-002",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 2?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-003",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 3?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-004",
+            "question": "Why is Asynchronous JavaScript and Promises feature 4 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-005",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 5?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-006",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 6 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-007",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 7?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-008",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 8?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-009",
+            "question": "Why is Asynchronous JavaScript and Promises feature 9 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-010",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 10?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-011",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 11 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-012",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 12?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-013",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 13?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-014",
+            "question": "Why is Asynchronous JavaScript and Promises feature 14 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-015",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 15?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-016",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 16 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-017",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 17?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-018",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 18?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-019",
+            "question": "Why is Asynchronous JavaScript and Promises feature 19 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-020",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 20?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-021",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 21 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-022",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 22?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-023",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 23?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-024",
+            "question": "Why is Asynchronous JavaScript and Promises feature 24 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-025",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 25?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-026",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 26 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-027",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 27?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-028",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 28?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-029",
+            "question": "Why is Asynchronous JavaScript and Promises feature 29 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-030",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 30?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-031",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 31 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-032",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 32?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-033",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 33?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-034",
+            "question": "Why is Asynchronous JavaScript and Promises feature 34 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-035",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 35?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-036",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 36 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-037",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 37?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-038",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 38?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-039",
+            "question": "Why is Asynchronous JavaScript and Promises feature 39 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-040",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 40?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-041",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 41 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-042",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 42?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-043",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 43?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-044",
+            "question": "Why is Asynchronous JavaScript and Promises feature 44 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-045",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 45?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-046",
+            "question": "What is the primary purpose of Asynchronous JavaScript and Promises feature 46 in Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "To implement Asynchronous JavaScript and Promises feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-047",
+            "question": "How do you correctly use Asynchronous JavaScript and Promises feature 47?",
+            "options": {
+                "A": "By following standard Asynchronous JavaScript and Promises guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-048",
+            "question": "Which of the following best describes Asynchronous JavaScript and Promises feature 48?",
+            "options": {
+                "A": "A key concept in Asynchronous JavaScript and Promises",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-049",
+            "question": "Why is Asynchronous JavaScript and Promises feature 49 important for Asynchronous JavaScript and Promises?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D21-050",
+            "question": "When should you avoid using Asynchronous JavaScript and Promises feature 50?",
+            "options": {
+                "A": "When it violates Asynchronous JavaScript and Promises best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

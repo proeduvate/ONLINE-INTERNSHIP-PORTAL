@@ -39,7 +39,7 @@ def record_daily_question_result(
             detail="Access Denied: Only interns can record daily question results"
         )
 
-    final_score = round((data.mcq_score * 0.40) + (data.coding_score * 0.60), 2)
+    final_score = data.mcq_score + data.coding_score
 
     # Check if a result already exists for this intern and date
     existing_result = db.query(models.DailyQuestionResult).filter(
@@ -47,17 +47,22 @@ def record_daily_question_result(
         models.DailyQuestionResult.date == data.date
     ).first()
 
+    points_to_award = 0
     if existing_result:
+        # Calculate how many NEW points they earned
+        diff = final_score - existing_result.final_score
+        if diff > 0:
+            points_to_award = int(diff)
+            
         # Update existing record
         existing_result.question_id = data.question_id
         existing_result.mcq_score = data.mcq_score
         existing_result.coding_score = data.coding_score
         existing_result.final_score = final_score
         existing_result.attempted_at = datetime.utcnow()
-        db.commit()
-        db.refresh(existing_result)
-        return existing_result
+        result_obj = existing_result
     else:
+        points_to_award = int(final_score)
         # Create new record
         new_result = models.DailyQuestionResult(
             intern_id=current_user.id,
@@ -69,9 +74,34 @@ def record_daily_question_result(
             attempted_at=datetime.utcnow()
         )
         db.add(new_result)
-        db.commit()
-        db.refresh(new_result)
-        return new_result
+        result_obj = new_result
+
+    db.commit()
+    db.refresh(result_obj)
+
+    if points_to_award > 0:
+        pt = models.PointTransaction(
+            user_id=current_user.id,
+            points=points_to_award,
+            source_type="DAILY_ASSESSMENT",
+            source_id=result_obj.id,
+            reason=f"Daily Assessment Points for {data.date}"
+        )
+        db.add(pt)
+        
+    # Update progress and attendance
+    total_domain_tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).count() or 30
+    user_results = db.query(models.DailyQuestionResult).filter(
+        models.DailyQuestionResult.intern_id == current_user.id
+    ).count()
+    
+    current_user.progress_pct = min(100, int((user_results / total_domain_tasks) * 100))
+    current_user.attendance_pct = min(100, max(60, int((user_results / total_domain_tasks) * 100) + 60))
+    
+    db.add(current_user)
+    db.commit()
+
+    return result_obj
 
 
 
@@ -143,3 +173,46 @@ def get_intern_daily_analytics(
         }
         for r in results
     ]
+
+# ==========================================
+#    INTERN: VIEW OWN ANALYTICS
+# ==========================================
+
+@router.get(
+    "/analytics/daily-questions/me",
+    response_model=List[schemas_analytics.DailyMarksDataPoint],
+    summary="Get my daily question performance",
+    description="Interns can view their own daily question marks."
+)
+def get_my_daily_analytics(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role != models.UserRole.INTERN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access Denied: Only interns can view their own analytics"
+        )
+
+    results = (
+        db.query(
+            models.DailyQuestionResult.date,
+            models.DailyQuestionResult.mcq_score,
+            models.DailyQuestionResult.coding_score,
+            models.DailyQuestionResult.final_score
+        )
+        .filter(models.DailyQuestionResult.intern_id == current_user.id)
+        .order_by(models.DailyQuestionResult.date)
+        .all()
+    )
+
+    return [
+        {
+            "date": r.date, 
+            "mcq_score": r.mcq_score, 
+            "coding_score": r.coding_score, 
+            "final_score": r.final_score
+        }
+        for r in results
+    ]
+

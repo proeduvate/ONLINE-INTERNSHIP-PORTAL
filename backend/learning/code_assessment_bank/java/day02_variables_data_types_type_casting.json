@@ -1,0 +1,67 @@
+{
+    "day": 2,
+    "topic": "Variables, Data Types & Type Casting",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D2-Q001",
+            "title": "Student Details Variables",
+            "description": "Create variables for student name, age, CGPA, department and internship status.",
+            "requirements": [
+                "Use appropriate data types",
+                "Declare all five variables",
+                "Assign values",
+                "Print all details",
+                "Use correct Java syntax"
+            ]
+        },
+        {
+            "id": "CODE-PY-D2-Q002",
+            "title": "Primitive Data Types Demo",
+            "description": "Demonstrate Java's primitive data types in a single program.",
+            "requirements": [
+                "Demonstrate byte, short, int, long",
+                "Demonstrate float, double",
+                "Demonstrate char, boolean",
+                "Print each variable",
+                "Show range or sample value"
+            ]
+        },
+        {
+            "id": "CODE-PY-D2-Q003",
+            "title": "Int to Double Conversion",
+            "description": "Convert an int value to double and display both values.",
+            "requirements": [
+                "Declare an int variable",
+                "Convert to double using widening",
+                "Print both values",
+                "Show the difference in output",
+                "Add a comment explaining widening"
+            ]
+        },
+        {
+            "id": "CODE-PY-D2-Q004",
+            "title": "Double to Int Narrowing",
+            "description": "Convert a double value to int and observe the result.",
+            "requirements": [
+                "Declare a double variable",
+                "Cast to int using narrowing",
+                "Print both values",
+                "Comment on data loss",
+                "Show the truncation effect"
+            ]
+        },
+        {
+            "id": "CODE-PY-D2-Q005",
+            "title": "Student Data Types Display",
+            "description": "Create a program that accepts student details and displays their data types.",
+            "requirements": [
+                "Accept student name (String)",
+                "Accept age (int)",
+                "Accept CGPA (double)",
+                "Accept department (String)",
+                "Display all with data types labeled"
+            ]
+        }
+    ]
+}

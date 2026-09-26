@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional, List, Any
 from enum import Enum
 from datetime import datetime
 
@@ -18,6 +18,7 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+    github_repo_url: Optional[str] = None
     role: UserRole = UserRole.INTERN
 
 class UserLoginSchema(BaseModel):
@@ -29,6 +30,7 @@ class UserOnboard(BaseModel):
     email: EmailStr
     password: str
     role: UserRole
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
@@ -39,6 +41,8 @@ class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
     college: Optional[str] = None
     password: Optional[str] = None
+    email: Optional[str] = None
+    github_repo_url: Optional[str] = None
 
 class UserResponse(BaseModel):
     id: int
@@ -47,8 +51,10 @@ class UserResponse(BaseModel):
     role: UserRole
     created_at: Optional[datetime] = None
     intern_id: Optional[str] = None
+    github_repo_url: Optional[str] = None
     college: Optional[str] = None
     domain_id: Optional[int] = None
+    domain_name: Optional[str] = None
     mentor_id: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
@@ -210,6 +216,8 @@ class MessageResponse(BaseModel):
 class MeetingCreate(BaseModel):
     title: str
     room_code: str
+    status: Optional[str] = "scheduled"
+    scheduled_time: Optional[Any] = None
 
 class MeetingResponse(BaseModel):
     id: int
@@ -217,7 +225,8 @@ class MeetingResponse(BaseModel):
     title: str
     room_code: str
     status: str
-    created_at: datetime
+    scheduled_time: Optional[Any] = None
+    created_at: Optional[Any] = None
 
     class Config:
         from_attributes = True
@@ -344,6 +353,7 @@ class OnboardingApplicationCreate(BaseModel):
     graduation_year: int
     domain: str
     resume_url: Optional[str] = None
+    github_repo_url: Optional[str] = None
 
 
 # ==========================================
@@ -356,13 +366,16 @@ class SimulationChoice(BaseModel):
 
 class SimulationScenarioResponse(BaseModel):
     day: int
-    simulation_title: str
+    title: str
+    subtitle: Optional[str] = None
     scenario_number: int
     scenario_id: str
     total_scenarios: int
     situation: str
     question: str
     choices: List[SimulationChoice]
+    completed: Optional[bool] = False
+    decisionResult: Optional[dict] = None
 
 class SimulationDecision(BaseModel):
     scenario_id: str

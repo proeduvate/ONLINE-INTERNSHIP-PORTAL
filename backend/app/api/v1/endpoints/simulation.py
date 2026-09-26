@@ -43,6 +43,10 @@ def save_simulation_state(db: Session, submission: models.Submission, state_dict
     if state_dict.get("day_completed", False):
         submission.status = "submitted"
         submission.ai_score = state_dict.get("daily_score", 0)
+        from datetime import datetime
+        # Only set submitted_at if it's not already set
+        if not submission.submitted_at:
+            submission.submitted_at = datetime.utcnow()
     db.commit()
 
 @router.get("/intern/current", response_model=schemas.SimulationScenarioResponse)
@@ -50,6 +54,11 @@ def get_current_simulation(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    intern_id = current_user.id
+    current_user = db.query(models.User).filter(models.User.id == intern_id).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
         
@@ -65,24 +74,84 @@ def get_current_simulation(
     if not sim_tasks:
         raise HTTPException(status_code=404, detail="No simulations available for this domain")
 
+    current_date_local = datetime.now()
+    start_date = current_user.start_date or current_date_local
+    # Fetch all tasks and submissions to calculate the max unlocked day purely for simulations
+    sim_tasks = db.query(models.Task).filter(
+        models.Task.domain_id == current_user.domain_id,
+        models.Task.task_type == "simulation"
+    ).order_by(models.Task.day_number).all()
+
+    all_subs = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).order_by(models.Submission.id.asc()).all()
+    
+    sub_map = {}
+    for sub in all_subs:
+        if sub.task_id not in sub_map:
+            sub_map[sub.task_id] = sub
+        else:
+            if sub.ai_feedback:
+                try:
+                    state = json.loads(sub.ai_feedback)
+                    if state.get("day_completed", False):
+                        sub_map[sub.task_id] = sub
+                except:
+                    pass
+    
+    completed_sim_days = set()
+    completion_dates = {}
+    
+    for task_item in sim_tasks:
+        s = sub_map.get(task_item.id)
+        if s and s.ai_feedback:
+            try:
+                state = json.loads(s.ai_feedback)
+                if state.get("day_completed", False):
+                    completed_sim_days.add(task_item.day_number)
+                    sub_date = s.submitted_at or s.started_at
+                    if sub_date:
+                        utc_offset = current_date_local - datetime.utcnow()
+                        local_sub_date = sub_date + utc_offset
+                    else:
+                        local_sub_date = current_date_local
+                    completion_dates[task_item.day_number] = local_sub_date
+            except Exception:
+                pass
+
+    max_unlocked_day = 1
+    unique_days = sorted(list(set([t.day_number for t in sim_tasks])))
+    for d in unique_days:
+        if d in completed_sim_days and completion_dates[d].date() < current_date_local.date():
+            if d >= max_unlocked_day:
+                max_unlocked_day = d + 1
+        else:
+            if d == max_unlocked_day:
+                break
+                
+    internship_day = max_unlocked_day
+
     current_task = None
     current_submission = None
     
-    # Find the first incomplete simulation
+    # Strictly select the simulation for the current calendar day
     for task in sim_tasks:
-        sub = db.query(models.Submission).filter(
-            models.Submission.intern_id == current_user.id,
-            models.Submission.task_id == task.id
-        ).first()
-        
-        state = get_simulation_state(sub)
-        if not state.get("day_completed", False):
+        if task.day_number == internship_day:
             current_task = task
-            current_submission = sub
+            current_submission = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == task.id
+            ).order_by(models.Submission.id.desc()).first()
             break
             
     if not current_task:
-        raise HTTPException(status_code=404, detail="All simulations completed!")
+        # Fallback to the latest task if internship day exceeds available simulations
+        if internship_day > len(sim_tasks) and sim_tasks:
+            current_task = sim_tasks[-1]
+            current_submission = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == current_task.id
+            ).order_by(models.Submission.id.desc()).first()
+        else:
+            raise HTTPException(status_code=404, detail="No simulation scenario found for today")
 
     # Enforce day locking removed for demo purposes
 
@@ -104,14 +173,46 @@ def get_current_simulation(
         db.refresh(current_submission)
         
         state = initial_state
+    else:
+        try:
+            state = json.loads(current_submission.ai_feedback) if current_submission.ai_feedback else get_simulation_state(None)
+        except Exception:
+            state = get_simulation_state(None)
 
     current_scenario_val = state.get("current_scenario_id", "start")
+
+    # If the day was already completed, return the final state and feedback
+    if state.get("day_completed", False):
+        history = state.get("history", [])
+        if history:
+            last_action = history[-1]
+            last_scenario_id = last_action.get("scenario_id")
+            scenario = db.query(models.DailyScenario).filter(models.DailyScenario.id == int(last_scenario_id)).first()
+            return {
+                "day": current_task.day_number,
+                "title": f"{current_task.domain.name} Workplace Simulation",
+                "subtitle": f"Scenario {scenario.step_number if scenario else 1} of 1",
+                "scenario_number": scenario.step_number if scenario else 1,
+                "scenario_id": str(scenario.id) if scenario else "completed",
+                "total_scenarios": 1,
+                "situation": scenario.scenario_text if scenario else "",
+                "question": scenario.question_text if scenario else "",
+                "choices": [],
+                "completed": True,
+                "decisionResult": {
+                    "score": last_action.get("score", 0),
+                    "consequence": last_action.get("consequence", ""),
+                    "day_completed": True
+                }
+            }
 
     # Fetch the scenario from DailyScenario table based on exact ID
     # But for the very first step, we might only have "start" as a placeholder and need to find root
     if current_scenario_val == "start" or current_scenario_val == "1":
+        domain_query = current_task.domain.name
+            
         scenario = db.query(models.DailyScenario).filter(
-            models.DailyScenario.domain.ilike(f"%{current_task.domain.name}%"),
+            models.DailyScenario.domain.ilike(f"%{domain_query}%"),
             models.DailyScenario.day_number == current_task.day_number,
             models.DailyScenario.step_number == 1,
             models.DailyScenario.is_active == True
@@ -120,8 +221,8 @@ def get_current_simulation(
             state["current_scenario_id"] = str(scenario.id)
             save_simulation_state(db, current_submission, state)
             current_scenario_val = str(scenario.id)
-        elif current_scenario_val == "1":
-             # fallback for legacy "1" if no day scenario found
+        elif current_scenario_val in ["1", "start"]:
+             # fallback for legacy "1" or missing day scenarios
              scenario = db.query(models.DailyScenario).filter(
                 models.DailyScenario.id == 1,
                 models.DailyScenario.is_active == True
@@ -144,13 +245,15 @@ def get_current_simulation(
 
     return {
         "day": current_task.day_number,
-        "simulation_title": f"{current_task.domain.name} Workplace Simulation",
+        "title": f"{current_task.domain.name} Workplace Simulation",
+        "subtitle": f"Scenario {scenario.step_number} of 1",
         "scenario_number": scenario.step_number,
         "scenario_id": str(scenario.id),
         "total_scenarios": 1,
         "situation": scenario.scenario_text,
         "question": scenario.question_text or "What is your decision?",
-        "choices": choices
+        "choices": choices,
+        "completed": state.get("day_completed", False)
     }
 
 
@@ -160,6 +263,11 @@ def submit_decision(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    intern_id = current_user.id
+    current_user = db.query(models.User).filter(models.User.id == intern_id).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
 
@@ -176,7 +284,7 @@ def submit_decision(
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
-        ).first()
+        ).order_by(models.Submission.id.desc()).first()
         
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
@@ -222,9 +330,11 @@ def submit_decision(
     state = get_simulation_state(current_submission)
     current_scenario_val = state.get("current_scenario_id", "1")
 
-    # We use actual ID to represent scenario_id for daily_scenarios table
-    if str(current_scenario_val) != str(decision.scenario_id):
-        raise HTTPException(status_code=400, detail="Invalid scenario ID for current state")
+    # Trust the frontend's scenario_id if our state is out of sync or uninitialized
+    if current_scenario_val in ["start", "1"] or str(current_scenario_val) != str(decision.scenario_id):
+        current_scenario_val = decision.scenario_id
+        state["current_scenario_id"] = current_scenario_val
+        save_simulation_state(db, current_submission, state)
 
     scenario = db.query(models.DailyScenario).filter(
         models.DailyScenario.id == int(current_scenario_val),
@@ -270,10 +380,12 @@ def submit_decision(
         "consequence": consequence
     })
     
+    domain_to_save = current_task.domain.name if current_task.domain else None
+        
     # Store in the DB table as requested by user
     history_record = models.ScenarioHistory(
         intern_id=current_user.id,
-        domain=current_task.domain.name if current_task.domain else None,
+        domain=domain_to_save,
         day_number=current_task.day_number,
         scenario_id=int(current_scenario_val),
         choice_id=str(decision.choice_id),

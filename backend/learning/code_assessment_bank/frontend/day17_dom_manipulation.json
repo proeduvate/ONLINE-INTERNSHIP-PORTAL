@@ -1,0 +1,37 @@
+{
+    "day": 17,
+    "topic": "DOM Manipulation",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D17-Q001",
+            "title": "Dynamic Greeting",
+            "description": "Create an input where entering a name dynamically updates a greeting.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D17-Q002",
+            "title": "Dynamic To-Do List",
+            "description": "Build a to-do list where users can add and remove tasks.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D17-Q003",
+            "title": "Theme Switcher",
+            "description": "Create a button that changes the page between light and dark themes.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D17-Q004",
+            "title": "Dynamic Product Cards",
+            "description": "Generate product cards dynamically from JavaScript data.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D17-Q005",
+            "title": "DOM Dashboard",
+            "description": "Create a dashboard where statistics are dynamically generated and updated using JavaScript.",
+            "requirements": []
+        }
+    ]
+}

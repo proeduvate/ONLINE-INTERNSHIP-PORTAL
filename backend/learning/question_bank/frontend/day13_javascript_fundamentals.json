@@ -1,0 +1,557 @@
+{
+    "day": 13,
+    "topic": "JavaScript Fundamentals",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D13-001",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 1 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-002",
+            "question": "How do you correctly use JavaScript Fundamentals feature 2?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-003",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 3?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-004",
+            "question": "Why is JavaScript Fundamentals feature 4 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-005",
+            "question": "When should you avoid using JavaScript Fundamentals feature 5?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-006",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 6 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-007",
+            "question": "How do you correctly use JavaScript Fundamentals feature 7?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-008",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 8?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-009",
+            "question": "Why is JavaScript Fundamentals feature 9 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-010",
+            "question": "When should you avoid using JavaScript Fundamentals feature 10?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-011",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 11 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-012",
+            "question": "How do you correctly use JavaScript Fundamentals feature 12?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-013",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 13?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-014",
+            "question": "Why is JavaScript Fundamentals feature 14 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-015",
+            "question": "When should you avoid using JavaScript Fundamentals feature 15?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-016",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 16 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-017",
+            "question": "How do you correctly use JavaScript Fundamentals feature 17?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-018",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 18?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-019",
+            "question": "Why is JavaScript Fundamentals feature 19 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-020",
+            "question": "When should you avoid using JavaScript Fundamentals feature 20?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-021",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 21 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-022",
+            "question": "How do you correctly use JavaScript Fundamentals feature 22?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-023",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 23?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-024",
+            "question": "Why is JavaScript Fundamentals feature 24 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-025",
+            "question": "When should you avoid using JavaScript Fundamentals feature 25?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-026",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 26 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-027",
+            "question": "How do you correctly use JavaScript Fundamentals feature 27?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-028",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 28?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-029",
+            "question": "Why is JavaScript Fundamentals feature 29 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-030",
+            "question": "When should you avoid using JavaScript Fundamentals feature 30?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-031",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 31 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-032",
+            "question": "How do you correctly use JavaScript Fundamentals feature 32?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-033",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 33?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-034",
+            "question": "Why is JavaScript Fundamentals feature 34 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-035",
+            "question": "When should you avoid using JavaScript Fundamentals feature 35?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-036",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 36 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-037",
+            "question": "How do you correctly use JavaScript Fundamentals feature 37?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-038",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 38?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-039",
+            "question": "Why is JavaScript Fundamentals feature 39 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-040",
+            "question": "When should you avoid using JavaScript Fundamentals feature 40?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-041",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 41 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-042",
+            "question": "How do you correctly use JavaScript Fundamentals feature 42?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-043",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 43?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-044",
+            "question": "Why is JavaScript Fundamentals feature 44 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-045",
+            "question": "When should you avoid using JavaScript Fundamentals feature 45?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-046",
+            "question": "What is the primary purpose of JavaScript Fundamentals feature 46 in JavaScript Fundamentals?",
+            "options": {
+                "A": "To implement JavaScript Fundamentals feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-047",
+            "question": "How do you correctly use JavaScript Fundamentals feature 47?",
+            "options": {
+                "A": "By following standard JavaScript Fundamentals guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-048",
+            "question": "Which of the following best describes JavaScript Fundamentals feature 48?",
+            "options": {
+                "A": "A key concept in JavaScript Fundamentals",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-049",
+            "question": "Why is JavaScript Fundamentals feature 49 important for JavaScript Fundamentals?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D13-050",
+            "question": "When should you avoid using JavaScript Fundamentals feature 50?",
+            "options": {
+                "A": "When it violates JavaScript Fundamentals best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

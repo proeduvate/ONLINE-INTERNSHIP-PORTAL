@@ -231,4 +231,12 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 node_modules
+<<<<<<< HEAD
 backend/google-credentials.json
+=======
+
+# Custom ignores
+scratch_move*.py
+backend/analytics.db
+
+>>>>>>> b7586252505400251137459c84ff8c8e1014256c

@@ -1,0 +1,44 @@
+{
+    "day": 9,
+    "topic": "CSS Grid",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D9-Q001",
+            "title": "Image Gallery",
+            "description": "Create a responsive image gallery using CSS Grid.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D9-Q002",
+            "title": "Dashboard Grid",
+            "description": "Build a dashboard containing:",
+            "requirements": [
+                "Sidebar",
+                "Header",
+                "Statistics",
+                "Main content using Grid"
+            ]
+        },
+        {
+            "id": "CODE-D9-Q003",
+            "title": "Magazine Layout",
+            "description": "Create a magazine/news layout using Grid with different column sizes.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D9-Q004",
+            "title": "Grid Areas",
+            "description": "Build a webpage using:",
+            "requirements": [
+                "grid-template-areas"
+            ]
+        },
+        {
+            "id": "CODE-D9-Q005",
+            "title": "Responsive Grid",
+            "description": "Create a product grid that automatically changes the number of columns according to screen width.",
+            "requirements": []
+        }
+    ]
+}

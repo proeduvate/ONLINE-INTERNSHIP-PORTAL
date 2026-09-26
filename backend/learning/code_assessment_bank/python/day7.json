@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 7 Code Assessment",
+  "day": 7,
+  "topic": "Loop Control Statements",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY07-Q01",
+      "day": 7,
+      "topic": "Loop Control Statements",
+      "question": "Print numbers from 1 to 100 while skipping multiples of 5."
+    },
+    {
+      "id": "DAY07-Q02",
+      "day": 7,
+      "topic": "Loop Control Statements",
+      "question": "Find the first number divisible by both 7 and 11 using break."
+    },
+    {
+      "id": "DAY07-Q03",
+      "day": 7,
+      "topic": "Loop Control Statements",
+      "question": "Print all odd numbers between 1 and 100 using continue."
+    },
+    {
+      "id": "DAY07-Q04",
+      "day": 7,
+      "topic": "Loop Control Statements",
+      "question": "Create a number guessing game using break."
+    },
+    {
+      "id": "DAY07-Q05",
+      "day": 7,
+      "topic": "Loop Control Statements",
+      "question": "Build a menu-driven calculator that continues until the user selects Exit."
+    }
+  ]
+}
