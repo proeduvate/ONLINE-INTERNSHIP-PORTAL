@@ -84,11 +84,8 @@ app = FastAPI(
 # 2. Register routers
 
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
-<<<<<<< HEAD
-=======
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
->>>>>>> b7586252505400251137459c84ff8c8e1014256c
 app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
 app.include_router(airdrops.router, tags=["Airdrops"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
@@ -250,12 +247,7 @@ def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     try:
         if not user or not pwd_context.verify(login_in.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid email or password")
-<<<<<<< HEAD
-    except Exception as e:
-        print("Login hash check error:", e)
-=======
     except passlib.exc.UnknownHashError:
->>>>>>> b7586252505400251137459c84ff8c8e1014256c
         # If the hash in the DB is plain text or invalid, we can just check it manually for demo purposes
         if not user or user.hashed_password != login_in.password:
             raise HTTPException(status_code=401, detail="Invalid email or password")
