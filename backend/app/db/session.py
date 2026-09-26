@@ -18,10 +18,21 @@ print("\n" + "=" * 50)
 print("DEBUG: LOADED DATABASE_URL ->", DATABASE_URL)
 print("=" * 50 + "\n")
 
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs = {"connect_args": {"check_same_thread": False}}
+else:
+    engine_kwargs = {
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_recycle": 1800, # Recycle connections after 30 minutes
+        "pool_pre_ping": True, # Automatically check and restore dropped connections
+        "pool_use_lifo": True,
+    }
+
 # 4. Initialize the SQLAlchemy engine
 engine = create_engine(
     DATABASE_URL,
-    pool_pre_ping=True,  # Automatically check and restore dropped connections
+    **engine_kwargs
 )
 
 # 5. Create SessionLocal class for database queries

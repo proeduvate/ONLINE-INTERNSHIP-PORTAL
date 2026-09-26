@@ -96,8 +96,8 @@ def get_final_evaluations(db: Session = Depends(database.get_db), current_user: 
     
     for intern in interns:
         evaluation = evals_by_intern.get(intern.id)
-        # Only show interns who have completed their 30-day requirement
-        if evaluation and evaluation.is_completed:
+        # Show all interns so admins can see partial real data
+        if evaluation:
             results.append({
                 "intern_id": intern.id,
                 "intern_name": intern.name,

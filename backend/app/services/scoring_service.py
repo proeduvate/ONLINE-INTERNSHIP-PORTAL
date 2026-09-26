@@ -49,8 +49,10 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
     
     mcq_percentage = 0.0
     if mcq_attempts:
-        total_pct = sum(atm.percentage for atm in mcq_attempts)
-        mcq_percentage = total_pct / len(mcq_attempts)
+        valid_mcqs = [atm for atm in mcq_attempts if atm.percentage is not None]
+        if valid_mcqs:
+            total_pct = sum(atm.percentage for atm in valid_mcqs)
+            mcq_percentage = total_pct / len(valid_mcqs)
         
     evaluation.mcq_final_mark = round((mcq_percentage / 100.0) * config.mcq_weight, 2)
 
@@ -64,8 +66,10 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
     
     code_percentage = 0.0
     if code_submissions:
-        total_ai = sum(s.ai_score for s in code_submissions if s.ai_score)
-        code_percentage = total_ai / len(code_submissions)
+        valid_code_subs = [s for s in code_submissions if s.ai_score is not None]
+        if valid_code_subs:
+            total_ai = sum(s.ai_score for s in valid_code_subs)
+            code_percentage = total_ai / len(valid_code_subs)
         
     evaluation.code_final_mark = round((code_percentage / 100.0) * config.code_weight, 2)
 
@@ -106,8 +110,8 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
     mentor_percentage = 0.0
     if code_submissions:
         # Mentor score is out of 100
-        # Only include submissions where the mentor has actually provided a score (status == 'approved' or 'rejected')
-        reviewed_subs = [s for s in code_submissions if s.mentor_score is not None and s.mentor_score > 0]
+        # Only include submissions where the mentor has actually provided a score
+        reviewed_subs = [s for s in code_submissions if s.mentor_score is not None]
         if reviewed_subs:
             total_mentor = sum(s.mentor_score for s in reviewed_subs)
             mentor_percentage = total_mentor / len(reviewed_subs)
@@ -122,6 +126,7 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
         evaluation.airdrop_final_mark +
         evaluation.mentor_evaluation_mark
     )
+    final_score = min(100.0, final_score)
     evaluation.final_score = round(final_score, 2)
 
     # 8. Grade Calculation
@@ -251,16 +256,20 @@ def bulk_calculate_final_grades(db: Session, interns: list, force_recalculate: b
         intern_mcqs = mcq_by_intern[intern.id]
         mcq_percentage = 0.0
         if intern_mcqs:
-            total_pct = sum(atm.percentage for atm in intern_mcqs)
-            mcq_percentage = total_pct / len(intern_mcqs)
+            valid_mcqs = [atm for atm in intern_mcqs if atm.percentage is not None]
+            if valid_mcqs:
+                total_pct = sum(atm.percentage for atm in valid_mcqs)
+                mcq_percentage = total_pct / len(valid_mcqs)
         evaluation.mcq_final_mark = round((mcq_percentage / 100.0) * config.mcq_weight, 2)
         
         # Code
         intern_subs = sub_by_intern[intern.id]
         code_percentage = 0.0
         if intern_subs:
-            total_ai = sum(s.ai_score for s in intern_subs if s.ai_score)
-            code_percentage = total_ai / len(intern_subs)
+            valid_code_subs = [s for s in intern_subs if s.ai_score is not None]
+            if valid_code_subs:
+                total_ai = sum(s.ai_score for s in valid_code_subs)
+                code_percentage = total_ai / len(valid_code_subs)
         evaluation.code_final_mark = round((code_percentage / 100.0) * config.code_weight, 2)
         
         # Airdrop
@@ -287,7 +296,7 @@ def bulk_calculate_final_grades(db: Session, interns: list, force_recalculate: b
         # Mentor
         mentor_percentage = 0.0
         if intern_subs:
-            reviewed_subs = [s for s in intern_subs if s.mentor_score is not None and s.mentor_score > 0]
+            reviewed_subs = [s for s in intern_subs if s.mentor_score is not None]
             if reviewed_subs:
                 total_mentor = sum(s.mentor_score for s in reviewed_subs)
                 mentor_percentage = total_mentor / len(reviewed_subs)
@@ -300,6 +309,7 @@ def bulk_calculate_final_grades(db: Session, interns: list, force_recalculate: b
             evaluation.airdrop_final_mark +
             evaluation.mentor_evaluation_mark
         )
+        final_score = min(100.0, final_score)
         evaluation.final_score = round(final_score, 2)
         
         if not evaluation.is_completed:

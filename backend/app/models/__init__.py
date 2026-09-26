@@ -654,11 +654,11 @@ class FinalGradeConfig(Base):
     __tablename__ = "final_grade_config"
 
     id = Column(Integer, primary_key=True, index=True)
-    mcq_weight = Column(Float, default=20.0)
-    code_weight = Column(Float, default=35.0)
-    airdrop_weight = Column(Float, default=15.0)
-    mentor_weight = Column(Float, default=30.0)
-    grade_ranges_json = Column(Text, default='{"A+": 90, "A": 80, "B+": 70, "B": 60, "C": 50}')
+    mcq_weight = Column(Float, default=30.0)
+    code_weight = Column(Float, default=20.0)
+    airdrop_weight = Column(Float, default=5.0)
+    mentor_weight = Column(Float, default=50.0)
+    grade_ranges_json = Column(Text, default='{"O": 91, "A+": 81, "A": 71, "B+": 61, "B": 51, "C+": 41, "C": 35}')
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class FinalEvaluation(Base):

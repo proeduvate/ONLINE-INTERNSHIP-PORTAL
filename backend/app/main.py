@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -1034,6 +1034,7 @@ def execute_code(
 @app.post("/submissions")
 def create_submission(
     data: schemas.SubmissionCreate, 
+    background_tasks: BackgroundTasks,
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -1124,52 +1125,54 @@ def create_submission(
             print(f"Error saving submission file: {e}")
             raise HTTPException(status_code=500, detail="Unable to save your submission. Please try again.")
 
-        github_file_url = None
-        if current_user.github_repo_url:
-            github_repo_url = current_user.github_repo_url
-            if github_repo_url.endswith("/"):
-                github_repo_url = github_repo_url[:-1]
-            
-            # Extract owner and repo from url (e.g. https://github.com/owner/repo)
-            match = re.search(r"github\.com/([^/]+)/([^/]+)", github_repo_url)
+        def sync_to_github_background(repo_url, token, fname, code_content, day_num):
+            if repo_url.endswith("/"):
+                repo_url = repo_url[:-1]
+            match = re.search(r"github\.com/([^/]+)/([^/]+)", repo_url)
             if match:
                 owner, repo = match.groups()
                 repo = repo.replace(".git", "")
-                
-                # We can construct the hypothetical redirect URL even if we don't have a token to push
+                try:
+                    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{fname}"
+                    headers = {
+                        "Authorization": f"token {token}",
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                    get_resp = requests.get(api_url, headers=headers)
+                    sha = None
+                    if get_resp.status_code == 200:
+                        sha = get_resp.json().get("sha")
+                    message = f"Submission for task day {day_num}"
+                    content_encoded = base64.b64encode(code_content.encode("utf-8")).decode("utf-8")
+                    payload = {
+                        "message": message,
+                        "content": content_encoded,
+                        "branch": "main"
+                    }
+                    if sha:
+                        payload["sha"] = sha
+                    requests.put(api_url, headers=headers, json=payload)
+                except Exception as e:
+                    print(f"Failed to push to GitHub: {e}")
+
+        github_file_url = None
+        if current_user.github_repo_url:
+            github_token = os.environ.get("GITHUB_API_TOKEN")
+            if github_token:
+                background_tasks.add_task(
+                    sync_to_github_background,
+                    current_user.github_repo_url,
+                    github_token,
+                    file_name,
+                    data.code_submission,
+                    task.day_number
+                )
+            # We construct the hypothetical URL immediately so frontend has it
+            match = re.search(r"github\.com/([^/]+)/([^/]+)", current_user.github_repo_url)
+            if match:
+                owner, repo = match.groups()
+                repo = repo.replace(".git", "")
                 github_file_url = f"https://github.com/{owner}/{repo}/blob/main/{file_name}"
-
-                github_token = os.environ.get("GITHUB_API_TOKEN")
-                if github_token:
-                    try:
-                        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_name}"
-                        headers = {
-                            "Authorization": f"token {github_token}",
-                            "Accept": "application/vnd.github.v3+json"
-                        }
-                        
-                        # Check if file already exists
-                        get_resp = requests.get(api_url, headers=headers)
-                        sha = None
-                        if get_resp.status_code == 200:
-                            sha = get_resp.json().get("sha")
-
-                        # Commit the new code
-                        message = f"Submission for task day {task.day_number}"
-                        content_encoded = base64.b64encode(data.code_submission.encode("utf-8")).decode("utf-8")
-                        payload = {
-                            "message": message,
-                            "content": content_encoded,
-                            "branch": "main"
-                        }
-                        if sha:
-                            payload["sha"] = sha
-                            
-                        put_resp = requests.put(api_url, headers=headers, json=payload)
-                        if put_resp.status_code in [200, 201]:
-                            github_file_url = put_resp.json().get("content", {}).get("html_url", github_file_url)
-                    except Exception as e:
-                        print(f"Failed to push to GitHub: {e}")
 
     # Trigger AI Evaluator and secure runtime execution for code submission
     ai_eval_result = {"score": 0, "feedback": None}

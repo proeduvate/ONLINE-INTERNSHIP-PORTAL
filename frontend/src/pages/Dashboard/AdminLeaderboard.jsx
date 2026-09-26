@@ -250,10 +250,10 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
                 <TableHeader>
                   <TableRow>
                     <TableHead style={{ padding: '14px 20px' }}>Intern</TableHead>
-                    <TableHead style={{ padding: '14px 20px' }}>MCQ (/20)</TableHead>
-                    <TableHead style={{ padding: '14px 20px' }}>Code Assessment (/35)</TableHead>
-                    <TableHead style={{ padding: '14px 20px' }}>Airdrop (/15)</TableHead>
-                    <TableHead style={{ padding: '14px 20px' }}>Mentor (/30)</TableHead>
+                    <TableHead style={{ padding: '14px 20px' }}>MCQ (/30)</TableHead>
+                    <TableHead style={{ padding: '14px 20px' }}>Code Assessment (/20)</TableHead>
+                    <TableHead style={{ padding: '14px 20px' }}>Airdrop (+5)</TableHead>
+                    <TableHead style={{ padding: '14px 20px' }}>Mentor (/50)</TableHead>
                     <TableHead style={{ padding: '14px 20px' }}>Final Score (/100)</TableHead>
                     <TableHead style={{ padding: '14px 20px' }}>Grade</TableHead>
                   </TableRow>

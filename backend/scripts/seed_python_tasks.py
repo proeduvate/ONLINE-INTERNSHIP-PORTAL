@@ -84,7 +84,7 @@ def seed_python_tasks():
                 Task.day_number == day
             ).first()
             
-            title = f"Day {day} Scenario: {curriculum[day]}"
+            title = curriculum[day]
             description = f"Complete your Day {day} workplace simulation on {curriculum[day]}."
             
             if existing_task:

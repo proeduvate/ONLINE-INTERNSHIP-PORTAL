@@ -114,8 +114,9 @@ def start_mcq_assessment(day: int, db: Session = Depends(database.get_db), curre
         # Group questions by their base text to prevent selecting duplicates
         base_questions = {}
         for q in all_questions:
-            # Remove " (Variant X)" or similar suffixes
-            base_text = re.sub(r'\s*\(Variant\s*\d+\)\s*', '', q["question"]).strip()
+            # Remove " (Variant X)" or "with feature X" suffixes
+            base_text = re.sub(r'\s*\(?(?:Variant|with feature|feature)\s*\d+\)?\s*', ' ', q["question"], flags=re.IGNORECASE)
+            base_text = re.sub(r'\s+', ' ', base_text).strip()
             if base_text not in base_questions:
                 base_questions[base_text] = []
             base_questions[base_text].append(q)
@@ -147,11 +148,21 @@ def start_mcq_assessment(day: int, db: Session = Depends(database.get_db), curre
     import re
     clean_questions = []
     for q in selected_questions:
-        clean_text = re.sub(r'\s*\(Variant\s*\d+\)\s*', '', q["question"]).strip()
+        clean_text = re.sub(r'\s*\(?(?:Variant|with feature|feature)\s*\d+\)?\s*', ' ', q["question"], flags=re.IGNORECASE)
+        clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+        
+        clean_options = {}
+        for k, v in q["options"].items():
+            if isinstance(v, str):
+                cleaned_v = re.sub(r'\s*\(?(?:Variant|with feature|feature)\s*\d+\)?\s*', ' ', v, flags=re.IGNORECASE)
+                clean_options[k] = re.sub(r'\s+', ' ', cleaned_v).strip()
+            else:
+                clean_options[k] = v
+
         clean_questions.append(MCQQuestionSchema(
             id=q["id"],
             question=clean_text,
-            options=q["options"]
+            options=clean_options
         ))
         
     return MCQStartResponse(
