@@ -89,14 +89,25 @@ def record_daily_question_result(
         )
         db.add(pt)
         
-    # Update progress and attendance
-    total_domain_tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).count() or 30
+    # Update progress and attendance based strictly on database records
+    total_domain_tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).count() if hasattr(models, 'Task') else 30
+    if not total_domain_tasks:
+        total_domain_tasks = 30
     user_results = db.query(models.DailyQuestionResult).filter(
         models.DailyQuestionResult.intern_id == current_user.id
     ).count()
     
     current_user.progress_pct = min(100, int((user_results / total_domain_tasks) * 100))
-    current_user.attendance_pct = min(100, max(60, int((user_results / total_domain_tasks) * 100) + 60))
+    
+    total_logs = db.query(models.AttendanceLog).filter(models.AttendanceLog.intern_id == current_user.id).count() if hasattr(models, 'AttendanceLog') else 0
+    if total_logs > 0:
+        present_logs = db.query(models.AttendanceLog).filter(
+            models.AttendanceLog.intern_id == current_user.id,
+            models.AttendanceLog.status == "PRESENT"
+        ).count()
+        current_user.attendance_pct = min(100, int((present_logs / total_logs) * 100))
+    else:
+        current_user.attendance_pct = min(100, int((user_results / total_domain_tasks) * 100))
     
     db.add(current_user)
     db.commit()

@@ -14,7 +14,7 @@ load_dotenv()
 pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 
 # JWT security configurations
-SECRET_KEY = os.environ.get("SECRET_KEY", "SUPER_SECRET_COMPLEX_KEY_HERE_THAT_IS_LONGER_THAN_32_BYTES")
+SECRET_KEY = os.environ.get("SECRET_KEY", "PROEDUVATE_SUPER_SECRET_COMPLEX_KEY_2026_PRODUCTION_32BYTES_LONG")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 240
 

@@ -43,6 +43,14 @@ except ImportError:
     except ImportError:
         certificates = None
 
+try:
+    from app.api.deps import get_db
+except ImportError:
+    try:
+        from app.db.session import get_db
+    except ImportError:
+        from backend.app.api.deps import get_db
+
 api_router = APIRouter()
 
 # Authentication & User Management
@@ -57,7 +65,7 @@ if certificates and hasattr(certificates, "router"):
     # Standalone QR Code Verification Route (/verify/{certificate_id})
     verify_router = APIRouter()
     @verify_router.get("/verify/{certificate_id}")
-    async def standalone_verify_certificate(certificate_id: str, db=Depends(certificates.get_db)):
+    async def standalone_verify_certificate(certificate_id: str, db=Depends(get_db)):
         return await certificates.verify_certificate(certificate_id, db)
 
     api_router.include_router(verify_router, tags=["certificates"])

@@ -12,29 +12,45 @@ export const AuthProvider = ({ children }) => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    let response = await fetch(`${API_BASE}/users/profile`, {
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`
-                        }
+                    let response = await fetch(`${API_BASE}/users/me`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
                     });
                     if (!response.ok) {
+                        response = await fetch(`${API_BASE}/auth/me`, {
+                            headers: { 'Authorization': `Bearer ${authToken}` }
+                        });
+                    }
+                    if (!response.ok) {
+                        response = await fetch(`${API_BASE}/users/profile`, {
+                            headers: { 'Authorization': `Bearer ${authToken}` }
+                        });
+                    }
+                    if (!response.ok) {
                         response = await fetch(`${API_BASE}/profile`, {
-                            headers: {
-                                'Authorization': `Bearer ${authToken}`
-                            }
+                            headers: { 'Authorization': `Bearer ${authToken}` }
                         });
                     }
                     if (response.ok) {
                         const userData = await response.json();
                         setUser(userData);
                     } else {
-                        console.error('Failed to fetch user data with token, logging out.');
-                        logout();
+                        const savedRole = localStorage.getItem('role');
+                        if (savedRole) {
+                            setUser({ role: savedRole });
+                        } else {
+                            console.error('Failed to fetch user data with token, logging out.');
+                            logout();
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
-                    logout();
+                    const savedRole = localStorage.getItem('role');
+                    if (savedRole) {
+                        setUser({ role: savedRole });
+                    }
                 }
+            } else {
+                setUser(null);
             }
             setLoading(false);
         };

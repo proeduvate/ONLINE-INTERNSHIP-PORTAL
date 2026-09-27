@@ -22,7 +22,8 @@ class UserCreate(BaseModel):
     role: UserRole = UserRole.INTERN
 
 class UserLoginSchema(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
+    username: Optional[str] = None
     password: str
 
 class UserOnboard(BaseModel):
@@ -46,10 +47,11 @@ class UserProfileUpdate(BaseModel):
 
 class UserResponse(BaseModel):
     id: int
-    name: str
-    email: EmailStr
-    role: UserRole
-    created_at: datetime
+    name: Optional[str] = "User"
+    full_name: Optional[str] = None
+    email: str
+    role: Any
+    created_at: Optional[datetime] = None
     intern_id: Optional[str] = None
     github_repo_url: Optional[str] = None
     college: Optional[str] = None
@@ -58,9 +60,9 @@ class UserResponse(BaseModel):
     mentor_id: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
-    attendance_pct: int
-    progress_pct: int
-    learning_streak: int = 0
+    attendance_pct: Optional[int] = 0
+    progress_pct: Optional[int] = 0
+    learning_streak: Optional[int] = 0
     last_task_completion_date: Optional[datetime] = None
 
     class Config:

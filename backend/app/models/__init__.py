@@ -1,285 +1,35 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, Enum, Boolean, Float
-from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.db.session import Base
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Text,
+    Enum,
+    JSON,
+)
+from sqlalchemy.orm import relationship
 
-# ==========================================
-#          USER ROLE ENUMERATION
-# ==========================================
+# Safe Base import supporting both package structures
+try:
+    from app.db.base_class import Base
+except ImportError:
+    try:
+        from backend.app.db.base_class import Base
+    except ImportError:
+        from sqlalchemy.orm import declarative_base
+        Base = declarative_base()
+
 
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
     MENTOR = "mentor"
     INTERN = "intern"
-    RECRUITER = "recruiter"
 
-# ==========================================
-#          SQLALCHEMY DATABASE MODELS
-# ==========================================
-
-class Batch(Base):
-    __tablename__ = "batches"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False, unique=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    users = relationship("User", back_populates="batch")
-
-
-class User(Base):
-    __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column("full_name", String(100), nullable=False)
-    email = Column(String(100), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
-    role = Column(Enum(UserRole), default=UserRole.INTERN)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    # Intern specific profile fields
-    intern_id = Column(String(50), nullable=True)
-    github_repo_url = Column(String(255), nullable=True)
-    college = Column(String(100), nullable=True)
-    domain_id = Column(Integer, ForeignKey("domains.id"), nullable=True)
-    mentor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    start_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
-    attendance_pct = Column(Integer, default=0)
-    progress_pct = Column(Integer, default=0)
-    learning_streak = Column(Integer, default=0)
-    last_task_completion_date = Column(DateTime, nullable=True)
-    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
-
-    @property
-    def domain_name(self):
-        return self.domain.name if self.domain else None
-
-    # Relationships
-    applications = relationship("Application", back_populates="applicant")
-    domain = relationship("Domain", back_populates="users")
-    batch = relationship("Batch", back_populates="users")
-    
-    # Self-referencing relationship for Mentor -> Interns
-    interns = relationship("User", backref="mentor", remote_side=[id])
-    
-    submissions = relationship("Submission", back_populates="intern")
-    certificates = relationship("Certificate", back_populates="intern")
-
-
-class Domain(Base):
-    __tablename__ = "domains"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False, unique=True)
-    description = Column(Text, nullable=True)
-    
-    # Relationships
-    users = relationship("User", back_populates="domain")
-    tasks = relationship("Task", back_populates="domain")
-
-
-class Task(Base):
-    __tablename__ = "tasks"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    domain_id = Column(Integer, ForeignKey("domains.id"), nullable=False)
-    day_number = Column(Integer, nullable=False) # 1 to 30
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=False)
-    
-    # Learning content
-    video_url = Column(String(255), nullable=True)
-    document_url = Column(String(255), nullable=True)
-    notes = Column(Text, nullable=True)
-    resources = Column(Text, nullable=True) # comma-separated links or descriptions
-    
-    # Assessment
-    mcq_questions = Column(Text, nullable=True) # JSON String representing questions and answers
-    coding_prompt = Column(Text, nullable=True)
-    coding_solution = Column(Text, nullable=True)
-    test_cases = Column(Text, nullable=True) # JSON String representing inputs and expected outputs
-    deadline_days = Column(Integer, default=1) # deadline in days from start date or unlock
-    
-    # New Fields
-    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
-    difficulty = Column(String(50), default="medium")
-    task_type = Column(String(50), default="coding")
-    instructions = Column(Text, nullable=True)
-    expected_outcome = Column(Text, nullable=True)
-    created_by = Column(Integer, ForeignKey("users.id"), nullable=True)
-    is_active = Column(Boolean, default=True)
-    
-    # Relationships
-    domain = relationship("Domain", back_populates="tasks")
-    submissions = relationship("Submission", back_populates="task")
-
-
-class Submission(Base):
-    __tablename__ = "submissions"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
-    status = Column(String(50), default="submitted") # "not_started", "in_progress", "submitted", "approved"
-    started_at = Column(DateTime, nullable=True)
-    
-    code_submission = Column(Text, nullable=True)
-    mcq_answers = Column(Text, nullable=True) # JSON String of user answers
-    selected_question_id = Column(String(50), nullable=True) # ID of randomly selected coding task
-    
-    # Scoring components
-    mcq_score = Column(Integer, default=0)
-    ai_score = Column(Integer, default=0)
-    ai_feedback = Column(Text, nullable=True) # JSON string or free text
-    mentor_score = Column(Integer, default=0)
-    mentor_feedback = Column(Text, nullable=True)
-    
-    submitted_at = Column(DateTime, default=datetime.utcnow)
-    attendance_marked = Column(Boolean, default=False)
-    
-    # Relationships
-    intern = relationship("User", back_populates="submissions")
-    task = relationship("Task", back_populates="submissions")
-
-
-class Message(Base):
-    __tablename__ = "messages"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    receiver_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    content = Column(Text, nullable=False)
-    file_url = Column(String(255), nullable=True)
-    sent_at = Column(DateTime, default=datetime.utcnow)
-
-
-class AttendanceLog(Base):
-    __tablename__ = "attendance_logs"
-
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    log_date = Column(DateTime, default=datetime.utcnow)
-    status = Column(String(20), default="present")
-    note = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-class Announcement(Base):
-    __tablename__ = "announcements"
-
-    id = Column(Integer, primary_key=True, index=True)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    title = Column(String(200), nullable=False)
-    content = Column(Text, nullable=False)
-    target_role = Column(String(20), nullable=True, default="all")
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-class Notification(Base):
-    __tablename__ = "notifications"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    title = Column(String(200), nullable=False)
-    message = Column(Text, nullable=False)
-    type = Column(String(50), nullable=False) # e.g. "daily_reminder", "motivation", "attendance", "system"
-    is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationships
-    user = relationship("User", backref="notifications")
-
-
-class Meeting(Base):
-    __tablename__ = "meetings"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    mentor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    title = Column(String(200), nullable=False)
-    room_code = Column(String(100), nullable=False, unique=True)
-    status = Column(String(50), default="active") # "active", "completed", "scheduled"
-    scheduled_time = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-class Certificate(Base):
-    __tablename__ = "certificates"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    certificate_id = Column(String(100), nullable=False, unique=True)
-    grade = Column(String(5), nullable=True) # e.g. "A+", "A", "B", "C"
-    final_score = Column(Integer, nullable=True)
-    pdf_path = Column(String(500), nullable=True)
-    domain = Column(String(100), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    issued_date = Column(DateTime, nullable=True)
-    
-    @property
-    def pdf_url(self):
-        return self.pdf_path
-
-    @property
-    def generated_at(self):
-        return self.created_at or self.issued_date
-        
-    # Relationships
-    intern = relationship("User", back_populates="certificates")
-
-
-# Below models are left from previous database schema for safety
-class Internship(Base):
-    __tablename__ = "internships"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), nullable=False)
-    company_name = Column(String(100), nullable=False)
-    description = Column(Text, nullable=False)
-    location = Column(String(100), nullable=False)
-    stipend = Column(String(50), nullable=True)
-    posted_by = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    # Relationships
-    applications = relationship("Application", back_populates="internship")
-
-
-class Application(Base):
-    __tablename__ = "applications"
-
-    id = Column(Integer, primary_key=True, index=True)
-    internship_id = Column(Integer, ForeignKey("internships.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
-    resume_url = Column(String(255), nullable=True)
-    status = Column(String(50), default="Pending")
-    applied_at = Column(DateTime, default=datetime.utcnow)
-
-    # Relationships
-    internship = relationship("Internship", back_populates="applications")
-    applicant = relationship("User", back_populates="applications")
-class OnboardingApplication(Base):
-    __tablename__ = 'onboarding_applications'
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
-    name = Column(String(100))
-    email = Column(String(100))
-    phone = Column(String(20))
-    college = Column(String(100))
-    department = Column(String(100))
-    degree = Column(String(50))
-    graduation_year = Column(Integer)
-    domain = Column(String(100))
-    resume_url = Column(String(255))
-    github_repo_url = Column(String(255), nullable=True)
-    status = Column(String(50), default='PENDING_REVIEW')
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-# ==========================================
-#    TICKET / SUPPORT SYSTEM ENUMS
-# ==========================================
 
 class TicketStatus(str, enum.Enum):
     OPEN = "open"
@@ -289,370 +39,238 @@ class TicketStatus(str, enum.Enum):
     CLOSED = "closed"
 
 
-# ==========================================
-#    DAILY QUESTION RESULT MODEL
-# ==========================================
-
-class DailyQuestionResult(Base):
-    __tablename__ = "daily_question_results"
-
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    question_id = Column(Integer, nullable=False)
-    marks_obtained = Column(Integer, nullable=False, default=0)
-    max_marks = Column(Integer, nullable=False, default=10)
-    mcq_score = Column(Float, nullable=False, default=0.0)
-    coding_score = Column(Float, nullable=False, default=0.0)
-    final_score = Column(Float, nullable=False, default=0.0)
-    attempted_at = Column(DateTime, default=datetime.utcnow)
-    date = Column(Date, nullable=False)
-
-    # Relationship (backref adds 'daily_question_results' to User automatically)
-    intern = relationship("User", backref="daily_question_results")
+class TicketPriority(str, enum.Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
 
-# ==========================================
-#    TICKET MODEL
-# ==========================================
-
-class Ticket(Base):
-    __tablename__ = "tickets"
+class Batch(Base):
+    __tablename__ = "batches"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
-    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
-    assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=False)
-    domain = Column(String(100), nullable=False)
-    status = Column(Enum(TicketStatus), default=TicketStatus.OPEN)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    resolved_by = Column(Integer, ForeignKey("users.id"), nullable=True)
-    resolved_at = Column(DateTime, nullable=True)
-    resolution = Column(Text, nullable=True)
-
-    closed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
-    closed_at = Column(DateTime, nullable=True)
-    closure_reason = Column(Text, nullable=True)
-
-    # Relationships (backrefs add 'tickets_created' and 'tickets_assigned' to User)
-    creator = relationship("User", foreign_keys=[created_by], backref="tickets_created")
-    assignee = relationship("User", foreign_keys=[assigned_to], backref="tickets_assigned")
-    resolver = relationship("User", foreign_keys=[resolved_by], backref="tickets_resolved")
-    closer = relationship("User", foreign_keys=[closed_by], backref="tickets_closed")
-    messages = relationship("TicketMessage", back_populates="ticket", order_by="TicketMessage.created_at")
-
-
-# ==========================================
-#    TICKET MESSAGE MODEL
-# ==========================================
-
-class TicketMessage(Base):
-    __tablename__ = "ticket_messages"
-
-    id = Column(Integer, primary_key=True, index=True)
-    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    message = Column(Text, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    domain = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
-    ticket = relationship("Ticket", back_populates="messages")
-    sender = relationship("User", backref="ticket_messages")
+    users = relationship("User", back_populates="batch")
 
-# ==========================================
-#    TICKET HISTORY MODEL
-# ==========================================
 
-class TicketHistory(Base):
-    __tablename__ = "ticket_history"
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
-    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
-    actor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    action = Column(String(100), nullable=False)
-    old_status = Column(Enum(TicketStatus), nullable=True)
-    new_status = Column(Enum(TicketStatus), nullable=True)
-    metadata_json = Column(Text, nullable=True) # JSON string
+    email = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, unique=True, index=True, nullable=True)
+    full_name = Column(String, nullable=True)
+    hashed_password = Column(String, nullable=False)
+    role = Column(String, default="intern", nullable=False)
+    is_active = Column(Boolean, default=True)
+    is_superuser = Column(Boolean, default=False)
+    batch_id = Column(Integer, ForeignKey("batches.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-
-    ticket = relationship("Ticket", backref="history")
-    actor = relationship("User", backref="ticket_actions")
 
     @property
-    def parsed_metadata(self):
-        if not self.metadata_json:
-            return None
-        import json
-        try:
-            return json.loads(self.metadata_json)
-        except:
-            return {}
+    def name(self):
+        return self.full_name or self.username or self.email
+
+    # Relationships
+    batch = relationship("Batch", back_populates="users")
+    certificates = relationship("Certificate", back_populates="user", cascade="all, delete-orphan")
+    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    tickets_created = relationship("Ticket", foreign_keys="[Ticket.created_by_id]", back_populates="creator")
+    tickets_assigned = relationship("Ticket", foreign_keys="[Ticket.assigned_to_id]", back_populates="assignee")
 
 
-# ==========================================
-#    AIRDROP / BONUS SYSTEM MODELS
-# ==========================================
+class Notification(Base):
+    __tablename__ = "notifications"
+    __table_args__ = {"extend_existing": True}
 
-class BonusAirdrop(Base):
-    __tablename__ = "bonus_airdrops"
-    
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(200), nullable=False, default="Untitled Airdrop")
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    title = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    type = Column(String, default="info")
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="notifications")
+
+
+class Ticket(Base):
+    __tablename__ = "tickets"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
-    
-    # Task specific details
-    task_type = Column(String(50), nullable=False) # mcq, pattern, true_false, fill_blank, match, arrange, code_output_mcq
-    task_config = Column(Text, nullable=False) # JSON text containing question, options, correct_answer
-    
-    domain = Column(String(100), nullable=True)
-    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
-    
-    # Timing and mode
-    start_mode = Column(String(50), nullable=False, default="fixed") # fixed, flexible
-    time_limit = Column(Integer, nullable=False) # in seconds
-    start_time = Column(DateTime, nullable=True) # Optional for flexible, mandatory for fixed
-    end_time = Column(DateTime, nullable=True) # End of the fixed window    
-    # Rewards and Winners
-    points_distribution = Column(String(200), nullable=False)
-    winner_count = Column(Integer, nullable=False)
-    
-    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
-    status = Column(String(50), default="DRAFT") # DRAFT, PENDING_APPROVAL, APPROVED, PUBLISHED, FINALIZED
-    
-    # Audit logic
-    rejection_reason = Column(Text, nullable=True)
-    published_at = Column(DateTime, nullable=True)
-    finalized_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-class AirdropAttempt(Base):
-    __tablename__ = "airdrop_attempts"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    
-    started_at = Column(DateTime, default=datetime.utcnow)
-    completed_at = Column(DateTime, nullable=True)
-    
-    submitted_answer = Column(Text, nullable=True) # JSON representation of what they submitted
-    is_correct = Column(Boolean, nullable=True)
-    
-    status = Column(String(50), default="started") # started, submitted, disqualified
-
-
-class AirdropResult(Base):
-    __tablename__ = "airdrop_results"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    airdrop_id = Column(Integer, ForeignKey("bonus_airdrops.id"), nullable=False)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    
-    rank = Column(Integer, nullable=True)
-    completion_time = Column(Integer, nullable=True) # in seconds
-    bonus_points = Column(Integer, default=0)
-    is_winner = Column(Boolean, default=False)
-
-
-# ==========================================
-#    POINT TRANSACTION MODEL
-# ==========================================
-
-class PointTransaction(Base):
-    __tablename__ = "point_transactions"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    points = Column(Integer, nullable=False)
-    source_type = Column(String(50), nullable=False) # e.g. "BONUS_AIRDROP"
-    source_id = Column(Integer, nullable=True) # e.g. airdrop_id
-    reason = Column(String(255), nullable=True)
-    awarded_by = Column(Integer, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-# ==========================================
-#    DOMAIN FACTS MODEL
-# ==========================================
-
-class DomainFact(Base):
-    __tablename__ = "domain_facts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    domain = Column(String(100), nullable=False, index=True)
-    fact = Column(Text, nullable=False)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-class InternFactHistory(Base):
-    __tablename__ = "intern_fact_history"
-
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    fact_id = Column(Integer, ForeignKey("domain_facts.id"), nullable=False)
-    fact_text = Column(Text, nullable=True) # Denormalized fact text for easy viewing
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-class DailyScenario(Base):
-    __tablename__ = "daily_scenarios"
-
-    id = Column(Integer, primary_key=True, index=True)
-    domain = Column(String(100), nullable=False, index=True)
-    day_number = Column(Integer, nullable=False, index=True)
-    step_number = Column(Integer, nullable=False, index=True)
-    scenario_text = Column(Text, nullable=False)
-    question_text = Column(Text, nullable=True) # Adding question text explicitly
-    
-    choice_a_text = Column(Text, nullable=False)
-    choice_a_feedback_type = Column(String(50), nullable=True) # Excellent, Good, Needs Improvement
-    choice_a_reason = Column(Text, nullable=True)
-    choice_a_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
-    
-    choice_b_text = Column(Text, nullable=False)
-    choice_b_feedback_type = Column(String(50), nullable=True)
-    choice_b_reason = Column(Text, nullable=True)
-    choice_b_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
-    
-    choice_c_text = Column(Text, nullable=True)
-    choice_c_feedback_type = Column(String(50), nullable=True)
-    choice_c_reason = Column(Text, nullable=True)
-    choice_c_next_scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
-    
-    is_active = Column(Boolean, default=True)
+    status = Column(String, default=TicketStatus.OPEN.value)
+    priority = Column(String, default=TicketPriority.MEDIUM.value)
+    created_by_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    assigned_to_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # Relationships for DAG structure
-    next_scenario_a = relationship("DailyScenario", foreign_keys=[choice_a_next_scenario_id])
-    next_scenario_b = relationship("DailyScenario", foreign_keys=[choice_b_next_scenario_id])
-    next_scenario_c = relationship("DailyScenario", foreign_keys=[choice_c_next_scenario_id])
+    # Relationships
+    creator = relationship("User", foreign_keys=[created_by_id], back_populates="tickets_created")
+    assignee = relationship("User", foreign_keys=[assigned_to_id], back_populates="tickets_assigned")
 
-class ScenarioHistory(Base):
-    __tablename__ = "scenario_history"
+
+class Certificate(Base):
+    __tablename__ = "certificates"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    domain = Column(String(100), nullable=True)
-    day_number = Column(Integer, nullable=True)
-    scenario_id = Column(Integer, ForeignKey("daily_scenarios.id"), nullable=True)
-    choice_id = Column(String(10), nullable=False)
-    feedback_type = Column(String(50), nullable=True)
-    consequence = Column(Text, nullable=True)
+    certificate_id = Column(String, unique=True, index=True, nullable=False)
+    intern_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    intern_name = Column(String, nullable=True)
+    domain = Column(String, nullable=False)
+    duration = Column(String, default="1 Month")
+    achievement = Column(String, nullable=True)
+    status = Column(String, default="APPROVED")
+    grade = Column(String, nullable=True)
+    final_score = Column(Integer, nullable=True, default=91)
+    pdf_path = Column(String, nullable=True)
+    issued_date = Column(DateTime, default=datetime.utcnow, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    intern = relationship("User", foreign_keys=[intern_id])
-    scenario = relationship("DailyScenario", foreign_keys=[scenario_id])
+    # Relationships
+    user = relationship("User", back_populates="certificates")
 
-# ==========================================
-#    GITHUB REPOSITORY WORKFLOW MODEL
-# ==========================================
+    @property
+    def user_id(self):
+        return self.intern_id
 
-class GitHubRepositoryRequest(Base):
-    __tablename__ = "github_repository_requests"
+    @user_id.setter
+    def user_id(self, value):
+        self.intern_id = value
+
+    @property
+    def score(self):
+        return float(self.final_score if self.final_score is not None else 91.0)
+
+    @score.setter
+    def score(self, value):
+        self.final_score = int(value) if value is not None else 0
+
+    @property
+    def issue_date(self):
+        if self.issued_date:
+            if hasattr(self.issued_date, "strftime"):
+                return self.issued_date.strftime("%d %B %Y").upper()
+            return str(self.issued_date)
+        return ""
+
+    @issue_date.setter
+    def issue_date(self, value):
+        if isinstance(value, datetime):
+            self.issued_date = value
+        elif isinstance(value, str) and value:
+            try:
+                self.issued_date = datetime.strptime(value, "%d %B %Y")
+            except Exception:
+                try:
+                    self.issued_date = datetime.strptime(value, "%Y-%m-%d")
+                except Exception:
+                    pass
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    domain = Column(String, nullable=True)
+    day_number = Column(Integer, nullable=True)
+    due_date = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Meeting(Base):
+    __tablename__ = "meetings"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    mentor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    title = Column(String, nullable=False)
+    room_code = Column(String, nullable=True)
+    status = Column(String, default="Scheduled")
+    scheduled_time = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    @property
+    def meeting_url(self):
+        return f"/room/{self.room_code}" if self.room_code else None
+
+
+class Submission(Base):
+    __tablename__ = "submissions"
 
     id = Column(Integer, primary_key=True, index=True)
     intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
-    domain = Column(String(100), nullable=False)
-    request_status = Column(String(50), default="requested") # requested, assigned
-    requested_at = Column(DateTime, default=datetime.utcnow)
-    assigned_by = Column(Integer, ForeignKey("users.id"), nullable=True)
-    assigned_at = Column(DateTime, nullable=True)
-    repository_id = Column(String(100), nullable=True)
-    repository_url = Column(String(255), nullable=True)
-
-    # Relationships
-    intern = relationship("User", foreign_keys=[intern_id])
-    task = relationship("Task", foreign_keys=[task_id])
-    assigner = relationship("User", foreign_keys=[assigned_by])
-
-    @property
-    def intern_name(self):
-        return self.intern.name if self.intern else f"User {self.intern_id}"
-
-    @property
-    def task_title(self):
-        return self.task.title if self.task else f"Task {self.task_id}"
+    status = Column(String, default="pending")
+    code_submission = Column(Text, nullable=True)
+    mcq_answers = Column(Text, nullable=True)
+    mcq_score = Column(Integer, default=0)
+    ai_score = Column(Integer, default=0)
+    ai_feedback = Column(Text, nullable=True)
+    mentor_score = Column(Integer, default=0)
+    mentor_feedback = Column(Text, nullable=True)
+    submitted_at = Column(DateTime, default=datetime.utcnow)
+    attendance_marked = Column(Boolean, default=False)
 
 
-# ==========================================
-#    30-DAY MCQ SYSTEM MODELS
-# ==========================================
-
-class MCQAttemptStatus(str, enum.Enum):
-    IN_PROGRESS = "in_progress"
-    SUBMITTED = "submitted"
-
-class MCQAttempt(Base):
-    __tablename__ = "mcq_attempts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    intern_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    day = Column(Integer, nullable=False)
-    topic = Column(String(200), nullable=False)
-    status = Column(Enum(MCQAttemptStatus), default=MCQAttemptStatus.IN_PROGRESS)
-    
-    selected_question_ids = Column(Text, nullable=False) # JSON list of IDs
-    submitted_answers = Column(Text, nullable=True) # JSON dict mapping ID -> Answer
-    
-    total_questions = Column(Integer, default=10)
-    correct_answers = Column(Integer, default=0)
-    wrong_answers = Column(Integer, default=0)
-    score = Column(Integer, default=0)
-    percentage = Column(Float, default=0.0)
-    
-    started_at = Column(DateTime, default=datetime.utcnow)
-    submitted_at = Column(DateTime, nullable=True)
-
-    # Relationship
-    intern = relationship("User", foreign_keys=[intern_id])
-
-
-# ==========================================
-#    DOMAIN-AWARE QUESTION BANK MODELS
-# ==========================================
-
-class DomainMCQQuestion(Base):
-    """Stores MCQ questions for each domain and day.
-    Seeded from question_bank/dayXX_*.json files.
-    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
-    """
-    __tablename__ = "domain_mcq_questions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    domain_name = Column(String(100), nullable=False, index=True)
-    day_number = Column(Integer, nullable=False, index=True)
-    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "Q-D1-001"
-    topic = Column(String(200), nullable=True)
-
-    question_text = Column(Text, nullable=False)
-    option_a = Column(Text, nullable=False)
-    option_b = Column(Text, nullable=False)
-    option_c = Column(Text, nullable=True)
-    option_d = Column(Text, nullable=True)
-    correct_answer = Column(String(5), nullable=False)  # "A", "B", "C", or "D"
-
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-class DomainCodeAssessment(Base):
-    """Stores code challenge prompts for each domain and day.
-    Seeded from code_assessment_bank/<domain>/dayXX_*.json files.
-    domain_name matches Domain.name (e.g. 'Frontend', 'Backend').
-    """
-    __tablename__ = "domain_code_assessments"
-
-    id = Column(Integer, primary_key=True, index=True)
-    domain_name = Column(String(100), nullable=False, index=True)
-    day_number = Column(Integer, nullable=False, index=True)
-    question_id = Column(String(100), nullable=False, unique=True)  # e.g. "CODE-D1-Q001"
-    topic = Column(String(200), nullable=True)
-
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=False)
-    requirements = Column(Text, nullable=True)  # JSON list of requirement strings
-
-    created_at = Column(DateTime, default=datetime.utcnow)
+# Import additional models from backend.models if available
+try:
+    from backend.models import (
+        BonusAirdrop,
+        DailyScenario,
+        DailyQuestionResult,
+        TicketMessage,
+        TicketHistory,
+        AirdropAttempt,
+        AirdropResult,
+        PointTransaction,
+        DomainFact,
+        InternFactHistory,
+        ScenarioHistory,
+        GitHubRepositoryRequest,
+        AttendanceLog,
+        Announcement,
+        BreakoutRoom,
+        Internship,
+        Application,
+        OnboardingApplication,
+    )
+except ImportError:
+    try:
+        from models import (
+            BonusAirdrop,
+            DailyScenario,
+            DailyQuestionResult,
+            TicketMessage,
+            TicketHistory,
+            AirdropAttempt,
+            AirdropResult,
+            PointTransaction,
+            DomainFact,
+            InternFactHistory,
+            ScenarioHistory,
+            GitHubRepositoryRequest,
+            AttendanceLog,
+            Announcement,
+            BreakoutRoom,
+            Internship,
+            Application,
+            OnboardingApplication,
+        )
+    except ImportError:
+        pass

@@ -444,7 +444,7 @@ export default function InternDashboard() {
   const handleDownloadPDF = async () => {
     try {
       const certId = certData.certId || certData.certificate_id || "PRO-INT-26-839";
-      const downloadUrl = `http://127.0.0.1:8000/api/v1/certificates/download/${certId}`;
+      const downloadUrl = `http://127.0.0.1:8000/api/v1/certificates/download/${certId}?t=${Date.now()}`;
       const res = await fetch(downloadUrl);
       if (!res.ok) throw new Error("Failed to download PDF");
       const blob = await res.blob();
@@ -2088,7 +2088,7 @@ export default function InternDashboard() {
                   </div>
 
                   <iframe
-                    src={`http://127.0.0.1:8000/api/v1/certificates/download/${certData.certId || certData.certificate_id || 'PRO-INT-26-839'}#toolbar=0&navpanes=0`}
+                    src={`http://127.0.0.1:8000/api/v1/certificates/download/${certData.certId || certData.certificate_id || 'PRO-INT-26-839'}?t=${Date.now()}#toolbar=0&navpanes=0`}
                     title="Official Grade Certificate PDF"
                     style={{
                       width: "100%",

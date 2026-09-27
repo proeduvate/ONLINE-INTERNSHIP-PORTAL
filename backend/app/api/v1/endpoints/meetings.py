@@ -50,18 +50,9 @@ def get_meetings(db: Session = Depends(get_db)):
 def create_meeting(
     data: schemas.MeetingCreate,
     db: Session = Depends(get_db),
-    authorization: Optional[str] = Header(None)
+    current_user: models.User = Depends(get_current_user)
 ):
-    mentor_id = 1
-    if authorization is not None and isinstance(authorization, str) and authorization.startswith("Bearer "):
-        try:
-            token = authorization.split(" ")[1]
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            uid = payload.get("sub") or payload.get("user_id")
-            if uid:
-                mentor_id = int(uid)
-        except Exception:
-            pass
+    mentor_id = current_user.id
 
     parsed_time = None
     if getattr(data, "scheduled_time", None):
@@ -76,6 +67,16 @@ def create_meeting(
                     parsed_time = datetime.strptime(st, "%Y-%m-%dT%H:%M")
                 except Exception:
                     parsed_time = None
+
+    existing_meeting = db.query(models.Meeting).filter(models.Meeting.room_code == data.room_code).first()
+    if existing_meeting:
+        existing_meeting.title = data.title or existing_meeting.title
+        existing_meeting.status = getattr(data, "status", None) or existing_meeting.status or "scheduled"
+        if parsed_time:
+            existing_meeting.scheduled_time = parsed_time
+        db.commit()
+        db.refresh(existing_meeting)
+        return existing_meeting
 
     db_kwargs = {
         "mentor_id": mentor_id,

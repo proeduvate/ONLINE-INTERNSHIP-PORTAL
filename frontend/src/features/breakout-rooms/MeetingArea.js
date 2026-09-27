@@ -66,8 +66,12 @@ export default function MeetingArea({
           setIsScreenSharing(true);
         }
       } catch (err) {
-        console.warn("Display media permission cancelled or unsupported, enabling stream view mode:", err);
-        setIsScreenSharing(true);
+        console.warn("Display media permission cancelled or error starting screen share:", err);
+        setIsScreenSharing(false);
+        setScreenStream(null);
+        if (screenStreamRef.current) {
+          screenStreamRef.current = null;
+        }
       }
     }
   };

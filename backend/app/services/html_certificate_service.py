@@ -1,195 +1,254 @@
-import base64
 import io
 import os
+import base64
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-import jinja2
-import qrcode
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+
+CURRENT_DIR = Path(__file__).resolve().parent
+APP_DIR = CURRENT_DIR.parent
+ASSETS_DIR = APP_DIR / "assets"
+FONTS_DIR = ASSETS_DIR / "fonts"
+TEMPLATES_DIR = ASSETS_DIR / "templates"
+
+TEMPLATE_PATH = TEMPLATES_DIR / "master_template.png"
+SIGNATURE_PATH = TEMPLATES_DIR / "ceo_signature_block.png"
+SEAL_PATH = TEMPLATES_DIR / "official_seal.png"
 
 
-# Determine base directories using pathlib.Path
-BASE_DIR = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = BASE_DIR.parent
-
-TEMPLATES_DIR = BASE_DIR / "templates"
-if not TEMPLATES_DIR.exists():
-    TEMPLATES_DIR = PROJECT_ROOT / "templates"
-
-ASSETS_DIR = BASE_DIR / "assets" / "templates"
-if not ASSETS_DIR.exists():
-    ASSETS_DIR = PROJECT_ROOT / "backend" / "app" / "assets" / "templates"
+def load_font(name: str, size: int):
+    font_path = FONTS_DIR / name
+    if font_path.exists():
+        return ImageFont.truetype(str(font_path), size)
+    return ImageFont.load_default()
 
 
-def calculate_grade(score: float) -> str:
-    """Calculates letter grade based on numeric score."""
-    val = float(score) if score is not None else 0.0
-    if val >= 90:
-        return "A+"
-    elif val >= 80:
-        return "A"
-    elif val >= 70:
-        return "B+"
-    elif val >= 60:
-        return "B"
-    elif val >= 50:
-        return "C+"
+def text_width(draw: ImageDraw.ImageDraw, text: str, font) -> float:
+    return draw.textlength(text, font=font)
+
+
+def centered_text(draw: ImageDraw.ImageDraw, image_width: int, y: int, text: str, font, fill):
+    width = text_width(draw, text, font)
+    draw.text(((image_width - width) / 2, y), text, font=font, fill=fill)
+
+
+def centered_rich_text(draw: ImageDraw.ImageDraw, image_width: int, y: int, parts):
+    total = sum(text_width(draw, text, font) for text, font, _ in parts)
+    x = (image_width - total) / 2
+    for text, font, fill in parts:
+        draw.text((x, y), text, font=font, fill=fill)
+        x += text_width(draw, text, font)
+
+
+def ordinal(n: int) -> str:
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
     else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
+def format_date(s: str) -> str:
+    if not s:
+        return ""
+    for fmt in ("%Y-%m-%d", "%d %B %Y", "%B %d, %Y", "%d/%m/%Y"):
+        try:
+            dt = datetime.strptime(s.strip(), fmt)
+            return f"{ordinal(dt.day)} {dt.strftime('%B %Y')}"
+        except Exception:
+            pass
+    return s
+
+
+def fit_font(draw: ImageDraw.ImageDraw, text: str, font_name: str, start_size: int, max_width: int):
+    size = start_size
+    while size > 9:
+        font = load_font(font_name, size)
+        if text_width(draw, text, font) <= max_width:
+            return font
+        size -= 1
+    return load_font(font_name, size)
+
+
+def grade_for_score(score: float) -> str:
+    if score >= 85:
+        return "A+"
+    if score >= 75:
+        return "A"
+    if score >= 65:
+        return "B+"
+    if score >= 50:
+        return "B"
+    if score >= 45:
         return "C"
+    return "FAIL"
 
 
-def resolve_background_image_data_uri(grade: str) -> str:
-    """
-    Resolves background template PNG for letter grade and encodes it as Base64 Data URI.
-    Points to official grade templates in backend/app/assets/templates/.
-    """
-    grade_clean = (grade or "A").upper().strip()
-    filename_map = {
-        "A+": ["template_grade_a_plus.png"],
-        "A": ["template_grade_a.png"],
-        "B+": ["template_grade_b_plus.png"],
-        "B": ["template_grade_b.png"],
-        "C+": ["template_grade_c_plus.png"],
-        "C": ["template_grade_c.png"],
-    }
-    
-    candidates = filename_map.get(grade_clean, ["template_grade_a.png"])
+def build_certificate_image(data: Dict[str, Any], include_authorization: bool = True) -> bytes:
+    intern_name = str(data.get("intern_name") or data.get("name") or "").strip()
+    domain_text = str(data.get("domain") or "").strip()
+    start_date = str(data.get("start_date") or "").strip()
+    end_date = str(data.get("end_date") or "").strip()
 
-    target_file = None
-    for filename in candidates:
-        possible_path = ASSETS_DIR / filename
-        if possible_path.exists():
-            target_file = possible_path
-            break
-            
-    if not target_file or not target_file.exists():
-        fallback_path = ASSETS_DIR / "template_grade_a.png"
-        if fallback_path.exists():
-            target_file = fallback_path
+    score_raw = data.get("score")
+    score = float(score_raw) if score_raw is not None else 92.0
+    grade = str(data.get("grade") or "").strip()
+    if not grade:
+        grade = grade_for_score(score)
 
-    if target_file and target_file.exists():
-        with open(target_file, "rb") as f:
-            b64_data = base64.b64encode(f.read()).decode("utf-8")
-            return f"data:image/png;base64,{b64_data}"
-    return ""       
-    return ""
+    if not TEMPLATE_PATH.exists():
+        raise FileNotFoundError(f"Master certificate template image not found at: {TEMPLATE_PATH}")
 
+    image = Image.open(TEMPLATE_PATH).convert("RGBA")
+    draw = ImageDraw.Draw(image)
+    width, height = image.size
 
-def generate_qr_code_data_uri(cert_id: str) -> str:
-    """
-    Generates a verification QR code pointing to https://www.proeduvate.in/verify/{cert_id}
-    and converts it to a Base64 Data URI.
-    """
-    target_url = f"https://www.proeduvate.in/verify/{cert_id}"
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=8,
-        border=1,
+    dark = (42, 42, 42, 255)
+    blue = (18, 94, 155, 255)
+
+    # 1. Recipient name: exact blank area above the existing blue line.
+    name_font = fit_font(draw, intern_name, "Roboto-Bold.ttf", 44, 620)
+    centered_text(draw, width, 190, intern_name, name_font, (4, 4, 4, 255))
+
+    # 2. Main certificate sentence
+    prefix = "for successfully completing the "
+    suffix = " Training"
+    regular = load_font("Roboto-Regular.ttf", 17)
+    italic_bold = load_font("Roboto-BoldItalic.ttf", 17)
+    total = text_width(draw, prefix, regular) + text_width(draw, domain_text, italic_bold) + text_width(draw, suffix, regular)
+    if total > 760:
+        regular = fit_font(draw, prefix + domain_text + suffix, "Roboto-Regular.ttf", 17, 760)
+        italic_bold = fit_font(draw, domain_text, "Roboto-BoldItalic.ttf", 17, 350)
+    centered_rich_text(
+        draw,
+        width,
+        257,
+        [
+            (prefix, regular, dark),
+            (domain_text, italic_bold, dark),
+            (suffix, regular, dark),
+        ],
     )
-    qr.add_data(target_url)
-    qr.make(fit=True)
 
-    img = qr.make_image(fill_color="black", back_color="white")
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    encoded_b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-    return f"data:image/png;base64,{encoded_b64}"
+    # 3. Dates
+    formatted_start = format_date(start_date)
+    formatted_end = format_date(end_date)
+    if formatted_start and formatted_end:
+        dates_str = f"at ProEduvate from {formatted_start} to {formatted_end}."
+    elif formatted_start:
+        dates_str = f"at ProEduvate starting from {formatted_start}."
+    else:
+        dates_str = "at ProEduvate."
+
+    centered_text(draw, width, 282, dates_str, fit_font(draw, dates_str, "Roboto-Regular.ttf", 16, 760), dark)
+
+    # 4. Original descriptive paragraph
+    paragraph_lines = [
+        "During this period, the candidate actively participated in the training sessions and demonstrated dedication",
+        f"in learning concepts related to {domain_text}. The candidate has shown good technical",
+        "understanding, teamwork, and professional conduct throughout the training duration.",
+    ]
+    for index, line in enumerate(paragraph_lines):
+        font = fit_font(draw, line, "Roboto-Italic.ttf", 11, 720)
+        centered_text(draw, width, 311 + index * 18, line, font, dark)
+
+    # 5. Appreciation text
+    appreciation = [
+        "We appreciate the candidate’s commitment and efforts during the program and wish them success in",
+        "their future academic and professional endeavors.",
+    ]
+    for index, line in enumerate(appreciation):
+        font = fit_font(draw, line, "Roboto-Italic.ttf", 11, 720)
+        centered_text(draw, width, 367 + index * 17, line, font, dark)
+
+    # 6. Grade/score line
+    grade_line = f"Grade: {grade} ({score:g}%)"
+    grade_font = load_font("Roboto-Bold.ttf", 13)
+    centered_text(draw, width, 404, grade_line, grade_font, blue)
+
+    # 7. Signature & Seal overlays
+    if include_authorization:
+        if SEAL_PATH.exists():
+            seal = Image.open(SEAL_PATH).convert("RGBA")
+            image.alpha_composite(seal, (370, 417))
+        if SIGNATURE_PATH.exists():
+            signature = Image.open(SIGNATURE_PATH).convert("RGBA")
+            image.alpha_composite(signature, (610, 409))
+
+    output = io.BytesIO()
+    image.convert("RGB").save(output, format="PNG")
+    return output.getvalue()
+
+
+def build_certificate_pdf(data: Dict[str, Any], include_authorization: bool = True) -> bytes:
+    png_data = build_certificate_image(data, include_authorization=include_authorization)
+    png = Image.open(io.BytesIO(png_data))
+    width, height = png.size
+    output = io.BytesIO()
+    pdf = canvas.Canvas(output, pagesize=(width, height))
+    pdf.drawImage(ImageReader(io.BytesIO(png_data)), 0, 0, width=width, height=height)
+    cert_id = str(data.get("cert_id") or data.get("certificate_id") or "Certificate")
+    pdf.setTitle(f"ProEduvate Certificate - {cert_id}")
+    pdf.setAuthor("ProEduvate")
+    pdf.showPage()
+    pdf.save()
+    output.seek(0)
+    return output.getvalue()
+
+
+try:
+    from app.services.certificate_service import (
+        CertificateService,
+        fit_font,
+        load_font,
+        grade_for_score,
+    )
+except ImportError:
+    try:
+        from backend.app.services.certificate_service import (
+            CertificateService,
+            fit_font,
+            load_font,
+            grade_for_score,
+        )
+    except ImportError:
+        pass
 
 
 class HTMLCertificateService:
-    """Service for rendering Jinja2 HTML templates and compiling into PDF documents."""
+    def __init__(self):
+        self._service = CertificateService()
 
-    def __init__(self, templates_directory: Optional[Path] = None):
-        self.templates_dir = templates_directory or TEMPLATES_DIR
-        self.jinja_env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(str(self.templates_dir)),
-            autoescape=jinja2.select_autoescape(["html", "xml"])
-        )
+    @staticmethod
+    def get_grade_info(score: float) -> tuple[str, str]:
+        g = grade_for_score(score)
+        return g, f"template_grade_{g.lower().replace('+', '_plus')}.png"
 
-    def generate_certificate_pdf(self, cert_data: Dict[str, Any]) -> bytes:
-        """
-        Renders HTML template with dynamic intern data and returns compiled PDF bytes.
-        Attempts WeasyPrint first; falls back to xhtml2pdf if GTK / WeasyPrint dependencies are missing.
-        """
-        cert_id = cert_data.get("cert_id") or cert_data.get("certificate_id") or "PE-2026-FSD-0123"
-        intern_name = (cert_data.get("intern_name") or cert_data.get("name") or "JOHN DOE").upper()
-        domain = cert_data.get("domain") or "Full Stack Development"
-        start_date = cert_data.get("start_date") or "18 August 2026"
-        end_date = cert_data.get("end_date") or "18 September 2026"
-        duration = cert_data.get("duration") or "1 Month"
-        issue_date = (cert_data.get("issue_date") or cert_data.get("issued_date") or "18 September 2026").upper()
+    def generate_certificate_pdf(self, data: Dict[str, Any], include_authorization: bool = True) -> bytes:
+        return self._service.generate_from_dict(data, is_approved=include_authorization)
+
+    def render_html(self, data: Dict[str, Any]) -> str:
+        score_raw = data.get("score")
+        score = float(score_raw) if score_raw is not None else 92.0
+        grade = str(data.get("grade") or grade_for_score(score))
+        intern_name = str(data.get("intern_name") or "").strip().upper()
+        domain = str(data.get("domain") or "").strip()
+        cert_id = str(data.get("cert_id") or data.get("certificate_id") or "").strip()
         
-        score = cert_data.get("score") if cert_data.get("score") is not None else 90
-        grade = cert_data.get("grade") or calculate_grade(score)
-
-        bg_data_uri = resolve_background_image_data_uri(grade)
-        qr_data_uri = generate_qr_code_data_uri(cert_id)
-
-        context = {
-            "intern_name": intern_name,
-            "domain": domain,
-            "start_date": start_date,
-            "end_date": end_date,
-            "duration": duration,
-            "cert_id": cert_id,
-            "issue_date": issue_date,
-            "qr_data_uri": qr_data_uri,
-            "background_image_path": bg_data_uri,
-            "grade": grade,
-        }
-
-        template = self.jinja_env.get_template("certificate_template.html")
-        rendered_html = template.render(**context)
-
-        # HTML to PDF conversion with WeasyPrint -> xhtml2pdf fallback
-        pdf_bytes = None
-
-        # 1. Try WeasyPrint
-        try:
-            import weasyprint
-            pdf_bytes = weasyprint.HTML(string=rendered_html).write_pdf()
-        except Exception as e:
-            # WeasyPrint missing GTK DLLs or unavailable
-            pdf_bytes = None
-
-        # 2. Fallback to xhtml2pdf if WeasyPrint fails or unavailable
-        if not pdf_bytes:
-            from xhtml2pdf import pisa
-            pdf_buffer = io.BytesIO()
-            pisa_status = pisa.CreatePDF(
-                src=rendered_html,
-                dest=pdf_buffer,
-                encoding="utf-8"
-            )
-            if pisa_status.err:
-                raise RuntimeError(f"xhtml2pdf rendering failed: {pisa_status.err}")
-            pdf_buffer.seek(0)
-            pdf_bytes = pdf_buffer.getvalue()
-
-            # Merge with grade background PDF if present for complete visual precision
-            candidate_pdf_templates = [
-                ASSETS_DIR / f"template_grade_{grade.lower().replace('+', '_plus')}.pdf",
-                ASSETS_DIR / "template_grade_a.pdf"
-            ]
-            bg_pdf_path = next((p for p in candidate_pdf_templates if p.exists()), None)
-            if bg_pdf_path:
-                try:
-                    from pypdf import PdfReader, PdfWriter
-                    base_reader = PdfReader(str(bg_pdf_path))
-                    overlay_reader = PdfReader(io.BytesIO(pdf_bytes))
-                    writer = PdfWriter()
-                    page = base_reader.pages[0]
-                    page.merge_page(overlay_reader.pages[0])
-                    writer.add_page(page)
-
-                    merged_buffer = io.BytesIO()
-                    writer.write(merged_buffer)
-                    merged_buffer.seek(0)
-                    pdf_bytes = merged_buffer.getvalue()
-                except Exception as merge_err:
-                    pass
-
-        return pdf_bytes
-
+        return f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate - {intern_name}</title>
+</head>
+<body style="margin:0; padding:0; background:#f4f4f4; text-align:center;">
+    <h2>Certificate of Completion</h2>
+    <p><strong>Name:</strong> {intern_name}</p>
+    <p><strong>Domain:</strong> {domain}</p>
+    <p><strong>Grade:</strong> {grade} ({score:g}/100)</p>
+    <p><strong>Certificate ID:</strong> {cert_id}</p>
+</body>
+</html>"""
