@@ -58,8 +58,7 @@ def get_current_simulation(
 
     # Get all simulation tasks for the domain ordered by day
     sim_tasks = db.query(models.Task).filter(
-        models.Task.domain_id == current_user.domain_id,
-        models.Task.task_type == "simulation"
+        models.Task.domain_id == current_user.domain_id
     ).order_by(models.Task.day_number).all()
 
     if not sim_tasks:

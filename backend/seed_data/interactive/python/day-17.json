@@ -1,0 +1,125 @@
+{
+  "curriculum": "Python",
+  "day": 17,
+  "topic": "Testing with pytest and Test-Driven Development",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Write unit tests for Python functions using pytest.",
+    "Use assertions and fixtures to verify program behavior.",
+    "Apply a basic test-driven development workflow."
+  ],
+  "activities": [
+    {
+      "id": "d17-a1",
+      "type": "discover",
+      "title": "TDD Workflow",
+      "instruction": "Arrange the core TDD cycle in the correct order.",
+      "content": {
+        "concept": "Test-driven development commonly follows a Red-Green-Refactor cycle: write a failing test, implement enough code to pass it, then improve the implementation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Write a test for the desired behavior",
+            "2. Run the test and observe failure",
+            "3. Implement the minimum code needed",
+            "4. Run the test and observe success",
+            "5. Refactor while keeping the tests passing"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "pytest Assertion Anatomy",
+      "instruction": "Click each part of the assertion to understand what it verifies.",
+      "content": {
+        "concept": "A pytest assertion checks whether an actual expression matches the expected behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def test_add():",
+            "result = add(2, 3)",
+            "assert result == 5"
+          ],
+          "descriptions": [
+            "Defines a pytest test function. Functions beginning with test_ are normally collected by pytest.",
+            "Calls the function under test and stores its actual result.",
+            "Checks that the actual result is equal to the expected value of 5."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Test Case Selector",
+      "instruction": "Choose the test case that best checks the function behavior.",
+      "content": {
+        "concept": "Good tests cover normal cases, boundary cases, and expected error conditions rather than checking only one happy path.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "test_add_two_positive_numbers()",
+            "test_add_with_zero()",
+            "test_add_with_negative_numbers()",
+            "test_add_with_non_numeric_input()"
+          ],
+          "answer": "test_add_with_zero()"
+        }
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Fixture Builder",
+      "instruction": "Assemble a reusable pytest fixture.",
+      "content": {
+        "concept": "A pytest fixture provides reusable setup data or resources that can be injected into test functions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "import pytest",
+            "@pytest.fixture",
+            "def sample_user():",
+            "return {\"name\": \"Maya\", \"age\": 21}"
+          ],
+          "required": [
+            "import pytest",
+            "@pytest.fixture",
+            "def sample_user():",
+            "return {\"name\": \"Maya\", \"age\": 21}"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-17.json",
+  "practicalTaskRef": "practical-day-17.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

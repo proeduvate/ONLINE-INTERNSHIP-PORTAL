@@ -1,0 +1,128 @@
+{
+  "curriculum": "Java",
+  "day": 4,
+  "topic": "Arrays and String Handling",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create and access one-dimensional and multidimensional arrays.",
+    "Traverse arrays using loops.",
+    "Manipulate strings using common Java String methods."
+  ],
+  "activities": [
+    {
+      "id": "d4-a1",
+      "type": "discover",
+      "title": "Array Anatomy",
+      "instruction": "Explore indexes, elements, and the length of an array.",
+      "content": {
+        "concept": "A Java array stores a fixed number of values of the same type. Indexing begins at zero, and the length field gives the number of elements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "array-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "int[] scores",
+            "scores[0]",
+            "scores[1]",
+            "scores[2]",
+            "scores.length"
+          ],
+          "descriptions": [
+            "Declares a reference to an integer array.",
+            "Accesses the first element because Java arrays use zero-based indexing.",
+            "Accesses the second element.",
+            "Accesses the third element.",
+            "Returns the number of elements in the array."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Index Explorer",
+      "instruction": "Move through the array and identify the value at each index.",
+      "content": {
+        "concept": "Each array element has a unique zero-based index. For an array of length n, the valid indexes range from 0 through n - 1.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "array-index-explorer",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 4,
+          "default": 0
+        }
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "String Method Matcher",
+      "instruction": "Match each text operation with the appropriate Java String method.",
+      "content": {
+        "concept": "Common String operations include length(), substring(), contains(), equals(), and toUpperCase(). String methods return information or transformed strings without changing the original String object.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "string-method-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Find the number of characters",
+            "Extract part of a string",
+            "Check whether text contains another sequence",
+            "Compare two strings for equal content",
+            "Convert text to uppercase"
+          ],
+          "answer": "Find the number of characters"
+        }
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Array Traversal Builder",
+      "instruction": "Build a loop that visits every element of an array.",
+      "content": {
+        "concept": "A standard indexed loop can traverse an array by starting at index 0 and continuing while the index is less than array.length.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "array-traversal-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "for",
+            "(int i = 0;",
+            "i < scores.length;",
+            "i++)",
+            "System.out.println(scores[i]);"
+          ],
+          "required": [
+            "for",
+            "(int i = 0;",
+            "i < scores.length;",
+            "i++)",
+            "System.out.println(scores[i]);"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

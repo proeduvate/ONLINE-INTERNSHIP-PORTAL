@@ -1,11 +1,37 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Lock, Save, Mail, Building2, Phone, Briefcase, Smartphone } from "lucide-react";
+import { useAuth } from "../../services/AuthContext";
 
 export default function AdminProfile() {
+  const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Admin'}&backgroundColor=f8fafc`);
   const fileInputRef = useRef(null);
+
+  const [profileData, setProfileData] = useState({
+    organization: "ProEduvate HQ",
+    role: "Super Administrator",
+    phone: "+1 (555) 123-4567"
+  });
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`admin_profile_${user?.id}`);
+    if (saved) {
+      setProfileData(JSON.parse(saved));
+    }
+  }, [user]);
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    localStorage.setItem(`admin_profile_${user?.id}`, JSON.stringify(profileData));
+    alert("Admin Profile saved successfully!");
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -16,7 +42,7 @@ export default function AdminProfile() {
   };
 
   const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+    setProfileImage(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Admin'}&backgroundColor=f8fafc`);
   };
 
   const handleForgotPassword = (e) => {
@@ -104,15 +130,15 @@ export default function AdminProfile() {
               </div>
 
               {/* Form Grid */}
-              <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
+              <form onSubmit={handleSaveProfile}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Super" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="text" defaultValue={user?.name?.split(' ')[0] || "Super"} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Admin" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="text" defaultValue={user?.name?.split(' ').slice(1).join(' ') || "Admin"} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
@@ -120,7 +146,7 @@ export default function AdminProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="admin@proeduvate.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="email" defaultValue={user?.email || "admin@proeduvate.com"} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
@@ -129,14 +155,14 @@ export default function AdminProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Organization</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="ProEduvate HQ" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
+                      <input type="text" name="organization" value={profileData.organization} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Super Administrator" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                      <input type="text" name="role" value={profileData.role} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                 </div>
@@ -146,7 +172,7 @@ export default function AdminProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Phone Number</label>
                     <div style={{ position: "relative" }}>
                       <Phone size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="tel" defaultValue="+1 (555) 123-4567" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
+                      <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
                     </div>
                   </div>
                 </div>

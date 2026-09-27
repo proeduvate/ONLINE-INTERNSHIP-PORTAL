@@ -7,8 +7,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # 1. Locate the .env file explicitly in the backend directory
 env_path = Path(__file__).resolve().parent / ".env"
 
-# 2. Force load the .env file (override=True ensures cached/system env vars are replaced)
-load_dotenv(dotenv_path=env_path, override=True)
+# 2. Load the .env file (override=False ensures system/Render env vars take precedence)
+load_dotenv(dotenv_path=env_path, override=False)
 
 # 3. Fetch the DATABASE_URL environment variable
 DATABASE_URL = os.getenv("DATABASE_URL")

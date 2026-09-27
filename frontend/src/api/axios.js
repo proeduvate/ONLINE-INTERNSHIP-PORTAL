@@ -27,7 +27,7 @@ api.interceptors.request.use((config) => {
 
   config.url = url;
 
-  const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+  const token = localStorage.getItem('token') || localStorage.getItem('access_token') || localStorage.getItem('authToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -42,7 +42,9 @@ api.interceptors.response.use((response) => {
   if (error.response && error.response.status === 401) {
     console.warn("Unauthorized, token expired or missing.");
     localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('access_token');
+    // We don't force redirect here to prevent crashing UI state, but could emit event
     window.dispatchEvent(new Event('unauthorized'));
   }
   return Promise.reject(error);

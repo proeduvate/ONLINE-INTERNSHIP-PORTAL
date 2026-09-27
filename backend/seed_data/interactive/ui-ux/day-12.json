@@ -1,0 +1,136 @@
+{
+  "curriculum": "UI/UX",
+  "day": 12,
+  "topic": "Figma Components, Variants, and Auto Layout",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create reusable components for common interface elements.",
+    "Use variants to represent different component states.",
+    "Apply Auto Layout to create flexible and maintainable interfaces."
+  ],
+  "activities": [
+    {
+      "id": "d12-a1",
+      "type": "discover",
+      "title": "Component Anatomy",
+      "instruction": "Explore the structure of a reusable Figma component.",
+      "content": {
+        "concept": "Components package reusable interface elements so designers can maintain consistent styling and behavior across a design.",
+        "tip": "Identify the main component, its properties, and the content that can change."
+      },
+      "interaction": {
+        "mode": "figma-component-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Main Component",
+            "Component Instance",
+            "Component Property",
+            "Nested Element",
+            "Instance Override"
+          ],
+          "descriptions": [
+            "The source definition used to create reusable instances.",
+            "A reusable copy of the main component.",
+            "Controls configurable content or behavior.",
+            "A component placed inside another component.",
+            "A controlled customization made to an instance."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Variant Matcher",
+      "instruction": "Match component states with their appropriate variants.",
+      "content": {
+        "concept": "Variants group related component states such as default, hover, active, disabled, and selected versions.",
+        "tip": "Think of variants as different versions of the same reusable component."
+      },
+      "interaction": {
+        "mode": "variant-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Default → Resting button",
+            "Hover → Pointer over button",
+            "Pressed → Button currently being activated",
+            "Disabled → Action unavailable",
+            "Selected → Option currently chosen"
+          ],
+          "answer": "Hover → Pointer over button"
+        }
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Auto Layout Builder",
+      "instruction": "Build a flexible card using Auto Layout concepts.",
+      "content": {
+        "concept": "Auto Layout automatically manages direction, spacing, padding, and sizing as content changes.",
+        "tip": "Combine a container, content, spacing, and padding to create a flexible structure."
+      },
+      "interaction": {
+        "mode": "auto-layout-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Container",
+            "Vertical Direction",
+            "Padding",
+            "Gap",
+            "Title",
+            "Description",
+            "Action Button"
+          ],
+          "required": [
+            "Container",
+            "Vertical Direction",
+            "Padding",
+            "Gap",
+            "Title",
+            "Description"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Responsive Component Lab",
+      "instruction": "Resize the component and observe how Auto Layout responds.",
+      "content": {
+        "concept": "Flexible components adapt their dimensions and spacing when content or container sizes change.",
+        "tip": "Observe which elements resize, wrap, or maintain their spacing as the container changes."
+      },
+      "interaction": {
+        "mode": "auto-layout-resize",
+        "family": "slider",
+        "config": {
+          "min": 200,
+          "max": 600,
+          "default": 400,
+          "unit": "px",
+          "labels": {
+            "min": "Compact",
+            "max": "Expanded"
+          }
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-12.json",
+  "practicalTaskRef": "practical-day-12.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

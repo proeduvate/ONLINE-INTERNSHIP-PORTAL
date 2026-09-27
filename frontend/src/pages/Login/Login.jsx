@@ -3,21 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent } from "../../components/ui/Card";
-import "./Login.css";export default function Login() {
+import { useAuth } from "../../services/AuthContext";
+import "./Login.css";
+
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  // Dummy Users
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,39 +38,16 @@ import "./Login.css";export default function Login() {
       return;
     }
 
+    setIsLoggingIn(true);
     try {
-      // Import the centralized api
-      const api = (await import("../../api/axios")).default;
-      
-      const response = await api.post("/auth/login", {
-        email: email,
-        password: password
-      });
-
-      const { access_token, role } = response.data;
-      if (access_token) {
-        localStorage.setItem("token", access_token);
-        localStorage.setItem("access_token", access_token);
-        
-        // Ensure role redirects correctly
-        const userRole = role?.toLowerCase() || 'intern'; // fallback
-        localStorage.setItem("role", userRole);
-        
-        if (userRole === "admin") {
-          navigate("/admin");
-        } else if (userRole === "mentor" || userRole === "vendor") {
-          navigate("/mentor");
-        } else {
-          navigate("/intern");
-        }
+      const userData = await login(email, password);
+      if (userData && userData.role) {
+        navigate(`/${userData.role}`);
       }
-    } catch (err) {
-      console.error(err);
-      if (err.response && err.response.data && err.response.data.detail) {
-        setErrorMessage(err.response.data.detail);
-      } else {
-        setErrorMessage("Invalid credentials or server error. Please try again.");
-      }
+    } catch (error) {
+      setErrorMessage(error.message || "Invalid email or password.");
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 

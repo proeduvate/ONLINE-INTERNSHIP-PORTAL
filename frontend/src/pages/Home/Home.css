@@ -52,7 +52,7 @@
 }
 
 .hs-hero-centered-content {
-  max-width: 860px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -92,7 +92,7 @@
   line-height: 1.6;
   color: var(--hs-text-muted);
   margin: 0 auto;
-  max-width: 640px;
+  max-width: 900px;
 }
 
 /* --- Trust Metrics Banner --- */
@@ -103,7 +103,7 @@
 }
 
 .hs-trust-grid {
-  max-width: 1240px;
+  max-width: 1600px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -129,13 +129,13 @@
 /* --- Technology Tracks Section --- */
 .hs-section {
   padding: 80px 5%;
-  max-width: 1240px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .hs-section-header {
   text-align: center;
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto 52px auto;
 }
 
@@ -240,7 +240,7 @@
 }
 
 .hs-contact-wide-container {
-  max-width: 1240px;
+  max-width: 1600px;
   margin: 0 auto;
   background: #f8fafc;
   border: 1px solid #e2e8f0;

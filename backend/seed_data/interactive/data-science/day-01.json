@@ -1,0 +1,128 @@
+{
+  "curriculum": "Data Science",
+  "day": 1,
+  "topic": "Introduction to Data Science",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the key stages of a data science workflow.",
+    "Differentiate data science, data analytics, and machine learning.",
+    "Recognize real-world applications of data science."
+  ],
+  "activities": [
+    {
+      "id": "d1-a1",
+      "type": "discover",
+      "title": "Map the Data Science Workflow",
+      "instruction": "Arrange the workflow stages in the correct order.",
+      "content": {
+        "concept": "A data science workflow moves from defining a problem and collecting data through analysis, modeling, and communicating or deploying results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define the Business Problem",
+            "2. Collect and Clean Data",
+            "3. Perform Exploratory Data Analysis",
+            "4. Build and Evaluate a Model",
+            "5. Communicate or Deploy Results"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Explore Data Science Roles",
+      "instruction": "Match each data role with its primary responsibility.",
+      "content": {
+        "concept": "Data projects involve different roles, with responsibilities ranging from data infrastructure and analysis to predictive modeling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Data Engineer: Builds and maintains data pipelines",
+            "Data Scientist: Analyzes data and develops predictive models",
+            "Data Analyst: Creates reports, dashboards, and business insights",
+            "Machine Learning Engineer: Integrates and operates ML models in applications"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Identify Data Science Applications",
+      "instruction": "Select the scenarios that represent data science applications.",
+      "content": {
+        "concept": "Data science is applied to problems such as fraud detection, recommendation, forecasting, customer analysis, and anomaly detection.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Fraud Detection",
+            "Movie Recommendation",
+            "Sales Forecasting",
+            "Customer Segmentation",
+            "Anomaly Detection",
+            "Basic File Renaming"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "Build a Data Science Project",
+      "instruction": "Assemble the core components of a data science project.",
+      "content": {
+        "concept": "A data science project connects a real-world problem with data, analysis, modeling, evaluation, and actionable results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Business Problem",
+            "Raw Data",
+            "Data Processing",
+            "Exploratory Analysis",
+            "Machine Learning Model",
+            "Evaluation",
+            "Actionable Insights"
+          ],
+          "required": [
+            "Business Problem",
+            "Raw Data",
+            "Data Processing",
+            "Exploratory Analysis",
+            "Machine Learning Model",
+            "Evaluation",
+            "Actionable Insights"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

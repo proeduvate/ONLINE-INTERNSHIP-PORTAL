@@ -1,0 +1,121 @@
+{
+  "curriculum": "Data Science",
+  "day": 9,
+  "topic": "Correlation and Regression Analysis",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Interpret relationships between numerical variables.",
+    "Understand the difference between correlation and regression.",
+    "Construct a basic linear regression workflow."
+  ],
+  "activities": [
+    {
+      "id": "d9-a1",
+      "type": "discover",
+      "title": "Explore Correlation",
+      "instruction": "Adjust the relationship strength and observe how correlation changes.",
+      "content": {
+        "concept": "Correlation measures the strength and direction of the linear relationship between two numerical variables.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": -100,
+          "max": 100,
+          "default": 0
+        }
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Anatomy of a Regression Line",
+      "instruction": "Explore the components of a simple linear regression equation.",
+      "content": {
+        "concept": "A simple linear regression model estimates a target variable using a predictor and represents the relationship with an equation such as y = mx + b.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "x: Predictor Variable",
+            "y: Target Variable",
+            "m: Slope",
+            "b: Intercept",
+            "ŷ: Predicted Value"
+          ],
+          "descriptions": [
+            "The input variable used to explain or predict the target.",
+            "The actual outcome variable being studied.",
+            "Indicates how much the predicted target changes for a one-unit change in the predictor.",
+            "The predicted value of y when x equals zero.",
+            "The value predicted by the regression model."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Build the Regression Workflow",
+      "instruction": "Arrange the steps into a logical regression workflow.",
+      "content": {
+        "concept": "Regression analysis involves preparing data, selecting variables, training a model, evaluating predictions, and interpreting the results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Collect and Prepare Data",
+            "2. Select Predictor and Target Variables",
+            "3. Split the Data into Training and Testing Sets",
+            "4. Train the Regression Model",
+            "5. Evaluate Predictions",
+            "6. Interpret the Model Results"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Correlation or Causation?",
+      "instruction": "Choose whether each statement describes association or establishes causation.",
+      "content": {
+        "concept": "Correlation shows that variables are associated, while causation requires evidence that changes in one variable produce changes in another.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Ice cream sales and swimming activity increase together → Correlation",
+            "A study randomly assigns a treatment and observes its effect → Evidence of causation",
+            "Umbrella sales and rainfall increase together → Correlation",
+            "Two variables move together because of a third variable → Possible confounding relationship"
+          ],
+          "answer": "Ice cream sales and swimming activity increase together → Correlation"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

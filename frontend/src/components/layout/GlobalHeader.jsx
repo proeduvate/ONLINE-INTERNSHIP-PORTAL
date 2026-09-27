@@ -28,7 +28,7 @@ export const GlobalHeader = () => {
   const handleTrackSubmit = (e) => {
     e.preventDefault();
     if (!applicationId) return;
-    navigate("/onboarding/status");
+    navigate(`/onboarding/status?appId=${applicationId}`);
     setShowTrackModal(false);
   };
 

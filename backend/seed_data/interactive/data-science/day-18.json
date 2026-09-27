@@ -1,0 +1,122 @@
+{
+  "curriculum": "Data Science",
+  "day": 18,
+  "topic": "Time Series Analysis and Forecasting",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify trend, seasonality, and noise in time series data.",
+    "Understand the basic workflow for time series forecasting.",
+    "Select suitable forecasting approaches for common scenarios."
+  ],
+  "activities": [
+    {
+      "id": "d18-a1",
+      "type": "discover",
+      "title": "Explore Time Series Components",
+      "instruction": "Adjust the component level and observe how it can affect a time series.",
+      "content": {
+        "concept": "Time series data can contain long-term trend, repeating seasonal patterns, and irregular noise.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Map Forecasting Components",
+      "instruction": "Explore the role of each component in a forecasting task.",
+      "content": {
+        "concept": "Forecasting uses historical observations, time-dependent patterns, and a forecasting model to estimate future values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Historical Data",
+            "Trend",
+            "Seasonality",
+            "Forecast Model",
+            "Future Prediction"
+          ],
+          "descriptions": [
+            "Previously observed values used to understand the behavior of the series.",
+            "A long-term upward or downward movement in the data.",
+            "A pattern that repeats at a known or regular interval.",
+            "A statistical or machine learning method used to estimate future values.",
+            "The estimated values for future time periods."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "Build a Forecasting Workflow",
+      "instruction": "Arrange the stages of a time series forecasting workflow.",
+      "content": {
+        "concept": "A forecasting workflow prepares chronological data, analyzes patterns, trains a model, validates predictions, and produces future forecasts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Collect and Order Time Series Data",
+            "2. Clean Missing and Invalid Observations",
+            "3. Explore Trend and Seasonality",
+            "4. Split Data Chronologically",
+            "5. Train a Forecasting Model",
+            "6. Validate the Forecast",
+            "7. Generate Future Predictions"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Choose the Forecasting Method",
+      "instruction": "Match each scenario with a suitable forecasting approach.",
+      "content": {
+        "concept": "The appropriate forecasting method depends on the amount of historical data, trend, seasonality, frequency, and complexity of the series.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Simple series with a stable recent level → Moving Average",
+            "Series with trend and seasonality → Exponential Smoothing",
+            "Autocorrelated time series with suitable historical structure → ARIMA",
+            "Complex series with many external predictors → Machine Learning Forecasting"
+          ],
+          "answer": "Simple series with a stable recent level → Moving Average"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-18.json",
+  "practicalTaskRef": "practical-day-18.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "curriculum": "Python",
+  "day": 5,
+  "topic": "Functions and Modular Programming",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Define and call reusable Python functions.",
+    "Use parameters, return values, and default arguments.",
+    "Break a program into modular functions with clear responsibilities."
+  ],
+  "activities": [
+    {
+      "id": "d5-a1",
+      "type": "discover",
+      "title": "Function Anatomy",
+      "instruction": "Explore the components of a Python function.",
+      "content": {
+        "concept": "A function definition contains the def keyword, function name, parameters, an indented body, and optionally a return statement.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def calculate_total(price, tax):",
+            "    total = price + (price * tax)",
+            "    return total",
+            "calculate_total(100, 0.05)"
+          ],
+          "descriptions": [
+            "Defines a function named calculate_total with two parameters.",
+            "Function body that calculates the result.",
+            "Returns the calculated value to the caller.",
+            "Calls the function with two arguments."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Function Flow",
+      "instruction": "Trace arguments and return values through a function call.",
+      "content": {
+        "concept": "Arguments are passed to parameters when a function is called. The return statement sends a result back to the caller.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define the function",
+            "2. Call the function with arguments",
+            "3. Assign arguments to parameters",
+            "4. Execute the function body",
+            "5. Return the result to the caller"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Function Builder",
+      "instruction": "Assemble a function that calculates a total price.",
+      "content": {
+        "concept": "Functions make programs easier to organize by encapsulating reusable operations behind a clear interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "def calculate_total(price, tax):",
+            "    return price + (price * tax)",
+            "result = calculate_total(100, 0.05)",
+            "print(result)",
+            "import math"
+          ],
+          "required": [
+            "def calculate_total(price, tax):",
+            "    return price + (price * tax)",
+            "result = calculate_total(100, 0.05)"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Parameter Explorer",
+      "instruction": "Identify how different argument styles affect a function call.",
+      "content": {
+        "concept": "Python functions can use required parameters, default values, positional arguments, and keyword arguments.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "greet(\"Maya\") → positional argument",
+            "greet(name=\"Maya\") → keyword argument",
+            "greet() → always invalid",
+            "greet(name = \"Maya\") → variable assignment only"
+          ],
+          "answer": "greet(\"Maya\") → positional argument"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}
