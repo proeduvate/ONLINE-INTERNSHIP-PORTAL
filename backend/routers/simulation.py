@@ -43,6 +43,7 @@ def save_simulation_state(db: Session, submission: models.Submission, state_dict
     if state_dict.get("day_completed", False):
         submission.status = "submitted"
         submission.ai_score = state_dict.get("daily_score", 0)
+        submission.submitted_at = datetime.utcnow()
     db.commit()
 
 @router.get("/intern/current", response_model=schemas.SimulationScenarioResponse)
@@ -72,7 +73,7 @@ def get_current_simulation(
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
-        ).first()
+        ).order_by(models.Submission.submitted_at.desc()).first()
         
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
@@ -83,7 +84,26 @@ def get_current_simulation(
     if not current_task:
         raise HTTPException(status_code=404, detail="All simulations completed!")
 
-    # Enforce day locking removed for demo purposes
+    current_date = datetime.utcnow().date()
+    start_date = current_user.start_date.date() if current_user.start_date else current_date
+    internship_day = (current_date - start_date).days + 1
+    
+    if current_task.day_number > internship_day:
+        raise HTTPException(status_code=403, detail="Next scenario unlocks at 12:00 AM Midnight.")
+        
+    if current_task.day_number > 1:
+        prev_task = db.query(models.Task).filter(
+            models.Task.domain_id == current_task.domain_id,
+            models.Task.day_number == current_task.day_number - 1
+        ).first()
+        if prev_task:
+            prev_sub = db.query(models.Submission).filter(
+                models.Submission.intern_id == current_user.id,
+                models.Submission.task_id == prev_task.id,
+                models.Submission.status == "submitted"
+            ).first()
+            if prev_sub and prev_sub.submitted_at and prev_sub.submitted_at.date() == current_date:
+                raise HTTPException(status_code=403, detail="Next scenario unlocks at 12:00 AM Midnight.")
 
     # Create submission if not exists to lock in the starting state
     if not current_submission:
@@ -164,8 +184,7 @@ def submit_decision(
 
     # Find the current active simulation task
     sim_tasks = db.query(models.Task).filter(
-        models.Task.domain_id == current_user.domain_id,
-        models.Task.task_type == "simulation"
+        models.Task.domain_id == current_user.domain_id
     ).order_by(models.Task.day_number).all()
 
     current_task = None
@@ -175,7 +194,7 @@ def submit_decision(
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
-        ).first()
+        ).order_by(models.Submission.submitted_at.desc()).first()
         
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
@@ -192,14 +211,13 @@ def submit_decision(
         if current_task.day_number > 1:
             prev_task = db.query(models.Task).filter(
                 models.Task.domain_id == current_task.domain_id,
-                models.Task.task_type == "simulation",
                 models.Task.day_number == current_task.day_number - 1
             ).first()
             if prev_task:
                 prev_sub = db.query(models.Submission).filter(
                     models.Submission.intern_id == current_user.id,
                     models.Submission.task_id == prev_task.id
-                ).first()
+                ).order_by(models.Submission.submitted_at.desc()).first()
                 if prev_sub:
                     prev_state = get_simulation_state(prev_sub)
                     if prev_state.get("current_scenario_id"):

@@ -48,7 +48,7 @@ const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDa
           <Check size={12} color="#16a34a" strokeWidth={3} /> Done
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Target size={12} color="#f59e0b" strokeWidth={2.5} /> Present
+          <Target size={12} color="#f59e0b" strokeWidth={2.5} /> Present (Day {currentDay})
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Circle size={12} color="#94a3b8" strokeWidth={2} /> Missed

@@ -556,7 +556,8 @@ def get_intern_stats(current_user: models.User = Depends(get_current_user), db: 
     
     total_days = 30
     submissions_count = db.query(models.Submission).filter(
-        models.Submission.intern_id == current_user.id
+        models.Submission.intern_id == current_user.id,
+        models.Submission.status == "submitted"
     ).count()
     progress_percent = int((submissions_count / total_days) * 100) if total_days > 0 else 0
     
@@ -577,10 +578,33 @@ def get_intern_stats(current_user: models.User = Depends(get_current_user), db: 
     
     ai_score = int(avg_ai_score) if avg_ai_score else 0
     
+    import json
+    sim_completed_day_numbers = set()
+    all_subs = db.query(models.Submission, models.Task).join(
+        models.Task, models.Submission.task_id == models.Task.id
+    ).filter(
+        models.Submission.intern_id == current_user.id,
+        models.Submission.status == "submitted"
+    ).all()
+    
+    for sub, task in all_subs:
+        if sub.ai_feedback:
+            try:
+                data = json.loads(sub.ai_feedback)
+                # Only count simulation submissions — they always have a "state" dict key
+                if isinstance(data, dict) and "state" in data and data.get("day_completed") is True:
+                    # Use the task's day_number — so Day1 completed 10 times = still just 1
+                    sim_completed_day_numbers.add(task.day_number)
+            except:
+                pass
+    
+    sim_count = len(sim_completed_day_numbers)
+    
     return {
-        "currentDay": submissions_count + 1,
+        "currentDay": sim_count + 1,
         "progressPercent": progress_percent,
         "daysCompleted": submissions_count,
+        "simulationDaysCompleted": sim_count,
         "totalDays": total_days,
         "attendancePercent": attendance_percent,
         "daysPresent": days_present,

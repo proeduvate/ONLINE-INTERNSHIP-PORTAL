@@ -15,7 +15,7 @@ import {
 
 import api from '../../api/axios';
 
-export default function DailyScenario({ onBackToDashboard, domainName = 'Frontend' }) {
+export default function DailyScenario({ onBackToDashboard, onScenarioCompleted, domainName = 'Frontend' }) {
   const [loading, setLoading] = useState(true);
   const [currentScenario, setCurrentScenario] = useState(null);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
@@ -46,11 +46,13 @@ export default function DailyScenario({ onBackToDashboard, domainName = 'Fronten
         setDecisionResult(res.data.decisionResult || null);
         if (res.data.decisionResult && res.data.decisionResult.selected_choice) {
           setSelectedOptionId(res.data.decisionResult.selected_choice);
+        } else {
+          setSelectedOptionId(null);
         }
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to load today's workplace simulation.");
+      setErrorMsg(err.response?.data?.detail || "Failed to load today's workplace simulation.");
     } finally {
       setLoading(false);
     }
@@ -84,6 +86,9 @@ export default function DailyScenario({ onBackToDashboard, domainName = 'Fronten
       setDecisionResult(res.data);
       if (res.data.day_completed) {
         setIsCompleted(true);
+        if (onScenarioCompleted) {
+          onScenarioCompleted();
+        }
       }
     } catch (err) {
       console.error(err);
@@ -100,18 +105,38 @@ export default function DailyScenario({ onBackToDashboard, domainName = 'Fronten
   }
 
   if (errorMsg || !currentScenario) {
+    const isLocked = errorMsg?.includes("12:00 AM Midnight");
+    
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 96px)" }}>
-        <div style={{ textAlign: "center", color: "#b91c1c" }}>
-          <AlertTriangle size={48} style={{ margin: "0 auto 16px auto" }} />
-          <h3>{errorMsg || "No scenario available."}</h3>
-        </div>
+        {isLocked ? (
+          <div style={{ textAlign: "center", backgroundColor: "white", padding: "40px", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", maxWidth: "450px" }}>
+            <div style={{ background: "#eff6ff", width: "80px", height: "80px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px auto" }}>
+              <Lock size={40} color="#3b82f6" />
+            </div>
+            <h2 style={{ fontSize: "22px", fontWeight: "800", color: "#0f172a", marginBottom: "12px" }}>Next Scenario Locked</h2>
+            <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", marginBottom: "24px" }}>
+              You've successfully completed today's workplace simulation. Your next engineering challenge is being prepared and will unlock automatically at midnight.
+            </p>
+            <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "12px", border: "1px dashed #cbd5e1" }}>
+              <div style={{ fontSize: "12px", textTransform: "uppercase", fontWeight: "700", color: "#64748b", letterSpacing: "1px", marginBottom: "8px" }}>Time until unlock</div>
+              <div style={{ fontSize: "28px", fontWeight: "800", color: "#1e293b", fontFamily: "monospace" }}>
+                {getTimeUntilMidnight()}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", color: "#b91c1c" }}>
+            <AlertTriangle size={48} style={{ margin: "0 auto 16px auto" }} />
+            <h3>{errorMsg || "No scenario available."}</h3>
+          </div>
+        )}
       </div>
     );
   }
 
   const selectedDay = currentScenario.day;
-  const completedCount = currentScenario.scenario_number - 1 + (isCompleted ? 1 : 0);
+  const completedCount = currentScenario.day - 1 + (isCompleted ? 1 : 0);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%", height: "calc(100vh - 96px)", overflowY: "auto", paddingBottom: "20px" }}>
@@ -260,31 +285,39 @@ export default function DailyScenario({ onBackToDashboard, domainName = 'Fronten
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 
                 {/* Status Banner */}
-                <div style={{
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  backgroundColor: decisionResult?.feedback_type === "success" ? "#f0fdf4" : decisionResult?.feedback_type === "warning" ? "#fffbeb" : "#fef2f2",
-                  border: "1px solid",
-                  borderColor: decisionResult?.feedback_type === "success" ? "#86efac" : decisionResult?.feedback_type === "warning" ? "#fde68a" : "#fca5a5",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px"
-                }}>
-                  {decisionResult?.feedback_type === "success" ? <CheckCircle2 size={24} color="#16a34a" /> : decisionResult?.feedback_type === "warning" ? <AlertTriangle size={24} color="#d97706" /> : <XCircle size={24} color="#dc2626" />}
-                  <div>
-                    <h4 style={{
-                      margin: 0,
-                      fontSize: "16px",
-                      fontWeight: "800",
-                      color: decisionResult?.feedback_type === "success" ? "#15803d" : decisionResult?.feedback_type === "warning" ? "#b45309" : "#b91c1c"
+                {(() => {
+                  const fType = (decisionResult?.feedback_type || "").toLowerCase();
+                  const isSuccess = fType.includes("excellent") || fType.includes("success") || fType.includes("good decision");
+                  const isWarning = (fType.includes("good") && !fType.includes("good decision")) || fType.includes("warning") || fType.includes("neutral");
+                  
+                  return (
+                    <div style={{
+                      padding: "16px 20px",
+                      borderRadius: "12px",
+                      backgroundColor: isSuccess ? "#f0fdf4" : isWarning ? "#fffbeb" : "#fef2f2",
+                      border: "1px solid",
+                      borderColor: isSuccess ? "#86efac" : isWarning ? "#fde68a" : "#fca5a5",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px"
                     }}>
-                      {decisionResult?.feedback_type === "success" ? "[SUCCESS] EXCELLENT DECISION" : decisionResult?.feedback_type === "warning" ? "[WARNING] SUBOPTIMAL APPROACH" : "POOR DECISION"}
-                    </h4>
-                    <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--text-muted)" }}>
-                      Your decision has been logged for Day {selectedDay}.
-                    </p>
-                  </div>
-                </div>
+                      {isSuccess ? <CheckCircle2 size={24} color="#16a34a" /> : isWarning ? <AlertTriangle size={24} color="#d97706" /> : <XCircle size={24} color="#dc2626" />}
+                      <div>
+                        <h4 style={{
+                          margin: 0,
+                          fontSize: "16px",
+                          fontWeight: "800",
+                          color: isSuccess ? "#15803d" : isWarning ? "#b45309" : "#b91c1c"
+                        }}>
+                          {isSuccess ? "[SUCCESS] EXCELLENT DECISION" : isWarning ? "[NEUTRAL] ACCEPTABLE DECISION" : "[POOR] BAD PERFORMANCE"}
+                        </h4>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--text-muted)" }}>
+                          Your decision has been logged for Day {selectedDay}.
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* WHAT HAPPENED & WHY Box */}
                 <div style={{

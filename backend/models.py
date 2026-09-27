@@ -73,6 +73,7 @@ class User(Base):
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime(timezone=True), nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id", ondelete="SET NULL"), nullable=True)
+    github_repo_url = Column(String(255), nullable=True)
 
     # Relationships
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")

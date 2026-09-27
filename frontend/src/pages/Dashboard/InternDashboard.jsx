@@ -103,7 +103,8 @@ export default function InternDashboard() {
         subsRes,
         airdropsRes,
         mcqAttemptsRes,
-        internTasksRes
+        internTasksRes,
+        statsRes
       ] = await Promise.all([
         api.get('/profile').catch(() => ({ data: {} })),
         api.get('/leaderboard').catch(() => ({ data: [] })),
@@ -116,7 +117,8 @@ export default function InternDashboard() {
         api.get('/analytics/daily-questions/me').catch(() => ({ data: [] })),
         api.get('/bonus-airdrops').catch(() => ({ data: [] })),
         api.get('/mcq/attempts/me').catch(() => ({ data: [] })),
-        api.get('/tasks/intern').catch(() => ({ data: [] }))
+        api.get('/tasks/intern').catch(() => ({ data: [] })),
+        api.get('/api/intern/stats').catch(() => ({ data: null }))
       ]);
 
       setDashboardData(profileRes.data || {});
@@ -128,33 +130,30 @@ export default function InternDashboard() {
       setDomainFact(factRes.data || null);
       if (airdropsRes.data) setBonusAirdrops(airdropsRes.data);
 
-      let doneDaysSet = new Set();
-      let simDay = 1;
-      if (simRes && simRes.data) {
-        if (simRes.data.day) simDay = simRes.data.day;
-        if (simRes.data.completed_days && Array.isArray(simRes.data.completed_days)) {
-          simRes.data.completed_days.forEach(d => doneDaysSet.add(d));
-        }
-        if (simRes.data.completed && simRes.data.day) {
-          doneDaysSet.add(simRes.data.day);
-        }
-      }
+      // Calendar current day is strictly based on simulation completions only
+      // simulationDaysCompleted = number of daily scenarios completed → current day = completed + 1
+      const simDay = (statsRes?.data?.simulationDaysCompleted || 0) + 1;
       setSimulationDay(simDay);
 
       const submissions = getArraySafe(subsRes.data);
       setRecentSubmissions(submissions);
 
-      // Add completed days from daily question assessments
+      setCompletedDays(Array.from({ length: statsRes?.data?.simulationDaysCompleted || 0 }, (_, i) => i + 1));
+
+      // Separate set for main coding/learning tasks
+      let taskDoneDaysSet = new Set();
+
+      // Add completed days from daily question assessments (coding tasks)
       submissions.forEach(s => {
         const d = s.question_id || s.day;
-        if (d) doneDaysSet.add(d);
+        if (d) taskDoneDaysSet.add(d);
       });
 
       // Add completed days from MCQ attempts
       const mcqAttempts = getArraySafe(mcqAttemptsRes.data);
       mcqAttempts.forEach(m => {
         if (m.status === "submitted" && m.day) {
-          doneDaysSet.add(m.day);
+          taskDoneDaysSet.add(m.day);
         }
       });
 
@@ -162,22 +161,23 @@ export default function InternDashboard() {
       const internTasks = getArraySafe(internTasksRes.data);
       internTasks.forEach(t => {
         if ((t.status === "submitted" || t.status === "approved") && t.day_number) {
-          doneDaysSet.add(t.day_number);
+          taskDoneDaysSet.add(t.day_number);
         }
       });
 
       let calculatedDay = 1;
       let shouldLockToday = false;
 
-      if (doneDaysSet.size > 0) {
-        const maxCompletedDay = Math.max(...Array.from(doneDaysSet));
+      if (taskDoneDaysSet.size > 0) {
+        const maxCompletedDay = Math.max(...Array.from(taskDoneDaysSet));
         calculatedDay = Math.min(30, maxCompletedDay + 1);
-      } else if (submissions.length > 0) {
-        calculatedDay = submissions.length + 1;
+      } else if (internTasks.length > 0) {
+        calculatedDay = internTasks.length + 1;
       }
 
-      if (submissions.length > 0) {
-        const lastSubDateStr = submissions[submissions.length - 1].date;
+      // We use internTasks for lock logic since submissions is for scenarios
+      if (internTasks.length > 0) {
+        const lastSubDateStr = internTasks[internTasks.length - 1].date;
         const today = new Date();
         const utcMs = today.getTime() + (today.getTimezoneOffset() * 60000);
         const istToday = new Date(utcMs + (3600000 * 5.5));
@@ -188,8 +188,6 @@ export default function InternDashboard() {
         }
       }
 
-      const sortedDoneDays = Array.from(doneDaysSet).sort((a, b) => a - b);
-      setCompletedDays(sortedDoneDays);
       setCurrentDay(calculatedDay);
       if (shouldLockToday) {
         setIsDayLockedUntilMidnight(true);
@@ -972,21 +970,44 @@ export default function InternDashboard() {
                   </div>
                   {/* Label */}
                   <span className="bonus-airdrop-text" style={{ fontSize: "0.85rem", fontWeight: 800, color: "#701a75", flexShrink: 0 }}>Bonus Airdrops</span>
-                  <span className="bonus-airdrop-badge" style={{ padding: "4px 10px", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 700, color: "#d946ef", background: "#fae8ff", flexShrink: 0 }}>
-                    {bonusAirdrops.filter(a => a.status === "PUBLISHED").length} Active
-                  </span>
                   
-                  {/* First airdrop question - truncated */}
-                  <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, color: "#86198f", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {bonusAirdrops.filter(a => a.status === "PUBLISHED")[0]?.question ?? "No active airdrops right now"}
-                  </span>
+                  {(() => {
+                    // Only show airdrops that are published AND not yet completed by the user
+                    const activeDrops = bonusAirdrops.filter(a => {
+                      const isPublished = a.status === "PUBLISHED" || a.status === "APPROVED";
+                      if (!isPublished) return false;
+                      // Hide if user already started or submitted this airdrop
+                      const userAttempt = (a.attempts || []).find(atm => 
+                        atm.status === "started" || atm.status === "submitted" || atm.status === "completed"
+                      );
+                      return !userAttempt; // only show if no completed attempt
+                    });
+                    const hasActive = activeDrops.length > 0;
+                    const drop = hasActive ? activeDrops[0] : null;
+                    
+                    return (
+                      <>
+                        {hasActive && (
+                          <span className="bonus-airdrop-badge" style={{ padding: "4px 10px", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 700, color: "#d946ef", background: "#fae8ff", flexShrink: 0 }}>
+                            {activeDrops.length} Active
+                          </span>
+                        )}
+                        
+                        {/* First airdrop title - truncated */}
+                        <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, color: "#86198f", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {hasActive ? (drop.title || "Live Bonus Airdrop!") : "No active airdrops right now"}
+                        </span>
 
-                  {/* Actions */}
-                  {bonusAirdrops.filter(a => a.status === "PUBLISHED")[0] && (
-                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "PUBLISHED")[0])} style={{ flexShrink: 0, padding: "6px 14px", background: "#d946ef", color: "#fff", border: "none", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
-                      Participate Now
-                    </button>
-                  )}
+                        {/* Actions — only show Participate if user hasn't completed it yet */}
+                        {hasActive && (
+                          <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(drop)} style={{ flexShrink: 0, padding: "6px 14px", background: "#d946ef", color: "#fff", border: "none", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
+                            Participate Now
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()}
+                  
                   {/* View All */}
                   <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "6px 14px", background: "transparent", color: "#a21caf", border: "1px solid #f0abfc", borderRadius: "8px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}>
                     View All &rarr;
@@ -1029,7 +1050,7 @@ export default function InternDashboard() {
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                   <DailyScenarioCalendar
-                    currentDay={currentDay}
+                    currentDay={simulationDay}
                     completedDays={completedDays}
                     onStartScenario={(day) => setActiveTab("Daily Scenario")}
                   />
@@ -2067,7 +2088,7 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => { setActiveTab("Overview"); fetchDashboard(); }} domainName={dashboardData?.domain?.name || 'Frontend'} />;
+        return <DailyScenario onBackToDashboard={() => { setActiveTab("Overview"); fetchDashboard(); }} onScenarioCompleted={() => fetchDashboard()} domainName={dashboardData?.domain?.name || 'Frontend'} />;
 
       case "Bonus Airdrops":
         const now = new Date();

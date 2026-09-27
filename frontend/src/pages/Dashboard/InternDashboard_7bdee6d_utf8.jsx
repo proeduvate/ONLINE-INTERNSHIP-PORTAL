@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../../api/axios";
 import { Award, Clock, Download } from "lucide-react";
 import "../../styles/Dashboard.css";
@@ -594,7 +594,11 @@ export default function InternDashboard() {
 
                 {/* Daily Scenario Activity Calendar */}
                 <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <DailyScenarioCalendar onStartScenario={(day) => setActiveTab("Daily Scenario")} />
+                  <DailyScenarioCalendar 
+                    onStartScenario={(day) => setActiveTab("Daily Scenario")} 
+                    currentDay={currentDay}
+                    completedDays={Array.from({ length: daysCompleted }, (_, i) => i + 1)}
+                  />
                 </div>
               </div>
 
@@ -1137,7 +1141,7 @@ export default function InternDashboard() {
         );
 
       case "Daily Scenario":
-        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
+        return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} onScenarioCompleted={() => { setDaysCompleted(prev => prev + 1); setCurrentDay(prev => prev + 1); }} />;
 
       case "Bonus Airdrops":
         const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");

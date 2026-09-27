@@ -709,7 +709,7 @@ def create_submission(
                     print(f"Failed to push to GitHub: {e}")
 
         github_file_url = None
-        if current_user.github_repo_url:
+        if getattr(current_user, "github_repo_url", None):
             github_token = os.environ.get("GITHUB_API_TOKEN")
             if github_token:
                 background_tasks.add_task(
