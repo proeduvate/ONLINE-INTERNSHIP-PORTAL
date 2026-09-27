@@ -78,6 +78,10 @@ class User(Base):
     def name(self):
         return self.full_name or self.username or self.email
 
+    @name.setter
+    def name(self, value):
+        self.full_name = value
+
     # Relationships
     batch = relationship("Batch", back_populates="users")
     certificates = relationship("Certificate", back_populates="user", cascade="all, delete-orphan")

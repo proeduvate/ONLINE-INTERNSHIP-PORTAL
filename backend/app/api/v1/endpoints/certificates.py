@@ -163,6 +163,11 @@ def download_certificate(
     and streams it with headers for inline viewing or direct downloading.
     """
     cert_record, user = resolve_cert_and_user(certificate_id, db)
+    if not cert_record and not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Certificate or intern record not found"
+        )
     user_id = user.id if user else (cert_record.intern_id if cert_record else None)
 
     if cert_record and cert_record.final_score is not None and cert_record.final_score > 0:
@@ -235,6 +240,11 @@ def preview_certificate(certificate_id: str, db: Session = Depends(deps.get_db))
     Direct alias to stream PDF inline for browser viewing (previews hide signature/seal).
     """
     cert_record, user = resolve_cert_and_user(certificate_id, db)
+    if not cert_record and not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Certificate or intern record not found"
+        )
     user_id = user.id if user else (cert_record.intern_id if cert_record else None)
 
     if cert_record and cert_record.final_score is not None and cert_record.final_score > 0:

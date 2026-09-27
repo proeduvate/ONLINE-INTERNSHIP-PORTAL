@@ -25,7 +25,7 @@ def get_leaderboard(
         models.Batch.name.label("batch_name"),
         models.Domain.name.label("domain"),
         func.sum(models.PointTransaction.points).label("total_points")
-    ).join(
+    ).outerjoin(
         models.PointTransaction, models.PointTransaction.user_id == models.User.id
     ).outerjoin(
         models.Batch, models.Batch.id == models.User.batch_id

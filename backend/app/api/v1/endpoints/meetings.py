@@ -32,8 +32,14 @@ class ConnectionManager:
 
     async def broadcast_to_room(self, room_id: str, message: dict):
         if room_id in self.active_rooms:
-            for connection in self.active_rooms[room_id]:
-                await connection.send_json(message)
+            dead_connections = []
+            for connection in list(self.active_rooms[room_id]):
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    dead_connections.append(connection)
+            for dead in dead_connections:
+                self.disconnect(room_id, dead)
 
 manager = ConnectionManager()
 
