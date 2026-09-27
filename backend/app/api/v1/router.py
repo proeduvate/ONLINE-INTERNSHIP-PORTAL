@@ -1,49 +1,6 @@
 from fastapi import APIRouter, Depends
 
 try:
-    from app.api.v1.endpoints import (
-        auth,
-        users,
-        meetings,
-        tasks,
-        simulation,
-        mcq,
-        questions,
-        analytics,
-        leaderboard,
-        onboarding,
-        airdrops,
-        tickets,
-        facts,
-        health,
-    )
-except Exception:
-    from .endpoints import (
-        auth,
-        users,
-        meetings,
-        tasks,
-        simulation,
-        mcq,
-        questions,
-        analytics,
-        leaderboard,
-        onboarding,
-        airdrops,
-        tickets,
-        facts,
-        health,
-    )
-
-try:
-    from app.api.v1.endpoints import certificates
-except ImportError:
-    try:
-        from .endpoints import certificates
-    except ImportError:
-        certificates = None
-
-try:
     from app.api.deps import get_db
 except ImportError:
     try:
@@ -53,34 +10,33 @@ except ImportError:
 
 api_router = APIRouter()
 
-# Authentication & User Management
-api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
-api_router.include_router(users.router, prefix="/users", tags=["users"])
+def _safe_include(module_path, prefix="", tags=None):
+    try:
+        import importlib
+        mod = importlib.import_module(module_path)
+        if hasattr(mod, "router"):
+            if prefix:
+                api_router.include_router(mod.router, prefix=prefix, tags=tags or [])
+            else:
+                api_router.include_router(mod.router)
+            return mod
+    except Exception:
+        pass
+    return None
 
-# Core Features
-api_router.include_router(meetings.router)
-if certificates and hasattr(certificates, "router"):
-    api_router.include_router(certificates.router, prefix="/certificates", tags=["certificates"])
+auth_mod = _safe_include("app.api.v1.endpoints.auth", prefix="/auth", tags=["auth"])
+users_mod = _safe_include("app.api.v1.endpoints.users", prefix="/users", tags=["users"])
+meetings_mod = _safe_include("app.api.v1.endpoints.meetings")
+cert_mod = _safe_include("app.api.v1.endpoints.certificates", prefix="/certificates", tags=["certificates"])
 
-    # Standalone QR Code Verification Route (/verify/{certificate_id})
-    verify_router = APIRouter()
-    @verify_router.get("/verify/{certificate_id}")
-    async def standalone_verify_certificate(certificate_id: str, db=Depends(get_db)):
-        return await certificates.verify_certificate(certificate_id, db)
-
-    api_router.include_router(verify_router, tags=["certificates"])
-
-api_router.include_router(tasks.router)
-api_router.include_router(simulation.router)
-api_router.include_router(mcq.router)
-api_router.include_router(questions.router, prefix="/questions", tags=["questions"])
-
-# Analytics & Engagement
-api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
-api_router.include_router(leaderboard.router)
-api_router.include_router(onboarding.router)
-api_router.include_router(airdrops.router)
-api_router.include_router(tickets.router)
-api_router.include_router(facts.router)
-api_router.include_router(health.router)
-
+_safe_include("app.api.v1.endpoints.tasks")
+_safe_include("app.api.v1.endpoints.simulation")
+_safe_include("app.api.v1.endpoints.mcq")
+_safe_include("app.api.v1.endpoints.questions", prefix="/questions", tags=["questions"])
+_safe_include("app.api.v1.endpoints.analytics", prefix="/analytics", tags=["analytics"])
+_safe_include("app.api.v1.endpoints.leaderboard")
+_safe_include("app.api.v1.endpoints.onboarding")
+_safe_include("app.api.v1.endpoints.airdrops")
+_safe_include("app.api.v1.endpoints.tickets")
+_safe_include("app.api.v1.endpoints.facts")
+_safe_include("app.api.v1.endpoints.health")
