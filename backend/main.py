@@ -361,60 +361,51 @@ def submit_task(
 # CERTIFICATE GENERATION
 # ==========================================
 
-@app.get("/api/certificates/download/{intern_id}")
+@app.get("/api/certificates/download/{cert_identifier}")
+@app.get("/api/v1/certificates/download/{cert_identifier}")
 def generate_certificate(
-    intern_id: int, 
-    db: Session = Depends(get_db), 
-    current_user: models.User = Depends(get_current_user)
+    cert_identifier: str, 
+    db: Session = Depends(get_db)
 ):
-    intern = db.query(models.User).filter(models.User.id == intern_id).first()
-    if not intern:
-        raise HTTPException(status_code=404, detail="Intern record not found")
-
     from datetime import datetime, timedelta
     from fastapi.responses import FileResponse
     from services.certificate_generator import generate_certificate_pdf
-    
-    # Calculate Date & Duration
-    start_date = intern.start_date or datetime.utcnow() - timedelta(days=30)
-    end_date = intern.end_date or start_date + timedelta(days=30)
-    
-    period = f"{start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}"
-    issued_date = datetime.utcnow().strftime('%B %d, %Y')
-    
-    cert_id = f"PRO-INT-26-{intern.id:04d}"
-    
-    # Grade Calculation
-    submissions = db.query(models.Submission).filter(models.Submission.intern_id == intern.id).all()
-    completed_tasks = len([s for s in submissions if s.status in ['evaluated', 'approved']])
-    
-    if len(submissions) > 0:
-        # Compute avg based on multiple components if available, else fallback to progress_pct
-        avg_score = sum((s.mcq_score or 0) + (s.ai_score or 0) for s in submissions) / (len(submissions) * 2) 
-    else:
-        avg_score = intern.progress_pct or 0
 
-    if avg_score >= 90:
-        grade = "A+"
-    elif avg_score >= 80:
-        grade = "A"
-    elif avg_score >= 70:
-        grade = "B+"
-    elif avg_score >= 60:
-        grade = "B"
-    else:
-        grade = "C"
+    intern = None
+    cert_record = None
 
-    # Domain
-    domain_name = intern.domain.name if intern.domain else "Software Engineering"
-    
+    if cert_identifier.isdigit():
+        intern = db.query(models.User).filter(models.User.id == int(cert_identifier)).first()
+
+    if not intern:
+        cert_record = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_identifier).first()
+        if cert_record:
+            intern = db.query(models.User).filter(models.User.id == cert_record.intern_id).first()
+
+    if not intern and not cert_record:
+        raise HTTPException(status_code=404, detail="Certificate or intern record not found")
+
+    intern_name = (intern.name if (intern and getattr(intern, 'name', None)) else (cert_record.intern_name if cert_record else "")).upper()
+    domain_name = (cert_record.domain if (cert_record and cert_record.domain) else (intern.domain.name if (intern and getattr(intern, 'domain', None) and hasattr(intern.domain, 'name')) else (getattr(intern, 'domain', '') or '')))
+    score = cert_record.final_score if (cert_record and cert_record.final_score is not None) else 0
+    grade = cert_record.grade if (cert_record and cert_record.grade) else "N/A"
+    cert_id = cert_record.certificate_id if cert_record else (cert_identifier if not cert_identifier.isdigit() else f"PRO-INT-26-{int(cert_identifier):04d}")
+
+    start_date = getattr(cert_record, 'start_date', None) or getattr(intern, 'start_date', None) or ""
+    end_date = getattr(cert_record, 'end_date', None) or getattr(intern, 'end_date', None) or ""
+    issued_date = (cert_record.issued_date.strftime('%d %B %Y').upper() if (cert_record and cert_record.issued_date) else datetime.utcnow().strftime('%d %B %Y').upper())
+
     cert_data = {
-        'intern_name': intern.name,
-        'domain': domain_name,
-        'duration': '1 MONTH',
-        'period': period,
+        'intern_name': intern_name,
+        'domain': str(domain_name),
+        'duration': getattr(cert_record, 'duration', '1 Month') if cert_record else '1 Month',
+        'start_date': start_date.strftime('%B %d, %Y') if hasattr(start_date, 'strftime') else str(start_date),
+        'end_date': end_date.strftime('%B %d, %Y') if hasattr(end_date, 'strftime') else str(end_date),
         'issued_date': issued_date,
+        'issue_date': issued_date,
         'certificate_id': cert_id,
+        'cert_id': cert_id,
+        'score': score,
         'grade': grade
     }
     
@@ -423,7 +414,7 @@ def generate_certificate(
     return FileResponse(
         pdf_path, 
         media_type="application/pdf", 
-        filename=f"Certificate_{intern.name.replace(' ', '_')}.pdf"
+        headers={"Content-Disposition": f"inline; filename=Certificate_{cert_id}.pdf"}
     )
 
 

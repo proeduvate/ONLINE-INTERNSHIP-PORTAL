@@ -50,24 +50,22 @@ import jwt
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
 ALGORITHM = "HS256"
 
-def get_user_id_from_token(authorization: str = Header(None)):
+def get_user_id_from_token(authorization: str = Header(None)) -> int:
     if authorization and authorization.startswith("Bearer "):
         try:
             token = authorization.split(" ")[1]
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            user_id = payload.get("sub")
+            user_id = payload.get("sub") or payload.get("user_id")
             if user_id:
                 return int(user_id)
-        except:
+        except Exception:
             pass
-    return 1 # Fallback mentor ID
+    raise HTTPException(status_code=401, detail="Authentication token required")
 
 @router.post("", response_model=MeetingResponse)
 @router.post("/", response_model=MeetingResponse)
 def create_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), authorization: str = Header(None)):
     mentor_id = get_user_id_from_token(authorization)
-    if not mentor_id:
-        mentor_id = 1 # Fallback for demo
 
     parsed_time = None
     if meeting.scheduled_time:

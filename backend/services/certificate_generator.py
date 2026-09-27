@@ -21,12 +21,12 @@ def generate_certificate_pdf(cert_data: dict) -> str:
     
     pdf_bytes = generate_certificate_from_html(
         cert_id=cert_id,
-        intern_name=cert_data.get('intern_name', 'Student Name'),
-        domain=cert_data.get('domain', 'Software Engineering'),
-        issue_date=cert_data.get('issued_date') or cert_data.get('issue_date') or '18 SEPTEMBER 2026',
-        start_date=cert_data.get('start_date', 'August 18, 2026'),
-        end_date=cert_data.get('end_date', 'September 18, 2026'),
-        duration=cert_data.get('duration', '1 MONTH'),
+        intern_name=cert_data.get('intern_name', ''),
+        domain=cert_data.get('domain', ''),
+        issue_date=cert_data.get('issued_date') or cert_data.get('issue_date') or '',
+        start_date=cert_data.get('start_date', ''),
+        end_date=cert_data.get('end_date', ''),
+        duration=cert_data.get('duration', '1 Month'),
         grade=cert_data.get('grade', 'A'),
         intern_data=cert_data
     )

@@ -39,12 +39,19 @@ def request_certificate(req: schemas.CertificateRequest, db: Session = Depends(g
     cert_id = f"CERT-2026-OIP-{uuid.uuid4().hex[:8].upper()}"
     
     
+    domain = ""
     if hasattr(current_user, 'domain') and current_user.domain:
         domain = current_user.domain.name if hasattr(current_user.domain, 'name') else str(current_user.domain)
-    else:
-        domain = "Software Engineering"
+    elif getattr(current_user, 'domain_name', None):
+        domain = current_user.domain_name
+    elif getattr(current_user, 'domain_id', None):
+        d_obj = db.query(models.Domain).filter(models.Domain.id == current_user.domain_id).first()
+        if d_obj:
+            domain = d_obj.name
 
-    
+    if not domain:
+        raise HTTPException(status_code=400, detail="User has no assigned domain for certificate generation.")
+
     new_cert = models.Certificate(
         intern_id=current_user.id,
         intern_name=current_user.name,
