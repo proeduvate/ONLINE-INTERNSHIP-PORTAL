@@ -1,0 +1,127 @@
+{
+  "curriculum": "UI/UX",
+  "day": 1,
+  "topic": "UI/UX Fundamentals and Human-Centered Design",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Differentiate UI design from UX design and explain how they work together.",
+    "Identify the core stages of a human-centered design process.",
+    "Recognize usability, accessibility, and user needs as key design considerations."
+  ],
+  "activities": [
+    {
+      "id": "d1-a1",
+      "type": "discover",
+      "title": "UI vs UX Explorer",
+      "instruction": "Choose whether each responsibility is primarily UI or UX.",
+      "content": {
+        "concept": "UI focuses on the interface's visual and interactive elements, while UX focuses on the broader experience, user goals, workflows, and problem-solving.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "ui-ux-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "UI: Designing colors, typography, spacing, and visual components",
+            "UX: Researching user needs and improving task flows"
+          ],
+          "answer": "UI: Designing colors, typography, spacing, and visual components"
+        }
+      }
+    },
+    {
+      "id": "d1-a2",
+      "type": "discover",
+      "title": "Human-Centered Design Map",
+      "instruction": "Explore the stages of a human-centered design process.",
+      "content": {
+        "concept": "Human-centered design starts with understanding people and their context, then moves through defining problems, exploring solutions, prototyping, testing, and iterating.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "design-process-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Research & Discover",
+            "Define the Problem",
+            "Ideate Solutions",
+            "Prototype",
+            "Test & Iterate"
+          ],
+          "descriptions": [
+            "Understand users, their context, behaviors, goals, and pain points.",
+            "Synthesize research into a clear problem statement or design challenge.",
+            "Generate multiple possible solutions before choosing a direction.",
+            "Create a simple representation of a solution that users can interact with.",
+            "Evaluate the design with users, learn from feedback, and improve the solution."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d1-a3",
+      "type": "discover",
+      "title": "Usability Check",
+      "instruction": "Choose the interface that makes the task easier to complete.",
+      "content": {
+        "concept": "Usability describes how effectively, efficiently, and easily users can accomplish their goals. Clear navigation, readable content, and understandable controls reduce unnecessary effort.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "usability-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Clear labels, readable text, visible actions, and simple navigation",
+            "Unclear icons, tiny text, hidden actions, and confusing navigation"
+          ],
+          "answer": "Clear labels, readable text, visible actions, and simple navigation"
+        }
+      }
+    },
+    {
+      "id": "d1-a4",
+      "type": "discover",
+      "title": "UX Principle Explorer",
+      "instruction": "Explore examples of important UX principles.",
+      "content": {
+        "concept": "Consistency, feedback, visibility, simplicity, and user control help users understand what is happening and predict how an interface will behave.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "ux-principles-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Consistency",
+            "Feedback",
+            "Visibility",
+            "Simplicity",
+            "User Control"
+          ],
+          "descriptions": [
+            "Use similar patterns and controls consistently across the interface.",
+            "Show users the result or status of their actions, such as a success message or loading indicator.",
+            "Make important information, system status, and available actions easy to discover.",
+            "Remove unnecessary complexity so users can focus on their goals.",
+            "Allow users to undo, cancel, go back, or otherwise control their actions when appropriate."
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-1.json",
+  "practicalTaskRef": "practical-day-1.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

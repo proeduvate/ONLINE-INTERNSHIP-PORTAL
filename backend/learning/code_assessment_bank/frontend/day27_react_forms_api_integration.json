@@ -1,0 +1,42 @@
+{
+    "day": 27,
+    "topic": "React Forms & API Integration",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D27-Q001",
+            "title": "Registration Form",
+            "description": "Build a controlled React registration form.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D27-Q002",
+            "title": "Form Validation",
+            "description": "Implement client-side validation for the React form.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D27-Q003",
+            "title": "API Submission",
+            "description": "Submit form data to an API endpoint.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D27-Q004",
+            "title": "API Product Search",
+            "description": "Build a React product search page using an API.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D27-Q005",
+            "title": "Complete CRUD Interface",
+            "description": "Build a React interface capable of:",
+            "requirements": [
+                "Create",
+                "Read",
+                "Update",
+                "Delete records through an API"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,128 @@
+{
+  "curriculum": "AIML",
+  "day": 22,
+  "topic": "Large Language Models and Prompt Engineering",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand the basic components of a large language model workflow",
+    "Identify effective prompt components",
+    "Improve prompts using context, constraints, and examples"
+  ],
+  "activities": [
+    {
+      "id": "d22-a1",
+      "type": "discover",
+      "title": "LLM Workflow Map",
+      "instruction": "Explore how a prompt becomes an AI-generated response.",
+      "content": {
+        "concept": "An LLM processes input tokens using learned parameters and generates output tokens sequentially.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "User Prompt",
+            "Tokenization",
+            "LLM",
+            "Model Parameters",
+            "Generated Tokens",
+            "AI Response"
+          ],
+          "descriptions": [
+            "The instruction or input provided by the user.",
+            "Converts the input text into tokens that the model can process.",
+            "The language model that processes the input and predicts output tokens.",
+            "Learned numerical values that influence how the model processes information.",
+            "Tokens generated sequentially based on the input and model behavior.",
+            "The generated text presented to the user."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Prompt Anatomy",
+      "instruction": "Click each prompt component to identify its purpose.",
+      "content": {
+        "concept": "Effective prompts can include a task, context, constraints, examples, and an expected output format.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Task",
+            "Context",
+            "Constraints",
+            "Examples",
+            "Output Format"
+          ],
+          "descriptions": [
+            "Clearly states what the model needs to do.",
+            "Provides relevant background information for the task.",
+            "Defines limits such as length, scope, style, or required conditions.",
+            "Provides sample inputs or outputs to demonstrate the expected behavior.",
+            "Specifies how the response should be structured or presented."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Build a Better Prompt",
+      "instruction": "Assemble prompt components into a clear instruction.",
+      "content": {
+        "concept": "Adding relevant context and explicit requirements can make an instruction clearer and more useful.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Define the task",
+            "Add relevant context",
+            "Specify constraints",
+            "Provide an example",
+            "Define the output format"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Prompt Refinement Lab",
+      "instruction": "Adjust prompt constraints and observe how the expected response changes.",
+      "content": {
+        "concept": "Prompt constraints can guide the format, scope, style, and structure of generated responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,557 @@
+{
+    "day": 11,
+    "topic": "CSS Positioning and Layout",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D11-001",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 1 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-002",
+            "question": "How do you correctly use CSS Positioning and Layout feature 2?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-003",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 3?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-004",
+            "question": "Why is CSS Positioning and Layout feature 4 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-005",
+            "question": "When should you avoid using CSS Positioning and Layout feature 5?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-006",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 6 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-007",
+            "question": "How do you correctly use CSS Positioning and Layout feature 7?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-008",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 8?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-009",
+            "question": "Why is CSS Positioning and Layout feature 9 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-010",
+            "question": "When should you avoid using CSS Positioning and Layout feature 10?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-011",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 11 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-012",
+            "question": "How do you correctly use CSS Positioning and Layout feature 12?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-013",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 13?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-014",
+            "question": "Why is CSS Positioning and Layout feature 14 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-015",
+            "question": "When should you avoid using CSS Positioning and Layout feature 15?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-016",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 16 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-017",
+            "question": "How do you correctly use CSS Positioning and Layout feature 17?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-018",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 18?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-019",
+            "question": "Why is CSS Positioning and Layout feature 19 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-020",
+            "question": "When should you avoid using CSS Positioning and Layout feature 20?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-021",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 21 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-022",
+            "question": "How do you correctly use CSS Positioning and Layout feature 22?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-023",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 23?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-024",
+            "question": "Why is CSS Positioning and Layout feature 24 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-025",
+            "question": "When should you avoid using CSS Positioning and Layout feature 25?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-026",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 26 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-027",
+            "question": "How do you correctly use CSS Positioning and Layout feature 27?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-028",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 28?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-029",
+            "question": "Why is CSS Positioning and Layout feature 29 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-030",
+            "question": "When should you avoid using CSS Positioning and Layout feature 30?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-031",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 31 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-032",
+            "question": "How do you correctly use CSS Positioning and Layout feature 32?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-033",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 33?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-034",
+            "question": "Why is CSS Positioning and Layout feature 34 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-035",
+            "question": "When should you avoid using CSS Positioning and Layout feature 35?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-036",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 36 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-037",
+            "question": "How do you correctly use CSS Positioning and Layout feature 37?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-038",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 38?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-039",
+            "question": "Why is CSS Positioning and Layout feature 39 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-040",
+            "question": "When should you avoid using CSS Positioning and Layout feature 40?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-041",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 41 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-042",
+            "question": "How do you correctly use CSS Positioning and Layout feature 42?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-043",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 43?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-044",
+            "question": "Why is CSS Positioning and Layout feature 44 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-045",
+            "question": "When should you avoid using CSS Positioning and Layout feature 45?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-046",
+            "question": "What is the primary purpose of CSS Positioning and Layout feature 46 in CSS Positioning and Layout?",
+            "options": {
+                "A": "To implement CSS Positioning and Layout feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-047",
+            "question": "How do you correctly use CSS Positioning and Layout feature 47?",
+            "options": {
+                "A": "By following standard CSS Positioning and Layout guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-048",
+            "question": "Which of the following best describes CSS Positioning and Layout feature 48?",
+            "options": {
+                "A": "A key concept in CSS Positioning and Layout",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-049",
+            "question": "Why is CSS Positioning and Layout feature 49 important for CSS Positioning and Layout?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D11-050",
+            "question": "When should you avoid using CSS Positioning and Layout feature 50?",
+            "options": {
+                "A": "When it violates CSS Positioning and Layout best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "day": 12,
+    "topic": "CSS Transitions, Transforms & Animations",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D12-Q001",
+            "title": "Hover Button",
+            "description": "Create an animated button with hover transition effects.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D12-Q002",
+            "title": "Card Hover Effect",
+            "description": "Create a card that scales and changes its shadow when hovered.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D12-Q003",
+            "title": "Rotating Element",
+            "description": "Create an element that continuously rotates using CSS animation.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D12-Q004",
+            "title": "Loading Animation",
+            "description": "Create a CSS loading spinner.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D12-Q005",
+            "title": "Animated Hero",
+            "description": "Create an animated hero section containing at least three coordinated CSS animations.",
+            "requirements": []
+        }
+    ]
+}

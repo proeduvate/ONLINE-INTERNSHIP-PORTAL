@@ -1,0 +1,139 @@
+{
+  "curriculum": "Java",
+  "day": 22,
+  "topic": "Spring Security and Authentication",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Distinguish authentication from authorization in web applications.",
+    "Identify the main components of a Spring Security request flow.",
+    "Construct a basic protected API workflow using roles and authentication."
+  ],
+  "activities": [
+    {
+      "id": "d22-a1",
+      "type": "discover",
+      "title": "Spring Security Request Flow",
+      "instruction": "Explore how a protected request is processed.",
+      "content": {
+        "concept": "Spring Security applies security processing to incoming requests. Authentication establishes the user's identity, while authorization determines whether that authenticated identity can access a protected resource.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Incoming Request",
+            "Security Filter Chain",
+            "Authentication",
+            "Authorization",
+            "Protected Resource"
+          ],
+          "descriptions": [
+            "The HTTP request sent by a client.",
+            "A sequence of Spring Security filters that processes the request.",
+            "Verifies credentials or another identity mechanism and establishes an authenticated identity.",
+            "Checks whether the authenticated identity has permission to perform the requested operation.",
+            "The controller or endpoint that requires the configured security rules."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Authentication vs Authorization",
+      "instruction": "Explore the distinction between identity and access.",
+      "content": {
+        "concept": "Authentication answers 'Who are you?' while authorization answers 'What are you allowed to access or do?' Both are important when protecting application resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Credentials",
+            "Authenticated Identity",
+            "Role",
+            "Authority",
+            "Protected Endpoint"
+          ],
+          "descriptions": [
+            "Information such as a username and password used to establish identity.",
+            "The identity established after successful authentication.",
+            "A named group of permissions, such as USER or ADMIN.",
+            "A permission or granted access rule used during authorization.",
+            "A resource whose access is controlled by security rules."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Access Rule Builder",
+      "instruction": "Build access rules for protected API endpoints.",
+      "content": {
+        "concept": "Spring Security rules can require authentication for an endpoint and can restrict access further using roles or authorities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Public endpoint",
+            "Authenticated users",
+            "Role USER",
+            "Role ADMIN",
+            "Permit all",
+            "Require authentication",
+            "Deny every request"
+          ],
+          "required": [
+            "Authenticated users",
+            "Role USER",
+            "Role ADMIN",
+            "Require authentication"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Security Decision",
+      "instruction": "Determine whether a request should be allowed.",
+      "content": {
+        "concept": "A request to a protected endpoint can proceed only when its authentication and authorization requirements are satisfied.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Authenticated USER requests an endpoint requiring USER",
+            "Unauthenticated client requests an endpoint requiring authentication",
+            "Authenticated USER requests an ADMIN-only endpoint",
+            "Authenticated client has no required authority"
+          ],
+          "answer": "Authenticated USER requests an endpoint requiring USER"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

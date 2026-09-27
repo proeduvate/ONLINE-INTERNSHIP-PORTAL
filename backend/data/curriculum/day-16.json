@@ -1,0 +1,77 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 16,
+  "topic": "Arrays, Objects & Modern JavaScript",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Manipulate arrays",
+    "Model objects",
+    "Use modern syntax"
+  ],
+  "activities": [
+    {
+      "id": "d16-a01",
+      "type": "array",
+      "title": "Array Playground",
+      "instruction": "Add, remove and reorder items in an array.",
+      "content": {
+        "concept": "Manipulate arrays",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "array"
+      }
+    },
+    {
+      "id": "d16-a02",
+      "type": "methods",
+      "title": "Method Lab",
+      "instruction": "Apply map, filter and find to a live dataset.",
+      "content": {
+        "concept": "Model objects",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "methods"
+      }
+    },
+    {
+      "id": "d16-a03",
+      "type": "object",
+      "title": "Object Inspector",
+      "instruction": "Edit object properties and see the rendered profile update.",
+      "content": {
+        "concept": "Use modern syntax",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "object"
+      }
+    },
+    {
+      "id": "d16-a04",
+      "type": "modern",
+      "title": "Modern JS Refactor",
+      "instruction": "Toggle template literals, destructuring and spread in a refactor preview.",
+      "content": {
+        "concept": "Manipulate arrays",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "modern"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-16.json",
+  "practicalTaskRef": "practical-day-16.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,708 @@
+{
+  "title": "Java Day 28 MCQ Question Bank",
+  "day": 28,
+  "topic": "Synchronization & Concurrency",
+  "total_questions": 50,
+  "questions": [
+    {
+      "id": "DAY28-Q01",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which Java component provides development tools such as the Java compiler (javac) [Day 28, Q1]?",
+      "options": {
+        "A": "Option A for DAY28-Q01",
+        "B": "Option B for DAY28-Q01",
+        "C": "Option C for DAY28-Q01",
+        "D": "Option D for DAY28-Q01"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 1 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q02",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 2 in Java is correct [Day 28, Q2]?",
+      "options": {
+        "A": "Option A for DAY28-Q02",
+        "B": "Option B for DAY28-Q02",
+        "C": "Option C for DAY28-Q02",
+        "D": "Option D for DAY28-Q02"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 2 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q03",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 3 in Java is correct [Day 28, Q3]?",
+      "options": {
+        "A": "Option A for DAY28-Q03",
+        "B": "Option B for DAY28-Q03",
+        "C": "Option C for DAY28-Q03",
+        "D": "Option D for DAY28-Q03"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 3 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q04",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 4 in Java is correct [Day 28, Q4]?",
+      "options": {
+        "A": "Option A for DAY28-Q04",
+        "B": "Option B for DAY28-Q04",
+        "C": "Option C for DAY28-Q04",
+        "D": "Option D for DAY28-Q04"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 4 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q05",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 5 in Java is correct [Day 28, Q5]?",
+      "options": {
+        "A": "Option A for DAY28-Q05",
+        "B": "Option B for DAY28-Q05",
+        "C": "Option C for DAY28-Q05",
+        "D": "Option D for DAY28-Q05"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 5 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q06",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 6 in Java is correct [Day 28, Q6]?",
+      "options": {
+        "A": "Option A for DAY28-Q06",
+        "B": "Option B for DAY28-Q06",
+        "C": "Option C for DAY28-Q06",
+        "D": "Option D for DAY28-Q06"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 6 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q07",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 7 in Java is correct [Day 28, Q7]?",
+      "options": {
+        "A": "Option A for DAY28-Q07",
+        "B": "Option B for DAY28-Q07",
+        "C": "Option C for DAY28-Q07",
+        "D": "Option D for DAY28-Q07"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 7 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q08",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 8 in Java is correct [Day 28, Q8]?",
+      "options": {
+        "A": "Option A for DAY28-Q08",
+        "B": "Option B for DAY28-Q08",
+        "C": "Option C for DAY28-Q08",
+        "D": "Option D for DAY28-Q08"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 8 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q09",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 9 in Java is correct [Day 28, Q9]?",
+      "options": {
+        "A": "Option A for DAY28-Q09",
+        "B": "Option B for DAY28-Q09",
+        "C": "Option C for DAY28-Q09",
+        "D": "Option D for DAY28-Q09"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 9 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q10",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 10 in Java is correct [Day 28, Q10]?",
+      "options": {
+        "A": "Option A for DAY28-Q10",
+        "B": "Option B for DAY28-Q10",
+        "C": "Option C for DAY28-Q10",
+        "D": "Option D for DAY28-Q10"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 10 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q11",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 11 in Java is correct [Day 28, Q11]?",
+      "options": {
+        "A": "Option A for DAY28-Q11",
+        "B": "Option B for DAY28-Q11",
+        "C": "Option C for DAY28-Q11",
+        "D": "Option D for DAY28-Q11"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 11 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q12",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 12 in Java is correct [Day 28, Q12]?",
+      "options": {
+        "A": "Option A for DAY28-Q12",
+        "B": "Option B for DAY28-Q12",
+        "C": "Option C for DAY28-Q12",
+        "D": "Option D for DAY28-Q12"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 12 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q13",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 13 in Java is correct [Day 28, Q13]?",
+      "options": {
+        "A": "Option A for DAY28-Q13",
+        "B": "Option B for DAY28-Q13",
+        "C": "Option C for DAY28-Q13",
+        "D": "Option D for DAY28-Q13"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 13 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q14",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 14 in Java is correct [Day 28, Q14]?",
+      "options": {
+        "A": "Option A for DAY28-Q14",
+        "B": "Option B for DAY28-Q14",
+        "C": "Option C for DAY28-Q14",
+        "D": "Option D for DAY28-Q14"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 14 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q15",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 15 in Java is correct [Day 28, Q15]?",
+      "options": {
+        "A": "Option A for DAY28-Q15",
+        "B": "Option B for DAY28-Q15",
+        "C": "Option C for DAY28-Q15",
+        "D": "Option D for DAY28-Q15"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 15 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q16",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 16 in Java is correct [Day 28, Q16]?",
+      "options": {
+        "A": "Option A for DAY28-Q16",
+        "B": "Option B for DAY28-Q16",
+        "C": "Option C for DAY28-Q16",
+        "D": "Option D for DAY28-Q16"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 16 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q17",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 17 in Java is correct [Day 28, Q17]?",
+      "options": {
+        "A": "Option A for DAY28-Q17",
+        "B": "Option B for DAY28-Q17",
+        "C": "Option C for DAY28-Q17",
+        "D": "Option D for DAY28-Q17"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 17 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q18",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 18 in Java is correct [Day 28, Q18]?",
+      "options": {
+        "A": "Option A for DAY28-Q18",
+        "B": "Option B for DAY28-Q18",
+        "C": "Option C for DAY28-Q18",
+        "D": "Option D for DAY28-Q18"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 18 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q19",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 19 in Java is correct [Day 28, Q19]?",
+      "options": {
+        "A": "Option A for DAY28-Q19",
+        "B": "Option B for DAY28-Q19",
+        "C": "Option C for DAY28-Q19",
+        "D": "Option D for DAY28-Q19"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 19 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q20",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 20 in Java is correct [Day 28, Q20]?",
+      "options": {
+        "A": "Option A for DAY28-Q20",
+        "B": "Option B for DAY28-Q20",
+        "C": "Option C for DAY28-Q20",
+        "D": "Option D for DAY28-Q20"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 20 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q21",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 21 in Java is correct [Day 28, Q21]?",
+      "options": {
+        "A": "Option A for DAY28-Q21",
+        "B": "Option B for DAY28-Q21",
+        "C": "Option C for DAY28-Q21",
+        "D": "Option D for DAY28-Q21"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 21 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q22",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 22 in Java is correct [Day 28, Q22]?",
+      "options": {
+        "A": "Option A for DAY28-Q22",
+        "B": "Option B for DAY28-Q22",
+        "C": "Option C for DAY28-Q22",
+        "D": "Option D for DAY28-Q22"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 22 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q23",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 23 in Java is correct [Day 28, Q23]?",
+      "options": {
+        "A": "Option A for DAY28-Q23",
+        "B": "Option B for DAY28-Q23",
+        "C": "Option C for DAY28-Q23",
+        "D": "Option D for DAY28-Q23"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 23 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q24",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 24 in Java is correct [Day 28, Q24]?",
+      "options": {
+        "A": "Option A for DAY28-Q24",
+        "B": "Option B for DAY28-Q24",
+        "C": "Option C for DAY28-Q24",
+        "D": "Option D for DAY28-Q24"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 24 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q25",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 25 in Java is correct [Day 28, Q25]?",
+      "options": {
+        "A": "Option A for DAY28-Q25",
+        "B": "Option B for DAY28-Q25",
+        "C": "Option C for DAY28-Q25",
+        "D": "Option D for DAY28-Q25"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 25 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q26",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 26 in Java is correct [Day 28, Q26]?",
+      "options": {
+        "A": "Option A for DAY28-Q26",
+        "B": "Option B for DAY28-Q26",
+        "C": "Option C for DAY28-Q26",
+        "D": "Option D for DAY28-Q26"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 26 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q27",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 27 in Java is correct [Day 28, Q27]?",
+      "options": {
+        "A": "Option A for DAY28-Q27",
+        "B": "Option B for DAY28-Q27",
+        "C": "Option C for DAY28-Q27",
+        "D": "Option D for DAY28-Q27"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 27 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q28",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 28 in Java is correct [Day 28, Q28]?",
+      "options": {
+        "A": "Option A for DAY28-Q28",
+        "B": "Option B for DAY28-Q28",
+        "C": "Option C for DAY28-Q28",
+        "D": "Option D for DAY28-Q28"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 28 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q29",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 29 in Java is correct [Day 28, Q29]?",
+      "options": {
+        "A": "Option A for DAY28-Q29",
+        "B": "Option B for DAY28-Q29",
+        "C": "Option C for DAY28-Q29",
+        "D": "Option D for DAY28-Q29"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 29 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q30",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 30 in Java is correct [Day 28, Q30]?",
+      "options": {
+        "A": "Option A for DAY28-Q30",
+        "B": "Option B for DAY28-Q30",
+        "C": "Option C for DAY28-Q30",
+        "D": "Option D for DAY28-Q30"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 30 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q31",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 31 in Java is correct [Day 28, Q31]?",
+      "options": {
+        "A": "Option A for DAY28-Q31",
+        "B": "Option B for DAY28-Q31",
+        "C": "Option C for DAY28-Q31",
+        "D": "Option D for DAY28-Q31"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 31 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q32",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 32 in Java is correct [Day 28, Q32]?",
+      "options": {
+        "A": "Option A for DAY28-Q32",
+        "B": "Option B for DAY28-Q32",
+        "C": "Option C for DAY28-Q32",
+        "D": "Option D for DAY28-Q32"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 32 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q33",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 33 in Java is correct [Day 28, Q33]?",
+      "options": {
+        "A": "Option A for DAY28-Q33",
+        "B": "Option B for DAY28-Q33",
+        "C": "Option C for DAY28-Q33",
+        "D": "Option D for DAY28-Q33"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 33 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q34",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 34 in Java is correct [Day 28, Q34]?",
+      "options": {
+        "A": "Option A for DAY28-Q34",
+        "B": "Option B for DAY28-Q34",
+        "C": "Option C for DAY28-Q34",
+        "D": "Option D for DAY28-Q34"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 34 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q35",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 35 in Java is correct [Day 28, Q35]?",
+      "options": {
+        "A": "Option A for DAY28-Q35",
+        "B": "Option B for DAY28-Q35",
+        "C": "Option C for DAY28-Q35",
+        "D": "Option D for DAY28-Q35"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 35 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q36",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 36 in Java is correct [Day 28, Q36]?",
+      "options": {
+        "A": "Option A for DAY28-Q36",
+        "B": "Option B for DAY28-Q36",
+        "C": "Option C for DAY28-Q36",
+        "D": "Option D for DAY28-Q36"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 36 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q37",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 37 in Java is correct [Day 28, Q37]?",
+      "options": {
+        "A": "Option A for DAY28-Q37",
+        "B": "Option B for DAY28-Q37",
+        "C": "Option C for DAY28-Q37",
+        "D": "Option D for DAY28-Q37"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 37 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q38",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 38 in Java is correct [Day 28, Q38]?",
+      "options": {
+        "A": "Option A for DAY28-Q38",
+        "B": "Option B for DAY28-Q38",
+        "C": "Option C for DAY28-Q38",
+        "D": "Option D for DAY28-Q38"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 38 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q39",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 39 in Java is correct [Day 28, Q39]?",
+      "options": {
+        "A": "Option A for DAY28-Q39",
+        "B": "Option B for DAY28-Q39",
+        "C": "Option C for DAY28-Q39",
+        "D": "Option D for DAY28-Q39"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 39 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q40",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 40 in Java is correct [Day 28, Q40]?",
+      "options": {
+        "A": "Option A for DAY28-Q40",
+        "B": "Option B for DAY28-Q40",
+        "C": "Option C for DAY28-Q40",
+        "D": "Option D for DAY28-Q40"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 40 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q41",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 41 in Java is correct [Day 28, Q41]?",
+      "options": {
+        "A": "Option A for DAY28-Q41",
+        "B": "Option B for DAY28-Q41",
+        "C": "Option C for DAY28-Q41",
+        "D": "Option D for DAY28-Q41"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 41 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q42",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 42 in Java is correct [Day 28, Q42]?",
+      "options": {
+        "A": "Option A for DAY28-Q42",
+        "B": "Option B for DAY28-Q42",
+        "C": "Option C for DAY28-Q42",
+        "D": "Option D for DAY28-Q42"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 42 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q43",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 43 in Java is correct [Day 28, Q43]?",
+      "options": {
+        "A": "Option A for DAY28-Q43",
+        "B": "Option B for DAY28-Q43",
+        "C": "Option C for DAY28-Q43",
+        "D": "Option D for DAY28-Q43"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 43 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q44",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 44 in Java is correct [Day 28, Q44]?",
+      "options": {
+        "A": "Option A for DAY28-Q44",
+        "B": "Option B for DAY28-Q44",
+        "C": "Option C for DAY28-Q44",
+        "D": "Option D for DAY28-Q44"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 44 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q45",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 45 in Java is correct [Day 28, Q45]?",
+      "options": {
+        "A": "Option A for DAY28-Q45",
+        "B": "Option B for DAY28-Q45",
+        "C": "Option C for DAY28-Q45",
+        "D": "Option D for DAY28-Q45"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 45 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q46",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 46 in Java is correct [Day 28, Q46]?",
+      "options": {
+        "A": "Option A for DAY28-Q46",
+        "B": "Option B for DAY28-Q46",
+        "C": "Option C for DAY28-Q46",
+        "D": "Option D for DAY28-Q46"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 46 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q47",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 47 in Java is correct [Day 28, Q47]?",
+      "options": {
+        "A": "Option A for DAY28-Q47",
+        "B": "Option B for DAY28-Q47",
+        "C": "Option C for DAY28-Q47",
+        "D": "Option D for DAY28-Q47"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 47 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q48",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 48 in Java is correct [Day 28, Q48]?",
+      "options": {
+        "A": "Option A for DAY28-Q48",
+        "B": "Option B for DAY28-Q48",
+        "C": "Option C for DAY28-Q48",
+        "D": "Option D for DAY28-Q48"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 48 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q49",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 49 in Java is correct [Day 28, Q49]?",
+      "options": {
+        "A": "Option A for DAY28-Q49",
+        "B": "Option B for DAY28-Q49",
+        "C": "Option C for DAY28-Q49",
+        "D": "Option D for DAY28-Q49"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 49 and its role in Synchronization & Concurrency."
+    },
+    {
+      "id": "DAY28-Q50",
+      "day": 28,
+      "topic": "Synchronization & Concurrency",
+      "question": "Which statement about concept 50 in Java is correct [Day 28, Q50]?",
+      "options": {
+        "A": "Option A for DAY28-Q50",
+        "B": "Option B for DAY28-Q50",
+        "C": "Option C for DAY28-Q50",
+        "D": "Option D for DAY28-Q50"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept 50 and its role in Synchronization & Concurrency."
+    }
+  ]
+}

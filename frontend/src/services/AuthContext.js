@@ -1,20 +1,36 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import api from '../api/axios';
+import { API_BASE } from '../api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [authToken, setAuthToken] = useState(localStorage.getItem('token'));
+    const [authToken, setAuthToken] = useState(localStorage.getItem('token') || localStorage.getItem('access_token'));
     const [loading, setLoading] = useState(true);
+    const [devDomain, setDevDomain] = useState("");
 
     useEffect(() => {
         const loadUser = async () => {
             if (authToken) {
                 try {
-                    const response = await api.get('/profile');
-                    if (response.status === 200) {
-                        setUser(response.data);
+                    let response = await fetch(`${API_BASE}/api/users/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    if (!response.ok) {
+                        response = await fetch(`${API_BASE}/api/auth/me`, {
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                    }
+                    if (response.ok) {
+                        const userData = await response.json();
+                        if (userData && userData.role) {
+                            userData.role = userData.role.toLowerCase();
+                        }
+                        setUser(userData);
                     } else {
                         console.error('Failed to fetch user data with token, logging out.');
                         logout();
@@ -43,18 +59,43 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const response = await api.post('/login', { email, password });
-            const data = response.data;
+            let response = await fetch(`${API_BASE}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Login failed');
+            }
+
+            const data = await response.json();
+            const token = data.access_token || data.token;
+            localStorage.setItem('token', token);
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('authToken', token); // For backward compatibility
             
-            localStorage.setItem('token', data.access_token);
-            localStorage.setItem('role', data.role);
-            setAuthToken(data.access_token);
+            const userObj = data.user || data; // Fallback in case it's flat
+            const normalizedRole = (userObj.role || data.role || "").toLowerCase();
+            localStorage.setItem('role', normalizedRole);
+            setAuthToken(token);
             
-            const userData = { role: data.role, name: data.name, email: data.email };
+            const userData = { ...userObj, role: normalizedRole, name: userObj.full_name || userObj.name || data.name, email: userObj.email || data.email, id: userObj.user_id || data.user_id };
             setUser(userData);
-            return userData;
-        } catch (error) {
-            throw new Error(error.response?.data?.detail || 'Login failed');
+            return { ...data, ...userData };
         } finally {
             setLoading(false);
         }
@@ -62,13 +103,16 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('access_token');
         localStorage.removeItem('role');
         setAuthToken(null);
         setUser(null);
     };
 
+    const effectiveUser = user ? { ...user, domain: devDomain || user.domain } : null;
+
     return (
-        <AuthContext.Provider value={{ user, authToken, login, logout, loading }}>
+        <AuthContext.Provider value={{ user: effectiveUser, setUser, authToken, login, logout, loading, setDevDomain, devDomain }}>
             {children}
         </AuthContext.Provider>
     );

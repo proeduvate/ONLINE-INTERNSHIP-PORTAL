@@ -1,0 +1,138 @@
+{
+  "curriculum": "Full Stack",
+  "day": 13,
+  "topic": "TypeScript for Frontend Development",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify TypeScript types and interfaces used in frontend applications.",
+    "Add type safety to component props and application data.",
+    "Use TypeScript to detect common JavaScript development errors."
+  ],
+  "activities": [
+    {
+      "id": "d13-a1",
+      "type": "discover",
+      "title": "TypeScript Type Explorer",
+      "instruction": "Click each type to explore the kind of value it can represent.",
+      "content": {
+        "concept": "TypeScript provides static types such as string, number, boolean, arrays, objects, and unions to describe the values used by an application.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "typescript-types",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "string",
+            "number",
+            "boolean",
+            "array",
+            "object",
+            "union"
+          ],
+          "descriptions": [
+            "Represents text values.",
+            "Represents numeric values.",
+            "Represents true or false values.",
+            "Represents a collection of values, often with a defined element type.",
+            "Represents structured data with named properties.",
+            "Allows a value to be one of several specified types."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Interface Anatomy",
+      "instruction": "Explore the parts of a TypeScript interface.",
+      "content": {
+        "concept": "An interface describes the expected shape of an object by defining its property names and types.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "interface-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "interface User",
+            "name: string",
+            "age: number",
+            "email?: string",
+            "}"
+          ],
+          "descriptions": [
+            "Declares an interface named User.",
+            "Defines a required name property containing a string.",
+            "Defines a required age property containing a number.",
+            "Defines an optional email property containing a string.",
+            "Closes the interface declaration."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Type Error Detector",
+      "instruction": "Choose the example that contains a TypeScript type mismatch.",
+      "content": {
+        "concept": "Static type checking can detect incompatible assignments and function arguments during development before the code is executed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "type-error",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "let age: number = 25",
+            "let age: number = \"twenty-five\""
+          ],
+          "answer": "let age: number = \"twenty-five\""
+        }
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Typed Component Builder",
+      "instruction": "Build the structure of a React component with typed props.",
+      "content": {
+        "concept": "TypeScript can define the shape of React component props so incorrect or missing values can be detected during development.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "typed-component",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Define Props interface",
+            "Add prop types",
+            "Declare component with Props",
+            "Use typed props in JSX",
+            "Render component"
+          ],
+          "required": [
+            "Define Props interface",
+            "Add prop types",
+            "Declare component with Props",
+            "Use typed props in JSX",
+            "Render component"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-13.json",
+  "practicalTaskRef": "practical-day-13.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

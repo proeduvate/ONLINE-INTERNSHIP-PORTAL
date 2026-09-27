@@ -3,7 +3,7 @@ import { useAuth } from "../services/AuthContext";
 
 export default function ProtectedRoute({ children, roles = [] }) {
   const { authToken } = useAuth();
-  const token = localStorage.getItem("token") || authToken;
+  const token = localStorage.getItem("token") || localStorage.getItem("authToken") || authToken;
   const role = localStorage.getItem("role");
 
   if (!token) {

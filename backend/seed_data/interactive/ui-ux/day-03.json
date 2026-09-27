@@ -1,0 +1,138 @@
+{
+  "curriculum": "UI/UX",
+  "day": 3,
+  "topic": "Personas, Empathy Maps, and User Needs",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create a basic persona from user research findings.",
+    "Identify what users say, think, feel, and do using an empathy map.",
+    "Convert research observations into actionable user needs."
+  ],
+  "activities": [
+    {
+      "id": "d3-a1",
+      "type": "discover",
+      "title": "Persona Anatomy",
+      "instruction": "Explore the key parts of a UX persona.",
+      "content": {
+        "concept": "A persona is a research-based representation of a meaningful user group. It commonly includes context, goals, behaviors, needs, frustrations, and motivations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "persona-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Name & Representative Profile",
+            "Context",
+            "Goals",
+            "Behaviors",
+            "Pain Points",
+            "Needs & Motivations"
+          ],
+          "descriptions": [
+            "Provides a memorable representation without pretending to describe one specific real person.",
+            "Describes relevant background, situation, environment, or constraints.",
+            "Explains what the user wants to accomplish.",
+            "Captures patterns in what the user commonly does.",
+            "Identifies recurring frustrations or obstacles supported by research.",
+            "Describes what helps the user succeed and what motivates their behavior."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Persona Builder",
+      "instruction": "Build a research-grounded persona using the essential components.",
+      "content": {
+        "concept": "A useful persona connects research evidence to a coherent user profile. Avoid adding unsupported demographics or assumptions simply to make the persona look detailed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "persona-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "User Context",
+            "Goals",
+            "Behaviors",
+            "Pain Points",
+            "Needs",
+            "Motivations"
+          ],
+          "required": [
+            "User Context",
+            "Goals",
+            "Behaviors",
+            "Pain Points",
+            "Needs",
+            "Motivations"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Empathy Map Explorer",
+      "instruction": "Explore the four main sections of an empathy map.",
+      "content": {
+        "concept": "Empathy maps help organize research around what users say, think, do, and feel. They help teams identify patterns rather than relying on isolated assumptions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "empathy-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Says",
+            "Thinks",
+            "Does",
+            "Feels"
+          ],
+          "descriptions": [
+            "Direct statements or words expressed by the user.",
+            "Beliefs, concerns, questions, or thoughts inferred carefully from research evidence.",
+            "Observable actions and behaviors.",
+            "Emotions or feelings indicated by the user's words, behavior, or research evidence."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Need vs Assumption",
+      "instruction": "Choose the statement that is supported by user evidence.",
+      "content": {
+        "concept": "A user need should describe something the user requires to achieve a goal. It should be grounded in research rather than an unsupported assumption about what users want.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "need-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Users need clear delivery-cost information before confirming an order.",
+            "Users probably want the website to have more animations."
+          ],
+          "answer": "Users need clear delivery-cost information before confirming an order."
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

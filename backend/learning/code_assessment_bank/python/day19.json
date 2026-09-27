@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 19 Code Assessment",
+  "day": 19,
+  "topic": "File Handling",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY19-Q01",
+      "day": 19,
+      "topic": "File Handling",
+      "question": "Create a text file and write student information into it."
+    },
+    {
+      "id": "DAY19-Q02",
+      "day": 19,
+      "topic": "File Handling",
+      "question": "Read a text file and count its lines, words, and characters."
+    },
+    {
+      "id": "DAY19-Q03",
+      "day": 19,
+      "topic": "File Handling",
+      "question": "Append new employee records to an existing file."
+    },
+    {
+      "id": "DAY19-Q04",
+      "day": 19,
+      "topic": "File Handling",
+      "question": "Search for a specific word inside a text file."
+    },
+    {
+      "id": "DAY19-Q05",
+      "day": 19,
+      "topic": "File Handling",
+      "question": "Create a program that reads a file and generates a summary report."
+    }
+  ]
+}

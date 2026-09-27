@@ -1,0 +1,37 @@
+{
+    "day": 10,
+    "topic": "Responsive Web Design",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D10-Q001",
+            "title": "Responsive Portfolio",
+            "description": "Make a portfolio responsive for desktop, tablet and mobile.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D10-Q002",
+            "title": "Responsive Navigation",
+            "description": "Create a navigation layout that changes appropriately on mobile.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D10-Q003",
+            "title": "Responsive Cards",
+            "description": "Build a card grid that changes from 4 \u2192 2 \u2192 1 columns.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D10-Q004",
+            "title": "Responsive Hero",
+            "description": "Create a hero section that adapts its typography and layout for mobile.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D10-Q005",
+            "title": "Mobile-First Website",
+            "description": "Build a complete mobile-first landing page and progressively enhance it for larger screens.",
+            "requirements": []
+        }
+    ]
+}

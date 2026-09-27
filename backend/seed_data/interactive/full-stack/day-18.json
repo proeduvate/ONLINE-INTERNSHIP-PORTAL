@@ -1,0 +1,131 @@
+{
+  "curriculum": "Full Stack",
+  "day": 18,
+  "topic": "SQL, PostgreSQL, and Relational Data Modeling",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain relational databases, tables, keys, and relationships.",
+    "Design normalized database structures for application data.",
+    "Construct basic SQL operations for creating and querying data."
+  ],
+  "activities": [
+    {
+      "id": "d18-a1",
+      "type": "discover",
+      "title": "Relational Database Anatomy",
+      "instruction": "Click each database element to explore its purpose.",
+      "content": {
+        "concept": "Relational databases organize structured data into tables made of rows and columns, with keys used to identify records and connect related tables.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "relational-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Table",
+            "Column",
+            "Row",
+            "Primary Key",
+            "Foreign Key"
+          ],
+          "descriptions": [
+            "A structured collection of related records.",
+            "Defines an attribute or field for each record.",
+            "Represents one record in a table.",
+            "Uniquely identifies a record in a table.",
+            "Stores a reference to a key in another table to represent a relationship."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "discover",
+      "title": "Relationship Mapper",
+      "instruction": "Explore how different table relationships connect records.",
+      "content": {
+        "concept": "Relational databases represent one-to-one, one-to-many, and many-to-many relationships using keys and, when necessary, junction tables.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "relationship-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "One-to-One",
+            "One-to-Many",
+            "Many-to-Many"
+          ],
+          "descriptions": [
+            "One record in one table is associated with one record in another table.",
+            "One record can be associated with many records in another table.",
+            "Records on both sides can have multiple related records, commonly represented using a junction table."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "SQL Operation Explorer",
+      "instruction": "Choose the SQL command that matches the requested operation.",
+      "content": {
+        "concept": "SQL provides commands such as SELECT for reading data, INSERT for creating rows, UPDATE for modifying rows, and DELETE for removing rows.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "sql-operation",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Retrieve users from a table → SELECT",
+            "Retrieve users from a table → DELETE"
+          ],
+          "answer": "Retrieve users from a table → SELECT"
+        }
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Database Schema Builder",
+      "instruction": "Build a normalized schema for users and their orders.",
+      "content": {
+        "concept": "Normalization separates related data into focused tables and uses keys to maintain relationships while reducing unnecessary duplication.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "schema-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Users table",
+            "Orders table",
+            "users.id primary key",
+            "orders.user_id foreign key",
+            "Order details"
+          ],
+          "required": [
+            "Users table",
+            "Orders table",
+            "users.id primary key",
+            "orders.user_id foreign key"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-18.json",
+  "practicalTaskRef": "practical-day-18.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

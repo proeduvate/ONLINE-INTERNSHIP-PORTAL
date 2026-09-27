@@ -1,0 +1,47 @@
+{
+    "day": 24,
+    "topic": "JSX, Props & Component Composition",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D24-Q001",
+            "title": "Props Profile",
+            "description": "Create a profile component receiving user information through props.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D24-Q002",
+            "title": "Product Props",
+            "description": "Create a reusable product card accepting:",
+            "requirements": [
+                "Name",
+                "Image",
+                "Price",
+                "Rating through props"
+            ]
+        },
+        {
+            "id": "CODE-D24-Q003",
+            "title": "Reusable Button",
+            "description": "Create a Button component with configurable:",
+            "requirements": [
+                "Text",
+                "Type",
+                "Size",
+                "Disabled state"
+            ]
+        },
+        {
+            "id": "CODE-D24-Q004",
+            "title": "Component Composition",
+            "description": "Create a reusable Card component that accepts children.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D24-Q005",
+            "title": "Dashboard Composition",
+            "description": "Build a dashboard by composing reusable components rather than creating one large component.",
+            "requirements": []
+        }
+    ]
+}

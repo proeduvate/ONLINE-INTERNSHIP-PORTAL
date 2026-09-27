@@ -12,23 +12,42 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { login } = useAuth();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const navigate = useNavigate();
+  const { login } = useAuth();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Please enter your email and password.");
+    if (!email) {
+      setErrorMessage("Please enter your email address.");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Please enter your password.");
       return;
     }
 
+    // Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    setIsLoggingIn(true);
     try {
       const userData = await login(email, password);
-      navigate(`/${userData.role}`);
+      if (userData && userData.role) {
+        navigate(`/${userData.role}`);
+      }
     } catch (error) {
       setErrorMessage(error.message || "Invalid email or password.");
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 

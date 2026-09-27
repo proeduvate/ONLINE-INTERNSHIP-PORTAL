@@ -1,0 +1,557 @@
+{
+    "day": 7,
+    "topic": "CSS Typography, Colors and Backgrounds",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D7-001",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 1 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-002",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 2?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-003",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 3?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-004",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 4 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-005",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 5?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-006",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 6 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-007",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 7?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-008",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 8?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-009",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 9 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-010",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 10?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-011",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 11 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-012",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 12?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-013",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 13?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-014",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 14 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-015",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 15?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-016",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 16 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-017",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 17?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-018",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 18?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-019",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 19 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-020",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 20?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-021",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 21 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-022",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 22?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-023",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 23?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-024",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 24 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-025",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 25?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-026",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 26 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-027",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 27?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-028",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 28?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-029",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 29 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-030",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 30?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-031",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 31 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-032",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 32?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-033",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 33?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-034",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 34 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-035",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 35?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-036",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 36 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-037",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 37?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-038",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 38?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-039",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 39 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-040",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 40?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-041",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 41 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-042",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 42?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-043",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 43?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-044",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 44 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-045",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 45?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-046",
+            "question": "What is the primary purpose of CSS Typography, Colors and Backgrounds feature 46 in CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "To implement CSS Typography, Colors and Backgrounds feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-047",
+            "question": "How do you correctly use CSS Typography, Colors and Backgrounds feature 47?",
+            "options": {
+                "A": "By following standard CSS Typography, Colors and Backgrounds guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-048",
+            "question": "Which of the following best describes CSS Typography, Colors and Backgrounds feature 48?",
+            "options": {
+                "A": "A key concept in CSS Typography, Colors and Backgrounds",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-049",
+            "question": "Why is CSS Typography, Colors and Backgrounds feature 49 important for CSS Typography, Colors and Backgrounds?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D7-050",
+            "question": "When should you avoid using CSS Typography, Colors and Backgrounds feature 50?",
+            "options": {
+                "A": "When it violates CSS Typography, Colors and Backgrounds best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

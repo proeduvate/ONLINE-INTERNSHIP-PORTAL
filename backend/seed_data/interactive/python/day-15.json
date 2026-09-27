@@ -1,0 +1,136 @@
+{
+  "curriculum": "Python",
+  "day": 15,
+  "topic": "Web Development with Flask and REST APIs",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the structure of a basic Flask web application.",
+    "Create routes that handle HTTP requests and return responses.",
+    "Design a simple REST API using Flask."
+  ],
+  "activities": [
+    {
+      "id": "d15-a1",
+      "type": "discover",
+      "title": "Flask Architecture",
+      "instruction": "Explore how a Flask application handles a web request.",
+      "content": {
+        "concept": "A Flask application maps incoming HTTP requests to route functions, executes application logic, and returns an HTTP response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Flask Application",
+            "Route",
+            "View Function",
+            "Application Logic",
+            "Response"
+          ],
+          "descriptions": [
+            "The Flask application object that receives incoming requests.",
+            "URL and HTTP method mapping that determines which function handles a request.",
+            "Python function executed for a matching route.",
+            "Code that processes the request and prepares the result.",
+            "HTTP response returned to the client."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "Route Anatomy",
+      "instruction": "Explore the parts of a Flask route.",
+      "content": {
+        "concept": "The @app.route decorator associates a URL path and optionally HTTP methods with a Python function.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@app.route(\"/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}"
+          ],
+          "descriptions": [
+            "Registers the /users URL and allows GET requests for this route.",
+            "Defines the Python function that handles the matching request.",
+            "Returns structured data that Flask can serialize as a response."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "REST Method Explorer",
+      "instruction": "Choose the HTTP method that best matches each REST operation.",
+      "content": {
+        "concept": "REST APIs commonly use GET to retrieve resources, POST to create resources, PUT or PATCH to update resources, and DELETE to remove resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "GET → retrieve a resource",
+            "POST → create a resource",
+            "PUT/PATCH → update a resource",
+            "DELETE → remove a resource"
+          ],
+          "answer": "GET → retrieve a resource"
+        }
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "Flask API Builder",
+      "instruction": "Build a simple Flask endpoint that returns JSON data.",
+      "content": {
+        "concept": "A Flask REST endpoint combines a route, an HTTP method, a view function, and a response containing structured data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "from flask import Flask",
+            "app = Flask(__name__)",
+            "@app.route(\"/api/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}",
+            "app.run()",
+            "import math"
+          ],
+          "required": [
+            "from flask import Flask",
+            "app = Flask(__name__)",
+            "@app.route(\"/api/users\", methods=[\"GET\"])",
+            "def get_users():",
+            "    return {\"users\": []}"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-15.json",
+  "practicalTaskRef": "practical-day-15.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

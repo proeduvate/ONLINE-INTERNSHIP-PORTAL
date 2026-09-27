@@ -231,6 +231,7 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 node_modules
+backend/google-credentials.json
 
 # Custom ignores
 scratch_move*.py

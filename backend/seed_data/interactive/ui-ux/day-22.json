@@ -1,0 +1,157 @@
+{
+  "curriculum": "UI/UX",
+  "day": 22,
+  "topic": "Ideation, User Journey Mapping, and Solution Exploration",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Generate multiple solution ideas from a defined user problem.",
+    "Map user emotions, actions, and pain points across a journey.",
+    "Select concepts for further exploration using clear criteria."
+  ],
+  "activities": [
+    {
+      "id": "d22-a1",
+      "type": "discover",
+      "title": "User Journey Map",
+      "instruction": "Explore the user's actions, emotions, pain points, and opportunities across a complete journey.",
+      "content": {
+        "concept": "A journey map visualizes user stages, actions, thoughts, emotions, pain points, and opportunities across an experience.",
+        "tip": "Select each journey stage to reveal what the user is doing, thinking, and feeling."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            {
+              "label": "Discover",
+              "description": "The user becomes aware of the product or service."
+            },
+            {
+              "label": "Explore",
+              "description": "The user compares available options and gathers information."
+            },
+            {
+              "label": "Decide",
+              "description": "The user evaluates options and chooses an action."
+            },
+            {
+              "label": "Complete",
+              "description": "The user performs the main task or transaction."
+            },
+            {
+              "label": "Post-Task",
+              "description": "The user receives confirmation, support, or follow-up information."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Journey Sequencer",
+      "instruction": "Arrange the user's actions in the correct order.",
+      "content": {
+        "concept": "Mapping actions in sequence helps reveal friction points and opportunities throughout the complete user experience.",
+        "tip": "Think about what the user needs to do before each subsequent action becomes possible."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Discover Product",
+            "2. Explore Options",
+            "3. Compare Alternatives",
+            "4. Select Option",
+            "5. Complete Task",
+            "6. Receive Confirmation"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "discover",
+      "title": "Ideation Builder",
+      "instruction": "Arrange solution ideas from broad possibilities toward concepts ready for further exploration.",
+      "content": {
+        "concept": "Ideation expands the solution space by generating multiple possibilities before narrowing toward promising concepts.",
+        "tip": "Separate idea generation from evaluation so that the team explores multiple possibilities before choosing."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "items": [
+            "Define Problem",
+            "Generate Many Ideas",
+            "Group Similar Ideas",
+            "Combine Concepts",
+            "Select Promising Concepts",
+            "Prototype"
+          ],
+          "correctOrder": [
+            "Define Problem",
+            "Generate Many Ideas",
+            "Group Similar Ideas",
+            "Combine Concepts",
+            "Select Promising Concepts",
+            "Prototype"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Concept Selection Lab",
+      "instruction": "Select the concept that best satisfies the given user and product criteria.",
+      "content": {
+        "concept": "Early concepts can be compared using factors such as user value, feasibility, clarity, and alignment with the problem.",
+        "tip": "Consider multiple criteria rather than selecting an idea simply because it looks interesting."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "scenarios": [
+            {
+              "question": "The team needs a solution that provides high user value and can be prototyped quickly.",
+              "options": [
+                "A simple personalized recommendation feature",
+                "A completely new operating system",
+                "A feature unrelated to the user's problem"
+              ],
+              "correctAnswer": "A simple personalized recommendation feature",
+              "explanation": "The concept directly addresses the problem while remaining practical to prototype."
+            },
+            {
+              "question": "A concept is technically impressive but does not address the identified user need.",
+              "options": [
+                "Do not prioritize it yet",
+                "Choose it automatically",
+                "Ignore the research"
+              ],
+              "correctAnswer": "Do not prioritize it yet",
+              "explanation": "Concept selection should remain connected to the validated problem."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

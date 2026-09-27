@@ -1,0 +1,557 @@
+{
+  "day": 2,
+  "topic": "Semantic HTML5",
+  "total_questions": 50,
+  "questions": [
+    {
+      "id": "Q-D2-001",
+      "question": "What is the primary purpose of semantic HTML?",
+      "options": {
+        "A": "To add more colors to a webpage",
+        "B": "To give meaning and structure to webpage content",
+        "C": "To replace JavaScript",
+        "D": "To increase image resolution"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-002",
+      "question": "Which element represents the introductory content of a webpage or section?",
+      "options": {
+        "A": "<header>",
+        "B": "<top>",
+        "C": "<intro>",
+        "D": "<head>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-003",
+      "question": "Which element represents the main content of a document?",
+      "options": {
+        "A": "<content>",
+        "B": "<primary>",
+        "C": "<main>",
+        "D": "<body-content>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-004",
+      "question": "Which element is most appropriate for a group of major navigation links?",
+      "options": {
+        "A": "<links>",
+        "B": "<menu-bar>",
+        "C": "<navigate>",
+        "D": "<nav>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D2-005",
+      "question": "Which element represents the footer of a page or section?",
+      "options": {
+        "A": "<footer>",
+        "B": "<bottom>",
+        "C": "<end>",
+        "D": "<page-footer-content>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-006",
+      "question": "Which semantic element is suitable for a self-contained blog post?",
+      "options": {
+        "A": "<post>",
+        "B": "<article>",
+        "C": "<blog>",
+        "D": "<entry>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-007",
+      "question": "Which element is used to group content that forms a thematic section of a document?",
+      "options": {
+        "A": "<group>",
+        "B": "<division>",
+        "C": "<section>",
+        "D": "<theme>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-008",
+      "question": "Which element is intended for content indirectly related to the main content?",
+      "options": {
+        "A": "<side>",
+        "B": "<extra>",
+        "C": "<related>",
+        "D": "<aside>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D2-009",
+      "question": "Which element is appropriate for a standalone illustration with an optional caption?",
+      "options": {
+        "A": "<figure>",
+        "B": "<illustration>",
+        "C": "<visual>",
+        "D": "<image-section>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-010",
+      "question": "Which element provides a caption for a figure?",
+      "options": {
+        "A": "<caption>",
+        "B": "<figcaption>",
+        "C": "<figure-label>",
+        "D": "<description>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-011",
+      "question": "Which element represents a date or time?",
+      "options": {
+        "A": "<date>",
+        "B": "<datetime>",
+        "C": "<time>",
+        "D": "<calendar>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-012",
+      "question": "Which attribute on a time element can provide a machine-readable date or time?",
+      "options": {
+        "A": "date-value",
+        "B": "datetime",
+        "C": "time-value",
+        "D": "machine-time"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-013",
+      "question": "Which element represents a specific person, organization, or place as an entity?",
+      "options": {
+        "A": "<entity>",
+        "B": "<name>",
+        "C": "<address>",
+        "D": "<entity-name>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-014",
+      "question": "Which element is intended for contact information for the nearest article or body ancestor?",
+      "options": {
+        "A": "<contact>",
+        "B": "<details>",
+        "C": "<address>",
+        "D": "<info>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-015",
+      "question": "Which element represents a list of navigation commands or menu items?",
+      "options": {
+        "A": "<menu>",
+        "B": "<nav-list>",
+        "C": "<commands>",
+        "D": "<navigation-list>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-016",
+      "question": "Which element is used to represent a term being defined?",
+      "options": {
+        "A": "<definition>",
+        "B": "<term>",
+        "C": "<dfn>",
+        "D": "<define>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-017",
+      "question": "Which element represents an abbreviation or acronym?",
+      "options": {
+        "A": "<abbr>",
+        "B": "<acronym>",
+        "C": "<short>",
+        "D": "<initialism>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-018",
+      "question": "Which attribute can provide the expanded meaning of an abbreviation?",
+      "options": {
+        "A": "expand",
+        "B": "title",
+        "C": "full-name",
+        "D": "description"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-019",
+      "question": "Which element represents a block of quoted content from another source?",
+      "options": {
+        "A": "<quote-block>",
+        "B": "<quotation>",
+        "C": "<blockquote>",
+        "D": "<source-quote>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-020",
+      "question": "Which attribute can identify the source URL of quoted content?",
+      "options": {
+        "A": "source",
+        "B": "cite",
+        "C": "reference",
+        "D": "source-url"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-021",
+      "question": "Which element represents content that is highlighted because of its relevance?",
+      "options": {
+        "A": "<highlight>",
+        "B": "<mark>",
+        "C": "<emphasis>",
+        "D": "<highlighted>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-022",
+      "question": "Which element represents text that has been inserted into a document?",
+      "options": {
+        "A": "<add>",
+        "B": "<insert>",
+        "C": "<ins>",
+        "D": "<new>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-023",
+      "question": "Which element represents text that has been deleted from a document?",
+      "options": {
+        "A": "<del>",
+        "B": "<remove>",
+        "C": "<deleted>",
+        "D": "<strike>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-024",
+      "question": "Which element represents a superscript character or number?",
+      "options": {
+        "A": "<super>",
+        "B": "<sup>",
+        "C": "<superscript>",
+        "D": "<top-text>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-025",
+      "question": "Which element represents a subscript character or number?",
+      "options": {
+        "A": "<sub>",
+        "B": "<subscript>",
+        "C": "<bottom-text>",
+        "D": "<under>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-026",
+      "question": "Which element represents a description list containing terms and descriptions?",
+      "options": {
+        "A": "<definition-list>",
+        "B": "<dl>",
+        "C": "<description>",
+        "D": "<terms>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-027",
+      "question": "Which element defines a term inside a description list?",
+      "options": {
+        "A": "<term>",
+        "B": "<dt>",
+        "C": "<definition-term>",
+        "D": "<dl-term>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-028",
+      "question": "Which element defines the description of a term in a description list?",
+      "options": {
+        "A": "<description>",
+        "B": "<dd>",
+        "C": "<definition>",
+        "D": "<dl-description>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-029",
+      "question": "Which element represents a numbered or unordered list item?",
+      "options": {
+        "A": "<item>",
+        "B": "<li>",
+        "C": "<list-item>",
+        "D": "<entry>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-030",
+      "question": "Which element represents a task that can be expanded or collapsed by the user?",
+      "options": {
+        "A": "<expand>",
+        "B": "<details>",
+        "C": "<toggle>",
+        "D": "<collapsible>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-031",
+      "question": "Which element provides a visible summary or caption for a details element?",
+      "options": {
+        "A": "<summary>",
+        "B": "<caption>",
+        "C": "<heading>",
+        "D": "<details-title>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-032",
+      "question": "Which attribute makes a details element expanded by default?",
+      "options": {
+        "A": "open",
+        "B": "expanded",
+        "C": "visible",
+        "D": "show"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-033",
+      "question": "Which element represents a dialog box or interactive modal?",
+      "options": {
+        "A": "<modal>",
+        "B": "<popup>",
+        "C": "<dialog>",
+        "D": "<window>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-034",
+      "question": "Which attribute makes a dialog element modal when opened using the showModal() method?",
+      "options": {
+        "A": "modal",
+        "B": "blocking",
+        "C": "open-modal",
+        "D": "The showModal() method opens it modally"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D2-035",
+      "question": "Which element represents a self-contained control or widget that can be interacted with?",
+      "options": {
+        "A": "<button>",
+        "B": "<click>",
+        "C": "<action>",
+        "D": "<control>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-036",
+      "question": "Which element represents a scalar measurement within a known range?",
+      "options": {
+        "A": "<progress>",
+        "B": "<meter>",
+        "C": "<range>",
+        "D": "<measure>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-037",
+      "question": "Which element represents the completion progress of a task?",
+      "options": {
+        "A": "<meter>",
+        "B": "<loading>",
+        "C": "<progress>",
+        "D": "<completion>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-038",
+      "question": "Which attribute specifies the maximum value of a progress element?",
+      "options": {
+        "A": "limit",
+        "B": "max",
+        "C": "maximum",
+        "D": "end"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-039",
+      "question": "Which element represents a machine-readable value associated with a human-readable label?",
+      "options": {
+        "A": "<data>",
+        "B": "<value>",
+        "C": "<machine-data>",
+        "D": "<value-data>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-040",
+      "question": "Which element is used to mark a portion of text as an inline quotation?",
+      "options": {
+        "A": "<quote>",
+        "B": "<q>",
+        "C": "<inlinequote>",
+        "D": "<quotation>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-041",
+      "question": "Which element is appropriate for a standalone product review that can be shared independently?",
+      "options": {
+        "A": "<section>",
+        "B": "<aside>",
+        "C": "<article>",
+        "D": "<review-content>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-042",
+      "question": "Which element should be used for the primary navigation of a website?",
+      "options": {
+        "A": "<div class=\"navigation\">",
+        "B": "<navigation>",
+        "C": "<links>",
+        "D": "<nav>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D2-043",
+      "question": "Which element is suitable for a website's copyright and contact information at the bottom?",
+      "options": {
+        "A": "<footer>",
+        "B": "<bottom-info>",
+        "C": "<copyright-section>",
+        "D": "<end>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-044",
+      "question": "Which element is best suited for a sidebar containing related articles?",
+      "options": {
+        "A": "<sidebar>",
+        "B": "<aside>",
+        "C": "<related-section>",
+        "D": "<secondary>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-045",
+      "question": "Which element is best suited for a group of introductory content and a logo?",
+      "options": {
+        "A": "<top>",
+        "B": "<head>",
+        "C": "<header>",
+        "D": "<intro>"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": "Q-D2-046",
+      "question": "Which element is used to embed an external webpage or document inside the current page?",
+      "options": {
+        "A": "<embed-page>",
+        "B": "<external>",
+        "C": "<frame-content>",
+        "D": "<iframe>"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": "Q-D2-047",
+      "question": "Which element represents a standalone image, diagram, or code example that may have a caption?",
+      "options": {
+        "A": "<figure>",
+        "B": "<visual>",
+        "C": "<media-section>",
+        "D": "<illustration>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-048",
+      "question": "Which semantic element is appropriate for an independent news story?",
+      "options": {
+        "A": "<news>",
+        "B": "<article>",
+        "C": "<story>",
+        "D": "<section>"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": "Q-D2-049",
+      "question": "Which element is appropriate for a page section containing a heading and related content?",
+      "options": {
+        "A": "<section>",
+        "B": "<group>",
+        "C": "<content-block>",
+        "D": "<heading-group>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D2-050",
+      "question": "Which HTML structure best represents a semantic webpage layout?",
+      "options": {
+        "A": "<div class=\"header\"><div class=\"content\"><div class=\"footer\"></div></div></div>",
+        "B": "<page><top></top><content></content><bottom></bottom></page>",
+        "C": "<header></header><main></main><footer></footer>",
+        "D": "<head></head><body-content></body-content><end></end>"
+      },
+      "correct_answer": "C"
+    }
+  ]
+}

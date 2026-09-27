@@ -1,0 +1,140 @@
+{
+  "curriculum": "Python",
+  "day": 10,
+  "topic": "Advanced Python: Iterators, Generators, and Decorators",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain how iterators and generators control data iteration.",
+    "Use generator functions to process values lazily.",
+    "Understand how decorators modify or extend function behavior."
+  ],
+  "activities": [
+    {
+      "id": "d10-a1",
+      "type": "discover",
+      "title": "Iterator Map",
+      "instruction": "Explore how Python obtains values from an iterable.",
+      "content": {
+        "concept": "An iterator implements the iteration protocol and provides values one at a time. The iter() function obtains an iterator and next() retrieves the next value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Iterable",
+            "iter()",
+            "Iterator",
+            "next()",
+            "StopIteration"
+          ],
+          "descriptions": [
+            "An object that can provide its members one at a time, such as a list.",
+            "Creates an iterator from an iterable.",
+            "Object that produces successive values through __next__().",
+            "Requests the next value from an iterator.",
+            "Exception raised when the iterator has no more values."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Generator Anatomy",
+      "instruction": "Explore how yield turns a function into a generator function.",
+      "content": {
+        "concept": "A function containing yield becomes a generator function. Calling it returns a generator, and each next() call resumes execution until the next yield.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "def count_up_to(limit):",
+            "    number = 1",
+            "    while number <= limit:",
+            "        yield number",
+            "        number += 1",
+            "numbers = count_up_to(3)"
+          ],
+          "descriptions": [
+            "Defines a generator function.",
+            "Initializes the current value.",
+            "Continues while the limit has not been reached.",
+            "Produces the current value and pauses execution.",
+            "Updates the value before the next iteration.",
+            "Creates a generator object; the function body does not run to completion immediately."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "Lazy Evaluation Explorer",
+      "instruction": "Adjust the number of values requested from a generator.",
+      "content": {
+        "concept": "Generators produce values on demand. They can process large or potentially unbounded sequences without creating all values in memory at once.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 20,
+          "default": 5
+        }
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Decorator Builder",
+      "instruction": "Assemble the components of a simple function decorator.",
+      "content": {
+        "concept": "A decorator is a callable that takes a function and returns a wrapped function, allowing behavior to be added around the original call.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "def logger(func):",
+            "    def wrapper(*args, **kwargs):",
+            "        print(\"Calling function\")",
+            "        result = func(*args, **kwargs)",
+            "        return result",
+            "    return wrapper",
+            "@logger",
+            "def greet():",
+            "    print(\"Hello\")"
+          ],
+          "required": [
+            "def logger(func):",
+            "    def wrapper(*args, **kwargs):",
+            "        result = func(*args, **kwargs)",
+            "    return wrapper",
+            "@logger"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-10.json",
+  "practicalTaskRef": "practical-day-10.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}
