@@ -1,7 +1,9 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../services/AuthContext";
 
 export default function ProtectedRoute({ children, roles = [] }) {
-  const token = localStorage.getItem("token");
+  const { authToken } = useAuth();
+  const token = localStorage.getItem("token") || authToken;
   const role = localStorage.getItem("role");
 
   if (!token) {

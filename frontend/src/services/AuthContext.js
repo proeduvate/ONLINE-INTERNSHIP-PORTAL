@@ -28,6 +28,16 @@ export const AuthProvider = ({ children }) => {
         };
 
         loadUser();
+        
+        const handleUnauthorized = () => {
+            console.log("Unauthorized event received in AuthContext. Logging out.");
+            logout();
+        };
+        window.addEventListener('unauthorized', handleUnauthorized);
+        
+        return () => {
+            window.removeEventListener('unauthorized', handleUnauthorized);
+        };
     }, [authToken]);
 
     const login = async (email, password) => {

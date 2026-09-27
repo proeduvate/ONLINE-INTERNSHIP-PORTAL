@@ -236,5 +236,6 @@ node_modules
 scratch_move*.py
 backend/analytics.db
 backend/app/internship_portal.db
+backend/submissions/
 *.db
 

@@ -511,10 +511,14 @@ export default function InternDashboard() {
   const startMcqTest = async () => {
     try {
       const res = await api.post(`/mcq/day/${currentDay}/start`);
+      if (!res.data.questions || res.data.questions.length === 0) {
+        alert("No questions found for this assessment day. Please contact your mentor or try again later.");
+        return;
+      }
       const mapped = res.data.questions.map(q => ({
         id: q.id,
         text: q.question,
-        options: Object.entries(q.options).map(([k, v]) => ({ label: v, val: k }))
+        options: Object.entries(q.options || {}).map(([k, v]) => ({ label: v, val: k }))
       }));
       setMcqQuestions(mapped);
       setMcqAttemptId(res.data.attempt_id);
@@ -1173,11 +1177,21 @@ export default function InternDashboard() {
                 <div className="card">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
-                    {mcqSubmitted && (
-                      <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                    {(mcqSubmitted || mcqQuestions.length === 0) && (
+                      <button className="btn btn-secondary" onClick={() => { setAssessmentView("selection"); setMcqStarted(false); }} style={{ padding: "6px 12px", fontSize: "12px" }}>Back to Assessments</button>
                     )}
                   </div>
                   {!mcqSubmitted ? (
+                    mcqQuestions.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "48px 24px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "12px", border: "1px dashed var(--border-color, #cbd5e1)", margin: "16px 0" }}>
+                        <p style={{ color: "var(--text-muted)", fontSize: "15px", marginBottom: "16px" }}>
+                          No questions currently available for this assessment.
+                        </p>
+                        <button className="btn btn-primary" onClick={() => { setAssessmentView("selection"); setMcqStarted(false); }}>
+                          Return to Assessments
+                        </button>
+                      </div>
+                    ) : (
                     <div>
                       {/* Top Bar: Timer and Submit */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-gray)", paddingBottom: "12px", marginBottom: "16px" }}>
@@ -1255,6 +1269,7 @@ export default function InternDashboard() {
                         </div>
                       </div>
                     </div>
+                  )
                   ) : (
                     <div>
                       <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>

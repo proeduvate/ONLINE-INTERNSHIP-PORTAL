@@ -106,7 +106,8 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
   }, [finalEvaluations]);
 
   const displayedData = viewType === 'raw' ? leaderboardData : finalEvaluationsData;
-  const itemsPerPage = isOverview ? 5 : 15;
+  // If isOverview is true, we hide pagination controls, so we should show all items (relying on the container's overflowY: 'auto' for scrolling).
+  const itemsPerPage = isOverview ? 9999 : 15;
   const totalPages = Math.ceil(displayedData.length / itemsPerPage);
   const paginatedData = displayedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const topInterns = leaderboardData.slice(0, 3);

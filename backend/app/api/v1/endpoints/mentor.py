@@ -172,7 +172,8 @@ def get_mentor_submissions(db: Session = Depends(get_db), current_user: models.U
             "aiFeedback": sub.ai_feedback,
             "status": "Pending" if sub.status == "submitted" else (sub.status.capitalize() if sub.status else "Unknown"),
             "mentorFeedback": sub.mentor_feedback,
-            "score": sub.mentor_score
+            "score": sub.mentor_score,
+            "githubUrl": intern.github_repo_url if intern and intern.github_repo_url else "#"
         })
     return result
 

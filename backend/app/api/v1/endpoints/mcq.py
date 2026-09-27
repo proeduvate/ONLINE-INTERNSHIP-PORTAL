@@ -92,22 +92,30 @@ def start_mcq_assessment(day: int, db: Session = Depends(database.get_db), curre
     all_questions = day_data.get("questions", [])
     topic = day_data.get("topic", "Unknown Topic")
     
+    if attempt and attempt.status == models.MCQAttemptStatus.SUBMITTED:
+        if attempt.percentage is not None and attempt.percentage < 50:
+            db.delete(attempt)
+            db.commit()
+            attempt = None
+        else:
+            raise HTTPException(status_code=400, detail="This MCQ assessment has already been submitted.")
+            
     if attempt:
-        if attempt.status == models.MCQAttemptStatus.SUBMITTED:
-            if attempt.percentage is not None and attempt.percentage < 50:
-                db.delete(attempt)
-                db.commit()
-                attempt = None
-            else:
-                raise HTTPException(status_code=400, detail="This MCQ assessment has already been submitted.")
-        
-        if attempt:
-            # Return existing IN_PROGRESS attempt
+        # Return existing IN_PROGRESS attempt
+        try:
             selected_ids = json.loads(attempt.selected_question_ids)
+        except Exception:
+            selected_ids = []
         # Fetch the actual questions from the bank
         selected_questions = [q for q in all_questions if q["id"] in selected_ids]
         
-    else:
+        # If the stored question IDs are stale or don't match the current bank (e.g. after re-seeding or domain switch)
+        if len(selected_questions) < 10:
+            db.delete(attempt)
+            db.commit()
+            attempt = None
+
+    if not attempt:
         # Create new attempt
         import re
         
