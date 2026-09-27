@@ -143,3 +143,43 @@ def get_intern_daily_analytics(
         }
         for r in results
     ]
+
+
+# ==========================================
+#    INTERN: VIEW OWN DAILY ANALYTICS
+# ==========================================
+
+@router.get(
+    "/daily-questions/me",
+    summary="Get current intern's daily question results"
+)
+@router.get(
+    "/analytics/daily-questions/me",
+    summary="Get current intern's daily question results"
+)
+def get_my_daily_analytics(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    results = (
+        db.query(models.DailyQuestionResult)
+        .filter(models.DailyQuestionResult.intern_id == current_user.id)
+        .order_by(models.DailyQuestionResult.question_id, models.DailyQuestionResult.date)
+        .all()
+    )
+
+    return [
+        {
+            "id": r.id,
+            "intern_id": r.intern_id,
+            "question_id": r.question_id,
+            "day": r.question_id,
+            "mcq_score": r.mcq_score,
+            "coding_score": r.coding_score,
+            "final_score": r.final_score,
+            "date": str(r.date) if r.date else "",
+            "attempted_at": str(r.attempted_at) if r.attempted_at else ""
+        }
+        for r in results
+    ]
+

@@ -95,6 +95,9 @@ app.include_router(airdrops.router, prefix="/api/v1", tags=["Airdrops"])
 
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api/v1", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api", tags=["Analytics"])
+app.include_router(analytics.router, tags=["Analytics"])
 
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
 app.include_router(onboarding.router, prefix="/api/v1", tags=["Onboarding"])
@@ -134,6 +137,8 @@ app.include_router(tickets.router, prefix="/api/v1", tags=["Tickets"])
 
 app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
 app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])
+app.include_router(mcq.router, prefix="/api", tags=["MCQ Assessment"])
+app.include_router(mcq.router, tags=["MCQ Assessment"])
 app.include_router(mentor.router, prefix="/api/v1", tags=["Mentor Dashboard"])
 
 app.include_router(questions.router, prefix="/api/v1", tags=["Questions"])
@@ -317,7 +322,10 @@ def get_me(current_user: models.User = Depends(get_current_user)):
 @app.get("/api/tasks", response_model=List[schemas.TaskResponse])
 @app.get("/api/v1/tasks", response_model=List[schemas.TaskResponse])
 def get_tasks(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    return db.query(models.Task).all()
+    query = db.query(models.Task)
+    if current_user.role == "intern" and current_user.domain_id:
+        query = query.filter(models.Task.domain_id == current_user.domain_id)
+    return query.order_by(models.Task.day_number).all()
 
 
 @app.post("/api/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
@@ -541,6 +549,7 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 @app.get("/api/intern/stats")
+@app.get("/api/v1/intern/stats")
 def get_intern_stats(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     if current_user.role.value != "intern":
         return {"error": "Not an intern"}

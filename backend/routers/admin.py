@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -79,11 +79,8 @@ def get_admin_dashboard_stats(
 
 @router.get("/final-evaluations", response_model=List[FinalEvaluationResponse])
 def get_final_evaluations(db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access Denied: Only Admins and Mentors can view final evaluations"
-        )
+    # All authenticated users (admin, mentor, intern) can view final evaluations (leaderboard data)
+
     
     interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
     results = []
@@ -115,3 +112,132 @@ def get_final_evaluations(db: Session = Depends(database.get_db), current_user: 
     
     return results
 
+
+@router.get("/domain-questions/mcq")
+def get_domain_mcq_questions(
+    domain: str = None,
+    day: int = None,
+    page: int = 1,
+    page_size: int = 30,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    """Return MCQ questions from domain_mcq_questions table filtered by domain and optionally day."""
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    query = db.query(models.DomainMCQQuestion)
+    if domain:
+        query = query.filter(models.DomainMCQQuestion.domain_name == domain)
+    if day is not None:
+        query = query.filter(models.DomainMCQQuestion.day_number == day)
+
+    total = query.count()
+    questions = (
+        query.order_by(
+            models.DomainMCQQuestion.domain_name,
+            models.DomainMCQQuestion.day_number,
+            models.DomainMCQQuestion.question_id
+        )
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+
+    days_query = db.query(models.DomainMCQQuestion.day_number).distinct()
+    if domain:
+        days_query = days_query.filter(models.DomainMCQQuestion.domain_name == domain)
+    available_days = sorted([r[0] for r in days_query.all()])
+
+    return {
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": (total + page_size - 1) // page_size,
+        "available_days": available_days,
+        "questions": [
+            {
+                "id": q.id,
+                "question_id": q.question_id,
+                "domain_name": q.domain_name,
+                "day_number": q.day_number,
+                "topic": q.topic,
+                "question_text": q.question_text,
+                "option_a": q.option_a,
+                "option_b": q.option_b,
+                "option_c": q.option_c,
+                "option_d": q.option_d,
+                "correct_answer": q.correct_answer,
+            }
+            for q in questions
+        ],
+    }
+
+
+@router.get("/domain-questions/code")
+def get_domain_code_assessments_admin(
+    domain: str = None,
+    day: int = None,
+    page: int = 1,
+    page_size: int = 30,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    """Return code assessments from domain_code_assessments table."""
+    import json
+
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    query = db.query(models.DomainCodeAssessment)
+    if domain:
+        query = query.filter(models.DomainCodeAssessment.domain_name == domain)
+    if day is not None:
+        query = query.filter(models.DomainCodeAssessment.day_number == day)
+
+    total = query.count()
+    assessments = (
+        query.order_by(
+            models.DomainCodeAssessment.domain_name,
+            models.DomainCodeAssessment.day_number,
+            models.DomainCodeAssessment.question_id
+        )
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+
+    days_query = db.query(models.DomainCodeAssessment.day_number).distinct()
+    if domain:
+        days_query = days_query.filter(models.DomainCodeAssessment.domain_name == domain)
+    available_days = sorted([r[0] for r in days_query.all()])
+
+    def parse_reqs(reqs):
+        if not reqs:
+            return []
+        try:
+            parsed = json.loads(reqs)
+            return parsed if isinstance(parsed, list) else [str(parsed)]
+        except Exception:
+            return [reqs]
+
+    return {
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": (total + page_size - 1) // page_size,
+        "available_days": available_days,
+        "assessments": [
+            {
+                "id": a.id,
+                "question_id": a.question_id,
+                "domain_name": a.domain_name,
+                "day_number": a.day_number,
+                "topic": a.topic,
+                "title": a.title,
+                "description": a.description,
+                "requirements": parse_reqs(a.requirements),
+            }
+            for a in assessments
+        ],
+    }

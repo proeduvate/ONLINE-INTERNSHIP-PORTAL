@@ -101,7 +101,9 @@ export default function InternDashboard() {
         portfolioRes,
         usersRes,
         subsRes,
-        airdropsRes
+        airdropsRes,
+        mcqAttemptsRes,
+        internTasksRes
       ] = await Promise.all([
         api.get('/profile').catch(() => ({ data: {} })),
         api.get('/leaderboard').catch(() => ({ data: [] })),
@@ -112,7 +114,9 @@ export default function InternDashboard() {
         api.get('/portfolio').catch(() => ({ data: { total_score: 0 } })),
         api.get('/users').catch(() => ({ data: [] })),
         api.get('/analytics/daily-questions/me').catch(() => ({ data: [] })),
-        api.get('/bonus-airdrops').catch(() => ({ data: [] }))
+        api.get('/bonus-airdrops').catch(() => ({ data: [] })),
+        api.get('/mcq/attempts/me').catch(() => ({ data: [] })),
+        api.get('/tasks/intern').catch(() => ({ data: [] }))
       ]);
 
       setDashboardData(profileRes.data || {});
@@ -137,13 +141,42 @@ export default function InternDashboard() {
       }
       setSimulationDay(simDay);
 
+      const submissions = getArraySafe(subsRes.data);
+      setRecentSubmissions(submissions);
+
+      // Add completed days from daily question assessments
+      submissions.forEach(s => {
+        const d = s.question_id || s.day;
+        if (d) doneDaysSet.add(d);
+      });
+
+      // Add completed days from MCQ attempts
+      const mcqAttempts = getArraySafe(mcqAttemptsRes.data);
+      mcqAttempts.forEach(m => {
+        if (m.status === "submitted" && m.day) {
+          doneDaysSet.add(m.day);
+        }
+      });
+
+      // Add completed days from task submissions
+      const internTasks = getArraySafe(internTasksRes.data);
+      internTasks.forEach(t => {
+        if ((t.status === "submitted" || t.status === "approved") && t.day_number) {
+          doneDaysSet.add(t.day_number);
+        }
+      });
+
       let calculatedDay = 1;
       let shouldLockToday = false;
-      const submissions = subsRes.data || [];
-      setRecentSubmissions(submissions);
-      if (submissions.length > 0) {
+
+      if (doneDaysSet.size > 0) {
+        const maxCompletedDay = Math.max(...Array.from(doneDaysSet));
+        calculatedDay = Math.min(30, maxCompletedDay + 1);
+      } else if (submissions.length > 0) {
         calculatedDay = submissions.length + 1;
-        
+      }
+
+      if (submissions.length > 0) {
         const lastSubDateStr = submissions[submissions.length - 1].date;
         const today = new Date();
         const utcMs = today.getTime() + (today.getTimezoneOffset() * 60000);
@@ -155,7 +188,8 @@ export default function InternDashboard() {
         }
       }
 
-      setCompletedDays(Array.from(doneDaysSet));
+      const sortedDoneDays = Array.from(doneDaysSet).sort((a, b) => a - b);
+      setCompletedDays(sortedDoneDays);
       setCurrentDay(calculatedDay);
       if (shouldLockToday) {
         setIsDayLockedUntilMidnight(true);
@@ -171,7 +205,10 @@ export default function InternDashboard() {
       }).catch(() => setMcqDone(false));
 
       // Transform task data to match curriculumData shape if needed
-      const fetchedTasks = tasksRes.data.map(task => ({
+      const rawTasks = Array.isArray(tasksRes.data) && tasksRes.data.length > 0 
+        ? tasksRes.data 
+        : (Array.isArray(internTasksRes.data) ? internTasksRes.data : []);
+      const fetchedTasks = rawTasks.map(task => ({
         id: task.id,
         day: task.day_number,
         topic: task.title,
@@ -813,9 +850,9 @@ export default function InternDashboard() {
                       return {
                         day: `Day ${dayNum}`,
                         title: mockTitle,
-                        done: dayNum < currentDay,
+                        done: completedDays.includes(dayNum) || dayNum < currentDay,
                         current: dayNum === currentDay,
-                        locked: dayNum > currentDay,
+                        locked: dayNum > currentDay && !completedDays.includes(dayNum),
                         isFlag: dayNum === 30
                       };
                     });
@@ -992,7 +1029,7 @@ export default function InternDashboard() {
                 {/* Daily Scenario Calendar Widget */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
                   <DailyScenarioCalendar
-                    currentDay={simulationDay}
+                    currentDay={currentDay}
                     completedDays={completedDays}
                     onStartScenario={(day) => setActiveTab("Daily Scenario")}
                   />
@@ -3409,3 +3446,4 @@ export default function InternDashboard() {
 
     </div>
   );
+}

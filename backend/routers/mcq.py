@@ -281,47 +281,60 @@ def submit_mcq_assessment(day: int, request: MCQSubmitRequest, db: Session = Dep
     db.commit()
     db.refresh(attempt)
 
-    # Check if Code Assessment for this day is also done
-    # We first find the corresponding coding task
-    task = db.query(models.Task).filter(
+    # --- ATTENDANCE LOGIC ---
+    # Mark attendance as PRESENT only when BOTH MCQ and Code Assessment are done for this day.
+    tasks_for_day = db.query(models.Task).filter(
         models.Task.domain_id == current_user.domain_id,
         models.Task.day_number == day
-    ).first()
-    
-    if task:
+    ).all()
+    code_done = False
+    if tasks_for_day:
+        task_ids = [t.id for t in tasks_for_day]
         code_sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
-            models.Submission.task_id == task.id,
+            models.Submission.task_id.in_(task_ids),
             models.Submission.status.in_(["submitted", "approved"])
         ).first()
-        
-        if code_sub:
-            attendance_log = db.query(models.AttendanceLog).filter(
-                models.AttendanceLog.intern_id == current_user.id,
-                models.AttendanceLog.log_date >= datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0),
-                models.AttendanceLog.log_date < datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
-            ).first()
-            if not attendance_log:
-                db.add(models.AttendanceLog(intern_id=current_user.id, status="present", note="Completed both Code Assessment and MCQ"))
-                
-            now_dt = datetime.utcnow()
-            last_comp = current_user.last_task_completion_date
-            if last_comp:
-                diff_hours = (now_dt - last_comp).total_seconds() / 3600
-                if diff_hours < 48 and now_dt.date() > last_comp.date():
-                    current_user.learning_streak += 1
-                elif now_dt.date() > last_comp.date():
-                    current_user.learning_streak = 1
-            else:
+        code_done = code_sub is not None
+
+    if code_done:
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
+        existing_log = db.query(models.AttendanceLog).filter(
+            models.AttendanceLog.intern_id == current_user.id,
+            models.AttendanceLog.log_date >= today_start,
+            models.AttendanceLog.log_date < today_end
+        ).first()
+        if not existing_log:
+            db.add(models.AttendanceLog(
+                intern_id=current_user.id,
+                status="present",
+                note=f"Completed MCQ + Code Assessment for Day {day}"
+            ))
+            db.flush()
+
+        # Recalculate attendance_pct from actual AttendanceLog present count
+        present_count = db.query(models.AttendanceLog).filter(
+            models.AttendanceLog.intern_id == current_user.id,
+            models.AttendanceLog.status == "present"
+        ).count()
+        current_user.attendance_pct = min(100, int((present_count / 30) * 100))
+
+        now_dt = datetime.utcnow()
+        last_comp = current_user.last_task_completion_date
+        if last_comp:
+            diff_hours = (now_dt - last_comp).total_seconds() / 3600
+            if diff_hours < 48 and now_dt.date() > last_comp.date():
+                current_user.learning_streak += 1
+            elif now_dt.date() > last_comp.date():
                 current_user.learning_streak = 1
-                
-            current_user.last_task_completion_date = now_dt
-            db.add(current_user)
-            db.commit()
+        else:
+            current_user.learning_streak = 1
+
+        current_user.last_task_completion_date = now_dt
+        db.add(current_user)
+        db.commit()
     
-    # Update Intern's User progress_pct if desired (Optional hook depending on existing logic)
-    # The prompt says: "The actual MCQ result should feed into the existing progress system... Do not create duplicate progress cards."
-    # We will just ensure the data is saved in attempt. We'll leave existing milestone logic intact but it can read from this model.
     
     db.refresh(attempt)
     
@@ -343,3 +356,33 @@ def submit_mcq_assessment(day: int, request: MCQSubmitRequest, db: Session = Dep
 def get_mcq_result(day: int, db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_user)):
     """Fetch the result of a submitted assessment"""
     return get_mcq_status(day, db, current_user)
+
+
+@router.get("/attempts/me")
+@router.get("/my")
+def get_my_mcq_attempts(
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """Fetch all MCQ attempts for current intern"""
+    attempts = db.query(models.MCQAttempt).filter(
+        models.MCQAttempt.intern_id == current_user.id
+    ).order_by(models.MCQAttempt.day).all()
+    
+    return [
+        {
+            "id": a.id,
+            "day": a.day,
+            "topic": a.topic,
+            "total_questions": a.total_questions,
+            "correct_answers": a.correct_answers,
+            "wrong_answers": a.wrong_answers,
+            "score": a.score,
+            "percentage": a.percentage,
+            "status": a.status.value if a.status else "unknown",
+            "started_at": str(a.started_at) if a.started_at else None,
+            "submitted_at": str(a.submitted_at) if a.submitted_at else None
+        }
+        for a in attempts
+    ]
+

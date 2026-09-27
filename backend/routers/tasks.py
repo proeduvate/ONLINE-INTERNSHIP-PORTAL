@@ -773,43 +773,63 @@ def create_submission(
     db.commit()
     db.refresh(sub)
     
-    # Update Attendance and Progress for Intern
-    # Progress: total tasks submitted divided by 30 (total days)
+    # Update Progress for Intern
+    # Progress: unique days submitted out of 30
     total_domain_tasks = db.query(models.Task).filter(models.Task.domain_id == current_user.domain_id).count() or 30
     user_subs = db.query(models.Submission).filter(
         models.Submission.intern_id == current_user.id,
         models.Submission.status.in_(["submitted", "approved"])
     ).count()
-    
     current_user.progress_pct = min(100, int((user_subs / total_domain_tasks) * 100))
     
-    # Attendance Calculation:
-    # 100% attendance if submitted days match elapsed days, or mock attendance tracker:
-    # Count how many days submitted out of elapsed. We can mock it to increase slightly or keep at 95%
-    submitted_days = db.query(models.Submission).filter(
-        models.Submission.intern_id == current_user.id,
-        models.Submission.attendance_marked == True
-    ).count()
-    current_user.attendance_pct = min(100, max(60, int((submitted_days / max(1, user_subs)) * 100)))
+    # --- ATTENDANCE LOGIC ---
+    # Mark attendance as PRESENT only when BOTH MCQ and Code Assessment are done for this day.
+    # This ensures attendance is counted per day, not per individual submission.
+    day_number = task.day_number if task and task.day_number else None
+    mcq_done = False
+    if day_number:
+        mcq_attempt = db.query(models.MCQAttempt).filter(
+            models.MCQAttempt.intern_id == current_user.id,
+            models.MCQAttempt.day == day_number,
+            models.MCQAttempt.status == models.MCQAttemptStatus.SUBMITTED
+        ).first()
+        mcq_done = mcq_attempt is not None
+    else:
+        # If task has no day_number, just mark based on submission alone
+        mcq_done = True
 
-    attendance_log = db.query(models.AttendanceLog).filter(
+    if mcq_done:
+        # Check if attendance already marked today (any time today)
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
+        existing_log = db.query(models.AttendanceLog).filter(
+            models.AttendanceLog.intern_id == current_user.id,
+            models.AttendanceLog.log_date >= today_start,
+            models.AttendanceLog.log_date < today_end
+        ).first()
+        if not existing_log:
+            db.add(models.AttendanceLog(
+                intern_id=current_user.id,
+                status="present",
+                note=f"Completed MCQ + Code Assessment for Day {day_number}"
+            ))
+            db.flush()  # flush so the count below picks it up
+
+    # Recalculate attendance_pct from actual AttendanceLog rows (present / 30 * 100)
+    present_count = db.query(models.AttendanceLog).filter(
         models.AttendanceLog.intern_id == current_user.id,
-        models.AttendanceLog.log_date >= datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0),
-        models.AttendanceLog.log_date < datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
-    ).first()
-    if not attendance_log:
-        db.add(models.AttendanceLog(intern_id=current_user.id, status="present", note="Submitted daily task"))
-    
+        models.AttendanceLog.status == "present"
+    ).count()
+    current_user.attendance_pct = min(100, int((present_count / 30) * 100))
+
     # Streak tracking logic
     now_dt = datetime.utcnow()
     last_comp = current_user.last_task_completion_date
     if last_comp:
-        # Check if difference is around 1 day (between 12 and 48 hours to be safe for "consecutive")
         diff_hours = (now_dt - last_comp).total_seconds() / 3600
         if diff_hours < 48 and now_dt.date() > last_comp.date():
             current_user.learning_streak += 1
         elif now_dt.date() > last_comp.date():
-             # missed a day
             current_user.learning_streak = 1
     else:
         current_user.learning_streak = 1

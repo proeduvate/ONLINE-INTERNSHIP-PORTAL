@@ -356,6 +356,57 @@ export default function AdminDashboard() {
   const [showDomainModal, setShowDomainModal] = useState(false);
   const [newDomain, setNewDomain] = useState({ name: "", duration: "" });
 
+  // Domain question bank state
+  const [domainMCQs, setDomainMCQs] = useState([]);
+  const [domainMCQMeta, setDomainMCQMeta] = useState({ total: 0, total_pages: 1, available_days: [] });
+  const [mcqDay, setMcqDay] = useState("");
+  const [mcqPage, setMcqPage] = useState(1);
+  const [domainCode, setDomainCode] = useState([]);
+  const [domainCodeMeta, setDomainCodeMeta] = useState({ total: 0, total_pages: 1, available_days: [] });
+  const [codeDay, setCodeDay] = useState("");
+  const [codePage, setCodePage] = useState(1);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+
+  // Fetch MCQs when tab is MCQs, or params change
+  useEffect(() => {
+    if (!selectedProgramDomain || detailSubTab !== "MCQs") return;
+    const fetchMCQs = async () => {
+      setLoadingQuestions(true);
+      try {
+        const params = new URLSearchParams({ domain: selectedProgramDomain, page: mcqPage, page_size: 30 });
+        if (mcqDay) params.set("day", mcqDay);
+        const res = await api.get(`/admin/domain-questions/mcq?${params}`);
+        setDomainMCQs(res.data.questions || []);
+        setDomainMCQMeta({ total: res.data.total, total_pages: res.data.total_pages, available_days: res.data.available_days || [] });
+      } catch (err) {
+        console.error("Failed to fetch domain MCQs:", err);
+      } finally {
+        setLoadingQuestions(false);
+      }
+    };
+    fetchMCQs();
+  }, [selectedProgramDomain, detailSubTab, mcqDay, mcqPage]);
+
+  // Fetch Code Assessments when tab is Code Assessments, or params change
+  useEffect(() => {
+    if (!selectedProgramDomain || detailSubTab !== "Code Assessments") return;
+    const fetchCode = async () => {
+      setLoadingQuestions(true);
+      try {
+        const params = new URLSearchParams({ domain: selectedProgramDomain, page: codePage, page_size: 30 });
+        if (codeDay) params.set("day", codeDay);
+        const res = await api.get(`/admin/domain-questions/code?${params}`);
+        setDomainCode(res.data.assessments || []);
+        setDomainCodeMeta({ total: res.data.total, total_pages: res.data.total_pages, available_days: res.data.available_days || [] });
+      } catch (err) {
+        console.error("Failed to fetch domain code assessments:", err);
+      } finally {
+        setLoadingQuestions(false);
+      }
+    };
+    fetchCode();
+  }, [selectedProgramDomain, detailSubTab, codeDay, codePage]);
+
   // Users sub-tab state
   const [usersSubTab, setUsersSubTab] = useState("Interns"); // Interns, Mentors
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -1161,48 +1212,133 @@ export default function AdminDashboard() {
                 )}
 
                 {detailSubTab === "Code Assessments" && (
-                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
-                    <table className="table">
-                      <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
-                        <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                      </thead>
-                      <tbody>
-                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'coding').map((t) => (
-                          <tr key={t.id}>
-                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                            <td><b>{t.title}</b></td>
-                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                            <td>{t.deadline}</td>
+                  <div>
+                    {/* Day Filter */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Filter by Day:</span>
+                      <select
+                        className="form-control"
+                        style={{ width: "140px", padding: "6px 10px", fontSize: "13px" }}
+                        value={codeDay}
+                        onChange={e => { setCodeDay(e.target.value); setCodePage(1); }}
+                      >
+                        <option value="">All Days</option>
+                        {domainCodeMeta.available_days.map(d => <option key={d} value={d}>Day {d}</option>)}
+                      </select>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>
+                        {loadingQuestions ? "Loading..." : `${domainCodeMeta.total} total assessments`}
+                      </span>
+                    </div>
+                    <div className="table-container" style={{ maxHeight: "calc(100vh - 320px)", overflowY: "auto" }}>
+                      <table className="table">
+                        <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                          <tr>
+                            <th style={{ minWidth: "80px" }}>Day</th>
+                            <th style={{ minWidth: "90px" }}>ID</th>
+                            <th style={{ minWidth: "120px" }}>Topic</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Requirements</th>
                           </tr>
-                        ))}
-                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'coding').length === 0 && (
-                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No coding assessments assigned to this domain yet.</td></tr>
-                        )}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {loadingQuestions && (
+                            <tr><td colSpan="6" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>Loading assessments...</td></tr>
+                          )}
+                          {!loadingQuestions && domainCode.length === 0 && (
+                            <tr><td colSpan="6" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No code assessments found for this domain{codeDay ? ` on Day ${codeDay}` : ""}.</td></tr>
+                          )}
+                          {!loadingQuestions && domainCode.map((a) => (
+                            <tr key={a.id}>
+                              <td><span className="badge badge-info" style={{ background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe" }}>Day {a.day_number}</span></td>
+                              <td style={{ fontSize: "11px", color: "#6b7280", fontFamily: "monospace" }}>{a.question_id}</td>
+                              <td style={{ fontSize: "12px", color: "#4b5563" }}>{a.topic}</td>
+                              <td><b style={{ fontSize: "13px" }}>{a.title}</b></td>
+                              <td style={{ fontSize: "12px", maxWidth: "260px" }}>{a.description}</td>
+                              <td style={{ fontSize: "12px" }}>
+                                {Array.isArray(a.requirements) && a.requirements.length > 0 ? (
+                                  <ul style={{ margin: 0, paddingLeft: "16px" }}>
+                                    {a.requirements.map((r, i) => <li key={i}>{r}</li>)}
+                                  </ul>
+                                ) : <span style={{ color: "#9ca3af" }}>—</span>}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Pagination */}
+                    {domainCodeMeta.total_pages > 1 && (
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                        <button className="btn btn-secondary" style={{ padding: "4px 12px", fontSize: "12px" }} disabled={codePage <= 1} onClick={() => setCodePage(p => p - 1)}>← Prev</button>
+                        <span style={{ fontSize: "13px", padding: "4px 8px" }}>Page {codePage} / {domainCodeMeta.total_pages}</span>
+                        <button className="btn btn-secondary" style={{ padding: "4px 12px", fontSize: "12px" }} disabled={codePage >= domainCodeMeta.total_pages} onClick={() => setCodePage(p => p + 1)}>Next →</button>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {detailSubTab === "MCQs" && (
-                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
-                    <table className="table">
-                      <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
-                        <tr><th>ID</th><th>Title</th><th>Difficulty</th><th>Deadline</th></tr>
-                      </thead>
-                      <tbody>
-                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'mcq').map((t) => (
-                          <tr key={t.id}>
-                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
-                            <td><b>{t.title}</b></td>
-                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
-                            <td>{t.deadline}</td>
+                  <div>
+                    {/* Day Filter */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Filter by Day:</span>
+                      <select
+                        className="form-control"
+                        style={{ width: "140px", padding: "6px 10px", fontSize: "13px" }}
+                        value={mcqDay}
+                        onChange={e => { setMcqDay(e.target.value); setMcqPage(1); }}
+                      >
+                        <option value="">All Days</option>
+                        {domainMCQMeta.available_days.map(d => <option key={d} value={d}>Day {d}</option>)}
+                      </select>
+                      <span style={{ fontSize: "12px", color: "#6b7280" }}>
+                        {loadingQuestions ? "Loading..." : `${domainMCQMeta.total} total questions`}
+                      </span>
+                    </div>
+                    <div className="table-container" style={{ maxHeight: "calc(100vh - 320px)", overflowY: "auto" }}>
+                      <table className="table">
+                        <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                          <tr>
+                            <th style={{ minWidth: "70px" }}>Day</th>
+                            <th style={{ minWidth: "90px" }}>ID</th>
+                            <th style={{ minWidth: "130px" }}>Topic</th>
+                            <th>Question</th>
+                            <th>A</th><th>B</th><th>C</th><th>D</th>
+                            <th style={{ minWidth: "60px" }}>Answer</th>
                           </tr>
-                        ))}
-                        {tasks.filter(t => isSameDomain(t.domain, selectedProgramDomain) && t.task_type === 'mcq').length === 0 && (
-                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No MCQs assigned to this domain yet.</td></tr>
-                        )}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {loadingQuestions && (
+                            <tr><td colSpan="9" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>Loading questions...</td></tr>
+                          )}
+                          {!loadingQuestions && domainMCQs.length === 0 && (
+                            <tr><td colSpan="9" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No MCQ questions found for this domain{mcqDay ? ` on Day ${mcqDay}` : ""}.</td></tr>
+                          )}
+                          {!loadingQuestions && domainMCQs.map((q) => (
+                            <tr key={q.id}>
+                              <td><span className="badge" style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0", padding: "2px 8px" }}>Day {q.day_number}</span></td>
+                              <td style={{ fontSize: "11px", color: "#6b7280", fontFamily: "monospace" }}>{q.question_id}</td>
+                              <td style={{ fontSize: "12px", color: "#4b5563" }}>{q.topic}</td>
+                              <td style={{ fontSize: "13px", maxWidth: "220px" }}>{q.question_text}</td>
+                              <td style={{ fontSize: "12px" }}>{q.option_a}</td>
+                              <td style={{ fontSize: "12px" }}>{q.option_b}</td>
+                              <td style={{ fontSize: "12px" }}>{q.option_c}</td>
+                              <td style={{ fontSize: "12px" }}>{q.option_d}</td>
+                              <td><span className="badge badge-success" style={{ fontWeight: 700 }}>{q.correct_answer}</span></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Pagination */}
+                    {domainMCQMeta.total_pages > 1 && (
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                        <button className="btn btn-secondary" style={{ padding: "4px 12px", fontSize: "12px" }} disabled={mcqPage <= 1} onClick={() => setMcqPage(p => p - 1)}>← Prev</button>
+                        <span style={{ fontSize: "13px", padding: "4px 8px" }}>Page {mcqPage} / {domainMCQMeta.total_pages}</span>
+                        <button className="btn btn-secondary" style={{ padding: "4px 12px", fontSize: "12px" }} disabled={mcqPage >= domainMCQMeta.total_pages} onClick={() => setMcqPage(p => p + 1)}>Next →</button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
