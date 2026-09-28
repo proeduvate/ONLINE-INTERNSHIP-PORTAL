@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import './Onboarding.css';
 
 export default function Apply() {
     const [step, setStep] = useState(1);
+    const [availableDomains, setAvailableDomains] = useState([
+        "Frontend Development",
+        "Full Stack Development",
+        "AI / ML",
+        "Data Science",
+        "Python Development",
+        "Java Development",
+        "UI / UX Design"
+    ]);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -24,6 +33,21 @@ export default function Apply() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [applicationId, setApplicationId] = useState(null);
+
+    useEffect(() => {
+        const fetchDomains = async () => {
+            try {
+                const response = await api.get('/v1/onboarding/domains');
+                if (response.data && response.data.length > 0) {
+                    const fetchedNames = response.data.map(d => typeof d === 'string' ? d : d.name);
+                    setAvailableDomains(fetchedNames);
+                }
+            } catch (err) {
+                console.warn("Could not fetch live domains from backend, using default domain list", err);
+            }
+        };
+        fetchDomains();
+    }, []);
 
     const validateStep = () => {
         if (step === 1) {
@@ -256,9 +280,9 @@ export default function Apply() {
                                 <label>Internship Domain *</label>
                                 <select required className="form-control" name="domain" value={formData.domain} onChange={handleChange}>
                                     <option value="">Select Domain ▼</option>
-                                    <option value="Full Stack Development">Full Stack Development</option>
-                                    <option value="AI / ML">AI / ML</option>
-                                    <option value="Data Science">Data Science</option>
+                                    {availableDomains.map((domName, idx) => (
+                                        <option key={idx} value={domName}>{domName}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="flex justify-between" style={{ marginTop: '30px' }}>
