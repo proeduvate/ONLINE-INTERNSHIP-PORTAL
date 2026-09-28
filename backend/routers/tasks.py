@@ -1,7 +1,9 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import APIRouter, status, Depends, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from database import get_db
+from database import get_db, SessionLocal as _SessionLocal
+import database
 from dependencies import get_current_user
 import models
 import schemas
@@ -9,16 +11,15 @@ from typing import List, Optional, Dict, Any, Tuple
 from datetime import datetime, timedelta
 import ast, re, tempfile, subprocess, sys, os, random, json, difflib, uuid, io
 import requests, base64
-import database
 from fpdf import FPDF
-from fastapi.responses import StreamingResponse
-
-SIGNALING_ROOMS = {}
 
 try:
     from sandbox_runner import run_submission as sandbox_run_submission
 except ImportError:
     sandbox_run_submission = None
+
+SIGNALING_ROOMS: Dict[str, Any] = {}
+
 
 router = APIRouter(prefix="", tags=["Tasks"])
 
