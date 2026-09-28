@@ -5,6 +5,8 @@ import emailjs from '@emailjs/browser';
 import { ArrowLeft, User, Mail, Phone, School, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { ONBOARDING_STATUSES } from '../../../services/mockOnboardingService';
 
+const API_BASE = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, '') : 'http://localhost:8000/api/v1';
+
 export default function AdminOnboardingDetails({ id: propId }) {
     const params = useParams();
     const id = propId || params.id;
@@ -20,7 +22,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
     useEffect(() => {
         const fetchMentors = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/v1/users?role=mentor`);
+                const response = await axios.get(`${API_BASE}/users?role=mentor`);
                 setMentors(response.data);
             } catch (error) {
                 console.error("Error fetching mentors", error);
@@ -33,7 +35,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
         const fetchApp = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
+                const response = await axios.get(`${API_BASE}/onboarding/applications/${id}`);
                 setApp(response.data);
             } catch (error) {
                 console.error("Error fetching", error);
@@ -46,7 +48,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
 
     const handleAction = async (newStatus) => {
         try {
-            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}/status`, { status: newStatus });
+            await axios.post(`${API_BASE}/onboarding/applications/${id}/status`, { status: newStatus });
             refreshApp();
         } catch (error) {
             console.error("Error updating status", error);
@@ -55,7 +57,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
 
     const refreshApp = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);
+            const response = await axios.get(`${API_BASE}/onboarding/applications/${id}`);
             setApp(response.data);
         } catch (error) { }
     };
@@ -77,7 +79,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                 }
                 data.payment_form_link = paymentFormLink;
             }
-            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/interview`, data);
+            await axios.post(`${API_BASE}/onboarding/${id}/interview`, data);
             
             if (isRequired) {
                 try {
@@ -116,7 +118,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                 }
                 data.payment_form_link = paymentFormLink;
             }
-            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/interview/result`, data);
+            await axios.post(`${API_BASE}/onboarding/${id}/interview/result`, data);
             refreshApp();
         } catch (error) {
             console.error("Error submitting result", error);
@@ -125,7 +127,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
 
     const handlePaymentVerify = async (verified) => {
         try {
-            await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/payment/verify`, { verified });
+            await axios.post(`${API_BASE}/onboarding/${id}/payment/verify`, { verified });
             refreshApp();
         } catch (error) {
             console.error("Error verifying payment", error);
@@ -256,7 +258,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                     <div style={{ marginTop: '16px' }}>
                         <button className="btn btn-secondary" style={{ fontSize: '13px', padding: '6px 14px' }} onClick={async () => {
                             try {
-                                const response = await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
+                                const response = await axios.post(`${API_BASE}/onboarding/${id}/generate-documents`);
                                 if (response.data.urls) {
                                     const templateParams = {
                                         intern_name: app.name,
@@ -343,7 +345,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                                     return;
                                 }
                                 try {
-                                    await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/assign-mentor`, { mentor_id: parseInt(selectedMentorId) });
+                                    await axios.post(`${API_BASE}/onboarding/${id}/assign-mentor`, { mentor_id: parseInt(selectedMentorId) });
                                     alert("Mentor assigned successfully");
                                     refreshApp();
                                 } catch (e) {
@@ -353,7 +355,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                             }}>Assign Mentor</button>
                             <button className="btn btn-secondary" onClick={async () => {
                                 try {
-                                    const response = await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
+                                    const response = await axios.post(`${API_BASE}/onboarding/${id}/generate-documents`);
 
                                     if (response.data.urls) {
                                         const templateParams = {
@@ -383,7 +385,7 @@ export default function AdminOnboardingDetails({ id: propId }) {
                     {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && (
                         <button className="btn btn-primary" onClick={async () => {
                             try {
-                                await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/create-account`);
+                                await axios.post(`${API_BASE}/onboarding/${id}/create-account`);
                                 refreshApp();
                             } catch (e) { console.error(e); }
                         }}>Create Account</button>

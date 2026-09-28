@@ -277,6 +277,7 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/api/auth/login")
 @app.post("/api/v1/auth/login")
+@app.post("/api/login")
 def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == login_in.email).first()
     if not user:

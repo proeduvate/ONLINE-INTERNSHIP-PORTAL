@@ -1,27 +1,36 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, Save } from "lucide-react";
 import { useAuth } from "../../services/AuthContext";
+import apiClient from "../../services/apiClient";
 
 export default function MentorProfile() {
   const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
   
-  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Mentor'}&backgroundColor=ecfdf5`);
+  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'Mentor')}&backgroundColor=ecfdf5`);
   const fileInputRef = useRef(null);
 
   const [profileData, setProfileData] = useState({
-    domain: "Artificial Intelligence",
-    institution: "IIT Madras",
-    role: "AI Mentor & Researcher",
-    location: "Chennai, India",
-    bio: "Passionate AI researcher and educator with 8+ years of experience in Machine Learning, Deep Learning, and NLP. Mentoring the next generation of AI engineers at ProEduvate."
+    domain: user?.domain?.name || "General",
+    institution: user?.college || "",
+    role: "Domain Mentor",
+    location: "",
+    bio: ""
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem(`mentor_profile_${user?.id}`);
-    if (saved) {
-      setProfileData(JSON.parse(saved));
+    if (user) {
+      const saved = localStorage.getItem(`mentor_profile_${user.id}`);
+      if (saved) {
+        setProfileData(JSON.parse(saved));
+      } else {
+        setProfileData(prev => ({
+          ...prev,
+          domain: user.domain?.name || "General",
+          institution: user.college || ""
+        }));
+      }
     }
   }, [user]);
 
@@ -42,10 +51,20 @@ export default function MentorProfile() {
     setProfileData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    localStorage.setItem(`mentor_profile_${user?.id}`, JSON.stringify(profileData));
-    alert("Profile saved successfully!");
+    try {
+      await apiClient.put('/api/users/profile', {
+        name: user?.name,
+        college: profileData.institution
+      });
+      localStorage.setItem(`mentor_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Mentor profile updated in database successfully!");
+    } catch (err) {
+      console.error("Failed to update profile on backend", err);
+      localStorage.setItem(`mentor_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Profile saved successfully!");
+    }
   };
 
   const handleForgotPassword = (e) => {

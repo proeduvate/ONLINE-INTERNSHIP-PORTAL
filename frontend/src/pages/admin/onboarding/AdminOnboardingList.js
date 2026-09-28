@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Search, UserCheck, Eye, RefreshCw } from 'lucide-react';
 
+const API_BASE = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, '') : 'http://localhost:8000/api/v1';
+
 export default function AdminOnboardingList() {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ export default function AdminOnboardingList() {
     const fetchApps = async () => {
         setLoading(true);
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/v1/onboarding/applications");
+            const response = await axios.get(`${API_BASE}/onboarding/applications`);
             setApplications(response.data);
         } catch (error) {
             console.error("Error fetching applications", error);

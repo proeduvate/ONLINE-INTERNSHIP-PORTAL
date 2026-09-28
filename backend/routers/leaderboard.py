@@ -1,79 +1,98 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, timedelta
 
-import models
-import schemas
 from database import get_db
+from models import User, PointTransaction, Submission, Domain, Batch
+from schemas import LeaderboardEntry
+from dependencies import get_current_user
 
-router = APIRouter(
-    prefix="/leaderboard",
-    tags=["Leaderboard"]
-)
+router = APIRouter()
 
-@router.get("", response_model=List[schemas.LeaderboardEntry])
+@router.get("", response_model=List[LeaderboardEntry])
+@router.get("/", response_model=List[LeaderboardEntry])
 def get_leaderboard(
-    batch_id: Optional[int] = Query(None, description="Filter by Batch ID"),
-    period: str = Query("all", description="Filter by period: 'weekly', 'monthly', or 'all'"),
-    db: Session = Depends(get_db)
+    period: Optional[str] = "all", # 'all', 'weekly', 'monthly'
+    domain_filter: Optional[str] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
+    """
+    Returns the live leaderboard ranking based on total points accumulated in PointTransactions
+    and completed task submissions.
+    """
+    # 1. Base query for points per user
     query = db.query(
-        models.User.id.label("user_id"),
-        models.User.name.label("user_name"),
-        models.Batch.name.label("batch_name"),
-        models.Domain.name.label("domain"),
-        func.sum(models.PointTransaction.points).label("total_points")
-    ).join(
-        models.PointTransaction, models.PointTransaction.user_id == models.User.id
-    ).outerjoin(
-        models.Batch, models.Batch.id == models.User.batch_id
-    ).outerjoin(
-        models.Domain, models.Domain.id == models.User.domain_id
+        PointTransaction.user_id,
+        func.coalesce(func.sum(PointTransaction.points), 0).label("total_points")
     )
+    
+    if period == "weekly":
+        start_date = datetime.utcnow() - timedelta(days=7)
+        query = query.filter(PointTransaction.created_at >= start_date)
+    elif period == "monthly":
+        start_date = datetime.utcnow() - timedelta(days=30)
+        query = query.filter(PointTransaction.created_at >= start_date)
 
-    # 1. Apply Batch Filter
-    if batch_id is not None:
-        query = query.filter(models.User.batch_id == batch_id)
+    query = query.group_by(PointTransaction.user_id).subquery()
 
-    # 2. Apply Period Filter
-    now = datetime.utcnow()
-    if period.lower() == "weekly":
-        # Start of current week (Monday)
-        start_of_week = now - timedelta(days=now.weekday())
-        start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
-        query = query.filter(models.PointTransaction.created_at >= start_of_week)
-    elif period.lower() == "monthly":
-        # Start of current month
-        start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        query = query.filter(models.PointTransaction.created_at >= start_of_month)
+    # 2. Join with User table to fetch intern metadata
+    users_query = db.query(
+        User,
+        func.coalesce(query.c.total_points, 0).label("points")
+    ).outerjoin(query, User.id == query.c.user_id).filter(User.role == "intern")
 
-    # Grouping and Ordering
-    query = query.group_by(
-        models.User.id,
-        models.User.name,
-        models.Batch.name,
-        models.Domain.name
-    ).order_by(
-        func.sum(models.PointTransaction.points).desc(),
-        models.User.id.asc() # Deterministic tie-breaker
+    if domain_filter:
+        users_query = users_query.join(Domain, User.domain_id == Domain.id).filter(Domain.name == domain_filter)
+
+    results = users_query.order_by(func.coalesce(query.c.total_points, 0).desc(), User.name.asc()).limit(limit).all()
+
+    leaderboard = []
+    for rank, (user, points) in enumerate(results, 1):
+        domain_name = user.domain.name if user.domain else None
+        batch_name = user.batch.name if user.batch else None
+        
+        # If user has no point transactions yet, calculate from mentor_score / ai_score on submissions
+        if points == 0:
+            sub_points = db.query(func.coalesce(func.sum(Submission.mentor_score + Submission.ai_score), 0)).filter(
+                Submission.intern_id == user.id
+            ).scalar() or 0
+            points = sub_points
+
+        leaderboard.append(LeaderboardEntry(
+            rank=rank,
+            user_id=user.id,
+            user_name=user.name,
+            batch=batch_name,
+            domain=domain_name,
+            total_points=int(points)
+        ))
+
+    return leaderboard
+
+@router.get("/me", response_model=LeaderboardEntry)
+def get_my_leaderboard_rank(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Returns the logged-in user's leaderboard rank and total points."""
+    leaderboard = get_leaderboard(period="all", limit=500, db=db, current_user=current_user)
+    
+    for entry in leaderboard:
+        if entry.user_id == current_user.id:
+            return entry
+
+    # Default entry if user is not in top list
+    domain_name = current_user.domain.name if current_user.domain else None
+    batch_name = current_user.batch.name if current_user.batch else None
+    return LeaderboardEntry(
+        rank=len(leaderboard) + 1,
+        user_id=current_user.id,
+        user_name=current_user.name,
+        batch=batch_name,
+        domain=domain_name,
+        total_points=0
     )
-
-    results = query.all()
-
-    # Format response with ranks
-    response = []
-    for rank, row in enumerate(results, start=1):
-        response.append(
-            schemas.LeaderboardEntry(
-                rank=rank,
-                user_id=row.user_id,
-                user_name=row.user_name,
-                batch=row.batch_name,
-                domain=row.domain,
-                total_points=row.total_points or 0
-            )
-        )
-
-    return response

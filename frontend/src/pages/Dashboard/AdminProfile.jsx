@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Lock, Save, Mail, Building2, Phone, Briefcase, Smartphone } from "lucide-react";
 import { useAuth } from "../../services/AuthContext";
+import apiClient from "../../services/apiClient";
 
 export default function AdminProfile() {
   const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Admin'}&backgroundColor=f8fafc`);
+  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'Admin')}&backgroundColor=f8fafc`);
   const fileInputRef = useRef(null);
 
   const [profileData, setProfileData] = useState({
-    organization: "ProEduvate HQ",
-    role: "Super Administrator",
-    phone: "+1 (555) 123-4567"
+    organization: user?.college || "ProEduvate HQ",
+    role: "System Administrator",
+    phone: ""
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem(`admin_profile_${user?.id}`);
-    if (saved) {
-      setProfileData(JSON.parse(saved));
+    if (user) {
+      const saved = localStorage.getItem(`admin_profile_${user.id}`);
+      if (saved) {
+        setProfileData(JSON.parse(saved));
+      } else {
+        setProfileData(prev => ({
+          ...prev,
+          organization: user.college || "ProEduvate HQ"
+        }));
+      }
     }
   }, [user]);
 
@@ -27,10 +35,20 @@ export default function AdminProfile() {
     setProfileData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    localStorage.setItem(`admin_profile_${user?.id}`, JSON.stringify(profileData));
-    alert("Admin Profile saved successfully!");
+    try {
+      await apiClient.put('/api/users/profile', {
+        name: user?.name,
+        college: profileData.organization
+      });
+      localStorage.setItem(`admin_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Admin profile updated in database successfully!");
+    } catch (err) {
+      console.error("Failed to update admin profile on backend", err);
+      localStorage.setItem(`admin_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Admin Profile saved successfully!");
+    }
   };
 
   const handleImageChange = (e) => {

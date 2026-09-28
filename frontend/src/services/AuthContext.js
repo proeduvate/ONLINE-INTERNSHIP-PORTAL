@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ email, password }),
             });
 
-            if (!response.ok) {
+            if (response.status === 404) {
                 response = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: {

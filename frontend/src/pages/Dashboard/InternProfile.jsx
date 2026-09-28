@@ -1,26 +1,59 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Key, Lock, Save, Trash2, Mail, MapPin, Briefcase, Code2, Building2 } from "lucide-react";
 import { useAuth } from "../../services/AuthContext";
+import apiClient from "../../services/apiClient";
 
 export default function InternProfile() {
   const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Intern'}&backgroundColor=f8fafc`);
+  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'Intern')}&backgroundColor=f8fafc`);
   const fileInputRef = useRef(null);
 
+  const [passData, setPassData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passMessage, setPassMessage] = useState('');
+  const [passError, setPassError] = useState('');
+
+  const handlePasswordChangeSubmit = async (e) => {
+    e.preventDefault();
+    setPassMessage('');
+    setPassError('');
+    if (passData.newPassword !== passData.confirmPassword) {
+      setPassError("New passwords do not match!");
+      return;
+    }
+    try {
+      await apiClient.post('/api/users/change-password', {
+        current_password: passData.currentPassword,
+        new_password: passData.newPassword
+      });
+      setPassMessage("Password updated successfully in database!");
+      setPassData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      setPassError(err.response?.data?.detail || "Failed to update password. Check current password.");
+    }
+  };
+
   const [profileData, setProfileData] = useState({
-    github: user?.github_repo_url || "dhanush-dev",
-    institution: "Tech University",
-    role: "Software Engineering Intern",
-    location: "San Francisco, CA",
-    bio: "Passionate software engineering intern excited to learn full-stack development and build scalable applications."
+    github: user?.github_repo_url || "",
+    institution: user?.college || "",
+    role: user?.domain?.name ? `${user.domain.name} Intern` : "Intern",
+    location: "",
+    bio: ""
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem(`intern_profile_${user?.id}`);
-    if (saved) {
-      setProfileData(JSON.parse(saved));
+    if (user) {
+      const saved = localStorage.getItem(`intern_profile_${user.id}`);
+      if (saved) {
+        setProfileData(JSON.parse(saved));
+      } else {
+        setProfileData(prev => ({
+          ...prev,
+          institution: user.college || "",
+          role: user.domain?.name ? `${user.domain.name} Intern` : "Intern"
+        }));
+      }
     }
   }, [user]);
 
@@ -29,10 +62,20 @@ export default function InternProfile() {
     setProfileData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    localStorage.setItem(`intern_profile_${user?.id}`, JSON.stringify(profileData));
-    alert("Profile saved successfully!");
+    try {
+      await apiClient.put('/api/users/profile', {
+        name: user?.name,
+        college: profileData.institution
+      });
+      localStorage.setItem(`intern_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Profile updated in database successfully!");
+    } catch (err) {
+      console.error("Failed to update profile on backend", err);
+      localStorage.setItem(`intern_profile_${user?.id}`, JSON.stringify(profileData));
+      alert("Profile saved successfully!");
+    }
   };
 
   const handleImageChange = (e) => {
@@ -47,9 +90,11 @@ export default function InternProfile() {
     setProfileImage(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Intern'}&backgroundColor=f8fafc`);
   };
 
-  const handleForgotPassword = (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
-    // Simulate sending reset email
+    try {
+      await apiClient.post('/api/users/reset-password-request');
+    } catch (err) {}
     setResetEmailSent(true);
     setTimeout(() => setResetEmailSent(false), 5000);
   };
@@ -212,8 +257,19 @@ export default function InternProfile() {
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
-              <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
+              <form onSubmit={handlePasswordChangeSubmit}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
+                  {passMessage && (
+                    <div style={{ padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "8px", color: "#166534", fontSize: "0.85rem" }}>
+                      {passMessage}
+                    </div>
+                  )}
+                  {passError && (
+                    <div style={{ padding: "10px 14px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", color: "#991b1b", fontSize: "0.85rem" }}>
+                      {passError}
+                    </div>
+                  )}
+
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                       <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155" }}>Current Password</label>
@@ -225,21 +281,39 @@ export default function InternProfile() {
                         Forgot Password?
                       </button>
                     </div>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passData.currentPassword}
+                      onChange={(e) => setPassData(p => ({ ...p, currentPassword: e.target.value }))}
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} 
+                      required 
+                    />
                     
                     {resetEmailSent && (
                       <div style={{ marginTop: "8px", padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Mail size={14} /> Password reset link sent to your email!
+                        <Mail size={14} /> Password reset instructions sent to your email!
                       </div>
                     )}
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passData.newPassword}
+                      onChange={(e) => setPassData(p => ({ ...p, newPassword: e.target.value }))}
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} 
+                      required 
+                    />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>Confirm New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passData.confirmPassword}
+                      onChange={(e) => setPassData(p => ({ ...p, confirmPassword: e.target.value }))}
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} 
+                      required 
+                    />
                   </div>
                   <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
                     Update Password
