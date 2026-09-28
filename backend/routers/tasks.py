@@ -1,7 +1,9 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import APIRouter, status, Depends, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from database import get_db
+from database import get_db, SessionLocal as _SessionLocal
+import database
 from dependencies import get_current_user
 import models
 import schemas
@@ -9,14 +11,22 @@ from typing import List, Optional, Dict, Any, Tuple
 from datetime import datetime, timedelta
 import ast, re, tempfile, subprocess, sys, os, random, json
 import requests, base64
+import difflib
+import uuid
+import io
+
+try:
+    from fpdf import FPDF
+except ImportError:
+    FPDF = None
 
 try:
     from sandbox_runner import run_submission as sandbox_run_submission
-except Exception:
-    try:
-        from .sandbox_runner import run_submission as sandbox_run_submission
-    except Exception:
-        sandbox_run_submission = None
+except ImportError:
+    sandbox_run_submission = None
+
+# In-memory signaling rooms for WebRTC
+SIGNALING_ROOMS: Dict[str, Any] = {}
 
 router = APIRouter(prefix="", tags=["Tasks"])
 
