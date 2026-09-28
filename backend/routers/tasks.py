@@ -7,16 +7,18 @@ import models
 import schemas
 from typing import List, Optional, Dict, Any, Tuple
 from datetime import datetime, timedelta
-import ast, re, tempfile, subprocess, sys, os, random, json
+import ast, re, tempfile, subprocess, sys, os, random, json, difflib, uuid, io
 import requests, base64
+import database
+from fpdf import FPDF
+from fastapi.responses import StreamingResponse
+
+SIGNALING_ROOMS = {}
 
 try:
     from sandbox_runner import run_submission as sandbox_run_submission
-except Exception:
-    try:
-        from .sandbox_runner import run_submission as sandbox_run_submission
-    except Exception:
-        sandbox_run_submission = None
+except ImportError:
+    sandbox_run_submission = None
 
 router = APIRouter(prefix="", tags=["Tasks"])
 

@@ -14,6 +14,18 @@ import schemas
 from dependencies import get_current_user
 import json
 
+def notify_user(db: Session, user_id: int, title: str, message: str, notif_type: str = "system"):
+    notif = models.Notification(user_id=user_id, title=title, message=message, type=notif_type)
+    db.add(notif)
+    db.commit()
+
+def notify_admins(db: Session, title: str, message: str, notif_type: str = "system"):
+    admins = db.query(models.User).filter(models.User.role == models.UserRole.ADMIN).all()
+    for admin in admins:
+        notif = models.Notification(user_id=admin.id, title=title, message=message, type=notif_type)
+        db.add(notif)
+    db.commit()
+
 router = APIRouter(prefix="/tickets", tags=["Tickets / Support"])
 
 

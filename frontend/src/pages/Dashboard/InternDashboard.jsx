@@ -381,6 +381,7 @@ export default function InternDashboard() {
       }
 
       setShowAirdropModal(true);
+      fetchAirdrops(); // Refetch to update status and attempts
     } catch (err) {
       console.error(err);
       alert("Failed to start Airdrop: " + (err.response?.data?.detail || err.message));
@@ -972,15 +973,21 @@ export default function InternDashboard() {
                   <span className="bonus-airdrop-text" style={{ fontSize: "0.85rem", fontWeight: 800, color: "#701a75", flexShrink: 0 }}>Bonus Airdrops</span>
                   
                   {(() => {
-                    // Only show airdrops that are published AND not yet completed by the user
+                    // Only show airdrops that are published AND active within start_time and end_time, and not attempted
                     const activeDrops = bonusAirdrops.filter(a => {
                       const isPublished = a.status === "PUBLISHED" || a.status === "APPROVED";
                       if (!isPublished) return false;
-                      // Hide if user already started or submitted this airdrop
-                      const userAttempt = (a.attempts || []).find(atm => 
-                        atm.status === "started" || atm.status === "submitted" || atm.status === "completed"
-                      );
-                      return !userAttempt; // only show if no completed attempt
+                      
+                      const now = new Date();
+                      const isPassed = a.end_time && new Date(a.end_time) < now;
+                      if (isPassed) return false;
+
+                      const isNotStarted = a.start_time && new Date(a.start_time) > now;
+                      if (isNotStarted) return false;
+
+                      // Hide if user already attempted this airdrop (any status)
+                      const hasAttempted = (a.attempts && a.attempts.length > 0);
+                      return !hasAttempted;
                     });
                     const hasActive = activeDrops.length > 0;
                     const drop = hasActive ? activeDrops[0] : null;
@@ -2092,9 +2099,10 @@ export default function InternDashboard() {
 
       case "Bonus Airdrops":
         const now = new Date();
-        const isPassedTime = (a) => a.start_mode === "fixed" && a.end_time && new Date(a.end_time) < now;
+        const isPassedTime = (a) => a.end_time && new Date(a.end_time) < now;
+        const isNotStartedYet = (a) => a.start_time && new Date(a.start_time) > now;
         
-        const activeDrops = bonusAirdrops.filter(a => a.status === "PUBLISHED" && (!a.attempts || a.attempts.length === 0) && !isPassedTime(a));
+        const activeDrops = bonusAirdrops.filter(a => a.status === "PUBLISHED" && (!a.attempts || a.attempts.length === 0) && !isPassedTime(a) && !isNotStartedYet(a));
         const completedDrops = bonusAirdrops.filter(a => a.status === "ENDED" || a.status === "FINALIZED" || (a.attempts && a.attempts.length > 0) || isPassedTime(a));
 
         // Motivational quotes for Airdrops

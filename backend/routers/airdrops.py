@@ -8,6 +8,29 @@ import models
 import schemas
 from database import get_db
 from dependencies import get_current_user
+from typing import Any
+
+def notify_interns(db: Session, title: str, message: str, notif_type: str = "system"):
+    interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
+    for intern in interns:
+        notif = models.Notification(user_id=intern.id, title=title, message=message, type=notif_type)
+        db.add(notif)
+    db.commit()
+
+def evaluate_airdrop_submission(task_type: str, config: dict, answer: Any) -> bool:
+    if task_type == 'mcq':
+        return answer == config.get("correct_answer")
+    elif task_type == 'pattern':
+        return str(answer).strip() == str(config.get("correct_answer")).strip()
+    elif task_type == 'true_false':
+        return str(answer).lower() == str(config.get("correct_answer")).lower()
+    elif task_type == 'fill_blank':
+        return str(answer).lower().strip() == str(config.get("correct_answer")).lower().strip()
+    elif task_type == 'match':
+        return answer == config.get("pairs")
+    elif task_type == 'arrange':
+        return answer == config.get("correct_sequence")
+    return False
 
 router = APIRouter(
     prefix="/bonus-airdrops",
@@ -39,6 +62,7 @@ def create_airdrop(
         start_mode=data.start_mode.value,
         time_limit=data.time_limit,
         start_time=data.start_time,
+        end_time=data.end_time,
         points_distribution=data.points_distribution,
         winner_count=data.winner_count,
         created_by=current_user.id,
@@ -200,9 +224,10 @@ def handle_airdrop_action(
         if airdrop.batch_id is not None and current_user.batch_id != airdrop.batch_id:
             raise HTTPException(status_code=403, detail="You are not eligible for this challenge")
             
-        if airdrop.start_mode == schemas.StartMode.FIXED.value:
-            if not airdrop.start_time or now < airdrop.start_time:
-                raise HTTPException(status_code=400, detail="Fixed start time has not been reached yet")
+        if airdrop.end_time and now > airdrop.end_time:
+            raise HTTPException(status_code=400, detail="Airdrop end time has passed")
+        if airdrop.start_time and now < airdrop.start_time:
+            raise HTTPException(status_code=400, detail="Start time has not been reached yet")
             
         existing = db.query(models.AirdropAttempt).filter(
             models.AirdropAttempt.airdrop_id == airdrop.id,
@@ -361,7 +386,9 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
         config_dict = json.loads(airdrop.task_config)
     except:
         pass
-        
+    start_time_utc = airdrop.start_time.replace(tzinfo=timezone.utc) if airdrop.start_time and airdrop.start_time.tzinfo is None else airdrop.start_time
+    end_time_utc = airdrop.end_time.replace(tzinfo=timezone.utc) if airdrop.end_time and airdrop.end_time.tzinfo is None else airdrop.end_time
+
     resp_dict = {
         "id": airdrop.id,
         "title": airdrop.title,
@@ -372,8 +399,9 @@ def _build_airdrop_response(db: Session, airdrop: models.BonusAirdrop) -> schema
         "batch_id": airdrop.batch_id,
         "start_mode": airdrop.start_mode,
         "time_limit": airdrop.time_limit,
-        "start_time": airdrop.start_time,
+        "start_time": start_time_utc,
         "start_time_ist": _format_ist(airdrop.start_time),
+        "end_time": end_time_utc,
         "points_distribution": airdrop.points_distribution,
         "winner_count": airdrop.winner_count,
         "status": airdrop.status,
