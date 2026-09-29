@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { mockOnboardingService, ONBOARDING_STATUSES } from '../../../services/mockOnboardingService';
 import { ArrowLeft, User, Briefcase, Settings } from 'lucide-react';
 import '../../../pages/Dashboard/Dashboard.css';
@@ -14,6 +15,21 @@ export default function AdminOnboardingDetails({ appId }) {
 
     const [app, setApp] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [mentors, setMentors] = useState([]);
+    const [selectedMentorId, setSelectedMentorId] = useState('');
+
+    useEffect(() => {
+        const fetchMentors = async () => {
+            try {
+                const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+                const response = await axios.get(`${baseUrl}/api/v1/users?role=mentor`);
+                setMentors(response.data || []);
+            } catch (error) {
+                console.error("Error fetching mentors:", error);
+            }
+        };
+        fetchMentors();
+    }, []);
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -25,6 +41,9 @@ export default function AdminOnboardingDetails({ appId }) {
             try {
                 const data = await mockOnboardingService.adminGetApplication(targetId);
                 setApp(data);
+                if (data?.assigned_mentor_id) {
+                    setSelectedMentorId(data.assigned_mentor_id.toString());
+                }
             } catch (error) {
                 console.error("Error fetching onboarding details:", error);
             } finally {
@@ -39,6 +58,24 @@ export default function AdminOnboardingDetails({ appId }) {
         await mockOnboardingService.adminUpdateStatus(targetId, newStatus);
         const data = await mockOnboardingService.adminGetApplication(targetId);
         setApp(data);
+    };
+
+    const handleAssignMentor = async () => {
+        if (!selectedMentorId) {
+            alert("Please select a mentor from the dropdown list first.");
+            return;
+        }
+        try {
+            const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+            await axios.post(`${baseUrl}/api/v1/onboarding/${targetId}/assign-mentor`, { mentor_id: parseInt(selectedMentorId) });
+            await mockOnboardingService.adminUpdateStatus(targetId, "MENTOR_ASSIGNED");
+            const data = await mockOnboardingService.adminGetApplication(targetId);
+            setApp(data);
+            alert("Mentor assigned successfully!");
+        } catch (err) {
+            console.error("Error assigning mentor", err);
+            alert("Failed to assign mentor: " + (err.response?.data?.detail || err.message));
+        }
     };
 
     if (loading) {
@@ -123,6 +160,12 @@ export default function AdminOnboardingDetails({ appId }) {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>College / University</span> 
                                 <span style={{ fontWeight: '500', color: '#1e293b', fontSize: '15px' }}>{app.college}</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>Assigned Mentor</span> 
+                                <span style={{ fontWeight: '600', color: app.assigned_mentor_name ? '#047857' : '#64748b', fontSize: '15px' }}>
+                                    {app.assigned_mentor_name ? `👤 ${app.assigned_mentor_name}` : 'Not assigned yet'}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -265,8 +308,29 @@ export default function AdminOnboardingDetails({ appId }) {
                             </>
                         )}
 
-                        {["PAYMENT_VERIFIED", "DOCUMENTS_PENDING"].includes(app.status) && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.MENTOR_ASSIGNED || "MENTOR_ASSIGNED")}>Assign Mentor</button>
+                        {["PAYMENT_VERIFIED", "DOCUMENTS_PENDING", "MENTOR_ASSIGNED"].includes(app.status) && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                <label style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a', margin: 0 }}>Assign Mentor to Candidate:</label>
+                                <select
+                                    value={selectedMentorId}
+                                    onChange={(e) => setSelectedMentorId(e.target.value)}
+                                    style={{ padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', width: '100%', outline: 'none', backgroundColor: 'white' }}
+                                >
+                                    <option value="">-- Choose a Mentor --</option>
+                                    {mentors.map(m => (
+                                        <option key={m.id} value={m.id}>
+                                            {m.name} ({m.college || m.email})
+                                        </option>
+                                    ))}
+                                </select>
+                                <button 
+                                    className="btn btn-primary" 
+                                    style={{ padding: '10px', width: '100%', fontSize: '13px', borderRadius: '6px', fontWeight: '600', backgroundColor: '#2563eb', color: 'white', border: 'none', cursor: 'pointer' }} 
+                                    onClick={handleAssignMentor}
+                                >
+                                    {app.assigned_mentor_name ? "Update Assigned Mentor ✓" : "Assign Mentor & Proceed ✓"}
+                                </button>
+                            </div>
                         )}
                         
                         {["MENTOR_ASSIGNED", "DOCUMENTS_GENERATED", "DOCUMENTS_UPLOADED", "ACCOUNT_CREATION_PENDING"].includes(app.status) && (

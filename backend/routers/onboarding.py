@@ -143,6 +143,12 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
+    mentor_name = None
+    if getattr(db_app, 'assigned_mentor_id', None):
+        mentor_user = db.query(models.User).filter(models.User.id == db_app.assigned_mentor_id).first()
+        if mentor_user:
+            mentor_name = mentor_user.name
+
     return {
         "applicationId": f"APP-{db_app.id}",
         "name": db_app.name,
@@ -155,6 +161,8 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
         "linkedin_url": getattr(db_app, 'linkedin_url', None),
         "status": db_app.status.value,
         "resume": db_app.resume_url,
+        "assigned_mentor_id": getattr(db_app, 'assigned_mentor_id', None),
+        "assigned_mentor_name": mentor_name,
         "offer_letter_url": getattr(db_app, 'offer_letter_url', None),
         "tc_url": getattr(db_app, 'tc_url', None),
         "signed_offer_letter_url": getattr(db_app, 'signed_offer_letter_url', None),
