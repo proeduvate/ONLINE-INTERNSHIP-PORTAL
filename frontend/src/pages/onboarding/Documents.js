@@ -34,21 +34,12 @@ export default function Documents() {
                     signed_tc_url: response.data.signed_tc_url
                 });
             } catch (error) {
-                console.warn("Backend API offline/unreachable, using mock document details fallback.", error);
-                const savedPayment = localStorage.getItem(`payment_status_${appId}`);
-                const signedOffer = localStorage.getItem(`signed_offer_${appId}`) === 'true';
-                const signedTc = localStorage.getItem(`signed_tc_${appId}`) === 'true';
-                let mockStatus = savedPayment || "PAYMENT_REQUIRED";
-                if (savedPayment === "PAYMENT_VERIFIED") {
-                    mockStatus = "DOCUMENTS_GENERATED";
-                }
+                console.error("Error fetching document details from backend API:", error);
                 setStatusData({ 
-                    status: mockStatus, 
+                    status: "PENDING_REVIEW", 
                     applicationId: appId,
                     offer_letter_url: "#",
-                    tc_url: "#",
-                    signed_offer_letter_url: signedOffer ? "#" : null,
-                    signed_tc_url: signedTc ? "#" : null
+                    tc_url: "#"
                 });
             } finally {
                 setLoading(false);

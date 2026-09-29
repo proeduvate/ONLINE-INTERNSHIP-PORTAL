@@ -30,33 +30,7 @@ export default function Status() {
       const response = await axios.get(`${baseUrl}/api/v1/onboarding/status/${idToFetch.trim()}`);
       setStatusResult(response.data);
     } catch (err) {
-      console.warn("Backend API unavailable, using rich mock status tracking details.", err.message);
-      
-      const savedPayment = localStorage.getItem(`payment_status_${idToFetch.trim()}`);
-      const signedOffer = localStorage.getItem(`signed_offer_${idToFetch.trim()}`) === 'true';
-      const signedTc = localStorage.getItem(`signed_tc_${idToFetch.trim()}`) === 'true';
-
-      let currentStage = "PAYMENT_REQUIRED";
-      if (savedPayment === "PAYMENT_SUBMITTED") {
-        currentStage = "PAYMENT_SUBMITTED";
-      } else if (savedPayment === "PAYMENT_VERIFIED") {
-        currentStage = signedOffer && signedTc ? "ONBOARDING_COMPLETED" : "DOCUMENTS_GENERATED";
-      }
-
-      setStatusResult({
-        applicationId: idToFetch.trim(),
-        name: "John Doe",
-        track: "Full Stack Web Development",
-        status: currentStage,
-        appliedDate: "2026-09-18",
-        message: currentStage === "ONBOARDING_COMPLETED" 
-          ? "Congratulations! Your onboarding is complete and account credentials are ready."
-          : currentStage === "DOCUMENTS_GENERATED"
-          ? "Payment verified. Please view and sign your offer letter and terms."
-          : currentStage === "PAYMENT_SUBMITTED"
-          ? "Payment verification submitted! Awaiting admin verification before documents are unlocked."
-          : "Your application has been reviewed & approved! Please complete payment verification."
-      });
+      setError(err.response?.data?.detail || "Application ID not found. Please check your ID and try again.");
     } finally {
       setLoading(false);
     }

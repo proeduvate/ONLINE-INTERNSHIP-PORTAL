@@ -1,18 +1,35 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
+import api from '../../api/axios';
 
-export default function AdminLeaderboard({ usersList, isOverview = false }) {
+export default function AdminLeaderboard({ usersList = [], isOverview = false }) {
   const [timeFilter, setTimeFilter] = useState('All-Time');
   const [batchFilter, setBatchFilter] = useState('All Batches');
   const [currentPage, setCurrentPage] = useState(1);
+  const [apiLeaderboard, setApiLeaderboard] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [timeFilter, batchFilter]);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const periodParam = timeFilter === 'Weekly' ? 'weekly' : timeFilter === 'Monthly' ? 'monthly' : 'all';
+        const res = await api.get(`/api/v1/leaderboard?period=${periodParam}`);
+        if (Array.isArray(res.data)) {
+          setApiLeaderboard(res.data);
+        }
+      } catch (err) {
+        console.warn("Error fetching live leaderboard from backend:", err);
+      }
+    };
+    fetchLeaderboard();
+  }, [timeFilter]);
 
   const interns = usersList.filter(user => user.role === 'Intern');
 
@@ -21,41 +38,36 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
     return ['All Batches', ...Array.from(uniqueBatches)];
   }, [interns]);
 
-  // Generate mock leaderboard data
   const leaderboardData = useMemo(() => {
+    if (apiLeaderboard.length > 0) {
+      let data = apiLeaderboard.map((entry, idx) => ({
+        id: entry.intern_id || `INT-${entry.user_id}`,
+        name: entry.name,
+        college: entry.college || "-",
+        domain: entry.domain || "-",
+        totalPoints: entry.points || 0,
+        rank: idx + 1
+      }));
+      if (batchFilter !== 'All Batches') {
+        data = data.filter(i => i.college === batchFilter);
+      }
+      return data;
+    }
+
     let filteredInterns = interns;
     if (batchFilter !== 'All Batches') {
       filteredInterns = filteredInterns.filter(i => (i.batch || i.college) === batchFilter);
     }
 
-    let data = filteredInterns.map(intern => {
-      // Generate some dummy points based on ID
-      let seed = 0;
-      for (let i = 0; i < intern.id.length; i++) {
-        seed += intern.id.charCodeAt(i);
-      }
-      
-      let basePoints = (seed % 100) * 10; 
-      
-      // Adjust based on time
-      if (timeFilter === 'Weekly') basePoints = Math.floor(basePoints / 4);
-      if (timeFilter === 'Monthly') basePoints = Math.floor(basePoints / 2);
-      
-      return {
-        ...intern,
-        totalPoints: basePoints + (seed % 50)
-      };
-    });
-
-    // Sort by points descending
-    data.sort((a, b) => b.totalPoints - a.totalPoints);
-
-    // Assign ranks
-    return data.map((item, index) => ({
-      ...item,
-      rank: index + 1
+    let data = filteredInterns.map((intern, idx) => ({
+      ...intern,
+      totalPoints: parseInt(intern.progress || '0', 10) * 10,
+      rank: idx + 1
     }));
-  }, [interns, timeFilter, batchFilter]);
+
+    data.sort((a, b) => b.totalPoints - a.totalPoints);
+    return data.map((item, index) => ({ ...item, rank: index + 1 }));
+  }, [apiLeaderboard, interns, batchFilter]);
 
   const itemsPerPage = isOverview ? 5 : 15;
   const totalPages = Math.ceil(leaderboardData.length / itemsPerPage);

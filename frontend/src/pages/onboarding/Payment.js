@@ -20,9 +20,8 @@ export default function Payment() {
                 const response = await api.get(`/api/v1/onboarding/status/${appId}`);
                 setStatusData({ status: response.data.status, applicationId: appId });
             } catch (error) {
-                console.warn("Backend API offline/unreachable, using mock payment details fallback.", error);
-                const savedPaymentStatus = localStorage.getItem(`payment_status_${appId}`) || "PAYMENT_REQUIRED";
-                setStatusData({ status: savedPaymentStatus, applicationId: appId });
+                console.error("Error fetching payment status from backend API:", error);
+                setStatusData({ status: "PAYMENT_REQUIRED", applicationId: appId });
             } finally {
                 setLoading(false);
             }

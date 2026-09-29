@@ -80,23 +80,18 @@ export default function Apply() {
                 formPayload.append("resume", formData.resume);
             }
 
-            let appId = null;
-            try {
-                const response = await fetch("http://127.0.0.1:8000/api/v1/onboarding/apply", {
-                    method: "POST",
-                    body: formPayload,
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    appId = data.application_id;
-                }
-            } catch (err) {
-                console.warn("Backend API offline, generating mock Application ID for demo", err);
+            const response = await fetch("http://127.0.0.1:8000/api/v1/onboarding/apply", {
+                method: "POST",
+                body: formPayload,
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.detail || "Application submission failed.");
             }
 
-            if (!appId) {
-                appId = "APP-2026-" + Math.floor(10000 + Math.random() * 90000);
-            }
+            const data = await response.json();
+            const appId = data.application_id;
 
             localStorage.setItem("last_application_id", appId);
             setApplicationId(appId);
