@@ -77,6 +77,20 @@ def apply_for_onboarding(
     db.commit()
     db.refresh(new_app)
     
+    # Send application submission confirmation email
+    try:
+        from services.email_service import dispatch_notification, EventType
+        dispatch_notification(
+            recipient_email=new_app.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Application Received - ProEduvate Internship",
+            message=f"Dear {new_app.name}, thank you for applying for the {new_app.domain} Internship at ProEduvate. Your Application ID is APP-{new_app.id}. We have received your details and resume, and our team is currently reviewing your application.",
+            action_url=f"http://localhost:3000/track?appId=APP-{new_app.id}",
+            sender_name="ProEduvate Admissions"
+        )
+    except Exception as e:
+        print(f"[Email Exception] Failed to send submission email: {e}")
+
     return {"message": "Application submitted successfully", "application_id": f"APP-{new_app.id}"}
 
 def parse_app_id(application_id: str) -> int:
@@ -240,6 +254,19 @@ def schedule_interview(
         )
     else:
         db_app.status = models.ApplicationStatus.PAYMENT_PENDING
+        try:
+            from services.email_service import dispatch_notification, EventType
+            payment_url = req.payment_form_link or "https://docs.google.com/forms/d/e/1FAIpQLSc-ZEaOZTekZKlJgivqgC3EHsyJBY2gHqOgGzSHTDQTKq8tJg/viewform?usp=publish-editor"
+            dispatch_notification(
+                recipient_email=db_app.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Congratulations! Application Selected",
+                message=f"Dear {db_app.name}, your application for the {db_app.domain} Internship at ProEduvate has been selected! Please complete your fee payment to proceed with onboarding.",
+                action_url=payment_url,
+                sender_name="ProEduvate Admissions"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send direct selection email: {e}")
         
     db.commit()
     return {"message": "Interview decision recorded and emails sent."}
@@ -255,13 +282,37 @@ def interview_result(application_id: str, res: InterviewRes, db: Session = Depen
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
+    from services.email_service import dispatch_notification, EventType
     if res.passed:
         db_app.status = models.ApplicationStatus.INTERVIEW_PASSED
+        try:
+            payment_url = res.payment_form_link or "https://docs.google.com/forms/d/e/1FAIpQLSc-ZEaOZTekZKlJgivqgC3EHsyJBY2gHqOgGzSHTDQTKq8tJg/viewform?usp=publish-editor"
+            dispatch_notification(
+                recipient_email=db_app.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Interview Cleared - ProEduvate Internship",
+                message=f"Congratulations {db_app.name}! You have successfully cleared your interview for the {db_app.domain} Internship. Please complete your fee payment to unlock your onboarding documents.",
+                action_url=payment_url,
+                sender_name="ProEduvate Admissions"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send interview pass email: {e}")
     else:
         db_app.status = models.ApplicationStatus.INTERVIEW_FAILED
+        try:
+            dispatch_notification(
+                recipient_email=db_app.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Update on your ProEduvate Internship Application",
+                message=f"Dear {db_app.name}, thank you for attending the interview. Unfortunately, we are unable to proceed with your application at this time.",
+                action_url=f"http://localhost:3000/track?appId=APP-{db_app.id}",
+                sender_name="ProEduvate Admissions"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send interview failed email: {e}")
         
     db.commit()
-    return {"message": "Interview result recorded"}
+    return {"message": "Interview result recorded and email sent"}
 
 class PaymentVerifyReq(BaseModel):
     verified: bool
@@ -273,13 +324,36 @@ def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Dep
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
+    from services.email_service import dispatch_notification, EventType
     if req.verified:
         db_app.status = models.ApplicationStatus.DOCUMENTS_PENDING
+        try:
+            dispatch_notification(
+                recipient_email=db_app.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Payment Verified - Documents Ready for Signing",
+                message=f"Dear {db_app.name}, your payment for the {db_app.domain} Internship has been verified by our team! Your Offer Letter and Terms & Conditions are ready for you to review and sign.",
+                action_url=f"http://localhost:3000/onboarding/documents?appId=APP-{db_app.id}",
+                sender_name="ProEduvate Admissions"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send payment verified email: {e}")
     else:
         db_app.status = models.ApplicationStatus.PAYMENT_REJECTED
+        try:
+            dispatch_notification(
+                recipient_email=db_app.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Payment Verification Notice",
+                message=f"Dear {db_app.name}, we could not verify your payment submission. Please check your transaction details or contact support.",
+                action_url=f"http://localhost:3000/onboarding/payment?appId=APP-{db_app.id}",
+                sender_name="ProEduvate Finance"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send payment rejected email: {e}")
         
     db.commit()
-    return {"message": "Payment verification recorded"}
+    return {"message": "Payment verification recorded and email sent"}
 
 @router.post("/{application_id}/generate-documents")
 def generate_documents(application_id: str, db: Session = Depends(get_db)):
@@ -296,6 +370,19 @@ def generate_documents(application_id: str, db: Session = Depends(get_db)):
     db_app.offer_letter_url = urls.get('offer_letter_url')
     db_app.tc_url = urls.get('terms_url')
     db.commit()
+
+    try:
+        from services.email_service import dispatch_notification, EventType
+        dispatch_notification(
+            recipient_email=db_app.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Onboarding Documents Generated",
+            message=f"Dear {db_app.name}, your Offer Letter and Terms & Conditions are ready for review and digital signature.",
+            action_url=f"http://localhost:3000/onboarding/documents?appId=APP-{db_app.id}",
+            sender_name="ProEduvate Onboarding"
+        )
+    except Exception as e:
+        print(f"[Email Exception] Failed to send document generation notification: {e}")
     
     return {"urls": urls}
 
@@ -311,6 +398,35 @@ def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depen
     
     db_app.assigned_mentor_id = req.mentor_id
     db.commit()
+
+    try:
+        from services.email_service import dispatch_notification, EventType
+        mentor_user = db.query(models.User).filter(models.User.id == req.mentor_id).first()
+        mentor_name = mentor_user.name if mentor_user else "Assigned Mentor"
+        
+        # Email Intern
+        dispatch_notification(
+            recipient_email=db_app.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Mentor Assigned - ProEduvate Internship",
+            message=f"Dear {db_app.name}, mentor {mentor_name} has been assigned to guide you during your {db_app.domain} Internship.",
+            action_url="http://localhost:3000/login",
+            sender_name="ProEduvate Team"
+        )
+        
+        # Email Mentor if mentor email exists
+        if mentor_user and mentor_user.email:
+            dispatch_notification(
+                recipient_email=mentor_user.email,
+                event_type=EventType.TASK_ASSIGNED,
+                title="New Intern Assigned",
+                message=f"Hello {mentor_name}, intern {db_app.name} ({db_app.domain}) has been assigned to you.",
+                action_url="http://localhost:3000/admin/onboarding",
+                sender_name="ProEduvate System"
+            )
+    except Exception as e:
+        print(f"[Email Exception] Failed to send mentor assignment emails: {e}")
+
     return {"message": "Mentor assigned"}
 
 @router.post("/{application_id}/create-account")
@@ -371,8 +487,8 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
         dispatch_notification(
             recipient_email=new_user.email,
             event_type=EventType.SYSTEM_ALERT,
-            title="Account Activated",
-            message=f"Your account has been activated. Your default password is: {default_pwd}. Please login and change your password.",
+            title="Account Activated - Credentials Enclosed",
+            message=f"Welcome {new_user.name}! Your account has been activated. Your Intern ID is {intern_id}. Your default password is: {default_pwd}. Please login and change your password.",
             action_url=login_url,
             sender_name="ProEduvate System"
         )
@@ -394,6 +510,7 @@ def sign_document_inline(application_id: str, req: SignDocumentReq, db: Session 
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
+    doc_name = "Offer Letter" if req.document_type == "offer_letter" else "Terms & Conditions"
     if req.document_type == "offer_letter":
         # Generate the signed offer letter and upload it
         signed_url = document_service.process_signed_document_generation(db_app, "offer_letter", req.signature_base64)
@@ -406,6 +523,20 @@ def sign_document_inline(application_id: str, req: SignDocumentReq, db: Session 
     # If both are signed, update status
     if db_app.signed_offer_letter_url and db_app.signed_tc_url:
         db_app.status = models.ApplicationStatus.DOCUMENTS_UPLOADED
-        
+
     db.commit()
+
+    try:
+        from services.email_service import dispatch_notification, EventType
+        dispatch_notification(
+            recipient_email=db_app.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title=f"Signed Document Received ({doc_name})",
+            message=f"Dear {db_app.name}, we have successfully recorded your digital signature for your {doc_name}.",
+            action_url=signed_url or "http://localhost:3000/onboarding/documents",
+            sender_name="ProEduvate Onboarding"
+        )
+    except Exception as e:
+        print(f"[Email Exception] Failed to send document signed email: {e}")
+
     return {"message": "Document signed successfully", "url": signed_url}
