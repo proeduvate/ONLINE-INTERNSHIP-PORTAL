@@ -97,6 +97,8 @@ export default function Apply() {
             formPayload.append("degree", formData.degree || "Bachelors"); 
             formPayload.append("graduation_year", parseInt(formData.currentYear) + 2024); // roughly
             formPayload.append("domain", formData.domain);
+            formPayload.append("github_url", formData.githubId || "");
+            formPayload.append("linkedin_url", formData.linkedin || "");
             if (formData.resume) {
                 formPayload.append("resume", formData.resume);
             }

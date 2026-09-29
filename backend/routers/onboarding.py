@@ -22,6 +22,8 @@ def apply_for_onboarding(
     degree: str = Form(...),
     graduation_year: int = Form(...),
     domain: str = Form(...),
+    github_url: Optional[str] = Form(None),
+    linkedin_url: Optional[str] = Form(None),
     resume: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
@@ -53,6 +55,8 @@ def apply_for_onboarding(
         degree=degree,
         graduation_year=graduation_year,
         domain=domain,
+        github_url=github_url,
+        linkedin_url=linkedin_url,
         resume_url=resume_url,
         status=models.ApplicationStatus.PENDING_REVIEW
     )
@@ -119,6 +123,8 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
         "college": db_app.college,
         "department": db_app.department,
         "domain": db_app.domain,
+        "github_url": getattr(db_app, 'github_url', None),
+        "linkedin_url": getattr(db_app, 'linkedin_url', None),
         "status": db_app.status.value,
         "resume": db_app.resume_url,
         "offer_letter_url": getattr(db_app, 'offer_letter_url', None),

@@ -297,6 +297,8 @@ class OnboardingApplication(Base):
     graduation_year = Column(Integer)
     domain = Column(String(100))
     resume_url = Column(String(255))
+    github_url = Column(String(255), nullable=True)
+    linkedin_url = Column(String(255), nullable=True)
     offer_letter_url = Column(String(255), nullable=True)
     tc_url = Column(String(255), nullable=True)
     signed_offer_letter_url = Column(String(255), nullable=True)
