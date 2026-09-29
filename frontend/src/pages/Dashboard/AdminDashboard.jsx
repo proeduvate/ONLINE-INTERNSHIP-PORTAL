@@ -10,6 +10,7 @@ import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboarding
 import AdminOnboardingDetails from "../../features/onboarding/admin/AdminOnboardingDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
+import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
@@ -104,7 +105,49 @@ export default function AdminDashboard() {
     alert("Certificate approved and sent to intern!");
   };
 
-  // State Mock Data
+  const [dashboardStats, setDashboardStats] = useState({
+    total_interns: 50,
+    active_interns: 48,
+    total_mentors: 10,
+    active_domains: 5,
+    avg_performance: 78
+  });
+
+  useEffect(() => {
+    const fetchLiveData = async () => {
+      try {
+        const statsRes = await api.get('/api/v1/admin/dashboard');
+        if (statsRes.data) {
+          setDashboardStats(prev => ({ ...prev, ...statsRes.data }));
+        }
+      } catch (err) {
+        console.warn("Backend admin dashboard stats fetch fallback:", err);
+      }
+
+      try {
+        const usersRes = await api.get('/api/v1/users');
+        if (Array.isArray(usersRes.data) && usersRes.data.length > 0) {
+          const mappedUsers = usersRes.data.map(u => ({
+            id: u.intern_id || `USR${u.id}`,
+            name: u.name,
+            role: u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1) : "Intern",
+            college: u.college || "-",
+            domain: u.domain_id ? `Domain ${u.domain_id}` : "-",
+            mentor: u.mentor_id ? `Mentor ${u.mentor_id}` : "-",
+            progress: `${u.progress_pct || 0}%`,
+            attendance: `${u.attendance_pct || 0}%`,
+            status: "Active"
+          }));
+          setUsersList(mappedUsers);
+        }
+      } catch (err) {
+        console.warn("Backend users list fetch fallback:", err);
+      }
+    };
+
+    fetchLiveData();
+  }, []);
+
   // State Mock Data
   const [usersList, setUsersList] = useState([
     // Mentors
@@ -503,22 +546,22 @@ export default function AdminDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Total Interns</span>
-                <span className="stat-value">50</span>
-                <span className="stat-desc">48 Active / 2 Deactivated</span>
+                <span className="stat-value">{dashboardStats.total_interns}</span>
+                <span className="stat-desc">{dashboardStats.active_interns} Active</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Total Mentors</span>
-                <span className="stat-value">10</span>
-                <span className="stat-desc">Assigned across 5 domains</span>
+                <span className="stat-value">{dashboardStats.total_mentors}</span>
+                <span className="stat-desc">Assigned across domains</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Active Domains</span>
-                <span className="stat-value">5</span>
-                <span className="stat-desc">AI, DS, CS, Web Dev, UI/UX</span>
+                <span className="stat-value">{dashboardStats.active_domains}</span>
+                <span className="stat-desc">Active learning domains</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Avg Performance</span>
-                <span className="stat-value">78%</span>
+                <span className="stat-value">{dashboardStats.avg_performance}%</span>
                 <span className="stat-desc">Based on evaluations</span>
               </div>
             </div>
