@@ -20,7 +20,12 @@ export default function Documents() {
     useEffect(() => {
         const fetchStatus = async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const appId = urlParams.get('appId') || localStorage.getItem('last_application_id') || 'APP-2026-00125';
+            const appId = urlParams.get('appId') || localStorage.getItem('last_application_id');
+
+            if (!appId) {
+                setLoading(false);
+                return;
+            }
 
             setLoading(true);
             try {

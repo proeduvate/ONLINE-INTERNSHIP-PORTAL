@@ -66,21 +66,40 @@ def apply_for_onboarding(
     
     return {"message": "Application submitted successfully", "application_id": f"APP-{new_app.id}"}
 
+def parse_app_id(application_id: str) -> int:
+    import re
+    numbers = re.findall(r'\d+', str(application_id))
+    if not numbers:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid application ID format")
+    return int(numbers[-1])
+
 @router.get("/status/{application_id}")
 def get_application_status(application_id: str, db: Session = Depends(get_db)):
-    if not application_id.startswith("APP-"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid application ID format")
-    
-    try:
-        app_id = int(application_id.replace("APP-", ""))
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid application ID format")
+    app_id = parse_app_id(application_id)
         
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
         
-    return {"status": db_app.status.value}
+    status_val = db_app.status.value if hasattr(db_app.status, 'value') else str(db_app.status)
+
+    message = "Your application is under review."
+    if status_val in ["PAYMENT_REQUIRED", "PENDING_REVIEW"]:
+        message = "Your application is under review. Please proceed to payment verification when eligible."
+    elif status_val == "PAYMENT_SUBMITTED":
+        message = "Payment submitted! Awaiting admin verification before documents are unlocked."
+    elif status_val in ["PAYMENT_VERIFIED", "DOCUMENTS_GENERATED"]:
+        message = "Payment verified. Please view and sign your offer letter and terms."
+    elif status_val in ["ONBOARDING_COMPLETED", "ACCOUNT_CREATED", "ACTIVE"]:
+        message = "Congratulations! Your onboarding is complete and account credentials are ready."
+
+    return {
+        "applicationId": f"APP-{db_app.id}",
+        "name": db_app.name,
+        "track": db_app.domain,
+        "status": status_val,
+        "message": message
+    }
 
 @router.get("/applications")
 def get_all_applications(db: Session = Depends(get_db)):
@@ -100,17 +119,13 @@ def get_all_applications(db: Session = Depends(get_db)):
 def get_domains(db: Session = Depends(get_db)):
     domains = db.query(models.Domain).all()
     return domains
-from pydantic import BaseModel
 
 class StatusUpdate(BaseModel):
     status: str
 
 @router.get("/applications/{application_id}")
 def get_application_details(application_id: str, db: Session = Depends(get_db)):
-    try:
-        app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid application ID format")
+    app_id = parse_app_id(application_id)
         
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
@@ -135,7 +150,7 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
 
 @router.post("/applications/{application_id}/status")
 def update_application_status(application_id: str, update: StatusUpdate, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -156,7 +171,7 @@ def schedule_interview(
     db: Session = Depends(get_db), 
     current_user: models.User = Depends(get_current_user)
 ):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -214,7 +229,7 @@ class InterviewRes(BaseModel):
 
 @router.post("/{application_id}/interview/result")
 def interview_result(application_id: str, res: InterviewRes, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -232,7 +247,7 @@ class PaymentVerifyReq(BaseModel):
 
 @router.post("/{application_id}/payment/verify")
 def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -247,7 +262,7 @@ def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Dep
 
 @router.post("/{application_id}/generate-documents")
 def generate_documents(application_id: str, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -268,7 +283,7 @@ class AssignMentorReq(BaseModel):
 
 @router.post("/{application_id}/assign-mentor")
 def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -282,7 +297,7 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
     from main import pwd_context
     from datetime import datetime
 
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -353,7 +368,7 @@ class SignDocumentReq(BaseModel):
 
 @router.post("/{application_id}/sign-document-inline")
 def sign_document_inline(application_id: str, req: SignDocumentReq, db: Session = Depends(get_db)):
-    app_id = int(application_id.replace("APP-", "")) if application_id.startswith("APP-") else int(application_id)
+    app_id = parse_app_id(application_id)
     db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")

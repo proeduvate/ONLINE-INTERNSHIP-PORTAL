@@ -13,7 +13,12 @@ export default function Payment() {
     useEffect(() => {
         const fetchStatus = async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const appId = urlParams.get('appId') || localStorage.getItem('last_application_id') || 'APP-2026-00125';
+            const appId = urlParams.get('appId') || localStorage.getItem('last_application_id');
+
+            if (!appId) {
+                setLoading(false);
+                return;
+            }
 
             setLoading(true);
             try {
@@ -38,8 +43,10 @@ export default function Payment() {
 
         setSubmittingPayment(true);
         setTimeout(() => {
-            const appId = statusData?.applicationId || "APP-2026-00125";
-            localStorage.setItem(`payment_status_${appId}`, "PAYMENT_SUBMITTED");
+            const appId = statusData?.applicationId;
+            if (appId) {
+                localStorage.setItem(`payment_status_${appId}`, "PAYMENT_SUBMITTED");
+            }
             setStatusData(prev => ({ ...prev, status: "PAYMENT_SUBMITTED" }));
             setSubmittingPayment(false);
         }, 500);
@@ -55,7 +62,7 @@ export default function Payment() {
         );
     }
 
-    const applicationId = statusData?.applicationId || "APP-2026-00125";
+    const applicationId = statusData?.applicationId;
     const status = statusData?.status || "PAYMENT_REQUIRED";
 
     const isPending = status === "PAYMENT_REQUIRED" || status === "ELIGIBLE_FOR_PAYMENT" || status === "PAYMENT_PENDING";
