@@ -24,6 +24,27 @@ export default function Apply() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [applicationId, setApplicationId] = useState(null);
+    const [availableDomains, setAvailableDomains] = useState([
+        "Full Stack Development",
+        "AI / ML",
+        "Data Science",
+        "Cybersecurity",
+        "UI/UX Design"
+    ]);
+
+    React.useEffect(() => {
+        const fetchDomains = async () => {
+            try {
+                const res = await api.get('/api/v1/onboarding/domains');
+                if (Array.isArray(res.data) && res.data.length > 0) {
+                    setAvailableDomains(res.data.map(d => typeof d === 'string' ? d : d.name));
+                }
+            } catch (err) {
+                console.warn("Backend domains fetch error:", err);
+            }
+        };
+        fetchDomains();
+    }, []);
 
     const validateStep = () => {
         if (step === 1) {
@@ -259,9 +280,9 @@ export default function Apply() {
                                 <label>Internship Domain *</label>
                                 <select required className="form-control" name="domain" value={formData.domain} onChange={handleChange}>
                                     <option value="">Select Domain ▼</option>
-                                    <option value="Full Stack Development">Full Stack Development</option>
-                                    <option value="AI / ML">AI / ML</option>
-                                    <option value="Data Science">Data Science</option>
+                                    {availableDomains.map(d => (
+                                        <option key={d} value={d}>{d}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="flex justify-between" style={{ marginTop: '30px' }}>
