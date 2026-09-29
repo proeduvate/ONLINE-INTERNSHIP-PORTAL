@@ -219,43 +219,68 @@ export default function AdminOnboardingDetails({ appId }) {
 
                         {app.status === ONBOARDING_STATUSES.PENDING_REVIEW && (
                             <>
-                                <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_REQUIRED)}>Require Interview</button>
-                                <button className="btn btn-secondary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#334155' }} onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT)}>Skip Interview (Eligible)</button>
+                                <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_REQUIRED || "INTERVIEW_REQUIRED")}>Require Interview</button>
+                                <button className="btn btn-secondary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#334155' }} onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT || "ELIGIBLE_FOR_PAYMENT")}>Skip Interview (Eligible for Payment)</button>
                             </>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_REQUIRED && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_SCHEDULED)}>Schedule Interview</button>
+                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_SCHEDULED || "INTERVIEW_SCHEDULED")}>Schedule Interview</button>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_SCHEDULED && (
                             <>
-                                <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_PASSED)}>Mark Passed</button>
-                                <button className="btn btn-danger" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_FAILED)}>Mark Failed</button>
+                                <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_PASSED || "INTERVIEW_PASSED")}>Mark Passed</button>
+                                <button className="btn btn-danger" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.INTERVIEW_FAILED || "INTERVIEW_FAILED")}>Mark Failed</button>
                             </>
                         )}
                         
                         {app.status === ONBOARDING_STATUSES.INTERVIEW_PASSED && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT)}>Move to Payment Stage</button>
+                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ELIGIBLE_FOR_PAYMENT || "ELIGIBLE_FOR_PAYMENT")}>Move to Payment Stage</button>
+                        )}
+
+                        {["ELIGIBLE_FOR_PAYMENT", "PAYMENT_PENDING", "PAYMENT_REQUIRED", "ACCEPTED"].includes(app.status) && (
+                            <>
+                                <button 
+                                    className="btn" 
+                                    style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} 
+                                    onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_VERIFIED || "PAYMENT_VERIFIED")}
+                                >
+                                    Verify Payment & Move to Docs ✓
+                                </button>
+                                <button 
+                                    className="btn btn-danger" 
+                                    style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#ef4444', color: 'white', border: 'none' }} 
+                                    onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_REJECTED || "PAYMENT_REJECTED")}
+                                >
+                                    Reject Payment ✕
+                                </button>
+                            </>
                         )}
 
                         {app.status === ONBOARDING_STATUSES.PAYMENT_SUBMITTED && (
                             <>
-                                <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_VERIFIED)}>Verify Payment</button>
-                                <button className="btn btn-danger" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_REJECTED)}>Reject Payment</button>
+                                <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_VERIFIED || "PAYMENT_VERIFIED")}>Verify Payment ✓</button>
+                                <button className="btn btn-danger" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.PAYMENT_REJECTED || "PAYMENT_REJECTED")}>Reject Payment ✕</button>
                             </>
                         )}
 
-                        {app.status === ONBOARDING_STATUSES.PAYMENT_VERIFIED && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.MENTOR_ASSIGNED)}>Assign Mentor</button>
+                        {["PAYMENT_VERIFIED", "DOCUMENTS_PENDING"].includes(app.status) && (
+                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.MENTOR_ASSIGNED || "MENTOR_ASSIGNED")}>Assign Mentor</button>
                         )}
                         
-                        {app.status === ONBOARDING_STATUSES.MENTOR_ASSIGNED && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ACCOUNT_CREATED)}>Generate Docs & Create Account</button>
+                        {["MENTOR_ASSIGNED", "DOCUMENTS_GENERATED", "DOCUMENTS_UPLOADED", "ACCOUNT_CREATION_PENDING"].includes(app.status) && (
+                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ACCOUNT_CREATED || "ACCOUNT_CREATED")}>Generate Docs & Create Account</button>
                         )}
 
-                        {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATED && (
-                            <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ONBOARDING_COMPLETED)}>Complete Onboarding</button>
+                        {["ACCOUNT_CREATED", "ACCOUNT_ACTIVATION_PENDING"].includes(app.status) && (
+                            <button className="btn" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', backgroundColor: '#10b981', color: 'white', fontWeight: '600', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ONBOARDING_COMPLETED || "ONBOARDING_COMPLETED")}>Complete Onboarding</button>
+                        )}
+
+                        {["ONBOARDING_COMPLETED", "ACTIVE"].includes(app.status) && (
+                            <div style={{ backgroundColor: "#ecfdf5", border: "1px solid #a7f3d0", padding: "12px", borderRadius: "8px", textAlign: "center", color: "#047857", fontWeight: "600", fontSize: "14px" }}>
+                                ✓ Onboarding Completed & Account Active
+                            </div>
                         )}
                     </div>
                 </div>
