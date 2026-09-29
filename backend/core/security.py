@@ -36,7 +36,7 @@ def create_access_token(user_id: int, role: str, expires_delta: Optional[timedel
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     expire = datetime.utcnow() + expires_delta
-    token_payload = {"user_id": user_id, "role": role, "exp": expire}
+    token_payload = {"sub": str(user_id), "user_id": int(user_id), "role": role, "exp": expire}
     encoded_jwt = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

@@ -41,12 +41,15 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
     return {"message": "User registered successfully", "user_id": new_user.id}
 
 
+from sqlalchemy import func
+
 @router.post("/login")
 def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(database.get_db)):
     """
     Login user and return JWT access token
     """
-    user = db.query(models.User).filter(models.User.email == user_credentials.email).first()
+    clean_email = user_credentials.email.strip().lower() if user_credentials.email else ""
+    user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
