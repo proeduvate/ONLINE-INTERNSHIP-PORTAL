@@ -13,6 +13,7 @@ import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
+import api from "../../api/axios";
 export default function InternDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -260,33 +261,24 @@ export default function InternDashboard() {
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const [ticketsData, setTicketsData] = useState([
-    {
-      id: "TKT-1042",
-      title: "Environment setup failing on local machine during Docker build",
-      date: "2 days ago",
-      status: "In Progress",
-      statusBg: "var(--bg-yellow-light)",
-      statusColor: "var(--warning-darker)",
-      tagBg: "var(--bg-red-lighter)",
-      tagColor: "var(--danger-darkest)",
-      adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
-    },
-    {
-      id: "TKT-0985",
-      title: "Missing lecture notes for Day 5",
-      date: "1 week ago",
-      status: "Resolved",
-      statusBg: "var(--bg-emerald-lighter)",
-      statusColor: "var(--success-darker)",
-      tagBg: "var(--bg-gray-light)",
-      tagColor: "var(--text-gray)",
-      adminReply: "The notes have been uploaded to the portal. Please refresh the page."
-    }
-  ]);
+  const [ticketsData, setTicketsData] = useState([]);
   const [newTicketTitle, setNewTicketTitle] = useState("");
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
+
+  useEffect(() => {
+    const fetchInternTickets = async () => {
+      try {
+        const res = await api.get('/api/v1/tickets');
+        if (Array.isArray(res.data)) {
+          setTicketsData(res.data);
+        }
+      } catch (err) {
+        console.warn("Error fetching intern tickets from API:", err);
+      }
+    };
+    fetchInternTickets();
+  }, []);
 
   const handleCreateTicket = () => {
     if (!newTicketTitle.trim()) {

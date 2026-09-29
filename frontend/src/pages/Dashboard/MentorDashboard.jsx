@@ -8,6 +8,7 @@ import MentorProfile from "./MentorProfile";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
+import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -203,48 +204,50 @@ export default function MentorDashboard() {
     alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
-  // State Mock Data
-  const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
-  ]);
-
-  const [selectedBatch, setSelectedBatch] = useState("Harvard");
-
-  const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
-  ]);
+  const [assignedInterns, setAssignedInterns] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState("All");
+  const [submissions, setSubmissions] = useState([]);
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
-
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
-  ]);
-
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
-
+  const [meetings, setMeetings] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
-
-  // Tickets state
-  const [mentorTickets, setMentorTickets] = useState([
-    { id: "8", user: "Sushmitha", title: "mcq button isnt working", description: "I have clicked the MCQ button but it is not working as expected.", status: "Assigned", date: "15/9/2026 01:51 am", comments: [] },
-    { id: "6", user: "John Doe", title: "button issue", description: "The submit button is overlapping with the footer on smaller screens.", status: "Resolved", date: "29/8/2026 12:51 pm", comments: [{ author: "Admin", text: "Please investigate this issue." }] }
-  ]);
+  const [mentorTickets, setMentorTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
+
+  useEffect(() => {
+    const fetchMentorLiveData = async () => {
+      try {
+        const internsRes = await api.get('/api/v1/mentor/interns');
+        if (Array.isArray(internsRes.data)) {
+          setAssignedInterns(internsRes.data);
+        }
+      } catch (err) {
+        console.warn("Error fetching mentor assigned interns:", err);
+      }
+
+      try {
+        const subsRes = await api.get('/api/v1/mentor/submissions');
+        if (Array.isArray(subsRes.data)) {
+          setSubmissions(subsRes.data);
+        }
+      } catch (err) {
+        console.warn("Error fetching mentor submissions:", err);
+      }
+
+      try {
+        const ticketsRes = await api.get('/api/v1/tickets');
+        if (Array.isArray(ticketsRes.data)) {
+          setMentorTickets(ticketsRes.data);
+        }
+      } catch (err) {
+        console.warn("Error fetching mentor tickets:", err);
+      }
+    };
+
+    fetchMentorLiveData();
+  }, []);
 
   const handleReplyTicket = (e) => {
     e.preventDefault();
