@@ -16,13 +16,6 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Fallback Dummy Users for local offline testing
-  const users = {
-    admin: { email: "admin@gmail.com", password: "admin123" },
-    mentor: { email: "mentor@gmail.com", password: "mentor123" },
-    intern: { email: "intern@gmail.com", password: "intern123" },
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -58,25 +51,8 @@ export default function Login() {
 
       navigate(`/${role}`);
     } catch (err) {
-      console.warn("Backend auth attempt failed, checking local fallback credentials:", err);
-
-      let foundRole = null;
-      for (const [key, u] of Object.entries(users)) {
-        if (u.email === email && u.password === password) {
-          foundRole = key;
-          break;
-        }
-      }
-
-      if (foundRole) {
-        localStorage.setItem("token", "dummy-token-123");
-        localStorage.setItem("authToken", "dummy-token-123");
-        localStorage.setItem("role", foundRole);
-        navigate(`/${foundRole}`);
-      } else {
-        const msg = err.response?.data?.detail || "Invalid email or password.";
-        setErrorMessage(msg);
-      }
+      const msg = err.response?.data?.detail || "Invalid email or password.";
+      setErrorMessage(msg);
     } finally {
       setLoading(false);
     }
