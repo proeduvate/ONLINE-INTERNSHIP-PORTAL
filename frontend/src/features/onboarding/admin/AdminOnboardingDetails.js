@@ -1,32 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { mockOnboardingService, ONBOARDING_STATUSES } from '../../../services/mockOnboardingService';
 import { ArrowLeft, User, Briefcase, Settings } from 'lucide-react';
 import '../../../pages/Dashboard/Dashboard.css';
 
-export default function AdminOnboardingDetails() {
-    const { id } = useParams();
+export default function AdminOnboardingDetails({ appId }) {
+    const { id: paramId } = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const pathParts = location.pathname.split('/');
+    const targetId = appId || paramId || (pathParts.length > 3 ? pathParts[3] : null);
+
     const [app, setApp] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchApp = async () => {
+            if (!targetId || targetId === "undefined") {
+                setLoading(false);
+                return;
+            }
             setLoading(true);
             try {
-                const data = await mockOnboardingService.adminGetApplication(id);
+                const data = await mockOnboardingService.adminGetApplication(targetId);
                 setApp(data);
             } catch (error) {
-                console.error("Error fetching", error);
+                console.error("Error fetching onboarding details:", error);
             } finally {
                 setLoading(false);
             }
         };
         fetchApp();
-    }, [id]);
+    }, [targetId]);
 
     const handleAction = async (newStatus) => {
-        await mockOnboardingService.adminUpdateStatus(id, newStatus);
-        const data = await mockOnboardingService.adminGetApplication(id);
+        if (!targetId) return;
+        await mockOnboardingService.adminUpdateStatus(targetId, newStatus);
+        const data = await mockOnboardingService.adminGetApplication(targetId);
         setApp(data);
     };
 
@@ -58,7 +69,7 @@ export default function AdminOnboardingDetails() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <button 
                         className="btn btn-secondary" 
-                        onClick={() => window.location.href='/admin/onboarding'}
+                        onClick={() => navigate('/admin/onboarding')}
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '14px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#475569', backgroundColor: 'white', cursor: 'pointer', transition: 'all 0.2s' }}
                     >
                         <ArrowLeft size={16} /> Back

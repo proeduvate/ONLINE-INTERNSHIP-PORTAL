@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 import { ONBOARDING_STATUSES } from '../../../services/mockOnboardingService'; // Keep for enum
 import '../../onboarding/Onboarding.css';
 
-export default function AdminOnboardingDetails() {
-    const { id } = useParams();
+export default function AdminOnboardingDetails({ appId }) {
+    const { id: paramId } = useParams();
+    const location = useLocation();
+    const pathParts = location.pathname.split('/');
+    const id = appId || paramId || (pathParts.length > 3 ? pathParts[3] : null);
+
     const [app, setApp] = useState(null);
     const [loading, setLoading] = useState(true);
     const [meetLink, setMeetLink] = useState('');
@@ -29,6 +33,10 @@ export default function AdminOnboardingDetails() {
 
     useEffect(() => {
         const fetchApp = async () => {
+            if (!id || id === "undefined") {
+                setLoading(false);
+                return;
+            }
             setLoading(true);
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/onboarding/applications/${id}`);

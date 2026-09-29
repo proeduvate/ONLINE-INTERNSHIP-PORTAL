@@ -1199,7 +1199,7 @@ export default function AdminDashboard() {
 
       case "Onboarding":
         if (pathParts.length > 3 && pathParts[3]) {
-          return <AdminOnboardingDetails />;
+          return <AdminOnboardingDetails appId={pathParts[3]} />;
         }
         return <AdminOnboardingList />;
 
