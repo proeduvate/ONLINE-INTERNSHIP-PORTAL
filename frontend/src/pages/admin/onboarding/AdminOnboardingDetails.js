@@ -15,7 +15,7 @@ export default function AdminOnboardingDetails({ appId }) {
     const [loading, setLoading] = useState(true);
     const [meetLink, setMeetLink] = useState('');
     const [scheduledTime, setScheduledTime] = useState('');
-    const [paymentFormLink, setPaymentFormLink] = useState('');
+    const [paymentFormLink, setPaymentFormLink] = useState('https://docs.google.com/forms/d/e/1FAIpQLSc-ZEaOZTekZKlJgivqgC3EHsyJBY2gHqOgGzSHTDQTKq8tJg/viewform?usp=publish-editor');
     const [mentors, setMentors] = useState([]);
     const [selectedMentorId, setSelectedMentorId] = useState('');
 

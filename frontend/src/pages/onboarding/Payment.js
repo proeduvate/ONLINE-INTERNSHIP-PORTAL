@@ -97,6 +97,35 @@ export default function Payment() {
                             <div><strong>GST / Tax:</strong> Included</div>
                         </div>
 
+                        {/* Official Google Form Payment Link Banner */}
+                        <div style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "14px 16px", marginBottom: "14px", textAlign: "center" }}>
+                            <p style={{ margin: "0 0 8px 0", fontSize: "12px", color: "#1e40af", fontWeight: 600 }}>
+                                Complete your registration fee payment using the official Google Form link below:
+                            </p>
+                            <a 
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSc-ZEaOZTekZKlJgivqgC3EHsyJBY2gHqOgGzSHTDQTKq8tJg/viewform?usp=publish-editor" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-primary"
+                                style={{ 
+                                    display: "inline-flex", 
+                                    alignItems: "center", 
+                                    gap: "6px", 
+                                    padding: "9px 18px", 
+                                    fontSize: "13px", 
+                                    fontWeight: "bold",
+                                    backgroundColor: "#2563eb",
+                                    borderColor: "#2563eb",
+                                    color: "#ffffff",
+                                    textDecoration: "none",
+                                    borderRadius: "6px",
+                                    boxShadow: "0 2px 4px rgba(37,99,235,0.2)"
+                                }}
+                            >
+                                📋 Open Official Payment Form ↗
+                            </a>
+                        </div>
+
                         {/* UPI / QR Payment Instructions */}
                         <div style={{ backgroundColor: "#f8fafc", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "10px", textAlign: "center" }}>
                             <p style={{ margin: "0 0 2px 0", fontSize: "11px", color: "#475569", fontWeight: 600 }}>Scan QR or Pay via UPI ID:</p>
