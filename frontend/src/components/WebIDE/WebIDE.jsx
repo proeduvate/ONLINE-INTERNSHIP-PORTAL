@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { Folder, File, FilePlus, FolderPlus, X, ChevronRight, ChevronDown, Save, Edit2, Trash2 } from 'lucide-react';
 import './WebIDE.css';
 
 const WebIDE = ({ initialFiles, language = 'javascript', onChange }) => {
+  const [isDark, setIsDark] = useState(() => document.documentElement.getAttribute('data-theme') === 'dark');
   const [files, setFiles] = useState(
     initialFiles || [
       { path: 'src/index.js', content: '// Write your code here\n', isFolder: false },
@@ -20,6 +21,15 @@ const WebIDE = ({ initialFiles, language = 'javascript', onChange }) => {
   const [renameValue, setRenameValue] = useState("");
   const [creatingItem, setCreatingItem] = useState(null);
   const [createValue, setCreateValue] = useState("");
+
+  // Observe dark/light theme changes on :root
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.getAttribute('data-theme') === 'dark');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Global click listener to close context menu
   React.useEffect(() => {
@@ -350,7 +360,7 @@ const WebIDE = ({ initialFiles, language = 'javascript', onChange }) => {
             <Editor
               height="100%"
               language={language}
-              theme="vs-light"
+              theme={isDark ? "vs-dark" : "vs-light"}
               value={activeFile.content}
               onChange={handleEditorChange}
               options={{
