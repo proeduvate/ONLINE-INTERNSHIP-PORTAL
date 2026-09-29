@@ -121,16 +121,16 @@ app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=[
 app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
 
 app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
-app.include_router(facts.router, prefix="/api/v1", tags=["Facts"])
+app.include_router(facts.router, prefix="/api/v1/facts", tags=["Facts"])
 
 app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
-app.include_router(leaderboard.router, prefix="/api/v1", tags=["Leaderboard"])
+app.include_router(leaderboard.router, prefix="/api/v1/leaderboard", tags=["Leaderboard"])
 
 app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
-app.include_router(simulation.router, prefix="/api/v1", tags=["Simulation"])
+app.include_router(simulation.router, prefix="/api/v1/simulation", tags=["Simulation"])
 
 app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
-app.include_router(tickets.router, prefix="/api/v1", tags=["Tickets"])
+app.include_router(tickets.router, prefix="/api/v1/tickets", tags=["Tickets"])
 
 app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
 app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])

@@ -82,7 +82,7 @@ def record_daily_question_result(
 # ==========================================
 
 @router.get(
-    "/analytics/daily-questions/intern/{intern_id}",
+    "/daily-questions/intern/{intern_id}",
     response_model=List[schemas.DailyMarksDataPoint],
     summary="Get an intern's daily question performance",
     description=(
@@ -130,6 +130,37 @@ def get_intern_daily_analytics(
             models.DailyQuestionResult.final_score
         )
         .filter(models.DailyQuestionResult.intern_id == intern_id)
+        .order_by(models.DailyQuestionResult.date)
+        .all()
+    )
+
+    return [
+        {
+            "date": r.date, 
+            "mcq_score": r.mcq_score, 
+            "coding_score": r.coding_score, 
+            "final_score": r.final_score
+        }
+        for r in results
+    ]
+
+@router.get(
+    "/daily-questions/me",
+    response_model=List[schemas.DailyMarksDataPoint],
+    summary="Get logged-in intern's daily question performance"
+)
+def get_my_daily_analytics(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    results = (
+        db.query(
+            models.DailyQuestionResult.date,
+            models.DailyQuestionResult.mcq_score,
+            models.DailyQuestionResult.coding_score,
+            models.DailyQuestionResult.final_score
+        )
+        .filter(models.DailyQuestionResult.intern_id == current_user.id)
         .order_by(models.DailyQuestionResult.date)
         .all()
     )
