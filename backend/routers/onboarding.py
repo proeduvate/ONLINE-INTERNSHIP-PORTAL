@@ -29,19 +29,32 @@ def apply_for_onboarding(
 ):
     from services.supabase_service import supabase_service
     import uuid
+    import os
 
     resume_url = None
     if resume:
         try:
             content = resume.file.read()
-            # Generate a unique filename to avoid overwrites
             ext = resume.filename.split('.')[-1] if '.' in resume.filename else 'pdf'
             unique_filename = f"{uuid.uuid4().hex}_{name.replace(' ', '_')}.{ext}"
             uploaded_url = supabase_service.upload_file(content, bucket_name="resumes", filename=unique_filename, content_type=resume.content_type)
             if uploaded_url:
                 resume_url = uploaded_url
             else:
-                resume_url = resume.filename  # Fallback
+                # Save locally to uploads/resumes directory
+                os.makedirs("uploads/resumes", exist_ok=True)
+                local_path = os.path.join("uploads/resumes", unique_filename)
+                with open(local_path, "wb") as f:
+                    f.write(content)
+                resume_url = f"http://127.0.0.1:8000/uploads/resumes/{unique_filename}"
+        except Exception as err:
+            print("Error uploading/saving resume file:", err)
+            os.makedirs("uploads/resumes", exist_ok=True)
+            unique_filename = f"{uuid.uuid4().hex}_{name.replace(' ', '_')}.pdf"
+            local_path = os.path.join("uploads/resumes", unique_filename)
+            with open(local_path, "wb") as f:
+                f.write(content)
+            resume_url = f"http://127.0.0.1:8000/uploads/resumes/{unique_filename}"
         finally:
             resume.file.close()
 

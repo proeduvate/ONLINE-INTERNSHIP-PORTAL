@@ -143,8 +143,18 @@ export default function AdminOnboardingDetails({ appId }) {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>Submitted Resume</span> 
-                                {app.resume ? (
-                                    <a href={app.resume.startsWith('http') ? app.resume : `http://127.0.0.1:8000/static/${app.resume}`} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+                                {(app.resume || app.resume_url) ? (
+                                    <a 
+                                        href={
+                                            (app.resume || app.resume_url).startsWith('http') 
+                                                ? (app.resume || app.resume_url) 
+                                                : `http://127.0.0.1:8000/uploads/resumes/${app.resume || app.resume_url}`
+                                        } 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="btn btn-secondary" 
+                                        style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
+                                    >
                                         📄 View Resume
                                     </a>
                                 ) : (
@@ -153,9 +163,18 @@ export default function AdminOnboardingDetails({ appId }) {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>GitHub Profile</span> 
-                                {app.github_url ? (
-                                    <a href={app.github_url.startsWith('http') ? app.github_url : `https://github.com/${app.github_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontWeight: '600', fontSize: '14px', textDecoration: 'underline' }}>
-                                        {app.github_url}
+                                {(app.github_url || app.github) ? (
+                                    <a 
+                                        href={
+                                            (app.github_url || app.github).startsWith('http') 
+                                                ? (app.github_url || app.github) 
+                                                : `https://github.com/${app.github_url || app.github}`
+                                        } 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        style={{ color: '#2563eb', fontWeight: '600', fontSize: '14px', textDecoration: 'underline' }}
+                                    >
+                                        {app.github_url || app.github}
                                     </a>
                                 ) : (
                                     <span style={{ color: '#94a3b8', fontSize: '13px' }}>Not provided</span>
@@ -163,9 +182,18 @@ export default function AdminOnboardingDetails({ appId }) {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>LinkedIn Profile</span> 
-                                {app.linkedin_url ? (
-                                    <a href={app.linkedin_url.startsWith('http') ? app.linkedin_url : `https://linkedin.com/in/${app.linkedin_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontWeight: '600', fontSize: '14px', textDecoration: 'underline' }}>
-                                        {app.linkedin_url}
+                                {(app.linkedin_url || app.linkedin) ? (
+                                    <a 
+                                        href={
+                                            (app.linkedin_url || app.linkedin).startsWith('http') 
+                                                ? (app.linkedin_url || app.linkedin) 
+                                                : `https://linkedin.com/in/${app.linkedin_url || app.linkedin}`
+                                        } 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        style={{ color: '#2563eb', fontWeight: '600', fontSize: '14px', textDecoration: 'underline' }}
+                                    >
+                                        {app.linkedin_url || app.linkedin}
                                     </a>
                                 ) : (
                                     <span style={{ color: '#94a3b8', fontSize: '13px' }}>Not provided</span>
