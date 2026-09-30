@@ -41,6 +41,7 @@ class UserOnboard(BaseModel):
 class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
     college: Optional[str] = None
+    phone: Optional[str] = None
     password: Optional[str] = None
 
 class UserResponse(BaseModel):
@@ -51,7 +52,9 @@ class UserResponse(BaseModel):
     created_at: Optional[datetime] = None
     intern_id: Optional[str] = None
     college: Optional[str] = None
+    phone: Optional[str] = None
     domain_id: Optional[int] = None
+    domain_name: Optional[str] = None
     mentor_id: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
@@ -62,6 +65,13 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class MentorCreateRequest(BaseModel):
+    name: str
+    email: EmailStr
+    domain: Optional[str] = None
+    password: Optional[str] = "Mentor@123"
+
 
 # ==========================================
 #           DOMAIN SCHEMAS

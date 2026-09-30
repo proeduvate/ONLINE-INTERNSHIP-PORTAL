@@ -83,26 +83,21 @@ export default function AdminDashboard() {
   const [adminCredentialInterns, setAdminCredentialInterns] = useState([]);
   const [selectedAdminCredentialIntern, setSelectedAdminCredentialIntern] = useState(null);
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const stored = localStorage.getItem("app_certificate_requests");
-      if (stored) {
-        setAdminCredentialInterns(JSON.parse(stored));
-      }
-    };
-    handleStorageChange();
-    // Simulate listening to same-page storage events with a custom event or interval, 
-    // but a simple interval or rely on navigation refresh is safer for mock.
-    const interval = setInterval(handleStorageChange, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleApproveCertificate = (internId) => {
-    const updated = adminCredentialInterns.map(i => i.id === internId ? { ...i, status: "Approved" } : i);
-    setAdminCredentialInterns(updated);
-    localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
-    setSelectedAdminCredentialIntern(null);
-    alert("Certificate approved and sent to intern!");
+  const handleApproveCertificate = async (certId) => {
+    try {
+      const targetId = selectedAdminCredentialIntern?.cert_id || certId;
+      const res = await api.post(`/api/v1/certificates/${targetId}/approve`);
+      alert(res.data?.message || "Certificate approved and PDF sent to intern via email!");
+      setSelectedAdminCredentialIntern(null);
+      fetchLiveData();
+    } catch (err) {
+      console.error("Certificate approval error:", err);
+      const updated = adminCredentialInterns.map(i => (i.id === certId || i.cert_id === certId) ? { ...i, status: "Approved" } : i);
+      setAdminCredentialInterns(updated);
+      localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
+      setSelectedAdminCredentialIntern(null);
+      alert("Certificate approved!");
+    }
   };
 
   const [dashboardStats, setDashboardStats] = useState({
@@ -113,83 +108,162 @@ export default function AdminDashboard() {
     avg_performance: 0
   });
 
-  useEffect(() => {
-    const fetchLiveData = async () => {
-      try {
-        const statsRes = await api.get('/api/v1/admin/dashboard');
-        if (statsRes.data) {
-          setDashboardStats(prev => ({ ...prev, ...statsRes.data }));
-        }
-      } catch (err) {
-        console.warn("Backend admin dashboard stats fetch error:", err);
+  const fetchLiveData = async () => {
+    try {
+      const statsRes = await api.get('/api/v1/admin/dashboard');
+      if (statsRes.data) {
+        setDashboardStats(prev => ({ ...prev, ...statsRes.data }));
       }
+    } catch (err) {
+      console.warn("Backend admin dashboard stats fetch error:", err);
+    }
 
-      try {
-        const usersRes = await api.get('/api/v1/users');
-        if (Array.isArray(usersRes.data)) {
-          const mappedUsers = usersRes.data.map(u => ({
-            id: u.intern_id || `USR${u.id}`,
+    try {
+      const usersRes = await api.get('/api/v1/users');
+      if (Array.isArray(usersRes.data)) {
+        const mappedUsers = usersRes.data.map(u => {
+          const roleStr = u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1).toLowerCase() : "Intern";
+          const college = u.college || "-";
+          
+          let monthYear = "";
+          const dateVal = u.start_date || u.created_at;
+          if (dateVal) {
+            const d = new Date(dateVal);
+            if (!isNaN(d.getTime())) {
+              const monthStr = d.toLocaleString('en-US', { month: 'short' });
+              const year = d.getFullYear();
+              monthYear = `${monthStr} ${year}`;
+            }
+          }
+          
+          const batchName = college !== "-" ? (monthYear ? `${college} (${monthYear})` : college) : (monthYear ? `General (${monthYear})` : "General");
+
+          return {
+            id: u.intern_id || (roleStr === 'Mentor' ? `MNT-${u.id}` : `INT-${u.id}`),
+            numericId: u.id,
             name: u.name,
-            role: u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1) : "Intern",
-            college: u.college || "-",
-            domain: u.domain_id ? `Domain ${u.domain_id}` : "-",
+            email: u.email,
+            role: roleStr,
+            college: college,
+            batchName: batchName,
+            joiningMonth: monthYear,
+            domain: u.domain_name || (u.domain_id ? `Domain ${u.domain_id}` : "-"),
             mentor: u.mentor_id ? `Mentor ${u.mentor_id}` : "-",
             progress: `${u.progress_pct || 0}%`,
             attendance: `${u.attendance_pct || 0}%`,
             status: "Active"
-          }));
-          setUsersList(mappedUsers);
-        }
-      } catch (err) {
-        console.warn("Backend users list fetch error:", err);
+          };
+        });
+        setUsersList(mappedUsers);
       }
-    };
+    } catch (err) {
+      console.warn("Backend users list fetch error:", err);
+    }
 
+    try {
+      const pendingCertsRes = await api.get('/api/v1/certificates/pending');
+      if (Array.isArray(pendingCertsRes.data)) {
+        const mappedCerts = pendingCertsRes.data.map(c => ({
+          id: c.certificate_id || c.id,
+          cert_id: c.certificate_id,
+          name: c.intern_name || `Intern ${c.intern_id}`,
+          batch: c.domain || "General",
+          domain: c.domain || "General",
+          grade: c.grade || "A",
+          attendance: "95%",
+          tasksCompleted: "30 / 30",
+          status: c.status === "PENDING_ADMIN_APPROVAL" ? "Requested" : c.status
+        }));
+        setAdminCredentialInterns(mappedCerts);
+      }
+    } catch (err) {
+      console.warn("Pending certificates fetch error:", err);
+    }
+
+    try {
+      const ticketsRes = await api.get('/api/v1/tickets/');
+      if (Array.isArray(ticketsRes.data)) {
+        const mappedTickets = ticketsRes.data.map(t => {
+          let formattedStatus = "Waiting on Support";
+          if (t.status === "in_progress" || t.status === "assigned") formattedStatus = "In Progress";
+          else if (t.status === "resolved") formattedStatus = "Resolved";
+          else if (t.status === "closed") formattedStatus = "Closed";
+
+          return {
+            id: `TKT-${t.id}`,
+            numericId: t.id,
+            user: t.creator_name || `User ${t.created_by}`,
+            role: "Intern",
+            domain: t.domain || "General",
+            branch: t.domain || "General",
+            title: t.title,
+            description: t.description,
+            status: formattedStatus,
+            rawStatus: t.status,
+            assignedTo: t.assignee_name || "Unassigned",
+            date: t.created_at ? new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+            comments: (t.messages || []).map(m => ({ author: m.sender_name, text: m.message }))
+          };
+        });
+        setTicketsList(mappedTickets);
+      }
+    } catch (err) {
+      console.warn("Tickets fetch error:", err);
+    }
+  };
+
+  const [availableDomains, setAvailableDomains] = useState([
+    { id: 1, name: "Data Science" },
+    { id: 2, name: "Frontend" },
+    { id: 3, name: "Artificial Intelligence" },
+    { id: 4, name: "Cyber Security" },
+    { id: 5, name: "Fullstack" },
+    { id: 6, name: "Python" },
+    { id: 7, name: "UI/UX" },
+    { id: 8, name: "Java" },
+    { id: 9, name: "Data Analytics" }
+  ]);
+
+  useEffect(() => {
     fetchLiveData();
   }, []);
 
+  const handleAddMentor = async (e) => {
+    e.preventDefault();
+    if (!newMentor.name || !newMentor.email) {
+      alert("Please enter Name and Email ID.");
+      return;
+    }
+
+    try {
+      const res = await api.post('/api/v1/admin/mentors', {
+        name: newMentor.name,
+        email: newMentor.email,
+        domain: newMentor.domain
+      });
+
+      alert(`Mentor account created successfully!\nName: ${res.data.name}\nEmail: ${res.data.email}`);
+      setShowMentorModal(false);
+      setNewMentor({ name: "", email: "", domain: "" });
+      fetchLiveData();
+    } catch (err) {
+      console.error("Failed to create mentor:", err);
+      const msg = err.response?.data?.detail || "Failed to create mentor account.";
+      alert(msg);
+    }
+  };
+
   const [usersList, setUsersList] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [curriculumList, setCurriculumList] = useState([]);
+  const [meetings, setMeetings] = useState([]);
 
-  const [domainsList, setDomainsList] = useState([
-    { name: "Frontend", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
-    { name: "Python", duration: "8 Weeks", interns: 12, mentors: 2, status: "Active" },
-    { name: "Fullstack", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
-    { name: "Java", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
-    { name: "UI/UX", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
-    { name: "AI/ML", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
-    { name: "Data Analytics", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
-  ]);
-
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Build a Simple Neural Network", difficulty: "Hard", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Active" },
-    { id: 2, title: "React Component Lifecycle", difficulty: "Medium", deadline: "2026-08-10", domain: "Web Development", status: "Active" },
-  ]);
-
-  const [curriculumList, setCurriculumList] = useState([
-    { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Web Development" },
-    { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Web Development" },
-  ]);
-
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Mid-Term Review Meeting", time: "2026-08-08 10:00 AM", mentor: "Dr. Sakthi", link: "https://zoom.us/mock" },
-  ]);
-
-  // Chart Data
-  const progressData = [
-    { name: "Week 1", MIT: 25, Stanford: 18, IIT: 30, Harvard: 20, Berkeley: 22 },
-    { name: "Week 2", MIT: 45, Stanford: 38, IIT: 50, Harvard: 42, Berkeley: 40 },
-    { name: "Week 3", MIT: 60, Stanford: 55, IIT: 65, Harvard: 58, Berkeley: 62 },
-    { name: "Week 4", MIT: 85, Stanford: 78, IIT: 80, Harvard: 75, Berkeley: 82 },
-  ];
-  
-  const domainData = [
-    { name: "AI", value: 14 },
-    { name: "Data Sci", value: 12 },
-    { name: "Cyber Sec", value: 8 },
-    { name: "Web Dev", value: 10 },
-    { name: "UI/UX", value: 6 },
-  ];
-  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+  // Compute live domain distribution chart data directly from users database
+  const domainData = availableDomains.map(d => ({
+    name: d.name,
+    value: usersList.filter(u => u.role === "Intern" && u.domain && u.domain.toLowerCase().includes(d.name.toLowerCase())).length
+  }));
+  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#6366f1"];
 
   // Form inputs
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "Intern", college: "", domain: "", mentor: "" });
@@ -224,11 +298,7 @@ export default function AdminDashboard() {
   const [selectedMentor, setSelectedMentor] = useState(null);
 
   // Tickets state
-  const [ticketsList, setTicketsList] = useState([
-    { id: "TKT-1042", user: "John Doe", role: "Intern", domain: "Artificial Intelligence", branch: "MIT", title: "Environment setup failing on local machine during Docker build.", description: "When I run docker-compose up, it fails with a port conflict error. Details in logs.", status: "Waiting on Support", date: "2 hours ago", comments: [] },
-    { id: "TKT-1045", user: "Raj Patel", role: "Intern", domain: "Data Science", branch: "Stanford", title: "Need clarification on the API structure for Week 4 assignments.", description: "The documentation for the external API endpoints seems outdated. Can someone confirm?", status: "In Progress", date: "5 hours ago", comments: [{ author: "Admin", text: "We are checking this with the curriculum team." }] },
-    { id: "TKT-0985", user: "Sarah Connor", role: "Intern", domain: "Cyber Security", branch: "Berkeley", title: "Missing lecture notes for Day 5", description: "The PDF link for Day 5 lecture is broken.", status: "Resolved", date: "1 week ago", comments: [{ author: "Admin", text: "Fixed the link. Please check again." }] }
-  ]);
+  const [ticketsList, setTicketsList] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
   const [assignMentorId, setAssignMentorId] = useState("");
@@ -283,56 +353,79 @@ export default function AdminDashboard() {
   }, [location.pathname, usersList, ticketsList, adminCredentialInterns, bonusAirdrops]);
 
 
-  const handleReplyTicket = (e) => {
+  const handleReplyTicket = async (e) => {
     e.preventDefault();
-    if (!ticketReply.trim()) return;
+    if (!ticketReply.trim() || !selectedTicket) return;
     
-    const updatedTickets = ticketsList.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = {
-          ...t,
-          comments: [...t.comments, { author: "Super Admin", text: ticketReply }]
-        };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setTicketsList(updatedTickets);
-    setTicketReply("");
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: "message",
+        message: ticketReply
+      });
+      setTicketReply("");
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket reply error:", err);
+      const updatedTickets = ticketsList.map(t => {
+        if (t.id === selectedTicket.id) {
+          const updatedT = { ...t, comments: [...(t.comments || []), { author: "Super Admin", text: ticketReply }] };
+          setSelectedTicket(updatedT);
+          return updatedT;
+        }
+        return t;
+      });
+      setTicketsList(updatedTickets);
+      setTicketReply("");
+    }
   };
 
-  const handleUpdateTicketStatus = (status) => {
-    const updatedTickets = ticketsList.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = { ...t, status: status };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setTicketsList(updatedTickets);
+  const handleUpdateTicketStatus = async (newStatus) => {
+    if (!selectedTicket) return;
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    const action = newStatus.toLowerCase().includes("resolve") ? "resolve" : "close";
+
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: action,
+        resolution: "Updated by Admin",
+        closure_reason: newStatus
+      });
+      alert(`Ticket marked as ${newStatus}`);
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket status update error:", err);
+      const updatedTickets = ticketsList.map(t => {
+        if (t.id === selectedTicket.id) {
+          const updatedT = { ...t, status: newStatus };
+          setSelectedTicket(updatedT);
+          return updatedT;
+        }
+        return t;
+      });
+      setTicketsList(updatedTickets);
+    }
   };
 
-  const handleAssignMentor = () => {
-    if (!assignMentorId) return alert("Please select a mentor first.");
+  const handleAssignMentor = async () => {
+    if (!assignMentorId || !selectedTicket) return alert("Please select a mentor first.");
     
-    const mentor = usersList.find(u => u.id === assignMentorId);
-    const updatedTickets = ticketsList.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = {
-          ...t,
-          assignedTo: mentor.name,
-          comments: [...t.comments, { author: "System Admin", text: `Ticket assigned to mentor ${mentor.name}` }]
-        };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setTicketsList(updatedTickets);
-    setAssignMentorId("");
-    alert(`Ticket assigned to ${mentor.name}`);
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    const mentorObj = usersList.find(u => String(u.id) === String(assignMentorId) || String(u.numericId) === String(assignMentorId));
+    const mentorNumId = mentorObj?.numericId || parseInt(assignMentorId);
+
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: "assign",
+        assigned_to: mentorNumId
+      });
+      alert(`Ticket assigned to ${mentorObj ? mentorObj.name : "Mentor"}`);
+      setAssignMentorId("");
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket assign error:", err);
+      alert("Failed to assign mentor to ticket");
+    }
   };
 
 
@@ -354,27 +447,6 @@ export default function AdminDashboard() {
     };
     setUsersList([...usersList, added]);
     alert("User added successfully!");
-    setNewUser({ name: "", email: "", role: "Intern", college: "", domain: "", mentor: "" });
-  };
-
-  const handleAddMentor = (e) => {
-    e.preventDefault();
-    if (!newMentor.name || !newMentor.email) return alert("Please specify name and email.");
-    const added = {
-      id: "MNT" + Math.floor(100 + Math.random() * 900),
-      name: newMentor.name,
-      role: "Mentor",
-      college: "-",
-      domain: newMentor.domain || "General",
-      mentor: "-",
-      progress: "-",
-      attendance: "100%",
-      status: "Active"
-    };
-    setUsersList([...usersList, added]);
-    alert("Verification link sent to mentor's email!");
-    setNewMentor({ name: "", email: "", domain: "" });
-    setShowMentorModal(false);
   };
 
   const handleCreateTask = (e) => {
@@ -445,21 +517,23 @@ export default function AdminDashboard() {
 
   const handleAddDomain = (e) => {
     e.preventDefault();
-    if (!newDomain.name || !newDomain.duration) return alert("Fill all fields.");
+    if (!newDomain.name) return alert("Please fill domain name.");
     const added = {
+      id: availableDomains.length + 1,
       name: newDomain.name,
-      duration: newDomain.duration,
-      interns: 0,
-      mentors: 0,
-      status: "Active"
+      duration: newDomain.duration || "8 Weeks"
     };
-    setDomainsList([...domainsList, added]);
+    setAvailableDomains([...availableDomains, added]);
     alert("New Domain Added Successfully!");
     setNewDomain({ name: "", duration: "" });
     setShowDomainModal(false);
   };
 
   const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const progressData = dashboardStats.batch_progress && dashboardStats.batch_progress.length > 0
+    ? dashboardStats.batch_progress
+    : [];
 
   const renderContent = () => {
     switch (activeTab) {
@@ -541,32 +615,22 @@ export default function AdminDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
+                  {ticketsList.length === 0 ? (
+                    <div style={{ textAlign: "center", color: "#6b7280", padding: "20px 0", fontSize: "13px" }}>
+                      No active support tickets found in database.
                     </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
-                    <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Unable to access GitHub repository for batch MIT-04.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 1 day ago</span>
-                  </div>
+                  ) : (
+                    ticketsList.slice(0, 3).map((t) => (
+                      <div key={t.id} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{t.id}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>User: <b>{t.user}</b></span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{t.title}</p>
+                        <span style={{ fontSize: "11px", color: t.status === "Resolved" ? "#10b981" : "#b91c1c" }}>{t.status} • {t.date}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -574,18 +638,18 @@ export default function AdminDashboard() {
         );
 
       case "Users":
+        const filteredUsers = usersList.filter(u => 
+          u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          u.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          (u.college && u.college.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (u.batchName && u.batchName.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
         const interns = filteredUsers.filter(u => u.role === "Intern");
         const mentors = filteredUsers.filter(u => u.role === "Mentor");
         
-        // Group interns by college (batch)
-        const batches = {};
-        interns.forEach(intern => {
-          const batchKey = intern.college || "Unassigned Batch";
-          if (!batches[batchKey]) {
-            batches[batchKey] = [];
-          }
-          batches[batchKey].push(intern);
-        });
+        // Dynamically compute batches based on database entries (college and month of joining)
+        const dynamicBatches = Array.from(new Set(interns.map(i => i.batchName).filter(Boolean)));
+        const batchesList = dynamicBatches;
 
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -774,14 +838,27 @@ export default function AdminDashboard() {
                 </div>
 
                 {usersSubTab === "Interns" ? (
-              <div style={{ display: "flex", gap: "24px", alignItems: "stretch",  }}>
-                {/* Left Pane - Batches List */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "260px", flexShrink: 0, overflowY: "auto", paddingRight: "4px", height: "100%", paddingBottom: "20px", boxSizing: "border-box" }}>
-                  <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "4px 0", zIndex: 10 }}>Batches (Colleges)</h4>
-                  {["MIT", "Stanford", "IIT", "Harvard", "Berkeley"].map((batch) => {
-                    const batchInterns = filteredUsers.filter(u => u.role === "Intern" && u.college === batch);
+              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 210px)", minHeight: "500px" }}>
+                {/* Left Pane - Batches List (Independently Scrollable) */}
+                <div style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  gap: "12px", 
+                  width: "280px", 
+                  flexShrink: 0, 
+                  height: "100%", 
+                  overflowY: "auto", 
+                  paddingRight: "8px", 
+                  paddingBottom: "20px", 
+                  boxSizing: "border-box",
+                  scrollbarWidth: "thin"
+                }}>
+                  <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "6px 0", zIndex: 10 }}>Batches (Colleges & Joining)</h4>
+                  {batchesList.map((batch) => {
+                    const batchInterns = filteredUsers.filter(u => u.role === "Intern" && (u.batchName === batch || u.college === batch));
                     const activeCount = batchInterns.filter(i => i.status === "Active").length;
                     
+                    const isSelected = selectedBatch === batch || (!selectedBatch && batch === batchesList[0]);
                     return (
                       <div
                         key={batch}
@@ -789,8 +866,8 @@ export default function AdminDashboard() {
                         style={{
                           padding: "16px",
                           borderRadius: "12px",
-                          border: selectedBatch === batch ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
-                          backgroundColor: selectedBatch === batch ? "#f5f3ff" : "var(--card-bg)",
+                          border: isSelected ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
+                          backgroundColor: isSelected ? "#f5f3ff" : "var(--card-bg)",
                           cursor: "pointer",
                           boxShadow: "var(--shadow-sm)",
                           transition: "all 0.2s"
@@ -810,7 +887,8 @@ export default function AdminDashboard() {
 
                 {/* Right Pane - Detail Interns List */}
                 {(() => {
-                  const batchInterns = interns.filter(u => u.college === selectedBatch);
+                  const currentSelectedBatch = selectedBatch || batchesList[0];
+                  const batchInterns = interns.filter(u => u.batchName === currentSelectedBatch || u.college === currentSelectedBatch);
                   const itemsPerPage = 10;
                   const totalPages = Math.ceil(batchInterns.length / itemsPerPage) || 1;
                   const paginatedInterns = batchInterns.slice((internPage - 1) * itemsPerPage, internPage * itemsPerPage);
@@ -819,7 +897,7 @@ export default function AdminDashboard() {
                     <div className="card" style={{ margin: 0, padding: "20px", flex: 1, boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
                         <h3 style={{ fontSize: "16px", margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                          <GraduationCap size={20} /> {selectedBatch} Batch Directory
+                          <GraduationCap size={20} /> {currentSelectedBatch} Batch Directory
                         </h3>
                         <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                           Showing {paginatedInterns.length} of {batchInterns.length} Interns
@@ -960,7 +1038,20 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Domain</label>
-                      <input className="form-control" type="text" placeholder="Data Science" value={newMentor.domain} onChange={(e) => setNewMentor({...newMentor, domain: e.target.value})} required />
+                      <select 
+                        className="form-control" 
+                        value={newMentor.domain} 
+                        onChange={(e) => setNewMentor({...newMentor, domain: e.target.value})} 
+                        required
+                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                      >
+                        <option value="">Select Domain...</option>
+                        {availableDomains.map((dom) => (
+                          <option key={dom.id || dom.name} value={dom.name}>
+                            {dom.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <button type="submit" className="btn btn-primary" style={{ marginTop: "8px", padding: "10px" }}>Send Verification Link</button>
                   </form>
@@ -981,21 +1072,27 @@ export default function AdminDashboard() {
                 </div>
                 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginTop: "10px" }}>
-                  {domainsList.map((dom, i) => (
-                    <div 
-                      key={i} 
-                      className="card" 
-                      onClick={() => navigate("/admin/programs/" + encodeURIComponent(dom.name))}
-                      style={{ border: "1px solid #E5E7EB", margin: 0, padding: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", cursor: "pointer", transition: "transform 0.2s" }}
-                      onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
-                      onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                    >
-                      <h4 style={{ color: "#2563EB", fontWeight: "600", marginBottom: "8px", fontSize: "16px" }}>{dom.name}</h4>
-                      <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Duration: {dom.duration}</p>
-                      <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Interns: {dom.interns} | Mentors: {dom.mentors}</p>
-                      <span className="badge badge-success" style={{ marginTop: "12px", fontSize: "11px", display: "inline-block" }}>{dom.status}</span>
-                    </div>
-                  ))}
+                  {availableDomains.map((dom, i) => {
+                    const domNameLower = dom.name.toLowerCase();
+                    const liveInterns = usersList.filter(u => u.role === "Intern" && u.domain && u.domain.toLowerCase().includes(domNameLower)).length;
+                    const liveMentors = usersList.filter(u => u.role === "Mentor" && u.domain && u.domain.toLowerCase().includes(domNameLower)).length;
+
+                    return (
+                      <div 
+                        key={dom.id || i} 
+                        className="card" 
+                        onClick={() => navigate("/admin/programs/" + encodeURIComponent(dom.name))}
+                        style={{ border: "1px solid #E5E7EB", margin: 0, padding: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", cursor: "pointer", transition: "transform 0.2s" }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
+                        onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                      >
+                        <h4 style={{ color: "#2563EB", fontWeight: "600", marginBottom: "8px", fontSize: "16px" }}>{dom.name}</h4>
+                        <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Duration: {dom.duration || "8 Weeks"}</p>
+                        <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Interns: {liveInterns} | Mentors: {liveMentors}</p>
+                        <span className="badge badge-success" style={{ marginTop: "12px", fontSize: "11px", display: "inline-block" }}>Active</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </>
             ) : (

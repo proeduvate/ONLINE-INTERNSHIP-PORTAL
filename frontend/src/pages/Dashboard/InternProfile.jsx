@@ -1,11 +1,68 @@
-import React, { useState, useRef } from "react";
-import { User, Shield, Bell, Camera, Key, Lock, Save, Trash2, Mail, MapPin, Briefcase, Code2, Building2 } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { User, Shield, Bell, Camera, Save, Mail, Briefcase, Code2, Building2, CheckCircle, AlertCircle, Phone } from "lucide-react";
+import api from "../../api/axios";
 
 export default function InternProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Intern&backgroundColor=f8fafc");
   const fileInputRef = useRef(null);
+
+  // Profile Form State
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    domain_name: "",
+    institution: "",
+    role: "INTERN",
+    phone: ""
+  });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // Password Security Form State
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [passwordStatus, setPasswordStatus] = useState({ error: "", success: "", loading: false });
+
+  // Notifications State
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    fetchProfileData();
+    fetchNotifications();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const res = await api.get('/api/v1/users/profile');
+      if (res.data) {
+        setProfile({
+          name: res.data.name || "",
+          email: res.data.email || "",
+          domain_name: res.data.domain_name || "General Track",
+          institution: res.data.college || "",
+          role: res.data.role ? res.data.role.toUpperCase() : "INTERN",
+          phone: res.data.phone || ""
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to fetch intern profile:", err);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await api.get('/api/v1/notifications');
+      if (Array.isArray(res.data)) {
+        setNotifications(res.data);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch notifications:", err);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -16,14 +73,72 @@ export default function InternProfile() {
   };
 
   const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Intern&backgroundColor=f8fafc");
   };
 
-  const handleForgotPassword = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    // Simulate sending reset email
-    setResetEmailSent(true);
-    setTimeout(() => setResetEmailSent(false), 5000);
+    setIsSavingProfile(true);
+    try {
+      await api.put('/api/v1/users/profile', {
+        name: profile.name,
+        college: profile.institution,
+        phone: profile.phone
+      });
+      alert("Profile updated successfully in database!");
+      fetchProfileData();
+    } catch (err) {
+      console.error("Profile update error:", err);
+      const msg = err.response?.data?.detail || "Failed to update profile.";
+      alert(msg);
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordStatus({ error: "", success: "", loading: true });
+
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setPasswordStatus({ error: "New passwords do not match!", success: "", loading: false });
+      return;
+    }
+
+    if (passwords.newPassword.length < 6) {
+      setPasswordStatus({ error: "Password must be at least 6 characters.", success: "", loading: false });
+      return;
+    }
+
+    try {
+      const res = await api.post('/api/v1/users/change-password', {
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword
+      });
+
+      setPasswordStatus({
+        error: "",
+        success: res.data?.message || "Password updated successfully in database!",
+        loading: false
+      });
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      console.error("Password change error:", err);
+      const errMsg = err.response?.data?.detail || "Failed to change password. Please verify current password.";
+      setPasswordStatus({ error: errMsg, success: "", loading: false });
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/api/v1/users/reset-password-request', { email: profile.email });
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    } catch (err) {
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    }
   };
 
   return (
@@ -74,14 +189,14 @@ export default function InternProfile() {
       </div>
 
       {/* Right Content Area */}
-      <div style={{ flex: 1, maxWidth: "800px" }}>
+      <div style={{ flex: 1, maxWidth: "800px", overflowY: "auto", paddingRight: "10px" }}>
         
         {/* PERSONAL INFO TAB */}
         {activeSettingsTab === "personal" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Personal Information</h3>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your personal details and how they appear on your profile.</p>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your intern details connected with live database.</p>
             </div>
 
             <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
@@ -104,39 +219,54 @@ export default function InternProfile() {
               </div>
 
               {/* Form Grid */}
-              <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
-                  </div>
+              <form onSubmit={handleSaveProfile}>
+                <div style={{ marginBottom: "16px" }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Full Name</label>
+                  <input 
+                    type="text" 
+                    value={profile.name} 
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })} 
+                    style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                    required 
+                  />
                 </div>
 
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
+                    <input 
+                      type="email" 
+                      value={profile.email} 
+                      disabled 
+                      style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed", boxSizing: "border-box" }} 
+                    />
                   </div>
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>GitHub ID</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Domain / Track</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="dhanush-dev" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
+                      <input 
+                        type="text" 
+                        value={profile.domain_name} 
+                        disabled 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Institution</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>College / Institution</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Tech University" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
+                      <input 
+                        type="text" 
+                        value={profile.institution} 
+                        onChange={(e) => setProfile({ ...profile, institution: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
@@ -146,27 +276,32 @@ export default function InternProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Software Engineering Intern" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
+                      <input 
+                        type="text" 
+                        value={profile.role} 
+                        disabled 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Location</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Phone Number</label>
                     <div style={{ position: "relative" }}>
-                      <MapPin size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="San Francisco, CA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} />
+                      <Phone size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input 
+                        type="tel" 
+                        value={profile.phone} 
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
 
-                <div style={{ marginBottom: "20px" }}>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate software engineering intern excited to learn full-stack development and build scalable applications." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none", background: "transparent" }}></textarea>
-                </div>
-
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid var(--border-color, #e2e8f0)", paddingTop: "16px" }}>
-                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-secondary, #475569)", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "var(--brand-primary, #2563eb)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Save size={16} /> Save Changes
+                  <button type="button" onClick={fetchProfileData} style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-secondary, #475569)", cursor: "pointer" }}>Cancel</button>
+                  <button type="submit" disabled={isSavingProfile} style={{ background: "var(--brand-primary, #2563eb)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Save size={16} /> {isSavingProfile ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>
@@ -179,12 +314,12 @@ export default function InternProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Account Security</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and secure your account.</p>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and update backend credentials.</p>
             </div>
 
             <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
-              <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
+              <form onSubmit={handleChangePassword}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
@@ -197,30 +332,63 @@ export default function InternProfile() {
                         Forgot Password?
                       </button>
                     </div>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.currentPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                      required 
+                    />
                     
                     {resetEmailSent && (
                       <div style={{ marginTop: "8px", padding: "8px 12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "6px", color: "var(--success, #166534)", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Mail size={14} /> Password reset link sent to your email!
+                        <Mail size={14} /> Password reset link sent to {profile.email}!
                       </div>
                     )}
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "8px" }}>New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.newPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "8px" }}>Confirm New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.confirmPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", background: "transparent", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
-                  <button type="submit" style={{ background: "var(--brand-primary, #2563eb)", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
-                    Update Password
+
+                  {passwordStatus.error && (
+                    <div style={{ padding: "8px 12px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "6px", color: "#991b1b", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <AlertCircle size={14} /> {passwordStatus.error}
+                    </div>
+                  )}
+
+                  {passwordStatus.success && (
+                    <div style={{ padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <CheckCircle size={14} /> {passwordStatus.success}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit" 
+                    disabled={passwordStatus.loading}
+                    style={{ background: "var(--brand-primary, #2563eb)", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}
+                  >
+                    {passwordStatus.loading ? "Updating..." : "Update Password"}
                   </button>
                 </div>
               </form>
             </div>
-
-
           </div>
         )}
 
@@ -229,34 +397,30 @@ export default function InternProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Notifications</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Choose how you receive updates and alerts.</p>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Real-time backend system notifications.</p>
             </div>
 
             <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Email Notifications</h4>
+              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Live Notifications Log</h4>
               
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Weekly Summary</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Receive a weekly email summarizing your progress.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {notifications.length === 0 ? (
+                  <div style={{ padding: "16px", textAlign: "center", color: "#64748b", fontSize: "0.9rem" }}>
+                    No system notifications in database yet.
                   </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Mentor Messages</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Get notified when a mentor replies to your ticket.</p>
-                  </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>New Airdrops</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Alerts when a new bonus challenge is available.</p>
-                  </div>
-                  <input type="checkbox" style={{ width: "18px", height: "18px", accentColor: "var(--brand-primary, #2563eb)", cursor: "pointer" }} />
-                </div>
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} style={{ padding: "12px 16px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-primary, #1e293b)" }}>{n.title}</div>
+                        <div style={{ fontSize: "0.85rem", color: "var(--text-secondary, #475569)", marginTop: "2px" }}>{n.message}</div>
+                      </div>
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #94a3b8)" }}>
+                        {n.created_at ? new Date(n.created_at).toLocaleDateString() : "Today"}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

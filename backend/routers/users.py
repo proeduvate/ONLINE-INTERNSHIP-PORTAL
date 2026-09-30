@@ -42,6 +42,8 @@ def update_profile(
         user.name = profile_update.name.strip()
     if profile_update.college is not None:
         user.college = profile_update.college.strip()
+    if profile_update.phone is not None:
+        user.phone = profile_update.phone.strip()
     if profile_update.password is not None and profile_update.password.strip():
         user.hashed_password = hash_password(profile_update.password.strip())
 

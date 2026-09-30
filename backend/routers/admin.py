@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 import models
 import database
+import schemas
 from dependencies import get_current_user
 from services.scoring_service import calculate_final_grade, bulk_calculate_final_grades
 from scoring_schemas import FinalEvaluationResponse
@@ -114,4 +115,95 @@ def get_final_evaluations(db: Session = Depends(database.get_db), current_user: 
     results.sort(key=lambda x: x.get("final_score") or 0, reverse=True)
     
     return results
+
+@router.post("/mentors", status_code=status.HTTP_201_CREATED)
+def create_mentor(
+    mentor_data: schemas.MentorCreateRequest,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Creates a new Mentor account and optional verification/welcome notification.
+    Only Admin users can perform this action.
+    """
+    if current_user.role != models.UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access Denied: Only Admins can create mentor accounts"
+        )
+    
+    # Check if email already registered
+    clean_email = mentor_data.email.strip().lower()
+    existing_user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with this email already exists"
+        )
+    
+    # Resolve or create domain if provided
+    domain_obj = None
+    if mentor_data.domain and mentor_data.domain.strip():
+        domain_name_clean = mentor_data.domain.strip()
+        domain_obj = db.query(models.Domain).filter(models.Domain.name.ilike(domain_name_clean)).first()
+        if not domain_obj:
+            domain_obj = models.Domain(name=domain_name_clean, description=f"{domain_name_clean} Internship Domain")
+            db.add(domain_obj)
+            db.flush()
+    
+    from core.security import hash_password
+    hashed_pw = hash_password(mentor_data.password or "Mentor@123")
+    
+    new_mentor = models.User(
+        name=mentor_data.name.strip(),
+        email=clean_email,
+        hashed_password=hashed_pw,
+        role=models.UserRole.MENTOR,
+        college="ProEduvate Mentors",
+        domain_id=domain_obj.id if domain_obj else None,
+        attendance_pct=100,
+        progress_pct=100
+    )
+    
+    db.add(new_mentor)
+    db.commit()
+    db.refresh(new_mentor)
+    
+    # Dispatch notification email if service is available
+    try:
+        from services.email_service import dispatch_notification, EventType
+        dispatch_notification(
+            recipient_email=new_mentor.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Mentor Account Verification & Login Credentials",
+            message=f"Welcome {new_mentor.name}! Your mentor account has been created for {domain_obj.name if domain_obj else (mentor_data.domain or 'General')}. Temporary password: {mentor_data.password or 'Mentor@123'}",
+            action_url="http://localhost:3000/login"
+        )
+    except Exception as e:
+        print(f"Notification dispatch warning: {e}")
+    
+    return {
+        "id": new_mentor.id,
+        "name": new_mentor.name,
+        "email": new_mentor.email,
+        "role": "mentor",
+        "domain": domain_obj.name if domain_obj else (mentor_data.domain or "-"),
+        "domain_id": new_mentor.domain_id,
+        "status": "Active",
+        "message": "Mentor account created successfully"
+    }
+
+@router.get("/domains")
+def get_all_domains(db: Session = Depends(database.get_db)):
+    domains = db.query(models.Domain).all()
+    if not domains:
+        default_names = ["Frontend", "Data Science", "Artificial Intelligence", "Cyber Security", "Fullstack", "Python", "UI/UX", "Java", "Data Analytics"]
+        for d_name in default_names:
+            d_obj = models.Domain(name=d_name, description=f"{d_name} Internship Domain")
+            db.add(d_obj)
+        db.commit()
+        domains = db.query(models.Domain).all()
+    return [{"id": d.id, "name": d.name, "description": d.description} for d in domains]
+
+
 
