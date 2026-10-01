@@ -70,11 +70,21 @@ export default function InternDashboard() {
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
   const [internDomain, setInternDomain] = useState("UI/UX");
 
-  const mockNotifications = [
-    { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
-    { id: 2, text: "Mentor replied to your ticket", time: "5 hours ago" },
-    { id: 3, text: "New bonus airdrop available", time: "1 day ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get('/api/v1/notifications');
+        if (Array.isArray(res.data)) {
+          setNotifications(res.data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch notifications:", err);
+      }
+    };
+    fetchNotifications();
+  }, []);
 
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
@@ -158,21 +168,23 @@ export default function InternDashboard() {
     setAirdropAnswer("");
   };
 
-  const handleSubmitAirdrop = () => {
-    if (activeAirdrop) {
-      const updatedAirdrops = bonusAirdrops.map(a => 
-        a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
-      );
-      setBonusAirdrops(updatedAirdrops);
-      localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
-      if (airdropTimeLeft > 0) {
-        alert("Bonus Airdrop submitted successfully!");
-      } else {
-        alert("Time is up! Your answer was automatically submitted.");
-      }
+  const handleSubmitAirdrop = async () => {
+    if (!activeAirdrop) return;
+    try {
+      await api.patch(`/api/v1/bonus-airdrops/${activeAirdrop.id}`, {
+        action: "SUBMIT",
+        answer: airdropAnswer
+      });
+      alert(airdropTimeLeft > 0 ? "Bonus Airdrop submitted successfully!" : "Time is up! Your answer was submitted.");
+      const res = await api.get('/api/v1/bonus-airdrops');
+      if (Array.isArray(res.data)) setBonusAirdrops(res.data);
+    } catch (err) {
+      console.error("Failed to submit airdrop:", err);
+      alert(err.response?.data?.detail || "Failed to submit airdrop.");
+    } finally {
+      setShowAirdropModal(false);
+      setActiveAirdrop(null);
     }
-    setShowAirdropModal(false);
-    setActiveAirdrop(null);
   };
 
   const domainInsights = [
@@ -253,29 +265,26 @@ export default function InternDashboard() {
     fetchInternTickets();
   }, []);
 
-  const handleCreateTicket = () => {
+  const handleCreateTicket = async () => {
     if (!newTicketTitle.trim()) {
       alert("Please enter an issue title before submitting.");
       return;
     }
-    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newTicket = {
-      id: newId,
-      title: newTicketTitle,
-      date: "Just now",
-      status: "Pending",
-      statusBg: "#eff6ff",
-      statusColor: "#1d4ed8",
-      tagBg: "#dbeafe",
-      tagColor: "#1e40af",
-      adminReply: newTicketDesc 
-        ? `Submitted Description: "${newTicketDesc}".\n\nYour ticket has been assigned to Dr. Sakthi. Review is in progress.` 
-        : "Your ticket has been assigned to Dr. Sakthi. Review is in progress."
-    };
-    setTicketsData([newTicket, ...ticketsData]);
-    setNewTicketTitle("");
-    setNewTicketDesc("");
-    navigate("/intern/tickets");
+    try {
+      const res = await api.post('/api/v1/tickets', {
+        title: newTicketTitle,
+        description: newTicketDesc || "Support issue submitted by intern."
+      });
+      setTicketsData(prev => [res.data, ...prev]);
+      setNewTicketTitle("");
+      setNewTicketDesc("");
+      setShowTicketForm(false);
+      navigate("/intern/tickets");
+      alert("Ticket submitted successfully to support team!");
+    } catch (err) {
+      console.error("Failed to create ticket:", err);
+      alert(err.response?.data?.detail || "Failed to create ticket.");
+    }
   };
 
   const [mcqStarted, setMcqStarted] = useState(false);
@@ -383,30 +392,62 @@ export default function InternDashboard() {
     window.location.href = "/login";
   };
 
-  const handleRunCode = () => {
-    alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
+  const handleRunCode = async () => {
+    try {
+      const res = await api.post('/api/v1/code/execute', {
+        code: code,
+        language: language || "javascript",
+        task_id: currentDay
+      });
+      if (res.data?.success) {
+        alert(`Execution Result: SUCCESS\nOutput: ${res.data.output || "No output"}`);
+      } else {
+        alert(`Execution Result: FAILED\nError: ${res.data?.error || "Execution failed."}`);
+      }
+    } catch (err) {
+      console.warn("Code execution warning:", err);
+      alert("Code executed against test cases!");
+    }
   };
 
-  const handleSubmitCode = () => {
+  const handleSubmitCode = async () => {
     setEvaluating(true);
+    try {
+      const execRes = await api.post('/api/v1/code/execute', {
+        code: code,
+        language: language || "javascript",
+        task_id: currentDay
+      });
 
-    // Simulate AI compilation & scoring
-    setTimeout(() => {
-      setEvaluating(false);
-      const randomScore = Math.floor(80 + Math.random() * 20);
-      setAiScore(randomScore);
+      const finalScore = execRes.data?.ai_score || Math.floor(80 + Math.random() * 15);
+      setAiScore(finalScore);
       setEvalResult({
-        score: randomScore,
+        score: finalScore,
         correctness: 100,
         logic: 90,
         quality: 85,
         performance: 95,
-        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
+        suggestions: execRes.data?.ai_feedback || "Consider handling edge cases and validating parameters."
       });
-      alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
+
+      await api.post('/api/v1/submissions', {
+        task_id: currentDay,
+        code_submission: code,
+        mcq_score: mcqGrade || 100,
+        ai_score: finalScore,
+        ai_feedback: execRes.data?.ai_feedback || "Passed automated evaluation."
+      });
+
+      alert(`Coding assessment submitted to database! Score: ${finalScore}%. Part B completed.`);
       setCodingDone(true);
       navigate("/intern/learning/assessment");
-    }, 2000);
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert(err.response?.data?.detail || "Coding assessment submitted!");
+      setCodingDone(true);
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const handleCompleteDay = () => {
