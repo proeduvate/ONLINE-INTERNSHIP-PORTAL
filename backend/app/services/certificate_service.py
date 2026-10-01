@@ -200,17 +200,24 @@ class CertificateService:
 
     def generate_certificate_pdf(
         self,
-        intern_name: str,
-        domain: str,
+        intern_name: Any,
+        domain: str = "",
         start_date: str = "",
         end_date: str = "",
         grade: str = "",
         score: float = 92.0,
         certificate_id: str = "Certificate",
-        is_approved: bool = True
+        is_approved: bool = True,
+        include_authorization: Optional[bool] = None
     ) -> bytes:
+        if include_authorization is not None:
+            is_approved = include_authorization
+
+        if isinstance(intern_name, dict):
+            return self.generate_from_dict(intern_name, is_approved=is_approved)
+
         png_bytes = self.generate_certificate_image(
-            intern_name=intern_name,
+            intern_name=str(intern_name),
             domain=domain,
             start_date=start_date,
             end_date=end_date,

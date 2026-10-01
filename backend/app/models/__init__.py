@@ -72,6 +72,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
     batch_id = Column(Integer, ForeignKey("batches.id", ondelete="SET NULL"), nullable=True)
+    is_credential_approved = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     @property

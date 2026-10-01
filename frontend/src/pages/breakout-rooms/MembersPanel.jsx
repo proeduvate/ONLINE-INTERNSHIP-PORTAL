@@ -1,9 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Search, Send, X, ArrowLeft, UserX, MessageSquare, MessageCircle, Users, AlertTriangle } from 'lucide-react';
 import { mockChatMessages, mockInterns, mockMentor } from './MockData';
 
 export default function MembersPanel({ mode, onClose, interns: propInterns = mockInterns, mentor = mockMentor, isIntern = false }) {
-  const [interns, setInterns] = useState(propInterns);
+  const [kickedIds, setKickedIds] = useState([]);
+  const interns = useMemo(() => (propInterns || []).filter(i => !kickedIds.includes(i.id)), [propInterns, kickedIds]);
+
+  // Members search
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // ── Members list calculations (placed top-level to satisfy Rules of Hooks) ──
+  const filteredInterns = useMemo(() => {
+    return interns.filter(i =>
+      i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      i.room.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [interns, searchTerm]);
+
+  const allMembers = useMemo(() => [mentor, ...interns], [mentor, interns]);
 
   // Group chat state
   const [groupMessages, setGroupMessages] = useState(mockChatMessages);
@@ -13,9 +27,6 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
   const [dmTarget, setDmTarget] = useState(null);        // intern object or null
   const [dmChats, setDmChats] = useState({});            // { internId: [messages] }
   const [dmInput, setDmInput] = useState('');
-
-  // Members search
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Kick confirm
   const [kickTarget, setKickTarget] = useState(null);
@@ -57,7 +68,7 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
 
   // ── Kick intern ──
   const handleKick = (internId) => {
-    setInterns(prev => prev.filter(i => i.id !== internId));
+    setKickedIds(prev => [...prev, internId]);
     setKickTarget(null);
     if (dmTarget?.id === internId) setDmTarget(null);
   };
@@ -171,11 +182,6 @@ export default function MembersPanel({ mode, onClose, interns: propInterns = moc
   }
 
   // ── Members list panel ──
-  const filteredInterns = interns.filter(i =>
-    i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    i.room.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const allMembers = [mentor, ...interns];
 
   return (
     <div className="br-right-sidebar">

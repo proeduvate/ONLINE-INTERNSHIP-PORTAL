@@ -7,6 +7,7 @@ import {
 export default function MeetingArea({ 
   room, 
   participants, 
+  currentParticipantId,
   rightPanelMode, 
   setRightPanelMode,
   onLeave,
@@ -85,6 +86,12 @@ export default function MeetingArea({
     }, 2200);
   };
 
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (a.id === currentParticipantId) return -1;
+    if (b.id === currentParticipantId) return 1;
+    return 0;
+  });
+
   const getGridLayout = (count) => {
     if (count <= 1) return 'layout-1';
     if (count === 2) return 'layout-2';
@@ -94,7 +101,7 @@ export default function MeetingArea({
     return 'layout-many';
   };
 
-  const layoutClass = getGridLayout(participants.length);
+  const layoutClass = getGridLayout(sortedParticipants.length);
 
   return (
     <div className="br-main-area" style={{ position: 'relative' }}>
@@ -122,7 +129,7 @@ export default function MeetingArea({
         </div>
         <div className="br-header-right">
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#5c5e66' }}>
-            <Users size={18} /> {participants.length}
+            <Users size={18} /> {sortedParticipants.length}
           </div>
           {!isIntern && (
             <button className="br-btn br-btn-secondary" onClick={openManager}>
@@ -160,9 +167,10 @@ export default function MeetingArea({
           <div className="br-discord-stage-container">
             {/* Top Participant Camera Strip (Discord Theater Strip) */}
             <div className="br-discord-participant-strip">
-              {participants.map((p, idx) => {
-                const pMic = idx === 0 ? isMicOn : p.micOn;
-                const pCam = idx === 0 ? isVideoOn : p.camOn;
+              {sortedParticipants.map((p) => {
+                const isSelf = p.id === currentParticipantId;
+                const pMic = isSelf ? isMicOn : p.micOn;
+                const pCam = isSelf ? isVideoOn : p.camOn;
                 return (
                   <div key={p.id} className={`br-discord-participant-tile ${pMic ? 'speaking' : ''}`}>
                     {pCam ? (
@@ -192,13 +200,12 @@ export default function MeetingArea({
                     <Tv size={14} /> LIVE
                   </div>
                   <span style={{ color: '#ffffff', fontSize: '13px', fontWeight: 700 }}>
-                    Screen Share - {participants[0]?.name || 'You'}
+                    Screen Share - {sortedParticipants.find(p => p.id === currentParticipantId)?.name || 'You'}
                   </span>
                   <span style={{ backgroundColor: '#2b2d31', color: '#b5bac1', fontSize: '11px', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
                     1080p 60FPS
                   </span>
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <button 
                     onClick={handleToggleScreenShare} 
@@ -257,7 +264,7 @@ export default function MeetingArea({
           </div>
         ) : (
           /* STANDARD PARTICIPANTS GRID */
-          participants.length === 0 ? (
+          sortedParticipants.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>
               <Users size={48} style={{ marginBottom: '12px', opacity: 0.5 }} />
               <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#64748b' }}>No participants in this room</h3>
@@ -265,9 +272,10 @@ export default function MeetingArea({
             </div>
           ) : (
             <div className={`br-video-grid ${layoutClass}`}>
-              {participants.map((p, idx) => {
-                const pMic = idx === 0 ? isMicOn : p.micOn;
-                const pCam = idx === 0 ? isVideoOn : p.camOn;
+              {sortedParticipants.map((p) => {
+                const isSelf = p.id === currentParticipantId;
+                const pMic = isSelf ? isMicOn : p.micOn;
+                const pCam = isSelf ? isVideoOn : p.camOn;
                 return (
                   <div key={p.id} className={`br-video-tile ${pMic ? 'speaking' : ''}`}>
                     {pCam ? (
@@ -279,7 +287,7 @@ export default function MeetingArea({
                       <div className="br-video-avatar">{p.avatar}</div>
                     )}
 
-                    {idx === 0 && isHandRaised && (
+                    {isSelf && isHandRaised && (
                       <div style={{ position: 'absolute', top: '10px', right: '10px', background: '#f59e0b', color: '#ffffff', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 700, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                         ✋ Hand Raised
                       </div>
@@ -287,10 +295,10 @@ export default function MeetingArea({
 
                     <div className="br-video-overlay">
                       {pMic ? <Mic size={14} color="#23a559" /> : <MicOff size={14} color="#da373c" />}
-                      {p.name} {idx === 0 ? '(You)' : ''}
+                      {p.name} {isSelf ? '(You)' : ''}
                     </div>
                     <div className="br-video-controls">
-                      <button className="br-icon-btn" style={{ backgroundColor: 'rgba(255,255,255,0.8)' }} onClick={() => idx === 0 && setIsMicOn(!isMicOn)}>
+                      <button className="br-icon-btn" style={{ backgroundColor: 'rgba(255,255,255,0.8)' }} onClick={() => isSelf && setIsMicOn(!isMicOn)}>
                         {pMic ? <Mic size={14} color="#23a559" /> : <MicOff size={14} color="#da373c" />}
                       </button>
                     </div>

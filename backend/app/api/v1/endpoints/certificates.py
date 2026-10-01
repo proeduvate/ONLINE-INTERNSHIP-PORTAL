@@ -192,8 +192,18 @@ def download_certificate(
     end_date = getattr(cert_record, "end_date", "") or "September 18, 2026"
     issue_date = getattr(cert_record, "issue_date", "") or datetime.utcnow().strftime("%d %B %Y").upper()
 
-    cert_status = str(getattr(cert_record, "status", "APPROVED")).upper()
-    is_approved = cert_status in ("GENERATED", "ISSUED", "APPROVED")
+    cert_status = str(getattr(cert_record, "status", "")).upper()
+    is_approved = False
+    if cert_status in ("GENERATED", "ISSUED", "APPROVED"):
+        is_approved = True
+    elif user and getattr(user, "is_credential_approved", False):
+        is_approved = True
+
+    if not is_approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Certificate is pending admin credential approval upon internship completion."
+        )
 
     try:
         payload = {
@@ -206,7 +216,7 @@ def download_certificate(
             "cert_id": cert_record.certificate_id if cert_record else certificate_id,
             "issue_date": issue_date,
         }
-        pdf_bytes = cert_service.generate_certificate_pdf(payload, include_authorization=is_approved)
+        pdf_bytes = cert_service.generate_certificate_pdf(payload, include_authorization=True)
     except ValueError as ve:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -256,6 +266,19 @@ def preview_certificate(certificate_id: str, db: Session = Depends(deps.get_db))
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Score below 45. Certificate will not be generated."
+        )
+
+    cert_status = str(getattr(cert_record, "status", "")).upper()
+    is_approved = False
+    if cert_status in ("GENERATED", "ISSUED", "APPROVED"):
+        is_approved = True
+    elif user and getattr(user, "is_credential_approved", False):
+        is_approved = True
+
+    if not is_approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Certificate is pending admin credential approval upon internship completion."
         )
 
     intern_name = (getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
@@ -330,8 +353,18 @@ def get_intern_certificate(intern_id: str, db: Session = Depends(deps.get_db)):
     pdf_url = f"/api/v1/certificates/download/{cert_id}"
     issue_date = getattr(cert_record, "issue_date", "") or datetime.utcnow().strftime("%d %B %Y").upper()
 
+    cert_status = str(getattr(cert_record, "status", "")).upper()
+    is_approved = False
+    if cert_status in ("GENERATED", "ISSUED", "APPROVED"):
+        is_approved = True
+    elif user and getattr(user, "is_credential_approved", False):
+        is_approved = True
+
     return {
         "status": "success",
+        "is_approved": is_approved,
+        "is_credential_approved": is_approved,
+        "certificate_status": "APPROVED" if is_approved else "PENDING",
         "certificate_id": cert_id,
         "certId": cert_id,
         "intern_id": str(user.id) if user else str(intern_id),
@@ -343,6 +376,75 @@ def get_intern_certificate(intern_id: str, db: Session = Depends(deps.get_db)):
         "pdf_url": pdf_url,
         "public_url": pdf_url,
         "issue_date": issue_date
+    }
+
+
+@router.post("/approve/{intern_id}", summary="Approve and issue credential for an intern")
+@router.post("/admin/credentials/approve/{intern_id}", summary="Approve and issue credential for an intern (Admin Alias)")
+def approve_intern_credential(
+    intern_id: str,
+    db: Session = Depends(deps.get_db)
+):
+    """
+    Admin Action: Marks the intern's credential as APPROVED in the database
+    and creates a confirmation notification.
+    """
+    cert_record, user = resolve_cert_and_user(intern_id, db)
+    if not user and not cert_record:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Intern user record not found"
+        )
+
+    target_user_id = user.id if user else cert_record.intern_id
+
+    # Update User model approval flag
+    if user:
+        user.is_credential_approved = True
+        db.add(user)
+
+    # Update Certificate model status
+    if cert_record:
+        cert_record.status = "APPROVED"
+        db.add(cert_record)
+    elif Certificate is not None and user:
+        domain = getattr(user, "domain", None) or "Full Stack Web Development"
+        if hasattr(domain, "name"):
+            domain = domain.name
+        cert_id = f"PE-2026-{str(domain)[:3].upper()}-{user.id:04d}"
+        new_cert = Certificate(
+            certificate_id=cert_id,
+            intern_id=user.id,
+            intern_name=user.name,
+            domain=str(domain),
+            duration="1 Month",
+            status="APPROVED",
+            final_score=91
+        )
+        db.add(new_cert)
+
+    # Add confirmation Notification
+    try:
+        from app.models import Notification
+        notif = Notification(
+            user_id=target_user_id,
+            title="Credential Approved & Issued",
+            message="Your internship certificate has been officially approved by the Admin and is now unlocked for download and LinkedIn sharing.",
+            type="success"
+        )
+        db.add(notif)
+    except Exception:
+        pass
+
+    db.commit()
+
+    return {
+        "success": True,
+        "status": "APPROVED",
+        "is_approved": True,
+        "is_credential_approved": True,
+        "message": "Credential approved successfully. Intern certificate is now unlocked.",
+        "intern_id": str(target_user_id)
     }
 
 

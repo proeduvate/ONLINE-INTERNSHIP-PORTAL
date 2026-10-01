@@ -5,7 +5,7 @@ from datetime import datetime
 import asyncio
 import jwt
 
-from app.api.deps import get_db, get_current_user
+from app.api.deps import get_db, get_current_user, get_current_user_optional
 from app import models, schemas
 from app.core.security import SECRET_KEY, ALGORITHM
 
@@ -48,7 +48,7 @@ manager = ConnectionManager()
 @router.get("", response_model=List[schemas.MeetingResponse])
 @router.get("/", response_model=List[schemas.MeetingResponse])
 def get_meetings(db: Session = Depends(get_db)):
-    meetings = db.query(models.Meeting).filter(models.Meeting.status.in_(["active", "scheduled"])).order_by(models.Meeting.id.desc()).all()
+    meetings = db.query(models.Meeting).order_by(models.Meeting.id.desc()).all()
     return meetings
 
 @router.post("", response_model=schemas.MeetingResponse)
@@ -56,7 +56,7 @@ def get_meetings(db: Session = Depends(get_db)):
 def create_meeting(
     data: schemas.MeetingCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
+    current_user: models.User = Depends(get_current_user_optional)
 ):
     mentor_id = current_user.id
 

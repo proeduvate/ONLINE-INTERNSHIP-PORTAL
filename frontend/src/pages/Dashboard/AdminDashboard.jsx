@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../services/AuthContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
 import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
@@ -14,6 +15,7 @@ import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,7 +83,9 @@ export default function AdminDashboard() {
   const [refixEndDate, setRefixEndDate] = useState("");
   const [refixEndTime, setRefixEndTime] = useState("");
 
-  const [adminCredentialInterns, setAdminCredentialInterns] = useState([]);
+  const defaultCredentialRequests = [];
+
+  const [adminCredentialInterns, setAdminCredentialInterns] = useState(defaultCredentialRequests);
   const [selectedAdminCredentialIntern, setSelectedAdminCredentialIntern] = useState(null);
 
   useEffect(() => {
@@ -89,6 +93,8 @@ export default function AdminDashboard() {
       const stored = localStorage.getItem("app_certificate_requests");
       if (stored) {
         setAdminCredentialInterns(JSON.parse(stored));
+      } else {
+        localStorage.setItem("app_certificate_requests", JSON.stringify(defaultCredentialRequests));
       }
     };
     handleStorageChange();
@@ -96,7 +102,14 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleApproveCertificate = (id) => {
+  const handleApproveCertificate = async (id) => {
+    try {
+      await api.post(`/admin/credentials/approve/${id}`).catch(async () => {
+        await api.post(`/certificates/approve/${id}`);
+      });
+    } catch (err) {
+      console.error("Backend certificate approval call failed:", err);
+    }
     const updated = adminCredentialInterns.map(i => i.id === id ? { ...i, status: "Approved" } : i);
     setAdminCredentialInterns(updated);
     localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
@@ -313,9 +326,7 @@ export default function AdminDashboard() {
     { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Web Development" },
   ]);
 
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Mid-Term Review Meeting", time: "2026-08-08 10:00 AM", mentor: "Dr. Sakthi", link: "https://zoom.us/mock" },
-  ]);
+  const [meetings, setMeetings] = useState([]);
 
   // Chart Data
   const progressData = dashboardStats?.batch_progress || [];
@@ -1673,11 +1684,15 @@ export default function AdminDashboard() {
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
             >
-              SA
+              {user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "AD"}
             </div>
             
             {isProfileDropdownOpen && (
-              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "10px 14px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{user?.name || user?.full_name || "Admin"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || ""}</p>
+                </div>
                 <button 
                   onClick={() => { handleTabClick("Profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#475569", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { useAuth } from "../../services/AuthContext";
 import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot, Video } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
@@ -13,6 +14,7 @@ import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 export default function InternDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
@@ -24,9 +26,10 @@ export default function InternDashboard() {
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
   const [internDomain, setInternDomain] = useState("Full Stack Development");
   const [certViewMode, setCertViewMode] = useState("pdf");
+  const [isApproved, setIsApproved] = useState(false);
 
   const [certData, setCertData] = useState({
-    internName: "JOHN DOE",
+    internName: user?.name ? user.name.toUpperCase() : "INTERN",
     domain: "Full Stack Development",
     startDate: "August 18, 2026",
     endDate: "September 18, 2026",
@@ -45,6 +48,8 @@ export default function InternDashboard() {
         const currentUserId = localStorage.getItem("user_id") || "3";
         const res = await api.get(`/certificates/intern/${currentUserId}`);
         if (res.data && res.data.status === "success") {
+          const approved = res.data.is_approved === true || res.data.is_credential_approved === true || res.data.certificate_status === "APPROVED";
+          setIsApproved(approved);
           setCertData(prev => ({
             ...prev,
             internName: res.data.intern_name || prev.internName,
@@ -82,14 +87,18 @@ export default function InternDashboard() {
       try {
         const res = await api.get("/api/meetings");
         if (res.data && Array.isArray(res.data)) {
-          setScheduledMeetings(res.data);
+          const sorted = [...res.data].sort((a, b) => (b.id || 0) - (a.id || 0));
+          setScheduledMeetings(prev => {
+            if (JSON.stringify(prev) === JSON.stringify(sorted)) return prev;
+            return sorted;
+          });
         }
       } catch (err) {
         console.error("Failed to fetch meetings for intern:", err);
       }
     };
     fetchMeetings();
-    const interval = setInterval(fetchMeetings, 10000);
+    const interval = setInterval(fetchMeetings, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -442,12 +451,16 @@ export default function InternDashboard() {
 
   
   const handleDownloadPDF = async () => {
+    if (!isApproved) {
+      alert("Certificate is pending admin credential approval upon internship completion.");
+      return;
+    }
     try {
+      const currentUserId = localStorage.getItem("user_id") || "3";
       const certId = certData.certId || certData.certificate_id || "PRO-INT-26-839";
-      const downloadUrl = `http://127.0.0.1:8000/api/v1/certificates/download/${certId}?t=${Date.now()}`;
-      const res = await fetch(downloadUrl);
-      if (!res.ok) throw new Error("Failed to download PDF");
-      const blob = await res.blob();
+      const downloadUrl = `/certificates/${currentUserId}/download`;
+      const res = await api.get(downloadUrl, { responseType: 'blob' });
+      const blob = new Blob([res.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -457,15 +470,23 @@ export default function InternDashboard() {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert("Error downloading certificate");
+      if (err.response && err.response.status === 403) {
+        alert("Certificate is pending admin credential approval upon internship completion.");
+      } else {
+        alert("Error downloading certificate: " + (err.message || "Failed"));
+      }
     }
   };
 
   const handleShareLinkedIn = () => {
-    const certName = "Certificate of Completion - Internship";
-    const certId = certData.certId || "PRO-INT-26-839";
-    const certUrl = `http://127.0.0.1:3000/verify/${certId}`;
-    const linkedinUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(certName)}&certUrl=${encodeURIComponent(certUrl)}`;
+    if (!isApproved) {
+      alert("Certificate is pending admin credential approval upon internship completion.");
+      return;
+    }
+    const domain = certData.domain || "Full Stack Development";
+    const certId = certData.certId || certData.certificate_id || "PRO-INT-26-839";
+    const verifyUrl = `${window.location.origin}/verify/${certId}`;
+    const linkedinUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(domain)}&organizationName=${encodeURIComponent("ProEduvate")}&issueYear=2026&certUrl=${encodeURIComponent(verifyUrl)}`;
     window.open(linkedinUrl, "_blank");
   };
 
@@ -713,24 +734,26 @@ export default function InternDashboard() {
                           {scheduledMeetings.length > 0 && <span style={{ fontSize: "0.7rem", color: "#16a34a", fontWeight: 700 }}>● {scheduledMeetings.length} Available</span>}
                         </div>
                         {scheduledMeetings.length > 0 ? (
-                          scheduledMeetings.slice(0, 3).map((m) => (
-                            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface, #ffffff)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)" }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: m.status === 'active' ? '#dcfce7' : '#eff6ff', color: m.status === 'active' ? '#16a34a' : '#2563eb', display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                  <Video size={16} />
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "210px", overflowY: "auto", paddingRight: "4px" }}>
+                            {scheduledMeetings.slice(0, 5).map((m) => (
+                              <div key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface, #ffffff)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                  <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: m.status === 'active' || m.status === 'ACTIVE' ? '#dcfce7' : '#eff6ff', color: m.status === 'active' || m.status === 'ACTIVE' ? '#16a34a' : '#2563eb', display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                    <Video size={16} />
+                                  </div>
+                                  <div>
+                                    <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{m.title}</span>
+                                    <span style={{ fontSize: "0.65rem", color: m.status === 'active' || m.status === 'ACTIVE' ? '#16a34a' : '#64748b', fontWeight: 600 }}>
+                                      {m.status === 'active' || m.status === 'ACTIVE' ? 'LIVE NOW' : (m.scheduled_time ? new Date(m.scheduled_time).toLocaleString() : 'Scheduled')}
+                                    </span>
+                                  </div>
                                 </div>
-                                <div>
-                                  <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{m.title}</span>
-                                  <span style={{ fontSize: "0.65rem", color: m.status === 'active' ? '#16a34a' : '#64748b', fontWeight: 600 }}>
-                                    {m.status === 'active' ? 'LIVE NOW' : (m.scheduled_time ? new Date(m.scheduled_time).toLocaleString() : 'Scheduled')}
-                                  </span>
-                                </div>
+                                <button style={{ padding: "6px 14px", background: m.status === 'active' || m.status === 'ACTIVE' ? "#16a34a" : "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }} onClick={() => handleJoinMeeting(m.room_code)}>
+                                  {m.status === 'active' || m.status === 'ACTIVE' ? 'Join Live' : 'Join'}
+                                </button>
                               </div>
-                              <button style={{ padding: "6px 14px", background: m.status === 'active' ? "#16a34a" : "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }} onClick={() => handleJoinMeeting(m.room_code)}>
-                                {m.status === 'active' ? 'Join Live' : 'Join'}
-                              </button>
-                            </div>
-                          ))
+                            ))}
+                          </div>
                         ) : (
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface, #ffffff)", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -2027,6 +2050,29 @@ export default function InternDashboard() {
 
       case "Progress & Certificate":
         if (showCertificateView) {
+          if (!isApproved) {
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px" }}>
+                <div style={{ marginBottom: "-8px" }}>
+                  <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0" }}>
+                    <ArrowLeft size={16} /> Back to Dashboard
+                  </button>
+                </div>
+                <div style={{ background: "#fff", padding: "48px 32px", borderRadius: "16px", border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+                  <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
+                    <Lock size={32} />
+                  </div>
+                  <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#0f172a", margin: "0 0 8px 0" }}>Certificate Locked</h3>
+                  <p style={{ color: "#64748b", fontSize: "0.95rem", maxWidth: "540px", margin: "0 auto 20px auto", lineHeight: "1.6" }}>
+                    Certificate Locked - Pending Admin Credential Clearance Upon Internship Completion.
+                  </p>
+                  <span style={{ fontSize: "0.8rem", color: "#b45309", background: "#fef3c7", padding: "6px 18px", borderRadius: "20px", fontWeight: 700, display: "inline-block", border: "1px solid #fde68a" }}>
+                    PENDING ADMIN APPROVAL
+                  </span>
+                </div>
+              </div>
+            );
+          }
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "visible", paddingBottom: "10px", flex: 1, paddingRight: "10px" }}>
               {/* Back Button */}
@@ -2416,48 +2462,48 @@ export default function InternDashboard() {
 
               {/* Certificate Card */}
               <div style={{
-                background: isInternshipCompleted ? "linear-gradient(135deg, #cce3fd, #7ab6e8)" : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
+                background: (isInternshipCompleted && isApproved) ? "linear-gradient(135deg, #cce3fd, #7ab6e8)" : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
                 borderRadius: "16px",
                 padding: "16px",
                 display: "flex",
                 flexDirection: "column",
-                border: isInternshipCompleted ? "none" : "1px solid var(--border-color, #e2e8f0)",
-                color: isInternshipCompleted ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                border: (isInternshipCompleted && isApproved) ? "none" : "1px solid var(--border-color, #e2e8f0)",
+                color: (isInternshipCompleted && isApproved) ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
                 position: "relative",
                 overflow: "hidden"
               }}>
                 <div style={{ zIndex: 1 }}>
-                  <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: isInternshipCompleted ? "rgba(255,255,255,0.4)" : "var(--border-color, #e2e8f0)", color: isInternshipCompleted ? "#2563eb" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
-                    {isInternshipCompleted ? <Award size={24} /> : <Lock size={24} />}
+                  <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: (isInternshipCompleted && isApproved) ? "rgba(255,255,255,0.4)" : "var(--border-color, #e2e8f0)", color: (isInternshipCompleted && isApproved) ? "#2563eb" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+                    {(isInternshipCompleted && isApproved) ? <Award size={24} /> : <Lock size={24} />}
                   </div>
                   <h3 style={{ margin: "0 0 8px 0", fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #1e293b)" }}>
-                    {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
+                    {(isInternshipCompleted && isApproved) ? "Certificate Ready!" : "Certificate Locked"}
                   </h3>
-                  <p style={{ margin: "0 0 20px 0", fontSize: "0.85rem", lineHeight: "1.5", opacity: isInternshipCompleted ? 0.9 : 1 }}>
-                    {isInternshipCompleted 
+                  <p style={{ margin: "0 0 20px 0", fontSize: "0.85rem", lineHeight: "1.5", opacity: (isInternshipCompleted && isApproved) ? 0.9 : 1 }}>
+                    {(isInternshipCompleted && isApproved) 
                       ? "Your official verified certificate is now available." 
-                      : "Complete all 30 days of your internship to unlock."}
+                      : "Certificate Locked - Pending Admin Credential Clearance Upon Internship Completion."}
                   </p>
                   <button 
-                    disabled={!isInternshipCompleted}
+                    disabled={!(isInternshipCompleted && isApproved)}
                     onClick={() => setShowCertificateView(true)}
                     style={{
                       width: "100%",
-                      background: isInternshipCompleted ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)",
-                      color: isInternshipCompleted ? "#1e3a8a" : "#94a3b8",
+                      background: (isInternshipCompleted && isApproved) ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)",
+                      color: (isInternshipCompleted && isApproved) ? "#1e3a8a" : "#94a3b8",
                       border: "none",
                       padding: "12px",
                       borderRadius: "10px",
                       fontWeight: 700,
                       fontSize: "0.95rem",
-                      cursor: isInternshipCompleted ? "pointer" : "not-allowed",
+                      cursor: (isInternshipCompleted && isApproved) ? "pointer" : "not-allowed",
                       transition: "all 0.2s"
                     }}
                   >
-                    {isInternshipCompleted ? "View Certificate" : "Locked"}
+                    {(isInternshipCompleted && isApproved) ? "View Certificate" : "Locked (Pending Approval)"}
                   </button>
                 </div>
-                {isInternshipCompleted && <div style={{ position: "absolute", right: "-20%", bottom: "-20%", width: "150px", height: "150px", background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)", zIndex: 0 }}></div>}
+                {(isInternshipCompleted && isApproved) && <div style={{ position: "absolute", right: "-20%", bottom: "-20%", width: "150px", height: "150px", background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)", zIndex: 0 }}></div>}
               </div>
             </div>
           </div>
@@ -2611,11 +2657,15 @@ export default function InternDashboard() {
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              <img src="/assets/sadie-pfp.jpg" alt="John Doe Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
+              {user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : "IN"}
             </div>
             
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "10px 14px", borderBottom: "1px solid var(--border-color, #e2e8f0)", background: "var(--bg-light, #f8fafc)" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{user?.name || "Intern"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || ""}</p>
+                </div>
                 <button 
                   onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #0f172a)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
@@ -2700,9 +2750,9 @@ export default function InternDashboard() {
             style={{ padding: "20px 16px", textAlign: "center", backgroundColor: "#111214", cursor: "pointer" }}
           >
             <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "#5865f2", color: "#fff", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "18px", margin: "0 auto 8px auto", boxShadow: "0 0 12px rgba(88,101,242,0.5)" }}>
-              DS
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : "IN"}
             </div>
-            <span style={{ fontSize: "13px", fontWeight: 700, color: "#dbdee1", display: "block" }}>Dr. Sakthi (Speaker)</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "#dbdee1", display: "block" }}>{user?.name || "Intern"} (You)</span>
             <span style={{ fontSize: "11px", color: "#949ba4", marginTop: "2px", display: "block" }}>Click widget to maximize call</span>
           </div>
         </div>

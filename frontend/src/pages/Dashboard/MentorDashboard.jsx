@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../services/AuthContext";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, LineChart, Line } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Headset, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, TrendingUp, CheckCircle } from "lucide-react";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
@@ -12,6 +13,7 @@ import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -105,10 +107,7 @@ export default function MentorDashboard() {
   const [airdropPage, setAirdropPage] = useState(1);
   const [airdropFilter, setAirdropFilter] = useState("All");
 
-  const [credentialInterns, setCredentialInterns] = useState([
-    { id: 1, name: "Alice Smith", batch: "Batch A", domain: "Frontend", grade: "92%", status: "Eligible", attendance: "95%", tasksCompleted: "15/15" },
-    { id: 2, name: "Bob Jones", batch: "Batch B", domain: "Backend", grade: "88%", status: "Eligible", attendance: "90%", tasksCompleted: "14/15" }
-  ]);
+  const [credentialInterns, setCredentialInterns] = useState([]);
   const [selectedCredentialIntern, setSelectedCredentialIntern] = useState(null);
 
   useEffect(() => {
@@ -560,15 +559,20 @@ export default function MentorDashboard() {
     }
   };
 
-  const handleCreateMeeting = async (title, time) => {
-    if (!title || !time) return alert("Fill in title & time!");
+  const handleCreateMeeting = async (title, rawTime, formattedTime) => {
+    if (!title) return alert("Please enter a meeting title!");
     try {
-      const response = await api.post('/mentor/meetings', { title, time });
-      setMeetings([...meetings, response.data]);
-      alert("Meeting created!");
+      const response = await api.post('/mentor/meetings', { 
+        title, 
+        scheduled_time: rawTime,
+        time: formattedTime || rawTime,
+        room_code: `ROOM-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      });
+      setMeetings(prev => [response.data, ...prev]);
+      alert("Meeting created successfully and saved in database!");
     } catch (err) {
       console.error(err);
-      alert("Failed to create meeting");
+      alert("Failed to create meeting: " + (err.response?.data?.detail || err.message));
     }
   };
 
@@ -583,14 +587,25 @@ export default function MentorDashboard() {
   const renderLobby = () => {
     const isAlreadyActive = localStorage.getItem("breakout_meeting_active") === "true";
     
-    const handleStartOrJoin = () => {
+    const handleStartOrJoin = async () => {
+      if (!isAlreadyActive) {
+        try {
+          await api.post('/mentor/meetings', {
+            title: "Instant Breakout Session",
+            room_code: "MAIN-MEETING",
+            status: "Active"
+          });
+        } catch (err) {
+          console.error("Error persisting instant meeting record:", err);
+        }
+      }
       setIsMeetingActive(true);
       localStorage.setItem("breakout_meeting_active", "true");
     };
 
-    const handleScheduleSubmit = (e) => {
+    const handleScheduleSubmit = async (e) => {
       e.preventDefault();
-      // Format time for presentation
+      if (!scheduleTitle || !scheduleTime) return alert("Please fill in meeting title, date, and time!");
       const dateObj = new Date(scheduleTime);
       const formattedTime = dateObj.toLocaleString("en-US", { 
         weekday: "short", 
@@ -599,7 +614,7 @@ export default function MentorDashboard() {
         hour: "numeric", 
         minute: "2-digit" 
       });
-      handleCreateMeeting(scheduleTitle, formattedTime);
+      await handleCreateMeeting(scheduleTitle, scheduleTime, formattedTime);
       setScheduleTitle("");
       setScheduleTime("");
     };
@@ -2155,14 +2170,14 @@ export default function MentorDashboard() {
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
             >
-              DM
+              {user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "M"}
             </div>
             
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
                 <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
-                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Dr. Ananya Menon</p>
-                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{user?.name || user?.full_name || "Mentor"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || "mentor@proedu.com"}</p>
                 </div>
                 <button
                   onClick={() => { handleTabClick("My Profile"); setIsProfileDropdownOpen(false); }}
@@ -2244,9 +2259,9 @@ export default function MentorDashboard() {
             style={{ padding: "20px 16px", textAlign: "center", backgroundColor: "#111214", cursor: "pointer" }}
           >
             <div style={{ width: "52px", height: "52px", borderRadius: "50%", backgroundColor: "#5865f2", color: "#fff", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold", fontSize: "18px", margin: "0 auto 8px auto", boxShadow: "0 0 12px rgba(88,101,242,0.5)" }}>
-              An
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : "ME"}
             </div>
-            <span style={{ fontSize: "13px", fontWeight: 700, color: "#dbdee1", display: "block" }}>Ananya (You)</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: "#dbdee1", display: "block" }}>{user?.name || "Mentor"} (You)</span>
             <span style={{ fontSize: "11px", color: "#949ba4", marginTop: "2px", display: "block" }}>Click widget to return to Breakout Rooms</span>
           </div>
 
