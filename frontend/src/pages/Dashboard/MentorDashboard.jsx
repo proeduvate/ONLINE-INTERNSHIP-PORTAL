@@ -116,21 +116,24 @@ export default function MentorDashboard() {
     }
   }, []);
 
-  const handleRequestCertificate = (internId) => {
-    const updated = credentialInterns.map(i => i.id === internId ? { ...i, status: "Requested" } : i);
-    setCredentialInterns(updated);
-    localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
-    setSelectedCredentialIntern(null);
+  const handleRequestCertificate = async (internId) => {
+    try {
+      await api.post('/api/v1/certificates/request', {
+        duration: "1 Month",
+        achievement: "Successful Internship Completion",
+        grade: "A",
+        final_score: 90
+      });
+      alert("Certificate request created in live database!");
+      setSelectedCredentialIntern(null);
+      fetchMentorLiveData();
+    } catch (err) {
+      console.error("Certificate request error:", err);
+      alert(err.response?.data?.detail || "Failed to request certificate.");
+    }
   };
 
-  useEffect(() => {
-    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    if (storedAirdrops) {
-      setBonusAirdrops(JSON.parse(storedAirdrops));
-    }
-  }, []);
-
-  const handleCreateAirdrop = (e) => {
+  const handleCreateAirdrop = async (e) => {
     e.preventDefault();
     if (!newAirdrop.title.trim()) return alert("Please enter an airdrop title.");
     
@@ -166,42 +169,50 @@ export default function MentorDashboard() {
       return alert("Please select start and end dates.");
     }
 
-    const newAirdropObj = {
-      id: bonusAirdrops.length > 0 ? Math.max(...bonusAirdrops.map(a => a.id)) + 1 : 1,
-      title: newAirdrop.title,
-      taskType: newAirdrop.taskType,
-      question: newAirdrop.taskType === "Match the Following"
-        ? "Match the following pairs correctly."
-        : newAirdrop.taskType === "Arrange in Order"
-        ? "Arrange the items in the correct sequence."
-        : newAirdrop.question,
-      correctAnswer: newAirdrop.taskType === "Match the Following"
-        ? JSON.stringify(newAirdrop.matchPairs)
-        : newAirdrop.taskType === "Arrange in Order"
-        ? JSON.stringify(newAirdrop.arrangeItems)
-        : newAirdrop.correctAnswer,
+    let taskTypeEnum = "MULTIPLE_CHOICE";
+    if (newAirdrop.taskType.includes("Pattern")) taskTypeEnum = "PATTERN_SERIES";
+    else if (newAirdrop.taskType.includes("True")) taskTypeEnum = "TRUE_FALSE";
+    else if (newAirdrop.taskType.includes("Fill")) taskTypeEnum = "FILL_IN_BLANK";
+    else if (newAirdrop.taskType.includes("Match")) taskTypeEnum = "MATCH_PAIRS";
+    else if (newAirdrop.taskType.includes("Arrange")) taskTypeEnum = "ARRANGE_ITEMS";
+
+    const taskConfigObj = {
+      question: newAirdrop.question,
       mcqOptions: newAirdrop.taskType === "Multiple Choice" ? newAirdrop.mcqOptions : null,
+      correctAnswer: newAirdrop.correctAnswer,
       matchPairs: newAirdrop.taskType === "Match the Following" ? newAirdrop.matchPairs : null,
       arrangeItems: newAirdrop.taskType === "Arrange in Order" ? newAirdrop.arrangeItems : null,
-      startMode: newAirdrop.startMode,
-      startDate: newAirdrop.startDate,
-      startTime: `${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute} ${newAirdrop.startTimeAmPm}`,
-      endDate: newAirdrop.endDate,
-      endTime: `${newAirdrop.endTimeHour}:${newAirdrop.endTimeMinute} ${newAirdrop.endTimeAmPm}`,
-      winners: newAirdrop.winners,
-      points: newAirdrop.points.map(p => p || "0"),
-      timeLimit: newAirdrop.timeLimit || "60",
-      status: "PENDING_APPROVAL",
-      createdAt: new Date().toISOString()
     };
 
-    const updatedAirdrops = [...bonusAirdrops, newAirdropObj];
-    setBonusAirdrops(updatedAirdrops);
-    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+    const startModeEnum = newAirdrop.startMode.toLowerCase().includes("fixed") ? "FIXED" : "FLEXIBLE";
 
-    setShowAirdropModal(false);
-    setNewAirdrop(defaultAirdropState);
-    alert("Bonus Airdrop created and sent to Admin for approval!");
+    let startIso = null;
+    if (newAirdrop.startDate) {
+      startIso = `${newAirdrop.startDate}T${newAirdrop.startTimeHour}:${newAirdrop.startTimeMinute}:00`;
+    }
+
+    try {
+      await api.post('/api/v1/bonus-airdrops', {
+        title: newAirdrop.title,
+        description: newAirdrop.question || "Bonus Airdrop Challenge",
+        task_type: taskTypeEnum,
+        task_config: taskConfigObj,
+        domain: mentorDomain || "General",
+        start_mode: startModeEnum,
+        time_limit: parseInt(newAirdrop.timeLimit || "60", 10),
+        start_time: startIso,
+        points_distribution: newAirdrop.points.join(","),
+        winner_count: parseInt(newAirdrop.winners || "3", 10)
+      });
+
+      alert("Bonus Airdrop created and sent to Admin for approval in live DB!");
+      setShowAirdropModal(false);
+      setNewAirdrop(defaultAirdropState);
+      fetchMentorLiveData();
+    } catch (err) {
+      console.error("Failed to create bonus airdrop:", err);
+      alert(err.response?.data?.detail || "Failed to create bonus airdrop.");
+    }
   };
 
   const [assignedInterns, setAssignedInterns] = useState([]);
@@ -215,69 +226,132 @@ export default function MentorDashboard() {
   const [mentorTickets, setMentorTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({
+    assigned_interns_count: 0,
+    pending_reviews_count: 0,
+    meetings_today_count: 0,
+    avg_performance: 0,
+    backlog_data: [],
+    at_risk_interns: []
+  });
+
+  const fetchMentorLiveData = async () => {
+    try {
+      const statsRes = await api.get('/api/v1/mentor/dashboard');
+      if (statsRes.data) {
+        setDashboardStats(statsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor dashboard stats:", err);
+    }
+
+    try {
+      const internsRes = await api.get('/api/v1/mentor/interns');
+      if (Array.isArray(internsRes.data)) {
+        setAssignedInterns(internsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor assigned interns:", err);
+    }
+
+    try {
+      const subsRes = await api.get('/api/v1/mentor/submissions');
+      if (Array.isArray(subsRes.data)) {
+        setSubmissions(subsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor submissions:", err);
+    }
+
+    try {
+      const ticketsRes = await api.get('/api/v1/tickets');
+      if (Array.isArray(ticketsRes.data)) {
+        setMentorTickets(ticketsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor tickets:", err);
+    }
+
+    try {
+      const meetingsRes = await api.get('/api/v1/mentor/meetings');
+      if (Array.isArray(meetingsRes.data)) {
+        setMeetings(meetingsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor meetings:", err);
+    }
+
+    try {
+      const airdropsRes = await api.get('/api/v1/bonus-airdrops');
+      if (Array.isArray(airdropsRes.data)) {
+        setBonusAirdrops(airdropsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching bonus airdrops:", err);
+    }
+
+    try {
+      const notifsRes = await api.get('/api/v1/notifications');
+      if (Array.isArray(notifsRes.data)) {
+        setNotifications(notifsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching notifications:", err);
+    }
+
+    try {
+      const certsRes = await api.get('/api/v1/certificates/pending');
+      if (Array.isArray(certsRes.data)) {
+        setCredentialInterns(certsRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching certificate requests:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchMentorLiveData = async () => {
-      try {
-        const internsRes = await api.get('/api/v1/mentor/interns');
-        if (Array.isArray(internsRes.data)) {
-          setAssignedInterns(internsRes.data);
-        }
-      } catch (err) {
-        console.warn("Error fetching mentor assigned interns:", err);
-      }
-
-      try {
-        const subsRes = await api.get('/api/v1/mentor/submissions');
-        if (Array.isArray(subsRes.data)) {
-          setSubmissions(subsRes.data);
-        }
-      } catch (err) {
-        console.warn("Error fetching mentor submissions:", err);
-      }
-
-      try {
-        const ticketsRes = await api.get('/api/v1/tickets');
-        if (Array.isArray(ticketsRes.data)) {
-          setMentorTickets(ticketsRes.data);
-        }
-      } catch (err) {
-        console.warn("Error fetching mentor tickets:", err);
-      }
-    };
-
     fetchMentorLiveData();
   }, []);
 
-  const handleReplyTicket = (e) => {
+  const handleReplyTicket = async (e) => {
     e.preventDefault();
-    if (!ticketReply.trim()) return;
+    if (!ticketReply.trim() || !selectedTicket) return;
     
-    const updatedTickets = mentorTickets.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = {
-          ...t,
-          comments: [...t.comments, { author: "Mentor", text: ticketReply }]
-        };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setMentorTickets(updatedTickets);
-    setTicketReply("");
+    let existingComments = [];
+    if (Array.isArray(selectedTicket.comments)) {
+      existingComments = selectedTicket.comments;
+    } else if (typeof selectedTicket.comments === "string") {
+      try { existingComments = JSON.parse(selectedTicket.comments); } catch (e) { existingComments = []; }
+    }
+
+    const updatedComments = [...existingComments, { author: "Mentor", text: ticketReply, time: new Date().toISOString() }];
+
+    try {
+      const res = await api.patch(`/api/v1/tickets/${selectedTicket.id}`, {
+        comments: updatedComments
+      });
+      setSelectedTicket(res.data);
+      setMentorTickets(prev => prev.map(t => t.id === res.data.id ? res.data : t));
+      setTicketReply("");
+    } catch (err) {
+      console.error("Failed to reply to ticket:", err);
+      alert("Failed to submit reply.");
+    }
   };
 
-  const handleUpdateTicketStatus = (status) => {
-    const updatedTickets = mentorTickets.map(t => {
-      if (t.id === selectedTicket.id) {
-        const updatedT = { ...t, status: status };
-        setSelectedTicket(updatedT);
-        return updatedT;
-      }
-      return t;
-    });
-    setMentorTickets(updatedTickets);
+  const handleUpdateTicketStatus = async (status) => {
+    if (!selectedTicket) return;
+    try {
+      const res = await api.patch(`/api/v1/tickets/${selectedTicket.id}`, {
+        status: status
+      });
+      setSelectedTicket(res.data);
+      setMentorTickets(prev => prev.map(t => t.id === res.data.id ? res.data : t));
+    } catch (err) {
+      console.error("Failed to update ticket status:", err);
+      alert("Failed to update ticket status.");
+    }
   };
 
   // Weekly review state inputs
@@ -391,19 +465,31 @@ export default function MentorDashboard() {
     setCurrentMessage("");
   };
 
-  const handleReviewSubmission = (id, action, score, feedback) => {
-    setSubmissions(submissions.map(sub => 
-      sub.id === id 
-        ? { ...sub, status: action === "Approve" ? "Approved" : "Rejected", score: score, mentorFeedback: feedback } 
-        : sub
-    ));
-    alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"}!`);
+  const handleReviewSubmission = async (id, action, score, feedback) => {
+    try {
+      await api.put(`/api/v1/mentor/submissions/${id}/review`, {
+        action: action,
+        score: Number(score),
+        feedback: feedback
+      });
+      alert(`Submission has been ${action === "Approve" ? "Approved" : "Rejected"} in live DB!`);
+      fetchMentorLiveData();
+    } catch (err) {
+      console.error("Error reviewing submission:", err);
+      alert(err.response?.data?.detail || "Failed to review submission.");
+    }
   };
 
-  const handleCreateMeeting = (title, time) => {
+  const handleCreateMeeting = async (title, time) => {
     if (!title || !time) return alert("Fill in title & time!");
-    setMeetings([...meetings, { id: meetings.length + 1, title, time, status: "Scheduled" }]);
-    alert("Meeting created!");
+    try {
+      const res = await api.post('/api/v1/mentor/meetings', { title, time });
+      setMeetings(prev => [...prev, res.data]);
+      alert("Meeting created in live database!");
+    } catch (err) {
+      console.error("Failed to create meeting:", err);
+      alert("Failed to create meeting.");
+    }
   };
 
   const handleWeeklySubmit = (e) => {
@@ -597,22 +683,22 @@ export default function MentorDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Assigned Interns</span>
-                <span className="stat-value">{assignedInterns.length}</span>
+                <span className="stat-value">{dashboardStats.assigned_interns_count || assignedInterns.length}</span>
                 <span className="stat-desc">Tracking active progression</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Pending Reviews</span>
-                <span className="stat-value">{submissions.filter(s => s.status === "Pending").length}</span>
+                <span className="stat-value">{dashboardStats.pending_reviews_count ?? submissions.filter(s => s.status === "Pending").length}</span>
                 <span className="stat-desc">Awaiting your feedback & score</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Meetings Today</span>
-                <span className="stat-value">1</span>
-                <span className="stat-desc">Review meeting at 3:00 PM</span>
+                <span className="stat-value">{dashboardStats.meetings_today_count ?? meetings.length}</span>
+                <span className="stat-desc">Scheduled sessions today</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Average Performance</span>
-                <span className="stat-value">83%</span>
+                <span className="stat-value">{dashboardStats.avg_performance || 0}%</span>
                 <span className="stat-desc">Calculated score of assigned cohort</span>
               </div>
             </div>
@@ -621,7 +707,7 @@ export default function MentorDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: 0, animationDelay: '0.5s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "8px" }}>Review Backlog Tracker</h3>
                 <ResponsiveContainer width="100%" height={225}>
-                  <BarChart data={backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                  <BarChart data={dashboardStats.backlog_data && dashboardStats.backlog_data.length > 0 ? dashboardStats.backlog_data : backlogData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
@@ -639,24 +725,23 @@ export default function MentorDashboard() {
 
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
+                  {dashboardStats.at_risk_interns && dashboardStats.at_risk_interns.length > 0 ? (
+                    dashboardStats.at_risk_interns.map((intern) => (
+                      <div key={intern.id} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>{intern.name}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>{intern.batch || "Batch A"}</span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>{intern.reason}</p>
+                        <button onClick={() => setSelectedInternForChat(intern.name)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ fontSize: "13px", color: "#6b7280", textAlign: "center", padding: "16px" }}>
+                      No at-risk interns identified. All interns on track!
                     </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Low progress (50%) and struggles with React Hooks.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Missing assignments and attendance dropping.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
