@@ -123,18 +123,18 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
                   )}
 
                   {!isAssigning && (
-                    <div style={{ padding: '12px', backgroundColor: 'var(--bg-surface)' }}>
+                    <div style={{ padding: '12px 16px', backgroundColor: 'var(--bg-surface)' }}>
                       {roomInterns.length === 0 ? (
                         <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '12px 0' }}>Empty</div>
                       ) : (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                           {roomInterns.map(intern => (
-                            <div key={intern.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--bg-surface)', padding: '6px 10px', borderRadius: '6px', fontSize: '13px' }}>
+                            <div key={intern.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
                               <div className="br-avatar-small" style={{ width: '18px', height: '18px', fontSize: '10px' }}>{intern.avatar}</div>
-                              {intern.name}
+                              <span style={{ fontWeight: 500, color: 'var(--text-primary, #334155)' }}>{intern.name}</span>
                               <button 
                                 onClick={() => moveIntern(intern.id, 'Main Meeting')}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: '#da373c', marginLeft: '6px' }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: '#da373c', marginLeft: '2px' }}
                                 title="Remove from room"
                               >
                                 <X size={14} />

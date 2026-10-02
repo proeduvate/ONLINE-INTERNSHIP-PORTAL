@@ -39,7 +39,7 @@ export const GlobalHeader = () => {
     <header className={`hs-global-header ${scrolled ? 'hs-scrolled' : ''}`}>
       <div className="hs-nav-capsule">
         {/* Brand */}
-        <div className="hs-nav-brand" onClick={() => navigate(userRole ? `/${userRole}` : '/')}>
+        <div className="hs-nav-brand" onClick={() => navigate('/')}>
           <div className="hs-brand-badge">P</div>
           <span className="hs-brand-name">ProEduvate</span>
         </div>

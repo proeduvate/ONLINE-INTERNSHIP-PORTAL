@@ -3,30 +3,7 @@ import { Bot, Code, Send, User, AlertTriangle, ChevronDown, ChevronUp } from 'lu
 import WebIDE from '../../components/WebIDE/WebIDE';
 
 export default function AIClientReview() {
-  const [implementationCode, setImplementationCode] = useState(
-`import React, { useEffect, useState } from "react";
-
-function Dashboard() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/tasks")
-      .then(res => res.json())
-      .then(data => {
-        setTasks(data);
-        setLoading(false);
-      })
-      .catch(err => console.error(err));
-  }, []);
-
-  return (
-    <div>
-      {loading ? "Loading..." : JSON.stringify(tasks)}
-    </div>
-  );
-}`
-  );
+  const [implementationCode, setImplementationCode] = useState("// Write your code here");
   
   const techUsed = "React, Tailwind CSS, JavaScript, REST API";
   const previousFeedback = "Refactor the component structure to use reusable UI pieces, add error handling for the API fetch, include missing internship details, and upgrade the styling for better responsiveness and user experience.";
@@ -41,6 +18,7 @@ function Dashboard() {
   const [chatInput, setChatInput] = useState("");
   const [isReviewing, setIsReviewing] = useState(false);
   const [isContextExpanded, setIsContextExpanded] = useState(true);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -51,10 +29,16 @@ function Dashboard() {
     scrollToBottom();
   }, [chatHistory]);
 
-  const handleSendMessage = () => {
-    if (!chatInput.trim() && !implementationCode.trim()) return;
+  const handleSendMessage = (overrideMessage) => {
+    const isCodeEmpty = !implementationCode.trim() || implementationCode.trim() === "// Write your code here";
+    
+    const messageContent = (typeof overrideMessage === "string" ? overrideMessage : "") || chatInput.trim();
+    if (!messageContent && isCodeEmpty) {
+      setShowWarningModal(true);
+      return;
+    }
 
-    const userMessageContent = chatInput.trim() || "Please review my current implementation.";
+    const userMessageContent = messageContent || "Please review my current implementation.";
 
     setChatHistory(prev => [...prev, {
       role: "user",
@@ -343,7 +327,14 @@ function Dashboard() {
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
                <button 
-                onClick={() => { setChatInput("Please review my current code."); handleSendMessage(); }}
+                onClick={() => { 
+                  const isCodeEmpty = !implementationCode.trim() || implementationCode.trim() === "// Write your code here";
+                  if (isCodeEmpty) {
+                    setShowWarningModal(true);
+                    return;
+                  }
+                  handleSendMessage("Please review my current code."); 
+                }}
                 disabled={isReviewing}
                 style={{
                   background: "none",
@@ -364,6 +355,65 @@ function Dashboard() {
         </div>
 
       </div>
+
+      {/* Warning Modal */}
+      {showWarningModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(15, 23, 42, 0.75)",
+          zIndex: 100000,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "20px"
+        }}>
+          <div style={{
+            backgroundColor: "var(--card-bg, #ffffff)",
+            borderRadius: "16px",
+            padding: "32px",
+            maxWidth: "400px",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+            textAlign: "center"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              backgroundColor: "#fee2e2",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "20px"
+            }}>
+              <AlertTriangle size={32} color="#ef4444" />
+            </div>
+            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-dark, #0f172a)", margin: "0 0 12px 0" }}>Empty Submission</h2>
+            <p style={{ color: "var(--text-gray, #64748b)", margin: "0 0 24px 0", lineHeight: 1.5 }}>
+              Please write some code or enter a message before submitting for review.
+            </p>
+            <button
+              onClick={() => setShowWarningModal(false)}
+              style={{
+                background: "var(--brand-primary, #3b82f6)",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                padding: "10px 24px",
+                fontSize: "14px",
+                fontWeight: 600,
+                cursor: "pointer"
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
 
       <style>{`
         .dot-typing {

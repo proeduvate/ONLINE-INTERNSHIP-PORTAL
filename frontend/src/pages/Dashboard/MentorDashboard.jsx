@@ -53,6 +53,17 @@ export default function MentorDashboard() {
   const [scheduleTime, setScheduleTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const userEmail = localStorage.getItem("userEmail") || "mentor";
+  const imageKey = `profile_image_${userEmail}`;
+  const [globalProfileImage, setGlobalProfileImage] = useState(localStorage.getItem(imageKey) || null);
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setGlobalProfileImage(localStorage.getItem(imageKey) || null);
+    };
+    window.addEventListener("profileImageUpdated", handleProfileUpdate);
+    return () => window.removeEventListener("profileImageUpdated", handleProfileUpdate);
+  }, []);
   const [profileTab, setProfileTab] = useState("overview");
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
@@ -643,7 +654,7 @@ export default function MentorDashboard() {
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
                     </div>
                     <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Low progress (50%) and struggles with React Hooks.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Schedule Intervention</button>
+                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }} onClick={() => { setActiveTab("Breakout Rooms"); navigate("/mentor/breakout-rooms"); }}>Schedule Intervention</button>
                   </div>
                   
                   <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
@@ -652,7 +663,7 @@ export default function MentorDashboard() {
                       <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
                     </div>
                     <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Missing assignments and attendance dropping.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
+                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }} onClick={() => setSelectedInternForChat("Anu Sharma")}>Send Message</button>
                   </div>
                 </div>
               </div>
@@ -940,6 +951,7 @@ export default function MentorDashboard() {
                       e.preventDefault();
                       setTasks(tasks.map(t => t.id === editingTask.id ? editingTask : t));
                       setEditingTask(null);
+                      navigate("/mentor/programs");
                     }} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       
                       {taskDetailTab === "General" && (
@@ -2053,7 +2065,11 @@ export default function MentorDashboard() {
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
             >
-              DM
+              {globalProfileImage ? (
+                <img src={globalProfileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+              ) : (
+                "DM"
+              )}
             </div>
             
             {isProfileDropdownOpen && (

@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { mockOnboardingService, ONBOARDING_STATUSES } from '../../../services/mockOnboardingService';
 import { ArrowLeft, User, Briefcase, Settings } from 'lucide-react';
+import { Modal } from '../../../components/ui/Modal';
 import '../../../pages/Dashboard/Dashboard.css';
 
 export default function AdminOnboardingDetails() {
-    const { id } = useParams();
+    const parts = window.location.pathname.split('/');
+    const id = parts[parts.length - 1];
     const [app, setApp] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -132,7 +135,7 @@ export default function AdminOnboardingDetails() {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>Submitted Resume</span> 
-                                <button className="btn btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <button className="btn btn-secondary" onClick={() => setIsDocumentModalOpen(true)} style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     View Document
                                 </button>
                             </div>
@@ -197,6 +200,12 @@ export default function AdminOnboardingDetails() {
                     </div>
                 </div>
             </div>
+
+            <Modal isOpen={isDocumentModalOpen} onClose={() => setIsDocumentModalOpen(false)} title="Submitted Document" className="document-modal">
+                <div style={{ width: '100%', height: '70vh', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
+                    <iframe src="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" title="Document Viewer" style={{ width: '100%', height: '100%', border: 'none' }} />
+                </div>
+            </Modal>
         </div>
     );
 }

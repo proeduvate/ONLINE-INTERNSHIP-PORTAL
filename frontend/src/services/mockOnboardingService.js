@@ -74,16 +74,13 @@ export const mockOnboardingService = {
     async adminGetApplication(id) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve({ 
-                    applicationId: id, 
-                    name: "Sakthi", 
-                    email: "intern@example.com", 
-                    phone: "1234567890",
-                    college: "ABC Tech",
-                    department: "Computer Science",
-                    domain: "Full Stack Development", 
-                    status: currentApplicationStatus // tie it to dev status for easy testing
-                });
+                const apps = [
+                    { applicationId: "APP-2026-00125", name: "Sakthi", email: "intern@example.com", phone: "1234567890", college: "ABC Tech", department: "Computer Science", domain: "Full Stack Development", status: currentApplicationStatus },
+                    { applicationId: "APP-2026-00126", name: "John Doe", email: "john@example.com", phone: "9876543210", college: "XYZ University", department: "Data Science", domain: "Data Science", status: ONBOARDING_STATUSES.PAYMENT_PENDING },
+                    { applicationId: "APP-2026-00127", name: "Jane Smith", email: "jane@example.com", phone: "5551234567", college: "MIT", department: "Artificial Intelligence", domain: "AI / ML", status: ONBOARDING_STATUSES.INTERVIEW_REQUIRED }
+                ];
+                const found = apps.find(a => a.applicationId === id);
+                resolve(found || apps[0]);
             }, 300);
         });
     },

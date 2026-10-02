@@ -1,9 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, Save } from "lucide-react";
 
 export default function MentorProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const userEmail = localStorage.getItem("userEmail") || "mentor";
+  const imageKey = `profile_image_${userEmail}`;
+  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5");
+  const fileInputRef = useRef(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        try {
+          localStorage.setItem(imageKey, reader.result);
+          setProfileImage(reader.result);
+          window.dispatchEvent(new Event("profileImageUpdated"));
+        } catch (error) {
+          alert("Image is too large to save. Please select a smaller image (under 3MB).");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    const defaultImg = "https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5";
+    setProfileImage(defaultImg);
+    localStorage.removeItem(imageKey);
+    window.dispatchEvent(new Event("profileImageUpdated"));
+  };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -74,18 +102,19 @@ export default function MentorProfile() {
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
                   <img
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5"
+                    src={profileImage}
                     alt="Profile"
                     style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }}
                   />
-                  <button style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                  <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
-                    <button style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
-                    <button style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
+                    <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
+                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
+                    <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
                   </div>
                   <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
                 </div>

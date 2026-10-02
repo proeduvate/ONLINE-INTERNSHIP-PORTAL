@@ -172,9 +172,16 @@ export default function Documents() {
                             <h4 style={{ color: '#1e293b', margin: '0 0 2px 0', fontSize: '13px' }}>Internship Offer Letter</h4>
                             <span style={{ fontSize: '11px', color: '#64748b' }}>ProEduvate 3-Month Program</span>
                         </div>
-                        <button type="button" className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openPdfViewer('offer_letter')}>
-                            {statusData?.signed_offer_letter_url ? "View Signed PDF" : "View PDF"}
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button type="button" className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openPdfViewer('offer_letter')}>
+                                {statusData?.signed_offer_letter_url ? "View Signed PDF" : "View PDF"}
+                            </button>
+                            {!statusData?.signed_offer_letter_url && (
+                                <button type="button" className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openSignModal('offer_letter')}>
+                                    Sign Offer Letter
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     {/* Document 2: Terms & Conditions */}
@@ -183,47 +190,23 @@ export default function Documents() {
                             <h4 style={{ color: '#1e293b', margin: '0 0 2px 0', fontSize: '13px' }}>Terms & Conditions Agreement</h4>
                             <span style={{ fontSize: '11px', color: '#64748b' }}>Code of Conduct & Confidentiality</span>
                         </div>
-                        <button type="button" className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openPdfViewer('tc')}>
-                            {statusData?.signed_tc_url ? "View Signed PDF" : "View PDF"}
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button type="button" className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openPdfViewer('tc')}>
+                                {statusData?.signed_tc_url ? "View Signed PDF" : "View PDF"}
+                            </button>
+                            {!statusData?.signed_tc_url && (
+                                <button type="button" className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => openSignModal('tc')}>
+                                    Sign Terms & Conditions
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    {/* E-Signature Section */}
-                    <div style={{ marginTop: '12px', padding: '12px', border: '1px solid #2563eb', borderRadius: '8px', background: '#eff6ff' }}>
-                        <h3 style={{ color: '#1d4ed8', margin: '0 0 2px 0', fontSize: '14px' }}>Digital Signature Verification</h3>
-                        <p style={{ color: '#3b82f6', fontSize: '11px', margin: '0 0 8px 0' }}>
-                            Please sign both documents online to complete your onboarding verification.
-                        </p>
-                        
-                        {isBothSigned ? (
-                            <div style={{ backgroundColor: "#ecfdf5", border: "1px solid #a7f3d0", padding: "8px 12px", borderRadius: "6px", color: "#047857", fontWeight: 600, fontSize: "12px", textAlign: "center" }}>
-                                All documents have been digitally signed! Click above to view signed PDFs.
-                            </div>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #dbeafe' }}>
-                                    <span style={{ fontWeight: '600', fontSize: '12px' }}>Offer Letter:</span>
-                                    {statusData?.signed_offer_letter_url ? (
-                                        <button className="btn btn-secondary" style={{ padding: '3px 10px', fontSize: '11px', color: '#16a34a', borderColor: '#86efac' }} onClick={() => openPdfViewer('offer_letter')}>
-                                            View Signed PDF
-                                        </button>
-                                    ) : (
-                                        <button className="btn btn-primary" style={{ padding: '3px 10px', fontSize: '11px' }} onClick={() => openSignModal('offer_letter')}>Sign Offer Letter</button>
-                                    )}
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #dbeafe' }}>
-                                    <span style={{ fontWeight: '600', fontSize: '12px' }}>Terms & Conditions:</span>
-                                    {statusData?.signed_tc_url ? (
-                                        <button className="btn btn-secondary" style={{ padding: '3px 10px', fontSize: '11px', color: '#16a34a', borderColor: '#86efac' }} onClick={() => openPdfViewer('tc')}>
-                                            View Signed PDF
-                                        </button>
-                                    ) : (
-                                        <button className="btn btn-primary" style={{ padding: '3px 10px', fontSize: '11px' }} onClick={() => openSignModal('tc')}>Sign Terms & Conditions</button>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    {isBothSigned && (
+                        <div style={{ marginTop: '12px', backgroundColor: "#ecfdf5", border: "1px solid #a7f3d0", padding: "8px 12px", borderRadius: "6px", color: "#047857", fontWeight: 600, fontSize: "12px", textAlign: "center" }}>
+                            All documents have been digitally signed! Click above to view signed PDFs.
+                        </div>
+                    )}
                     
                     <div style={{ display: 'flex', gap: '10px', marginTop: '14px', justifyContent: 'center' }}>
                         {isBothSigned && (
@@ -231,9 +214,6 @@ export default function Documents() {
                                 Proceed to Intern Login →
                             </button>
                         )}
-                        <button className="btn btn-secondary" onClick={() => navigate(`/onboarding/status?appId=${applicationId}`)} style={{ padding: '8px 16px', fontSize: '13px' }}>
-                            Back to Status
-                        </button>
                     </div>
                 </div>
             </div>

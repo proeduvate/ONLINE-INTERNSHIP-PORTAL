@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent } from "../../components/ui/Card";
-import "./Login.css";export default function Login() {
+import "./Login.css"; export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -50,6 +50,7 @@ import "./Login.css";export default function Login() {
     if (foundRole) {
       localStorage.setItem("token", "dummy-token-123");
       localStorage.setItem("role", foundRole);
+      localStorage.setItem("userEmail", email);
       navigate(`/${foundRole}`);
     } else {
       setErrorMessage("Invalid email or password.");
@@ -61,7 +62,7 @@ import "./Login.css";export default function Login() {
       <Card style={{ width: '100%', maxWidth: '400px', animation: 'fadeIn 0.4s ease-out' }}>
         <CardContent style={{ padding: '32px' }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", justifyContent: "center" }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "40px", width: "auto" }} />
+            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "140px", width: "auto" }} />
           </div>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 700, color: 'var(--text-darker)' }}>Welcome Back</h2>
@@ -84,7 +85,7 @@ import "./Login.css";export default function Login() {
           )}
 
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Input 
+            <Input
               type="email"
               label="Email Address"
               placeholder="Enter your email"
@@ -94,7 +95,7 @@ import "./Login.css";export default function Login() {
             />
 
             <div style={{ position: "relative" }}>
-              <Input 
+              <Input
                 type={showPassword ? "text" : "password"}
                 label="Password"
                 placeholder="Enter your password"
@@ -124,19 +125,17 @@ import "./Login.css";export default function Login() {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', marginBottom: '8px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-color)', cursor: 'pointer' }}>
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   style={{ cursor: 'pointer' }}
                 />
                 Remember me
               </label>
-              <button 
+              <button
                 type="button"
-                onClick={() => {
-                  alert("Password reset instructions have been simulated & sent to your email!");
-                }}
+                onClick={() => navigate("/forgot-password")}
                 style={{ color: "var(--primary-color)", fontWeight: "600", border: "none", background: "none", cursor: "pointer", padding: 0, fontSize: "14px" }}
               >
                 Forgot Password?

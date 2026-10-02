@@ -4,19 +4,34 @@ import { User, Shield, Bell, Camera, Lock, Save, Mail, Building2, Phone, Briefca
 export default function AdminProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
+  const userEmail = localStorage.getItem("userEmail") || "admin";
+  const imageKey = `profile_image_${userEmail}`;
+  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
   const fileInputRef = useRef(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setProfileImage(url);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        try {
+          localStorage.setItem(imageKey, reader.result);
+          setProfileImage(reader.result);
+          window.dispatchEvent(new Event("profileImageUpdated"));
+        } catch (error) {
+          alert("Image is too large to save. Please select a smaller image (under 3MB).");
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+    const defaultImg = "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc";
+    setProfileImage(defaultImg);
+    localStorage.removeItem(imageKey);
+    window.dispatchEvent(new Event("profileImageUpdated"));
   };
 
   const handleForgotPassword = (e) => {
@@ -217,8 +232,15 @@ export default function AdminProfile() {
                 <Smartphone size={24} color="#64748b" />
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <span style={{ fontSize: "0.9rem", color: "#64748b", fontWeight: 500 }}>Status: <span style={{ color: "#ef4444", fontWeight: 700 }}>Disabled</span></span>
-                <button style={{ background: "transparent", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Enable 2FA</button>
+                <span style={{ fontSize: "0.9rem", color: "#64748b", fontWeight: 500 }}>
+                  Status: <span style={{ color: is2FAEnabled ? "#10b981" : "#ef4444", fontWeight: 700 }}>{is2FAEnabled ? "Enabled" : "Disabled"}</span>
+                </span>
+                <button 
+                  onClick={() => setIs2FAEnabled(!is2FAEnabled)}
+                  style={{ background: is2FAEnabled ? "#fef2f2" : "transparent", border: is2FAEnabled ? "1px solid #fecaca" : "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: is2FAEnabled ? "#ef4444" : "var(--text-primary, #0f172a)", cursor: "pointer" }}
+                >
+                  {is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
+                </button>
               </div>
             </div>
           </div>

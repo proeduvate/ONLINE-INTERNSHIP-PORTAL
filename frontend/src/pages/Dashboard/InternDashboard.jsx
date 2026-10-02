@@ -21,7 +21,7 @@ export default function InternDashboard() {
 
   const canonicalTabs = [
     "Overview", "Learning", "Daily Scenario", "Progress", 
-    "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
+    "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile", "Saved Notes"
   ];
 
   const getTabFromUrl = (segment) => {
@@ -65,6 +65,17 @@ export default function InternDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const userEmail = localStorage.getItem("userEmail") || "intern";
+  const imageKey = `profile_image_${userEmail}`;
+  const [globalProfileImage, setGlobalProfileImage] = useState(localStorage.getItem(imageKey) || null);
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setGlobalProfileImage(localStorage.getItem(imageKey) || null);
+    };
+    window.addEventListener("profileImageUpdated", handleProfileUpdate);
+    return () => window.removeEventListener("profileImageUpdated", handleProfileUpdate);
+  }, [imageKey]);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
   const [internDomain, setInternDomain] = useState("UI/UX");
@@ -80,6 +91,7 @@ export default function InternDashboard() {
   const [isMeetingMinimized, setIsMeetingMinimized] = useState(false);
   const [activeMeetingRoom, setActiveMeetingRoom] = useState("Main Meeting"); // force recompile
   const [showThankYouModal, setShowThankYouModal] = useState(false);
+  const [showTicketModal, setShowTicketModal] = useState(false);
 
   const handleJoinMeeting = () => {
     // Bypassing mentor restriction for trial/demo purposes
@@ -108,6 +120,30 @@ export default function InternDashboard() {
   // Daily Domain Insight State & Rotation Logic
   const [showDomainInsightModal, setShowDomainInsightModal] = useState(false);
   const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
+
+  // Notes State
+  const [personalNoteText, setPersonalNoteText] = useState("");
+  const [savedNotes, setSavedNotes] = useState(() => {
+    const localNotes = localStorage.getItem("intern_personal_notes");
+    return localNotes ? JSON.parse(localNotes) : [];
+  });
+
+  const handleSaveNote = () => {
+    if (!personalNoteText.trim()) return;
+    const newNote = {
+      id: Date.now().toString(),
+      text: personalNoteText,
+      date: new Date().toLocaleDateString(),
+    };
+    const updatedNotes = [newNote, ...savedNotes];
+    setSavedNotes(updatedNotes);
+    localStorage.setItem("intern_personal_notes", JSON.stringify(updatedNotes));
+    setPersonalNoteText("");
+    alert("Note saved successfully!");
+  };
+
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -310,7 +346,7 @@ export default function InternDashboard() {
     setTicketsData([newTicket, ...ticketsData]);
     setNewTicketTitle("");
     setNewTicketDesc("");
-    navigate("/intern/tickets");
+    setShowTicketModal(true);
   };
 
   const [mcqStarted, setMcqStarted] = useState(false);
@@ -336,6 +372,8 @@ export default function InternDashboard() {
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
   const [filesData, setFilesData] = useState(null);
+  const [showCodingWarningModal, setShowCodingWarningModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [language, setLanguage] = useState("javascript");
 
   const [evaluating, setEvaluating] = useState(false);
@@ -414,15 +452,32 @@ export default function InternDashboard() {
   }, [mcqStarted, timer, mcqSubmitted]);
 
   const handleLogout = () => {
-    alert("Logged out successfully.");
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
     window.location.href = "/login";
   };
 
+  const isCodeEmpty = () => {
+    if (!filesData || !filesData.length) return true;
+    const content = filesData[0].content.trim();
+    return !content || content === "// Write your code here";
+  };
+
   const handleRunCode = () => {
+    if (isCodeEmpty()) {
+      setShowCodingWarningModal(true);
+      return;
+    }
     alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
   };
 
   const handleSubmitCode = () => {
+    if (isCodeEmpty()) {
+      setShowCodingWarningModal(true);
+      return;
+    }
     setEvaluating(true);
 
     // Simulate AI compilation & scoring
@@ -739,7 +794,7 @@ export default function InternDashboard() {
                     </button>
                   )}
                   {/* View All */}
-                  <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
+                  <button className="bonus-airdrop-view" onClick={() => handleTabClick("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
                     View All →
                   </button>
                 </div>
@@ -1138,13 +1193,7 @@ export default function InternDashboard() {
                     </div>
                   ) : (
                     <>
-                      <div style={{ marginBottom: "12px" }}>
-                        <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
-                        <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
-                          <option value="javascript">JavaScript</option>
-                          <option value="python">Python</option>
-                        </select>
-                      </div>
+
 
                       <WebIDE 
                         language={language} 
@@ -1275,7 +1324,7 @@ export default function InternDashboard() {
                       <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Module Notes: {currentCurriculum.topic}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <button style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
+                      <button onClick={() => { setSelectedDocument("Module Complete Notes (PDF)"); setShowDocumentModal(true); }} style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
                         <Download size={14} /> Download PDF
                       </button>
                     </div>
@@ -1296,8 +1345,8 @@ export default function InternDashboard() {
                             <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>PDF Document • 2.4 MB</span>
                           </div>
                         </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
-                          <Download size={16} /> Download
+                        <button onClick={() => { setSelectedDocument("Official Lecture Notes (PDF)"); setShowDocumentModal(true); }} style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                          <Download size={16} /> View/Download
                         </button>
                       </div>
 
@@ -1312,8 +1361,8 @@ export default function InternDashboard() {
                             <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Word Document • 1.1 MB</span>
                           </div>
                         </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
-                          <Download size={16} /> Download
+                        <button onClick={() => { setSelectedDocument("Practice Exercises (Word Doc)"); setShowDocumentModal(true); }} style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                          <Download size={16} /> View/Download
                         </button>
                       </div>
                     </div>
@@ -1339,9 +1388,14 @@ export default function InternDashboard() {
                     <h4 style={{ margin: 0, fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
                       <FileText size={16} color="var(--text-muted, #64748b)" /> My Personal Notes
                     </h4>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted, #94a3b8)", fontWeight: 600 }}>Auto-saved</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <span onClick={() => handleTabClick("Saved Notes")} style={{ fontSize: "11px", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}>View All →</span>
+                      <button onClick={handleSaveNote} style={{ background: "var(--brand-primary, #2563eb)", color: "white", padding: "4px 12px", border: "none", borderRadius: "6px", fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>Save Note</button>
+                    </div>
                   </div>
                   <textarea 
+                    value={personalNoteText}
+                    onChange={(e) => setPersonalNoteText(e.target.value)}
                     placeholder="Jot down important takeaways, questions, or ideas from this module..."
                     style={{
                       width: "100%",
@@ -1531,7 +1585,7 @@ export default function InternDashboard() {
                       <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Stuck somewhere?</p>
                     </div>
                   </div>
-                  <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #334155)", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--brand-bg, #eff6ff)"; e.currentTarget.style.color = "var(--brand-primary, #2563eb)"; e.currentTarget.style.borderColor = "var(--border-brand, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "var(--text-primary, #334155)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
+                  <button onClick={() => handleTabClick("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #334155)", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--brand-bg, #eff6ff)"; e.currentTarget.style.color = "var(--brand-primary, #2563eb)"; e.currentTarget.style.borderColor = "var(--border-brand, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "var(--text-primary, #334155)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
                     Message Mentor &rarr;
                   </button>
                 </div>
@@ -1832,6 +1886,44 @@ export default function InternDashboard() {
 
       case "Daily Scenario":
         return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
+
+      case "Saved Notes":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 style={{ fontSize: "24px", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <FileText size={24} color="#3b82f6" /> My Saved Notes
+              </h2>
+              <button className="btn btn-secondary" onClick={() => handleTabClick("Learning")} style={{ padding: "6px 14px", fontSize: "13px" }}>Back to Learning</button>
+            </div>
+            
+            {savedNotes.length === 0 ? (
+              <div style={{ background: "var(--bg-surface, #ffffff)", padding: "40px", borderRadius: "12px", textAlign: "center", border: "1px dashed var(--border-color, #e2e8f0)" }}>
+                <FileText size={48} color="var(--text-muted, #94a3b8)" style={{ marginBottom: "16px" }} />
+                <h3 style={{ margin: "0 0 8px 0", color: "var(--text-dark)", fontSize: "18px" }}>No notes saved yet</h3>
+                <p style={{ margin: 0, color: "var(--text-gray)" }}>When you take personal notes in your learning modules, they will appear here.</p>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+                {savedNotes.map((note) => (
+                  <div key={note.id} style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "12px", padding: "20px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "12px" }}>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-muted, #64748b)" }}>{note.date}</span>
+                      <button onClick={() => {
+                        const newNotes = savedNotes.filter(n => n.id !== note.id);
+                        setSavedNotes(newNotes);
+                        localStorage.setItem("intern_personal_notes", JSON.stringify(newNotes));
+                      }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "12px", fontWeight: 600 }}>Delete</button>
+                    </div>
+                    <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                      {note.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
 
       case "Bonus Airdrops":
         const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
@@ -2221,7 +2313,7 @@ export default function InternDashboard() {
                   <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "var(--text-primary, #334155)", fontWeight: 600 }}>Overall Progress ▾</div>
                 </div>
 
-                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
+                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px", paddingLeft: "30px", boxSizing: "border-box" }}>
                   <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
@@ -2246,13 +2338,13 @@ export default function InternDashboard() {
                     <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
                     <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
                   </svg>
-                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
+                  <div style={{ position: "absolute", top: "70px", left: "calc(28% + 30px)", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
                     <div style={{ marginBottom: "2px" }}>Day 12</div>
                     <div style={{ fontSize: "1rem" }}>40% Complete</div>
                   </div>
                   
                   {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)" }}>
+                  <div style={{ position: "absolute", left: "0", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)", width: "30px" }}>
                     <span>100%</span>
                     <span>75%</span>
                     <span>50%</span>
@@ -2407,7 +2499,6 @@ export default function InternDashboard() {
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Achievements</h3>
-                  <span style={{ fontSize: "0.9rem", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}>View All →</span>
                 </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -2652,7 +2743,7 @@ export default function InternDashboard() {
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              <img src="/assets/sadie-pfp.jpg" alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
+              <img src={globalProfileImage || "/assets/sadie-pfp.jpg"} alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
             </div>
             
             {isProfileDropdownOpen && (
@@ -2930,6 +3021,99 @@ export default function InternDashboard() {
             >
               Submit Answer
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Ticket Created Modal */}
+      {showTicketModal && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+          <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "40px", maxWidth: "460px", width: "100%", textAlign: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
+            <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--success-bg, #dcfce7)", color: "var(--success, #16a34a)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
+              <Ticket size={40} />
+            </div>
+            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", margin: "0 0 12px 0" }}>Ticket Created!</h2>
+            <p style={{ color: "var(--text-gray)", fontSize: "15px", lineHeight: "1.6", margin: "0 0 32px 0" }}>
+              Your support ticket has been successfully submitted. Our team will get back to you soon.
+            </p>
+            <Button
+              variant="primary"
+              onClick={() => { setShowTicketModal(false); navigate("/intern/tickets"); }}
+              style={{ width: "100%", padding: "14px", borderRadius: "12px", fontSize: "16px" }}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Document Viewer Modal */}
+      {showDocumentModal && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+          <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "16px", padding: "32px", maxWidth: "800px", width: "100%", height: "80vh", display: "flex", flexDirection: "column", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px" }}>
+              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-dark)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                <FileText size={24} color="#3b82f6" /> {selectedDocument}
+              </h2>
+              <button onClick={() => setShowDocumentModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div style={{ flex: 1, backgroundColor: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px" }}>
+              <FileText size={64} color="var(--text-muted, #94a3b8)" style={{ marginBottom: "16px", opacity: 0.5 }} />
+              <h3 style={{ margin: "0 0 12px 0", color: "var(--text-dark)", fontSize: "18px" }}>Document Preview</h3>
+              <p style={{ color: "var(--text-gray)", textAlign: "center", maxWidth: "400px", lineHeight: 1.5, marginBottom: "24px" }}>
+                This is a mock preview of <strong>{selectedDocument}</strong>. In a real application, the actual document contents would be displayed or downloaded here.
+              </p>
+              
+              <div style={{ display: "flex", gap: "12px" }}>
+                <Button variant="primary" style={{ display: "flex", alignItems: "center", gap: "8px" }} onClick={() => alert("Downloading document...")}>
+                  <Download size={16} /> Download File
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coding Warning Modal */}
+      {showCodingWarningModal && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+          <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "16px", padding: "32px", maxWidth: "400px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", textAlign: "center" }}>
+            <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+              <AlertTriangle size={32} color="#ef4444" />
+            </div>
+            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-dark, #0f172a)", margin: "0 0 12px 0" }}>Empty Submission</h2>
+            <p style={{ color: "var(--text-gray, #64748b)", margin: "0 0 24px 0", lineHeight: 1.5 }}>
+              Please write some code before running test cases or submitting for evaluation.
+            </p>
+            <button onClick={() => setShowCodingWarningModal(false)} style={{ background: "var(--brand-primary, #3b82f6)", color: "white", border: "none", borderRadius: "8px", padding: "10px 24px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+          <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "16px", padding: "32px", maxWidth: "400px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", textAlign: "center" }}>
+            <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+              <LogOut size={32} color="#ef4444" />
+            </div>
+            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-dark, #0f172a)", margin: "0 0 12px 0" }}>Confirm Logout</h2>
+            <p style={{ color: "var(--text-gray, #64748b)", margin: "0 0 24px 0", lineHeight: 1.5 }}>
+              Are you sure you want to log out of your session?
+            </p>
+            <div style={{ display: "flex", gap: "12px", width: "100%", justifyContent: "center" }}>
+              <button onClick={() => setShowLogoutModal(false)} style={{ background: "var(--bg-surface-elevated, #f1f5f9)", color: "var(--text-primary, #334155)", border: "none", borderRadius: "8px", padding: "10px 24px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+                Cancel
+              </button>
+              <button onClick={confirmLogout} style={{ background: "#ef4444", color: "white", border: "none", borderRadius: "8px", padding: "10px 24px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}
