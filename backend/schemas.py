@@ -311,7 +311,7 @@ class NotificationResponse(BaseModel):
     message: str
     type: str
     is_read: bool
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
