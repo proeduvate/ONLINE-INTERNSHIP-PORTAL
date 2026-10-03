@@ -81,9 +81,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Ensure uploads directory exists and mount static files
+# Ensure uploads and static directories exist and mount static files
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("uploads/resumes", exist_ok=True)
+os.makedirs("static", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # 2. Register routers
