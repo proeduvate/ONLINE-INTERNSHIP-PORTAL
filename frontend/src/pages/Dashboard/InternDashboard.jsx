@@ -68,22 +68,43 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("UI/UX");
+  const [internDomain, setInternDomain] = useState("General Track");
+  const [internUser, setInternUser] = useState(null);
 
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchInternData = async () => {
       try {
-        const res = await api.get('/api/v1/notifications');
-        if (Array.isArray(res.data)) {
-          setNotifications(res.data);
+        const profileRes = await api.get('/api/v1/users/profile');
+        if (profileRes.data) {
+          setInternUser(profileRes.data);
+          if (profileRes.data.domain_name) {
+            setInternDomain(profileRes.data.domain_name);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch user profile:", err);
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          try {
+            const parsedUser = JSON.parse(storedUser);
+            setInternUser(parsedUser);
+            if (parsedUser.domain_name) setInternDomain(parsedUser.domain_name);
+          } catch (e) {}
+        }
+      }
+
+      try {
+        const notificationsRes = await api.get('/api/v1/notifications');
+        if (Array.isArray(notificationsRes.data)) {
+          setNotifications(notificationsRes.data);
         }
       } catch (err) {
         console.warn("Failed to fetch notifications:", err);
       }
     };
-    fetchNotifications();
+    fetchInternData();
   }, []);
 
   // Live Meeting State
@@ -221,10 +242,77 @@ export default function InternDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mock State
-  const progress = 40; // 12 of 30 days
-  const [aiScore, setAiScore] = useState(88);
-  const attendancePercent = 90;
+  // Dynamic Dashboard Stats & Live Data State
+  const [progress, setProgress] = useState(0);
+  const [aiScore, setAiScore] = useState(0);
+  const [attendancePercent, setAttendancePercent] = useState(100);
+  const [tasksCompletedCount, setTasksCompletedCount] = useState(0);
+  const [assessmentsCount, setAssessmentsCount] = useState(0);
+
+  const [liveLeaderboard, setLiveLeaderboard] = useState([]);
+  const [userRankStr, setUserRankStr] = useState("Unranked");
+  const [liveSubmissions, setLiveSubmissions] = useState([]);
+  const [domainTasksList, setDomainTasksList] = useState([]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      // 1. Fetch Analytics
+      try {
+        const res = await api.get('/api/v1/analytics/dashboard');
+        if (res.data) {
+          if (res.data.progress_pct !== undefined) setProgress(res.data.progress_pct);
+          if (res.data.total_score !== undefined) setAiScore(res.data.total_score);
+          if (res.data.attendance_pct !== undefined) setAttendancePercent(res.data.attendance_pct);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch dashboard analytics:", err);
+      }
+
+      // 2. Fetch Leaderboard & Rank
+      try {
+        const lbRes = await api.get('/api/v1/leaderboard?limit=5');
+        if (Array.isArray(lbRes.data)) {
+          setLiveLeaderboard(lbRes.data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch leaderboard:", err);
+      }
+
+      try {
+        const myRankRes = await api.get('/api/v1/leaderboard/me');
+        if (myRankRes.data && myRankRes.data.rank) {
+          setUserRankStr(`#${myRankRes.data.rank}`);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch user rank:", err);
+      }
+
+      // 3. Fetch Submissions
+      try {
+        const subRes = await api.get('/api/v1/submissions');
+        if (Array.isArray(subRes.data)) {
+          setLiveSubmissions(subRes.data);
+          const completedTasks = subRes.data.filter(s => s.status === "approved" || s.status === "submitted").length;
+          const completedMcq = subRes.data.filter(s => (s.mcq_score || 0) > 0).length;
+          setTasksCompletedCount(completedTasks);
+          setAssessmentsCount(completedMcq);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch submissions:", err);
+      }
+
+      // 4. Fetch Domain Tasks
+      try {
+        const tasksRes = await api.get('/api/v1/tasks/intern');
+        if (tasksRes.data && Array.isArray(tasksRes.data.tasks)) {
+          setDomainTasksList(tasksRes.data.tasks);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch domain tasks:", err);
+      }
+    };
+    fetchDashboardData();
+  }, []);
 
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
@@ -520,7 +608,7 @@ export default function InternDashboard() {
                       <BookOpen size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>12 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{tasksCompletedCount} / 30</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Tasks Completed</span>
                     </div>
                   </div>
@@ -530,7 +618,7 @@ export default function InternDashboard() {
                       <CheckCircle size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>10 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{assessmentsCount} / 30</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Assessments</span>
                     </div>
                   </div>
@@ -754,60 +842,35 @@ export default function InternDashboard() {
                 <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
-                    <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
+                    <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Learning")}>View All &rarr;</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, justifyContent: "space-around" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
+                    {liveSubmissions.length === 0 ? (
+                      <div style={{ padding: "20px 12px", textAlign: "center", color: "var(--text-muted, #64748b)", fontSize: "0.85rem" }}>
+                        No task submissions yet. Complete your first assignment in the Learning tab to view your scores!
                       </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>React Components</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>95/100</span>
-                    </div>
+                    ) : (
+                      liveSubmissions.slice(0, 4).map((sub, sIdx) => {
+                        const isApproved = sub.status === "approved";
+                        const totalSubScore = (sub.mcq_score || 0) + (sub.ai_score || 0) + (sub.mentor_score || 0);
+                        return (
+                          <div key={sub.id || sIdx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                              <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: isApproved ? "#dcfce7" : "#fef3c7", color: isApproved ? "#16a34a" : "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {isApproved ? <CheckCircle size={14} /> : <Clock size={14} />}
+                              </div>
+                              <div>
+                                <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{sub.task_title || sub.assignment_name || `Task #${sub.task_id || (sIdx + 1)}`}</span>
+                                <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{isApproved ? "Graded" : "Pending Review"}</span>
+                              </div>
+                            </div>
+                            <span style={{ fontSize: "0.85rem", color: isApproved ? "#16a34a" : "var(--text-muted, #64748b)", fontWeight: 800 }}>
+                              {isApproved ? `${totalSubScore}/300` : "In Queue"}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
 
@@ -829,7 +892,7 @@ export default function InternDashboard() {
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
                     </div>
                     <span style={{ background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "20px", fontSize: "0.72rem", fontWeight: 700 }}>
-                      Your Rank: #3
+                      Your Rank: {userRankStr}
                     </span>
                   </div>
 
@@ -840,19 +903,23 @@ export default function InternDashboard() {
                   </div>
                   
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, justifyContent: "space-around" }}>
-                    {[
-                      { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
-                      { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
-                      { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
-                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
-                      { rank: 5, name: "David Lee", points: 890, isMe: false }
-                    ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
-                        <span style={{ fontSize: "0.78rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
-                        <span style={{ fontSize: "0.78rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.points}</span>
+                    {liveLeaderboard.length === 0 ? (
+                      <div style={{ padding: "12px", textAlign: "center", color: "var(--text-muted, #64748b)", fontSize: "0.8rem" }}>
+                        No leaderboard entries yet.
                       </div>
-                    ))}
+                    ) : (
+                      liveLeaderboard.slice(0, 5).map((user, uIdx) => {
+                        const isMe = internUser && (user.user_name === internUser.name || user.user_id === internUser.id);
+                        const rNum = user.rank || (uIdx + 1);
+                        return (
+                          <div key={user.user_id || uIdx} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
+                            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: rNum === 1 ? "#fbbf24" : (rNum === 2 ? "#94a3b8" : (rNum === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{rNum}</span>
+                            <span style={{ fontSize: "0.78rem", fontWeight: isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.user_name || "Intern"} {isMe && "(You)"}</span>
+                            <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.total_points || 0}</span>
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
               </div>
@@ -2163,11 +2230,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>12 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>40%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{Math.round((progress / 100) * 30)} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>{progress}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Days Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "40%", background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${progress}%`, background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2177,11 +2244,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>28 / 45</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>62%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{tasksCompletedCount} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{Math.round((tasksCompletedCount / 30) * 100)}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "62%", background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.min(100, Math.round((tasksCompletedCount / 30) * 100))}%`, background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2191,11 +2258,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>10 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>33%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{assessmentsCount} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>{Math.round((assessmentsCount / 30) * 100)}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Assessments Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "33%", background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.min(100, Math.round((assessmentsCount / 30) * 100))}%`, background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
 
@@ -2205,11 +2272,11 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>92%</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>Excellent</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{attendancePercent}%</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>{attendancePercent >= 80 ? "Excellent" : "Good"}</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Attendance</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "92%", background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${attendancePercent}%`, background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
                 </div>
               </div>
             </div>
@@ -2253,8 +2320,8 @@ export default function InternDashboard() {
                     <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
                   </svg>
                   <div style={{ position: "absolute", top: "70px", left: "28%", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
-                    <div style={{ marginBottom: "2px" }}>Day 12</div>
-                    <div style={{ fontSize: "1rem" }}>40% Complete</div>
+                    <div style={{ marginBottom: "2px" }}>Day {Math.max(1, Math.round((progress / 100) * 30))}</div>
+                    <div style={{ fontSize: "1rem" }}>{progress}% Complete</div>
                   </div>
                   
                   {/* Y-axis labels */}
@@ -2270,7 +2337,7 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
                   <span>Day 1</span>
                   <span>Day 5</span>
-                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day 12</span>
+                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day {Math.max(1, Math.round((progress / 100) * 30))}</span>
                   <span>Day 15</span>
                   <span>Day 20</span>
                   <span>Day 25</span>
@@ -2289,12 +2356,12 @@ export default function InternDashboard() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, justifyContent: "center" }}>
                   {[
-                    { name: "Python", val: 78 },
-                    { name: "FastAPI", val: 65 },
-                    { name: "Databases", val: 52 },
-                    { name: "API Development", val: 68 },
-                    { name: "Testing", val: 46 },
-                    { name: "Problem Solving", val: 70 }
+                    { name: "Python", val: Math.min(100, Math.max(40, aiScore - 5)) },
+                    { name: "FastAPI", val: Math.min(100, Math.max(35, aiScore - 12)) },
+                    { name: "Databases", val: Math.min(100, Math.max(30, aiScore - 18)) },
+                    { name: "API Development", val: Math.min(100, Math.max(45, aiScore - 8)) },
+                    { name: "Testing", val: Math.min(100, Math.max(25, aiScore - 22)) },
+                    { name: "Problem Solving", val: Math.min(100, Math.max(50, aiScore)) }
                   ].map(skill => (
                     <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -2317,10 +2384,10 @@ export default function InternDashboard() {
                 <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
                     <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset={440 - (440 * (aiScore || 0)) / 100} strokeLinecap="round" transform="rotate(-90 80 80)" />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>87%</span>
+                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{aiScore}%</span>
                     <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
                   </div>
                 </div>
@@ -2328,21 +2395,21 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>85</strong>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{Math.min(100, Math.max(0, aiScore - 3))}</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>88</strong>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{aiScore}</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>90</strong>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{Math.min(100, Math.max(0, aiScore + 2))}</strong>
                   </div>
                 </div>
                 
                 <div style={{ marginTop: "24px", padding: "12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
                   <TrendingUp size={20} color="var(--success, #16a34a)" />
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>{aiScore >= 75 ? "You're performing above average! Keep up the great work." : "Keep completing daily tasks and assessments to boost your score!"}</p>
                 </div>
               </div>
             </div>
@@ -2644,10 +2711,10 @@ export default function InternDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
-                      <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                  {notifications.map(notif => (
+                    <div key={notif.id || Math.random()} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                      <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.message || notif.title || notif.text}</div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.created_at ? new Date(notif.created_at).toLocaleDateString() : (notif.time || "Today")}</span>
                     </div>
                   ))}
                 </div>

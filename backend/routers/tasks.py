@@ -1,13 +1,30 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import APIRouter, status, Depends, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+import database
 from database import get_db
 from dependencies import get_current_user
 import models
 import schemas
 from typing import List, Optional, Dict, Any, Tuple
 from datetime import datetime, timedelta
-import ast, re, tempfile, subprocess, sys, os, random, json
+import ast, re, tempfile, subprocess, sys, os, random, json, difflib, uuid, io
+
+try:
+    from fpdf import FPDF
+except ImportError:
+    class FPDF:
+        def __init__(self, *args, **kwargs): pass
+        def add_page(self): pass
+        def set_auto_page_break(self, *args, **kwargs): pass
+        def set_font(self, *args, **kwargs): pass
+        def cell(self, *args, **kwargs): pass
+        def ln(self, *args, **kwargs): pass
+        def multi_cell(self, *args, **kwargs): pass
+        def output(self, *args, **kwargs): return "PDF Content".encode("utf-8")
+
+SIGNALING_ROOMS: Dict[str, Dict[str, Any]] = {}
 
 try:
     from sandbox_runner import run_submission as sandbox_run_submission

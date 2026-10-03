@@ -88,16 +88,18 @@ export default function AdminOnboardingDetails({ appId }) {
             if (isRequired) {
                 try {
                     const templateParams = {
-                        intern_name: app.name,
                         to_email: app.email,
-                        meet_link: meetLink,
-                        scheduled_time: new Date(scheduledTime).toLocaleString()
+                        sender_name: "ProEduvate Onboarding",
+                        event_type: "Interview Scheduled 📅",
+                        details: `Dear ${app.name}, your interview for the ${app.domain} Internship has been scheduled at ${new Date(scheduledTime).toLocaleString()}.`,
+                        action_link: meetLink,
+                        timestamp: new Date().toLocaleString()
                     };
                     await emailjs.send(
-                        'service_tcpvv7r',
-                        'template_mpcare4',
+                        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+                        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
                         templateParams,
-                        'AUbUjQbyafx3K-_aP'
+                        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
                     );
                     alert("Interview scheduled and email sent successfully");
                 } catch (e) {
@@ -222,15 +224,18 @@ export default function AdminOnboardingDetails({ appId }) {
                                         const response = await axios.post(`http://127.0.0.1:8000/api/v1/onboarding/${id}/generate-documents`);
                                         if (response.data.urls) {
                                             const templateParams = {
-                                                intern_name: app.name,
                                                 to_email: app.email,
-                                                document_link: response.data.urls.offer_letter_url
+                                                sender_name: "ProEduvate Onboarding",
+                                                event_type: "Onboarding Documents Generated 📄",
+                                                details: `Dear ${app.name}, your onboarding offer letter and terms documents are ready. Please review them using the link below.`,
+                                                action_link: response.data.urls.offer_letter_url,
+                                                timestamp: new Date().toLocaleString()
                                             };
                                             await emailjs.send(
-                                                'service_tcpvv7r',
-                                                'template_mpcare4',
+                                                process.env.REACT_APP_EMAILJS_SERVICE_ID,
+                                                process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
                                                 templateParams,
-                                                'AUbUjQbyafx3K-_aP'
+                                                process.env.REACT_APP_EMAILJS_PUBLIC_KEY
                                             );
                                         }
                                         alert("Documents regenerated and sent successfully");
@@ -321,17 +326,19 @@ export default function AdminOnboardingDetails({ appId }) {
 
                                         if (response.data.urls) {
                                             const templateParams = {
-                                                intern_name: app.name,
                                                 to_email: app.email,
-                                                document_link: response.data.urls.offer_letter_url
+                                                sender_name: "ProEduvate Onboarding",
+                                                event_type: "Onboarding Documents Prepared 📄",
+                                                details: `Dear ${app.name}, your onboarding offer letter and terms documents have been prepared.`,
+                                                action_link: response.data.urls.offer_letter_url,
+                                                timestamp: new Date().toLocaleString()
                                             };
 
-                                            // Make sure to replace these with your actual EmailJS IDs
                                             await emailjs.send(
-                                                'service_tcpvv7r',
-                                                'template_mpcare4',
+                                                process.env.REACT_APP_EMAILJS_SERVICE_ID,
+                                                process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
                                                 templateParams,
-                                                'AUbUjQbyafx3K-_aP'
+                                                process.env.REACT_APP_EMAILJS_PUBLIC_KEY
                                             );
                                         }
 
