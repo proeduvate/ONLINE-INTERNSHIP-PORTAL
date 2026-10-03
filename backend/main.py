@@ -88,6 +88,10 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # 2. Register routers
 
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
