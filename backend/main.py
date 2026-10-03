@@ -151,10 +151,10 @@ app.include_router(normal_learning.router, prefix="/api/v1/learning/normal", tag
 app.include_router(normal_learning.router, prefix="/api/learning/normal", tags=["Normal Learning"])
 
 
-# CORS configuration
+# CORS configuration - Allow local, Vercel, and Render origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
