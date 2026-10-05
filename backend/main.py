@@ -81,32 +81,37 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Fail-safe CORS Middleware - Dynamically reflects request Origin
+# Fail-safe CORS Middleware - Dynamically reflects request Origin on all responses (including 404, 500, OPTIONS)
 @app.middleware("http")
 async def add_cors_headers(request, call_next):
-    origin = request.headers.get("origin")
+    origin = request.headers.get("origin") or "*"
     if request.method == "OPTIONS":
         from fastapi.responses import Response
         response = Response(status_code=200)
-        if origin:
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Methods"] = "*"
-            response.headers["Access-Control-Allow-Headers"] = "*"
-        return response
-
-    response = await call_next(request)
-    if origin:
         response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
+        if origin != "*":
+            response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
+
+    try:
+        response = await call_next(request)
+    except Exception as exc:
+        from fastapi.responses import JSONResponse
+        response = JSONResponse(status_code=500, content={"detail": str(exc)})
+
+    response.headers["Access-Control-Allow-Origin"] = origin
+    if origin != "*":
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origin_regex=r"https?://.*",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
