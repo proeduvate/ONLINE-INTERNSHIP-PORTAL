@@ -110,7 +110,78 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("uploads/resumes", exist_ok=True)
+os.makedirs("static", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# 2. Register routers
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
+
+app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
+app.include_router(submissions.router, prefix="/api/v1/submissions", tags=["Submissions"])
+
+app.include_router(airdrops.router, tags=["Airdrops"])
+app.include_router(airdrops.router, prefix="/api/v1", tags=["Airdrops"])
+
+app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
+
+app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api/v1", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="", tags=["Onboarding"])
+
+app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
+app.include_router(meetings.router, prefix="/api/v1/meetings", tags=["Meetings"])
+app.include_router(meetings.router, prefix="/meetings", tags=["Meetings"])
+
+app.include_router(certificates.router)
+app.include_router(certificates.router, prefix="/api/v1")
+
+app.include_router(tasks.router)
+app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(tasks.router, prefix="/api")
+
+from routers import notifications
+app.include_router(notifications.router)
+app.include_router(notifications.router, prefix="/api/v1")
+
+app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
+app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
+
+app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
+app.include_router(facts.router, prefix="/api/v1/facts", tags=["Facts"])
+
+app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
+app.include_router(leaderboard.router, prefix="/api/v1/leaderboard", tags=["Leaderboard"])
+
+app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
+app.include_router(simulation.router, prefix="/api/v1/simulation", tags=["Simulation"])
+
+app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
+app.include_router(tickets.router, prefix="/api/v1/tickets", tags=["Tickets"])
+
+app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
+app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])
+app.include_router(mentor.router, prefix="/api/v1", tags=["Mentor Dashboard"])
+
+app.include_router(questions.router, prefix="/api/v1", tags=["Questions"])
+app.include_router(questions.router, prefix="/api", tags=["Questions"])
+
+app.include_router(interactive_learning.router, prefix="/api/v1/learning/interactive", tags=["Interactive Learning"])
+app.include_router(interactive_learning.router, prefix="/api/learning/interactive", tags=["Interactive Learning"])
+
+app.include_router(normal_learning.router, prefix="/api/v1/learning/normal", tags=["Normal Learning"])
+app.include_router(normal_learning.router, prefix="/api/learning/normal", tags=["Normal Learning"])
 
 # --- Security & Auth Configuration ---
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
