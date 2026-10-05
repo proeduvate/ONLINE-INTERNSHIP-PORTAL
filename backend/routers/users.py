@@ -17,9 +17,15 @@ class PasswordChangeRequest(BaseModel):
 class ResetRequest(BaseModel):
     email: Optional[str] = None
 
+from sqlalchemy import func, cast, String
+
 @router.get("/", response_model=List[schemas.UserResponse])
-def get_users(db: Session = Depends(get_db)):
-    users = db.query(models.User).all()
+def get_users(role: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(models.User)
+    if role:
+        r_str = role.lower().strip()
+        query = query.filter(func.lower(cast(models.User.role, String)) == r_str)
+    users = query.all()
     return users
 
 @router.get("/profile", response_model=schemas.UserResponse)

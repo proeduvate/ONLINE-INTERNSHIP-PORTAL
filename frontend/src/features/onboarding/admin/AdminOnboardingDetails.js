@@ -23,7 +23,9 @@ export default function AdminOnboardingDetails({ appId }) {
             try {
                 const baseUrl = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
                 const response = await axios.get(`${baseUrl}/api/v1/users?role=mentor`);
-                setMentors(response.data || []);
+                const allUsers = response.data || [];
+                const mentorList = allUsers.filter(u => (u.role || "").toString().toLowerCase() === "mentor");
+                setMentors(mentorList);
             } catch (error) {
                 console.error("Error fetching mentors:", error);
             }
