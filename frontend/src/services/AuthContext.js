@@ -1,11 +1,11 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { API_BASE } from '../api';
+import { API_BASE } from '../api/axios';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [authToken, setAuthToken] = useState(localStorage.getItem('token') || localStorage.getItem('access_token'));
+    const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -88,22 +88,22 @@ export const AuthProvider = ({ children }) => {
             const token = data.access_token || data.token;
             localStorage.setItem('token', token);
             localStorage.setItem('access_token', token);
+            localStorage.setItem('authToken', token);
             localStorage.setItem('role', data.role);
             setAuthToken(token);
             const userData = { role: data.role, name: data.name, email: data.email, id: data.user_id };
             setUser(userData);
-            return { ...data, ...userData };
+            return userData;
         } finally {
             setLoading(false);
         }
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('role');
+        localStorage.removeItem('authToken');
         setAuthToken(null);
         setUser(null);
+        // Optionally redirect to login page or home
     };
 
     return (

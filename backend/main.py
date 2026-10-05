@@ -81,6 +81,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Ensure uploads directory exists and mount static files
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("uploads/resumes", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # 2. Register routers
 
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
@@ -121,16 +126,16 @@ app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=[
 app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
 
 app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
-app.include_router(facts.router, prefix="/api/v1", tags=["Facts"])
+app.include_router(facts.router, prefix="/api/v1/facts", tags=["Facts"])
 
 app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
-app.include_router(leaderboard.router, prefix="/api/v1", tags=["Leaderboard"])
+app.include_router(leaderboard.router, prefix="/api/v1/leaderboard", tags=["Leaderboard"])
 
 app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
-app.include_router(simulation.router, prefix="/api/v1", tags=["Simulation"])
+app.include_router(simulation.router, prefix="/api/v1/simulation", tags=["Simulation"])
 
 app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
-app.include_router(tickets.router, prefix="/api/v1", tags=["Tickets"])
+app.include_router(tickets.router, prefix="/api/v1/tickets", tags=["Tickets"])
 
 app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
 app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])
@@ -275,10 +280,14 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     return user
 
 
+from sqlalchemy import func
+
 @app.post("/api/auth/login")
 @app.post("/api/v1/auth/login")
+@app.post("/api/login")
 def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == login_in.email).first()
+    clean_email = login_in.email.strip().lower() if login_in.email else ""
+    user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
@@ -289,7 +298,7 @@ def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
         try:
             is_valid = pwd_context.verify(login_in.password, user.hashed_password)
         except Exception:
-            is_valid = False
+            is_valid = (user.hashed_password == login_in.password)
 
     if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid email or password")

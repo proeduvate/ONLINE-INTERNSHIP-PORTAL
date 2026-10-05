@@ -1,36 +1,66 @@
 import React, { useState, useEffect, useRef } from "react";
-import { User, Shield, Bell, Camera, Lock, Save, Mail, Building2, Phone, Briefcase, Smartphone } from "lucide-react";
-import { useAuth } from "../../services/AuthContext";
+import { User, Shield, Bell, Camera, Mail, Building2, Phone, Briefcase, Smartphone, Save, CheckCircle, AlertCircle } from "lucide-react";
+import api from "../../api/axios";
 
 export default function AdminProfile() {
-  const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Admin'}&backgroundColor=f8fafc`);
+  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
   const fileInputRef = useRef(null);
 
-  const [profileData, setProfileData] = useState({
-    organization: "ProEduvate HQ",
-    role: "Super Administrator",
-    phone: "+1 (555) 123-4567"
+  // Profile Form State
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    role: "",
+    organization: "",
+    phone: ""
   });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
+  // Password Security Form State
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [passwordStatus, setPasswordStatus] = useState({ error: "", success: "", loading: false });
+
+  // Notifications State
+  const [notifications, setNotifications] = useState([]);
+
+  // Fetch Live Profile & Notifications on Mount
   useEffect(() => {
-    const saved = localStorage.getItem(`admin_profile_${user?.id}`);
-    if (saved) {
-      setProfileData(JSON.parse(saved));
-    }
-  }, [user]);
+    fetchProfileData();
+    fetchNotifications();
+  }, []);
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
+  const fetchProfileData = async () => {
+    try {
+      const res = await api.get('/api/v1/users/profile');
+      if (res.data) {
+        setProfile({
+          name: res.data.name || "",
+          email: res.data.email || "",
+          role: res.data.role ? res.data.role.toUpperCase() : "ADMIN",
+          organization: res.data.college || "",
+          phone: res.data.phone || ""
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to fetch user profile:", err);
+    }
   };
 
-  const handleSaveProfile = (e) => {
-    e.preventDefault();
-    localStorage.setItem(`admin_profile_${user?.id}`, JSON.stringify(profileData));
-    alert("Admin Profile saved successfully!");
+  const fetchNotifications = async () => {
+    try {
+      const res = await api.get('/api/v1/notifications');
+      if (Array.isArray(res.data)) {
+        setNotifications(res.data);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch notifications:", err);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -42,14 +72,71 @@ export default function AdminProfile() {
   };
 
   const handleRemoveImage = () => {
-    setProfileImage(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Admin'}&backgroundColor=f8fafc`);
+    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
   };
 
-  const handleForgotPassword = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    // Simulate sending reset email
-    setResetEmailSent(true);
-    setTimeout(() => setResetEmailSent(false), 5000);
+    setIsSavingProfile(true);
+    try {
+      await api.put('/api/v1/users/profile', {
+        name: profile.name,
+        college: profile.organization
+      });
+      alert("Profile updated successfully in database!");
+      fetchProfileData();
+    } catch (err) {
+      console.error("Profile update error:", err);
+      const msg = err.response?.data?.detail || "Failed to update profile.";
+      alert(msg);
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordStatus({ error: "", success: "", loading: true });
+
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setPasswordStatus({ error: "New passwords do not match!", success: "", loading: false });
+      return;
+    }
+
+    if (passwords.newPassword.length < 6) {
+      setPasswordStatus({ error: "Password must be at least 6 characters.", success: "", loading: false });
+      return;
+    }
+
+    try {
+      const res = await api.post('/api/v1/users/change-password', {
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword
+      });
+
+      setPasswordStatus({
+        error: "",
+        success: res.data?.message || "Password updated successfully in database!",
+        loading: false
+      });
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      console.error("Password change error:", err);
+      const errMsg = err.response?.data?.detail || "Failed to change password. Please verify your current password.";
+      setPasswordStatus({ error: errMsg, success: "", loading: false });
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/api/v1/users/reset-password-request', { email: profile.email });
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    } catch (err) {
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    }
   };
 
   return (
@@ -107,7 +194,7 @@ export default function AdminProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Admin Profile Information</h3>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your administrative details.</p>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your administrative details in live database.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
@@ -131,22 +218,27 @@ export default function AdminProfile() {
 
               {/* Form Grid */}
               <form onSubmit={handleSaveProfile}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue={user?.name?.split(' ')[0] || "Super"} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue={user?.name?.split(' ').slice(1).join(' ') || "Admin"} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
-                  </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Full Name</label>
+                  <input 
+                    type="text" 
+                    value={profile.name} 
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })} 
+                    style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                    required 
+                  />
                 </div>
 
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue={user?.email || "admin@proeduvate.com"} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input 
+                      type="email" 
+                      value={profile.email} 
+                      disabled 
+                      style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} 
+                    />
                   </div>
                 </div>
 
@@ -155,14 +247,24 @@ export default function AdminProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Organization</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="organization" value={profileData.organization} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
+                      <input 
+                        type="text" 
+                        value={profile.organization} 
+                        onChange={(e) => setProfile({ ...profile, organization: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="role" value={profileData.role} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
+                      <input 
+                        type="text" 
+                        value={profile.role} 
+                        disabled 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
@@ -172,15 +274,20 @@ export default function AdminProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Phone Number</label>
                     <div style={{ position: "relative" }}>
                       <Phone size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} />
+                      <input 
+                        type="tel" 
+                        value={profile.phone} 
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
-                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Save size={16} /> Save Changes
+                  <button type="button" onClick={fetchProfileData} style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
+                  <button type="submit" disabled={isSavingProfile} style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Save size={16} /> {isSavingProfile ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>
@@ -193,12 +300,12 @@ export default function AdminProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Account Security</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and secure your account.</p>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and update backend credentials.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
-              <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
+              <form onSubmit={handleChangePassword}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
@@ -211,24 +318,59 @@ export default function AdminProfile() {
                         Forgot Password?
                       </button>
                     </div>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.currentPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
                     
                     {resetEmailSent && (
                       <div style={{ marginTop: "8px", padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Mail size={14} /> Password reset link sent to your email!
+                        <Mail size={14} /> Password reset link sent to {profile.email}!
                       </div>
                     )}
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.newPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>Confirm New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.confirmPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
-                  <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
-                    Update Password
+
+                  {passwordStatus.error && (
+                    <div style={{ padding: "8px 12px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "6px", color: "#991b1b", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <AlertCircle size={14} /> {passwordStatus.error}
+                    </div>
+                  )}
+
+                  {passwordStatus.success && (
+                    <div style={{ padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <CheckCircle size={14} /> {passwordStatus.success}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit" 
+                    disabled={passwordStatus.loading}
+                    style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}
+                  >
+                    {passwordStatus.loading ? "Updating..." : "Update Password"}
                   </button>
                 </div>
               </form>
@@ -254,42 +396,31 @@ export default function AdminProfile() {
         {activeSettingsTab === "notifications" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
-              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Notifications</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Choose how you receive administrative alerts.</p>
+              <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Notifications & System Alerts</h3>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Real-time database system alerts.</p>
             </div>
 
             <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>System Notifications</h4>
+              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Live Notifications Log</h4>
               
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>New Intern Registrations</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Receive an alert when a new intern signs up on the portal.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {notifications.length === 0 ? (
+                  <div style={{ padding: "16px", textAlign: "center", color: "#64748b", fontSize: "0.9rem" }}>
+                    No system notifications in database yet.
                   </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>New Mentor Approvals</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Get notified when a mentor profile needs to be reviewed.</p>
-                  </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Task Escalations</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Alerts for any tasks that interns have flagged for admin review.</p>
-                  </div>
-                  <input type="checkbox" defaultChecked style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>Weekly Analytics Reports</h5>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Receive a weekly digest of platform activity and growth.</p>
-                  </div>
-                  <input type="checkbox" style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
-                </div>
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} style={{ padding: "12px 16px", background: "#ffffff", borderRadius: "8px", border: "1px solid #cbd5e1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#1e293b" }}>{n.title}</div>
+                        <div style={{ fontSize: "0.85rem", color: "#475569", marginTop: "2px" }}>{n.message}</div>
+                      </div>
+                      <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+                        {n.created_at ? new Date(n.created_at).toLocaleDateString() : "Today"}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

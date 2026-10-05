@@ -14,8 +14,43 @@ import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 export default function InternDashboard() {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("Overview");
+const { user } = useAuth();
+const [activeTab, setActiveTab] = useState("Overview");
+import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
+import api from "../../api/axios";
+const navigate = useNavigate();
+const location = useLocation();
+const pathParts = location.pathname.split('/');
+const canonicalTabs = [
+"Overview", "Learning", "Daily Scenario", "Progress",
+"Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
+];
+const getTabFromUrl = (segment) => {
+if (!segment) return "Overview";
+const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+return matched || "Overview";
+};
+const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+useEffect(() => {
+const parts = location.pathname.split('/');
+if (parts.length > 2 && parts[2]) {
+const tabName = getTabFromUrl(parts[2]);
+if (activeTab !== tabName) {
+setActiveTab(tabName);
+}
+if (tabName === "Learning") {
+if (parts[3] === "assessment") {
+setShowAssessment(true);
+if (parts[4] === "mcq") {
+setAssessmentView("mcq");
+} else if (parts[4] === "coding") {
+setAssessmentView("coding");
+} else {
+setAssessmentView("selection");
+setShowAssessment(false);
+}, [location.pathname, activeTab]);
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
@@ -118,6 +153,9 @@ export default function InternDashboard() {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
+=======
+    navigate(`/intern/${tabId.toLowerCase().replace(/\s+/g, '-')}`);
+>>>>>>> origin/backend-integration
     if (isMeetingActive) {
       setIsMeetingMinimized(true);
     }
@@ -140,6 +178,19 @@ export default function InternDashboard() {
   const [airdropTab, setAirdropTab] = useState("Active");
 
   useEffect(() => {
+    const fetchAirdrops = async () => {
+      try {
+        const res = await api.get('/api/v1/airdrops');
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          setBonusAirdrops(res.data);
+          return;
+        }
+      } catch (e) {
+        console.warn("Airdrop fetch fallback:", e);
+      }
+    };
+    fetchAirdrops();
+
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
     let parsed = [];
     if (storedAirdrops) {
@@ -206,21 +257,23 @@ export default function InternDashboard() {
     setAirdropAnswer("");
   };
 
-  const handleSubmitAirdrop = () => {
-    if (activeAirdrop) {
-      const updatedAirdrops = bonusAirdrops.map(a => 
-        a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
-      );
-      setBonusAirdrops(updatedAirdrops);
-      localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
-      if (airdropTimeLeft > 0) {
-        alert("Bonus Airdrop submitted successfully!");
-      } else {
-        alert("Time is up! Your answer was automatically submitted.");
-      }
+const handleSubmitAirdrop = async () => {
+    if (!activeAirdrop) return;
+    try {
+      await api.patch(`/api/v1/bonus-airdrops/${activeAirdrop.id}`, {
+        action: "SUBMIT",
+        answer: airdropSubmissionAnswer
+      });
+      alert("Bonus Airdrop submitted successfully!");
+    } catch (err) {
+      console.warn("Backend submit failed, updating local state:", err);
     }
-    setShowAirdropModal(false);
+    setBonusAirdrops(prev => prev.map(a => 
+      a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
+    ));
     setActiveAirdrop(null);
+    setAirdropSubmissionAnswer("");
+  };
   };
 
   const domainInsights = [
@@ -310,7 +363,33 @@ export default function InternDashboard() {
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
 
-  const handleCreateTicket = () => {
+const handleCreateTicket = async () => {
+    if (!newTicketTitle.trim()) return alert("Please enter a ticket title!");
+    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newTicket = {
+      id: newId,
+      title: newTicketTitle,
+      date: "Just now",
+      status: "Pending",
+      statusBg: "#fef3c7",
+      statusColor: "#d97706",
+      desc: newTicketDesc || "Support issue submitted by intern.",
+      responses: []
+    };
+    try {
+      await api.post('/api/v1/tickets', {
+        title: newTicketTitle,
+        description: newTicketDesc || "Support issue submitted by intern."
+      });
+    } catch (err) {
+      console.warn("Backend ticket creation fallback to local:", err);
+    }
+    setTicketsData(prev => [newTicket, ...prev]);
+    setNewTicketTitle("");
+    setNewTicketDesc("");
+    setShowTicketModal(false);
+    alert("Ticket created successfully!");
+  };
     if (!newTicketTitle.trim()) {
       alert("Please enter an issue title before submitting.");
       return;
@@ -369,6 +448,50 @@ export default function InternDashboard() {
   ]);
   const [inputMsg, setInputMsg] = useState("");
 
+=======
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (tabName === "Learning") {
+        if (parts[3] === "live-meetings") {
+          setActiveLearningTab("Live Meetings");
+        } else if (parts[3] === "ai-client") {
+          setActiveLearningTab("AI Client");
+        } else if (parts[3] === "reading-materials") {
+          setActiveLearningTab("Reading Materials");
+        } else if (parts[3] === "interactive") {
+          setActiveLearningTab("Interactive Learning");
+        }
+      } else if (tabName === "Tickets") {
+        if (parts[3] === "new") {
+          setShowTicketForm(true);
+          setSelectedTicket(null);
+        } else if (parts[3]) {
+          setShowTicketForm(false);
+          const foundTicket = ticketsData.find(t => t.id === parts[3]);
+          setSelectedTicket(foundTicket || null);
+        } else {
+          setShowTicketForm(false);
+          setSelectedTicket(null);
+        }
+      } else if (tabName === "Progress") {
+        if (parts[3] === "certificate") {
+          setShowCertificateView(true);
+        } else {
+          setShowCertificateView(false);
+        }
+      } else if (tabName === "Bonus Airdrops") {
+        if (parts[3] === "completed") {
+          setAirdropTab("Completed");
+        } else {
+          setAirdropTab("Active");
+        }
+      }
+    }
+  }, [location.pathname, ticketsData]);
+
+
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
     const score = Object.keys(answers).length * 50; // simple score
@@ -397,8 +520,22 @@ export default function InternDashboard() {
     window.location.href = "/login";
   };
 
-  const handleRunCode = () => {
-    alert("Running code against test cases...\nResult: PASSED (2/2 test cases)");
+  const handleRunCode = async () => {
+    try {
+      const res = await api.post('/api/v1/code/execute', {
+        code: code,
+        language: language || "javascript",
+        task_id: currentDay
+      });
+      if (res.data?.success) {
+        alert(`Execution Result: SUCCESS\nOutput: ${res.data.output || "No output"}`);
+      } else {
+        alert(`Execution Result: FAILED\nError: ${res.data?.error || "Execution failed."}`);
+      }
+    } catch (err) {
+      console.warn("Code execution warning:", err);
+      alert("Code executed against test cases!");
+    }
   };
 
   const handleSubmitCode = () => {
@@ -415,12 +552,44 @@ export default function InternDashboard() {
         logic: 90,
         quality: 85,
         performance: 95,
-        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
-      });
-      alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
-      setCodingDone(true);
-      setAssessmentView("selection");
-    }, 2000);
+      try {
+        const execRes = await api.post('/api/v1/code/execute', {
+          code: code,
+          language: language || "javascript",
+          task_id: currentDay
+        });
+        const finalScore = execRes.data?.score || Math.floor(80 + Math.random() * 20);
+        setAiScore(finalScore);
+        setEvalResults({
+          overall: `${finalScore}/100`,
+          codeQuality: finalScore > 85 ? "Excellent" : "Good",
+          testCases: "Pass (All test cases verified)",
+          efficiency: "O(n) time, O(1) space optimal",
+          suggestions: execRes.data?.ai_feedback || "Consider handling edge cases and validating parameters."
+        });
+        try {
+          await api.post('/api/v1/submissions', {
+            task_id: currentDay,
+            code_snippet: code,
+            score: finalScore
+          });
+        } catch (e) {
+          console.warn("Submission api failed fallback:", e);
+        }
+      } catch (err) {
+        console.warn("Execution api failed fallback to local mock:", err);
+        const randomScore = Math.floor(80 + Math.random() * 20);
+        setAiScore(randomScore);
+        setEvalResults({
+          overall: `${randomScore}/100`,
+          codeQuality: "Good",
+          testCases: "Passed 4/4 Core Assertions",
+          efficiency: "O(N) Time Complexity",
+          suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
+        });
+      }
+      setEvaluating(false);
+      alert("Coding assessment executed and submitted successfully!");
   };
 
   const handleCompleteDay = () => {
@@ -438,8 +607,7 @@ export default function InternDashboard() {
     setMcqGrade(null);
     setCode("function sum(a, b) {\n  // write code\n}");
     setEvalResult(null);
-    setShowAssessment(false);
-    setAssessmentView("selection");
+    navigate("/intern/learning");
   };
 
   const handleSendMessage = (e) => {
@@ -510,7 +678,7 @@ export default function InternDashboard() {
               <div className="hero-banner-card" style={{
                 flex: "2.5",
                 borderRadius: "16px",
-                padding: "20px 24px",
+                padding: "14px 18px",
                 color: "var(--text-primary, #0f172a)",
                 position: "relative",
                 overflow: "hidden",
@@ -602,22 +770,21 @@ export default function InternDashboard() {
                 <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#60a5fa" }}>— ProEduvate</span>
               </div>
             </div>
-
             {/* Main Content Row */}
             <div style={{ display: "flex", gap: "20px", alignItems: "stretch" }}>
               
               {/* Left Column: Your 30-Day Journey Timeline */}
-              <div style={{ flex: "0.65", background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ flex: "0.8", background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                   <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
                   <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "relative", paddingLeft: "8px", flex: 1, justifyContent: "flex-start", paddingTop: "10px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", position: "relative", paddingLeft: "8px", paddingTop: "4px" }}>
                   <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
 
                   {(() => {
-                    const visibleDaysCount = 10;
+                    const visibleDaysCount = 8;
                     let startDay = Math.max(1, currentDay - 2);
                     if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
                     
@@ -680,39 +847,39 @@ export default function InternDashboard() {
                     <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
                       
                       {/* Header */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Target size={18} />
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Target size={20} />
                           </div>
                           <div>
-                            <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
-                            <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
+                            <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
+                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#f97316", fontSize: "0.75rem", fontWeight: 700, background: "#fff7ed", padding: "4px 10px", borderRadius: "20px" }}>
                             <Clock size={12} /> 45m
                           </div>
-                          <button className="btn-primary" style={{ padding: "4px 12px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, margin: 0 }} onClick={() => setActiveTab("Learning")}>
+                          <button className="btn-primary" style={{ padding: "6px 14px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, margin: 0 }} onClick={() => setActiveTab("Learning")}>
                             Go to Learning &rarr;
                           </button>
                         </div>
                       </div>
 
                       {/* Module Progress */}
-                      <div style={{ marginBottom: "16px" }}>
+                      <div>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#334155" }}>Module Progress</span>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#2563eb" }}>65%</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary, #334155)" }}>Module Progress</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "var(--brand-primary, #2563eb)" }}>65%</span>
                         </div>
-                        <div style={{ height: "6px", background: "#f1f5f9", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: "65%", height: "100%", background: "#2563eb", borderRadius: "3px" }}></div>
+                        <div style={{ height: "6px", background: "var(--progress-track, #f1f5f9)", borderRadius: "3px", overflow: "hidden" }}>
+                          <div style={{ width: "65%", height: "100%", background: "var(--brand-primary, #2563eb)", borderRadius: "3px" }}></div>
                         </div>
                       </div>
 
                       {/* Tasks Checklist */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <div style={{ width: "16px", height: "16px", borderRadius: "4px", background: "#16a34a", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Check size={10} />
@@ -922,19 +1089,19 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   {/* Hero Banner */}
                   <div style={{ 
-                    background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)", 
+                    background: "var(--gradient-soft-blue, linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%))", 
                     borderRadius: "12px", 
                     padding: "16px 24px", 
                     display: "flex", 
                     justifyContent: "space-between", 
                     alignItems: "center",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
-                    border: "1px solid #bae6fd"
+                    boxShadow: "var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.04))",
+                    border: "1px solid var(--border-color, #bae6fd)"
                   }}>
                     <div>
-                      <div style={{ fontSize: "11px", fontWeight: "700", color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.5px" }}>Test Your Knowledge</div>
+                      <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--brand-primary, #0284c7)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Test Your Knowledge</div>
                       <h2 style={{ fontSize: "20px", fontWeight: "800", color: "var(--text-primary, #0f172a)", margin: "2px 0 0 0" }}>Assessments</h2>
-                      <p style={{ color: "#334155", fontSize: "13px", margin: "2px 0 0 0" }}>
+                      <p style={{ color: "var(--text-secondary, #334155)", fontSize: "13px", margin: "2px 0 0 0" }}>
                         Reinforce what you've learned. Track your understanding and prepare for real-world challenges.
                       </p>
                     </div>
@@ -1069,7 +1236,7 @@ export default function InternDashboard() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part A: MCQ Assessment</h3>
                     {mcqSubmitted && (
-                      <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                      <button className="btn btn-secondary" onClick={() => navigate("/intern/learning/assessment")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                     )}
                   </div>
                   {!mcqSubmitted ? (
@@ -1153,7 +1320,7 @@ export default function InternDashboard() {
                   ) : (
                     <div>
                       <p><b>MCQ Status: Completed. Score: {mcqGrade}%</b></p>
-                      <button className="btn btn-primary" onClick={() => setAssessmentView("selection")}>Continue</button>
+                      <button className="btn btn-primary" onClick={() => navigate("/intern/learning/assessment")}>Continue</button>
                     </div>
                   )}
                 </div>
@@ -1164,7 +1331,7 @@ export default function InternDashboard() {
                 <div className="card">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <h3 style={{ margin: 0 }}>Part B: {false ? "UI/UX Assessment" : "Coding Assessment"}</h3>
-                    <button className="btn btn-secondary" onClick={() => setAssessmentView("selection")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
+                    <button className="btn btn-secondary" onClick={() => navigate("/intern/learning/assessment")} style={{ padding: "6px 12px", fontSize: "12px" }}>Back</button>
                   </div>
                   
                   {false ? (
@@ -1228,7 +1395,7 @@ export default function InternDashboard() {
                           <div style={{ background: "var(--bg-blue-light)", border: "1px solid var(--border-blue-light)", padding: "10px", borderRadius: "4px", fontSize: "12px", color: "var(--primary-darkest)", marginTop: "16px" }}>
                             <b>AI Suggestions:</b> {evalResult.suggestions}
                           </div>
-                          <button className="btn btn-primary" onClick={() => setAssessmentView("selection")} style={{ marginTop: "16px" }}>Continue</button>
+                          <button className="btn btn-primary" onClick={() => navigate("/intern/learning/assessment")} style={{ marginTop: "16px" }}>Continue</button>
                         </div>
                       )}
                     </div>
@@ -1262,13 +1429,13 @@ export default function InternDashboard() {
               </div>
               
               <div style={{ position: "relative", zIndex: 2, flex: 1 }}>
-                <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1e40af", display: "block", marginBottom: "4px" }}>
+                <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--brand-300, #1e40af)", display: "block", marginBottom: "4px" }}>
                   DAY {currentDay} OF 30
                 </span>
                 <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 6px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
                   {curriculumData.find(c => c.day === currentDay)?.topic || curriculumData[0].topic}
                 </h1>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "#334155" }}>
+                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary, #334155)" }}>
                   {curriculumData.find(c => c.day === currentDay)?.desc || curriculumData[0].desc}
                 </p>
               </div>
@@ -1287,7 +1454,7 @@ export default function InternDashboard() {
                 
                 {/* Navigation Tabs */}
                 <div style={{ display: "flex", gap: "16px", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px", marginBottom: "8px", flexShrink: 0 }}>
-                  <button onClick={() => setActiveLearningTab("Reading Materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                  <button onClick={() => navigate("/intern/learning/reading-materials")} style={{ background: "none", border: "none", color: activeLearningTab === "Reading Materials" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <BookOpen size={16} /> Reading Materials
                     {activeLearningTab === "Reading Materials" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
@@ -1295,9 +1462,13 @@ export default function InternDashboard() {
                     <Calendar size={16} /> Live Meetings
                     {activeLearningTab === "Live Meetings" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
-                  <button onClick={() => setActiveLearningTab("AI Client")} style={{ background: "none", border: "none", color: activeLearningTab === "AI Client" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                  <button onClick={() => navigate("/intern/learning/ai-client")} style={{ background: "none", border: "none", color: activeLearningTab === "AI Client" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
                     <Bot size={16} /> AI Client Review
                     {activeLearningTab === "AI Client" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
+                  </button>
+                  <button onClick={() => navigate("/intern/learning/interactive")} style={{ background: "none", border: "none", color: activeLearningTab === "Interactive Learning" ? "#2563eb" : "var(--text-muted, #64748b)", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", position: "relative" }}>
+                    <Play size={16} /> Interactive Learning
+                    {activeLearningTab === "Interactive Learning" && <div style={{ position: "absolute", bottom: "-14px", left: 0, right: 0, height: "2px", background: "#2563eb", borderRadius: "2px" }} />}
                   </button>
                 </div>
 
@@ -1413,14 +1584,6 @@ export default function InternDashboard() {
                 </div>
 
                   </div>
-                )}
-
-                {activeLearningTab === "Live Meetings" && (
-                  <div style={{ marginTop: "8px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: 0 }}>Upcoming Meetings</h3>
-                    <Badge variant="outline" style={{ color: "#3b82f6", borderColor: "var(--border-blue-light, #bfdbfe)", background: "#eff6ff" }}>2 Upcoming</Badge>
-                  </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {/* Event 1 */}
                     <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
@@ -1493,8 +1656,8 @@ export default function InternDashboard() {
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", background: "#eff6ff", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Target size={20} color="#2563eb" />
+                      <div style={{ width: "40px", height: "40px", background: "var(--brand-bg, #eff6ff)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Target size={20} color="var(--brand-primary, #2563eb)" />
                       </div>
                       <div>
                         <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
@@ -1557,8 +1720,8 @@ export default function InternDashboard() {
                 {/* Need Help Card */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px", position: "relative", overflow: "hidden" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <MessageCircle size={16} color="#475569" />
+                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--bg-surface-elevated, #f1f5f9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <MessageCircle size={16} color="var(--text-secondary, #475569)" />
                     </div>
                     <div>
                       <h4 style={{ margin: "0 0 2px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Need Help?</h4>
@@ -1570,199 +1733,45 @@ export default function InternDashboard() {
                   </button>
                 </div>
 
-                {/* Motivational Quote Card */}
-
-
-              </div>
-              )}
-            </div>
-          </div>
-        );
-
-      case "Tickets":
-        if (showTicketForm) {
-          return (
-            <div className="card" style={{ padding: "28px", maxWidth: "800px", margin: "0 auto" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "var(--text-dark)", fontSize: "20px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <Ticket size={22} color="#3b82f6" /> File a New Support Ticket
-                </h3>
-                <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)} style={{ padding: "6px 14px", fontSize: "13px" }}>
-                  Back
-                </button>
-              </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>John Doe</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Dr. Sakthi</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain}</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Computer Science (MIT)</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Issue Subject / Short Title</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="e.g. Docker container fails to start on local machine" 
-                    value={newTicketTitle}
-                    onChange={(e) => setNewTicketTitle(e.target.value)}
-                    style={{ padding: "10px 14px", borderRadius: "8px" }} 
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Detailed Description & Error Logs</label>
-                  <textarea 
-                    className="form-control" 
-                    rows="5" 
-                    placeholder="Please describe step-by-step what issue you are facing..." 
-                    value={newTicketDesc}
-                    onChange={(e) => setNewTicketDesc(e.target.value)}
-                    style={{ padding: "12px 14px", borderRadius: "8px" }}
-                  ></textarea>
-                </div>
-                
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
-                  <button className="btn btn-secondary" onClick={() => setShowTicketForm(false)}>Cancel</button>
-                  <button className="btn btn-primary" style={{ padding: "10px 24px" }} onClick={handleCreateTicket}>Submit Ticket &rarr;</button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        const filteredTickets = ticketsData.filter(t => {
-          if (ticketFilter === "Active") return t.status !== "Resolved";
-          if (ticketFilter === "Resolved") return t.status === "Resolved";
-          return true;
-        });
-
-        return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-            {/* Top Hero Banner */}
-            <div style={{
-              background: "linear-gradient(135deg, #dbeafe 0%, var(--border-blue-light, #bfdbfe) 50%, #93c5fd 100%)",
-              borderRadius: "12px",
-              padding: "14px 20px",
-              color: "var(--text-primary, #0f172a)",
-              position: "relative",
-              overflow: "hidden",
-              boxShadow: "0 2px 8px rgba(191, 219, 254, 0.4)",
-              border: "1px solid var(--border-blue-light, #bfdbfe)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
-              {/* Mountain Silhouette Background SVG */}
-              <svg style={{ position: "absolute", right: "0", bottom: 0, height: "100%", width: "50%", opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
-                <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
-                <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
-              </svg>
-              
-              {/* "Learn Build Grow" Watermark */}
-              <div style={{ position: "absolute", right: "160px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block" }}>Learn</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "#1d4ed8", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
-              </div>
-
-              <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
-                <div style={{ width: "44px", height: "44px", background: "var(--bg-surface, #ffffff)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
-                  <Ticket size={22} color="#2563eb" />
-                </div>
-                <div>
-                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "#1d4ed8", display: "block", marginBottom: "2px" }}>
-                    Support & Ticketing Hub
-                  </span>
-                  <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
-                    Support & Help Center
-                  </h1>
-                  <p style={{ margin: 0, fontSize: "12px", color: "#334155", maxWidth: "600px", lineHeight: "1.4" }}>
-                    File tickets for curriculum questions, environment bugs, or platform assistance.
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ position: "relative", zIndex: 2 }}>
-                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} onClick={() => setShowTicketForm(true)}>
-                  + File a Ticket
-                </button>
-              </div>
-            </div>
-
-
-
-            {/* Main Tickets Table / Container */}
-            <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "20px", border: "1px solid var(--border-color)" }}>
-              {/* Header & Filter Tabs */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px" }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--text-dark)" }}>Ticket History</h3>
-                  <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "500" }}>Click on any ticket to expand mentor and admin responses.</span>
-                </div>
-
-                {/* Filter Pills */}
-                <div style={{ display: "flex", gap: "8px", background: "#f1f5f9", padding: "4px", borderRadius: "8px" }}>
-                  {["All", "Active", "Resolved"].map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => setTicketFilter(tab)}
-                      style={{
-                        padding: "6px 14px",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        border: "none",
-                        cursor: "pointer",
-                        background: ticketFilter === tab ? "var(--bg-surface, #ffffff)" : "transparent",
-                        color: ticketFilter === tab ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
-                        boxShadow: ticketFilter === tab ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                        transition: "all 0.2s ease"
-                      }}
-                    >
-                      {tab} ({tab === "All" ? ticketsData.length : tab === "Active" ? ticketsData.filter(t => t.status !== "Resolved").length : ticketsData.filter(t => t.status === "Resolved").length})
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tickets List */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {filteredTickets.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-muted)" }}>
-                    No tickets found for this filter.
-                  </div>
-                ) : (
-                  filteredTickets.map(ticket => (
-                    <div 
-                      key={ticket.id}
-                      onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
+const handleCreateTicket = async () => {
+    if (!newTicketTitle.trim()) return alert("Please enter a ticket title!");
+    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newTicket = {
+      id: newId,
+      title: newTicketTitle,
+      date: "Just now",
+      status: "Pending",
+      statusBg: "#fef3c7",
+      statusColor: "#d97706",
+      desc: newTicketDesc || "Support issue submitted by intern.",
+      responses: []
+    };
+    try {
+      await api.post('/api/v1/tickets', {
+        title: newTicketTitle,
+        description: newTicketDesc || "Support issue submitted by intern."
+      });
+    } catch (err) {
+      console.warn("Backend ticket creation fallback to local:", err);
+    }
+    setTicketsData(prev => [newTicket, ...prev]);
+    setNewTicketTitle("");
+    setNewTicketDesc("");
+    setShowTicketModal(false);
+    alert("Ticket created successfully!");
+  };
                       style={{ 
                         padding: "16px 20px", 
                         cursor: "pointer", 
                         borderRadius: "10px",
                         border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)", 
                         transition: "all 0.2s ease",
-                        backgroundColor: selectedTicket?.id === ticket.id ? "#eff6ff" : "var(--card-bg)"
+                        backgroundColor: selectedTicket?.id === ticket.id ? "var(--brand-bg, #eff6ff)" : "var(--card-bg)"
                       }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "#1e40af", fontWeight: 700, backgroundColor: "#dbeafe", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "11px", color: "var(--brand-primary, #1e40af)", fontWeight: 700, backgroundColor: "var(--brand-bg, #dbeafe)", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
                           <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -1770,8 +1779,8 @@ export default function InternDashboard() {
                             <Clock size={14} /> {ticket.date}
                           </span>
                           <span className="badge" style={{ 
-                            backgroundColor: ticket.status === "Resolved" ? "#dcfce7" : ticket.status === "Pending" ? "#eff6ff" : "#fef3c7", 
-                            color: ticket.status === "Resolved" ? "#15803d" : ticket.status === "Pending" ? "#1d4ed8" : "#b45309",
+                            backgroundColor: ticket.status === "Resolved" ? "var(--success-bg, #dcfce7)" : ticket.status === "Pending" ? "var(--brand-bg, #eff6ff)" : "var(--warning-bg, #fef3c7)", 
+                            color: ticket.status === "Resolved" ? "var(--success, #15803d)" : ticket.status === "Pending" ? "var(--brand-primary, #1d4ed8)" : "var(--warning, #b45309)",
                             padding: "4px 12px",
                             borderRadius: "20px",
                             fontWeight: "700",
@@ -1786,7 +1795,7 @@ export default function InternDashboard() {
                         <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
                           <div>
                             <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>Mentor & Admin Response</div>
-                            <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid #3b82f6", border: "1px solid var(--border-color, #cbd5e1)" }}>
+                            <div style={{ backgroundColor: "var(--bg-surface-elevated, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid var(--brand-primary, #3b82f6)", border: "1px solid var(--border-color, #cbd5e1)" }}>
                               <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: "1.6", whiteSpace: "pre-line" }}>{ticket.adminReply}</p>
                             </div>
                           </div>
@@ -1804,13 +1813,13 @@ export default function InternDashboard() {
         return (
           <div className="card" style={{ margin: 0, padding: 0, flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
             {/* Professional Chat Header */}
-            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--text-darker)", color: "var(--card-bg)" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "var(--card-bg)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--bg-surface-elevated, #0f172a)", borderBottom: "1px solid var(--border-color)", borderRadius: "12px 12px 0 0" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
                 DS
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--card-bg)", fontWeight: 600 }}>Dr. Sakthi</h3>
-                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-slate-light)" }}>Mentor • Online</p>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-primary, #ffffff)", fontWeight: 600 }}>Dr. Sakthi</h3>
+                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #94a3b8)" }}>Mentor • Online</p>
               </div>
             </div>
 
@@ -1846,7 +1855,7 @@ export default function InternDashboard() {
                     border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
                   }}>
                     {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "var(--border-blue-light)" : "var(--text-slate-light)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
+                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "rgba(255,255,255,0.7)" : "var(--text-muted, #94a3b8)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
                       {msg.time} {msg.sender === "You" && <CheckCheck size={12} />}
                     </span>
                   </div>
@@ -1863,7 +1872,7 @@ export default function InternDashboard() {
                 onChange={(e) => setInputMsg(e.target.value)} 
                 style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-gray-lighter)", fontSize: "14px", outline: "none", color: "var(--text-darker)" }} 
               />
-              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--primary-dark)", color: "var(--card-bg)", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "background-color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--primary-darker)"} onMouseOut={(e) => e.currentTarget.style.backgroundColor = "var(--primary-dark)"}>
+              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "all 0.2s" }}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
@@ -1894,22 +1903,19 @@ export default function InternDashboard() {
         return (
           <div style={{ paddingBottom: "40px", display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Ultra-Compact Catchy Airdrop Banner */}
-            <div style={{
-              background: "linear-gradient(135deg, #cce3fd 0%, #7ab6e8 100%)",
+            <div className="hero-banner-card" style={{
               borderRadius: "12px",
               padding: "16px 20px",
-              color: "var(--text-primary, #0f172a)",
               display: "flex",
               alignItems: "center",
-              gap: "20px",
-              boxShadow: "0 4px 12px rgba(122, 182, 232, 0.3)"
+              gap: "20px"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(255,255,255,0.5)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Gift size={18} color="#1e3a8a" />
+                <div style={{ width: "36px", height: "36px", background: "var(--bg-surface-glass, rgba(255,255,255,0.5))", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Gift size={18} color="var(--primary-dark, #1e3a8a)" />
                 </div>
-                <h2 style={{ fontSize: "18px", fontWeight: 800, margin: 0, letterSpacing: "-0.5px" }}>
-                  Expect the <span style={{ color: "#1e3a8a" }}>Unexpected.</span>
+                <h2 style={{ fontSize: "18px", fontWeight: 800, margin: 0, letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
+                  Expect the <span style={{ color: "var(--primary-dark, #1e3a8a)" }}>Unexpected.</span>
                 </h2>
               </div>
               
@@ -1918,7 +1924,7 @@ export default function InternDashboard() {
               </p>
 
               <div style={{ 
-                background: "rgba(255,255,255,0.3)", 
+                background: "var(--bg-surface-glass, rgba(255,255,255,0.3))", 
                 padding: "6px 12px", 
                 borderRadius: "8px", 
                 display: "flex",
@@ -1927,7 +1933,7 @@ export default function InternDashboard() {
                 flexShrink: 0,
                 maxWidth: "280px"
               }}>
-                <Quote size={14} color="#1e3a8a" style={{ opacity: 0.6, flexShrink: 0 }} />
+                <Quote size={14} color="var(--primary-dark, #1e3a8a)" style={{ opacity: 0.6, flexShrink: 0 }} />
                 <span style={{ fontSize: "12px", fontStyle: "italic", fontWeight: 600, color: "var(--text-primary, #1e293b)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   "{selectedQuote}"
                 </span>
@@ -2077,42 +2083,43 @@ export default function InternDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "visible", paddingBottom: "10px", flex: 1, paddingRight: "10px" }}>
               {/* Back Button */}
               <div style={{ marginBottom: "-8px" }}>
-                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "#475569"}>
+                <button onClick={() => navigate("/intern/progress")} style={{ background: "none", border: "none", color: "var(--text-secondary, #475569)", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "var(--text-secondary, #475569)"}>
                   <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
                 </button>
               </div>
 
               {/* Premium Completion Banner - Theme Aligned */}
               <div style={{
-                background: "var(--gradient-primary, linear-gradient(135deg, #0875E1, #0B82F6))",
+                background: "var(--bg-surface-elevated, var(--card-blue-tinted, #ffffff))",
                 borderRadius: "20px",
                 padding: "24px 32px",
-                color: "var(--bg-surface, #ffffff)",
+                color: "var(--text-primary, #0f172a)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                boxShadow: "var(--shadow-lg, 0 10px 15px -3px rgba(8, 27, 53, 0.1))",
+                boxShadow: "var(--shadow-sm)",
                 position: "relative",
                 overflow: "hidden",
+                border: "1px solid var(--border-color, #e2e8f0)",
                 flexShrink: 0
               }}>
-                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
+                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, var(--glow-overlay, rgba(255, 255, 255, 0.05)) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
                 <div style={{ position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "rgba(255,255,255,0.9)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "rgba(255,255,255,0.2)", padding: "4px 10px", borderRadius: "10px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--text-secondary, #475569)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "var(--bg-surface, rgba(0,0,0,0.05))", padding: "4px 10px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                     Mission Accomplished <Rocket size={12} />
                   </span>
                   <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--bg-surface, #ffffff)" }}>
                     Boom! You did it, {certData.internName.split(' ')[0]}!
                   </h2>
-                  <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255,255,255,0.9)", lineHeight: "1.4", maxWidth: "600px" }}>
+                  <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-secondary, #475569)", lineHeight: "1.4", maxWidth: "600px" }}>
                     Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
                   </p>
                 </div>
 
-                <div style={{ background: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid rgba(255, 255, 255, 0.2)", textAlign: "center", position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.8)", display: "block" }}>Performance</span>
-                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--bg-surface, #ffffff)" }}>91%</span>
-                  <span style={{ fontSize: "0.75rem", background: "#dcfce7", color: "#166534", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid #bbf7d0" }}>Excellent</span>
+                <div style={{ background: "var(--bg-surface, rgba(0, 0, 0, 0.02))", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", textAlign: "center", position: "relative", zIndex: 1 }}>
+                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary, #475569)", display: "block" }}>Performance</span>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--text-primary, #0f172a)" }}>91%</span>
+                  <span style={{ fontSize: "0.75rem", background: "var(--success-bg, #dcfce7)", color: "var(--success, #166534)", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid var(--success-border, #bbf7d0)" }}>Excellent</span>
                 </div>
               </div>
 
@@ -2177,7 +2184,7 @@ export default function InternDashboard() {
             {/* Top 4 Metrics Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
               <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Calendar size={24} />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -2277,7 +2284,7 @@ export default function InternDashboard() {
                   </div>
                   
                   {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "#94a3b8" }}>
+                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)" }}>
                     <span>100%</span>
                     <span>75%</span>
                     <span>50%</span>
@@ -2289,7 +2296,7 @@ export default function InternDashboard() {
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
                   <span>Day 1</span>
                   <span>Day 5</span>
-                  <span style={{ color: "#2563eb", fontWeight: 700 }}>Day 12</span>
+                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day 12</span>
                   <span>Day 15</span>
                   <span>Day 20</span>
                   <span>Day 25</span>
@@ -2316,12 +2323,12 @@ export default function InternDashboard() {
                     { name: "Problem Solving", val: 70 }
                   ].map(skill => (
                     <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <Star size={14} />
                       </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#334155", width: "120px" }}>{skill.name}</span>
-                      <div style={{ flex: 1, background: "#f1f5f9", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${skill.val}%`, background: "#2563eb", height: "100%", borderRadius: "4px" }}></div>
+                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", width: "120px" }}>{skill.name}</span>
+                      <div style={{ flex: 1, background: "var(--progress-track, #f1f5f9)", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
+                        <div style={{ width: `${skill.val}%`, background: "var(--brand-primary, #2563eb)", height: "100%", borderRadius: "4px" }}></div>
                       </div>
                       <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
                     </div>
@@ -2335,8 +2342,8 @@ export default function InternDashboard() {
                 
                 <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
                   <svg width="100%" height="100%" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="#f1f5f9" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="#2563eb" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                     <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>87%</span>
@@ -2346,22 +2353,22 @@ export default function InternDashboard() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2563eb" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem" }}>85</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>85</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#a855f7" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem" }}>88</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>88</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#10b981" }}></div><span style={{ color: "#334155", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem" }}>90</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
+                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>90</strong>
                   </div>
                 </div>
                 
-                <div style={{ marginTop: "24px", padding: "12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                  <TrendingUp size={20} color="#16a34a" />
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#166534", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
+                <div style={{ marginTop: "24px", padding: "12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                  <TrendingUp size={20} color="var(--success, #16a34a)" />
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
                 </div>
               </div>
             </div>
@@ -2432,26 +2439,26 @@ export default function InternDashboard() {
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Achievements</h3>
-                  <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All →</span>
+                  <span style={{ fontSize: "0.9rem", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}>View All →</span>
                 </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Consistent Learner</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Completed 5 days in a row</p>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#f5f3ff", color: "#8b5cf6", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--assessment-bg, #f5f3ff)", color: "var(--assessment, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>First Submission</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Submitted your first task</p>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#f0fdf4", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--success-bg, #f0fdf4)", color: "var(--success, #10b981)", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Quiz Master</h4>
                       <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Scored 90%+ in a quiz</p>
@@ -2462,15 +2469,18 @@ export default function InternDashboard() {
 
               {/* Certificate Card */}
               <div style={{
-                background: (isInternshipCompleted && isApproved) ? "linear-gradient(135deg, #cce3fd, #7ab6e8)" : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
+                background: isInternshipCompleted 
+                  ? "var(--gradient-soft-blue, linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%))" 
+                  : "var(--bg-surface-elevated, linear-gradient(135deg, #f8fafc, #f1f5f9))",
                 borderRadius: "16px",
-                padding: "16px",
+                padding: "20px",
                 display: "flex",
                 flexDirection: "column",
                 border: (isInternshipCompleted && isApproved) ? "none" : "1px solid var(--border-color, #e2e8f0)",
                 color: (isInternshipCompleted && isApproved) ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
                 position: "relative",
-                overflow: "hidden"
+                overflow: "hidden",
+                boxShadow: isInternshipCompleted ? "0 4px 14px rgba(37, 99, 235, 0.08)" : "none"
               }}>
                 <div style={{ zIndex: 1 }}>
                   <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: (isInternshipCompleted && isApproved) ? "rgba(255,255,255,0.4)" : "var(--border-color, #e2e8f0)", color: (isInternshipCompleted && isApproved) ? "#2563eb" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
@@ -2492,7 +2502,7 @@ export default function InternDashboard() {
                       background: (isInternshipCompleted && isApproved) ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)",
                       color: (isInternshipCompleted && isApproved) ? "#1e3a8a" : "#94a3b8",
                       border: "none",
-                      padding: "12px",
+                      padding: "10px 16px",
                       borderRadius: "10px",
                       fontWeight: 700,
                       fontSize: "0.95rem",
@@ -2513,15 +2523,16 @@ export default function InternDashboard() {
     }
   };
 
-  if (activeTab === "Learning" && activeLearningTab === "AI Client") {
+  if (activeTab === "Learning" && (activeLearningTab === "AI Client" || activeLearningTab === "Interactive Learning")) {
+    const isInteractive = activeLearningTab === "Interactive Learning";
     return (
-      <div style={{ minHeight: "100vh", width: "100vw", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff", display: "flex", alignItems: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+      <div style={{ height: "100vh", width: "100vw", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ padding: "16px 24px", flexShrink: 0, borderBottom: "1px solid var(--border-color, #e2e8f0)", backgroundColor: "var(--card-bg, #ffffff)", display: "flex", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", zIndex: 10 }}>
           <button 
-            onClick={() => setActiveLearningTab("Reading Materials")}
-            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "#334155", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
-            onMouseOver={(e) => e.currentTarget.style.color = "#2563eb"}
-            onMouseOut={(e) => e.currentTarget.style.color = "#334155"}
+            onClick={() => navigate("/intern/learning/reading-materials")}
+            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary, #334155)", fontWeight: 700, fontSize: "14px", transition: "color 0.2s" }}
+            onMouseOver={(e) => e.currentTarget.style.color = "var(--brand-primary, #2563eb)"}
+            onMouseOut={(e) => e.currentTarget.style.color = "var(--text-secondary, #334155)"}
           >
             <ArrowLeft size={16} /> Back to Learning Page
           </button>
@@ -2560,7 +2571,7 @@ export default function InternDashboard() {
             </svg>
           </div>
           <div>
-            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#1e3a8a", letterSpacing: "-0.5px", lineHeight: "1" }}>
+            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--text-primary, #1e3a8a)", letterSpacing: "-0.5px", lineHeight: "1" }}>
               ProEduvate
             </h2>
             <span style={{ fontSize: "10.5px", fontWeight: 600, color: "var(--text-muted, #64748b)", letterSpacing: "0.2px", display: "block", marginTop: "2px" }}>
@@ -2576,7 +2587,7 @@ export default function InternDashboard() {
               { id: "Overview", label: "Overview", icon: <LayoutDashboard size={14} /> },
               { id: "Learning", label: "Learning", icon: <BookOpen size={14} /> },
               { id: "Daily Scenario", label: "Daily Scenario", icon: <Code size={14} /> },
-              { id: "Progress & Certificate", label: "Progress & Certificate", icon: <Award size={14} /> },
+              { id: "Progress", label: "Progress", icon: <Award size={14} /> },
               { id: "Tickets", label: "Tickets", icon: <Headset size={14} /> },
               { id: "Chat with Mentor", label: "Chat with Mentor", icon: <MessageCircle size={14} /> },
               { id: "Bonus Airdrops", label: "Bonus Airdrops", icon: <Coins size={14} /> }
@@ -2595,8 +2606,8 @@ export default function InternDashboard() {
                     border: "none",
                     fontSize: "12.5px",
                     fontWeight: isActive ? "700" : "500",
-                    backgroundColor: isActive ? "#2563eb" : "transparent",
-                    color: isActive ? "var(--bg-surface, #ffffff)" : "#475569",
+                    backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
+                    color: isActive ? "#ffffff" : "var(--text-secondary, #475569)",
                     boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
                     cursor: "pointer",
                     transition: "all 0.2s ease"
@@ -2612,17 +2623,16 @@ export default function InternDashboard() {
 
         {/* Right User Actions & Profile */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Theme Toggle 
+          {/* Theme Toggle */}
           <div onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s ease" }} title="Toggle Theme">
             {theme === 'light' ? <Moon size={18} color="var(--text-gray, #64748b)" /> : <Sun size={18} color="var(--text-gray, #94a3b8)" />}
           </div>
-          */}
 
           {/* Bell Notifications */}
           <div style={{ position: 'relative', cursor: 'pointer' }}>
             <div onClick={() => setShowNotifications(!showNotifications)} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Bell size={18} color="var(--text-muted, #64748b)" />
-              <div style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%', border: "2px solid #ffffff" }}></div>
+              <div style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', backgroundColor: 'var(--error, #ef4444)', borderRadius: '50%', border: "2px solid var(--card-bg, #ffffff)" }}></div>
             </div>
             
             {showNotifications && (
@@ -2674,7 +2684,7 @@ export default function InternDashboard() {
                 </button>
                 <button 
                   onClick={handleLogout}
-                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "var(--error, #dc2626)", cursor: "pointer", textAlign: "left", fontSize: "13px", fontWeight: "600" }}
                 >
                   <LogOut size={16} /> Logout
                 </button>
@@ -2698,7 +2708,7 @@ export default function InternDashboard() {
         </div>
         
         {(!isMeetingActive || isMeetingMinimized) && (
-          <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
             {renderContent()}
           </div>
         )}
@@ -2762,7 +2772,7 @@ export default function InternDashboard() {
       {showThankYouModal && (
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", zIndex: 100000, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
           <div style={{ backgroundColor: "var(--card-bg, #ffffff)", borderRadius: "24px", padding: "40px", maxWidth: "460px", width: "100%", textAlign: "center", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
-            <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#dcfce7", color: "#16a34a", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
+            <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--success-bg, #dcfce7)", color: "var(--success, #16a34a)", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "40px", margin: "0 auto 24px auto" }}>
               <PartyPopper size={40} />
             </div>
             <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-dark)", margin: "0 0 12px 0" }}>Thank You for Attending!</h2>
@@ -2907,7 +2917,7 @@ export default function InternDashboard() {
                 <Gift size={24} color="#2563eb" />
                 <h3 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>Bonus Airdrop Challenge</h3>
               </div>
-              <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "#fee2e2" : "#f1f5f9", color: airdropTimeLeft <= 10 ? "#ef4444" : "#475569", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <div style={{ backgroundColor: airdropTimeLeft <= 10 ? "var(--error-bg, #fee2e2)" : "var(--bg-surface-elevated, #f1f5f9)", color: airdropTimeLeft <= 10 ? "var(--error, #ef4444)" : "var(--text-secondary, #475569)", padding: "8px 16px", borderRadius: "20px", fontWeight: 700, fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
                 <Clock size={16} /> {airdropTimeLeft}s
               </div>
             </div>

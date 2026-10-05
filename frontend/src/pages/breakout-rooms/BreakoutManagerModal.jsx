@@ -58,7 +58,7 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
         <div className="br-modal-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '500px', padding: '16px' }}>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', fontWeight: 500, color: '#4b4d54' }}>Unassigned Interns: {unassignedInterns.length}</span>
+            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>Unassigned Interns: {unassignedInterns.length}</span>
             <button className="br-btn br-btn-primary" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={addRoom}>+ Add Room</button>
           </div>
 
@@ -69,10 +69,10 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
 
               return (
                 <div key={room.id} style={{ border: '1px solid #e3e5e8', borderRadius: '8px', overflow: 'hidden' }}>
-                  <div style={{ padding: '12px 16px', backgroundColor: '#f8f9fa', fontWeight: 600, fontSize: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isAssigning ? '1px solid #e3e5e8' : 'none' }}>
+                  <div style={{ padding: '12px 16px', backgroundColor: 'var(--bg-light)', fontWeight: 600, fontSize: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isAssigning ? '1px solid #e3e5e8' : 'none' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Volume2 size={18} /> {room.name}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <span style={{ color: '#4b4d54', fontSize: '13px', fontWeight: 500 }}>{roomInterns.length} / 6</span>
+                      <span style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: 500 }}>{roomInterns.length} / 6</span>
                       
                       {!isAssigning && unassignedInterns.length > 0 && (
                         <button 
@@ -95,14 +95,14 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
                   </div>
 
                   {isAssigning && (
-                    <div style={{ padding: '12px', backgroundColor: '#fff', borderBottom: '1px solid #e3e5e8' }}>
-                      <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#4b4d54' }}>Select interns to assign:</div>
+                    <div style={{ padding: '12px', backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid #e3e5e8' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: 'var(--text-primary)' }}>Select interns to assign:</div>
                       <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid #e3e5e8', borderRadius: '6px', marginBottom: '12px' }}>
                         {unassignedInterns.map(intern => (
                           <div 
                             key={intern.id} 
                             onClick={() => toggleInternSelection(intern.id)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderBottom: '1px solid #f2f3f5', cursor: 'pointer', backgroundColor: selectedInterns.includes(intern.id) ? '#f2f9ff' : '#fff' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderBottom: '1px solid #f2f3f5', cursor: 'pointer', backgroundColor: selectedInterns.includes(intern.id) ? '#f2f9ff' : 'var(--bg-surface)' }}
                           >
                             <input 
                               type="checkbox" 
@@ -123,13 +123,13 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
                   )}
 
                   {!isAssigning && (
-                    <div style={{ padding: '12px', backgroundColor: '#fff' }}>
+                    <div style={{ padding: '12px', backgroundColor: 'var(--bg-surface)' }}>
                       {roomInterns.length === 0 ? (
-                        <div style={{ color: '#80848e', fontSize: '13px', textAlign: 'center', padding: '12px 0' }}>Empty</div>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '12px 0' }}>Empty</div>
                       ) : (
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                           {roomInterns.map(intern => (
-                            <div key={intern.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#ebedef', padding: '6px 10px', borderRadius: '6px', fontSize: '13px' }}>
+                            <div key={intern.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--bg-surface)', padding: '6px 10px', borderRadius: '6px', fontSize: '13px' }}>
                               <div className="br-avatar-small" style={{ width: '18px', height: '18px', fontSize: '10px' }}>{intern.avatar}</div>
                               {intern.name}
                               <button 
@@ -150,7 +150,7 @@ export default function BreakoutManagerModal({ onClose, rooms, setRooms, interns
             })}
             
             {breakoutRooms.length === 0 && (
-              <div style={{ textAlign: 'center', color: '#80848e', marginTop: '40px', fontSize: '14px' }}>
+              <div style={{ textAlign: 'center', color: 'var(--text-muted)', marginTop: '40px', fontSize: '14px' }}>
                 No breakout rooms created yet.
               </div>
             )}

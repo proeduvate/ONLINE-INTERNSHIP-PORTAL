@@ -53,7 +53,16 @@ class SupabaseService:
         try:
             logger.info(f"[SupabaseService] Uploading {filename} to bucket '{bucket_name}'...")
             
-            # Ensure bucket exists (or at least attempt to upload, let it fail if bucket is missing)
+            # Ensure target bucket exists
+            try:
+                buckets = self.client.storage.list_buckets()
+                bucket_names = [b.name for b in buckets] if buckets else []
+                if bucket_name not in bucket_names:
+                    logger.info(f"[SupabaseService] Creating public bucket '{bucket_name}'...")
+                    self.client.storage.create_bucket(bucket_name, options={"public": True})
+            except Exception as b_err:
+                logger.warning(f"[SupabaseService] Bucket check/creation warning: {b_err}")
+
             res = self.client.storage.from_(bucket_name).upload(
                 path=filename,
                 file=file_content,
@@ -66,7 +75,6 @@ class SupabaseService:
             
         except Exception as e:
             logger.error(f"[SupabaseService] Upload failed for {filename}: {str(e)}")
-            # Sometimes supabase returns an error string in exception, we should handle it gracefully
             return None
 
 supabase_service = SupabaseService()

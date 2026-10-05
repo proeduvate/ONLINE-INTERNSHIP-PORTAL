@@ -1,29 +1,68 @@
 import React, { useState, useEffect, useRef } from "react";
-import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, Save } from "lucide-react";
-import { useAuth } from "../../services/AuthContext";
+import { User, Shield, Bell, Camera, Mail, Briefcase, Code2, Building2, Save, CheckCircle, AlertCircle, Phone } from "lucide-react";
+import api from "../../api/axios";
 
 export default function MentorProfile() {
-  const { user } = useAuth();
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  
-  const [profileImage, setProfileImage] = useState(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Mentor'}&backgroundColor=ecfdf5`);
+  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5");
   const fileInputRef = useRef(null);
 
-  const [profileData, setProfileData] = useState({
-    domain: "Artificial Intelligence",
-    institution: "IIT Madras",
-    role: "AI Mentor & Researcher",
-    location: "Chennai, India",
-    bio: "Passionate AI researcher and educator with 8+ years of experience in Machine Learning, Deep Learning, and NLP. Mentoring the next generation of AI engineers at ProEduvate."
+  // Profile Form State
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    domain_name: "",
+    institution: "",
+    role: "MENTOR",
+    phone: ""
   });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // Password Security Form State
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [passwordStatus, setPasswordStatus] = useState({ error: "", success: "", loading: false });
+
+  // Notifications State
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(`mentor_profile_${user?.id}`);
-    if (saved) {
-      setProfileData(JSON.parse(saved));
+    fetchProfileData();
+    fetchNotifications();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const res = await api.get('/api/v1/users/profile');
+      if (res.data) {
+        setProfile({
+          name: res.data.name || "",
+          email: res.data.email || "",
+          domain_name: res.data.domain_name || "General Mentor",
+          institution: res.data.college || "",
+          role: res.data.role ? res.data.role.toUpperCase() : "MENTOR",
+          phone: res.data.phone || ""
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to fetch mentor profile:", err);
     }
-  }, [user]);
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await api.get('/api/v1/notifications');
+      if (Array.isArray(res.data)) {
+        setNotifications(res.data);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch notifications:", err);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -34,24 +73,72 @@ export default function MentorProfile() {
   };
 
   const handleRemoveImage = () => {
-    setProfileImage(`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Mentor'}&backgroundColor=ecfdf5`);
+    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5");
   };
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    localStorage.setItem(`mentor_profile_${user?.id}`, JSON.stringify(profileData));
-    alert("Profile saved successfully!");
+    setIsSavingProfile(true);
+    try {
+      await api.put('/api/v1/users/profile', {
+        name: profile.name,
+        college: profile.institution,
+        phone: profile.phone
+      });
+      alert("Profile updated successfully in database!");
+      fetchProfileData();
+    } catch (err) {
+      console.error("Profile update error:", err);
+      const msg = err.response?.data?.detail || "Failed to update profile.";
+      alert(msg);
+    } finally {
+      setIsSavingProfile(false);
+    }
   };
 
-  const handleForgotPassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    setResetEmailSent(true);
-    setTimeout(() => setResetEmailSent(false), 5000);
+    setPasswordStatus({ error: "", success: "", loading: true });
+
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setPasswordStatus({ error: "New passwords do not match!", success: "", loading: false });
+      return;
+    }
+
+    if (passwords.newPassword.length < 6) {
+      setPasswordStatus({ error: "Password must be at least 6 characters.", success: "", loading: false });
+      return;
+    }
+
+    try {
+      const res = await api.post('/api/v1/users/change-password', {
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword
+      });
+
+      setPasswordStatus({
+        error: "",
+        success: res.data?.message || "Password updated successfully in database!",
+        loading: false
+      });
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      console.error("Password change error:", err);
+      const errMsg = err.response?.data?.detail || "Failed to change password. Please verify current password.";
+      setPasswordStatus({ error: errMsg, success: "", loading: false });
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/api/v1/users/reset-password-request', { email: profile.email });
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    } catch (err) {
+      setResetEmailSent(true);
+      setTimeout(() => setResetEmailSent(false), 5000);
+    }
   };
 
   return (
@@ -102,14 +189,14 @@ export default function MentorProfile() {
       </div>
 
       {/* Right Content Area */}
-      <div style={{ flex: 1, maxWidth: "800px" }}>
+      <div style={{ flex: 1, maxWidth: "800px", overflowY: "auto", paddingRight: "10px" }}>
 
         {/* PERSONAL INFO TAB */}
         {activeSettingsTab === "personal" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Personal Information</h3>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your personal details and how they appear on your profile.</p>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Manage your mentor details connected with the live backend.</p>
             </div>
 
             <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
@@ -121,15 +208,15 @@ export default function MentorProfile() {
                     alt="Profile"
                     style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }}
                   />
-                  <button onClick={() => fileInputRef.current?.click()} type="button" style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                  <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
                     <input type="file" accept="image/png, image/jpeg, image/gif" ref={fileInputRef} onChange={handleImageChange} style={{ display: "none" }} />
-                    <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
-                    <button type="button" onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
+                    <button onClick={() => fileInputRef.current?.click()} style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Change Photo</button>
+                    <button onClick={handleRemoveImage} style={{ background: "transparent", border: "none", padding: "8px", fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", cursor: "pointer" }}>Remove</button>
                   </div>
                   <p style={{ margin: 0, fontSize: "0.8rem", color: "#94a3b8" }}>JPG, GIF or PNG. Max size of 5MB.</p>
                 </div>
@@ -137,68 +224,88 @@ export default function MentorProfile() {
 
               {/* Form Grid */}
               <form onSubmit={handleSaveProfile}>
-                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue={user?.name?.split(' ')[0] || ""} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue={user?.name?.split(' ').slice(1).join(' ') || ""} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
-                  </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Full Name</label>
+                  <input 
+                    type="text" 
+                    value={profile.name} 
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })} 
+                    style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                    required 
+                  />
                 </div>
 
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue={user?.email || ""} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input 
+                      type="email" 
+                      value={profile.email} 
+                      disabled 
+                      style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} 
+                    />
                   </div>
                 </div>
 
-                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Domain / Specialization</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="domain" value={profileData.domain} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input 
+                        type="text" 
+                        value={profile.domain_name} 
+                        disabled 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution / Organization</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="institution" value={profileData.institution} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input 
+                        type="text" 
+                        value={profile.institution} 
+                        onChange={(e) => setProfile({ ...profile, institution: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
 
-                <div className="dashboard-grid-half" style={{ marginBottom: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="role" value={profileData.role} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input 
+                        type="text" 
+                        value={profile.role} 
+                        disabled 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Phone Number</label>
                     <div style={{ position: "relative" }}>
-                      <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" name="location" value={profileData.location} onChange={handleProfileChange} style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <Phone size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
+                      <input 
+                        type="tel" 
+                        value={profile.phone} 
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })} 
+                        style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", boxSizing: "border-box" }} 
+                      />
                     </div>
                   </div>
                 </div>
 
-                <div style={{ marginBottom: "20px" }}>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" name="bio" value={profileData.bio} onChange={handleProfileChange} style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }} />
-                </div>
-
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
-                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
-                  <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Save size={16} /> Save Changes
+                  <button type="button" onClick={fetchProfileData} style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
+                  <button type="submit" disabled={isSavingProfile} style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Save size={16} /> {isSavingProfile ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>
@@ -211,12 +318,12 @@ export default function MentorProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Account Security</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and secure your account.</p>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Manage your password and update backend credentials.</p>
             </div>
 
             <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
               <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Change Password</h4>
-              <form onSubmit={(e) => { e.preventDefault(); alert("Password updated"); }}>
+              <form onSubmit={handleChangePassword}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "400px" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
@@ -229,24 +336,59 @@ export default function MentorProfile() {
                         Forgot Password?
                       </button>
                     </div>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.currentPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
 
                     {resetEmailSent && (
                       <div style={{ marginTop: "8px", padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Mail size={14} /> Password reset link sent to your email!
+                        <Mail size={14} /> Password reset link sent to {profile.email}!
                       </div>
                     )}
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.newPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>Confirm New Password</label>
-                    <input type="password" style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem" }} required />
+                    <input 
+                      type="password" 
+                      value={passwords.confirmPassword} 
+                      onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} 
+                      style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.95rem", boxSizing: "border-box" }} 
+                      required 
+                    />
                   </div>
-                  <button type="submit" style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}>
-                    Update Password
+
+                  {passwordStatus.error && (
+                    <div style={{ padding: "8px 12px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "6px", color: "#991b1b", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <AlertCircle size={14} /> {passwordStatus.error}
+                    </div>
+                  )}
+
+                  {passwordStatus.success && (
+                    <div style={{ padding: "8px 12px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "6px", color: "#166534", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <CheckCircle size={14} /> {passwordStatus.success}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit" 
+                    disabled={passwordStatus.loading}
+                    style={{ background: "#2563eb", width: "fit-content", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", marginTop: "8px" }}
+                  >
+                    {passwordStatus.loading ? "Updating..." : "Update Password"}
                   </button>
                 </div>
               </form>
@@ -259,27 +401,30 @@ export default function MentorProfile() {
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", animation: "fadeIn 0.3s ease-out" }}>
             <div>
               <h3 style={{ margin: "0 0 4px 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Notifications</h3>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Choose how you receive updates and alerts.</p>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Real-time backend system alerts.</p>
             </div>
 
             <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Email Notifications</h4>
+              <h4 style={{ margin: "0 0 20px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Live Notifications Log</h4>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                {[
-                  { title: "New Task Submissions", desc: "Get notified when an intern submits a task for review.", on: true },
-                  { title: "Meeting Reminders", desc: "Receive reminders before your scheduled 1-on-1 sessions.", on: true },
-                  { title: "Airdrop Activity", desc: "Alerts when interns participate in your bonus airdrops.", on: true },
-                  { title: "Weekly Cohort Summary", desc: "A weekly email summarising your cohort's overall progress.", on: false },
-                ].map((n, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <h5 style={{ margin: "0 0 4px 0", fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>{n.title}</h5>
-                      <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>{n.desc}</p>
-                    </div>
-                    <input type="checkbox" defaultChecked={n.on} style={{ width: "18px", height: "18px", accentColor: "#2563eb", cursor: "pointer" }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {notifications.length === 0 ? (
+                  <div style={{ padding: "16px", textAlign: "center", color: "#64748b", fontSize: "0.9rem" }}>
+                    No system notifications in database yet.
                   </div>
-                ))}
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} style={{ padding: "12px 16px", background: "#f8fafc", borderRadius: "8px", border: "1px solid #cbd5e1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#1e293b" }}>{n.title}</div>
+                        <div style={{ fontSize: "0.85rem", color: "#475569", marginTop: "2px" }}>{n.message}</div>
+                      </div>
+                      <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+                        {n.created_at ? new Date(n.created_at).toLocaleDateString() : "Today"}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

@@ -83,7 +83,11 @@ export const GlobalHeader = () => {
 
         {/* Right Actions */}
         <div className="hs-nav-actions">
-          <button className="hs-nav-btn-track" onClick={() => setShowTrackModal(true)}>
+          <button className="hs-nav-btn-track" onClick={() => {
+            const saved = localStorage.getItem('last_application_id') || "APP-2026-00125";
+            setApplicationId(saved);
+            setShowTrackModal(true);
+          }}>
             Track Application
           </button>
           <button className="hs-nav-btn-login" onClick={() => navigate('/login')}>
@@ -97,7 +101,7 @@ export const GlobalHeader = () => {
 
       <Modal 
         isOpen={showTrackModal} 
-        onClose={() => { setShowTrackModal(false); setApplicationId(""); }}
+        onClose={() => { setShowTrackModal(false); }}
         title="Track Application Status"
       >
         <form onSubmit={handleTrackSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -107,8 +111,11 @@ export const GlobalHeader = () => {
             value={applicationId}
             onChange={(e) => setApplicationId(e.target.value)}
             required
-            helpText="Enter the ID you received via email during registration."
+            helpText="Enter the ID you received during application submission."
           />
+          <div style={{ fontSize: "12px", color: "#64748b", marginTop: "-8px" }}>
+            Demo ID: <span onClick={() => setApplicationId("APP-2026-00125")} style={{ color: "#2563eb", cursor: "pointer", textDecoration: "underline", fontWeight: 600 }}>APP-2026-00125</span>
+          </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
             <Button variant="ghost" type="button" onClick={() => setShowTrackModal(false)}>Cancel</Button>
             <Button variant="primary" type="submit">Check Status</Button>

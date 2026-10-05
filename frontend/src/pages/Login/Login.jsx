@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent } from "../../components/ui/Card";
-import { useAuth } from "../../services/AuthContext";
+import api from "../../api/axios";
 import "./Login.css";
 
 export default function Login() {
@@ -12,11 +12,9 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
-
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -38,20 +36,27 @@ export default function Login() {
       return;
     }
 
-    setIsLoggingIn(true);
+    setLoading(true);
+
     try {
-      const userData = await login(email, password);
-      if (userData && userData.role) {
-        navigate(`/${userData.role}`);
+      const response = await api.post("/api/v1/auth/login", { email, password });
+      const { access_token, role, user } = response.data;
+
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("authToken", access_token);
+      localStorage.setItem("role", role);
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
       }
+      navigate(`/${(role || "").toLowerCase()}`);
     } catch (error) {
+      const msg = error.response?.data?.detail || error.message || "Invalid email or password.";
       if (error && (error.message === "Failed to fetch" || error.name === "TypeError")) {
         setErrorMessage("Unable to connect to backend server. Please verify that server.py is running on http://127.0.0.1:8000.");
       } else {
-        setErrorMessage(error.message || "Invalid email or password.");
-      }
+        setErrorMessage(msg);
     } finally {
-      setIsLoggingIn(false);
+      setLoading(false);
     }
   };
 

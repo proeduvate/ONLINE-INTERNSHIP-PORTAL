@@ -61,7 +61,8 @@ class User(Base):
     role = Column(Enum(UserRole), default=UserRole.INTERN, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # Intern specific profile fields
+    # Profile fields
+    phone = Column(String(50), nullable=True)
     intern_id = Column(String(50), nullable=True)
     college = Column(String(100), nullable=True)
     domain_id = Column(Integer, ForeignKey("domains.id", ondelete="SET NULL"), nullable=True)
@@ -84,6 +85,10 @@ class User(Base):
     submissions = relationship("Submission", back_populates="intern", cascade="all, delete-orphan")
     certificates = relationship("Certificate", back_populates="intern", cascade="all, delete-orphan")
     batch = relationship("Batch", back_populates="users")
+
+    @property
+    def domain_name(self):
+        return self.domain.name if self.domain else None
 
 
 class Domain(Base):
@@ -297,6 +302,8 @@ class OnboardingApplication(Base):
     graduation_year = Column(Integer)
     domain = Column(String(100))
     resume_url = Column(String(255))
+    github_url = Column(String(255), nullable=True)
+    linkedin_url = Column(String(255), nullable=True)
     offer_letter_url = Column(String(255), nullable=True)
     tc_url = Column(String(255), nullable=True)
     signed_offer_letter_url = Column(String(255), nullable=True)

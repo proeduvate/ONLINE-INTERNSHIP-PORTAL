@@ -110,7 +110,7 @@ export default function MeetingArea({
           {onMinimize && (
             <button 
               onClick={onMinimize} 
-              style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "6px 12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "#475569", whiteSpace: "nowrap" }}
+              style={{ background: "var(--bg-surface)", border: "1px solid #e2e8f0", padding: "6px 12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap" }}
               title="Return to Dashboard (Keeps meeting active)"
             >
               <ArrowLeft size={16} /> Back
@@ -366,7 +366,6 @@ export default function MeetingArea({
         >
           <MessageSquare size={20} />
         </button>
-
         {/* 2 Interactive Emoji Reaction Buttons */}
         <button 
           className="br-control-btn"

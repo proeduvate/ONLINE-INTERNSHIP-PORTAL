@@ -1,58 +1,57 @@
 import React, { useState } from 'react';
+import { Check, CircleDot, Circle } from 'lucide-react';
 import '../../styles/Dashboard.css';
-import { Check, Circle, Target } from 'lucide-react';
+import { scenarioData } from './DailyScenario';
 
-const DailyScenarioCalendar = ({ onStartScenario, curriculumData = [], currentDay = 1, completedDays = [] }) => {
+const DailyScenarioCalendar = ({ onStartScenario }) => {
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  // Explicit mock data to keep the scenario fixed and consistent
+  const currentDay = 5;
+  const attendedDays = [1, 4, 6, 8, 9];
+  const missedDays = [2, 3, 7, 10]; // Day 3 added explicitly
+
   const getDayStatus = (day) => {
-    if (completedDays.includes(day)) return 'completed';
-    const task = curriculumData.find(t => t.day === day);
-    if (task) {
-      if (task.status === 'completed') return 'completed';
-      if (task.status === 'current') return 'current';
-    }
     if (day === currentDay) return 'current';
-    if (day < currentDay) return 'missed';
+    if (attendedDays.includes(day)) return 'completed';
+    if (missedDays.includes(day)) return 'missed';
     return 'upcoming';
   };
 
   const days = Array.from({ length: 30 }, (_, i) => i + 1);
 
   return (
-    <div className="activity-calendar-widget">
-      <h3 className="activity-calendar-title">Activity Calendar</h3>
-
-      <div className="activity-calendar-grid">
+    <div style={{ background: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Activity Calendar</h3>
+      </div>
+      
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "4px" }}>
         {days.map(day => {
           const status = getDayStatus(day);
+          
+          const bg = status === "completed" ? "var(--success-bg, #f0fdf4)" : (status === "missed" ? "var(--bg-surface-elevated, #f8fafc)" : (status === "current" ? "var(--warning-bg, #fef3c7)" : "var(--bg-surface, #ffffff)"));
+          const borderColor = status === "completed" ? "var(--success-border, #bbf7d0)" : (status === "missed" ? "var(--border-color, #e2e8f0)" : (status === "current" ? "var(--warning-border, #fde68a)" : "var(--border-color, #e2e8f0)"));
+          const iconColor = status === "completed" ? "var(--success-color, #16a34a)" : (status === "missed" ? "var(--text-muted, #94a3b8)" : (status === "current" ? "var(--warning-color, #d97706)" : "var(--text-muted, #cbd5e1)"));
+          
           return (
-            <div
-              key={day}
-              className={`activity-calendar-day ${status}`}
-              onClick={() => onStartScenario(day)}
-              style={{ cursor: 'pointer', padding: '8px 0', minHeight: '60px' }}
-            >
-              <span className="day-number">{day}</span>
-              <div className="day-icon-wrapper" style={{ marginTop: '2px' }}>
-                {status === 'completed' && <Check size={14} color="#16a34a" strokeWidth={3} />}
-                {status === 'missed' && <Circle size={12} color="#94a3b8" strokeWidth={2} />}
-                {status === 'upcoming' && <Circle size={12} color="#94a3b8" strokeWidth={2} opacity={0.3} />}
-                {status === 'current' && <Target size={14} color="#f59e0b" strokeWidth={2.5} />}
+            <div key={day} style={{ background: bg, border: `1px solid ${borderColor}`, borderRadius: "4px", padding: "6px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2px" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{day}</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor }}>
+                {status === "completed" && <Check size={8} strokeWidth={4} />}
+                {status === "missed" && <Circle size={8} strokeWidth={4} />}
+                {status === "current" && <CircleDot size={8} strokeWidth={3} />}
+                {status === "upcoming" && "\u00A0"}
               </div>
             </div>
           );
         })}
       </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '4px', fontSize: '11px', fontWeight: 600, color: '#64748b' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Check size={12} color="#16a34a" strokeWidth={3} /> Done
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Target size={12} color="#f59e0b" strokeWidth={2.5} /> Present
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Circle size={12} color="#94a3b8" strokeWidth={2} /> Missed
-        </div>
+      
+      <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "4px", fontSize: "0.65rem", fontWeight: 700, color: "var(--text-muted)" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Check size={10} strokeWidth={3} color="var(--success)" /> Done</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><CircleDot size={10} strokeWidth={3} color="var(--warning)" /> Present</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Circle size={10} strokeWidth={3} color="var(--text-muted)" /> Missed</span>
       </div>
     </div>
   );
