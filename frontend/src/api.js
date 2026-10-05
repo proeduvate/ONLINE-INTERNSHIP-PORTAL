@@ -1,1 +1,9 @@
-export const API_BASE = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
+const getApiBase = () => {
+  let base = process.env.REACT_APP_API_BASE;
+  if (!base || base.includes("internship-portal-backend.onrender.com")) {
+    return "https://online-internship-portal.onrender.com";
+  }
+  return base;
+};
+
+export const API_BASE = getApiBase();
