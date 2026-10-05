@@ -1,0 +1,37 @@
+{
+    "day": 15,
+    "topic": "Functions, Scope & Closures",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D15-Q001",
+            "title": "Calculator Functions",
+            "description": "Create separate functions for arithmetic operations.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D15-Q002",
+            "title": "Reusable Validation Function",
+            "description": "Create functions to validate email, password and required fields.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D15-Q003",
+            "title": "Counter Closure",
+            "description": "Create a counter function using a closure so the counter's value cannot be directly accessed from outside.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D15-Q004",
+            "title": "Discount Calculator",
+            "description": "Create reusable functions for calculating product discounts and final prices.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D15-Q005",
+            "title": "Function Factory",
+            "description": "Create a function that returns another function for generating personalized greetings.",
+            "requirements": []
+        }
+    ]
+}

@@ -1,0 +1,138 @@
+{
+  "curriculum": "AIML",
+  "day": 20,
+  "topic": "MLOps and End-to-End AI Project Architecture",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand the lifecycle of a production machine learning system",
+    "Identify monitoring, versioning, and retraining components",
+    "Design an end-to-end architecture for an AI application"
+  ],
+  "activities": [
+    {
+      "id": "d20-a1",
+      "type": "discover",
+      "title": "MLOps Lifecycle Map",
+      "instruction": "Explore each stage of the machine learning lifecycle.",
+      "content": {
+        "concept": "MLOps connects development, deployment, monitoring, and maintenance throughout the ML lifecycle.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Collection",
+            "Data Preparation",
+            "Model Development",
+            "Model Training",
+            "Model Deployment",
+            "Monitoring",
+            "Retraining"
+          ],
+          "descriptions": [
+            "Collect and store data required by the ML system.",
+            "Clean, validate, transform, and prepare data for modeling.",
+            "Develop and experiment with machine learning solutions.",
+            "Train the model using prepared data and selected configurations.",
+            "Make the trained model available for real-world predictions.",
+            "Track system health, data quality, predictions, and model behavior.",
+            "Update the model using new data or improved configurations when needed."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a2",
+      "type": "discover",
+      "title": "Production ML Architecture",
+      "instruction": "Build a production-ready conceptual ML architecture.",
+      "content": {
+        "concept": "A production ML system can include data ingestion, feature processing, model serving, monitoring, storage, and retraining.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Data Source",
+            "Data Ingestion",
+            "Data Storage",
+            "Feature Processing",
+            "Model Training",
+            "Model Registry",
+            "Model Serving",
+            "Monitoring",
+            "Retraining Pipeline"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a3",
+      "type": "discover",
+      "title": "Monitoring the Model",
+      "instruction": "Select the signals that should be monitored in production.",
+      "content": {
+        "concept": "Production monitoring can track service health, prediction behavior, data quality, and model performance.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "API Response Time",
+            "Prediction Distribution",
+            "Input Data Quality",
+            "Model Accuracy",
+            "Data Drift",
+            "Server Health",
+            "UI Font Size",
+            "Unused Files"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a4",
+      "type": "discover",
+      "title": "Retraining Workflow",
+      "instruction": "Arrange the steps from monitoring an issue to deploying an updated model.",
+      "content": {
+        "concept": "A retraining workflow can collect new data, validate it, train and evaluate an updated model, then deploy it when appropriate.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Detect a model or data issue",
+            "2. Collect new or updated data",
+            "3. Validate and preprocess the data",
+            "4. Train the updated model",
+            "5. Evaluate the updated model",
+            "6. Register the validated model",
+            "7. Deploy the updated model",
+            "8. Monitor the new production version"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-20.json",
+  "practicalTaskRef": "practical-day-20.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

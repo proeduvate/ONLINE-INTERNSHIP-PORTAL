@@ -1,0 +1,125 @@
+{
+  "curriculum": "Python",
+  "day": 3,
+  "topic": "Loops and Iteration",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain how for and while loops repeat program instructions.",
+    "Construct loops using ranges, conditions, and iteration variables.",
+    "Apply break and continue to control loop execution."
+  ],
+  "activities": [
+    {
+      "id": "d3-a1",
+      "type": "discover",
+      "title": "Loop Anatomy",
+      "instruction": "Explore the parts of a for loop.",
+      "content": {
+        "concept": "A for loop iterates over items in an iterable. The loop variable receives each item and the indented body executes for each iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "for number in range(1, 4):",
+            "    print(number)",
+            "range(1, 4)",
+            "number"
+          ],
+          "descriptions": [
+            "Starts the loop and assigns each value from the iterable to number.",
+            "The indented loop body executes once for each iteration.",
+            "Produces the sequence 1, 2, 3.",
+            "Loop variable that receives the current value."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Iteration Sequence",
+      "instruction": "Order the steps of a for-loop execution.",
+      "content": {
+        "concept": "A loop obtains the next value from its iterable, assigns it to the loop variable, executes the body, and continues until the iterable is exhausted.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Get the next value from the iterable",
+            "2. Assign the value to the loop variable",
+            "3. Execute the loop body",
+            "4. Repeat until no values remain"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Loop Builder",
+      "instruction": "Build a loop that prints the numbers 1 through 5.",
+      "content": {
+        "concept": "range() can generate a sequence of numbers for a for loop. The stop value is excluded.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "for number in range(1, 6):",
+            "    print(number)",
+            "for number in range(1, 5):",
+            "    print(number * 2)",
+            "while number < 5:"
+          ],
+          "required": [
+            "for number in range(1, 6):",
+            "    print(number)"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Loop Control Explorer",
+      "instruction": "Identify what break and continue do inside a loop.",
+      "content": {
+        "concept": "break terminates the loop immediately, while continue skips the remaining statements in the current iteration and proceeds to the next iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "break → stop the entire loop",
+            "continue → skip to the next iteration",
+            "break → skip only one statement",
+            "continue → stop the entire loop"
+          ],
+          "answer": "break → stop the entire loop"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

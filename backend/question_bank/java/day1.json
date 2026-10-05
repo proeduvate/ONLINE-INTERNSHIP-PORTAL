@@ -1,0 +1,706 @@
+{
+  "day": 1,
+  "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+  "questions": [
+    {
+      "id": "DAY01-Q01",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which Java component provides development tools such as the Java compiler (javac) [Day 1, Q1]?",
+      "options": {
+        "A": "JDK",
+        "B": "JRE", 
+        "C": "JVM",
+        "D": "JIT compiler"
+      },
+      "answer": "A",
+      "explanation": "The JDK contains development tools such as javac."
+    },
+    {
+      "id": "DAY01-Q02",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding JDK useful when writing Java programs [Day 1, Q2]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with JDK",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JDK and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q03",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to JDK [Day 1, Q3]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving JDK",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JDK and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q04",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters JDK. What should they focus on first [Day 1, Q4]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of JDK in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JDK and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q05",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of JDK in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q5]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JDK and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q06",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which Java runtime concept traditionally contains the JVM and runtime libraries needed to run Java applications [Day 1, Q6]?",
+      "options": {
+        "A": "JRE",
+        "B": "JDK",
+        "C": "Javadoc",
+        "D": "javac"
+      },
+      "answer": "A",
+      "explanation": "The JRE traditionally provides the JVM and runtime libraries."
+    },
+    {
+      "id": "DAY01-Q07",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding JRE useful when writing Java programs [Day 1, Q7]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with JRE",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JRE and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q08",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to JRE [Day 1, Q8]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving JRE",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JRE and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q09",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters JRE. What should they focus on first [Day 1, Q9]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of JRE in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JRE and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q10",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of JRE in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q10]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JRE and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q11",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which component executes Java bytecode [Day 1, Q11]?",
+      "options": {
+        "A": "JVM",
+        "B": "JDK",
+        "C": "JRE installer",
+        "D": "javac"
+      },
+      "answer": "A",
+      "explanation": "The JVM executes Java bytecode."
+    },
+    {
+      "id": "DAY01-Q12",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding JVM useful when writing Java programs [Day 1, Q12]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with JVM",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JVM and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q13",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to JVM [Day 1, Q13]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving JVM",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JVM and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q14",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters JVM. What should they focus on first [Day 1, Q14]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of JVM in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JVM and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q15",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of JVM in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q15]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept JVM and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q16",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about source structure in Java is correct [Day 1, Q16]?",
+      "options": {
+        "A": "source structure is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept source structure and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q17",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding source structure useful when writing Java programs [Day 1, Q17]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with source structure",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept source structure and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q18",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to source structure [Day 1, Q18]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving source structure",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept source structure and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q19",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters source structure. What should they focus on first [Day 1, Q19]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of source structure in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept source structure and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q20",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of source structure in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q20]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept source structure and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q21",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about bytecode in Java is correct [Day 1, Q21]?",
+      "options": {
+        "A": "bytecode is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept bytecode and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q22",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding bytecode useful when writing Java programs [Day 1, Q22]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with bytecode",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept bytecode and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q23",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to bytecode [Day 1, Q23]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving bytecode",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept bytecode and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q24",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters bytecode. What should they focus on first [Day 1, Q24]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of bytecode in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept bytecode and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q25",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of bytecode in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q25]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept bytecode and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q26",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about compilation in Java is correct [Day 1, Q26]?",
+      "options": {
+        "A": "compilation is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept compilation and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q27",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding compilation useful when writing Java programs [Day 1, Q27]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with compilation",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept compilation and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q28",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to compilation [Day 1, Q28]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving compilation",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept compilation and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q29",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters compilation. What should they focus on first [Day 1, Q29]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of compilation in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept compilation and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q30",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of compilation in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q30]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept compilation and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q31",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about execution in Java is correct [Day 1, Q31]?",
+      "options": {
+        "A": "execution is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept execution and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q32",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding execution useful when writing Java programs [Day 1, Q32]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with execution",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept execution and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q33",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to execution [Day 1, Q33]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving execution",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept execution and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q34",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters execution. What should they focus on first [Day 1, Q34]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of execution in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept execution and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q35",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of execution in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q35]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept execution and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q36",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about main method in Java is correct [Day 1, Q36]?",
+      "options": {
+        "A": "main method is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept main method and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q37",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding main method useful when writing Java programs [Day 1, Q37]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with main method",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept main method and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q38",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to main method [Day 1, Q38]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving main method",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept main method and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q39",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters main method. What should they focus on first [Day 1, Q39]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of main method in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept main method and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q40",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of main method in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q40]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept main method and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q41",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about class declaration in Java is correct [Day 1, Q41]?",
+      "options": {
+        "A": "class declaration is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept class declaration and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q42",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding class declaration useful when writing Java programs [Day 1, Q42]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with class declaration",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept class declaration and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q43",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to class declaration [Day 1, Q43]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving class declaration",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept class declaration and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q44",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters class declaration. What should they focus on first [Day 1, Q44]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of class declaration in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept class declaration and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q45",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of class declaration in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q45]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept class declaration and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q46",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which statement about comments in Java is correct [Day 1, Q46]?",
+      "options": {
+        "A": "comments is a Java concept with defined language/library behavior",
+        "B": "It is only an HTML feature",
+        "C": "It exists only in SQL",
+        "D": "It is unrelated to Java"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept comments and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q47",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Why is understanding comments useful when writing Java programs [Day 1, Q47]?",
+      "options": {
+        "A": "It helps apply the Java rules associated with comments",
+        "B": "It removes the need for Java syntax",
+        "C": "It replaces the JVM",
+        "D": "It is required only for CSS"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept comments and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q48",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which scenario is most directly related to comments [Day 1, Q48]?",
+      "options": {
+        "A": "Writing or analyzing Java code involving comments",
+        "B": "Designing an HTML page",
+        "C": "Editing a raster image",
+        "D": "Configuring a DNS record"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept comments and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q49",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "A beginner encounters comments. What should they focus on first [Day 1, Q49]?",
+      "options": {
+        "A": "The syntax, purpose, and behavior of comments in Java",
+        "B": "Ignoring compiler feedback",
+        "C": "Using JavaScript syntax instead",
+        "D": "Treating it as a database command"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept comments and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    },
+    {
+      "id": "DAY01-Q50",
+      "day": 1,
+      "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+      "question": "Which choice best identifies the role of comments in the topic 'Java Introduction, JDK, JRE, JVM & Basic Syntax' [Day 1, Q50]?",
+      "options": {
+        "A": "It is one of the concepts used to understand Java Introduction, JDK, JRE, JVM & Basic Syntax",
+        "B": "It is a networking protocol",
+        "C": "It is an operating-system kernel",
+        "D": "It is a spreadsheet formula"
+      },
+      "answer": "A",
+      "explanation": "The correct choice is the one that describes the Java concept comments and its role in Java Introduction, JDK, JRE, JVM & Basic Syntax."
+    }
+  ]
+}

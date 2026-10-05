@@ -1,0 +1,130 @@
+{
+  "curriculum": "Full Stack",
+  "day": 15,
+  "topic": "Express.js and REST API Development",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the structure and purpose of an Express.js backend.",
+    "Create REST endpoints using HTTP methods and routes.",
+    "Understand how requests, responses, and middleware work together."
+  ],
+  "activities": [
+    {
+      "id": "d15-a1",
+      "type": "discover",
+      "title": "Express Architecture",
+      "instruction": "Click each part to explore its role in an Express application.",
+      "content": {
+        "concept": "An Express application organizes backend logic around an application instance, middleware, routes, request handling, and responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "express-architecture",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Express App",
+            "Middleware",
+            "Route",
+            "Request",
+            "Response"
+          ],
+          "descriptions": [
+            "The main Express application instance that coordinates middleware and routes.",
+            "Function that can inspect or modify requests and responses or pass control to the next handler.",
+            "Defines how a specific HTTP method and URL should be handled.",
+            "Contains information sent by the client to the server.",
+            "Carries the data and status returned by the server to the client."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "REST Method Explorer",
+      "instruction": "Choose the HTTP method that best matches each resource operation.",
+      "content": {
+        "concept": "REST APIs commonly use GET to retrieve resources, POST to create resources, PUT or PATCH to update resources, and DELETE to remove resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "rest-method",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Create a new user → POST",
+            "Create a new user → GET"
+          ],
+          "answer": "Create a new user → POST"
+        }
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "Request Response Journey",
+      "instruction": "Arrange the path of a request through an Express server.",
+      "content": {
+        "concept": "An incoming request can pass through middleware and route handlers before the server sends a response back to the client.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "express-request-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Client sends HTTP request",
+            "2. Express receives the request",
+            "3. Middleware processes the request",
+            "4. Matching route handler runs",
+            "5. Server creates the response",
+            "6. Client receives the response"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "REST API Builder",
+      "instruction": "Build a simple CRUD API for a users resource.",
+      "content": {
+        "concept": "A REST API exposes resources through predictable routes and HTTP methods so clients can create, retrieve, update, and delete data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "rest-api",
+        "family": "builder",
+        "config": {
+          "options": [
+            "GET /users",
+            "GET /users/:id",
+            "POST /users",
+            "PATCH /users/:id",
+            "DELETE /users/:id"
+          ],
+          "required": [
+            "GET /users",
+            "GET /users/:id",
+            "POST /users",
+            "PATCH /users/:id",
+            "DELETE /users/:id"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-15.json",
+  "practicalTaskRef": "practical-day-15.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

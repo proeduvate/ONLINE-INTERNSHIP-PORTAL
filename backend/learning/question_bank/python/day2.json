@@ -1,0 +1,556 @@
+﻿{
+    "day": 2,
+    "topic": "Variables & Data Types",
+    "mcqs": [
+        {
+            "id": 1,
+            "question": "Which symbol is used to assign a value to a variable in Python?",
+            "options": [
+                "=",
+                "==",
+                ":=",
+                "->"
+            ],
+            "answer": "="
+        },
+        {
+            "id": 2,
+            "question": "Which of the following is a valid Python variable name?",
+            "options": [
+                "2value",
+                "my_value",
+                "my-value",
+                "class"
+            ],
+            "answer": "my_value"
+        },
+        {
+            "id": 3,
+            "question": "Which of the following cannot be used as a Python variable name?",
+            "options": [
+                "student_name",
+                "_score",
+                "total2",
+                "2total"
+            ],
+            "answer": "2total"
+        },
+        {
+            "id": 4,
+            "question": "What type of value is stored in `x = 25`?",
+            "options": [
+                "str",
+                "float",
+                "int",
+                "bool"
+            ],
+            "answer": "int"
+        },
+        {
+            "id": 5,
+            "question": "What is the data type of `3.14` in Python?",
+            "options": [
+                "int",
+                "float",
+                "decimal",
+                "double"
+            ],
+            "answer": "float"
+        },
+        {
+            "id": 6,
+            "question": "Which function is used to determine the data type of an object?",
+            "options": [
+                "datatype()",
+                "typeof()",
+                "type()",
+                "gettype()"
+            ],
+            "answer": "type()"
+        },
+        {
+            "id": 7,
+            "question": "What is the type of the value `True`?",
+            "options": [
+                "int",
+                "bool",
+                "str",
+                "boolean"
+            ],
+            "answer": "bool"
+        },
+        {
+            "id": 8,
+            "question": "Which data type represents text in Python?",
+            "options": [
+                "char",
+                "text",
+                "str",
+                "string"
+            ],
+            "answer": "str"
+        },
+        {
+            "id": 9,
+            "question": "Which of the following creates a string?",
+            "options": [
+                "name = 'Python'",
+                "name = Python",
+                "name = {Python}",
+                "name = [Python]"
+            ],
+            "answer": "name = 'Python'"
+        },
+        {
+            "id": 10,
+            "question": "What is the data type of `None`?",
+            "options": [
+                "null",
+                "NoneType",
+                "void",
+                "empty"
+            ],
+            "answer": "NoneType"
+        },
+        {
+            "id": 11,
+            "question": "Which value represents the absence of a value in Python?",
+            "options": [
+                "null",
+                "None",
+                "nil",
+                "void"
+            ],
+            "answer": "None"
+        },
+        {
+            "id": 12,
+            "question": "Which of the following is a complex number in Python?",
+            "options": [
+                "5 + 3j",
+                "5 + 3i",
+                "5.3",
+                "complex(5, 3.0j)"
+            ],
+            "answer": "5 + 3j"
+        },
+        {
+            "id": 13,
+            "question": "Which suffix is used to represent the imaginary part of a Python complex number?",
+            "options": [
+                "i",
+                "j",
+                "c",
+                "z"
+            ],
+            "answer": "j"
+        },
+        {
+            "id": 14,
+            "question": "What is the result of `type(10)`?",
+            "options": [
+                "<class 'float'>",
+                "<class 'str'>",
+                "<class 'int'>",
+                "<class 'number'>"
+            ],
+            "answer": "<class 'int'>"
+        },
+        {
+            "id": 15,
+            "question": "What is the result of `type(10.0)`?",
+            "options": [
+                "<class 'int'>",
+                "<class 'float'>",
+                "<class 'number'>",
+                "<class 'decimal'>"
+            ],
+            "answer": "<class 'float'>"
+        },
+        {
+            "id": 16,
+            "question": "What is the result of `type('10')`?",
+            "options": [
+                "<class 'int'>",
+                "<class 'float'>",
+                "<class 'str'>",
+                "<class 'text'>"
+            ],
+            "answer": "<class 'str'>"
+        },
+        {
+            "id": 17,
+            "question": "What is the result of `type(False)`?",
+            "options": [
+                "<class 'bool'>",
+                "<class 'boolean'>",
+                "<class 'int'>",
+                "<class 'false'>"
+            ],
+            "answer": "<class 'bool'>"
+        },
+        {
+            "id": 18,
+            "question": "Which function converts a numeric string into an integer?",
+            "options": [
+                "str()",
+                "float()",
+                "int()",
+                "number()"
+            ],
+            "answer": "int()"
+        },
+        {
+            "id": 19,
+            "question": "Which function converts an integer into a floating-point number?",
+            "options": [
+                "float()",
+                "decimal()",
+                "double()",
+                "real()"
+            ],
+            "answer": "float()"
+        },
+        {
+            "id": 20,
+            "question": "Which function converts a value into a string?",
+            "options": [
+                "string()",
+                "str()",
+                "text()",
+                "convert()"
+            ],
+            "answer": "str()"
+        },
+        {
+            "id": 21,
+            "question": "What is the result of `int(4.9)`?",
+            "options": [
+                "5",
+                "4",
+                "4.9",
+                "Error"
+            ],
+            "answer": "4"
+        },
+        {
+            "id": 22,
+            "question": "What is the result of `float(7)`?",
+            "options": [
+                "7",
+                "7.0",
+                "'7.0'",
+                "Error"
+            ],
+            "answer": "7.0"
+        },
+        {
+            "id": 23,
+            "question": "What is the result of `str(100)`?",
+            "options": [
+                "100",
+                "'100'",
+                "100.0",
+                "Error"
+            ],
+            "answer": "'100'"
+        },
+        {
+            "id": 24,
+            "question": "Which statement correctly assigns multiple values to multiple variables?",
+            "options": [
+                "a, b, c = 1, 2, 3",
+                "a = b = c = 1, 2, 3",
+                "a:b:c = 1:2:3",
+                "a; b; c = 1; 2; 3"
+            ],
+            "answer": "a, b, c = 1, 2, 3"
+        },
+        {
+            "id": 25,
+            "question": "What is the value of `x` after `x = y = 50`?",
+            "options": [
+                "0",
+                "50",
+                "y",
+                "Error"
+            ],
+            "answer": "50"
+        },
+        {
+            "id": 26,
+            "question": "Which statement swaps the values of `a` and `b` without using a temporary variable?",
+            "options": [
+                "a, b = b, a",
+                "a = b; b = a",
+                "swap(a,b)",
+                "a := b; b := a"
+            ],
+            "answer": "a, b = b, a"
+        },
+        {
+            "id": 27,
+            "question": "Python variables are best described as:",
+            "options": [
+                "Fixed memory locations only",
+                "Names bound to objects",
+                "Constants by default",
+                "Data types"
+            ],
+            "answer": "Names bound to objects"
+        },
+        {
+            "id": 28,
+            "question": "Which statement about Python variable types is correct?",
+            "options": [
+                "A variable's type cannot change",
+                "A variable can refer to objects of different types",
+                "All variables must be declared with a type",
+                "Only numbers can be assigned to variables"
+            ],
+            "answer": "A variable can refer to objects of different types"
+        },
+        {
+            "id": 29,
+            "question": "What happens after `x = 10` followed by `x = 'Python'`?",
+            "options": [
+                "An error occurs",
+                "x refers to the string 'Python'",
+                "x remains 10",
+                "Both values are stored in x"
+            ],
+            "answer": "x refers to the string 'Python'"
+        },
+        {
+            "id": 30,
+            "question": "Which of the following is a valid identifier in Python?",
+            "options": [
+                "first-name",
+                "first_name",
+                "first name",
+                "1st_name"
+            ],
+            "answer": "first_name"
+        },
+        {
+            "id": 31,
+            "question": "Which character can be used at the beginning of a Python variable name?",
+            "options": [
+                "$",
+                "_",
+                "@",
+                "#"
+            ],
+            "answer": "_"
+        },
+        {
+            "id": 32,
+            "question": "Python variable names are case-sensitive. Which statement is correct?",
+            "options": [
+                "age and Age are always the same variable",
+                "age and Age can refer to different variables",
+                "Python ignores capitalization",
+                "Only uppercase names are valid"
+            ],
+            "answer": "age and Age can refer to different variables"
+        },
+        {
+            "id": 33,
+            "question": "Which of the following is a Python keyword and cannot normally be used as a variable name?",
+            "options": [
+                "value",
+                "number",
+                "return",
+                "result"
+            ],
+            "answer": "return"
+        },
+        {
+            "id": 34,
+            "question": "Which built-in type represents a sequence of Unicode characters?",
+            "options": [
+                "bytes",
+                "str",
+                "bytearray",
+                "memoryview"
+            ],
+            "answer": "str"
+        },
+        {
+            "id": 35,
+            "question": "Which data type is used to represent raw binary data as an immutable sequence?",
+            "options": [
+                "bytes",
+                "str",
+                "list",
+                "tuple"
+            ],
+            "answer": "bytes"
+        },
+        {
+            "id": 36,
+            "question": "Which built-in type stores an ordered, mutable collection of objects?",
+            "options": [
+                "tuple",
+                "list",
+                "set",
+                "frozenset"
+            ],
+            "answer": "list"
+        },
+        {
+            "id": 37,
+            "question": "Which built-in type represents an unordered collection of unique elements?",
+            "options": [
+                "list",
+                "tuple",
+                "set",
+                "str"
+            ],
+            "answer": "set"
+        },
+        {
+            "id": 38,
+            "question": "Which Python type stores data as key-value pairs?",
+            "options": [
+                "list",
+                "tuple",
+                "dictionary",
+                "set"
+            ],
+            "answer": "dictionary"
+        },
+        {
+            "id": 39,
+            "question": "Which data type is immutable?",
+            "options": [
+                "list",
+                "set",
+                "dictionary",
+                "tuple"
+            ],
+            "answer": "tuple"
+        },
+        {
+            "id": 40,
+            "question": "Which of the following is mutable?",
+            "options": [
+                "tuple",
+                "str",
+                "list",
+                "int"
+            ],
+            "answer": "list"
+        },
+        {
+            "id": 41,
+            "question": "What is the type of the literal `1 + 2j`?",
+            "options": [
+                "int",
+                "float",
+                "complex",
+                "imaginary"
+            ],
+            "answer": "complex"
+        },
+        {
+            "id": 42,
+            "question": "Which function can be used to convert a value to a Boolean?",
+            "options": [
+                "bool()",
+                "boolean()",
+                "logical()",
+                "truth()"
+            ],
+            "answer": "bool()"
+        },
+        {
+            "id": 43,
+            "question": "What is the result of `bool(1)`?",
+            "options": [
+                "True",
+                "False",
+                "1",
+                "Error"
+            ],
+            "answer": "True"
+        },
+        {
+            "id": 44,
+            "question": "What is the result of `bool(0)`?",
+            "options": [
+                "True",
+                "False",
+                "0",
+                "None"
+            ],
+            "answer": "False"
+        },
+        {
+            "id": 45,
+            "question": "Which value is an example of a floating-point literal?",
+            "options": [
+                "42",
+                "42.0",
+                "'42'",
+                "True"
+            ],
+            "answer": "42.0"
+        },
+        {
+            "id": 46,
+            "question": "Which prefix is used for a hexadecimal integer literal in Python?",
+            "options": [
+                "0b",
+                "0o",
+                "0x",
+                "0h"
+            ],
+            "answer": "0x"
+        },
+        {
+            "id": 47,
+            "question": "Which prefix is used for a binary integer literal in Python?",
+            "options": [
+                "0b",
+                "0x",
+                "0o",
+                "0d"
+            ],
+            "answer": "0b"
+        },
+        {
+            "id": 48,
+            "question": "Which prefix is used for an octal integer literal in Python?",
+            "options": [
+                "0x",
+                "0b",
+                "0o",
+                "0q"
+            ],
+            "answer": "0o"
+        },
+        {
+            "id": 49,
+            "question": "What is the data type of `b'Python'`?",
+            "options": [
+                "str",
+                "bytes",
+                "bytearray",
+                "binary"
+            ],
+            "answer": "bytes"
+        },
+        {
+            "id": 50,
+            "question": "Which statement correctly demonstrates Python's dynamic typing?",
+            "options": [
+                "x: int = 10 only",
+                "x = 10 followed by x = 'Hello'",
+                "int x = 10",
+                "declare x as integer"
+            ],
+            "answer": "x = 10 followed by x = 'Hello'"
+        }
+    ]
+}

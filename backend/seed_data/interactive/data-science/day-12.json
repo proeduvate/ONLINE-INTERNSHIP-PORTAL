@@ -1,0 +1,122 @@
+{
+  "curriculum": "Data Science",
+  "day": 12,
+  "topic": "Feature Engineering and Data Preparation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify useful features from raw datasets.",
+    "Apply encoding and scaling techniques to numerical and categorical data.",
+    "Construct a preprocessing workflow for machine learning."
+  ],
+  "activities": [
+    {
+      "id": "d12-a1",
+      "type": "discover",
+      "title": "Discover Useful Features",
+      "instruction": "Identify variables that could provide useful information for prediction.",
+      "content": {
+        "concept": "Feature engineering transforms raw variables into useful representations that can improve the information available to a machine learning model.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Age",
+            "Monthly Income",
+            "Customer ID",
+            "Purchase Frequency",
+            "Account Creation Date"
+          ],
+          "descriptions": [
+            "Can represent a customer's demographic characteristic.",
+            "Can provide information about spending capacity.",
+            "Usually serves as an identifier rather than a meaningful predictive feature.",
+            "Can describe how frequently a customer makes purchases.",
+            "Can be transformed into useful features such as account age or signup month."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d12-a2",
+      "type": "discover",
+      "title": "Encode Categories",
+      "instruction": "Match categorical data with an appropriate encoding approach.",
+      "content": {
+        "concept": "Categorical variables can be converted into numerical representations using techniques such as one-hot encoding and ordinal encoding.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "City: Chennai, Mumbai, Delhi → One-Hot Encoding",
+            "Size: Small, Medium, Large → Ordinal Encoding",
+            "Gender: Category values with no natural order → One-Hot Encoding",
+            "Education Level: School, Bachelor, Master, Doctorate → Ordinal Encoding"
+          ],
+          "answer": "City: Chennai, Mumbai, Delhi → One-Hot Encoding"
+        }
+      }
+    },
+    {
+      "id": "d12-a3",
+      "type": "discover",
+      "title": "Explore Feature Scaling",
+      "instruction": "Adjust the feature range and observe how scaling changes its representation.",
+      "content": {
+        "concept": "Feature scaling transforms numerical variables to comparable ranges and can be important for algorithms that depend on distances or feature magnitudes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
+      }
+    },
+    {
+      "id": "d12-a4",
+      "type": "discover",
+      "title": "Build the Preprocessing Pipeline",
+      "instruction": "Arrange the preprocessing stages in a logical order.",
+      "content": {
+        "concept": "A preprocessing workflow can handle missing values, encode categorical variables, scale numerical features, and prepare the final feature set before model training.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Inspect the Raw Features",
+            "2. Handle Missing Values",
+            "3. Encode Categorical Features",
+            "4. Scale Numerical Features When Needed",
+            "5. Create or Select Useful Features",
+            "6. Validate the Prepared Feature Set",
+            "7. Pass the Prepared Data to the Model"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-12.json",
+  "practicalTaskRef": "practical-day-12.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

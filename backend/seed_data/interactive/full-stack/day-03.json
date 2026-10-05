@@ -1,0 +1,123 @@
+{
+  "curriculum": "Full Stack",
+  "day": 3,
+  "topic": "CSS Fundamentals and Responsive Styling",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Apply CSS selectors, properties, and the box model.",
+    "Construct layouts using Flexbox and responsive techniques.",
+    "Choose appropriate styling strategies for different screen sizes."
+  ],
+  "activities": [
+    {
+      "id": "d3-a1",
+      "type": "discover",
+      "title": "CSS Rule Anatomy",
+      "instruction": "Explore the selector, property, value, and declaration of a CSS rule.",
+      "content": {
+        "concept": "A CSS rule uses a selector to target elements and declarations to define their visual properties.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "css-rule-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Selector",
+            "Property",
+            "Value",
+            "Declaration"
+          ],
+          "descriptions": [
+            "Identifies which HTML elements should be styled.",
+            "Specifies the characteristic being changed, such as color or margin.",
+            "Specifies the setting assigned to the property.",
+            "A property-value pair that defines one style rule."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "Box Model Explorer",
+      "instruction": "Adjust spacing layers and observe how they change the element's size.",
+      "content": {
+        "concept": "The CSS box model consists of content, padding, border, and margin, each affecting layout differently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "box-model",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 50,
+          "default": 10
+        }
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Flexbox Layout Builder",
+      "instruction": "Configure a Flexbox container to align and distribute its children.",
+      "content": {
+        "concept": "Flexbox provides properties such as display, flex-direction, justify-content, align-items, and gap for arranging elements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flexbox-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "display: flex",
+            "flex-direction: row",
+            "justify-content: center",
+            "align-items: center",
+            "gap: 16px",
+            "flex-wrap: wrap"
+          ],
+          "required": [
+            "display: flex",
+            "justify-content: center",
+            "align-items: center"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Responsive Strategy",
+      "instruction": "Choose the styling approach that best adapts a layout across screen sizes.",
+      "content": {
+        "concept": "Responsive design combines flexible layouts, relative sizing, and media queries to adapt interfaces to different viewport sizes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "responsive-strategy",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Use fixed desktop widths everywhere",
+            "Use flexible layouts with appropriate breakpoints",
+            "Create a separate page for every screen width"
+          ],
+          "answer": "Use flexible layouts with appropriate breakpoints"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

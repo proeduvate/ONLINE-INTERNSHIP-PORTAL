@@ -1,0 +1,129 @@
+{
+  "curriculum": "Python",
+  "day": 16,
+  "topic": "FastAPI and Modern API Development",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Build basic REST endpoints using FastAPI.",
+    "Define request and response schemas with Pydantic.",
+    "Organize API routes and validate incoming data."
+  ],
+  "activities": [
+    {
+      "id": "d16-a1",
+      "type": "discover",
+      "title": "FastAPI Request Flow",
+      "instruction": "Arrange the steps of a FastAPI request from arrival to response.",
+      "content": {
+        "concept": "A FastAPI request is routed to an endpoint, validated when a schema is defined, processed by the path operation function, and converted into a response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Client sends an HTTP request",
+            "2. FastAPI matches the route",
+            "3. FastAPI validates request data",
+            "4. Path operation function runs",
+            "5. FastAPI generates the response"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "FastAPI Route Anatomy",
+      "instruction": "Click each part of the FastAPI endpoint to understand its role.",
+      "content": {
+        "concept": "A FastAPI route combines an HTTP method, URL path, Python function, and response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@app.get(\"/users/{user_id}\")",
+            "def get_user(user_id: int):",
+            "user_id: int",
+            "return {\"id\": user_id}"
+          ],
+          "descriptions": [
+            "Registers a GET endpoint and declares a path parameter.",
+            "Defines the Python function that handles the request.",
+            "Declares that the path parameter should be interpreted as an integer.",
+            "Returns response data that FastAPI can serialize as JSON."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "Pydantic Schema Builder",
+      "instruction": "Build a valid Pydantic request model.",
+      "content": {
+        "concept": "Pydantic models describe the expected structure and types of incoming data and allow FastAPI to validate request bodies.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "from pydantic import BaseModel",
+            "class UserCreate(BaseModel):",
+            "name: str",
+            "age: int",
+            "email: str"
+          ],
+          "required": [
+            "from pydantic import BaseModel",
+            "class UserCreate(BaseModel):",
+            "name: str",
+            "age: int",
+            "email: str"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "HTTP Method Selector",
+      "instruction": "Choose the HTTP method that best matches the operation.",
+      "content": {
+        "concept": "REST APIs commonly use GET for retrieval, POST for creation, PUT or PATCH for updates, and DELETE for removal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+          ],
+          "answer": "POST"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-16.json",
+  "practicalTaskRef": "practical-day-16.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

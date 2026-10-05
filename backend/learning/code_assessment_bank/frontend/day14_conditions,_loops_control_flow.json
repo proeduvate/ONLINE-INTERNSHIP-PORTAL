@@ -1,0 +1,48 @@
+{
+    "day": 14,
+    "topic": "Conditions, Loops & Control Flow",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D14-Q001",
+            "title": "Even/Odd Checker",
+            "description": "Determine whether a given number is even or odd.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D14-Q002",
+            "title": "Grade Calculator",
+            "description": "Accept marks and calculate:",
+            "requirements": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "Fail based on defined ranges"
+            ]
+        },
+        {
+            "id": "CODE-D14-Q003",
+            "title": "Number Pattern",
+            "description": "Use loops to generate a triangle pattern of numbers or stars.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D14-Q004",
+            "title": "Multiplication Table",
+            "description": "Generate the multiplication table of a number using a loop.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D14-Q005",
+            "title": "Student Result System",
+            "description": "Process multiple students and determine:",
+            "requirements": [
+                "Total",
+                "Average",
+                "Grade",
+                "Pass/Fail"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1793 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../services/AuthContext";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
+import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
+import AdminAnalytics from "./AdminAnalytics";
+import AdminAirdropDetails from "./AdminAirdropDetails";
+import AdminLeaderboard from "./AdminLeaderboard";
+import AdminProfile from "./AdminProfile";
+import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboardingList";
+import AdminOnboardingDetails from "../../features/onboarding/admin/AdminOnboardingDetails";
+import { PageContainer } from "../../components/layout/PageContainer";
+import { Button } from "../../components/ui/Button";
+import api from "../../api/axios";
+import "../../styles/Dashboard.css";
+
+export default function AdminDashboard() {
+  const { user } = useAuth() || {};
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathParts = location.pathname.split('/');
+
+  const canonicalTabs = [
+    "Overview", "Analytics", "Onboarding", "Users", 
+    "Programs", "Credentials", "Tickets", "Bonus Airdrops", "Leaderboard", "Profile"
+  ];
+
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
+  };
+
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+  
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab !== tabName) {
+         setActiveTab(tabName);
+      }
+    }
+  }, [location.pathname, activeTab]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
+  const mockNotifications = [
+    { id: 1, text: "New intern registered", time: "5 mins ago" },
+    { id: 2, text: "New support ticket created", time: "1 hour ago" },
+    { id: 3, text: "Weekly performance report is ready", time: "2 hours ago" }
+  ];
+
+  // Bonus Airdrops State
+  const [bonusAirdrops, setBonusAirdrops] = useState([]);
+  const [selectedAirdrop, setSelectedAirdrop] = useState(null);
+  const [airdropCurrentPage, setAirdropCurrentPage] = useState(1);
+  const airdropsPerPage = 14;
+
+  useEffect(() => {
+    const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
+    if (storedAirdrops) {
+      setBonusAirdrops(JSON.parse(storedAirdrops));
+    }
+  }, []);
+
+  const handleApproveAirdrop = (id) => {
+    const updatedAirdrops = bonusAirdrops.map(a => 
+      a.id === id ? { ...a, status: "APPROVED" } : a
+    );
+    setBonusAirdrops(updatedAirdrops);
+    localStorage.setItem("app_bonus_airdrops", JSON.stringify(updatedAirdrops));
+  };
+
+  const defaultCredentialRequests = [];
+
+  const [adminCredentialInterns, setAdminCredentialInterns] = useState(defaultCredentialRequests);
+  const [selectedAdminCredentialIntern, setSelectedAdminCredentialIntern] = useState(null);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const stored = localStorage.getItem("app_certificate_requests");
+      if (stored) {
+        setAdminCredentialInterns(JSON.parse(stored));
+      } else {
+        localStorage.setItem("app_certificate_requests", JSON.stringify(defaultCredentialRequests));
+      }
+    };
+    handleStorageChange();
+    const interval = setInterval(handleStorageChange, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const transformAirdrops = (data) => {
+    const formatDate = (isoString) => {
+      if (!isoString) return "";
+      const d = new Date(isoString);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+    const formatTime = (isoString) => {
+      if (!isoString) return "";
+      const d = new Date(isoString);
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'pm' : 'am';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+    };
+
+    return data.map(a => {
+      const startDate = formatDate(a.start_time);
+      const startTime = formatTime(a.start_time);
+      const endDate = formatDate(a.end_time);
+      const endTime = formatTime(a.end_time);
+      
+      let frontendTaskType = a.task_type;
+      let questionText = a.title || "No Title";
+      if (a.task_type === 'mcq') {
+        frontendTaskType = 'Multiple Choice';
+        questionText = a.task_config?.question || questionText;
+      } else if (a.task_type === 'pattern') {
+        frontendTaskType = 'Pattern / Sequence';
+        questionText = a.task_config?.question || questionText;
+      } else if (a.task_type === 'true_false') {
+        frontendTaskType = 'True / False';
+        questionText = a.task_config?.statement || questionText;
+      } else if (a.task_type === 'fill_blank') {
+        frontendTaskType = 'Fill in the Blank';
+        questionText = a.task_config?.sentence || questionText;
+      } else if (a.task_type === 'match') {
+        frontendTaskType = 'Match the Following';
+        questionText = "Match the following pairs correctly.";
+      } else if (a.task_type === 'arrange') {
+        frontendTaskType = 'Arrange in Order';
+        questionText = "Arrange the items in the correct sequence.";
+      }
+
+      return {
+        ...a,
+        id: a.id,
+        question: questionText,
+        points: a.points_distribution ? a.points_distribution.split(",") : ["0"],
+        status: a.status,
+        timeLimit: a.time_limit,
+        taskType: frontendTaskType,
+        startMode: a.start_mode === 'fixed' ? 'Fixed Start Time' : 'Flexible Start',
+        startDate,
+        startTime,
+        endDate,
+        endTime,
+        rawEndTime: a.end_time,
+        mcqOptions: a.task_config?.options,
+        correctAnswer: a.task_config?.correct_answer,
+        matchPairs: a.task_config?.pairs ? Object.entries(a.task_config.pairs).map(([k, v]) => ({ key: k, value: v })) : [],
+        arrangeItems: a.task_config?.correct_sequence || []
+      };
+    });
+  };
+
+  const handleApproveCertificate = async (certId) => {
+    try {
+      const targetId = selectedAdminCredentialIntern?.cert_id || certId;
+      const res = await api.post(`/api/v1/certificates/${targetId}/approve`);
+      alert(res.data?.message || "Certificate approved and PDF sent to intern via email!");
+      setSelectedAdminCredentialIntern(null);
+      fetchLiveData();
+    } catch (err) {
+      console.error("Certificate approval error:", err);
+      const updated = adminCredentialInterns.map(i => (i.id === certId || i.cert_id === certId) ? { ...i, status: "Approved" } : i);
+      setAdminCredentialInterns(updated);
+      localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
+      setSelectedAdminCredentialIntern(null);
+      alert("Certificate approved!");
+    }
+  };
+
+  const [usersList, setUsersList] = useState([]);
+  const [ticketsList, setTicketsList] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({
+    total_interns: 0,
+    active_interns: 0,
+    total_mentors: 0,
+    active_domains: 0,
+    avg_performance: 0
+  });
+
+  const fetchLiveData = async () => {
+    try {
+      const statsRes = await api.get('/api/v1/admin/dashboard');
+      if (statsRes.data) {
+        setDashboardStats(prev => ({ ...prev, ...statsRes.data }));
+      }
+    } catch (err) {
+      console.warn("Backend admin dashboard stats fetch error:", err);
+    }
+
+    try {
+      const usersRes = await api.get('/api/v1/users');
+      if (Array.isArray(usersRes.data)) {
+        const mappedUsers = usersRes.data.map(u => {
+          const roleStr = u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1).toLowerCase() : "Intern";
+          const college = u.college || "-";
+          
+          let monthYear = "";
+          const dateVal = u.start_date || u.created_at;
+          if (dateVal) {
+            const d = new Date(dateVal);
+            if (!isNaN(d.getTime())) {
+              const monthStr = d.toLocaleString('en-US', { month: 'short' });
+              const year = d.getFullYear();
+              monthYear = `${monthStr} ${year}`;
+            }
+          }
+          
+          const batchName = college !== "-" ? (monthYear ? `${college} (${monthYear})` : college) : (monthYear ? `General (${monthYear})` : "General");
+
+          return {
+            id: u.intern_id || (roleStr === 'Mentor' ? `MNT-${u.id}` : `INT-${u.id}`),
+            numericId: u.id,
+            name: u.name,
+            email: u.email,
+            role: roleStr,
+            college: college,
+            batchName: batchName,
+            joiningMonth: monthYear,
+            domain: u.domain_name || (u.domain_id ? `Domain ${u.domain_id}` : "-"),
+            mentor: u.mentor_id ? `Mentor ${u.mentor_id}` : "-",
+            progress: `${u.progress_pct || 0}%`,
+            attendance: `${u.attendance_pct || 0}%`,
+            status: "Active"
+          };
+        });
+        setUsersList(mappedUsers);
+      }
+    } catch (err) {
+      console.warn("Backend users list fetch error:", err);
+    }
+
+    try {
+      const pendingCertsRes = await api.get('/api/v1/certificates/pending');
+      if (Array.isArray(pendingCertsRes.data)) {
+        const mappedCerts = pendingCertsRes.data.map(c => ({
+          id: c.certificate_id || c.id,
+          cert_id: c.certificate_id,
+          name: c.intern_name || `Intern ${c.intern_id}`,
+          batch: c.domain || "General",
+          domain: c.domain || "General",
+          grade: c.grade || "A",
+          attendance: "95%",
+          tasksCompleted: "30 / 30",
+          status: c.status === "PENDING_ADMIN_APPROVAL" ? "Requested" : c.status
+        }));
+        setAdminCredentialInterns(mappedCerts);
+      }
+    } catch (err) {
+      console.warn("Pending certificates fetch error:", err);
+    }
+
+    try {
+      const ticketsRes = await api.get('/api/v1/tickets/');
+      if (Array.isArray(ticketsRes.data)) {
+        const mappedTickets = ticketsRes.data.map(t => {
+          let formattedStatus = "Waiting on Support";
+          if (t.status === "in_progress" || t.status === "assigned") formattedStatus = "In Progress";
+          else if (t.status === "resolved") formattedStatus = "Resolved";
+          else if (t.status === "closed") formattedStatus = "Closed";
+
+          return {
+            id: `TKT-${t.id}`,
+            numericId: t.id,
+            user: t.creator_name || `User ${t.created_by}`,
+            role: "Intern",
+            domain: t.domain || "General",
+            branch: t.domain || "General",
+            title: t.title,
+            description: t.description,
+            status: formattedStatus,
+            rawStatus: t.status,
+            assignedTo: t.assignee_name || "Unassigned",
+            date: t.created_at ? new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+            comments: (t.messages || []).map(m => ({ author: m.sender_name, text: m.message }))
+          };
+        });
+        setTicketsList(mappedTickets);
+      }
+    } catch (err) {
+      console.warn("Tickets fetch error:", err);
+    }
+  };
+
+  const [availableDomains, setAvailableDomains] = useState([
+    { id: 1, name: "Data Science" },
+    { id: 2, name: "Frontend" },
+    { id: 3, name: "Artificial Intelligence" },
+    { id: 4, name: "Cyber Security" },
+    { id: 5, name: "Fullstack" },
+    { id: 6, name: "Python" },
+    { id: 7, name: "UI/UX" },
+    { id: 8, name: "Java" },
+    { id: 9, name: "Data Analytics" }
+  ]);
+
+  useEffect(() => {
+    fetchLiveData();
+  }, []);
+
+  const [domainsList, setDomainsList] = useState([
+    { name: "Frontend", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
+    { name: "Python", duration: "8 Weeks", interns: 12, mentors: 2, status: "Active" },
+    { name: "Fullstack", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
+    { name: "Java", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
+    { name: "UI/UX", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
+    { name: "AI/ML", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
+    { name: "Data Analytics", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
+  ]);
+
+  const [curriculumList, setCurriculumList] = useState([
+    { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Web Development" },
+    { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Web Development" },
+  ]);
+
+  const [meetings, setMeetings] = useState([]);
+  
+  const handleAddMentor = async (e) => {
+    e.preventDefault();
+    if (!newMentor.name || !newMentor.email) {
+      alert("Please enter Name and Email ID.");
+      return;
+    }
+
+    try {
+      const res = await api.post('/api/v1/admin/mentors', {
+        name: newMentor.name,
+        email: newMentor.email,
+        domain: newMentor.domain
+      });
+
+      alert(`Mentor account created successfully!\nName: ${res.data.name}\nEmail: ${res.data.email}`);
+      setShowMentorModal(false);
+      setNewMentor({ name: "", email: "", domain: "" });
+      fetchLiveData();
+    } catch (err) {
+      console.error("Failed to create mentor:", err);
+      const msg = err.response?.data?.detail || "Failed to create mentor account.";
+      alert(msg);
+    }
+  };
+
+  // Compute live domain distribution chart data directly from users database
+  const domainData = availableDomains.map(d => ({
+    name: d.name,
+    value: usersList.filter(u => u.role === "Intern" && u.domain && u.domain.toLowerCase().includes(d.name.toLowerCase())).length
+  }));
+  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#6366f1"];
+
+  // Form inputs
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: "Intern", college: "", domain: "", mentor: "" });
+  const [showMentorModal, setShowMentorModal] = useState(false);
+  const [newMentor, setNewMentor] = useState({ name: "", email: "", domain: "" });
+  const [newTask, setNewTask] = useState({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+  const [newCurriculum, setNewCurriculum] = useState({ day: "", topic: "", resources: "", domain: "Web Development" });
+  const [newMeeting, setNewMeeting] = useState({ title: "", time: "", mentor: "", link: "" });
+  
+  // Onboarding state
+  const [onboardingSubTab, setOnboardingSubTab] = useState("Resume");
+  const [onboardingCandidates, setOnboardingCandidates] = useState([
+    { id: "C001", name: "Alice Smith", domain: "Data Science", stage: "Resume", resumeLink: "#" },
+    { id: "C002", name: "Bob Jones", domain: "Web Development", stage: "Interview", resumeLink: "#" },
+    { id: "C003", name: "Charlie Brown", domain: "Cyber Security", stage: "Payment", resumeLink: "#" }
+  ]);
+  const [viewedDocs, setViewedDocs] = useState({});
+  const [activeDocument, setActiveDocument] = useState(null);
+
+  // Programs sub-tab state
+  const [programsSubTab, setProgramsSubTab] = useState("Domains");
+  const [selectedProgramDomain, setSelectedProgramDomain] = useState(null);
+  const [detailSubTab, setDetailSubTab] = useState("Curriculum");
+  const [showDomainModal, setShowDomainModal] = useState(false);
+  const [newDomain, setNewDomain] = useState({ name: "", duration: "" });
+
+  // Users sub-tab state
+  const [usersSubTab, setUsersSubTab] = useState("Interns"); // Interns, Mentors
+  const [selectedBatch, setSelectedBatch] = useState("MIT");
+  const [internPage, setInternPage] = useState(1);
+  const [selectedIntern, setSelectedIntern] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketReply, setTicketReply] = useState("");
+  const [assignMentorId, setAssignMentorId] = useState("");
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (tabName === "Users") {
+        if (parts[3] === "intern" && parts[4]) {
+          const found = usersList.find(u => String(u.id) === parts[4]);
+          setSelectedIntern(found || null);
+          setSelectedMentor(null);
+        } else if (parts[3] === "mentor" && parts[4]) {
+          const found = usersList.find(u => String(u.id) === parts[4]);
+          setSelectedMentor(found || null);
+          setSelectedIntern(null);
+        } else {
+          setSelectedIntern(null);
+          setSelectedMentor(null);
+        }
+      } else if (tabName === "Programs") {
+        if (parts[3]) {
+          // Decode URL component because domain names might have spaces
+          setSelectedProgramDomain(decodeURIComponent(parts[3]));
+        } else {
+          setSelectedProgramDomain(null);
+        }
+      } else if (tabName === "Tickets") {
+        if (parts[3]) {
+          const found = ticketsList.find(t => String(t.id) === parts[3]);
+          setSelectedTicket(found || null);
+        } else {
+          setSelectedTicket(null);
+        }
+      } else if (tabName === "Credentials") {
+        if (parts[3]) {
+          const found = adminCredentialInterns.find(i => String(i.id) === parts[3]);
+          setSelectedAdminCredentialIntern(found || null);
+        } else {
+          setSelectedAdminCredentialIntern(null);
+        }
+      } else if (tabName === "Bonus Airdrops") {
+        if (parts[3]) {
+          const found = bonusAirdrops.find(a => String(a.id) === parts[3]);
+          setSelectedAirdrop(found || null);
+        } else {
+          setSelectedAirdrop(null);
+        }
+      }
+    }
+  }, [location.pathname, usersList, ticketsList, adminCredentialInterns, bonusAirdrops]);
+
+
+  const handleReplyTicket = async (e) => {
+    e.preventDefault();
+    if (!ticketReply.trim() || !selectedTicket) return;
+    
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: "message",
+        message: ticketReply
+      });
+      setTicketReply("");
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket reply error:", err);
+      const updatedTickets = ticketsList.map(t => {
+        if (t.id === selectedTicket.id) {
+          const updatedT = { ...t, comments: [...(t.comments || []), { author: "Super Admin", text: ticketReply }] };
+          setSelectedTicket(updatedT);
+          return updatedT;
+        }
+        return t;
+      });
+      setTicketsList(updatedTickets);
+      setTicketReply("");
+    }
+  };
+
+  const handleUpdateTicketStatus = async (newStatus) => {
+    if (!selectedTicket) return;
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    const action = newStatus.toLowerCase().includes("resolve") ? "resolve" : "close";
+
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: action,
+        resolution: "Updated by Admin",
+        closure_reason: newStatus
+      });
+      alert(`Ticket marked as ${newStatus}`);
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket status update error:", err);
+      const updatedTickets = ticketsList.map(t => {
+        if (t.id === selectedTicket.id) {
+          const updatedT = { ...t, status: newStatus };
+          setSelectedTicket(updatedT);
+          return updatedT;
+        }
+        return t;
+      });
+      setTicketsList(updatedTickets);
+    }
+  };
+
+  const handleAssignMentor = async () => {
+    if (!assignMentorId || !selectedTicket) return alert("Please select a mentor first.");
+    
+    const targetId = selectedTicket.numericId || String(selectedTicket.id).replace("TKT-", "");
+    const mentorObj = usersList.find(u => String(u.id) === String(assignMentorId) || String(u.numericId) === String(assignMentorId));
+    const mentorNumId = mentorObj?.numericId || parseInt(assignMentorId);
+
+    try {
+      await api.patch(`/api/v1/tickets/${targetId}`, {
+        action: "assign",
+        assigned_to: mentorNumId
+      });
+      alert(`Ticket assigned to ${mentorObj ? mentorObj.name : "Mentor"}`);
+      setAssignMentorId("");
+      fetchLiveData();
+    } catch (err) {
+      console.error("Ticket assign error:", err);
+      alert("Failed to assign mentor to ticket");
+    }
+  };
+
+
+  const handleAddUser = (e) => {
+    e.preventDefault();
+    if (!newUser.name) return alert("Please specify user name.");
+    const roleIdPrefix = newUser.role === "Intern" ? "INT" : "MNT";
+    const randomId = roleIdPrefix + Math.floor(100 + Math.random() * 900);
+    const added = {
+      id: randomId,
+      name: newUser.name,
+      role: newUser.role,
+      college: newUser.role === "Intern" ? newUser.college || "N/A" : "-",
+      domain: newUser.domain || "General",
+      mentor: newUser.role === "Intern" ? newUser.mentor || "Unassigned" : "-",
+      progress: newUser.role === "Intern" ? "0%" : "-",
+      attendance: "100%",
+      status: "Active"
+    };
+    setUsersList([...usersList, added]);
+    alert("User added successfully!");
+  };
+
+  const handleCreateTask = (e) => {
+    e.preventDefault();
+    if (!newTask.title) return alert("Please specify task title.");
+    const created = {
+      id: tasks.length + 1,
+      title: newTask.title,
+      difficulty: newTask.difficulty,
+      deadline: newTask.deadline || "TBD",
+      domain: selectedProgramDomain || newTask.domain || "General",
+      status: "Active"
+    };
+    setTasks([...tasks, created]);
+    alert("New task created and assigned successfully!");
+    setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
+  };
+
+  const handleUploadCurriculum = (e) => {
+    e.preventDefault();
+    if (!newCurriculum.day || !newCurriculum.topic) return alert("Fill day & topic.");
+    setCurriculumList([...curriculumList, newCurriculum]);
+    alert("Curriculum content uploaded!");
+    setNewCurriculum({ day: "", topic: "", resources: "", domain: "Web Development" });
+  };
+
+  const handleScheduleMeeting = (e) => {
+    e.preventDefault();
+    if (!newMeeting.title) return alert("Enter meeting title.");
+    const scheduled = {
+      id: meetings.length + 1,
+      title: newMeeting.title,
+      time: newMeeting.time || "Immediate",
+      mentor: newMeeting.mentor || "Dr. Sakthi",
+      link: newMeeting.link || "https://zoom.us/mock"
+    };
+    setMeetings([...meetings, scheduled]);
+    alert("Meeting scheduled!");
+    setNewMeeting({ title: "", time: "", mentor: "", link: "" });
+  };
+
+  const toggleUserStatus = (id) => {
+    setUsersList(usersList.map(u => u.id === id ? { ...u, status: u.status === "Active" ? "Deactivated" : "Active" } : u));
+  };
+
+  const moveCandidateStage = (id, newStage) => {
+    setOnboardingCandidates(onboardingCandidates.map(c => c.id === id ? { ...c, stage: newStage } : c));
+  };
+
+  const enrollCandidate = (id) => {
+    const candidate = onboardingCandidates.find(c => c.id === id);
+    if (!candidate) return;
+    const newIntern = {
+      id: "INT" + Math.floor(100 + Math.random() * 900),
+      name: candidate.name,
+      role: "Intern",
+      college: "N/A",
+      domain: candidate.domain,
+      mentor: "Unassigned",
+      progress: "0%",
+      attendance: "100%",
+      status: "Active"
+    };
+    setUsersList([...usersList, newIntern]);
+    setOnboardingCandidates(onboardingCandidates.filter(c => c.id !== id));
+    alert(`${candidate.name} has been enrolled successfully!`);
+  };
+
+  const handleAddDomain = (e) => {
+    e.preventDefault();
+    if (!newDomain.name) return alert("Please fill domain name.");
+    const added = {
+      id: availableDomains.length + 1,
+      name: newDomain.name,
+      duration: newDomain.duration || "8 Weeks"
+    };
+    setAvailableDomains([...availableDomains, added]);
+    alert("New Domain Added Successfully!");
+    setNewDomain({ name: "", duration: "" });
+    setShowDomainModal(false);
+  };
+
+  const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const progressData = dashboardStats.batch_progress && dashboardStats.batch_progress.length > 0
+    ? dashboardStats.batch_progress
+    : [];
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "Analytics":
+        return <AdminAnalytics usersList={usersList} />;
+      case "Leaderboard":
+        return <AdminLeaderboard usersList={usersList} />;
+      case "Overview":
+        return (
+          <>
+            <div className="grid">
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                <span className="stat-title">Total Interns</span>
+                <span className="stat-value">{dashboardStats.total_interns}</span>
+                <span className="stat-desc">{dashboardStats.active_interns} Active</span>
+              </div>
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                <span className="stat-title">Total Mentors</span>
+                <span className="stat-value">{dashboardStats.total_mentors}</span>
+                <span className="stat-desc">Assigned across domains</span>
+              </div>
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                <span className="stat-title">Active Domains</span>
+                <span className="stat-value">{dashboardStats.active_domains}</span>
+                <span className="stat-desc">Active learning domains</span>
+              </div>
+              <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                <span className="stat-title">Avg Performance</span>
+                <span className="stat-value">{dashboardStats.avg_performance}%</span>
+                <span className="stat-desc">Based on evaluations</span>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
+              <div className="card animate-slide-up" style={{ margin: 0, paddingBottom: "16px", animationDelay: '0.5s' }}>
+                <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Batch-wise Progress Trend</h3>
+                <ResponsiveContainer width="100%" height={160}>
+                  <BarChart data={progressData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#6b7280" }} dx={-10} />
+                    <Tooltip 
+                      cursor={{fill: '#f3f4f6'}} 
+                      contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                      wrapperStyle={{ zIndex: 1000 }}
+                    />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                    <Bar dataKey="MIT" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Stanford" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="IIT" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Harvard" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Berkeley" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.6s' }}>
+                <h3 style={{ fontSize: "15px", marginBottom: "12px" }}>Intern Distribution by Domain</h3>
+                <div style={{ flex: 1, padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <ResponsiveContainer width="100%" height={160}>
+                    <RadarChart cx="50%" cy="50%" outerRadius="75%" data={domainData}>
+                      <PolarGrid stroke="#e5e7eb" />
+                      <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 11, fontWeight: 600 }} />
+                      <PolarRadiusAxis angle={90} domain={[0, 'auto']} tick={false} axisLine={false} />
+                      <Radar name="Interns" dataKey="value" stroke="#8b5cf6" strokeWidth={2} fill="#8b5cf6" fillOpacity={0.4} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: 'var(--bg-surface, #ffffff)', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} 
+                        wrapperStyle={{ zIndex: 1000 }}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="animate-slide-up" style={{ margin: 0, paddingBottom: 0, display: "flex", flexDirection: "column", height: "100%", animationDelay: '0.7s' }}>
+                <AdminLeaderboard usersList={usersList} isOverview={true} />
+              </div>
+
+              <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
+                  {ticketsList.length === 0 ? (
+                    <div style={{ textAlign: "center", color: "#6b7280", padding: "20px 0", fontSize: "13px" }}>
+                      No active support tickets found in database.
+                    </div>
+                  ) : (
+                    ticketsList.slice(0, 3).map((t) => (
+                      <div key={t.id} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{t.id}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>User: <b>{t.user}</b></span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{t.title}</p>
+                        <span style={{ fontSize: "11px", color: t.status === "Resolved" ? "#10b981" : "#b91c1c" }}>{t.status} • {t.date}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
+        );
+
+      case "Users":
+        const filteredUsers = usersList.filter(u => 
+          u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          u.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          (u.college && u.college.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (u.batchName && u.batchName.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+        const interns = filteredUsers.filter(u => u.role === "Intern");
+        const mentors = filteredUsers.filter(u => u.role === "Mentor");
+        
+        // Dynamically compute batches based on database entries (college and month of joining)
+        const dynamicBatches = Array.from(new Set(interns.map(i => i.batchName).filter(Boolean)));
+        const batchesList = dynamicBatches;
+
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {selectedIntern ? (
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
+                  <button onClick={() => navigate("/admin/users")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h2 style={{ margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "12px", fontSize: "22px" }}>
+                        {selectedIntern.name}
+                        <span className={`badge badge-${selectedIntern.status === "Active" ? "success" : "danger"}`} style={{ fontSize: "12px", padding: "4px 8px" }}>{selectedIntern.status}</span>
+                      </h2>
+                      <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
+                        <span>ID: {selectedIntern.id}</span>
+                        <span>•</span>
+                        <span>{selectedIntern.domain}</span>
+                        <span>•</span>
+                        <span>{selectedIntern.college}</span>
+                      </p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Assigned Mentor</p>
+                      <p style={{ margin: "4px 0 0 0", fontSize: "16px", fontWeight: 600, color: "var(--text-color)" }}>{selectedIntern.mentor}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <TrendingUp size={16} /> Performance Overview
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                          <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Progress</span>
+                          <span style={{ fontWeight: 700, color: "#10b981", fontSize: "14px" }}>{selectedIntern.progress}</span>
+                        </div>
+                        <div style={{ width: "100%", height: "8px", backgroundColor: "var(--border-color, #e2e8f0)", borderRadius: "4px", overflow: "hidden" }}>
+                          <div style={{ width: selectedIntern.progress, height: "100%", backgroundColor: "#10b981" }}></div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed #cbd5e1" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Internship Duration</span>
+                        <span style={{ fontWeight: 600, color: "var(--text-muted, #64748b)", fontSize: "14px" }}>Week 4 of 8</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#fff5f5", border: "1px solid #fecaca", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <h4 style={{ margin: 0, color: "#b91c1c", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <AlertTriangle size={16} /> Active Tickets / Issues
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
+                      {ticketsList.filter(t => t.status !== "Resolved").slice(0, 2).map(ticket => (
+                        <div 
+                          key={ticket.id}
+                          onClick={() => {
+                            setActiveTab("tickets");
+                            setSelectedTicket(ticket);
+                          }}
+                          style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", cursor: "pointer", transition: "transform 0.1s" }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                          onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                            <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{ticket.id}</span>
+                            <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.date}</span>
+                          </div>
+                          <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ marginTop: "10px" }}>
+                  <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Recent Activity</h4>
+                  <div style={{ padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10b981", marginTop: "6px" }}></div>
+                      <div>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Submitted task <b>"React Core Concepts"</b></p>
+                        <span style={{ fontSize: "11px", color: "#6b7280" }}>1 day ago</span>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#3b82f6", marginTop: "6px" }}></div>
+                      <div>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#1f2937" }}>Attended <b>Mid-Term Review Meeting</b> with {selectedIntern.mentor}</p>
+                        <span style={{ fontSize: "11px", color: "#6b7280" }}>3 days ago</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : selectedMentor ? (
+              <div className="card" style={{ margin: 0, padding: "24px", flex: 1, display: "flex", flexDirection: "column", gap: "24px", boxSizing: "border-box" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", borderBottom: "1px solid #e5e7eb", paddingBottom: "16px" }}>
+                  <button onClick={() => navigate("/admin/users")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <h2 style={{ margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "12px", fontSize: "22px" }}>
+                        {selectedMentor.name}
+                        <span className={`badge badge-${selectedMentor.status === "Active" ? "success" : "danger"}`} style={{ fontSize: "12px", padding: "4px 8px" }}>{selectedMentor.status}</span>
+                      </h2>
+                      <p style={{ margin: "4px 0 0 0", color: "var(--text-muted)", fontSize: "14px", display: "flex", gap: "12px" }}>
+                        <span>ID: {selectedMentor.id}</span>
+                        <span>•</span>
+                        <span>{selectedMentor.domain}</span>
+                        <span>•</span>
+                        <span>Mentor</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <h4 style={{ margin: 0, color: "#475569", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Users size={16} /> Mentorship Overview
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Assigned Interns</span>
+                        <span style={{ fontWeight: 700, color: "var(--primary-color)", fontSize: "16px" }}>12</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed #cbd5e1" }}>
+                        <span style={{ color: "var(--text-color)", fontWeight: 600, fontSize: "14px" }}>Avg Intern Progress</span>
+                        <span style={{ fontWeight: 600, color: "#10b981", fontSize: "14px" }}>78%</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: "20px", borderRadius: "12px", backgroundColor: "#fff5f5", border: "1px solid #fecaca", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <h4 style={{ margin: 0, color: "#b91c1c", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Calendar size={16} /> Upcoming Meetings
+                    </h4>
+                    
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
+                      <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>Week 4 Review</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>Today, 2:00 PM</span>
+                        </div>
+                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Group session with all assigned interns via Zoom.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Sub navigation bar for Users */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <div style={{ display: "flex", gap: "12px" }}>
+                    {["Interns", "Mentors"].map((tab) => (
+                      <button 
+                        key={tab} 
+                        onClick={() => setUsersSubTab(tab)} 
+                        className={`btn ${usersSubTab === tab ? "btn-primary" : "btn-secondary"}`}
+                        style={{ padding: "8px 16px", borderRadius: "20px" }}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                    <div style={{ position: "relative" }}>
+                      <Search size={16} color="#9ca3af" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
+                      <input type="text" placeholder={`Search ${usersSubTab.toLowerCase()}...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="form-control" style={{ paddingLeft: "32px", width: "220px", marginBottom: 0 }} />
+                    </div>
+                    {usersSubTab === "Mentors" && (
+                      <button className="btn btn-primary" style={{ padding: "8px 12px" }} onClick={() => setShowMentorModal(true)}>Add Mentor</button>
+                    )}
+                  </div>
+                </div>
+
+                {usersSubTab === "Interns" ? (
+              <div style={{ display: "flex", gap: "24px", alignItems: "stretch", height: "calc(100vh - 210px)", minHeight: "500px" }}>
+                {/* Left Pane - Batches List (Independently Scrollable) */}
+                <div style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  gap: "12px", 
+                  width: "280px", 
+                  flexShrink: 0, 
+                  height: "100%", 
+                  overflowY: "auto", 
+                  paddingRight: "8px", 
+                  paddingBottom: "20px", 
+                  boxSizing: "border-box",
+                  scrollbarWidth: "thin"
+                }}>
+                  <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", position: "sticky", top: 0, background: "var(--bg-surface-elevated, #f8fafc)", padding: "6px 0", zIndex: 10 }}>Batches (Colleges & Joining)</h4>
+                  {batchesList.map((batch) => {
+                    const batchInterns = filteredUsers.filter(u => u.role === "Intern" && (u.batchName === batch || u.college === batch));
+                    const activeCount = batchInterns.filter(i => i.status === "Active").length;
+                    
+                    const isSelected = selectedBatch === batch || (!selectedBatch && batch === batchesList[0]);
+                    return (
+                      <div
+                        key={batch}
+                        onClick={() => { setSelectedBatch(batch); setInternPage(1); }}
+                        style={{
+                          padding: "16px",
+                          borderRadius: "12px",
+                          border: isSelected ? "2px solid var(--primary-color)" : "1px solid var(--border-color)",
+                          backgroundColor: isSelected ? "#f5f3ff" : "var(--card-bg)",
+                          cursor: "pointer",
+                          boxShadow: "var(--shadow-sm)",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                          <span style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-color)", display: "flex", alignItems: "center", gap: "6px" }}><GraduationCap size={16} color="var(--primary-color)" /> {batch}</span>
+                          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--primary-color)", background: "#eff6ff", padding: "2px 8px", borderRadius: "10px" }}>{activeCount} Active</span>
+                        </div>
+                        <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                          Total Headcount: <b>{batchInterns.length}</b>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Right Pane - Detail Interns List */}
+                {(() => {
+                  const currentSelectedBatch = selectedBatch || batchesList[0];
+                  const batchInterns = interns.filter(u => u.batchName === currentSelectedBatch || u.college === currentSelectedBatch);
+                  const itemsPerPage = 10;
+                  const totalPages = Math.ceil(batchInterns.length / itemsPerPage) || 1;
+                  const paginatedInterns = batchInterns.slice((internPage - 1) * itemsPerPage, internPage * itemsPerPage);
+
+                  return (
+                    <div className="card" style={{ margin: 0, padding: "20px", flex: 1, boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
+                        <h3 style={{ fontSize: "16px", margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
+                          <GraduationCap size={20} /> {currentSelectedBatch} Batch Directory
+                        </h3>
+                        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                          Showing {paginatedInterns.length} of {batchInterns.length} Interns
+                        </span>
+                      </div>
+                      
+                      <div className="table-container" style={{ marginTop: 0, flex: 1, minHeight: 0 }}>
+                        <table className="table">
+                          <thead style={{ position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
+                            <tr>
+                              <th>ID</th>
+                              <th>Name</th>
+                              <th>Domain</th>
+                              <th>Mentor</th>
+                              <th>Progress</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedInterns.length === 0 ? (
+                              <tr>
+                                <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>No interns found.</td>
+                              </tr>
+                            ) : (
+                              paginatedInterns.map((user) => (
+                                <tr 
+                                  key={user.id}
+                                  onClick={() => navigate("/admin/users/intern/" + user.id)}
+                                  style={{ cursor: "pointer", transition: "background-color 0.2s" }}
+                                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
+                                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                                >
+                                  <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
+                                  <td><b>{user.name}</b></td>
+                                  <td>{user.domain}</td>
+                                  <td>{user.mentor}</td>
+                                  <td>{user.progress}</td>
+                                  <td>
+                                    <span className={`badge badge-${user.status === "Active" ? "success" : "danger"}`}>
+                                      {user.status}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                      {/* Pagination Controls */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', padding: '0 4px 8px 4px', flexShrink: 0 }}>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                          Page <b>{internPage}</b> of <b>{totalPages}</b>
+                        </span>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            className="btn btn-secondary" 
+                            onClick={() => setInternPage(p => Math.max(1, p - 1))}
+                            disabled={internPage === 1}
+                            style={{ padding: '6px 12px', fontSize: '12px' }}
+                          >
+                            Previous
+                          </button>
+                          <button 
+                            className="btn btn-secondary" 
+                            onClick={() => setInternPage(p => Math.min(totalPages, p + 1))}
+                            disabled={internPage === totalPages}
+                            style={{ padding: '6px 12px', fontSize: '12px' }}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="card" style={{ margin: 0 }}>
+                <h3 style={{ fontSize: "16px", marginBottom: "12px" }}>Mentor Registry</h3>
+                <div className="table-container" style={{ marginTop: 0 }}>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Domain</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {mentors.map((user) => (
+                        <tr 
+                          key={user.id}
+                          onClick={() => navigate("/admin/users/mentor/" + user.id)}
+                          style={{ cursor: "pointer", transition: "background-color 0.2s" }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "var(--bg-surface-elevated, #f8fafc)"}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                        >
+                          <td style={{ color: "#6b7280", fontSize: "12px" }}>{user.id}</td>
+                          <td><b>{user.name}</b></td>
+                          <td>{user.domain}</td>
+                          <td>
+                            <span className={`badge badge-${user.status === "Active" ? "success" : "danger"}`}>
+                              {user.status}
+                            </span>
+                          </td>
+                          <td>
+                            <button onClick={() => toggleUserStatus(user.id)} className={`btn ${user.status === "Active" ? "btn-secondary" : "btn-primary"}`} style={{ padding: "4px 8px", fontSize: "12px" }}>
+                              {user.status === "Active" ? "Deactivate" : "Activate"}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+            </>
+          )}
+            {showMentorModal && (
+              <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
+                <div className="card" style={{ width: "400px", margin: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h3 style={{ margin: 0 }}>Add New Mentor</h3>
+                    <button onClick={() => setShowMentorModal(false)} style={{ background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#6b7280" }}>&times;</button>
+                  </div>
+                  <form onSubmit={handleAddMentor} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Name</label>
+                      <input className="form-control" type="text" placeholder="Dr. Jane Smith" value={newMentor.name} onChange={(e) => setNewMentor({...newMentor, name: e.target.value})} required />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Email ID</label>
+                      <input className="form-control" type="email" placeholder="jane@example.com" value={newMentor.email} onChange={(e) => setNewMentor({...newMentor, email: e.target.value})} required />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Domain</label>
+                      <select 
+                        className="form-control" 
+                        value={newMentor.domain} 
+                        onChange={(e) => setNewMentor({...newMentor, domain: e.target.value})} 
+                        required
+                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                      >
+                        <option value="">Select Domain...</option>
+                        {availableDomains.map((dom) => (
+                          <option key={dom.id || dom.name} value={dom.name}>
+                            {dom.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ marginTop: "8px", padding: "10px" }}>Send Verification Link</button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case "Programs":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {selectedProgramDomain === null ? (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e5e7eb", paddingBottom: "12px" }}>
+                  <h3 style={{ margin: 0, fontSize: "18px" }}>Active Internship Domains</h3>
+                  <button className="btn btn-primary" onClick={() => setShowDomainModal(true)}>Add Domain</button>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginTop: "10px" }}>
+                  {availableDomains.map((dom, i) => {
+                    const domNameLower = dom.name.toLowerCase();
+                    const liveInterns = usersList.filter(u => u.role === "Intern" && u.domain && u.domain.toLowerCase().includes(domNameLower)).length;
+                    const liveMentors = usersList.filter(u => u.role === "Mentor" && u.domain && u.domain.toLowerCase().includes(domNameLower)).length;
+
+                    return (
+                      <div 
+                        key={dom.id || i} 
+                        className="card" 
+                        onClick={() => navigate("/admin/programs/" + encodeURIComponent(dom.name))}
+                        style={{ border: "1px solid #E5E7EB", margin: 0, padding: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", cursor: "pointer", transition: "transform 0.2s" }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
+                        onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                      >
+                        <h4 style={{ color: "#2563EB", fontWeight: "600", marginBottom: "8px", fontSize: "16px" }}>{dom.name}</h4>
+                        <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Duration: {dom.duration || "8 Weeks"}</p>
+                        <p style={{ fontSize: "13px", margin: "4px 0", color: "#4b5563" }}>Interns: {liveInterns} | Mentors: {liveMentors}</p>
+                        <span className="badge badge-success" style={{ marginTop: "12px", fontSize: "11px", display: "inline-block" }}>Active</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <div className="card">
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
+                  <button onClick={() => navigate("/admin/programs")} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    &larr; Back
+                  </button>
+                  <h3 style={{ margin: 0, fontSize: "20px", color: "#1f2937" }}>Program Details - {selectedProgramDomain}</h3>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                  <button 
+                    className={`btn ${detailSubTab === "Curriculum" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Curriculum")}
+                  >Curriculum</button>
+                  <button 
+                    className={`btn ${detailSubTab === "Tasks" ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setDetailSubTab("Tasks")}
+                  >Tasks</button>
+                </div>
+
+                {detailSubTab === "Curriculum" && (
+                  <div className="table-container" style={{ maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}>
+                    <table className="table">
+                      <thead>
+                        <tr><th>Day</th><th>Topic / Focus</th><th>Tasks/Resources</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                        {/* Render custom user-uploaded curriculum first */}
+                        {curriculumList.filter(c => c.domain === selectedProgramDomain).map((cur, i) => (
+                          <tr key={`custom-${i}`}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>{cur.day}</td>
+                            <td><b>{cur.topic}</b></td>
+                            <td>{cur.resources}</td>
+                            <td><span className="badge badge-success" style={{ fontSize: "10px" }}>Active</span></td>
+                          </tr>
+                        ))}
+                        
+                        {/* Render generated 30 days mock curriculum */}
+                        {[...Array(30)].map((_, i) => {
+                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
+                          
+                          return (
+                          <tr key={i}>
+                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
+                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
+                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
+                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                          </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {detailSubTab === "Tasks" && (
+                  <div className="table-container">
+                    <table className="table">
+                      <thead>
+                        <tr><th>ID</th><th>Task Title</th><th>Difficulty</th><th>Deadline</th></tr>
+                      </thead>
+                      <tbody>
+                        {tasks.filter(t => t.domain === selectedProgramDomain).map((t) => (
+                          <tr key={t.id}>
+                            <td style={{ color: "#6b7280", fontSize: "12px" }}>TSK-{t.id}</td>
+                            <td><b>{t.title}</b></td>
+                            <td><span className={`badge ${t.difficulty === 'Hard' ? 'badge-danger' : t.difficulty === 'Medium' ? 'badge-warning' : 'badge-success'}`}>{t.difficulty}</span></td>
+                            <td>{t.deadline}</td>
+                          </tr>
+                        ))}
+                        {tasks.filter(t => t.domain === selectedProgramDomain).length === 0 && (
+                          <tr><td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>No tasks assigned to this domain yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Add Domain Modal */}
+            {showDomainModal && (
+              <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
+                <div className="card" style={{ width: "400px", margin: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h3 style={{ margin: 0 }}>Add Internship Domain</h3>
+                    <button onClick={() => setShowDomainModal(false)} style={{ background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#6b7280" }}>&times;</button>
+                  </div>
+                  <form onSubmit={handleAddDomain} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Domain Name</label>
+                      <input className="form-control" type="text" placeholder="Cloud Computing" value={newDomain.name} onChange={(e) => setNewDomain({...newDomain, name: e.target.value})} required />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", marginBottom: "6px", fontWeight: 600 }}>Duration</label>
+                      <input className="form-control" type="text" placeholder="8 Weeks" value={newDomain.duration} onChange={(e) => setNewDomain({...newDomain, duration: e.target.value})} required />
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ marginTop: "8px", padding: "10px" }}>Add Domain</button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case "Credentials":
+        return (
+          <div className="card">
+            <h3 style={{ marginBottom: "16px" }}>Certificate Credentials Panel</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Approve 30-day completion certificates requested by mentors.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Intern Name</th>
+                    <th>Batch</th>
+                    <th>Domain</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adminCredentialInterns.filter(i => i.status !== "Eligible").length === 0 ? (
+                    <tr><td colSpan="6" style={{ textAlign: "center", color: "#6b7280" }}>No certificate requests found.</td></tr>
+                  ) : (
+                    adminCredentialInterns.filter(i => i.status !== "Eligible").map(intern => (
+                      <tr key={intern.id}>
+                        <td style={{ fontWeight: 600 }}>{intern.name}</td>
+                        <td>{intern.batch}</td>
+                        <td>{intern.domain}</td>
+                        <td><span style={{ fontWeight: 700, color: "var(--primary-color)" }}>{intern.grade}</span></td>
+                        <td>
+                          <span className={`badge ${intern.status === 'Approved' ? 'badge-success' : 'badge-primary'}`}>
+                            {intern.status}
+                          </span>
+                        </td>
+                        <td>
+                          <button 
+                            className="btn btn-secondary" 
+                            style={{ padding: "4px 12px", fontSize: "12px" }}
+                            onClick={() => navigate("/admin/credentials/" + intern.id)}
+                          >
+                            Review & Approve
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {selectedAdminCredentialIntern && (
+              <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+                <div style={{ backgroundColor: "#fff", width: "500px", maxWidth: "90%", borderRadius: "12px", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                    <h2 style={{ margin: 0, fontSize: "20px", color: "var(--text-dark)" }}>30-Day Summary Report</h2>
+                    <button onClick={() => navigate("/admin/credentials")} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}><X size={16} /></button>
+                  </div>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Intern Name:</span>
+                      <span style={{ fontWeight: 700 }}>{selectedAdminCredentialIntern.name}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Domain:</span>
+                      <span>{selectedAdminCredentialIntern.domain}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Attendance:</span>
+                      <span>{selectedAdminCredentialIntern.attendance}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Tasks Completed:</span>
+                      <span>{selectedAdminCredentialIntern.tasksCompleted}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "8px" }}>
+                      <span style={{ color: "var(--text-gray)", fontWeight: 600 }}>Overall Grade:</span>
+                      <span style={{ fontWeight: 800, color: "var(--primary-color)" }}>{selectedAdminCredentialIntern.grade}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                    <button onClick={() => navigate("/admin/credentials")} className="btn btn-secondary">Cancel</button>
+                    {selectedAdminCredentialIntern.status === "Requested" && (
+                      <button onClick={() => handleApproveCertificate(selectedAdminCredentialIntern.id)} className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981" }}>Approve Certificate</button>
+                    )}
+                    {selectedAdminCredentialIntern.status === "Approved" && (
+                      <button disabled className="btn btn-secondary" style={{ opacity: 0.7 }}>Already Approved</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case "Onboarding":
+        if (pathParts.length > 3 && pathParts[3]) {
+          return <AdminOnboardingDetails appId={pathParts[3]} />;
+        }
+        return <AdminOnboardingList />;
+
+      case "Tickets":
+        if (selectedTicket) {
+          return (
+            <div className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <button className="btn btn-secondary" onClick={() => navigate("/admin/tickets")}>Back to Tickets</button>
+                  <h3 style={{ margin: 0 }}>Ticket {selectedTicket.id}</h3>
+                  <span className={`badge ${selectedTicket.status === 'Resolved' ? 'badge-success' : selectedTicket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: selectedTicket.status === 'Resolved' ? '#d1fae5' : selectedTicket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: selectedTicket.status === 'Resolved' ? '#065f46' : selectedTicket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
+                    {selectedTicket.status}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <select 
+                    className="form-control" 
+                    style={{ marginBottom: 0, padding: "4px 8px", width: "auto", fontSize: "13px", height: "auto" }}
+                    value={assignMentorId}
+                    onChange={(e) => setAssignMentorId(e.target.value)}
+                  >
+                    <option value="">Select Mentor to Assign</option>
+                    {usersList.filter(u => u.role === "Mentor").map(m => (
+                      <option key={m.id} value={m.id}>{m.name}</option>
+                    ))}
+                  </select>
+                  <button className="btn btn-secondary" style={{ color: "#2563eb", borderColor: "#bfdbfe", backgroundColor: "#eff6ff", padding: "4px 10px", fontSize: "13px" }} onClick={handleAssignMentor}>Assign Mentor</button>
+                  <button className="btn btn-primary" style={{ backgroundColor: "#10b981", borderColor: "#10b981", padding: "4px 10px", fontSize: "13px" }} onClick={() => handleUpdateTicketStatus("Resolved")}>Mark as Resolved</button>
+                  <button className="btn btn-secondary" style={{ color: "#b91c1c", borderColor: "#fca5a5", backgroundColor: "#fef2f2", padding: "4px 10px", fontSize: "13px" }} onClick={() => handleUpdateTicketStatus("Rejected")}>Reject Ticket</button>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user} ({selectedTicket.role})</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Domain</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.domain}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Branch / University</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.branch}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Assigned To</label>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.assignedTo || "Unassigned"}</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <h4 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1f2937" }}>{selectedTicket.title}</h4>
+                <div style={{ padding: "16px", backgroundColor: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", color: "#4b5563", lineHeight: "1.5" }}>
+                  {selectedTicket.description}
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+                  {selectedTicket.comments.length === 0 ? (
+                    <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
+                  ) : (
+                    selectedTicket.comments.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.author === "Super Admin" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.author === "Super Admin" ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.author === "Super Admin" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
+                  <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
+                  <button type="submit" className="btn btn-primary">Send Reply</button>
+                </form>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="card">
+            <h3>Support Tickets</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "20px" }}>Manage issues and support requests filed by Interns and Mentors.</p>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>User</th>
+                    <th>Issue Title</th>
+                    <th>Status</th>
+                    <th>Date Filed</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ticketsList.map((ticket) => (
+                    <tr key={ticket.id}>
+                      <td><span style={{ fontWeight: 600, color: "#1f2937" }}>{ticket.id}</span></td>
+                      <td>
+                        <div style={{ fontWeight: 500 }}>{ticket.user}</div>
+                        <div style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.role}</div>
+                      </td>
+                      <td><span style={{ color: "#4b5563" }}>{ticket.title}</span></td>
+                      <td>
+                        <span className={`badge ${ticket.status === 'Resolved' ? 'badge-success' : ticket.status === 'In Progress' ? 'badge-warning' : 'badge-primary'}`} style={{ backgroundColor: ticket.status === 'Resolved' ? '#d1fae5' : ticket.status === 'In Progress' ? '#fef3c7' : '#fee2e2', color: ticket.status === 'Resolved' ? '#065f46' : ticket.status === 'In Progress' ? '#92400e' : '#991b1b' }}>
+                          {ticket.status}
+                        </span>
+                      </td>
+                      <td><span style={{ fontSize: "12px", color: "#6b7280" }}>{ticket.date}</span></td>
+                      <td>
+                        <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: "12px" }} onClick={() => navigate("/admin/tickets/" + ticket.id)}>View Details</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case "Bonus Airdrops":
+        if (selectedAirdrop) {
+          return <AdminAirdropDetails airdrop={selectedAirdrop} onBack={() => navigate("/admin/bonus-airdrops")} />;
+        }
+        return (
+          <div className="card" style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
+
+            <div className="card" style={{ padding: "0", overflow: "hidden" }}>
+              <div className="table-container" style={{ margin: 0 }}>
+                <table className="table" style={{ margin: 0 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ padding: "12px 16px" }}>ID</th>
+                      <th style={{ padding: "12px 16px" }}>Question</th>
+                      <th style={{ padding: "12px 16px" }}>Points</th>
+                      <th style={{ padding: "12px 16px" }}>Status</th>
+                      <th style={{ padding: "12px 16px" }}>Time Limit</th>
+                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bonusAirdrops.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops available.</td>
+                      </tr>
+                    ) : (
+                      (() => {
+                        const reversedAirdrops = [...bonusAirdrops].reverse();
+                        const currentAirdrops = reversedAirdrops.slice((airdropCurrentPage - 1) * airdropsPerPage, airdropCurrentPage * airdropsPerPage);
+                        return currentAirdrops.map(airdrop => (
+                        <tr 
+                          key={airdrop.id} 
+                          onClick={() => navigate("/admin/bonus-airdrops/" + airdrop.id)} 
+                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <td style={{ padding: "10px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                          <td style={{ padding: "10px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
+                          <td style={{ padding: "10px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
+                          <td style={{ padding: "10px 16px" }}>
+                            {airdrop.status === "PENDING_APPROVAL" ? (
+                              <span className="badge badge-warning">PENDING_APPROVAL</span>
+                            ) : (
+                              <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
+                                {airdrop.status}
+                              </span>
+                            )}
+                          </td>
+                          <td style={{ padding: "10px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
+                          <td style={{ padding: "10px 16px", textAlign: "right" }}>
+                            {airdrop.status === "PENDING_APPROVAL" && (
+                              <button 
+                                className="btn btn-primary" 
+                                style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#10b981", borderColor: "#10b981" }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleApproveAirdrop(airdrop.id);
+                                }}
+                              >
+                                Approve
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                      })()
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {bonusAirdrops.length > 0 && Math.ceil(bonusAirdrops.length / airdropsPerPage) > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '12px 16px', gap: '10px', borderTop: '1px solid var(--border-color)' }}>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={airdropCurrentPage === 1}
+                    onClick={() => setAirdropCurrentPage(p => p - 1)}
+                    style={{ padding: "6px 12px", fontSize: "13px" }}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                    Page {airdropCurrentPage} of {Math.ceil(bonusAirdrops.length / airdropsPerPage)}
+                  </span>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={airdropCurrentPage === Math.ceil(bonusAirdrops.length / airdropsPerPage)}
+                    onClick={() => setAirdropCurrentPage(p => p + 1)}
+                    style={{ padding: "6px 12px", fontSize: "13px" }}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case "Profile":
+        return <AdminProfile />;
+      default:
+        return null;
+    }
+  };
+
+  const navItems = [
+    { id: "Overview", icon: <LayoutDashboard size={18} /> },
+    { id: "Analytics", icon: <LineChart size={18} /> },
+    { id: "Onboarding", icon: <UserPlus size={18} /> },
+    { id: "Users", icon: <Users size={18} /> },
+    { id: "Programs", icon: <Layers size={18} /> },
+    { id: "Credentials", icon: <ShieldCheck size={18} /> },
+    { id: "Tickets", icon: <Headset size={18} /> },
+    { id: "Bonus Airdrops", icon: <Coins size={18} /> },
+    { id: "Leaderboard", icon: <ListOrdered size={18} /> }
+  ];
+
+  return (
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
+      {/* Top Monolithic Webpage Hub Header */}
+      <header style={{ 
+        height: "70px", 
+        backgroundColor: "var(--card-bg, #ffffff)", 
+        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        padding: "0 32px",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
+      }}>
+        {/* Brand Logo & Portal Tag */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--primary-color, #2563eb)", letterSpacing: "-0.5px" }}>
+            ProEduvate
+          </h2>
+          <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#fef3c7", color: "#b45309", padding: "4px 10px", borderRadius: "12px" }}>
+            Admin Panel
+          </span>
+        </div>
+
+        {/* Module Access Navigation Hub (Monolithic Pill Bar) */}
+        <nav style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px", borderRadius: "28px" }}>
+          {navItems.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (tab.id === "Onboarding") {
+                    navigate('/admin/onboarding');
+                    return;
+                  }
+                  setActiveTab(tab.id);
+                  if (tab.id === "Bonus Airdrops") navigate("/admin/bonus-airdrops");
+                  navigate(`/admin/${tab.id.toLowerCase().replace(/\\s+/g, '-')}`);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: isActive ? "600" : "500",
+                  backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
+                  color: isActive ? "var(--bg-surface, #ffffff)" : "var(--text-color, #475569)",
+                  boxShadow: isActive ? "0 2px 8px rgba(37, 99, 235, 0.3)" : "none",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.icon}</span>
+                <span style={{ color: isActive ? "var(--bg-surface, #ffffff)" : "inherit" }}>{tab.id}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Actions & Utilities */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {/* Notifications */}
+          <div style={{ position: 'relative', cursor: 'pointer' }}>
+            <div onClick={() => setShowNotifications(!showNotifications)}>
+              <Bell size={20} color="var(--text-gray, #64748b)" />
+              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', backgroundColor: '#ef4444', borderRadius: '50%' }}></div>
+            </div>
+            
+            {showNotifications && (
+              <div style={{ 
+                position: 'absolute', 
+                top: '100%', 
+                right: 0, 
+                marginTop: '12px', 
+                width: '300px', 
+                backgroundColor: 'var(--card-bg, #ffffff)', 
+                borderRadius: '12px', 
+                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
+                border: '1px solid var(--border-color, #e2e8f0)',
+                zIndex: 50,
+                overflow: 'hidden'
+              }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', fontWeight: 600, color: 'var(--text-dark, #0f172a)', backgroundColor: 'var(--bg-light, #f8fafc)' }}>
+                  Notifications
+                </div>
+                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                  {mockNotifications.map(notif => (
+                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ height: '24px', width: '1px', backgroundColor: 'var(--border-color, #cbd5e1)' }}></div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
+            <div 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
+            >
+              {user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "AD"}
+            </div>
+            
+            {isProfileDropdownOpen && (
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "10px 14px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{user?.name || user?.full_name || "Admin"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || ""}</p>
+                </div>
+                <button 
+                  onClick={() => { setActiveTab("Profile"); navigate("/admin/profile"); setIsProfileDropdownOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#475569", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <User size={16} /> Profile
+                </button>
+                <div style={{ height: "1px", backgroundColor: "#e2e8f0", width: "100%" }}></div>
+                <button 
+                  onClick={handleLogout}
+                  style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#dc2626", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Workspace Content (Full Width) */}
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 24px", width: "100%", boxSizing: "border-box" }}>
+
+        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease-out" }}>
+          {renderContent()}
+        </div>
+      </main>
+    </div>
+  );
+}

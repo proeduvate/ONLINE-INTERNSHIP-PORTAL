@@ -1,0 +1,556 @@
+﻿{
+    "day": 25,
+    "topic": "Iterators & Generators",
+    "mcqs": [
+        {
+            "id": 1,
+            "question": "What is an iterator in Python?",
+            "options": [
+                "An object that produces values one at a time",
+                "A function that creates classes",
+                "A data type used only for strings",
+                "A module used for file handling"
+            ],
+            "answer": "An object that produces values one at a time"
+        },
+        {
+            "id": 2,
+            "question": "Which protocol must an iterator implement?",
+            "options": [
+                "__iter__() and __next__()",
+                "__start__() and __stop__()",
+                "__begin__() and __end__()",
+                "__loop__() and __nextvalue__()"
+            ],
+            "answer": "__iter__() and __next__()"
+        },
+        {
+            "id": 3,
+            "question": "Which special method returns an iterator from an iterable?",
+            "options": [
+                "__iter__()",
+                "__iterator__()",
+                "__next__()",
+                "__iterate__()"
+            ],
+            "answer": "__iter__()"
+        },
+        {
+            "id": 4,
+            "question": "Which special method retrieves the next item from an iterator?",
+            "options": [
+                "__next__()",
+                "__iter__()",
+                "__getitem__()",
+                "__next_item__()"
+            ],
+            "answer": "__next__()"
+        },
+        {
+            "id": 5,
+            "question": "Which built-in function obtains an iterator from an iterable?",
+            "options": [
+                "iter()",
+                "iterator()",
+                "next()",
+                "iterate()"
+            ],
+            "answer": "iter()"
+        },
+        {
+            "id": 6,
+            "question": "Which built-in function requests the next value from an iterator?",
+            "options": [
+                "next()",
+                "iter()",
+                "advance()",
+                "forward()"
+            ],
+            "answer": "next()"
+        },
+        {
+            "id": 7,
+            "question": "What exception is raised when an iterator has no more values?",
+            "options": [
+                "StopIteration",
+                "IterationError",
+                "EndOfIterator",
+                "ValueError"
+            ],
+            "answer": "StopIteration"
+        },
+        {
+            "id": 8,
+            "question": "Which objects are commonly iterable in Python?",
+            "options": [
+                "Lists, tuples, strings, and dictionaries",
+                "Only lists",
+                "Only generators",
+                "Only integers"
+            ],
+            "answer": "Lists, tuples, strings, and dictionaries"
+        },
+        {
+            "id": 9,
+            "question": "What is an iterable?",
+            "options": [
+                "An object that can provide an iterator",
+                "An object that must implement __next__ only",
+                "A function that cannot return values",
+                "A class that cannot be instantiated"
+            ],
+            "answer": "An object that can provide an iterator"
+        },
+        {
+            "id": 10,
+            "question": "What is the difference between an iterable and an iterator?",
+            "options": [
+                "An iterable can provide an iterator, while an iterator produces values using __next__()",
+                "They are always exactly the same object",
+                "An iterator cannot be used in a for loop",
+                "An iterable must always be a generator"
+            ],
+            "answer": "An iterable can provide an iterator, while an iterator produces values using __next__()"
+        },
+        {
+            "id": 11,
+            "question": "What does `iter([10, 20, 30])` return?",
+            "options": [
+                "A list iterator",
+                "A tuple",
+                "A generator function",
+                "A dictionary"
+            ],
+            "answer": "A list iterator"
+        },
+        {
+            "id": 12,
+            "question": "What does `next()` do when called on an iterator?",
+            "options": [
+                "Returns the next available item",
+                "Restarts the iterator",
+                "Converts the iterator to a list",
+                "Deletes the iterator"
+            ],
+            "answer": "Returns the next available item"
+        },
+        {
+            "id": 13,
+            "question": "What happens when `next()` is called after an iterator is exhausted?",
+            "options": [
+                "StopIteration is raised",
+                "The iterator automatically restarts",
+                "None is always returned",
+                "The iterator becomes a list"
+            ],
+            "answer": "StopIteration is raised"
+        },
+        {
+            "id": 14,
+            "question": "How does a `for` loop normally use an iterable?",
+            "options": [
+                "It obtains an iterator and repeatedly requests the next item",
+                "It converts every iterable into a dictionary",
+                "It calls only __iter__() once and stops",
+                "It ignores the iterable protocol"
+            ],
+            "answer": "It obtains an iterator and repeatedly requests the next item"
+        },
+        {
+            "id": 15,
+            "question": "What is a generator in Python?",
+            "options": [
+                "A special type of iterator produced by a generator function or expression",
+                "A class that can only store integers",
+                "A module for random numbers",
+                "A function that must return a list"
+            ],
+            "answer": "A special type of iterator produced by a generator function or expression"
+        },
+        {
+            "id": 16,
+            "question": "Which keyword is used to produce a value from a generator function?",
+            "options": [
+                "yield",
+                "generate",
+                "produce",
+                "returning"
+            ],
+            "answer": "yield"
+        },
+        {
+            "id": 17,
+            "question": "What does a function containing `yield` become when called?",
+            "options": [
+                "A generator object",
+                "A normal integer",
+                "A list automatically",
+                "A class object"
+            ],
+            "answer": "A generator object"
+        },
+        {
+            "id": 18,
+            "question": "When does the body of a generator function normally begin executing?",
+            "options": [
+                "When values are requested from the generator",
+                "Immediately when the function is defined",
+                "Before the function is called",
+                "Only after converting it to a list"
+            ],
+            "answer": "When values are requested from the generator"
+        },
+        {
+            "id": 19,
+            "question": "What happens when a generator reaches a `yield` statement?",
+            "options": [
+                "It produces the value and suspends its execution state",
+                "It permanently terminates immediately",
+                "It restarts from the beginning",
+                "It converts itself into a list"
+            ],
+            "answer": "It produces the value and suspends its execution state"
+        },
+        {
+            "id": 20,
+            "question": "What happens when a suspended generator is resumed?",
+            "options": [
+                "Execution continues from after the previous yield",
+                "Execution always starts from the first line",
+                "The generator is converted into a tuple",
+                "All previous state is deleted"
+            ],
+            "answer": "Execution continues from after the previous yield"
+        },
+        {
+            "id": 21,
+            "question": "Which function can retrieve values from a generator one at a time?",
+            "options": [
+                "next()",
+                "getall()",
+                "generate()",
+                "yield()"
+            ],
+            "answer": "next()"
+        },
+        {
+            "id": 22,
+            "question": "What happens when a generator function finishes without yielding more values?",
+            "options": [
+                "Its iterator becomes exhausted and raises StopIteration",
+                "It starts again automatically",
+                "It returns an empty list forever",
+                "It raises SyntaxError"
+            ],
+            "answer": "Its iterator becomes exhausted and raises StopIteration"
+        },
+        {
+            "id": 23,
+            "question": "Which keyword normally terminates a generator function explicitly?",
+            "options": [
+                "return",
+                "stop",
+                "break_generator",
+                "exit"
+            ],
+            "answer": "return"
+        },
+        {
+            "id": 24,
+            "question": "What is a major advantage of generators?",
+            "options": [
+                "They can produce values lazily without storing the entire sequence in memory",
+                "They always execute faster than every other approach",
+                "They automatically parallelize code",
+                "They eliminate all exceptions"
+            ],
+            "answer": "They can produce values lazily without storing the entire sequence in memory"
+        },
+        {
+            "id": 25,
+            "question": "What does lazy evaluation mean in the context of generators?",
+            "options": [
+                "Values are produced only when they are requested",
+                "All values are calculated before the generator starts",
+                "Values are never calculated",
+                "Values are stored permanently"
+            ],
+            "answer": "Values are produced only when they are requested"
+        },
+        {
+            "id": 26,
+            "question": "Which is generally more memory-efficient for producing a very large sequence?",
+            "options": [
+                "A generator",
+                "A list containing every value",
+                "A tuple containing every value",
+                "A dictionary containing every value"
+            ],
+            "answer": "A generator"
+        },
+        {
+            "id": 27,
+            "question": "Which syntax creates a generator expression?",
+            "options": [
+                "(x * 2 for x in range(5))",
+                "[x * 2 for x in range(5)]",
+                "{x * 2 for x in range(5)}",
+                "generator(x * 2 for x in range(5))"
+            ],
+            "answer": "(x * 2 for x in range(5))"
+        },
+        {
+            "id": 28,
+            "question": "What is the main difference between a list comprehension and a generator expression?",
+            "options": [
+                "A list comprehension creates the collection immediately, while a generator expression produces values lazily",
+                "A generator expression always creates a list",
+                "A list comprehension cannot use loops",
+                "They always have identical memory behavior"
+            ],
+            "answer": "A list comprehension creates the collection immediately, while a generator expression produces values lazily"
+        },
+        {
+            "id": 29,
+            "question": "Which syntax creates a generator that yields squares from 0 through 4?",
+            "options": [
+                "(x ** 2 for x in range(5))",
+                "[x ** 2 for x in range(5)]",
+                "{x ** 2 for x in range(5)}",
+                "yield x ** 2 for x in range(5)"
+            ],
+            "answer": "(x ** 2 for x in range(5))"
+        },
+        {
+            "id": 30,
+            "question": "Can a generator be iterated using a `for` loop?",
+            "options": [
+                "Yes",
+                "No",
+                "Only if converted to a list",
+                "Only when it contains strings"
+            ],
+            "answer": "Yes"
+        },
+        {
+            "id": 31,
+            "question": "What does `list(generator)` generally do?",
+            "options": [
+                "Consumes the generator and stores its yielded values in a list",
+                "Creates another generator without consuming it",
+                "Resets the generator",
+                "Deletes all generated values"
+            ],
+            "answer": "Consumes the generator and stores its yielded values in a list"
+        },
+        {
+            "id": 32,
+            "question": "What happens to a generator after all of its values have been consumed?",
+            "options": [
+                "It is exhausted",
+                "It automatically restarts",
+                "It becomes a list",
+                "It becomes reusable indefinitely"
+            ],
+            "answer": "It is exhausted"
+        },
+        {
+            "id": 33,
+            "question": "Can an exhausted generator normally be restarted by calling `next()` again?",
+            "options": [
+                "No",
+                "Yes, automatically",
+                "Only after calling iter()",
+                "Only after calling yield()"
+            ],
+            "answer": "No"
+        },
+        {
+            "id": 34,
+            "question": "Which statement about generators is correct?",
+            "options": [
+                "A generator maintains its execution state between yields",
+                "A generator forgets its local variables after every yield",
+                "A generator always stores all results in memory",
+                "A generator cannot use loops"
+            ],
+            "answer": "A generator maintains its execution state between yields"
+        },
+        {
+            "id": 35,
+            "question": "What does the `send()` method of a generator allow?",
+            "options": [
+                "It can send a value into a suspended generator",
+                "It converts a generator into a list",
+                "It restarts an exhausted generator",
+                "It deletes the generator"
+            ],
+            "answer": "It can send a value into a suspended generator"
+        },
+        {
+            "id": 36,
+            "question": "What is the purpose of `generator.close()`?",
+            "options": [
+                "To request termination of the generator",
+                "To restart the generator",
+                "To convert the generator to a list",
+                "To duplicate the generator"
+            ],
+            "answer": "To request termination of the generator"
+        },
+        {
+            "id": 37,
+            "question": "Which exception can be raised inside a generator when `close()` is used?",
+            "options": [
+                "GeneratorExit",
+                "StopGenerator",
+                "CloseError",
+                "GeneratorStop"
+            ],
+            "answer": "GeneratorExit"
+        },
+        {
+            "id": 38,
+            "question": "What does `yield from` allow a generator to do?",
+            "options": [
+                "Delegate yielding values to another iterable or generator",
+                "Convert all values into strings",
+                "Create a new Python module",
+                "Stop every generator in the program"
+            ],
+            "answer": "Delegate yielding values to another iterable or generator"
+        },
+        {
+            "id": 39,
+            "question": "Which statement can delegate values from another iterable inside a generator?",
+            "options": [
+                "yield from iterable",
+                "yield iterable",
+                "return from iterable",
+                "delegate iterable"
+            ],
+            "answer": "yield from iterable"
+        },
+        {
+            "id": 40,
+            "question": "Can a generator function contain multiple `yield` statements?",
+            "options": [
+                "Yes",
+                "No",
+                "Only two",
+                "Only when using recursion"
+            ],
+            "answer": "Yes"
+        },
+        {
+            "id": 41,
+            "question": "Which feature allows a class to behave like an iterator?",
+            "options": [
+                "Implementing `__iter__()` and `__next__()`",
+                "Implementing only `__init__()`",
+                "Implementing only `__str__()`",
+                "Implementing `__class__()`"
+            ],
+            "answer": "Implementing `__iter__()` and `__next__()`"
+        },
+        {
+            "id": 42,
+            "question": "What should an iterator's `__iter__()` method typically return?",
+            "options": [
+                "The iterator object itself",
+                "A new integer",
+                "None in every case",
+                "A string representation"
+            ],
+            "answer": "The iterator object itself"
+        },
+        {
+            "id": 43,
+            "question": "What should an iterator's `__next__()` method do when another value is unavailable?",
+            "options": [
+                "Raise StopIteration",
+                "Return False",
+                "Return an empty list",
+                "Restart the iteration"
+            ],
+            "answer": "Raise StopIteration"
+        },
+        {
+            "id": 44,
+            "question": "Why are generators useful for processing large files?",
+            "options": [
+                "They can process data incrementally instead of loading the entire file into memory",
+                "They automatically compress every file",
+                "They remove the need for file objects",
+                "They always read files in reverse"
+            ],
+            "answer": "They can process data incrementally instead of loading the entire file into memory"
+        },
+        {
+            "id": 45,
+            "question": "Which function can consume an iterator while applying a function to its values?",
+            "options": [
+                "map()",
+                "consume()",
+                "iterate_map()",
+                "apply_iterator()"
+            ],
+            "answer": "map()"
+        },
+        {
+            "id": 46,
+            "question": "What is a common characteristic of Python iterator objects?",
+            "options": [
+                "They maintain state about their current position",
+                "They always support random indexing",
+                "They must store all values at once",
+                "They can never be exhausted"
+            ],
+            "answer": "They maintain state about their current position"
+        },
+        {
+            "id": 47,
+            "question": "Which operation usually advances an iterator by one item?",
+            "options": [
+                "next(iterator)",
+                "iter(iterator)",
+                "advance(iterator, 1)",
+                "iterator++"
+            ],
+            "answer": "next(iterator)"
+        },
+        {
+            "id": 48,
+            "question": "Which statement about `iter()` and `next()` is correct?",
+            "options": [
+                "`iter()` obtains an iterator, while `next()` retrieves its next value",
+                "`iter()` retrieves values and `next()` creates iterators",
+                "Both functions always create lists",
+                "Both functions terminate iteration"
+            ],
+            "answer": "`iter()` obtains an iterator, while `next()` retrieves its next value"
+        },
+        {
+            "id": 49,
+            "question": "What is one practical advantage of custom iterators?",
+            "options": [
+                "They allow user-defined objects to control how their values are traversed",
+                "They automatically make objects immutable",
+                "They eliminate the need for classes",
+                "They convert every object into a dictionary"
+            ],
+            "answer": "They allow user-defined objects to control how their values are traversed"
+        },
+        {
+            "id": 50,
+            "question": "Which statement best summarizes iterators and generators?",
+            "options": [
+                "Iterators provide sequential access to values, while generators offer a convenient lazy way to create iterators",
+                "Iterators and generators are only used for mathematical calculations",
+                "Generators always store all values before iteration",
+                "Iterators cannot be used with for loops"
+            ],
+            "answer": "Iterators provide sequential access to values, while generators offer a convenient lazy way to create iterators"
+        }
+    ]
+}

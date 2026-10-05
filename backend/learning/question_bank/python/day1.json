@@ -1,0 +1,556 @@
+﻿{
+    "day": 1,
+    "topic": "Python Introduction & Environment",
+    "mcqs": [
+        {
+            "id": 1,
+            "question": "Who created Python?",
+            "options": [
+                "James Gosling",
+                "Guido van Rossum",
+                "Dennis Ritchie",
+                "Bjarne Stroustrup"
+            ],
+            "answer": "Guido van Rossum"
+        },
+        {
+            "id": 2,
+            "question": "In which year was Python first released?",
+            "options": [
+                "1989",
+                "1991",
+                "1995",
+                "2000"
+            ],
+            "answer": "1991"
+        },
+        {
+            "id": 3,
+            "question": "Which type of programming language is Python?",
+            "options": [
+                "Low-level language",
+                "Assembly language",
+                "High-level language",
+                "Machine language"
+            ],
+            "answer": "High-level language"
+        },
+        {
+            "id": 4,
+            "question": "What is the standard file extension for a Python source file?",
+            "options": [
+                ".java",
+                ".py",
+                ".python",
+                ".pt"
+            ],
+            "answer": ".py"
+        },
+        {
+            "id": 5,
+            "question": "Which command commonly displays the installed Python version?",
+            "options": [
+                "python --version",
+                "python --check",
+                "python --info",
+                "python --details"
+            ],
+            "answer": "python --version"
+        },
+        {
+            "id": 6,
+            "question": "Which symbol is used to write a single-line comment in Python?",
+            "options": [
+                "//",
+                "/*",
+                "#",
+                "--"
+            ],
+            "answer": "#"
+        },
+        {
+            "id": 7,
+            "question": "What does REPL stand for?",
+            "options": [
+                "Read Execute Print Loop",
+                "Read Eval Print Loop",
+                "Run Execute Program Language",
+                "Read Edit Program Loop"
+            ],
+            "answer": "Read Eval Print Loop"
+        },
+        {
+            "id": 8,
+            "question": "What is the main purpose of Python's interactive interpreter?",
+            "options": [
+                "To edit images",
+                "To execute Python statements interactively",
+                "To manage hardware devices",
+                "To create databases automatically"
+            ],
+            "answer": "To execute Python statements interactively"
+        },
+        {
+            "id": 9,
+            "question": "Which command is commonly used to start Python from a terminal?",
+            "options": [
+                "start-python",
+                "python",
+                "runpy",
+                "execute-python"
+            ],
+            "answer": "python"
+        },
+        {
+            "id": 10,
+            "question": "Which command is commonly used to start Python 3 on systems where it is separated from Python 2?",
+            "options": [
+                "python3",
+                "python-three",
+                "pyth3",
+                "runpython3"
+            ],
+            "answer": "python3"
+        },
+        {
+            "id": 11,
+            "question": "Which IDE is specifically designed for Python development by JetBrains?",
+            "options": [
+                "Eclipse",
+                "PyCharm",
+                "NetBeans",
+                "Android Studio"
+            ],
+            "answer": "PyCharm"
+        },
+        {
+            "id": 12,
+            "question": "Which editor from Microsoft is commonly used for Python programming?",
+            "options": [
+                "Visual Studio Code",
+                "Notepad",
+                "WordPad",
+                "Expression Web"
+            ],
+            "answer": "Visual Studio Code"
+        },
+        {
+            "id": 13,
+            "question": "Which Python distribution is widely used for data science?",
+            "options": [
+                "Anaconda",
+                "Maven",
+                "Tomcat",
+                "Gradle"
+            ],
+            "answer": "Anaconda"
+        },
+        {
+            "id": 14,
+            "question": "What does IDE stand for?",
+            "options": [
+                "Integrated Development Environment",
+                "Internal Development Engine",
+                "Integrated Data Editor",
+                "Internet Development Environment"
+            ],
+            "answer": "Integrated Development Environment"
+        },
+        {
+            "id": 15,
+            "question": "Which of the following is a feature of Python?",
+            "options": [
+                "Difficult syntax",
+                "Readability",
+                "Mandatory pointers",
+                "Manual memory allocation"
+            ],
+            "answer": "Readability"
+        },
+        {
+            "id": 16,
+            "question": "Which implementation is considered the standard implementation of Python?",
+            "options": [
+                "Jython",
+                "IronPython",
+                "CPython",
+                "MicroPython"
+            ],
+            "answer": "CPython"
+        },
+        {
+            "id": 17,
+            "question": "Which Python implementation runs on the Java Virtual Machine?",
+            "options": [
+                "CPython",
+                "Jython",
+                "PyPy",
+                "MicroPython"
+            ],
+            "answer": "Jython"
+        },
+        {
+            "id": 18,
+            "question": "Which Python implementation is associated with the .NET platform?",
+            "options": [
+                "Jython",
+                "CPython",
+                "IronPython",
+                "PyPy"
+            ],
+            "answer": "IronPython"
+        },
+        {
+            "id": 19,
+            "question": "Which Python implementation uses a Just-In-Time compiler?",
+            "options": [
+                "PyPy",
+                "Jython",
+                "IDLE",
+                "MicroPython"
+            ],
+            "answer": "PyPy"
+        },
+        {
+            "id": 20,
+            "question": "What is IDLE in Python?",
+            "options": [
+                "A database system",
+                "A Python development environment",
+                "A package repository",
+                "A web framework"
+            ],
+            "answer": "A Python development environment"
+        },
+        {
+            "id": 21,
+            "question": "What does PEP stand for in Python?",
+            "options": [
+                "Python Enhancement Proposal",
+                "Python Execution Program",
+                "Python Environment Protocol",
+                "Programming Extension Package"
+            ],
+            "answer": "Python Enhancement Proposal"
+        },
+        {
+            "id": 22,
+            "question": "Which PEP defines the main Python coding style guidelines?",
+            "options": [
+                "PEP 1",
+                "PEP 8",
+                "PEP 20",
+                "PEP 100"
+            ],
+            "answer": "PEP 8"
+        },
+        {
+            "id": 23,
+            "question": "What is PEP 20 commonly known for?",
+            "options": [
+                "Python package management",
+                "The Zen of Python",
+                "Python installation",
+                "Python exception handling"
+            ],
+            "answer": "The Zen of Python"
+        },
+        {
+            "id": 24,
+            "question": "Which statement displays the Zen of Python?",
+            "options": [
+                "import zen",
+                "import this",
+                "show zen",
+                "python zen"
+            ],
+            "answer": "import this"
+        },
+        {
+            "id": 25,
+            "question": "How does Python define blocks of code?",
+            "options": [
+                "Using curly braces",
+                "Using indentation",
+                "Using brackets",
+                "Using semicolons"
+            ],
+            "answer": "Using indentation"
+        },
+        {
+            "id": 26,
+            "question": "What indentation size is recommended by PEP 8 for each level?",
+            "options": [
+                "2 spaces",
+                "3 spaces",
+                "4 spaces",
+                "8 spaces"
+            ],
+            "answer": "4 spaces"
+        },
+        {
+            "id": 27,
+            "question": "What error can occur because of incorrect indentation?",
+            "options": [
+                "ValueError",
+                "IndentationError",
+                "ImportError",
+                "NameError"
+            ],
+            "answer": "IndentationError"
+        },
+        {
+            "id": 28,
+            "question": "Which statement about Python syntax is correct?",
+            "options": [
+                "Python requires curly braces for blocks",
+                "Python uses indentation to structure blocks",
+                "Every statement must end with a semicolon",
+                "Python does not support comments"
+            ],
+            "answer": "Python uses indentation to structure blocks"
+        },
+        {
+            "id": 29,
+            "question": "Which built-in function is commonly used to display output?",
+            "options": [
+                "display()",
+                "echo()",
+                "print()",
+                "output()"
+            ],
+            "answer": "print()"
+        },
+        {
+            "id": 30,
+            "question": "What is the output of `print(\"Hello\")`?",
+            "options": [
+                "Hello",
+                "\"Hello\"",
+                "print",
+                "Error"
+            ],
+            "answer": "Hello"
+        },
+        {
+            "id": 31,
+            "question": "Which statement about Python is true?",
+            "options": [
+                "Python is statically typed only",
+                "Python is dynamically typed",
+                "Python does not support functions",
+                "Python cannot use external libraries"
+            ],
+            "answer": "Python is dynamically typed"
+        },
+        {
+            "id": 32,
+            "question": "Which characteristic makes Python programs generally portable across operating systems?",
+            "options": [
+                "Platform independence",
+                "Hardware dependency",
+                "Assembly execution",
+                "Operating-system locking"
+            ],
+            "answer": "Platform independence"
+        },
+        {
+            "id": 33,
+            "question": "Which command can execute a Python file named `main.py`?",
+            "options": [
+                "python main.py",
+                "run main.py",
+                "execute main.py",
+                "start main.py"
+            ],
+            "answer": "python main.py"
+        },
+        {
+            "id": 34,
+            "question": "What is a Python script?",
+            "options": [
+                "A file containing Python code",
+                "A Python hardware component",
+                "A database server",
+                "A programming keyboard"
+            ],
+            "answer": "A file containing Python code"
+        },
+        {
+            "id": 35,
+            "question": "Which tool is commonly used to install Python packages?",
+            "options": [
+                "npm",
+                "pip",
+                "javac",
+                "gcc"
+            ],
+            "answer": "pip"
+        },
+        {
+            "id": 36,
+            "question": "What does PyPI stand for?",
+            "options": [
+                "Python Package Index",
+                "Python Program Interface",
+                "Python Processing Index",
+                "Python Programming Installation"
+            ],
+            "answer": "Python Package Index"
+        },
+        {
+            "id": 37,
+            "question": "Which command installs a Python package using pip?",
+            "options": [
+                "pip install package_name",
+                "pip add package_name",
+                "pip get package_name",
+                "pip create package_name"
+            ],
+            "answer": "pip install package_name"
+        },
+        {
+            "id": 38,
+            "question": "What is the main purpose of a Python virtual environment?",
+            "options": [
+                "To isolate project dependencies",
+                "To replace the operating system",
+                "To convert Python into Java",
+                "To remove all Python errors"
+            ],
+            "answer": "To isolate project dependencies"
+        },
+        {
+            "id": 39,
+            "question": "Which standard module is commonly used to create Python virtual environments?",
+            "options": [
+                "venv",
+                "virtualenvs",
+                "environment",
+                "isolate"
+            ],
+            "answer": "venv"
+        },
+        {
+            "id": 40,
+            "question": "Which file commonly contains a list of Python project dependencies?",
+            "options": [
+                "packages.py",
+                "requirements.txt",
+                "dependencies.exe",
+                "python.config"
+            ],
+            "answer": "requirements.txt"
+        },
+        {
+            "id": 41,
+            "question": "Which of the following is NOT a typical use of Python?",
+            "options": [
+                "Web development",
+                "Data analysis",
+                "Automation",
+                "Directly designing physical circuit boards without additional tools"
+            ],
+            "answer": "Directly designing physical circuit boards without additional tools"
+        },
+        {
+            "id": 42,
+            "question": "Which web framework is written in Python?",
+            "options": [
+                "Django",
+                "Spring",
+                "Laravel",
+                "ASP.NET"
+            ],
+            "answer": "Django"
+        },
+        {
+            "id": 43,
+            "question": "Which Python library is primarily used for numerical computing?",
+            "options": [
+                "NumPy",
+                "JUnit",
+                "Hibernate",
+                "Maven"
+            ],
+            "answer": "NumPy"
+        },
+        {
+            "id": 44,
+            "question": "Which Python library is widely used for data analysis?",
+            "options": [
+                "Pandas",
+                "Servlet",
+                "JDBC",
+                "Swing"
+            ],
+            "answer": "Pandas"
+        },
+        {
+            "id": 45,
+            "question": "Which Python library is commonly used for data visualization?",
+            "options": [
+                "Matplotlib",
+                "Requests",
+                "Flask",
+                "Tkinter"
+            ],
+            "answer": "Matplotlib"
+        },
+        {
+            "id": 46,
+            "question": "Which programming paradigm does Python support?",
+            "options": [
+                "Object-oriented programming",
+                "Functional programming",
+                "Procedural programming",
+                "All of the above"
+            ],
+            "answer": "All of the above"
+        },
+        {
+            "id": 47,
+            "question": "Which statement best describes Python's memory management?",
+            "options": [
+                "Programmers must manually free every object",
+                "Python provides automatic memory management",
+                "Python does not use memory",
+                "Memory is managed only by the programmer"
+            ],
+            "answer": "Python provides automatic memory management"
+        },
+        {
+            "id": 48,
+            "question": "Which of the following is a major advantage of Python?",
+            "options": [
+                "Readable and relatively simple syntax",
+                "Requires complex pointer arithmetic",
+                "Works only on one operating system",
+                "Has no third-party libraries"
+            ],
+            "answer": "Readable and relatively simple syntax"
+        },
+        {
+            "id": 49,
+            "question": "Which organization currently maintains the Python programming language?",
+            "options": [
+                "Python Software Foundation",
+                "Apache Software Foundation",
+                "Oracle Corporation",
+                "Mozilla Foundation"
+            ],
+            "answer": "Python Software Foundation"
+        },
+        {
+            "id": 50,
+            "question": "Which command can be used to exit the Python interactive interpreter?",
+            "options": [
+                "exit()",
+                "stop()",
+                "close_python()",
+                "quitpython()"
+            ],
+            "answer": "exit()"
+        }
+    ]
+}

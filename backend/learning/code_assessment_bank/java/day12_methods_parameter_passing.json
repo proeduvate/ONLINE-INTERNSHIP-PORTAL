@@ -1,0 +1,67 @@
+{
+    "day": 12,
+    "topic": "Methods & Parameter Passing",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D12-Q001",
+            "title": "Factorial Method",
+            "description": "Create a method to calculate factorial.",
+            "requirements": [
+                "Define a static method factorial(int n)",
+                "Return the factorial value",
+                "Call method from main",
+                "Handle n=0 case",
+                "Print result with clear label"
+            ]
+        },
+        {
+            "id": "CODE-PY-D12-Q002",
+            "title": "Prime Checker Method",
+            "description": "Create a method to determine whether a number is prime.",
+            "requirements": [
+                "Define isPrime(int n) method",
+                "Return boolean",
+                "Check primality efficiently",
+                "Call from main with multiple inputs",
+                "Print results for each input"
+            ]
+        },
+        {
+            "id": "CODE-PY-D12-Q003",
+            "title": "Calculator Methods",
+            "description": "Create separate methods for calculator operations.",
+            "requirements": [
+                "Define add(), subtract(), multiply(), divide() methods",
+                "Accept two parameters each",
+                "Return result",
+                "Call each from main",
+                "Handle division by zero in divide()"
+            ]
+        },
+        {
+            "id": "CODE-PY-D12-Q004",
+            "title": "Grade Calculator Method",
+            "description": "Create a method to calculate student grades.",
+            "requirements": [
+                "Define calculateGrade(int marks) method",
+                "Return grade as char or String",
+                "Use marks ranges for A/B/C/D/F",
+                "Call with multiple student marks",
+                "Print grade for each student"
+            ]
+        },
+        {
+            "id": "CODE-PY-D12-Q005",
+            "title": "Menu-Driven Calculator",
+            "description": "Build a menu-driven calculator using reusable methods.",
+            "requirements": [
+                "Display operation menu",
+                "Accept user choice",
+                "Call appropriate method",
+                "Display result",
+                "Loop until user exits"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "day": 21,
+    "topic": "Packages, static, final & Java Organization",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D21-Q001",
+            "title": "Custom Math Package",
+            "description": "Create a custom mathematics package containing calculator methods.",
+            "requirements": [
+                "Create package com.internship.math",
+                "Add MathUtils class with add, subtract, multiply, divide",
+                "Make methods static",
+                "Import and use in main class",
+                "Include Javadoc comments"
+            ]
+        },
+        {
+            "id": "CODE-PY-D21-Q002",
+            "title": "Student and Employee Packages",
+            "description": "Create separate packages for students and employees.",
+            "requirements": [
+                "Package com.internship.student with Student class",
+                "Package com.internship.employee with Employee class",
+                "Import both in a main class",
+                "Create objects of each",
+                "Display details from both packages"
+            ]
+        },
+        {
+            "id": "CODE-PY-D21-Q003",
+            "title": "Static Utility Methods",
+            "description": "Create a class containing static utility methods.",
+            "requirements": [
+                "Create Utility class",
+                "Add static methods: reverseString(), isPrime(), factorial()",
+                "No object creation needed",
+                "Call all methods directly from class name",
+                "Test each utility method"
+            ]
+        },
+        {
+            "id": "CODE-PY-D21-Q004",
+            "title": "Final Variables and Methods",
+            "description": "Create a program demonstrating the use of final variables and methods.",
+            "requirements": [
+                "Use final variable for PI",
+                "Use final for MAX_MARKS constant",
+                "Create a method with final parameter",
+                "Create a final method that cannot be overridden",
+                "Demonstrate each usage from main"
+            ]
+        },
+        {
+            "id": "CODE-PY-D21-Q005",
+            "title": "Mini Java Project with Packages",
+            "description": "Build a small Java project organized into multiple packages.",
+            "requirements": [
+                "Create at least 3 packages",
+                "Each package has at least one class",
+                "Classes interact with each other",
+                "Use static utilities where appropriate",
+                "Demonstrate full project from a main runner class"
+            ]
+        }
+    ]
+}

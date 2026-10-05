@@ -1,0 +1,149 @@
+{
+  "curriculum": "UI/UX",
+  "day": 8,
+  "topic": "UI Components, Design Patterns, and Design Systems",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify common UI components and their appropriate use cases.",
+    "Understand how reusable components create interface consistency.",
+    "Recognize common component states and interaction patterns.",
+    "Assemble a basic design system from reusable UI elements."
+  ],
+  "activities": [
+    {
+      "id": "d8-a1",
+      "type": "discover",
+      "title": "UI Component Anatomy",
+      "instruction": "Explore the anatomy of common interface components.",
+      "content": {
+        "concept": "Components such as buttons, inputs, cards, navigation, dialogs, and dropdowns provide reusable interaction patterns.",
+        "tip": "Explore each component to understand its structure and purpose."
+      },
+      "interaction": {
+        "mode": "component-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Button",
+            "Text Input",
+            "Card",
+            "Navigation",
+            "Dialog",
+            "Dropdown"
+          ],
+          "descriptions": [
+            "Triggers a primary or secondary action.",
+            "Allows users to enter or edit information.",
+            "Groups related content and actions.",
+            "Helps users move between sections or screens.",
+            "Displays important information or requests an action.",
+            "Allows users to select from a list of options."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Component Matcher",
+      "instruction": "Match each user need with the most appropriate UI component.",
+      "content": {
+        "concept": "Selecting familiar components reduces interaction complexity and makes interfaces easier to understand.",
+        "tip": "Choose the component that directly supports the user's task."
+      },
+      "interaction": {
+        "mode": "component-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Text Input",
+            "Dropdown",
+            "Checkbox",
+            "Radio Group",
+            "Modal Dialog"
+          ],
+          "answer": "Dropdown"
+        }
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Component States Lab",
+      "instruction": "Explore how a component changes across different interaction states.",
+      "content": {
+        "concept": "Components commonly have states such as default, hover, focus, active, disabled, loading, selected, and error.",
+        "tip": "Observe how each state communicates what the user can do and what the system is doing."
+      },
+      "interaction": {
+        "mode": "component-states",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Default",
+            "Hover",
+            "Focus",
+            "Active",
+            "Disabled",
+            "Loading",
+            "Error"
+          ],
+          "descriptions": [
+            "The normal resting state.",
+            "Appears when the pointer is positioned over the component.",
+            "Shows keyboard or interaction focus.",
+            "Indicates that the component is currently being activated.",
+            "Shows that the action is temporarily unavailable.",
+            "Communicates that an operation is in progress.",
+            "Communicates that an input or operation has a problem."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "Mini Design System Builder",
+      "instruction": "Assemble the essential parts of a basic design system.",
+      "content": {
+        "concept": "A design system combines reusable components, design tokens, styles, states, and usage rules to maintain consistency.",
+        "tip": "Build the system from foundational styles toward reusable components."
+      },
+      "interaction": {
+        "mode": "design-system-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Color Tokens",
+            "Typography Tokens",
+            "Spacing Tokens",
+            "Buttons",
+            "Form Inputs",
+            "Cards",
+            "Navigation",
+            "Component States"
+          ],
+          "required": [
+            "Color Tokens",
+            "Typography Tokens",
+            "Spacing Tokens",
+            "Buttons",
+            "Form Inputs"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,48 @@
+{
+    "day": 19,
+    "topic": "Forms & Client-Side Validation",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D19-Q001",
+            "title": "Registration Validation",
+            "description": "Validate:",
+            "requirements": [
+                "Name",
+                "Email",
+                "Password",
+                "Confirm password"
+            ]
+        },
+        {
+            "id": "CODE-D19-Q002",
+            "title": "Login Validation",
+            "description": "Prevent form submission when credentials fields are empty or invalid.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D19-Q003",
+            "title": "Password Strength Checker",
+            "description": "Create a password strength indicator based on:",
+            "requirements": [
+                "Length",
+                "Uppercase",
+                "Lowercase",
+                "Number",
+                "Special character"
+            ]
+        },
+        {
+            "id": "CODE-D19-Q004",
+            "title": "Dynamic Error Messages",
+            "description": "Create reusable validation functions that display error messages beside invalid fields.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D19-Q005",
+            "title": "Complete Form Validator",
+            "description": "Build a multi-field internship application form with real-time validation and final submission validation.",
+            "requirements": []
+        }
+    ]
+}

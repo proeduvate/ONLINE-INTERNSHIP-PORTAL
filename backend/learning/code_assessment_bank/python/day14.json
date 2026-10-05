@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 14 Code Assessment",
+  "day": 14,
+  "topic": "Advanced Functions",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY14-Q01",
+      "day": 14,
+      "topic": "Advanced Functions",
+      "question": "Create a function using default arguments to calculate employee salary."
+    },
+    {
+      "id": "DAY14-Q02",
+      "day": 14,
+      "topic": "Advanced Functions",
+      "question": "Create a function using *args to calculate the average of any number of values."
+    },
+    {
+      "id": "DAY14-Q03",
+      "day": 14,
+      "topic": "Advanced Functions",
+      "question": "Create a function using **kwargs to display employee information."
+    },
+    {
+      "id": "DAY14-Q04",
+      "day": 14,
+      "topic": "Advanced Functions",
+      "question": "Create a function that accepts any number of student marks and returns the highest score."
+    },
+    {
+      "id": "DAY14-Q05",
+      "day": 14,
+      "topic": "Advanced Functions",
+      "question": "Build a reusable report generator using functions with positional and keyword arguments."
+    }
+  ]
+}

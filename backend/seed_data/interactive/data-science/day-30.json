@@ -1,0 +1,149 @@
+{
+  "curriculum": "Data Science",
+  "day": 30,
+  "topic": "Capstone Demonstration, Review, and Future Enhancements",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Demonstrate the complete data science solution from input to output.",
+    "Evaluate project results against defined success criteria.",
+    "Identify practical improvements and future extensions for the solution."
+  ],
+  "activities": [
+    {
+      "id": "d30-a1",
+      "type": "discover",
+      "title": "Capstone Walkthrough",
+      "instruction": "Explore how the complete solution moves from user input or raw data to the final output.",
+      "content": {
+        "concept": "A capstone demonstration shows how each component works together to solve the defined data science problem.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Input or Data Source",
+            "Data Processing",
+            "Feature Engineering",
+            "Trained Model",
+            "Prediction Service",
+            "Final Output",
+            "Monitoring"
+          ],
+          "descriptions": [
+            "Provides raw or user-generated information to the solution.",
+            "Cleans, validates, and transforms incoming data.",
+            "Creates or selects the features required by the model.",
+            "Produces predictions using learned parameters.",
+            "Makes the model available to an application or workflow.",
+            "Displays or uses the prediction or analytical result.",
+            "Tracks system and model behavior after deployment."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a2",
+      "type": "discover",
+      "title": "System Architecture Review",
+      "instruction": "Inspect how the final components connect and exchange data.",
+      "content": {
+        "concept": "Architecture review verifies that data, models, APIs, storage, and user outputs work together coherently.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Source",
+            "Processing Pipeline",
+            "Feature Pipeline",
+            "Model",
+            "API or Serving Layer",
+            "Application",
+            "Monitoring"
+          ],
+          "descriptions": [
+            "Provides data to the system.",
+            "Prepares and validates the incoming data.",
+            "Produces the model-ready feature representation.",
+            "Generates predictions from prepared inputs.",
+            "Receives prediction requests and invokes the model.",
+            "Consumes and presents the prediction to users.",
+            "Tracks errors, latency, data quality, and model behavior."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a3",
+      "type": "discover",
+      "title": "Results Review",
+      "instruction": "Match project results with the criteria used to evaluate the solution.",
+      "content": {
+        "concept": "Project evaluation compares observed results with predefined technical and project objectives.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Classification Model → Accuracy, Precision, Recall, or F1",
+            "Regression Model → MAE, RMSE, or R²",
+            "Prediction API → Response correctness and latency",
+            "Data Pipeline → Data quality and processing reliability",
+            "Application → Functional requirements and usability"
+          ],
+          "answer": "Classification Model → Accuracy, Precision, Recall, or F1"
+        }
+      }
+    },
+    {
+      "id": "d30-a4",
+      "type": "discover",
+      "title": "Enhancement Planner",
+      "instruction": "Build a roadmap for practical future improvements.",
+      "content": {
+        "concept": "Future enhancements can target data quality, model performance, scalability, usability, monitoring, security, or new capabilities.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Improve Data Quality",
+            "Collect More Representative Data",
+            "Tune or Replace the Model",
+            "Improve API Performance",
+            "Add Monitoring",
+            "Improve User Experience",
+            "Scale the Infrastructure",
+            "Add New Features"
+          ],
+          "required": [
+            "Improve Data Quality",
+            "Collect More Representative Data",
+            "Tune or Replace the Model",
+            "Add Monitoring"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-30.json",
+  "practicalTaskRef": "practical-day-30.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

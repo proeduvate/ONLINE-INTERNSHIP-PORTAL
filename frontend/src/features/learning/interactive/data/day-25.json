@@ -1,0 +1,93 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 25,
+  "topic": "React State & Event Handling",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand state",
+    "Update from events",
+    "Build controlled UI"
+  ],
+  "activities": [
+    {
+      "id": "d25-a01",
+      "type": "state",
+      "title": "State Machine",
+      "instruction": "Click controls and watch state transitions update the UI.",
+      "content": {
+        "concept": "Understand state",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "state",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d25-a02",
+      "type": "events",
+      "title": "React Event Lab",
+      "instruction": "Trigger click/change events and inspect the handler payload.",
+      "content": {
+        "concept": "Update from events",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "react-events",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d25-a03",
+      "type": "controlled",
+      "title": "Controlled Input",
+      "instruction": "Type into an input and trace value → state → render.",
+      "content": {
+        "concept": "Build controlled UI",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "controlled",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d25-a04",
+      "type": "build",
+      "title": "Interactive Counter",
+      "instruction": "Build a counter with increment, decrement and reset behavior.",
+      "content": {
+        "concept": "Understand state",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "counter",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-25.json",
+  "practicalTaskRef": "practical-day-25.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "curriculum": "UI/UX",
+  "day": 5,
+  "topic": "Wireframing and Low-Fidelity Interface Design",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the essential components of a low-fidelity wireframe.",
+    "Create a basic screen layout based on user goals and information hierarchy.",
+    "Use wireframes to validate structure before applying visual styling."
+  ],
+  "activities": [
+    {
+      "id": "d5-a1",
+      "type": "discover",
+      "title": "Wireframe Anatomy",
+      "instruction": "Explore the essential parts of a low-fidelity wireframe.",
+      "content": {
+        "concept": "A low-fidelity wireframe focuses on structure and functionality rather than final colors, typography, imagery, or visual polish.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "wireframe-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Header / Navigation",
+            "Page Title",
+            "Main Content Area",
+            "Primary Action",
+            "Supporting Content",
+            "Footer / Secondary Navigation"
+          ],
+          "descriptions": [
+            "Provides orientation and access to major navigation options.",
+            "Clearly identifies the purpose of the current screen.",
+            "Contains the main information or task the user needs to complete.",
+            "Represents the most important action the user is expected to take.",
+            "Contains secondary information, supporting controls, or related content.",
+            "Provides secondary links, information, or navigation when needed."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Screen Layout Builder",
+      "instruction": "Build a basic wireframe structure for a task-focused screen.",
+      "content": {
+        "concept": "A wireframe should reflect the user's goal and information hierarchy. The primary task and important content should be easy to locate before visual styling is added.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "wireframe-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Header / Navigation",
+            "Page Title",
+            "Primary Content",
+            "Primary Action",
+            "Supporting Content",
+            "Secondary Navigation"
+          ],
+          "required": [
+            "Header / Navigation",
+            "Page Title",
+            "Primary Content",
+            "Primary Action"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Wireframe User Flow",
+      "instruction": "Connect the screens in the correct order for a simple task.",
+      "content": {
+        "concept": "Wireframes can represent individual screens, while connecting them creates a low-fidelity representation of the user's task flow.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "wireframe-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Product Listing Screen",
+            "2. Product Details Screen",
+            "3. Cart Screen",
+            "4. Checkout Screen",
+            "5. Order Confirmation Screen"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "Wireframe Critique",
+      "instruction": "Choose the wireframe structure that better supports the user's task.",
+      "content": {
+        "concept": "A strong wireframe makes the user's goal, content hierarchy, navigation, and primary action understandable without relying on visual decoration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "wireframe-critique",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Page title is clear, main task is prominent, primary action is visible, and secondary information is separated.",
+            "Decorative elements dominate the screen, the main task is unclear, and the primary action is difficult to locate."
+          ],
+          "answer": "Page title is clear, main task is prominent, primary action is visible, and secondary information is separated."
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

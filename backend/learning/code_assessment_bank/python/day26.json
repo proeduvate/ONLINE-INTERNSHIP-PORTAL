@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 26 Code Assessment",
+  "day": 26,
+  "topic": "Decorators & Closures",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY26-Q01",
+      "day": 26,
+      "topic": "Decorators & Closures",
+      "question": "Create a decorator that prints a message before and after a function executes."
+    },
+    {
+      "id": "DAY26-Q02",
+      "day": 26,
+      "topic": "Decorators & Closures",
+      "question": "Create a decorator that measures function execution time."
+    },
+    {
+      "id": "DAY26-Q03",
+      "day": 26,
+      "topic": "Decorators & Closures",
+      "question": "Create a decorator that checks whether a user is authenticated."
+    },
+    {
+      "id": "DAY26-Q04",
+      "day": 26,
+      "topic": "Decorators & Closures",
+      "question": "Create a closure that generates customized greeting functions."
+    },
+    {
+      "id": "DAY26-Q05",
+      "day": 26,
+      "topic": "Decorators & Closures",
+      "question": "Build a logging decorator that records function name and arguments."
+    }
+  ]
+}

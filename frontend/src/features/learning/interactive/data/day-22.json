@@ -1,0 +1,102 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 22,
+  "topic": "REST APIs & Fetch",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand requests/responses",
+    "Use fetch",
+    "Handle API states"
+  ],
+  "activities": [
+    {
+      "id": "d22-a01",
+      "type": "request",
+      "title": "Request Builder",
+      "instruction": "Configure method, endpoint, query and headers before sending a simulated request.",
+      "content": {
+        "concept": "Understand requests/responses",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "request",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "Start",
+            "Process",
+            "End"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a02",
+      "type": "response",
+      "title": "Response Inspector",
+      "instruction": "Inspect status, headers and JSON body from a simulated API response.",
+      "content": {
+        "concept": "Use fetch",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "response",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d22-a03",
+      "type": "fetch",
+      "title": "Fetch Flow",
+      "instruction": "Step through fetch → response → json → UI update.",
+      "content": {
+        "concept": "Handle API states",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "fetch",
+        "family": "timeline",
+        "config": {
+          "labels": [
+            "fetch()",
+            "response",
+            "response.json()",
+            "render UI"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a04",
+      "type": "debug",
+      "title": "API Debugger",
+      "instruction": "Fix a request with an incorrect method or endpoint.",
+      "content": {
+        "concept": "Understand requests/responses",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "api-debug",
+        "family": "debug",
+        "config": {
+          "target": 100
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,605 @@
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
+from pydantic import BaseModel
+from services.email_service import dispatch_notification, EventType
+
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+from passlib.context import CryptContext
+import jwt
+from datetime import datetime, timedelta
+import os
+import io
+import json
+import re
+import ast
+import subprocess
+import sys
+import tempfile
+from typing import Dict, Any, Optional, List
+from fpdf import FPDF
+from apscheduler.schedulers.background import BackgroundScheduler
+import pytz
+
+# 1. Import the meetings router module
+from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates, batch_analytics, facts, leaderboard, simulation, tickets, admin, mcq, mentor, questions, interactive_learning, normal_learning
+
+
+try:
+    import models, database, schemas
+except ImportError:
+    from . import models, database, schemas
+
+# Optional sandbox runner using Docker; falls back to local subprocess if unavailable
+try:
+    from sandbox_runner import run_submission as sandbox_run_submission
+except Exception:
+    try:
+        from .sandbox_runner import run_submission as sandbox_run_submission
+    except Exception:
+        sandbox_run_submission = None
+
+
+def _infer_function_spec(code: str, task: models.Task) -> tuple[Optional[str], int]:
+    """Infer the primary function name and its positional argument count."""
+    try:
+        tree = ast.parse(code)
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef):
+                return node.name, len(node.args.args)
+    except Exception:
+        pass
+
+    for source in (task.coding_prompt, task.coding_solution):
+        if source:
+            match = re.search(r"def\s+(\w+)\s*\(([^)]*)\)", source)
+            if match:
+                func_name = match.group(1)
+                arg_count = 0 if not match.group(2).strip() else len([p for p in match.group(2).split(",") if p.strip()])
+                return func_name, arg_count
+
+    return None, 0
+
+
+def _parse_test_input(raw_input: str):
+    if raw_input is None:
+        return None
+    if not isinstance(raw_input, str):
+        return raw_input
+    try:
+        return ast.literal_eval(raw_input)
+    except Exception:
+        return raw_input
+
+
+# Initialize FastAPI application
+app = FastAPI(
+    title="Online Internship Portal",
+    description="Backend API for managing interns, mentors, curriculum, submissions, messaging, video meetings, and certificates.",
+    version="1.0.0"
+)
+
+# Ensure uploads directory exists and mount static files
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("uploads/resumes", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# 2. Register routers
+
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
+
+app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
+app.include_router(submissions.router, prefix="/api/v1/submissions", tags=["Submissions"])
+
+app.include_router(airdrops.router, tags=["Airdrops"])
+app.include_router(airdrops.router, prefix="/api/v1", tags=["Airdrops"])
+
+app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
+
+app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api/v1", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="/api", tags=["Onboarding"])
+app.include_router(onboarding.router, prefix="", tags=["Onboarding"])
+
+# Meetings uses a custom prefix internally for WS, but we'll register the router
+app.include_router(meetings.router, prefix="/api/meetings", tags=["Meetings"])
+app.include_router(meetings.router, prefix="/api/v1/meetings", tags=["Meetings"])
+app.include_router(meetings.router, prefix="/meetings", tags=["Meetings"])
+
+app.include_router(certificates.router)
+app.include_router(certificates.router, prefix="/api/v1")
+
+app.include_router(tasks.router)
+app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(tasks.router, prefix="/api")
+
+from routers import notifications
+app.include_router(notifications.router)
+app.include_router(notifications.router, prefix="/api/v1")
+
+app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
+app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
+
+app.include_router(facts.router, prefix="/api/facts", tags=["Facts"])
+app.include_router(facts.router, prefix="/api/v1/facts", tags=["Facts"])
+
+app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
+app.include_router(leaderboard.router, prefix="/api/v1/leaderboard", tags=["Leaderboard"])
+
+app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
+app.include_router(simulation.router, prefix="/api/v1/simulation", tags=["Simulation"])
+
+app.include_router(tickets.router, prefix="/api/tickets", tags=["Tickets"])
+app.include_router(tickets.router, prefix="/api/v1/tickets", tags=["Tickets"])
+
+app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
+app.include_router(mcq.router, prefix="/api/v1", tags=["MCQ Assessment"])
+app.include_router(mentor.router, prefix="/api/v1", tags=["Mentor Dashboard"])
+
+app.include_router(questions.router, prefix="/api/v1", tags=["Questions"])
+app.include_router(questions.router, prefix="/api", tags=["Questions"])
+
+app.include_router(interactive_learning.router, prefix="/api/v1/learning/interactive", tags=["Interactive Learning"])
+app.include_router(interactive_learning.router, prefix="/api/learning/interactive", tags=["Interactive Learning"])
+
+app.include_router(normal_learning.router, prefix="/api/v1/learning/normal", tags=["Normal Learning"])
+app.include_router(normal_learning.router, prefix="/api/learning/normal", tags=["Normal Learning"])
+
+
+# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# --- Security & Auth Configuration ---
+SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 Hours
+
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+
+# Ensure DB tables exist on startup
+models.Base.metadata.create_all(bind=database.engine)
+
+
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub") or payload.get("user_id")
+        if user_id is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    user = db.query(models.User).filter(models.User.id == int(user_id)).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+def require_role(roles: List[str]):
+    def role_checker(current_user: models.User = Depends(get_current_user)):
+        if current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have sufficient permissions for this operation"
+            )
+        return current_user
+    return role_checker
+
+
+# --- Real-Time Messaging Connection Manager ---
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, WebSocket] = {}
+
+    async def connect(self, user_id: int, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections[user_id] = websocket
+
+    def disconnect(self, user_id: int):
+        if user_id in self.active_connections:
+            del self.active_connections[user_id]
+
+    async def send_personal_message(self, message: str, user_id: int):
+        if user_id in self.active_connections:
+            await self.active_connections[user_id].send_text(message)
+
+
+manager = ConnectionManager()
+
+# --- Background Scheduler Setup ---
+scheduler = BackgroundScheduler(timezone=pytz.UTC)
+
+
+def scheduled_daily_cleanup():
+    db = database.SessionLocal()
+    try:
+        pass
+    finally:
+        db.close()
+
+
+scheduler.add_job(scheduled_daily_cleanup, 'cron', hour=0, minute=0)
+scheduler.start()
+
+
+# ==========================================
+# AUTHENTICATION ENDPOINTS
+# ==========================================
+
+@app.post("/api/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing = db.query(models.User).filter(models.User.email == user_in.email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    role_val = user_in.role.value if hasattr(user_in.role, 'value') else user_in.role
+    hashed_password = pwd_context.hash(user_in.password)
+    user = models.User(
+        email=user_in.email,
+        name=user_in.name,
+        hashed_password=hashed_password,
+        role=models.UserRole(role_val)
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+from sqlalchemy import func
+
+@app.post("/api/auth/login")
+@app.post("/api/v1/auth/login")
+@app.post("/api/login")
+def login(login_in: schemas.UserLoginSchema, db: Session = Depends(get_db)):
+    clean_email = login_in.email.strip().lower() if login_in.email else ""
+    user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    is_valid = False
+    if user.hashed_password == login_in.password:
+        is_valid = True
+    else:
+        try:
+            is_valid = pwd_context.verify(login_in.password, user.hashed_password)
+        except Exception:
+            is_valid = (user.hashed_password == login_in.password)
+
+    if not is_valid:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    user_role_str = user.role.value if hasattr(user.role, 'value') else str(user.role)
+    token = create_access_token({"sub": str(user.id), "role": user_role_str})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "role": user_role_str,
+        "user": schemas.UserResponse.from_orm(user)
+    }
+
+
+@app.get("/api/auth/me", response_model=schemas.UserResponse)
+@app.get("/api/v1/auth/me", response_model=schemas.UserResponse)
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return current_user
+
+
+# ==========================================
+# CURRICULUM & TASK ENDPOINTS
+# ==========================================
+
+@app.get("/api/tasks", response_model=List[schemas.TaskResponse])
+@app.get("/api/v1/tasks", response_model=List[schemas.TaskResponse])
+def get_tasks(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    return db.query(models.Task).all()
+
+
+@app.post("/api/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/v1/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
+def create_task(
+    task_in: schemas.TaskCreate, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(require_role(["mentor", "admin"]))
+):
+    task = models.Task(**task_in.dict(), created_by=current_user.id)
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@app.get("/api/tasks/{task_id}", response_model=schemas.TaskResponse)
+@app.get("/api/v1/tasks/{task_id}", response_model=schemas.TaskResponse)
+def get_task(task_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+
+# ==========================================
+# SUBMISSIONS & AUTO-EVALUATION
+# ==========================================
+
+@app.post("/api/tasks/{task_id}/submit", response_model=schemas.SubmissionResponse)
+def submit_task(
+    task_id: int,
+    submission_in: schemas.SubmissionCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_role(["intern"]))
+):
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    submission = models.Submission(
+        task_id=task.id,
+        user_id=current_user.id,
+        submitted_code=submission_in.submitted_code,
+        status="pending"
+    )
+    db.add(submission)
+    db.commit()
+
+    if task.is_coding_task and submission_in.submitted_code:
+        if sandbox_run_submission:
+            results = sandbox_run_submission(submission_in.submitted_code, task)
+            submission.score = results.get("score", 0)
+            submission.status = "evaluated"
+            submission.feedback = json.dumps(results.get("test_results", []))
+        else:
+            func_name, arg_count = _infer_function_spec(submission_in.submitted_code, task)
+            passed_tests = 0
+            test_cases = task.test_cases or []
+
+            if func_name and test_cases:
+                with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as tmp:
+                    tmp.write(submission_in.submitted_code)
+                    tmp_path = tmp.name
+
+                try:
+                    for test in test_cases:
+                        inp = _parse_test_input(test.get("input"))
+                        expected = str(test.get("output")).strip()
+                        run_script = f"import sys, json\nfrom {os.path.basename(tmp_path)[:-3]} import {func_name}\nprint({func_name}(*{inp if isinstance(inp, list) else [inp]}))\n"
+                        
+                        proc = subprocess.run(
+                            [sys.executable, "-c", run_script],
+                            cwd=os.path.dirname(tmp_path),
+                            capture_output=True,
+                            text=True,
+                            timeout=5
+                        )
+                        if proc.stdout.strip() == expected:
+                            passed_tests += 1
+
+                    score = int((passed_tests / len(test_cases)) * 100) if test_cases else 100
+                    submission.score = score
+                    submission.status = "evaluated"
+                    submission.feedback = f"Passed {passed_tests}/{len(test_cases)} automated test cases."
+                except Exception as ex:
+                    submission.status = "failed"
+                    submission.feedback = f"Execution error: {str(ex)}"
+                finally:
+                    if os.path.exists(tmp_path):
+                        os.remove(tmp_path)
+            else:
+                submission.status = "evaluated"
+                submission.score = 100
+                submission.feedback = "Submitted successfully. Manual review pending."
+
+    db.commit()
+    db.refresh(submission)
+    return submission
+
+
+# ==========================================
+# CERTIFICATE GENERATION
+# ==========================================
+
+@app.get("/api/certificates/download/{cert_identifier}")
+@app.get("/api/v1/certificates/download/{cert_identifier}")
+def generate_certificate(
+    cert_identifier: str, 
+    db: Session = Depends(get_db)
+):
+    from datetime import datetime, timedelta
+    from fastapi.responses import FileResponse
+    from services.certificate_generator import generate_certificate_pdf
+
+    intern = None
+    cert_record = None
+
+    if cert_identifier.isdigit():
+        intern = db.query(models.User).filter(models.User.id == int(cert_identifier)).first()
+
+    if not intern:
+        cert_record = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_identifier).first()
+        if cert_record:
+            intern = db.query(models.User).filter(models.User.id == cert_record.intern_id).first()
+
+    if not intern and not cert_record:
+        raise HTTPException(status_code=404, detail="Certificate or intern record not found")
+
+    intern_name = (intern.name if (intern and getattr(intern, 'name', None)) else (cert_record.intern_name if cert_record else "")).upper()
+    domain_name = (cert_record.domain if (cert_record and cert_record.domain) else (intern.domain.name if (intern and getattr(intern, 'domain', None) and hasattr(intern.domain, 'name')) else (getattr(intern, 'domain', '') or '')))
+    score = cert_record.final_score if (cert_record and cert_record.final_score is not None) else 0
+    grade = cert_record.grade if (cert_record and cert_record.grade) else "N/A"
+    cert_id = cert_record.certificate_id if cert_record else (cert_identifier if not cert_identifier.isdigit() else f"PRO-INT-26-{int(cert_identifier):04d}")
+
+    start_date = getattr(cert_record, 'start_date', None) or getattr(intern, 'start_date', None) or ""
+    end_date = getattr(cert_record, 'end_date', None) or getattr(intern, 'end_date', None) or ""
+    issued_date = (cert_record.issued_date.strftime('%d %B %Y').upper() if (cert_record and cert_record.issued_date) else datetime.utcnow().strftime('%d %B %Y').upper())
+
+    cert_data = {
+        'intern_name': intern_name,
+        'domain': str(domain_name),
+        'duration': getattr(cert_record, 'duration', '1 Month') if cert_record else '1 Month',
+        'start_date': start_date.strftime('%B %d, %Y') if hasattr(start_date, 'strftime') else str(start_date),
+        'end_date': end_date.strftime('%B %d, %Y') if hasattr(end_date, 'strftime') else str(end_date),
+        'issued_date': issued_date,
+        'issue_date': issued_date,
+        'certificate_id': cert_id,
+        'cert_id': cert_id,
+        'score': score,
+        'grade': grade
+    }
+    
+    pdf_path = generate_certificate_pdf(cert_data)
+    
+    return FileResponse(
+        pdf_path, 
+        media_type="application/pdf", 
+        headers={"Content-Disposition": f"inline; filename=Certificate_{cert_id}.pdf"}
+    )
+
+
+# ==========================================
+# REAL-TIME MESSAGING & WEBSOCKETS
+# ==========================================
+
+@app.websocket("/ws/chat/{user_id}")
+async def websocket_chat_endpoint(websocket: WebSocket, user_id: int, db: Session = Depends(get_db)):
+    await manager.connect(user_id, websocket)
+    try:
+        while True:
+            raw_data = await websocket.receive_text()
+            data = json.loads(raw_data)
+            recipient_id = data.get("recipient_id")
+            message_text = data.get("message")
+
+            if recipient_id and message_text:
+                db_message = models.Message(
+                    sender_id=user_id,
+                    recipient_id=recipient_id,
+                    content=message_text,
+                    timestamp=datetime.utcnow()
+                )
+                db.add(db_message)
+                db.commit()
+
+                payload = json.dumps({
+                    "sender_id": user_id,
+                    "content": message_text,
+                    "timestamp": db_message.timestamp.isoformat()
+                })
+                await manager.send_personal_message(payload, recipient_id)
+    except WebSocketDisconnect:
+        manager.disconnect(user_id)
+
+
+# ==========================================
+# HEALTH & APPLICATION ENTRYPOINT
+# ==========================================
+
+@app.get("/health", status_code=status.HTTP_200_OK)
+def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": app.version
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+@app.get("/api/intern/stats")
+def get_intern_stats(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.role.value != "intern":
+        return {"error": "Not an intern"}
+    
+    total_days = 30
+    submissions_count = db.query(models.Submission).filter(
+        models.Submission.intern_id == current_user.id
+    ).count()
+    progress_percent = int((submissions_count / total_days) * 100) if total_days > 0 else 0
+    
+    attendance_records = db.query(models.AttendanceLog).filter(
+        models.AttendanceLog.intern_id == current_user.id
+    ).all()
+    
+    days_present = sum(1 for a in attendance_records if a.status == "present")
+    days_absent = sum(1 for a in attendance_records if a.status == "absent")
+    total_attendance = days_present + days_absent
+    attendance_percent = int((days_present / total_attendance) * 100) if total_attendance > 0 else 0
+    
+    from sqlalchemy.sql import func
+    avg_ai_score = db.query(func.avg(models.Submission.ai_score)).filter(
+        models.Submission.intern_id == current_user.id,
+        models.Submission.ai_score > 0
+    ).scalar()
+    
+    ai_score = int(avg_ai_score) if avg_ai_score else 0
+    
+    return {
+        "currentDay": submissions_count + 1,
+        "progressPercent": progress_percent,
+        "daysCompleted": submissions_count,
+        "totalDays": total_days,
+        "attendancePercent": attendance_percent,
+        "daysPresent": days_present,
+        "daysAbsent": days_absent,
+        "aiScore": ai_score
+    }
+
+
+class NotificationTrigger(BaseModel):
+    recipient_email: str
+    event_type: str
+    title: str
+    message: str
+    action_url: str
+
+@app.post("/api/notifications/trigger")
+def trigger_notification(data: NotificationTrigger, bg_tasks: BackgroundTasks):
+    try:
+        e_type = EventType(data.event_type)
+    except ValueError:
+        e_type = EventType.SYSTEM_ALERT
+
+    bg_tasks.add_task(
+        dispatch_notification,
+        recipient_email=data.recipient_email,
+        event_type=e_type,
+        title=data.title,
+        message=data.message,
+        action_url=data.action_url
+    )
+    return {"status": "dispatched"}

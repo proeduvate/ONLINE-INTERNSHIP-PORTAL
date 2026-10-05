@@ -1,0 +1,123 @@
+{
+  "curriculum": "Python",
+  "day": 22,
+  "topic": "Performance Optimization and Profiling",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify performance bottlenecks in Python programs.",
+    "Use profiling concepts to measure execution time and resource usage.",
+    "Choose appropriate optimization techniques based on measured results."
+  ],
+  "activities": [
+    {
+      "id": "d22-a1",
+      "type": "discover",
+      "title": "Optimization Workflow",
+      "instruction": "Arrange the optimization workflow in the correct order.",
+      "content": {
+        "concept": "Effective optimization starts with measurement, identifies the actual bottleneck, applies a targeted change, and measures again to verify the result.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Measure the current performance",
+            "2. Identify the bottleneck",
+            "3. Choose a targeted optimization",
+            "4. Change the implementation",
+            "5. Measure again",
+            "6. Compare the results"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a2",
+      "type": "discover",
+      "title": "Complexity Explorer",
+      "instruction": "Choose the complexity that best matches the described algorithm.",
+      "content": {
+        "concept": "Big-O notation describes how an algorithm's resource requirements grow as input size increases. It helps identify algorithms that may become expensive at scale.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "O(1)",
+            "O(log n)",
+            "O(n)",
+            "O(n²)"
+          ],
+          "answer": "O(n)"
+        }
+      }
+    },
+    {
+      "id": "d22-a3",
+      "type": "anatomy",
+      "title": "Profiler Metrics",
+      "instruction": "Click each profiling metric to understand what it tells you.",
+      "content": {
+        "concept": "Profilers help locate expensive parts of a program by reporting information such as function call counts and execution time.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "ncalls",
+            "tottime",
+            "cumtime",
+            "function"
+          ],
+          "descriptions": [
+            "Shows how many times a function was called.",
+            "Shows the total time spent inside the function itself, excluding time in called functions.",
+            "Shows cumulative time spent in the function and functions it called.",
+            "Identifies the function associated with the profiling measurement."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d22-a4",
+      "type": "discover",
+      "title": "Optimization Selector",
+      "instruction": "Choose the optimization that directly addresses the measured bottleneck.",
+      "content": {
+        "concept": "Optimization should be driven by profiling evidence. For example, repeated linear searches may benefit from a set or dictionary when appropriate, while excessive repeated computation may benefit from caching.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Replace repeated membership checks in a large collection with a set",
+            "Add random optimizations without measuring",
+            "Increase the number of print statements",
+            "Rewrite unrelated functions"
+          ],
+          "answer": "Replace repeated membership checks in a large collection with a set"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-22.json",
+  "practicalTaskRef": "practical-day-22.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

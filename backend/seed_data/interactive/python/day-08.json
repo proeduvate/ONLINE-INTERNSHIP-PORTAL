@@ -1,0 +1,138 @@
+{
+  "curriculum": "Python",
+  "day": 8,
+  "topic": "Object-Oriented Programming",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create classes and objects using Python.",
+    "Apply encapsulation, inheritance, and polymorphism to program designs.",
+    "Model real-world entities using object-oriented structures."
+  ],
+  "activities": [
+    {
+      "id": "d8-a1",
+      "type": "discover",
+      "title": "OOP Concept Map",
+      "instruction": "Explore the main concepts used in Python object-oriented programming.",
+      "content": {
+        "concept": "OOP organizes programs around objects that combine state and behavior. Classes define the structure and behavior that objects can have.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Class",
+            "Object",
+            "Encapsulation",
+            "Inheritance",
+            "Polymorphism"
+          ],
+          "descriptions": [
+            "Blueprint that defines attributes and methods.",
+            "An instance created from a class.",
+            "Combines data and behavior while controlling how implementation details are accessed.",
+            "Allows a class to reuse or extend behavior from another class.",
+            "Allows the same interface or method call to produce different behavior for different objects."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Class Anatomy",
+      "instruction": "Explore the parts of a Python class.",
+      "content": {
+        "concept": "A class can contain class attributes, instance attributes, methods, and an initializer such as __init__ for setting initial object state.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "    def introduce(self):",
+            "        return f\"I am {self.name}\""
+          ],
+          "descriptions": [
+            "Defines the Student class.",
+            "Initializer method that runs when a Student object is created.",
+            "Stores name as instance state.",
+            "Defines behavior that can be called on a Student object.",
+            "Uses the object's state to produce a result."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Object Builder",
+      "instruction": "Build an object from a Python class.",
+      "content": {
+        "concept": "Calling a class creates an object. Constructor arguments can initialize the object's instance attributes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "student = Student(\"Maya\")",
+            "student.name",
+            "import math"
+          ],
+          "required": [
+            "class Student:",
+            "    def __init__(self, name):",
+            "        self.name = name",
+            "student = Student(\"Maya\")"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "OOP Principle Explorer",
+      "instruction": "Choose the OOP principle illustrated by each scenario.",
+      "content": {
+        "concept": "Encapsulation controls access to implementation details, inheritance reuses or extends existing behavior, and polymorphism allows common interfaces to work with different implementations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Inheritance",
+            "Encapsulation",
+            "Polymorphism",
+            "Object instantiation"
+          ],
+          "answer": "Inheritance"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

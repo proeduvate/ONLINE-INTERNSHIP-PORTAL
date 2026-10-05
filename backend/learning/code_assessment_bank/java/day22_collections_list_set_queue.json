@@ -1,0 +1,67 @@
+{
+    "day": 22,
+    "topic": "Collections — List, Set & Queue",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D22-Q001",
+            "title": "Student Names ArrayList",
+            "description": "Store and display student names using ArrayList.",
+            "requirements": [
+                "Create ArrayList<String>",
+                "Add at least 5 student names",
+                "Display all using enhanced for loop",
+                "Remove a specific name",
+                "Display after removal"
+            ]
+        },
+        {
+            "id": "CODE-PY-D22-Q002",
+            "title": "Duplicate Remover with HashSet",
+            "description": "Remove duplicate numbers using HashSet.",
+            "requirements": [
+                "Create ArrayList with duplicates",
+                "Convert to HashSet",
+                "Display unique elements",
+                "Print count before and after",
+                "Show size difference"
+            ]
+        },
+        {
+            "id": "CODE-PY-D22-Q003",
+            "title": "Attendance List",
+            "description": "Create a student attendance list using ArrayList.",
+            "requirements": [
+                "Store student names in ArrayList",
+                "Mark attendance by adding to present list",
+                "Find absent students by comparing lists",
+                "Print present and absent lists",
+                "Calculate attendance percentage"
+            ]
+        },
+        {
+            "id": "CODE-PY-D22-Q004",
+            "title": "Customer Queue System",
+            "description": "Implement a queue-based customer service system.",
+            "requirements": [
+                "Use LinkedList as Queue",
+                "Enqueue customers with add()",
+                "Dequeue and serve with poll()",
+                "Display queue before and after serving",
+                "Show when queue is empty"
+            ]
+        },
+        {
+            "id": "CODE-PY-D22-Q005",
+            "title": "Sorted Marks List",
+            "description": "Sort a list of student marks.",
+            "requirements": [
+                "Create ArrayList<Integer> of marks",
+                "Sort using Collections.sort()",
+                "Print sorted ascending list",
+                "Reverse sort for descending",
+                "Display top 3 scores"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+  "curriculum": "Java",
+  "day": 2,
+  "topic": "Input, Output, and Conditional Statements",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Read user input using Java input utilities.",
+    "Produce formatted console output.",
+    "Implement decisions using if, else if, else, and switch."
+  ],
+  "activities": [
+    {
+      "id": "d2-a1",
+      "type": "discover",
+      "title": "Input-Process-Output Flow",
+      "instruction": "Arrange the stages of a simple interactive Java program.",
+      "content": {
+        "concept": "A console program commonly reads input, stores or converts the value, processes it using program logic, and displays the result.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "input-output-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Prompt the user",
+            "2. Read input with Scanner",
+            "3. Store or convert the value",
+            "4. Process the value",
+            "5. Display the result"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Scanner Anatomy",
+      "instruction": "Explore the parts of a Scanner input statement.",
+      "content": {
+        "concept": "Scanner reads input from a source such as System.in. Methods such as nextInt(), nextDouble(), and nextLine() read different forms of input.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "scanner-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Scanner",
+            "System.in",
+            "scanner",
+            "nextInt()",
+            "int age ="
+          ],
+          "descriptions": [
+            "The Java utility class used for reading input.",
+            "The standard input stream, commonly connected to keyboard input.",
+            "The variable referencing the Scanner object.",
+            "Reads the next integer value.",
+            "Declares an integer variable and stores the value returned by nextInt()."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Condition Matcher",
+      "instruction": "Choose the condition that correctly represents each requirement.",
+      "content": {
+        "concept": "Conditional statements evaluate boolean expressions and select which block of code should execute.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "condition-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "age >= 18",
+            "score < 50",
+            "temperature == 30",
+            "name.equals(\"Java\")"
+          ],
+          "answer": "age >= 18"
+        }
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Decision Builder",
+      "instruction": "Build an if-else structure from the given requirement.",
+      "content": {
+        "concept": "An if-else structure evaluates a condition and executes one block when it is true and another block when it is false.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "conditional-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "if",
+            "(marks >= 50)",
+            "{",
+            "System.out.println(\"Pass\");",
+            "}",
+            "else",
+            "System.out.println(\"Fail\");"
+          ],
+          "required": [
+            "if",
+            "(marks >= 50)",
+            "System.out.println(\"Pass\");",
+            "else",
+            "System.out.println(\"Fail\");"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

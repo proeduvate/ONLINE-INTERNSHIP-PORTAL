@@ -1,0 +1,47 @@
+{
+    "day": 16,
+    "topic": "Arrays, Objects & Modern JavaScript",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D16-Q001",
+            "title": "Student Array",
+            "description": "Create an array of student objects and display their names and marks.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D16-Q002",
+            "title": "Array Filtering",
+            "description": "Filter products based on price and category.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D16-Q003",
+            "title": "Shopping Cart",
+            "description": "Create an array-based shopping cart supporting:",
+            "requirements": [
+                "Add",
+                "Remove",
+                "Quantity update",
+                "Total calculation"
+            ]
+        },
+        {
+            "id": "CODE-D16-Q004",
+            "title": "Object Transformation",
+            "description": "Transform an array of employee objects into a list containing only names and departments using modern JavaScript.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D16-Q005",
+            "title": "Product Analytics",
+            "description": "Given an array of products, calculate:",
+            "requirements": [
+                "Total inventory value",
+                "Most expensive product",
+                "Average price",
+                "Products below a given price"
+            ]
+        }
+    ]
+}

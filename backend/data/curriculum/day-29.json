@@ -1,0 +1,77 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 29,
+  "topic": "Frontend Performance, Debugging & Optimization",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Find bottlenecks",
+    "Understand lazy loading",
+    "Use audits"
+  ],
+  "activities": [
+    {
+      "id": "d29-a01",
+      "type": "debug",
+      "title": "Bug Hunt",
+      "instruction": "Interact with a deliberately flawed UI and identify the behavior causing the bug.",
+      "content": {
+        "concept": "Find bottlenecks",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "bug-hunt"
+      }
+    },
+    {
+      "id": "d29-a02",
+      "type": "performance",
+      "title": "Performance Meter",
+      "instruction": "Toggle rendering strategies and compare simulated work and responsiveness.",
+      "content": {
+        "concept": "Understand lazy loading",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "performance"
+      }
+    },
+    {
+      "id": "d29-a03",
+      "type": "lazy",
+      "title": "Lazy Loading",
+      "instruction": "Step through route-level loading and observe when code is requested.",
+      "content": {
+        "concept": "Use audits",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "lazy"
+      }
+    },
+    {
+      "id": "d29-a04",
+      "type": "audit",
+      "title": "Mini Audit",
+      "instruction": "Run checks and sort findings by impact and effort.",
+      "content": {
+        "concept": "Find bottlenecks",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "audit"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-29.json",
+  "practicalTaskRef": "practical-day-29.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 3,
+  "topic": "HTML Forms & Input Elements",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify common HTML form controls",
+    "Understand labels, names, values, and form submission",
+    "Build a usable and accessible HTML form"
+  ],
+  "activities": [
+    {
+      "id": "d03-a01",
+      "type": "build",
+      "title": "Form Builder",
+      "instruction": "Assemble the controls needed for a basic registration form.",
+      "content": {
+        "concept": "Identify common HTML form controls",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "form-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<form>",
+            "<label for=\"name\">Name</label>",
+            "<input id=\"name\" name=\"name\" type=\"text\">",
+            "<label for=\"email\">Email</label>",
+            "<input id=\"email\" name=\"email\" type=\"email\">",
+            "<button type=\"submit\">Register</button>"
+          ],
+          "required": [
+            "<form>",
+            "<label for=\"name\">Name</label>",
+            "<input id=\"name\" name=\"name\" type=\"text\">",
+            "<label for=\"email\">Email</label>",
+            "<input id=\"email\" name=\"email\" type=\"email\">",
+            "<button type=\"submit\">Register</button>"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d03-a02",
+      "type": "match",
+      "title": "Input Type Matcher",
+      "instruction": "Match each user requirement with the most appropriate HTML input type.",
+      "content": {
+        "concept": "Choose appropriate form controls",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "input-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Email address → type=\"email\"",
+            "Password → type=\"password\"",
+            "Age → type=\"number\"",
+            "Date of birth → type=\"date\"",
+            "Accept terms → type=\"checkbox\""
+          ],
+          "answer": "Email address → type=\"email\""
+        }
+      }
+    },
+    {
+      "id": "d03-a03",
+      "type": "predict",
+      "title": "Form Submission Preview",
+      "instruction": "Predict which named fields will appear in the submitted form data.",
+      "content": {
+        "concept": "Understand form submission",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "form-predict",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "name and email",
+            "id and class",
+            "placeholder and required",
+            "label text and button text"
+          ],
+          "answer": "name and email"
+        }
+      }
+    },
+    {
+      "id": "d03-a04",
+      "type": "guided-code",
+      "title": "Connect the Form",
+      "instruction": "Build the attributes that correctly connect labels, inputs, and submitted values.",
+      "content": {
+        "concept": "Build a usable and accessible HTML form",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "form-code",
+        "family": "builder",
+        "config": {
+          "options": [
+            "for=\"email\"",
+            "id=\"email\"",
+            "name=\"email\"",
+            "type=\"email\"",
+            "type=\"submit\""
+          ],
+          "required": [
+            "for=\"email\"",
+            "id=\"email\"",
+            "name=\"email\"",
+            "type=\"email\"",
+            "type=\"submit\""
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-03.json",
+  "practicalTaskRef": "practical-day-03.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

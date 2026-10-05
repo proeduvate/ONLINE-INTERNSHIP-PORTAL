@@ -1,0 +1,129 @@
+{
+  "curriculum": "Data Science",
+  "day": 17,
+  "topic": "Advanced Machine Learning and Ensemble Methods",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand decision trees and ensemble learning concepts.",
+    "Differentiate bagging and boosting approaches.",
+    "Identify suitable ensemble methods for machine learning tasks."
+  ],
+  "activities": [
+    {
+      "id": "d17-a1",
+      "type": "discover",
+      "title": "Anatomy of a Decision Tree",
+      "instruction": "Explore the main components of a decision tree.",
+      "content": {
+        "concept": "Decision trees make predictions by recursively splitting data according to conditions on input features.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Root Node",
+            "Decision Node",
+            "Branch",
+            "Leaf Node",
+            "Prediction"
+          ],
+          "descriptions": [
+            "The starting point of the decision tree containing the first split.",
+            "A node where a feature-based condition determines the next path.",
+            "A connection representing the outcome of a decision.",
+            "A terminal node where the tree produces a final prediction.",
+            "The class or numerical value produced at a leaf."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Build a Random Forest",
+      "instruction": "Assemble the components of a random forest ensemble.",
+      "content": {
+        "concept": "Random forests combine many decision trees trained with randomized data and feature selections, then aggregate their predictions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Training Dataset",
+            "Random Samples",
+            "Multiple Decision Trees",
+            "Independent Tree Training",
+            "Aggregate Predictions",
+            "Final Prediction"
+          ],
+          "required": [
+            "Training Dataset",
+            "Random Samples",
+            "Multiple Decision Trees",
+            "Independent Tree Training",
+            "Aggregate Predictions",
+            "Final Prediction"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Compare Ensemble Strategies",
+      "instruction": "Identify the core idea behind each ensemble strategy.",
+      "content": {
+        "concept": "Bagging trains models independently on varied samples and combines their predictions, while boosting builds models sequentially to focus on previous errors.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Bagging → Train multiple models independently and aggregate predictions",
+            "Boosting → Train models sequentially while focusing on previous errors",
+            "Random Forest → Ensemble of randomized decision trees",
+            "Gradient Boosting → Sequentially build models that improve the current ensemble"
+          ],
+          "answer": "Bagging → Train multiple models independently and aggregate predictions"
+        }
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Tune Tree Complexity",
+      "instruction": "Adjust tree depth and observe how model complexity can affect learning behavior.",
+      "content": {
+        "concept": "Increasing tree depth can allow a decision tree to capture more detailed patterns but may also increase the risk of overfitting.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 20,
+          "default": 5
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-17.json",
+  "practicalTaskRef": "practical-day-17.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

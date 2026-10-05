@@ -1,0 +1,131 @@
+{
+  "curriculum": "UI/UX",
+  "day": 9,
+  "topic": "Interaction Design, Microinteractions, and Feedback",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify interaction patterns that communicate system behavior.",
+    "Design appropriate feedback for user actions and system states.",
+    "Understand the role of triggers, responses, and state changes in microinteractions.",
+    "Use microinteractions to improve clarity without adding unnecessary complexity."
+  ],
+  "activities": [
+    {
+      "id": "d9-a1",
+      "type": "discover",
+      "title": "Interaction State Explorer",
+      "instruction": "Explore each interaction state and identify what it communicates.",
+      "content": {
+        "concept": "Interaction states communicate what users can do, what they are currently doing, and what the system is doing.",
+        "tip": "Explore the states in sequence and observe how the interface communicates system status."
+      },
+      "interaction": {
+        "mode": "interaction-states",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Default",
+            "Hover",
+            "Focus",
+            "Pressed",
+            "Disabled",
+            "Loading",
+            "Success",
+            "Error"
+          ],
+          "descriptions": [
+            "Shows the normal available state.",
+            "Provides visual feedback when the pointer is over an element.",
+            "Shows keyboard or interaction focus.",
+            "Confirms that an action is being activated.",
+            "Shows that an action is unavailable.",
+            "Communicates that processing is taking place.",
+            "Confirms that an operation completed successfully.",
+            "Communicates that an operation failed or requires correction."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "Feedback Matcher",
+      "instruction": "Match each user action with suitable system feedback.",
+      "content": {
+        "concept": "Feedback confirms actions and communicates results through visual, textual, motion, or other appropriate cues.",
+        "tip": "Choose feedback that clearly communicates the result without distracting from the task."
+      },
+      "interaction": {
+        "mode": "feedback-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Form submitted successfully → Success message",
+            "Invalid password → Inline error message",
+            "File uploading → Progress indicator",
+            "Button pressed → Pressed state",
+            "Unsaved changes → Confirmation prompt"
+          ],
+          "answer": "Form submitted successfully → Success message"
+        }
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "Microinteraction Builder",
+      "instruction": "Build a microinteraction from trigger to response.",
+      "content": {
+        "concept": "A microinteraction connects a trigger, system response, feedback, and resulting state change.",
+        "tip": "Build the interaction in the order the user and system experience it."
+      },
+      "interaction": {
+        "mode": "microinteraction-builder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Trigger",
+            "2. System Response",
+            "3. Feedback",
+            "4. Resulting State"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Feedback Timing Lab",
+      "instruction": "Adjust feedback timing and observe how it affects the experience.",
+      "content": {
+        "concept": "Feedback should appear at an appropriate time so users understand whether an action succeeded, failed, or is still processing.",
+        "tip": "Compare immediate, delayed, and excessive feedback to identify the timing that best supports the task."
+      },
+      "interaction": {
+        "mode": "feedback-timing",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 25,
+          "labels": {
+            "min": "Immediate",
+            "max": "Too Delayed"
+          }
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

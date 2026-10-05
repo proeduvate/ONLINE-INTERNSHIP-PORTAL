@@ -1,0 +1,141 @@
+{
+  "curriculum": "Data Science",
+  "day": 26,
+  "topic": "Machine Learning Model Deployment and REST APIs",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain how a trained machine learning model is exposed through an API.",
+    "Design a basic REST API workflow for model predictions.",
+    "Connect an application to a deployed machine learning endpoint."
+  ],
+  "activities": [
+    {
+      "id": "d26-a1",
+      "type": "discover",
+      "title": "Deployment Pipeline",
+      "instruction": "Explore the path from a trained model to a prediction returned to an application.",
+      "content": {
+        "concept": "Model deployment makes a trained model available to applications through a serving layer such as a REST API.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Trained Model",
+            "Model Server",
+            "REST API Endpoint",
+            "Client Application",
+            "Prediction Response"
+          ],
+          "descriptions": [
+            "The trained model saved for inference.",
+            "Loads the model and handles prediction requests.",
+            "A URL through which applications send prediction requests.",
+            "Sends input data to the deployed endpoint.",
+            "Contains the model's prediction and related response data."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "API Anatomy",
+      "instruction": "Identify the main components of a REST prediction API.",
+      "content": {
+        "concept": "A prediction API receives structured input, validates it, performs inference, and returns a structured response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "HTTP Method",
+            "API Endpoint",
+            "Request Body",
+            "Input Validation",
+            "Model Inference",
+            "JSON Response"
+          ],
+          "descriptions": [
+            "Defines the operation, such as POST for sending prediction data.",
+            "The URL path that receives prediction requests.",
+            "Contains the input features sent by the client.",
+            "Checks that incoming data has the expected structure and values.",
+            "Uses the trained model to generate a prediction.",
+            "Returns the prediction and relevant information to the client."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Request Builder",
+      "instruction": "Build a valid request for a model prediction endpoint.",
+      "content": {
+        "concept": "A client sends structured feature values to a prediction endpoint, usually using an HTTP POST request with JSON data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "POST /predict",
+            "Content-Type: application/json",
+            "JSON feature values",
+            "Send the HTTP request",
+            "Receive prediction response"
+          ],
+          "required": [
+            "POST /predict",
+            "Content-Type: application/json",
+            "JSON feature values",
+            "Send the HTTP request"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Prediction Workflow",
+      "instruction": "Order the steps from an application request to the returned prediction.",
+      "content": {
+        "concept": "A prediction request flows from the client through the API, validation, model inference, and response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Client Creates Prediction Request",
+            "2. Request Reaches API Endpoint",
+            "3. API Validates Input",
+            "4. API Preprocesses Input",
+            "5. Model Generates Prediction",
+            "6. API Returns JSON Response",
+            "7. Client Displays or Uses Prediction"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-26.json",
+  "practicalTaskRef": "practical-day-26.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

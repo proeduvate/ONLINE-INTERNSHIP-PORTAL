@@ -1,0 +1,67 @@
+{
+    "day": 8,
+    "topic": "Arrays",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D8-Q001",
+            "title": "Min & Max Finder",
+            "description": "Find the largest and smallest element in an integer array.",
+            "requirements": [
+                "Accept array size and elements",
+                "Find maximum element",
+                "Find minimum element",
+                "Print both values",
+                "Show element positions"
+            ]
+        },
+        {
+            "id": "CODE-PY-D8-Q002",
+            "title": "Sum and Average",
+            "description": "Calculate the sum and average of an array.",
+            "requirements": [
+                "Accept array elements",
+                "Calculate sum using loop",
+                "Calculate average",
+                "Print sum and average",
+                "Format to two decimal places"
+            ]
+        },
+        {
+            "id": "CODE-PY-D8-Q003",
+            "title": "Array Reversal",
+            "description": "Reverse an array without using another array.",
+            "requirements": [
+                "Accept array elements",
+                "Reverse in-place using swapping",
+                "Print original array",
+                "Print reversed array",
+                "Do not use built-in reverse"
+            ]
+        },
+        {
+            "id": "CODE-PY-D8-Q004",
+            "title": "Remove Duplicates",
+            "description": "Remove duplicate values from an integer array.",
+            "requirements": [
+                "Accept array with possible duplicates",
+                "Identify unique elements",
+                "Store unique elements",
+                "Print unique array",
+                "Count duplicates removed"
+            ]
+        },
+        {
+            "id": "CODE-PY-D8-Q005",
+            "title": "Second Largest Element",
+            "description": "Find the second-largest element in an array.",
+            "requirements": [
+                "Accept array elements",
+                "Find maximum element",
+                "Find second maximum",
+                "Handle ties",
+                "Print second largest"
+            ]
+        }
+    ]
+}

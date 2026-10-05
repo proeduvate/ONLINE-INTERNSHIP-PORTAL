@@ -1,0 +1,556 @@
+﻿{
+    "day": 10,
+    "topic": "Tuples, Sets & Frozensets",
+    "mcqs": [
+        {
+            "id": 1,
+            "question": "Which data type is used to store an ordered and immutable collection of elements?",
+            "options": [
+                "Tuple",
+                "Set",
+                "List",
+                "Dictionary"
+            ],
+            "answer": "Tuple"
+        },
+        {
+            "id": 2,
+            "question": "Which brackets are commonly used to create a tuple?",
+            "options": [
+                "()",
+                "[]",
+                "{}",
+                "<>"
+            ],
+            "answer": "()"
+        },
+        {
+            "id": 3,
+            "question": "Which of the following is a valid tuple?",
+            "options": [
+                "(10, 20, 30)",
+                "[10, 20, 30]",
+                "{10, 20, 30}",
+                "<10, 20, 30>"
+            ],
+            "answer": "(10, 20, 30)"
+        },
+        {
+            "id": 4,
+            "question": "What is the key characteristic of a tuple?",
+            "options": [
+                "Immutable",
+                "Always unordered",
+                "Only stores strings",
+                "Cannot contain duplicates"
+            ],
+            "answer": "Immutable"
+        },
+        {
+            "id": 5,
+            "question": "Can a tuple contain duplicate elements?",
+            "options": [
+                "Yes",
+                "No",
+                "Only integers",
+                "Only strings"
+            ],
+            "answer": "Yes"
+        },
+        {
+            "id": 6,
+            "question": "Which of the following creates a single-element tuple?",
+            "options": [
+                "(5,)",
+                "(5)",
+                "[5]",
+                "{5}"
+            ],
+            "answer": "(5,)"
+        },
+        {
+            "id": 7,
+            "question": "What type is produced by `(10)`?",
+            "options": [
+                "int",
+                "tuple",
+                "list",
+                "set"
+            ],
+            "answer": "int"
+        },
+        {
+            "id": 8,
+            "question": "What is the type of `(10,)`?",
+            "options": [
+                "tuple",
+                "int",
+                "list",
+                "set"
+            ],
+            "answer": "tuple"
+        },
+        {
+            "id": 9,
+            "question": "Which function converts an iterable into a tuple?",
+            "options": [
+                "tuple()",
+                "make_tuple()",
+                "to_tuple()",
+                "convert()"
+            ],
+            "answer": "tuple()"
+        },
+        {
+            "id": 10,
+            "question": "What is the result of `tuple([1, 2, 3])`?",
+            "options": [
+                "(1, 2, 3)",
+                "[1, 2, 3]",
+                "{1, 2, 3}",
+                "Error"
+            ],
+            "answer": "(1, 2, 3)"
+        },
+        {
+            "id": 11,
+            "question": "Can elements of a tuple be accessed using indexes?",
+            "options": [
+                "Yes",
+                "No",
+                "Only the first element",
+                "Only negative indexes"
+            ],
+            "answer": "Yes"
+        },
+        {
+            "id": 12,
+            "question": "What is the result of `(10, 20, 30)[1]`?",
+            "options": [
+                "10",
+                "20",
+                "30",
+                "1"
+            ],
+            "answer": "20"
+        },
+        {
+            "id": 13,
+            "question": "Which method counts occurrences of a value in a tuple?",
+            "options": [
+                "count()",
+                "find()",
+                "occurrences()",
+                "frequency()"
+            ],
+            "answer": "count()"
+        },
+        {
+            "id": 14,
+            "question": "Which tuple method returns the index of the first occurrence of a value?",
+            "options": [
+                "index()",
+                "find()",
+                "position()",
+                "search()"
+            ],
+            "answer": "index()"
+        },
+        {
+            "id": 15,
+            "question": "What does `(4, 5, 4, 6).count(4)` return?",
+            "options": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "answer": "2"
+        },
+        {
+            "id": 16,
+            "question": "What happens if an attempt is made to change an element of a tuple?",
+            "options": [
+                "A TypeError is raised",
+                "The element changes",
+                "The tuple becomes a list",
+                "The tuple is automatically copied"
+            ],
+            "answer": "A TypeError is raised"
+        },
+        {
+            "id": 17,
+            "question": "Which operation combines two tuples?",
+            "options": [
+                "Concatenation using +",
+                "Union using |",
+                "Merge using &",
+                "Join using join()"
+            ],
+            "answer": "Concatenation using +"
+        },
+        {
+            "id": 18,
+            "question": "What is the result of `(1, 2) + (3, 4)`?",
+            "options": [
+                "(1, 2, 3, 4)",
+                "(4, 3, 2, 1)",
+                "(1, 2, 4)",
+                "Error"
+            ],
+            "answer": "(1, 2, 3, 4)"
+        },
+        {
+            "id": 19,
+            "question": "What is the result of `(1, 2) * 2`?",
+            "options": [
+                "(1, 2, 1, 2)",
+                "(2, 4)",
+                "(1, 2, 2)",
+                "Error"
+            ],
+            "answer": "(1, 2, 1, 2)"
+        },
+        {
+            "id": 20,
+            "question": "Which statement about tuple unpacking is correct?",
+            "options": [
+                "Tuple elements can be assigned to multiple variables",
+                "Tuples cannot be assigned to variables",
+                "Only one variable can receive a tuple",
+                "Unpacking works only with strings"
+            ],
+            "answer": "Tuple elements can be assigned to multiple variables"
+        },
+        {
+            "id": 21,
+            "question": "What are `a` and `b` after `a, b = (10, 20)`?",
+            "options": [
+                "a=10, b=20",
+                "a=20, b=10",
+                "a=(10,20), b=None",
+                "Both are 10"
+            ],
+            "answer": "a=10, b=20"
+        },
+        {
+            "id": 22,
+            "question": "Which data type stores only unique elements?",
+            "options": [
+                "Set",
+                "List",
+                "Tuple",
+                "String"
+            ],
+            "answer": "Set"
+        },
+        {
+            "id": 23,
+            "question": "Which brackets can be used to create a set literal?",
+            "options": [
+                "{}",
+                "[]",
+                "()",
+                "<>"
+            ],
+            "answer": "{}"
+        },
+        {
+            "id": 24,
+            "question": "What is the correct way to create an empty set?",
+            "options": [
+                "set()",
+                "{}",
+                "[]",
+                "emptyset()"
+            ],
+            "answer": "set()"
+        },
+        {
+            "id": 25,
+            "question": "What does `{}` create in Python?",
+            "options": [
+                "An empty dictionary",
+                "An empty set",
+                "An empty tuple",
+                "An empty list"
+            ],
+            "answer": "An empty dictionary"
+        },
+        {
+            "id": 26,
+            "question": "What happens to duplicate values when they are placed in a set?",
+            "options": [
+                "They are automatically removed",
+                "They are stored multiple times",
+                "They cause a TypeError",
+                "They are converted to strings"
+            ],
+            "answer": "They are automatically removed"
+        },
+        {
+            "id": 27,
+            "question": "What is the result of `set([1, 2, 2, 3])`?",
+            "options": [
+                "{1, 2, 3}",
+                "{1, 2, 2, 3}",
+                "[1, 2, 3]",
+                "(1, 2, 3)"
+            ],
+            "answer": "{1, 2, 3}"
+        },
+        {
+            "id": 28,
+            "question": "Are sets ordered collections that support indexing like lists?",
+            "options": [
+                "No",
+                "Yes",
+                "Only integer sets",
+                "Only sorted sets"
+            ],
+            "answer": "No"
+        },
+        {
+            "id": 29,
+            "question": "What happens if you try to access `my_set[0]`?",
+            "options": [
+                "TypeError is raised",
+                "The first element is returned",
+                "None is returned",
+                "The set is converted to a list"
+            ],
+            "answer": "TypeError is raised"
+        },
+        {
+            "id": 30,
+            "question": "Which method adds a single element to a set?",
+            "options": [
+                "add()",
+                "append()",
+                "insert()",
+                "push()"
+            ],
+            "answer": "add()"
+        },
+        {
+            "id": 31,
+            "question": "Which method adds multiple elements from an iterable to a set?",
+            "options": [
+                "update()",
+                "extend()",
+                "append()",
+                "insertAll()"
+            ],
+            "answer": "update()"
+        },
+        {
+            "id": 32,
+            "question": "Which set method removes a specified element and raises an error if it is absent?",
+            "options": [
+                "remove()",
+                "discard()",
+                "delete()",
+                "popitem()"
+            ],
+            "answer": "remove()"
+        },
+        {
+            "id": 33,
+            "question": "Which set method removes an element without raising an error if it is absent?",
+            "options": [
+                "discard()",
+                "remove()",
+                "delete()",
+                "clearOne()"
+            ],
+            "answer": "discard()"
+        },
+        {
+            "id": 34,
+            "question": "Which method removes all elements from a set?",
+            "options": [
+                "clear()",
+                "empty()",
+                "removeAll()",
+                "delete()"
+            ],
+            "answer": "clear()"
+        },
+        {
+            "id": 35,
+            "question": "Which operation produces elements that are present in either of two sets?",
+            "options": [
+                "Union",
+                "Intersection",
+                "Difference",
+                "Symmetric difference"
+            ],
+            "answer": "Union"
+        },
+        {
+            "id": 36,
+            "question": "Which operator represents set union?",
+            "options": [
+                "|",
+                "&",
+                "-",
+                "^"
+            ],
+            "answer": "|"
+        },
+        {
+            "id": 37,
+            "question": "What is `{1, 2} | {2, 3}`?",
+            "options": [
+                "{1, 2, 3}",
+                "{2}",
+                "{1}",
+                "{3}"
+            ],
+            "answer": "{1, 2, 3}"
+        },
+        {
+            "id": 38,
+            "question": "Which operation returns elements common to both sets?",
+            "options": [
+                "Intersection",
+                "Union",
+                "Difference",
+                "Concatenation"
+            ],
+            "answer": "Intersection"
+        },
+        {
+            "id": 39,
+            "question": "Which operator represents set intersection?",
+            "options": [
+                "&",
+                "|",
+                "-",
+                "^"
+            ],
+            "answer": "&"
+        },
+        {
+            "id": 40,
+            "question": "What is `{1, 2, 3} & {2, 3, 4}`?",
+            "options": [
+                "{2, 3}",
+                "{1, 4}",
+                "{1, 2, 3, 4}",
+                "{4}"
+            ],
+            "answer": "{2, 3}"
+        },
+        {
+            "id": 41,
+            "question": "Which operation returns elements present in the first set but not the second?",
+            "options": [
+                "Difference",
+                "Union",
+                "Intersection",
+                "Symmetric difference"
+            ],
+            "answer": "Difference"
+        },
+        {
+            "id": 42,
+            "question": "Which operator represents set difference?",
+            "options": [
+                "-",
+                "|",
+                "&",
+                "^"
+            ],
+            "answer": "-"
+        },
+        {
+            "id": 43,
+            "question": "What is `{1, 2, 3} - {2}`?",
+            "options": [
+                "{1, 3}",
+                "{2}",
+                "{1, 2, 3}",
+                "{}"
+            ],
+            "answer": "{1, 3}"
+        },
+        {
+            "id": 44,
+            "question": "Which operation returns elements that belong to either set but not both?",
+            "options": [
+                "Symmetric difference",
+                "Union",
+                "Intersection",
+                "Difference"
+            ],
+            "answer": "Symmetric difference"
+        },
+        {
+            "id": 45,
+            "question": "Which operator represents symmetric difference between sets?",
+            "options": [
+                "^",
+                "&",
+                "|",
+                "-"
+            ],
+            "answer": "^"
+        },
+        {
+            "id": 46,
+            "question": "What is a frozenset?",
+            "options": [
+                "An immutable set",
+                "A sorted set",
+                "A set containing only strings",
+                "An empty set"
+            ],
+            "answer": "An immutable set"
+        },
+        {
+            "id": 47,
+            "question": "Which function creates a frozenset?",
+            "options": [
+                "frozenset()",
+                "freeze()",
+                "fset()",
+                "immutable_set()"
+            ],
+            "answer": "frozenset()"
+        },
+        {
+            "id": 48,
+            "question": "Can elements be added to a frozenset after it is created?",
+            "options": [
+                "No",
+                "Yes",
+                "Only integers can be added",
+                "Only once"
+            ],
+            "answer": "No"
+        },
+        {
+            "id": 49,
+            "question": "Why can a frozenset be used as an element of another set?",
+            "options": [
+                "It is immutable and hashable",
+                "It automatically becomes a list",
+                "It contains only numbers",
+                "Sets allow all mutable objects"
+            ],
+            "answer": "It is immutable and hashable"
+        },
+        {
+            "id": 50,
+            "question": "Which statement correctly compares a set and a frozenset?",
+            "options": [
+                "A set is mutable, while a frozenset is immutable",
+                "A set is immutable, while a frozenset is mutable",
+                "Both are always mutable",
+                "Both are always ordered"
+            ],
+            "answer": "A set is mutable, while a frozenset is immutable"
+        }
+    ]
+}

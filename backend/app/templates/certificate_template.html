@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+      @frame recipient_frame {
+        left: 29.7mm; width: 237.6mm; top: 78mm; height: 18mm;
+      }
+      @frame body_frame {
+        left: 30mm; width: 237mm; top: 98mm; height: 40mm;
+      }
+      @frame row1_frame {
+        left: 68mm; width: 68mm; top: 147.0mm; height: 8mm;
+      }
+      @frame row2_frame {
+        left: 68mm; width: 68mm; top: 155.0mm; height: 8mm;
+      }
+      @frame row3_frame {
+        left: 68mm; width: 68mm; top: 163.4mm; height: 8mm;
+      }
+      @frame row4_frame {
+        left: 68mm; width: 68mm; top: 171.8mm; height: 8mm;
+      }
+      @frame row5_frame {
+        left: 68mm; width: 68mm; top: 179.6mm; height: 8mm;
+      }
+      @frame qr_frame {
+        left: 242mm; width: 35mm; top: 145mm; height: 35mm;
+      }
+      @frame issue_date_frame {
+        left: 206mm; width: 32mm; top: 154.5mm; height: 10mm;
+      }
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 297mm;
+      height: 210mm;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      position: relative;
+    }
+
+    #recipient_frame { position: absolute; left: 29.7mm; width: 237.6mm; top: 78mm; height: 18mm; -pdf-frame-name: recipient_frame; }
+    #body_frame { position: absolute; left: 30mm; width: 237mm; top: 98mm; height: 40mm; -pdf-frame-name: body_frame; }
+    #row1_frame { position: absolute; left: 68mm; width: 68mm; top: 153.5mm; height: 6mm; line-height: 6mm; -pdf-frame-name: row1_frame; }
+    #row2_frame { position: absolute; left: 68mm; width: 68mm; top: 161.9mm; height: 6mm; line-height: 6mm; -pdf-frame-name: row2_frame; }
+    #row3_frame { position: absolute; left: 68mm; width: 68mm; top: 170.3mm; height: 6mm; line-height: 6mm; -pdf-frame-name: row3_frame; }
+    #row4_frame { position: absolute; left: 68mm; width: 68mm; top: 178.1mm; height: 6mm; line-height: 6mm; -pdf-frame-name: row4_frame; }
+    #row5_frame { position: absolute; left: 68mm; width: 68mm; top: 186.2mm; height: 6mm; line-height: 6mm; -pdf-frame-name: row5_frame; }
+    #qr_frame { position: absolute; left: 242mm; width: 35mm; top: 145mm; height: 35mm; -pdf-frame-name: qr_frame; }
+    #issue_date_frame { position: absolute; left: 202mm; width: 33mm; top: 153.5mm; height: 10mm; -pdf-frame-name: issue_date_frame; }
+
+    .recipient-container {
+      width: 100%;
+      text-align: center;
+    }
+    .intern-name {
+      font-size: 24pt;
+      font-weight: bold;
+      color: #0b63c5;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .body-copy {
+      width: 100%;
+      text-align: center;
+      color: #334155;
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+    .body-copy strong {
+      color: #0f172a;
+    }
+
+    .details-value {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 7mm;
+    }
+    .cert-id {
+      color: #0b63c5;
+    }
+
+    .qr-code {
+      width: 23mm;
+      height: 23mm;
+      text-align: center;
+    }
+    .qr-code img {
+      width: 100%;
+      height: 100%;
+      max-width: 85px;
+      max-height: 85px;
+    }
+
+    .issue-date {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #475569;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="recipient-container" id="recipient_frame">
+    <div class="intern-name">{{ intern_name }}</div>
+  </div>
+
+  <div class="body-copy" id="body_frame" style="-pdf-frame-break: before;">
+    <p>was associated with <strong>ProEduvate</strong> as a <strong>{{ domain }} Intern</strong> from <strong>{{ start_date }}</strong>, to <strong>{{ end_date }}</strong>.</p>
+    <p>During this period, practical exposure to <strong>{{ domain }} concepts</strong> was gained, exhibiting a genuine interest in learning and a professional attitude in all activities assigned during the internship.</p>
+  </div>
+
+  <div class="details-value" id="row1_frame" style="-pdf-frame-break: before;">{{ intern_name }}</div>
+  <div class="details-value" id="row2_frame" style="-pdf-frame-break: before;">{{ domain }}</div>
+  <div class="details-value" id="row3_frame" style="-pdf-frame-break: before;">{{ duration }}</div>
+  <div class="details-value" id="row4_frame" style="-pdf-frame-break: before;">ONLINE</div>
+  <div class="details-value cert-id" id="row5_frame" style="-pdf-frame-break: before;">{{ cert_id }}</div>
+
+  <div class="qr-code" id="qr_frame" style="-pdf-frame-break: before;">
+    <img src="{{ qr_data_uri }}" alt="Verification QR">
+  </div>
+
+  <div class="issue-date" id="issue_date_frame" style="-pdf-frame-break: before;">
+    DATE OF ISSUE: {{ issue_date }}
+  </div>
+</body>
+</html>
