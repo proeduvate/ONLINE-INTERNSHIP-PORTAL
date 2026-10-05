@@ -8,7 +8,7 @@ import {
 import "./styles.css";
 import { useAuth } from "../../../services/AuthContext";
 
-const API = "http://localhost:8000/api";
+const API = (process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com") + "/api";
 
 const learningSlides = [
   {
