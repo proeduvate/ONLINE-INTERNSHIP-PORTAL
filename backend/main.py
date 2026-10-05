@@ -289,15 +289,19 @@ scheduler.start()
 @app.post("/api/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 @app.post("/api/v1/auth/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(models.User).filter(models.User.email == user_in.email).first()
+    clean_email = user_in.email.strip().lower() if user_in.email else ""
+    if not clean_email:
+        raise HTTPException(status_code=400, detail="Valid email address is required")
+        
+    existing = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     role_val = user_in.role.value if hasattr(user_in.role, 'value') else user_in.role
     hashed_password = pwd_context.hash(user_in.password)
     user = models.User(
-        email=user_in.email,
-        name=user_in.name,
+        email=clean_email,
+        name=user_in.name.strip(),
         hashed_password=hashed_password,
         role=models.UserRole(role_val)
     )

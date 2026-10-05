@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form, UploadFile, File
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from database import get_db
 from dependencies import get_current_user
 from services.document_service import document_service
@@ -27,6 +28,31 @@ def apply_for_onboarding(
     resume: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
+    clean_email = email.strip().lower() if email else ""
+    if not clean_email:
+        raise HTTPException(status_code=400, detail="Valid email address is required")
+
+    existing_user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=400, 
+            detail="An account with this email address already exists. Please log in to your dashboard."
+        )
+
+    existing_app = db.query(models.OnboardingApplication).filter(
+        func.lower(models.OnboardingApplication.email) == clean_email,
+        models.OnboardingApplication.status.in_([
+            models.ApplicationStatus.PENDING_REVIEW,
+            models.ApplicationStatus.OFFER_ISSUED,
+            models.ApplicationStatus.ACTIVE
+        ])
+    ).first()
+    if existing_app:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"An active application (ID: APP-{existing_app.id}) already exists for this email address."
+        )
+
     from services.supabase_service import supabase_service
     import uuid
     import os
@@ -443,7 +469,8 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
     
     # Generate account if not exists
     if not db_app.user_id:
-        existing_user = db.query(models.User).filter(models.User.email == db_app.email).first()
+        clean_app_email = db_app.email.strip().lower() if db_app.email else ""
+        existing_user = db.query(models.User).filter(func.lower(models.User.email) == clean_app_email).first()
         if existing_user:
             db_app.user_id = existing_user.id
             db_app.status = models.ApplicationStatus.ACTIVE

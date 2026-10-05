@@ -19,7 +19,11 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
     """
     Register a new user (public endpoint)
     """
-    existing_user = db.query(models.User).filter(models.User.email == user_data.email).first()
+    clean_email = user_data.email.strip().lower() if user_data.email else ""
+    if not clean_email:
+        raise HTTPException(status_code=400, detail="Valid email address is required")
+        
+    existing_user = db.query(models.User).filter(func.lower(models.User.email) == clean_email).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
@@ -29,8 +33,8 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(database.
     hashed_password = hash_password(user_data.password)
     
     new_user = models.User(
-        name=user_data.name,
-        email=user_data.email,
+        name=user_data.name.strip(),
+        email=clean_email,
         hashed_password=hashed_password,
         role=models.UserRole(user_data.role.value)
     )
