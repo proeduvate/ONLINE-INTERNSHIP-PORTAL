@@ -67,7 +67,7 @@ export default function InternDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
-  const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
+  const [isInternshipCompleted, setIsInternshipCompleted] = useState(false);
   const [internDomain, setInternDomain] = useState("General Track");
   const [internUser, setInternUser] = useState(null);
 
@@ -245,7 +245,7 @@ export default function InternDashboard() {
   // Dynamic Dashboard Stats & Live Data State
   const [progress, setProgress] = useState(0);
   const [aiScore, setAiScore] = useState(0);
-  const [attendancePercent, setAttendancePercent] = useState(100);
+  const [attendancePercent, setAttendancePercent] = useState(0);
   const [tasksCompletedCount, setTasksCompletedCount] = useState(0);
   const [assessmentsCount, setAssessmentsCount] = useState(0);
 
@@ -260,9 +260,17 @@ export default function InternDashboard() {
       try {
         const res = await api.get('/api/v1/analytics/dashboard');
         if (res.data) {
-          if (res.data.progress_pct !== undefined) setProgress(res.data.progress_pct);
-          if (res.data.total_score !== undefined) setAiScore(res.data.total_score);
+          const p = res.data.progress_pct !== undefined ? res.data.progress_pct : 0;
+          setProgress(p);
+          if (res.data.average_score_pct !== undefined) {
+            setAiScore(res.data.average_score_pct);
+          } else if (res.data.total_score !== undefined) {
+            setAiScore(Math.min(100, Math.round(res.data.total_score / 10)));
+          } else {
+            setAiScore(0);
+          }
           if (res.data.attendance_pct !== undefined) setAttendancePercent(res.data.attendance_pct);
+          if (p >= 100) setIsInternshipCompleted(true);
         }
       } catch (err) {
         console.warn("Failed to fetch dashboard analytics:", err);
@@ -2428,46 +2436,51 @@ export default function InternDashboard() {
                 </div>
 
                 <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "auto", paddingBottom: "40px" }}>
-                  {[
-                    { day: 10, title: "Git & GitHub", complete: true },
-                    { day: 11, title: "Database Basics", complete: true },
-                    { day: 12, title: "REST API", active: true, progress: 40 },
-                    { day: 13, title: "Authentication", locked: true },
-                    { day: 14, title: "Deployment", locked: true },
-                    { day: 15, title: "Testing", locked: true },
-                  ].map(d => (
-                    <div key={d.day} style={{ 
-                      flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
-                      border: d.active ? "2px solid #2563eb" : (d.complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
-                      background: d.locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
-                      position: "relative"
-                    }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: d.locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {d.day}</span>
-                        <span style={{ fontSize: "0.85rem", color: d.locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{d.title}</span>
-                        
-                        {d.complete && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
-                            <CheckCircle size={18} /> 100%
+                  {(() => {
+                    const currentActiveDay = Math.max(1, Math.min(30, tasksCompletedCount + 1));
+                    const startDay = Math.max(1, currentActiveDay - 2);
+                    const daysToShow = Array.from({ length: 6 }, (_, i) => startDay + i).filter(d => d <= 30);
+                    return daysToShow.map(dNum => {
+                      const complete = dNum < currentActiveDay;
+                      const active = dNum === currentActiveDay;
+                      const locked = dNum > currentActiveDay;
+                      const taskObj = domainTasksList.find(t => t.day_number === dNum);
+                      const title = taskObj?.title || `Day ${dNum} Topic`;
+                      return (
+                        <div key={dNum} style={{ 
+                          flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
+                          border: active ? "2px solid #2563eb" : (complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
+                          background: locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
+                          position: "relative"
+                        }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
+                            <span style={{ fontSize: "0.9rem", fontWeight: 700, color: locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {dNum}</span>
+                            <span style={{ fontSize: "0.85rem", color: locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{title}</span>
+                            
+                            {complete && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
+                                <CheckCircle size={18} /> 100%
+                              </div>
+                            )}
+                            {active && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb", fontWeight: 700, fontSize: "0.9rem" }}>
+                                <Clock size={18} /> In Progress
+                              </div>
+                            )}
+                            {locked && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#94a3b8", fontWeight: 600, fontSize: "0.9rem" }}>
+                                <Lock size={16} /> Locked
+                              </div>
+                            )}
                           </div>
-                        )}
-                        {d.active && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb", fontWeight: 700, fontSize: "0.9rem" }}>
-                            <Clock size={18} /> {d.progress}%
-                          </div>
-                        )}
-                        {d.locked && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#94a3b8", fontWeight: 600, fontSize: "0.9rem" }}>
-                            <Lock size={16} /> Locked
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Timeline Line */}
-                      <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
-                      <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
-                    </div>
-                  ))}
+                          
+                          {/* Timeline Line */}
+                          <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: complete || active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
+                          <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: complete || active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-muted, #64748b)" }}>
                   <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
@@ -2484,27 +2497,19 @@ export default function InternDashboard() {
                 </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
-                    <div>
-                      <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Consistent Learner</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Completed 5 days in a row</p>
+                  {[
+                    { title: "Consistent Learner", desc: "Completed 5 days in a row", icon: <Star size={20} />, unlocked: tasksCompletedCount >= 5 },
+                    { title: "First Submission", desc: "Submitted your first task", icon: <FileText size={20} />, unlocked: tasksCompletedCount >= 1 },
+                    { title: "Quiz Master", desc: "Scored 90%+ in a quiz", icon: <CheckCircle size={20} />, unlocked: assessmentsCount >= 1 }
+                  ].map(ach => (
+                    <div key={ach.title} style={{ display: "flex", gap: "12px", alignItems: "center", opacity: ach.unlocked ? 1 : 0.5 }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: ach.unlocked ? "var(--brand-bg, #eff6ff)" : "#f1f5f9", color: ach.unlocked ? "var(--brand-primary, #3b82f6)" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>{ach.icon}</div>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>{ach.title} {ach.unlocked ? "✓" : "🔒"}</h4>
+                        <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>{ach.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--assessment-bg, #f5f3ff)", color: "var(--assessment, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
-                    <div>
-                      <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>First Submission</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Submitted your first task</p>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--success-bg, #f0fdf4)", color: "var(--success, #10b981)", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
-                    <div>
-                      <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Quiz Master</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Scored 90%+ in a quiz</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
