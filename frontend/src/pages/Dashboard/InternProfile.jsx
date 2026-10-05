@@ -18,6 +18,7 @@ export default function InternProfile() {
     phone: ""
   });
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [message, setMessage] = useState(null);
 
   // Password Security Form State
   const [passwords, setPasswords] = useState({
@@ -79,20 +80,22 @@ export default function InternProfile() {
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setIsSavingProfile(true);
+    setMessage(null);
     try {
       await api.put('/api/v1/users/profile', {
         name: profile.name,
         college: profile.institution,
         phone: profile.phone
       });
-      alert("Profile updated successfully in database!");
+      setMessage({ type: "success", text: "Profile updated successfully!" });
       fetchProfileData();
     } catch (err) {
       console.error("Profile update error:", err);
       const msg = err.response?.data?.detail || "Failed to update profile.";
-      alert(msg);
+      setMessage({ type: "error", text: msg });
     } finally {
       setIsSavingProfile(false);
+      setTimeout(() => setMessage(null), 4000);
     }
   };
 
@@ -138,47 +141,6 @@ export default function InternProfile() {
     } catch (err) {
       setResetEmailSent(true);
       setTimeout(() => setResetEmailSent(false), 5000);
-    }
-  };
-
-  const handleUpdateProfile = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-    setMessage(null);
-    
-    try {
-      const token = localStorage.getItem("token") || "";
-      // In a real app, you might use FormData to upload the avatar image
-      // const formData = new FormData();
-      // formData.append("firstName", profileData.firstName);
-      // formData.append("lastName", profileData.lastName);
-      // formData.append("email", profileData.email);
-      // if (profileData.avatarUrl instanceof File) formData.append("avatar", profileData.avatarUrl);
-
-      const response = await fetch("/api/v1/users/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          firstName: profileData.firstName,
-          lastName: profileData.lastName,
-          email: profileData.email
-        })
-      });
-
-      if (response.ok) {
-        setMessage({ type: "success", text: "Profile updated successfully!" });
-      } else {
-        setMessage({ type: "error", text: "Failed to update profile." });
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      setMessage({ type: "error", text: "An error occurred while updating the profile." });
-    } finally {
-      setIsSaving(false);
-      setTimeout(() => setMessage(null), 3000);
     }
   };
 
@@ -348,8 +310,6 @@ export default function InternProfile() {
                   <button type="button" onClick={fetchProfileData} style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-secondary, #475569)", cursor: "pointer" }}>Cancel</button>
                   <button type="submit" disabled={isSavingProfile} style={{ background: "var(--brand-primary, #2563eb)", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                     <Save size={16} /> {isSavingProfile ? "Saving..." : "Save Changes"}
-                  </button>
-                </div>
                   </button>
                 </div>
               </form>

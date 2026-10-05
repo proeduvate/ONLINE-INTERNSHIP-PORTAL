@@ -181,7 +181,7 @@ def download_certificate(
             detail="Score below 45. Certificate will not be generated."
         )
 
-    intern_name = (getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
+    intern_name = (getattr(user, "name", None) or getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
     domain = getattr(cert_record, "domain", None) or getattr(user, "domain", None) or "Full Stack Web Development"
     if hasattr(domain, 'name'):
         domain = domain.name
@@ -281,7 +281,7 @@ def preview_certificate(certificate_id: str, db: Session = Depends(deps.get_db))
             detail="Certificate is pending admin credential approval upon internship completion."
         )
 
-    intern_name = (getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
+    intern_name = (getattr(user, "name", None) or getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
     domain = getattr(cert_record, "domain", None) or getattr(user, "domain", None) or "Full Stack Web Development"
     if hasattr(domain, 'name'):
         domain = domain.name
@@ -337,7 +337,7 @@ def get_intern_certificate(intern_id: str, db: Session = Depends(deps.get_db)):
         )
 
     cert_id = cert_record.certificate_id if cert_record else f"CERT-{user.id if user else intern_id}"
-    intern_name = (getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
+    intern_name = (getattr(user, "name", None) or getattr(user, "full_name", None) or getattr(user, "username", None) or getattr(cert_record, "intern_name", None) or "INTERN").strip().upper()
     domain = getattr(cert_record, "domain", None) or getattr(user, "domain", None) or "Full Stack Web Development"
     if hasattr(domain, 'name'):
         domain = domain.name
@@ -501,7 +501,7 @@ def verify_certificate(certificate_id: str, db: Session = Depends(deps.get_db)):
             return CertificateVerifyResponse(
                 is_valid=True,
                 certificate_id=cert.certificate_id,
-                intern_name=getattr(user, "full_name", user.username) if user else "Verified Intern",
+                intern_name=getattr(user, "name", None) or getattr(user, "full_name", None) or getattr(user, "username", "Verified Intern"),
                 domain=getattr(cert, "domain", ""),
                 grade=grade,
                 issue_date=getattr(cert, "issue_date", ""),

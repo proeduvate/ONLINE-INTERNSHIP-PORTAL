@@ -55,6 +55,7 @@ export default function Login() {
         setErrorMessage("Unable to connect to backend server. Please verify that server.py is running on http://127.0.0.1:8000.");
       } else {
         setErrorMessage(msg);
+      }
     } finally {
       setLoading(false);
     }

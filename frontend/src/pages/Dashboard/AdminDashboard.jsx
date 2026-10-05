@@ -15,7 +15,7 @@ import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user } = useAuth() || {};
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,21 +101,6 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleApproveCertificate = async (id) => {
-    try {
-      await api.post(`/admin/credentials/approve/${id}`).catch(async () => {
-        await api.post(`/certificates/approve/${id}`);
-      });
-    } catch (err) {
-      console.error("Backend certificate approval call failed:", err);
-    }
-    const updated = adminCredentialInterns.map(i => i.id === id ? { ...i, status: "Approved" } : i);
-    setAdminCredentialInterns(updated);
-    localStorage.setItem("app_certificate_requests", JSON.stringify(updated));
-    setSelectedAdminCredentialIntern(null);
-    alert("Certificate approved and sent to intern!");
-  };
-
   const transformAirdrops = (data) => {
     const formatDate = (isoString) => {
       if (!isoString) return "";
@@ -183,10 +168,7 @@ export default function AdminDashboard() {
     });
   };
 
-  const fetchAirdrops = async () => {
-=======
   const handleApproveCertificate = async (certId) => {
->>>>>>> origin/backend-integration
     try {
       const targetId = selectedAdminCredentialIntern?.cert_id || certId;
       const res = await api.post(`/api/v1/certificates/${targetId}/approve`);
@@ -203,6 +185,9 @@ export default function AdminDashboard() {
     }
   };
 
+  const [usersList, setUsersList] = useState([]);
+  const [ticketsList, setTicketsList] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [dashboardStats, setDashboardStats] = useState({
     total_interns: 0,
     active_interns: 0,
@@ -347,20 +332,7 @@ export default function AdminDashboard() {
   ]);
 
   const [meetings, setMeetings] = useState([]);
-
-  // Chart Data
-  const progressData = dashboardStats?.batch_progress || [];
   
-  const domainData = usersList.reduce((acc, user) => {
-    if (user.role && user.role.toLowerCase() === 'intern') {
-      const d = user.domain || 'Unassigned';
-      const existing = acc.find(item => item.name === d);
-      if (existing) existing.value += 1;
-      else acc.push({ name: d, value: 1 });
-    }
-    return acc;
-  }, []);
-
   const handleAddMentor = async (e) => {
     e.preventDefault();
     if (!newMentor.name || !newMentor.email) {
@@ -385,11 +357,6 @@ export default function AdminDashboard() {
       alert(msg);
     }
   };
-
-  const [usersList, setUsersList] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [curriculumList, setCurriculumList] = useState([]);
-  const [meetings, setMeetings] = useState([]);
 
   // Compute live domain distribution chart data directly from users database
   const domainData = availableDomains.map(d => ({
@@ -429,9 +396,6 @@ export default function AdminDashboard() {
   const [internPage, setInternPage] = useState(1);
   const [selectedIntern, setSelectedIntern] = useState(null);
   const [selectedMentor, setSelectedMentor] = useState(null);
-
-  // Tickets state
-  const [ticketsList, setTicketsList] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
   const [assignMentorId, setAssignMentorId] = useState("");

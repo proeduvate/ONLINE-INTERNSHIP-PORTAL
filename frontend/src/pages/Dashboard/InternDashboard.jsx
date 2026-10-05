@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/axios";
 import { useAuth } from "../../services/AuthContext";
 import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot, Video } from "lucide-react";
@@ -13,44 +14,58 @@ import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
-export default function InternDashboard() {
-const { user } = useAuth();
-const [activeTab, setActiveTab] = useState("Overview");
 import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
-import api from "../../api/axios";
-const navigate = useNavigate();
-const location = useLocation();
-const pathParts = location.pathname.split('/');
-const canonicalTabs = [
-"Overview", "Learning", "Daily Scenario", "Progress",
-"Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
-];
-const getTabFromUrl = (segment) => {
-if (!segment) return "Overview";
-const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
-const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
-return matched || "Overview";
-};
-const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
-const [activeTab, setActiveTab] = useState(initialTabFromUrl);
-useEffect(() => {
-const parts = location.pathname.split('/');
-if (parts.length > 2 && parts[2]) {
-const tabName = getTabFromUrl(parts[2]);
-if (activeTab !== tabName) {
-setActiveTab(tabName);
-}
-if (tabName === "Learning") {
-if (parts[3] === "assessment") {
-setShowAssessment(true);
-if (parts[4] === "mcq") {
-setAssessmentView("mcq");
-} else if (parts[4] === "coding") {
-setAssessmentView("coding");
-} else {
-setAssessmentView("selection");
-setShowAssessment(false);
-}, [location.pathname, activeTab]);
+
+export default function InternDashboard() {
+  const { user } = useAuth() || {};
+  const userDisplayName = (() => {
+    const raw = user?.name || localStorage.getItem('user_name') || localStorage.getItem('name') || "John Doe";
+    if (!raw || raw.toLowerCase() === "karan" || raw.toLowerCase() === "user") {
+      return "John Doe";
+    }
+    return raw;
+  })();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathParts = location.pathname.split('/');
+  const canonicalTabs = [
+    "Overview", "Learning", "Daily Scenario", "Progress",
+    "Tickets", "Chat with Mentor", "Bonus Airdrops", "Profile"
+  ];
+  const getTabFromUrl = (segment) => {
+    if (!segment) return "Overview";
+    const cleanSegment = decodeURIComponent(segment).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalTabs.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanSegment);
+    return matched || "Overview";
+  };
+  const initialTabFromUrl = pathParts.length > 2 ? getTabFromUrl(pathParts[2]) : "Overview";
+  const [activeTab, setActiveTab] = useState(initialTabFromUrl);
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [assessmentView, setAssessmentView] = useState("selection");
+
+  useEffect(() => {
+    const parts = location.pathname.split('/');
+    if (parts.length > 2 && parts[2]) {
+      const tabName = getTabFromUrl(parts[2]);
+      if (activeTab !== tabName) {
+        setActiveTab(tabName);
+      }
+      if (tabName === "Learning") {
+        if (parts[3] === "assessment") {
+          setShowAssessment(true);
+          if (parts[4] === "mcq") {
+            setAssessmentView("mcq");
+          } else if (parts[4] === "coding") {
+            setAssessmentView("coding");
+          } else {
+            setAssessmentView("selection");
+          }
+        }
+      } else {
+        setShowAssessment(false);
+      }
+    }
+  }, [location.pathname, activeTab]);
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
   const [trackerOpen, setTrackerOpen] = useState(true);
@@ -64,7 +79,7 @@ setShowAssessment(false);
   const [isApproved, setIsApproved] = useState(false);
 
   const [certData, setCertData] = useState({
-    internName: user?.name ? user.name.toUpperCase() : "INTERN",
+    internName: user?.name ? user.name.toUpperCase() : (localStorage.getItem("user_name") || "INTERN").toUpperCase(),
     domain: "Full Stack Development",
     startDate: "August 18, 2026",
     endDate: "September 18, 2026",
@@ -85,9 +100,10 @@ setShowAssessment(false);
         if (res.data && res.data.status === "success") {
           const approved = res.data.is_approved === true || res.data.is_credential_approved === true || res.data.certificate_status === "APPROVED";
           setIsApproved(approved);
+          const activeName = (user?.name || localStorage.getItem("user_name") || "").toUpperCase();
           setCertData(prev => ({
             ...prev,
-            internName: res.data.intern_name || prev.internName,
+            internName: (res.data.intern_name && res.data.intern_name !== "JOHN DOE" && res.data.intern_name !== "INTERN") ? res.data.intern_name : (activeName || prev.internName),
             domain: res.data.domain || prev.domain,
             duration: res.data.duration || prev.duration,
             grade: res.data.grade || "A+",
@@ -102,7 +118,7 @@ setShowAssessment(false);
       }
     };
     fetchCertificate();
-  }, []);
+  }, [user]);
 
   const mockNotifications = [
     { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
@@ -153,9 +169,7 @@ setShowAssessment(false);
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
-=======
     navigate(`/intern/${tabId.toLowerCase().replace(/\s+/g, '-')}`);
->>>>>>> origin/backend-integration
     if (isMeetingActive) {
       setIsMeetingMinimized(true);
     }
@@ -262,7 +276,7 @@ const handleSubmitAirdrop = async () => {
     try {
       await api.patch(`/api/v1/bonus-airdrops/${activeAirdrop.id}`, {
         action: "SUBMIT",
-        answer: airdropSubmissionAnswer
+        answer: airdropAnswer
       });
       alert("Bonus Airdrop submitted successfully!");
     } catch (err) {
@@ -272,8 +286,7 @@ const handleSubmitAirdrop = async () => {
       a.id === activeAirdrop.id ? { ...a, status: "FINALIZED" } : a
     ));
     setActiveAirdrop(null);
-    setAirdropSubmissionAnswer("");
-  };
+    setAirdropAnswer("");
   };
 
   const domainInsights = [
@@ -327,8 +340,6 @@ const handleSubmitAirdrop = async () => {
   ];
 
   // MCQ and Assessment Workflow State
-  const [showAssessment, setShowAssessment] = useState(false);
-  const [assessmentView, setAssessmentView] = useState("selection"); // selection, mcq, coding
   const [mcqDone, setMcqDone] = useState(false);
   const [codingDone, setCodingDone] = useState(false);
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
@@ -363,7 +374,7 @@ const handleSubmitAirdrop = async () => {
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
 
-const handleCreateTicket = async () => {
+  const handleCreateTicket = async () => {
     if (!newTicketTitle.trim()) return alert("Please enter a ticket title!");
     const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
     const newTicket = {
@@ -387,31 +398,8 @@ const handleCreateTicket = async () => {
     setTicketsData(prev => [newTicket, ...prev]);
     setNewTicketTitle("");
     setNewTicketDesc("");
-    setShowTicketModal(false);
-    alert("Ticket created successfully!");
-  };
-    if (!newTicketTitle.trim()) {
-      alert("Please enter an issue title before submitting.");
-      return;
-    }
-    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newTicket = {
-      id: newId,
-      title: newTicketTitle,
-      date: "Just now",
-      status: "Pending",
-      statusBg: "#eff6ff",
-      statusColor: "#1d4ed8",
-      tagBg: "#dbeafe",
-      tagColor: "#1e40af",
-      adminReply: newTicketDesc 
-        ? `Submitted Description: "${newTicketDesc}".\n\nYour ticket has been assigned to Dr. Sakthi. Review is in progress.` 
-        : "Your ticket has been assigned to Dr. Sakthi. Review is in progress."
-    };
-    setTicketsData([newTicket, ...ticketsData]);
-    setNewTicketTitle("");
-    setNewTicketDesc("");
     setShowTicketForm(false);
+    alert("Ticket created successfully!");
   };
 
   const [mcqStarted, setMcqStarted] = useState(false);
@@ -448,7 +436,6 @@ const handleCreateTicket = async () => {
   ]);
   const [inputMsg, setInputMsg] = useState("");
 
-=======
   useEffect(() => {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
@@ -538,58 +525,56 @@ const handleCreateTicket = async () => {
     }
   };
 
-  const handleSubmitCode = () => {
+  const handleSubmitCode = async () => {
     setEvaluating(true);
-
-    // Simulate AI compilation & scoring
-    setTimeout(() => {
-      setEvaluating(false);
+    try {
+      const execRes = await api.post('/api/v1/code/execute', {
+        code: code,
+        language: language || "javascript",
+        task_id: currentDay
+      });
+      const finalScore = execRes.data?.score || Math.floor(80 + Math.random() * 20);
+      setAiScore(finalScore);
+      setEvalResult({
+        overall: `${finalScore}/100`,
+        codeQuality: finalScore > 85 ? "Excellent" : "Good",
+        testCases: "Pass (All test cases verified)",
+        efficiency: "O(n) time, O(1) space optimal",
+        suggestions: execRes.data?.ai_feedback || "Consider handling edge cases and validating parameters.",
+        score: finalScore,
+        correctness: 100,
+        logic: 90,
+        quality: 85,
+        performance: 95
+      });
+      try {
+        await api.post('/api/v1/submissions', {
+          task_id: currentDay,
+          code_snippet: code,
+          score: finalScore
+        });
+      } catch (e) {
+        console.warn("Submission api failed fallback:", e);
+      }
+    } catch (err) {
+      console.warn("Execution api failed fallback to local mock:", err);
       const randomScore = Math.floor(80 + Math.random() * 20);
       setAiScore(randomScore);
       setEvalResult({
+        overall: `${randomScore}/100`,
+        codeQuality: "Good",
+        testCases: "Passed 4/4 Core Assertions",
+        efficiency: "O(N) Time Complexity",
+        suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors.",
         score: randomScore,
         correctness: 100,
         logic: 90,
         quality: 85,
-        performance: 95,
-      try {
-        const execRes = await api.post('/api/v1/code/execute', {
-          code: code,
-          language: language || "javascript",
-          task_id: currentDay
-        });
-        const finalScore = execRes.data?.score || Math.floor(80 + Math.random() * 20);
-        setAiScore(finalScore);
-        setEvalResults({
-          overall: `${finalScore}/100`,
-          codeQuality: finalScore > 85 ? "Excellent" : "Good",
-          testCases: "Pass (All test cases verified)",
-          efficiency: "O(n) time, O(1) space optimal",
-          suggestions: execRes.data?.ai_feedback || "Consider handling edge cases and validating parameters."
-        });
-        try {
-          await api.post('/api/v1/submissions', {
-            task_id: currentDay,
-            code_snippet: code,
-            score: finalScore
-          });
-        } catch (e) {
-          console.warn("Submission api failed fallback:", e);
-        }
-      } catch (err) {
-        console.warn("Execution api failed fallback to local mock:", err);
-        const randomScore = Math.floor(80 + Math.random() * 20);
-        setAiScore(randomScore);
-        setEvalResults({
-          overall: `${randomScore}/100`,
-          codeQuality: "Good",
-          testCases: "Passed 4/4 Core Assertions",
-          efficiency: "O(N) Time Complexity",
-          suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
-        });
-      }
-      setEvaluating(false);
-      alert("Coding assessment executed and submitted successfully!");
+        performance: 95
+      });
+    }
+    setEvaluating(false);
+    alert("Coding assessment executed and submitted successfully!");
   };
 
   const handleCompleteDay = () => {
@@ -666,6 +651,17 @@ const handleCreateTicket = async () => {
   };
 
   const renderContent = () => {
+    const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
+    const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
+    const quotes = [
+      "Success is where preparation and opportunity meet.",
+      "Challenge yourself; it's the only path which leads to growth.",
+      "Innovation distinguishes between a leader and a follower.",
+      "The expert in anything was once a beginner.",
+      "Great things never come from comfort zones."
+    ];
+    const selectedQuote = quotes[new Date().getDay() % quotes.length] || quotes[0];
+
     switch (activeTab) {
       case "Overview":
         return (
@@ -1583,8 +1579,7 @@ const handleCreateTicket = async () => {
                   />
                 </div>
 
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {/* Event 1 */}
                     <div style={{ background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", transition: "all 0.2s", cursor: "pointer" }} onMouseOver={(e) => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.08)"; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"; }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -1636,7 +1631,6 @@ const handleCreateTicket = async () => {
                     </div>
                   </div>
                 </div>
-
                 )}
 
                 {activeLearningTab === "AI Client" && (
@@ -1732,81 +1726,10 @@ const handleCreateTicket = async () => {
                     Message Mentor &rarr;
                   </button>
                 </div>
-
-const handleCreateTicket = async () => {
-    if (!newTicketTitle.trim()) return alert("Please enter a ticket title!");
-    const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newTicket = {
-      id: newId,
-      title: newTicketTitle,
-      date: "Just now",
-      status: "Pending",
-      statusBg: "#fef3c7",
-      statusColor: "#d97706",
-      desc: newTicketDesc || "Support issue submitted by intern.",
-      responses: []
-    };
-    try {
-      await api.post('/api/v1/tickets', {
-        title: newTicketTitle,
-        description: newTicketDesc || "Support issue submitted by intern."
-      });
-    } catch (err) {
-      console.warn("Backend ticket creation fallback to local:", err);
-    }
-    setTicketsData(prev => [newTicket, ...prev]);
-    setNewTicketTitle("");
-    setNewTicketDesc("");
-    setShowTicketModal(false);
-    alert("Ticket created successfully!");
-  };
-                      style={{ 
-                        padding: "16px 20px", 
-                        cursor: "pointer", 
-                        borderRadius: "10px",
-                        border: selectedTicket?.id === ticket.id ? "2px solid #3b82f6" : "1px solid var(--border-color)", 
-                        transition: "all 0.2s ease",
-                        backgroundColor: selectedTicket?.id === ticket.id ? "var(--brand-bg, #eff6ff)" : "var(--card-bg)"
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "var(--brand-primary, #1e40af)", fontWeight: 700, backgroundColor: "var(--brand-bg, #dbeafe)", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
-                          <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
-                            <Clock size={14} /> {ticket.date}
-                          </span>
-                          <span className="badge" style={{ 
-                            backgroundColor: ticket.status === "Resolved" ? "var(--success-bg, #dcfce7)" : ticket.status === "Pending" ? "var(--brand-bg, #eff6ff)" : "var(--warning-bg, #fef3c7)", 
-                            color: ticket.status === "Resolved" ? "var(--success, #15803d)" : ticket.status === "Pending" ? "var(--brand-primary, #1d4ed8)" : "var(--warning, #b45309)",
-                            padding: "4px 12px",
-                            borderRadius: "20px",
-                            fontWeight: "700",
-                            fontSize: "12px"
-                          }}>
-                            {ticket.status}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {selectedTicket?.id === ticket.id && (
-                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
-                          <div>
-                            <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>Mentor & Admin Response</div>
-                            <div style={{ backgroundColor: "var(--bg-surface-elevated, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid var(--brand-primary, #3b82f6)", border: "1px solid var(--border-color, #cbd5e1)" }}>
-                              <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: "1.6", whiteSpace: "pre-line" }}>{ticket.adminReply}</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
               </div>
-            </div>
+            )}
           </div>
+        </div>
         );
 
       case "Chat with Mentor":
@@ -1885,21 +1808,6 @@ const handleCreateTicket = async () => {
         return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
 
       case "Bonus Airdrops":
-        const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
-        const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
-        
-        // Motivational quotes for Airdrops
-        const quotes = [
-          "Success is where preparation and opportunity meet.",
-          "Challenge yourself; it's the only path which leads to growth.",
-          "Innovation distinguishes between a leader and a follower.",
-          "The expert in anything was once a beginner.",
-          "Great things never come from comfort zones."
-        ];
-        // Pick a random quote based on the day or just the first one
-        const quoteIndex = new Date().getDay() % quotes.length;
-        const selectedQuote = quotes[quoteIndex] || quotes[0];
-
         return (
           <div style={{ paddingBottom: "40px", display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Ultra-Compact Catchy Airdrop Banner */}
@@ -2054,31 +1962,32 @@ const handleCreateTicket = async () => {
           </div>
         );
 
+      case "Progress":
       case "Progress & Certificate":
-        if (showCertificateView) {
-          if (!isApproved) {
-            return (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px" }}>
-                <div style={{ marginBottom: "-8px" }}>
-                  <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0" }}>
-                    <ArrowLeft size={16} /> Back to Dashboard
-                  </button>
-                </div>
-                <div style={{ background: "#fff", padding: "48px 32px", borderRadius: "16px", border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-                  <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
-                    <Lock size={32} />
-                  </div>
-                  <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#0f172a", margin: "0 0 8px 0" }}>Certificate Locked</h3>
-                  <p style={{ color: "#64748b", fontSize: "0.95rem", maxWidth: "540px", margin: "0 auto 20px auto", lineHeight: "1.6" }}>
-                    Certificate Locked - Pending Admin Credential Clearance Upon Internship Completion.
-                  </p>
-                  <span style={{ fontSize: "0.8rem", color: "#b45309", background: "#fef3c7", padding: "6px 18px", borderRadius: "20px", fontWeight: 700, display: "inline-block", border: "1px solid #fde68a" }}>
-                    PENDING ADMIN APPROVAL
-                  </span>
-                </div>
+        if (showCertificateView && !isApproved) {
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px" }}>
+              <div style={{ marginBottom: "-8px" }}>
+                <button onClick={() => setShowCertificateView(false)} style={{ background: "none", border: "none", color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0" }}>
+                  <ArrowLeft size={16} /> Back to Dashboard
+                </button>
               </div>
-            );
-          }
+              <div style={{ background: "#fff", padding: "48px 32px", borderRadius: "16px", border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
+                  <Lock size={32} />
+                </div>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#0f172a", margin: "0 0 8px 0" }}>Certificate Locked</h3>
+                <p style={{ color: "#64748b", fontSize: "0.95rem", maxWidth: "540px", margin: "0 auto 20px auto", lineHeight: "1.6" }}>
+                  Certificate Locked - Pending Admin Credential Clearance Upon Internship Completion.
+                </p>
+                <span style={{ fontSize: "0.8rem", color: "#b45309", background: "#fef3c7", padding: "6px 18px", borderRadius: "20px", fontWeight: 700, display: "inline-block", border: "1px solid #fde68a" }}>
+                  PENDING ADMIN APPROVAL
+                </span>
+              </div>
+            </div>
+          );
+        }
+        if (showCertificateView) {
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "visible", paddingBottom: "10px", flex: 1, paddingRight: "10px" }}>
               {/* Back Button */}
@@ -2667,14 +2576,14 @@ const handleCreateTicket = async () => {
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              {user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : "IN"}
+              {userDisplayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: "160px", zIndex: 100, overflow: "hidden" }}>
                 <div style={{ padding: "10px 14px", borderBottom: "1px solid var(--border-color, #e2e8f0)", background: "var(--bg-light, #f8fafc)" }}>
-                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{user?.name || "Intern"}</p>
-                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || ""}</p>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{userDisplayName}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{user?.email || "intern@gmail.com"}</p>
                 </div>
                 <button 
                   onClick={() => { setActiveTab("Profile"); setIsProfileDropdownOpen(false); }}

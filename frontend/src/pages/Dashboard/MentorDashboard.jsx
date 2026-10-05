@@ -12,7 +12,7 @@ import { Button } from "../../components/ui/Button";
 import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 export default function MentorDashboard() {
-  const { user } = useAuth();
+  const { user } = useAuth() || {};
   const navigate = useNavigate();
   const location = useLocation();
 

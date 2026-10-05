@@ -71,7 +71,7 @@ except Exception:
 def _get_user_display_name(user: Any) -> str:
     if not user:
         return "Unknown"
-    return getattr(user, "full_name", None) or getattr(user, "name", None) or getattr(user, "username", "Intern")
+    return getattr(user, "name", None) or getattr(user, "full_name", None) or getattr(user, "username", "Intern")
 
 
 def _infer_function_spec(code: str, task: Any) -> tuple[Optional[str], int]:
@@ -396,7 +396,18 @@ def download_certificate_by_id(
             if user_fk:
                 intern = db.query(models.User).filter(models.User.id == user_fk).first()
 
-    intern_name = _get_user_display_name(intern).upper() if intern else "JOHN DOE"
+    if not intern and not cert_identifier.isdigit():
+        import re
+        digits = re.findall(r'\d+', cert_identifier)
+        if digits:
+            intern = db.query(models.User).filter(models.User.id == int(digits[-1])).first()
+
+    if intern:
+        intern_name = _get_user_display_name(intern).upper()
+    elif cert_record and getattr(cert_record, "intern_name", None):
+        intern_name = cert_record.intern_name.upper()
+    else:
+        intern_name = "INTERN"
     domain_name = getattr(cert_record, "domain", "Full Stack Development")
     score = float(getattr(cert_record, "score", None) or getattr(cert_record, "final_score", 92.0))
     grade, _ = service.get_grade_info(score)

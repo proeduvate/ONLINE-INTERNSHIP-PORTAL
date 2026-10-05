@@ -75,8 +75,8 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         if (!Array.isArray(list)) list = [];
 
         const now = Date.now();
-        // Remove stale participants (> 15 seconds without heartbeat) and any previous entry for this tab ID
-        list = list.filter(p => !p.id.endsWith(`_${tabId}`) && (now - (p.lastSeen || 0)) < 15000);
+        // Remove stale participants (> 6 seconds without heartbeat) and any existing entry for this participant/tab
+        list = list.filter(p => p.id !== participantId && !p.id.endsWith(`_${tabId}`) && (now - (p.lastSeen || 0)) < 6000);
 
         // Append current participant with latest lastSeen timestamp
         list.push({ ...currentParticipant, lastSeen: now });
@@ -99,6 +99,8 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
         try {
           let list = JSON.parse(e.newValue || '[]');
           if (Array.isArray(list)) {
+            const now = Date.now();
+            list = list.filter(p => (now - (p.lastSeen || 0)) < 6000);
             list.sort((a, b) => String(a.id).localeCompare(String(b.id)));
             setAllParticipants(prev => isSemanticEqual(prev, list) ? prev : list);
           }
@@ -113,7 +115,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
       try {
         const stored = localStorage.getItem('breakout_meeting_participants');
         if (stored) {
-          let list = JSON.parse(stored).filter(p => !p.id.endsWith(`_${tabId}`));
+          let list = JSON.parse(stored).filter(p => p.id !== participantId && !p.id.endsWith(`_${tabId}`));
           localStorage.setItem('breakout_meeting_participants', JSON.stringify(list));
         }
       } catch (err) {}
@@ -151,7 +153,7 @@ export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isInter
     try {
       const stored = localStorage.getItem('breakout_meeting_participants');
       if (stored) {
-        let list = JSON.parse(stored).filter(p => !p.id.endsWith(`_${tabId}`));
+        let list = JSON.parse(stored).filter(p => p.id !== participantId && !p.id.endsWith(`_${tabId}`));
         localStorage.setItem('breakout_meeting_participants', JSON.stringify(list));
       }
     } catch (err) {}
