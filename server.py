@@ -101,6 +101,7 @@ class DBUser(Base):
     progress_pct = Column(Integer, default=0)
     learning_streak = Column(Integer, default=0)
     last_task_completion_date = Column(DateTime, nullable=True)
+    is_credential_approved = Column(Boolean, default=False)
 
     certificates = relationship("DBCertificate", back_populates="intern", cascade="all, delete-orphan")
 
@@ -265,6 +266,9 @@ def ensure_supabase_compatibility() -> None:
         return
 
     with engine.begin() as conn:
+        # users.is_credential_approved is required for admin credential clearance
+        conn.execute(text("ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS is_credential_approved BOOLEAN DEFAULT FALSE"))
+
         # meetings.scheduled_time is required by the app UI and is missing in the live Supabase schema
         conn.execute(text("ALTER TABLE IF EXISTS meetings ADD COLUMN IF NOT EXISTS scheduled_time TIMESTAMP"))
         conn.execute(text("ALTER TABLE IF EXISTS meetings ADD COLUMN IF NOT EXISTS meeting_url VARCHAR"))
@@ -853,11 +857,16 @@ async def room_websocket_gateway(websocket: WebSocket, room_id: str):
             except json.JSONDecodeError:
                 data = {"type": "message", "content": raw_data}
 
-            await manager.broadcast_to_room(room_id, {
+            msg_to_send = {
                 "room_id": room_id,
-                "payload": data,
                 "timestamp": datetime.utcnow().isoformat()
-            })
+            }
+            if isinstance(data, dict):
+                msg_to_send.update(data)
+            else:
+                msg_to_send["payload"] = data
+
+            await manager.broadcast_to_room(room_id, msg_to_send, sender=websocket)
     except WebSocketDisconnect:
         manager.disconnect(room_id, websocket)
         await manager.broadcast_to_room(room_id, {

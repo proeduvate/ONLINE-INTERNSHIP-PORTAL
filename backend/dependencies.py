@@ -36,16 +36,19 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 def check_admin(current_user: models.User = Depends(get_current_user)) -> models.User:
-    if current_user.role != models.UserRole.ADMIN:
+    role_str = str(current_user.role.value if hasattr(current_user.role, 'value') else current_user.role).lower()
+    if role_str != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied: Admin role required")
     return current_user
 
 def check_mentor(current_user: models.User = Depends(get_current_user)) -> models.User:
-    if current_user.role != models.UserRole.MENTOR:
+    role_str = str(current_user.role.value if hasattr(current_user.role, 'value') else current_user.role).lower()
+    if role_str != "mentor" and role_str != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied: Mentor role required")
     return current_user
 
 def check_intern(current_user: models.User = Depends(get_current_user)) -> models.User:
-    if current_user.role != models.UserRole.INTERN:
+    role_str = str(current_user.role.value if hasattr(current_user.role, 'value') else current_user.role).lower()
+    if role_str != "intern":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied: Intern role required")
     return current_user
