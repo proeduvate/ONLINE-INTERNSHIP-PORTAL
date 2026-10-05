@@ -21,7 +21,7 @@ export default function AdminOnboardingDetails({ appId }) {
     useEffect(() => {
         const fetchMentors = async () => {
             try {
-                const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+                const baseUrl = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
                 const response = await axios.get(`${baseUrl}/api/v1/users?role=mentor`);
                 setMentors(response.data || []);
             } catch (error) {
@@ -66,7 +66,7 @@ export default function AdminOnboardingDetails({ appId }) {
             return;
         }
         try {
-            const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+            const baseUrl = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
             await axios.post(`${baseUrl}/api/v1/onboarding/${targetId}/assign-mentor`, { mentor_id: parseInt(selectedMentorId) });
             await mockOnboardingService.adminUpdateStatus(targetId, "MENTOR_ASSIGNED");
             const data = await mockOnboardingService.adminGetApplication(targetId);
@@ -191,7 +191,7 @@ export default function AdminOnboardingDetails({ appId }) {
                                         href={
                                             (app.resume || app.resume_url).startsWith('http') 
                                                 ? (app.resume || app.resume_url) 
-                                                : `http://127.0.0.1:8000/uploads/resumes/${app.resume || app.resume_url}`
+                                                : `https://online-internship-portal.onrender.com/uploads/resumes/${app.resume || app.resume_url}`
                                         } 
                                         target="_blank" 
                                         rel="noopener noreferrer" 

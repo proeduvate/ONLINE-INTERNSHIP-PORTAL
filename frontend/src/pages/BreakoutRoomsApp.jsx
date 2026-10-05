@@ -18,7 +18,7 @@ export default function BreakoutRoomsApp({ user, meetingId = "default-meeting" }
     if (!user) return;
 
     // Connect to WebSocket for presence tracking
-    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const baseUri = process.env.REACT_APP_API_BASE || 'https://online-internship-portal.onrender.com';
     const wsUri = baseUri.replace(/^http/, 'ws') + `/api/meetings/ws/${activeChannel}/${user.id}`;
     
     ws.current = new WebSocket(wsUri);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../api/axios';
 import '../../onboarding/Onboarding.css';
 
 export default function AdminOnboardingList() {
@@ -10,7 +10,7 @@ export default function AdminOnboardingList() {
         const fetchApps = async () => {
             setLoading(true);
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/v1/onboarding/applications");
+                const response = await api.get("/api/v1/onboarding/applications");
                 setApplications(response.data);
             } catch (error) {
                 console.error("Error fetching applications", error);

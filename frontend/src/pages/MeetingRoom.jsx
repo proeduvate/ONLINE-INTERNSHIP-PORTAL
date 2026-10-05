@@ -130,7 +130,7 @@ export default function MeetingRoom({ currentRoom = "main-meeting", user, onLeav
       localStreamRef.current = stream;
       
       // 2. Connect WebSocket
-      const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+      const baseUri = process.env.REACT_APP_API_BASE || 'https://online-internship-portal.onrender.com';
       const wsUri = baseUri.replace(/^http/, 'ws') + `/api/meetings/ws/${currentRoom}/${user.id}_media`;
       wsRef.current = new WebSocket(wsUri);
 

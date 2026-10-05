@@ -30,7 +30,7 @@ export default function Status() {
     setStatusResult(null);
 
     try {
-      const baseUrl = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+      const baseUrl = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
       const response = await axios.get(`${baseUrl}/api/v1/onboarding/status/${cleanId}`);
       setStatusResult(response.data);
       localStorage.setItem("last_application_id", response.data.applicationId);

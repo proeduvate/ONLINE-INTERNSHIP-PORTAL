@@ -103,17 +103,13 @@ export default function Apply() {
                 formPayload.append("resume", formData.resume);
             }
 
-            const response = await fetch("http://127.0.0.1:8000/api/v1/onboarding/apply", {
-                method: "POST",
-                body: formPayload,
+            const response = await api.post('/api/v1/onboarding/apply', formPayload, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
 
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.detail || "Application submission failed.");
-            }
-
-            const data = await response.json();
+            const data = response.data;
             const appId = data.application_id;
 
             localStorage.setItem("last_application_id", appId);
@@ -121,7 +117,8 @@ export default function Apply() {
             setSubmitted(true);
         } catch (error) {
             console.error("Error submitting application", error);
-            alert("Error submitting application: " + error.message);
+            const msg = error.response?.data?.detail || error.message;
+            alert("Error submitting application: " + msg);
         } finally {
             setIsSubmitting(false);
         }
