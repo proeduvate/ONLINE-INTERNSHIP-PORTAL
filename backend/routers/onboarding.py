@@ -46,7 +46,8 @@ def apply_for_onboarding(
                 local_path = os.path.join("uploads/resumes", unique_filename)
                 with open(local_path, "wb") as f:
                     f.write(content)
-                resume_url = f"http://127.0.0.1:8000/uploads/resumes/{unique_filename}"
+                from services.email_service import BACKEND_URL
+                resume_url = f"{BACKEND_URL}/uploads/resumes/{unique_filename}"
         except Exception as err:
             print("Error uploading/saving resume file:", err)
             os.makedirs("uploads/resumes", exist_ok=True)
@@ -54,7 +55,8 @@ def apply_for_onboarding(
             local_path = os.path.join("uploads/resumes", unique_filename)
             with open(local_path, "wb") as f:
                 f.write(content)
-            resume_url = f"http://127.0.0.1:8000/uploads/resumes/{unique_filename}"
+            from services.email_service import BACKEND_URL
+            resume_url = f"{BACKEND_URL}/uploads/resumes/{unique_filename}"
         finally:
             resume.file.close()
 
@@ -79,13 +81,13 @@ def apply_for_onboarding(
     
     # Send application submission confirmation email
     try:
-        from services.email_service import dispatch_notification, EventType
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
         dispatch_notification(
             recipient_email=new_app.email,
             event_type=EventType.SYSTEM_ALERT,
             title="Application Received - ProEduvate Internship",
             message=f"Dear {new_app.name}, thank you for applying for the {new_app.domain} Internship at ProEduvate. Your Application ID is APP-{new_app.id}. We have received your details and resume, and our team is currently reviewing your application.",
-            action_url=f"http://localhost:3000/track?appId=APP-{new_app.id}",
+            action_url=f"{FRONTEND_URL}/onboarding/status?appId=APP-{new_app.id}",
             sender_name="ProEduvate Admissions"
         )
     except Exception as e:
@@ -217,11 +219,11 @@ def schedule_interview(
         if not req.scheduled_time:
             raise HTTPException(status_code=400, detail="Scheduled time is required for interview")
             
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
+        
         # Generate daily link based on date portion of scheduled time (e.g. YYYY-MM-DD)
         date_part = req.scheduled_time.split("T")[0]
-        generated_meet_link = f"http://localhost:3000/meeting/interview-{date_part}"
-        
-        from services.email_service import dispatch_notification, EventType
+        generated_meet_link = f"{FRONTEND_URL}/meeting/interview-{date_part}"
         
         # 1. Email the Intern
         dispatch_notification(
@@ -305,7 +307,7 @@ def interview_result(application_id: str, res: InterviewRes, db: Session = Depen
                 event_type=EventType.SYSTEM_ALERT,
                 title="Update on your ProEduvate Internship Application",
                 message=f"Dear {db_app.name}, thank you for attending the interview. Unfortunately, we are unable to proceed with your application at this time.",
-                action_url=f"http://localhost:3000/track?appId=APP-{db_app.id}",
+                action_url=f"{FRONTEND_URL}/onboarding/status?appId=APP-{db_app.id}",
                 sender_name="ProEduvate Admissions"
             )
         except Exception as e:
@@ -324,7 +326,7 @@ def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Dep
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
-    from services.email_service import dispatch_notification, EventType
+    from services.email_service import dispatch_notification, EventType, FRONTEND_URL
     if req.verified:
         db_app.status = models.ApplicationStatus.DOCUMENTS_PENDING
         try:
@@ -333,7 +335,7 @@ def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Dep
                 event_type=EventType.SYSTEM_ALERT,
                 title="Payment Verified - Documents Ready for Signing",
                 message=f"Dear {db_app.name}, your payment for the {db_app.domain} Internship has been verified by our team! Your Offer Letter and Terms & Conditions are ready for you to review and sign.",
-                action_url=f"http://localhost:3000/onboarding/documents?appId=APP-{db_app.id}",
+                action_url=f"{FRONTEND_URL}/onboarding/documents?appId=APP-{db_app.id}",
                 sender_name="ProEduvate Admissions"
             )
         except Exception as e:
@@ -346,7 +348,7 @@ def verify_payment(application_id: str, req: PaymentVerifyReq, db: Session = Dep
                 event_type=EventType.SYSTEM_ALERT,
                 title="Payment Verification Notice",
                 message=f"Dear {db_app.name}, we could not verify your payment submission. Please check your transaction details or contact support.",
-                action_url=f"http://localhost:3000/onboarding/payment?appId=APP-{db_app.id}",
+                action_url=f"{FRONTEND_URL}/onboarding/payment?appId=APP-{db_app.id}",
                 sender_name="ProEduvate Finance"
             )
         except Exception as e:
@@ -372,13 +374,13 @@ def generate_documents(application_id: str, db: Session = Depends(get_db)):
     db.commit()
 
     try:
-        from services.email_service import dispatch_notification, EventType
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
         dispatch_notification(
             recipient_email=db_app.email,
             event_type=EventType.SYSTEM_ALERT,
             title="Onboarding Documents Generated",
             message=f"Dear {db_app.name}, your Offer Letter and Terms & Conditions are ready for review and digital signature.",
-            action_url=f"http://localhost:3000/onboarding/documents?appId=APP-{db_app.id}",
+            action_url=f"{FRONTEND_URL}/onboarding/documents?appId=APP-{db_app.id}",
             sender_name="ProEduvate Onboarding"
         )
     except Exception as e:
@@ -400,7 +402,7 @@ def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depen
     db.commit()
 
     try:
-        from services.email_service import dispatch_notification, EventType
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
         mentor_user = db.query(models.User).filter(models.User.id == req.mentor_id).first()
         mentor_name = mentor_user.name if mentor_user else "Assigned Mentor"
         
@@ -410,7 +412,7 @@ def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depen
             event_type=EventType.SYSTEM_ALERT,
             title="Mentor Assigned - ProEduvate Internship",
             message=f"Dear {db_app.name}, mentor {mentor_name} has been assigned to guide you during your {db_app.domain} Internship.",
-            action_url="http://localhost:3000/login",
+            action_url=f"{FRONTEND_URL}/login",
             sender_name="ProEduvate Team"
         )
         
@@ -421,7 +423,7 @@ def assign_mentor(application_id: str, req: AssignMentorReq, db: Session = Depen
                 event_type=EventType.TASK_ASSIGNED,
                 title="New Intern Assigned",
                 message=f"Hello {mentor_name}, intern {db_app.name} ({db_app.domain}) has been assigned to you.",
-                action_url="http://localhost:3000/admin/onboarding",
+                action_url=f"{FRONTEND_URL}/admin/onboarding",
                 sender_name="ProEduvate System"
             )
     except Exception as e:
@@ -482,8 +484,8 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
         db_app.status = models.ApplicationStatus.ACTIVE
         db.commit()
         
-        from services.email_service import dispatch_notification, EventType
-        login_url = "http://localhost:3000/login"
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
+        login_url = f"{FRONTEND_URL}/login"
         dispatch_notification(
             recipient_email=new_user.email,
             event_type=EventType.SYSTEM_ALERT,
@@ -527,13 +529,13 @@ def sign_document_inline(application_id: str, req: SignDocumentReq, db: Session 
     db.commit()
 
     try:
-        from services.email_service import dispatch_notification, EventType
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
         dispatch_notification(
             recipient_email=db_app.email,
             event_type=EventType.SYSTEM_ALERT,
             title=f"Signed Document Received ({doc_name})",
             message=f"Dear {db_app.name}, we have successfully recorded your digital signature for your {doc_name}.",
-            action_url=signed_url or "http://localhost:3000/onboarding/documents",
+            action_url=signed_url or f"{FRONTEND_URL}/onboarding/documents",
             sender_name="ProEduvate Onboarding"
         )
     except Exception as e:

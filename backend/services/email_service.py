@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://online-internship-portal-1.onrender.com").rstrip("/")
+BACKEND_URL = os.getenv("BACKEND_URL", "https://online-internship-portal.onrender.com").rstrip("/")
+
 # --- EmailJS Configuration (Supports standard and REACT_APP_ prefixes) ---
 EMAILJS_SERVICE_ID = os.getenv("EMAILJS_SERVICE_ID") or os.getenv("REACT_APP_EMAILJS_SERVICE_ID")
 EMAILJS_TEMPLATE_ID = os.getenv("EMAILJS_TEMPLATE_ID") or os.getenv("REACT_APP_EMAILJS_TEMPLATE_ID")
@@ -138,7 +141,7 @@ def dispatch_notification(
                 'sender_name': sender_name,
                 'event_type': event_type.value if hasattr(event_type, 'value') else str(event_type),
                 'details': message or title,
-                'action_link': action_url or "https://internship-portal.example.com",
+                'action_link': action_url or FRONTEND_URL,
                 'timestamp': formatted_time
             }
         }

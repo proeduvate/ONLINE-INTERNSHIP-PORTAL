@@ -171,13 +171,13 @@ def create_mentor(
     
     # Dispatch notification email if service is available
     try:
-        from services.email_service import dispatch_notification, EventType
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
         dispatch_notification(
             recipient_email=new_mentor.email,
             event_type=EventType.SYSTEM_ALERT,
             title="Mentor Account Verification & Login Credentials",
             message=f"Welcome {new_mentor.name}! Your mentor account has been created for {domain_obj.name if domain_obj else (mentor_data.domain or 'General')}. Temporary password: {mentor_data.password or 'Mentor@123'}",
-            action_url="http://localhost:3000/login"
+            action_url=f"{FRONTEND_URL}/login"
         )
     except Exception as e:
         print(f"Notification dispatch warning: {e}")

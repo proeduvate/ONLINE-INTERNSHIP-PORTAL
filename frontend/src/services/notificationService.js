@@ -49,6 +49,8 @@ class CorporateSMTPProvider {
 // 2. SERVICE (The interface used by your React components)
 // ---------------------------------------------------------
 
+const getSiteBase = () => typeof window !== 'undefined' ? window.location.origin : 'https://online-internship-portal-1.onrender.com';
+
 class NotificationService {
   constructor() {
     // Easily swap this to `new CorporateSMTPProvider()` later!
@@ -59,14 +61,14 @@ class NotificationService {
   /**
    * Generic notification sender
    */
-  async notify(eventTitle, eventDetails, ctaUrl = "http://localhost:3000/dashboard") {
+  async notify(eventTitle, eventDetails, ctaUrl = `${getSiteBase()}/dashboard`) {
     const templateParams = {
       to_email: this.targetEmail,
       sender_name: "Portal System", // Sender Name
       event_type: eventTitle,
       details: eventDetails || eventTitle,
       timestamp: new Date().toLocaleString(),
-      action_link: ctaUrl || "https://internship-portal.example.com"
+      action_link: ctaUrl || `${getSiteBase()}/dashboard`
     };
 
     return await this.provider.send(templateParams);
@@ -75,17 +77,17 @@ class NotificationService {
   // Pre-defined triggers for consistency
   async notifyMeetingScheduled(time, title, roomId) {
     const details = `A weekly mentoring meeting "${title}" has been scheduled for ${time}. Room ID: ${roomId}`;
-    return this.notify("Weekly Mentoring Meeting Scheduled 📅", details, `http://localhost:3000/meetings/${roomId}`);
+    return this.notify("Weekly Mentoring Meeting Scheduled 📅", details, `${getSiteBase()}/meetings/${roomId}`);
   }
 
   async notifyRoomAdmit(internName, roomName) {
     const details = `Intern ${internName} has been admitted to ${roomName}.`;
-    return this.notify("Breakout Room Access Granted 🔓", details, "http://localhost:3000/breakout-rooms");
+    return this.notify("Breakout Room Access Granted 🔓", details, `${getSiteBase()}/breakout-rooms`);
   }
 
   async notifyAnnouncement(title, content) {
     const details = `New Announcement: ${title}\n\n${content}`;
-    return this.notify("New Portal Announcement 📢", details, "http://localhost:3000/dashboard");
+    return this.notify("New Portal Announcement 📢", details, `${getSiteBase()}/dashboard`);
   }
 }
 

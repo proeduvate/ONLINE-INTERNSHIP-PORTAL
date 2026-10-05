@@ -126,13 +126,14 @@ class OnboardingService:
         user.onboarding_status = "ACCOUNT_ACTIVATION_PENDING"
         db.commit()
         
+        from .email_service import FRONTEND_URL
         await email_service.send_email(
             user.email,
             "Activate Your Account",
             {
                 "intern_name": user.name,
                 "temp_password": temp_password,
-                "login_url": "http://localhost:3000/login"
+                "login_url": f"{FRONTEND_URL}/login"
             },
             template_id=email_service.activation_template_id
         )
