@@ -162,11 +162,12 @@ def get_all_applications(db: Session = Depends(get_db)):
     # Format for the frontend table
     result = []
     for app in apps:
+        status_str = app.status.value if hasattr(app.status, 'value') else str(app.status) if app.status else "PENDING_REVIEW"
         result.append({
             "applicationId": f"APP-{app.id}",
             "name": app.name,
             "domain": app.domain,
-            "status": app.status.value
+            "status": status_str
         })
     return result
 
@@ -191,6 +192,8 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
         if mentor_user:
             mentor_name = mentor_user.name
 
+    status_str = db_app.status.value if hasattr(db_app.status, 'value') else str(db_app.status) if db_app.status else "PENDING_REVIEW"
+
     return {
         "applicationId": f"APP-{db_app.id}",
         "name": db_app.name,
@@ -201,7 +204,7 @@ def get_application_details(application_id: str, db: Session = Depends(get_db)):
         "domain": db_app.domain,
         "github_url": getattr(db_app, 'github_url', None),
         "linkedin_url": getattr(db_app, 'linkedin_url', None),
-        "status": db_app.status.value,
+        "status": status_str,
         "resume": db_app.resume_url,
         "assigned_mentor_id": getattr(db_app, 'assigned_mentor_id', None),
         "assigned_mentor_name": mentor_name,
