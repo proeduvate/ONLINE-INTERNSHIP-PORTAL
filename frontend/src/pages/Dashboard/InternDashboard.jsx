@@ -685,13 +685,6 @@ export default function InternDashboard() {
     navigate("/intern/learning");
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
-    setChatMessages(prev => [...prev, { sender: "You", text: inputMsg, time: "Just now" }]);
-    setInputMsg("");
-  };
-
   const renderContent = () => {
     switch (activeTab) {
       case "Overview":
