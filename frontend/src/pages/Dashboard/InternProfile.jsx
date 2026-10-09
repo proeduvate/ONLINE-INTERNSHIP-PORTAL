@@ -5,7 +5,7 @@ import api from "../../api/axios";
 export default function InternProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Intern&backgroundColor=f8fafc");
+  const [profileImage, setProfileImage] = useState(() => localStorage.getItem("user_profile_photo") || null);
   const fileInputRef = useRef(null);
 
   // Profile Form State
@@ -67,13 +67,21 @@ export default function InternProfile() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setProfileImage(url);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result;
+        setProfileImage(base64);
+        localStorage.setItem("user_profile_photo", base64);
+        window.dispatchEvent(new Event("profile_photo_updated"));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Intern&backgroundColor=f8fafc");
+    setProfileImage(null);
+    localStorage.removeItem("user_profile_photo");
+    window.dispatchEvent(new Event("profile_photo_updated"));
   };
 
   const handleSaveProfile = async (e) => {
@@ -203,7 +211,13 @@ export default function InternProfile() {
               {/* Avatar Section */}
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
-                  <img src={profileImage} alt="Profile" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid var(--border-color, #e2e8f0)", objectFit: "cover" }} />
+                  <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid var(--border-color, #e2e8f0)", overflow: "hidden", background: "var(--brand-primary, #3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
+                    {profileImage ? (
+                      <img src={profileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <User size={38} color="#ffffff" />
+                    )}
+                  </div>
                   <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface-elevated, #f1f5f9)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary, #475569)", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />
                   </button>

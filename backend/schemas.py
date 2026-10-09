@@ -56,6 +56,7 @@ class UserResponse(BaseModel):
     domain_id: Optional[int] = None
     domain_name: Optional[str] = None
     mentor_id: Optional[int] = None
+    mentor_name: Optional[str] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     attendance_pct: int

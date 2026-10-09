@@ -107,6 +107,20 @@ export default function InternDashboard() {
     fetchInternData();
   }, []);
 
+  const [profilePhoto, setProfilePhoto] = useState(() => localStorage.getItem("user_profile_photo"));
+
+  useEffect(() => {
+    const handlePhotoUpdate = () => {
+      setProfilePhoto(localStorage.getItem("user_profile_photo"));
+    };
+    window.addEventListener("profile_photo_updated", handlePhotoUpdate);
+    window.addEventListener("storage", handlePhotoUpdate);
+    return () => {
+      window.removeEventListener("profile_photo_updated", handlePhotoUpdate);
+      window.removeEventListener("storage", handlePhotoUpdate);
+    };
+  }, []);
+
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
   const [isMeetingMinimized, setIsMeetingMinimized] = useState(false);
@@ -1754,19 +1768,19 @@ export default function InternDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>John Doe</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.name || "Intern User"}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Dr. Sakthi</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.mentor_name || (typeof internUser?.mentor === 'string' ? internUser.mentor : internUser?.mentor?.name) || "Dr. Sakthi"}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain}</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain || internUser?.domain_name || "AIML"}</div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Computer Science (MIT)</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.college || "College / Institution"}</div>
                   </div>
                 </div>
 
@@ -2289,11 +2303,11 @@ export default function InternDashboard() {
                       <p style={{ fontSize: "0.9rem", color: "#45617F", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
 
                       <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "#0B82F6", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
-                        Sadie Sink
+                        {internUser?.name || "Intern User"}
                       </h1>
 
                       <p style={{ fontSize: "0.85rem", color: "#45617F", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
+                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>{internDomain || internUser?.domain_name || "Internship Program"}</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
                       </p>
                     </div>
 
@@ -2843,8 +2857,12 @@ export default function InternDashboard() {
 
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
-            <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              <img src="/assets/sadie-pfp.jpg" alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
+            <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "var(--brand-primary, #3b82f6)", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
+              {profilePhoto ? (
+                <img src={profilePhoto} alt={internUser?.name || "Profile"} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+              ) : (
+                <User size={18} color="#ffffff" />
+              )}
             </div>
             
             {isProfileDropdownOpen && (

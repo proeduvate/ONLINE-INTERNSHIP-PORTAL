@@ -33,6 +33,8 @@ export default function Documents() {
                 setStatusData({ 
                     status: response.data.status, 
                     applicationId: appId,
+                    fullName: response.data.full_name || response.data.name || "Intern Applicant",
+                    domainName: response.data.domain || "Internship Program",
                     offer_letter_url: response.data.offer_letter_url || "#",
                     tc_url: response.data.tc_url || "#",
                     signed_offer_letter_url: response.data.signed_offer_letter_url,
@@ -302,8 +304,8 @@ export default function Documents() {
                             {/* Offer Letter Body */}
                             {pdfType === 'offer_letter' ? (
                                 <div style={{ fontSize: '13px' }}>
-                                    <p>Dear <strong>John Doe</strong>,</p>
-                                    <p>We are pleased to offer you an appointment for the position of <strong>Full Stack Web Development Intern</strong> at ProEduvate EdTech Solutions. We were greatly impressed by your qualifications during the selection process.</p>
+                                    <p>Dear <strong>{statusData?.fullName || "Intern Applicant"}</strong>,</p>
+                                    <p>We are pleased to offer you an appointment for the position of <strong>{statusData?.domainName || "Intern"}</strong> at ProEduvate EdTech Solutions. We were greatly impressed by your qualifications during the selection process.</p>
                                     
                                     <p style={{ margin: '14px 0 6px 0', fontWeight: 700, fontFamily: 'sans-serif' }}>Key Terms of Internship:</p>
                                     <ul style={{ paddingLeft: '20px', margin: '0 0 14px 0' }}>
@@ -536,7 +538,7 @@ export default function Documents() {
                                                 alt="Intern Signature" 
                                                 style={{ height: '40px', maxWidth: '160px', objectFit: 'contain', borderBottom: '1px solid #0f172a' }} 
                                             />
-                                            <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a', marginTop: '4px' }}>John Doe</div>
+                                            <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a', marginTop: '4px' }}>{statusData?.fullName || "Intern Applicant"}</div>
                                             <div style={{ fontSize: '10px', color: '#2563eb' }}>Signed digitally on Sep 20, 2026</div>
                                         </div>
                                     ) : (

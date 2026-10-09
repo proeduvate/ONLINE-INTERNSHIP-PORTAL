@@ -99,6 +99,10 @@ class User(Base):
     def domain_name(self):
         return self.domain.name if self.domain else None
 
+    @property
+    def mentor_name(self):
+        return self.mentor.name if self.mentor else None
+
 
 class Domain(Base):
     __tablename__ = "domains"
