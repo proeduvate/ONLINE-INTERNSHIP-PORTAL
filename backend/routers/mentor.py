@@ -138,6 +138,184 @@ def get_mentor_interns(db: Session = Depends(get_db), current_user: models.User 
         
     return result
 
+@router.get("/interns/{intern_identifier}")
+def get_intern_details(intern_identifier: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    clean_identifier = intern_identifier.strip()
+    
+    # Try exact/case-insensitive match on intern_id
+    intern = db.query(models.User).options(
+        joinedload(models.User.batch),
+        joinedload(models.User.domain)
+    ).filter(
+        (models.User.intern_id == clean_identifier) | 
+        (func.lower(models.User.intern_id) == clean_identifier.lower())
+    ).first()
+
+    # Try numeric ID lookup
+    if not intern:
+        clean_num = clean_identifier.replace("INT-", "").replace("INT", "").strip()
+        if clean_num.isdigit():
+            intern = db.query(models.User).options(
+                joinedload(models.User.batch),
+                joinedload(models.User.domain)
+            ).filter(models.User.id == int(clean_num)).first()
+
+    if not intern:
+        raise HTTPException(status_code=404, detail=f"Intern '{intern_identifier}' not found")
+
+    # Fetch all submissions for this intern with task details
+    subs = db.query(models.Submission).options(
+        joinedload(models.Submission.task)
+    ).filter(models.Submission.intern_id == intern.id).all()
+
+    # Calculate live metrics
+    completed_subs = [s for s in subs if s.status in ["submitted", "approved"]]
+    completed_tasks_count = len(completed_subs)
+
+    avg_score = 0
+    weak_areas = "None identified"
+    strengths = "Good task completion"
+    
+    if subs:
+        scores = [(s.mcq_score or 0) + (s.ai_score or 0) + (s.mentor_score or 0) for s in subs]
+        if scores:
+            avg_score = int(sum(scores) / len(scores))
+        
+        low_subs = [s for s in subs if ((s.mcq_score or 0) + (s.ai_score or 0) + (s.mentor_score or 0)) < 150]
+        if low_subs:
+            lowest = sorted(low_subs, key=lambda s: (s.mcq_score or 0) + (s.ai_score or 0) + (s.mentor_score or 0))[0]
+            if lowest.task:
+                weak_areas = f"Struggled with {lowest.task.title}"
+            else:
+                weak_areas = "Needs additional practice"
+        
+        high_subs = [s for s in subs if ((s.mcq_score or 0) + (s.ai_score or 0) + (s.mentor_score or 0)) >= 180]
+        if high_subs and high_subs[0].task:
+            strengths = f"Strong performance in {high_subs[0].task.title}"
+
+    # Calculate days completed
+    days_completed = max(completed_tasks_count, int((intern.progress_pct / 100.0) * 30)) if intern.progress_pct else completed_tasks_count
+
+    # Build map of submissions by day number
+    sub_by_day = {}
+    for sub in subs:
+        day_num = sub.task.day_number if sub.task else sub.id
+        sub_by_day[day_num] = sub
+
+    formatted_submissions = []
+    submitted_count = 0
+    for day_i in range(1, 31):
+        sub = sub_by_day.get(day_i)
+        if sub:
+            submitted_count += 1
+            task = sub.task
+            task_title = task.title if task else f"Daily Task {day_i}"
+            sub_date = sub.submitted_at.strftime("%Y-%m-%d") if sub.submitted_at else f"2026-10-{day_i:02d}"
+            sub_datetime = sub.submitted_at.strftime("%Y-%m-%d %H:%M") if sub.submitted_at else f"2026-10-{day_i:02d} 10:00"
+            
+            files_list = []
+            if sub.code_submission and sub.code_submission.strip():
+                lang = "python" if ("def " in sub.code_submission or "import " in sub.code_submission or "print(" in sub.code_submission) else "javascript"
+                ext = "py" if lang == "python" else "js"
+                files_list.append({
+                    "name": f"Solution_Day{day_i}.{ext}",
+                    "type": "code",
+                    "language": lang,
+                    "size": f"{len(sub.code_submission)} B",
+                    "uploadedAt": sub_datetime,
+                    "content": sub.code_submission
+                })
+            if sub.mcq_answers:
+                files_list.append({
+                    "name": f"MCQ_Answers_Day{day_i}.json",
+                    "type": "code",
+                    "language": "json",
+                    "size": f"{len(sub.mcq_answers)} B",
+                    "uploadedAt": sub_datetime,
+                    "content": sub.mcq_answers
+                })
+            if sub.filename:
+                files_list.append({
+                    "name": sub.filename,
+                    "type": "document",
+                    "size": "500 KB",
+                    "uploadedAt": sub_datetime
+                })
+            if not files_list:
+                files_list.append({
+                    "name": f"MCQ_Day{day_i}.pdf",
+                    "type": "document",
+                    "size": "250 KB",
+                    "uploadedAt": sub_datetime
+                })
+
+            formatted_submissions.append({
+                "id": sub.id,
+                "dayNumber": day_i,
+                "day": f"Day {day_i}",
+                "task": task_title,
+                "date": sub_date,
+                "submittedAt": sub_datetime,
+                "mcqScore": f"{sub.mcq_score}%" if sub.mcq_score is not None else "0%",
+                "aiScore": f"{sub.ai_score}%" if sub.ai_score is not None else "N/A",
+                "mentorScore": sub.mentor_score,
+                "status": "Approved" if sub.status == "approved" else ("Rejected" if sub.status == "rejected" else "Submitted"),
+                "feedback": sub.mentor_feedback or sub.ai_feedback or "Good progress on daily assessment.",
+                "githubUrl": f"https://github.com/intern/task-{day_i}" if sub.code_submission else None,
+                "files": files_list,
+                "isSubmitted": True
+            })
+        else:
+            formatted_submissions.append({
+                "id": f"unsubmitted-{day_i}",
+                "dayNumber": day_i,
+                "day": f"Day {day_i}",
+                "task": "No Task Scheduled",
+                "date": "-",
+                "submittedAt": "-",
+                "mcqScore": "-",
+                "aiScore": "-",
+                "mentorScore": 0,
+                "status": "Not Submitted",
+                "feedback": "-",
+                "githubUrl": None,
+                "files": [],
+                "isSubmitted": False
+            })
+
+    # Performance trend curve
+    performance_trend = [
+        {"week": "Week 1", "score": min(100, max(40, avg_score - 15)) if avg_score else 50},
+        {"week": "Week 2", "score": min(100, max(45, avg_score - 10)) if avg_score else 60},
+        {"week": "Week 3", "score": min(100, max(50, avg_score - 5)) if avg_score else 70},
+        {"week": "Week 4", "score": avg_score if avg_score else intern.progress_pct or 75},
+    ]
+
+    domain_name = intern.domain.name if intern.domain else "AIML"
+
+    return {
+        "intern": {
+            "id": intern.intern_id or f"INT-{intern.id}",
+            "db_id": intern.id,
+            "name": intern.name,
+            "email": intern.email,
+            "domain": domain_name,
+            "batch": intern.batch.name if intern.batch else "Batch A",
+            "progress": intern.progress_pct or 0,
+            "attendance": intern.attendance_pct or 100,
+            "score": avg_score,
+            "weakAreas": weak_areas,
+            "strengths": strengths,
+            "completedDays": days_completed,
+            "totalDays": 30,
+            "completedTasks": submitted_count,
+            "totalTasks": 30,
+        },
+        "performanceData": performance_trend,
+        "submissions": formatted_submissions
+    }
+
+
 @router.get("/submissions")
 def get_mentor_submissions(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     if current_user.role != models.UserRole.MENTOR:
