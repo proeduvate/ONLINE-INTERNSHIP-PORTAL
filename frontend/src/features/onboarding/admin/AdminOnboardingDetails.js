@@ -188,21 +188,27 @@ export default function AdminOnboardingDetails({ appId }) {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <span style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>Submitted Resume</span> 
-                                {(app.resume || app.resume_url) ? (
-                                    <a 
-                                        href={
-                                            (app.resume || app.resume_url).startsWith('http') 
-                                                ? (app.resume || app.resume_url) 
-                                                : `https://online-internship-portal.onrender.com/uploads/resumes/${app.resume || app.resume_url}`
-                                        } 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
-                                        className="btn btn-secondary" 
-                                        style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
-                                    >
-                                        📄 View Resume
-                                    </a>
-                                ) : (
+                                {(app.resume || app.resume_url) ? (() => {
+                                    const raw = app.resume || app.resume_url;
+                                    const fixedUrl = raw.replace("https://online-internship-portal.onrender.com", "https://online-internship-portal-1.onrender.com")
+                                                        .replace("http://online-internship-portal.onrender.com", "https://online-internship-portal-1.onrender.com");
+                                    const finalHref = fixedUrl.startsWith('http') 
+                                        ? fixedUrl 
+                                        : (fixedUrl.startsWith('/') 
+                                            ? `https://online-internship-portal-1.onrender.com${fixedUrl}`
+                                            : `https://online-internship-portal-1.onrender.com/uploads/resumes/${fixedUrl}`);
+                                    return (
+                                        <a 
+                                            href={finalHref} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer" 
+                                            className="btn btn-secondary" 
+                                            style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '6px', backgroundColor: 'white', border: '1px solid #cbd5e1', color: '#0f172a', width: 'fit-content', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
+                                        >
+                                            📄 View Resume
+                                        </a>
+                                    );
+                                })() : (
                                     <span style={{ color: '#94a3b8', fontSize: '13px' }}>No resume uploaded</span>
                                 )}
                             </div>

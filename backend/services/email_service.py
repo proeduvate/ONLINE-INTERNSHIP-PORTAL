@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://online-internship-portal-1.onrender.com").rstrip("/")
-BACKEND_URL = os.getenv("BACKEND_URL", "https://online-internship-portal.onrender.com").rstrip("/")
+BACKEND_URL = os.getenv("BACKEND_URL", "https://online-internship-portal-1.onrender.com").rstrip("/")
 
 # --- EmailJS Configuration (Supports standard and REACT_APP_ prefixes) ---
 EMAILJS_SERVICE_ID = os.getenv("EMAILJS_SERVICE_ID") or os.getenv("REACT_APP_EMAILJS_SERVICE_ID")

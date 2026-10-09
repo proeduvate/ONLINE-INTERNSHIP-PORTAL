@@ -188,9 +188,19 @@ export default function AdminOnboardingDetails({ appId }) {
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-color)' }}>Domain:</strong> {app.domain}</p>
                         <p style={{ margin: '8px 0', color: 'var(--text-muted)' }}>
                             <strong style={{ color: 'var(--text-color)' }}>Resume:</strong>
-                            {app.resume && app.resume !== "#" ? (
-                                <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '12px', marginLeft: '8px' }} onClick={() => window.open(app.resume, "_blank")}>View Resume</button>
-                            ) : (
+                            {(app.resume || app.resume_url) && (app.resume || app.resume_url) !== "#" ? (() => {
+                                const raw = (app.resume || app.resume_url).trim();
+                                const fixedUrl = raw.replace("https://online-internship-portal.onrender.com", "https://online-internship-portal-1.onrender.com")
+                                                    .replace("http://online-internship-portal.onrender.com", "https://online-internship-portal-1.onrender.com");
+                                const finalHref = fixedUrl.startsWith('http') 
+                                    ? fixedUrl 
+                                    : (fixedUrl.startsWith('/') 
+                                        ? `https://online-internship-portal-1.onrender.com${fixedUrl}`
+                                        : `https://online-internship-portal-1.onrender.com/uploads/resumes/${fixedUrl}`);
+                                return (
+                                    <button className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '12px', marginLeft: '8px' }} onClick={() => window.open(finalHref, "_blank")}>View Resume</button>
+                                );
+                            })() : (
                                 <span style={{ marginLeft: '8px', color: 'var(--text-muted)' }}>Not Provided</span>
                             )}
                         </p>
