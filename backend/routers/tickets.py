@@ -16,21 +16,34 @@ router = APIRouter()
 
 def _format_ticket_response(ticket: Ticket) -> dict:
     messages = []
+    comments = []
     for msg in ticket.messages:
+        sender_name = msg.sender.name if msg.sender else f"User {msg.sender_id}"
+        sender_role = msg.sender.role.value if msg.sender and hasattr(msg.sender.role, 'value') else (str(msg.sender.role) if msg.sender else "user")
         messages.append({
             "id": msg.id,
             "ticket_id": msg.ticket_id,
             "sender_id": msg.sender_id,
-            "sender_name": msg.sender.name if msg.sender else f"User {msg.sender_id}",
-            "sender_role": msg.sender.role.value if msg.sender and hasattr(msg.sender.role, 'value') else (str(msg.sender.role) if msg.sender else "user"),
+            "sender_name": sender_name,
+            "sender_role": sender_role,
             "message": msg.message,
             "created_at": msg.created_at
         })
+        comments.append({
+            "author": sender_name,
+            "text": msg.message,
+            "time": msg.created_at.isoformat() if msg.created_at else None
+        })
     
+    creator_name = ticket.creator.name if ticket.creator else f"User {ticket.created_by}"
+    date_str = ticket.created_at.strftime("%b %d, %Y") if ticket.created_at else "Recently"
+
     return {
         "id": ticket.id,
         "created_by": ticket.created_by,
-        "creator_name": ticket.creator.name if ticket.creator else f"User {ticket.created_by}",
+        "creator_name": creator_name,
+        "user": creator_name,
+        "user_name": creator_name,
         "assigned_to": ticket.assigned_to,
         "assignee_name": ticket.assignee.name if ticket.assignee else None,
         "title": ticket.title,
@@ -39,13 +52,15 @@ def _format_ticket_response(ticket: Ticket) -> dict:
         "status": ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status),
         "created_at": ticket.created_at,
         "updated_at": ticket.updated_at,
+        "date": date_str,
         "resolved_by": ticket.resolved_by,
         "resolved_at": ticket.resolved_at,
         "resolution": ticket.resolution,
         "closed_by": ticket.closed_by,
         "closed_at": ticket.closed_at,
         "closure_reason": ticket.closure_reason,
-        "messages": messages
+        "messages": messages,
+        "comments": comments
     }
 
 @router.post("/", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
@@ -123,52 +138,59 @@ def get_ticket_details(
 @router.patch("/{ticket_id}", response_model=TicketResponse)
 def update_ticket(
     ticket_id: int,
-    req: TicketPatchRequest,
+    req: dict,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Perform action on a ticket (assign, message, resolve, close)."""
+    """Perform action on a ticket (assign, message, resolve, close, status, comments)."""
     ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
     old_status = ticket.status
+    action = req.get("action")
+    history_action = "updated"
 
-    if req.action == TicketAction.ASSIGN:
-        if not req.assigned_to:
-            raise HTTPException(status_code=400, detail="assigned_to user ID is required")
-        ticket.assigned_to = req.assigned_to
+    if action == "assign" or req.get("assigned_to"):
+        ticket.assigned_to = req.get("assigned_to")
         ticket.status = TicketStatus.ASSIGNED
         history_action = "assigned"
 
-    elif req.action == TicketAction.MESSAGE:
-        if not req.message:
-            raise HTTPException(status_code=400, detail="message text is required")
-        new_msg = TicketMessage(
-            ticket_id=ticket.id,
-            sender_id=current_user.id,
-            message=req.message
-        )
-        db.add(new_msg)
-        if ticket.status == TicketStatus.OPEN:
-            ticket.status = TicketStatus.IN_PROGRESS
-        history_action = "message_added"
+    if action == "message" or req.get("message") or req.get("comments"):
+        msg_text = req.get("message")
+        if not msg_text and req.get("comments"):
+            c_val = req.get("comments")
+            if isinstance(c_val, list) and len(c_val) > 0:
+                last_c = c_val[-1]
+                msg_text = last_c.get("text") if isinstance(last_c, dict) else str(last_c)
+            elif isinstance(c_val, str):
+                msg_text = c_val
+        if msg_text:
+            new_msg = TicketMessage(
+                ticket_id=ticket.id,
+                sender_id=current_user.id,
+                message=msg_text
+            )
+            db.add(new_msg)
+            if ticket.status == TicketStatus.OPEN:
+                ticket.status = TicketStatus.IN_PROGRESS
+            history_action = "message_added"
 
-    elif req.action == TicketAction.RESOLVE:
+    status_val = req.get("status")
+    if action == "resolve" or status_val == "Resolved":
         ticket.status = TicketStatus.RESOLVED
         ticket.resolved_by = current_user.id
         ticket.resolved_at = datetime.utcnow()
-        ticket.resolution = req.resolution or "Resolved by staff"
+        ticket.resolution = req.get("resolution") or "Resolved by staff"
         history_action = "resolved"
-
-    elif req.action == TicketAction.CLOSE:
+    elif action == "close" or status_val == "Closed":
         ticket.status = TicketStatus.CLOSED
         ticket.closed_by = current_user.id
         ticket.closed_at = datetime.utcnow()
-        ticket.closure_reason = req.closure_reason or "Closed"
+        ticket.closure_reason = req.get("closure_reason") or "Closed"
         history_action = "closed"
-    else:
-        raise HTTPException(status_code=400, detail=f"Invalid action: {req.action}")
+    elif status_val == "In Progress" or status_val == "in_progress":
+        ticket.status = TicketStatus.IN_PROGRESS
 
     ticket.updated_at = datetime.utcnow()
     db.commit()

@@ -761,6 +761,8 @@ class TicketResponse(BaseModel):
     id: int
     created_by: int
     creator_name: Optional[str] = None
+    user: Optional[str] = None
+    user_name: Optional[str] = None
     assigned_to: Optional[int] = None
     assignee_name: Optional[str] = None
     title: str
@@ -769,6 +771,7 @@ class TicketResponse(BaseModel):
     status: TicketStatusSchema
     created_at: datetime
     updated_at: datetime
+    date: Optional[str] = None
     
     resolved_by: Optional[int] = None
     resolved_at: Optional[datetime] = None
@@ -779,6 +782,7 @@ class TicketResponse(BaseModel):
     closure_reason: Optional[str] = None
     
     messages: List[TicketMessageResponse] = []
+    comments: Optional[List[dict]] = []
 
     class Config:
         from_attributes = True

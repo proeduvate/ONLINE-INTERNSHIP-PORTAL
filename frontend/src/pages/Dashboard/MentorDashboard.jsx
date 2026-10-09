@@ -1759,11 +1759,11 @@ export default function MentorDashboard() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>User</label>
-                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user}</div>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.user || selectedTicket.creator_name || selectedTicket.user_name || "Intern"}</div>
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "#6b7280", fontWeight: 600 }}>Filed On</label>
-                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date}</div>
+                  <div style={{ fontSize: "14px", fontWeight: 500, marginTop: "4px" }}>{selectedTicket.date || (selectedTicket.created_at ? new Date(selectedTicket.created_at).toLocaleDateString() : "Recently")}</div>
                 </div>
               </div>
 
@@ -1777,16 +1777,27 @@ export default function MentorDashboard() {
               <div>
                 <h4 style={{ margin: "0 0 12px 0", fontSize: "16px" }}>Comments & Updates</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
-                  {selectedTicket.comments.length === 0 ? (
-                    <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>
-                  ) : (
-                    selectedTicket.comments.map((comment, idx) => (
-                      <div key={idx} style={{ padding: "12px", backgroundColor: comment.author === "Mentor" ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${comment.author === "Mentor" ? "#bfdbfe" : "#e5e7eb"}` }}>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: comment.author === "Mentor" ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author}</div>
-                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text}</div>
+                  {(() => {
+                    let commentsList = [];
+                    if (selectedTicket.comments && Array.isArray(selectedTicket.comments)) {
+                      commentsList = selectedTicket.comments;
+                    } else if (selectedTicket.messages && Array.isArray(selectedTicket.messages)) {
+                      commentsList = selectedTicket.messages.map(m => ({ author: m.sender_name || "User", text: m.message }));
+                    } else if (typeof selectedTicket.comments === "string") {
+                      try { commentsList = JSON.parse(selectedTicket.comments); } catch (e) { commentsList = []; }
+                    }
+
+                    if (commentsList.length === 0) {
+                      return <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>No comments yet.</p>;
+                    }
+
+                    return commentsList.map((comment, idx) => (
+                      <div key={idx} style={{ padding: "12px", backgroundColor: (comment.author === "Mentor" || comment.sender_role === "mentor") ? "#eff6ff" : "#f3f4f6", borderRadius: "8px", border: `1px solid ${(comment.author === "Mentor" || comment.sender_role === "mentor") ? "#bfdbfe" : "#e5e7eb"}` }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: (comment.author === "Mentor" || comment.sender_role === "mentor") ? "#1d4ed8" : "#374151", marginBottom: "4px" }}>{comment.author || comment.sender_name || "User"}</div>
+                        <div style={{ fontSize: "13px", color: "#1f2937" }}>{comment.text || comment.message}</div>
                       </div>
-                    ))
-                  )}
+                    ));
+                  })()}
                 </div>
                 <form onSubmit={handleReplyTicket} style={{ display: "flex", gap: "10px" }}>
                   <input type="text" className="form-control" placeholder="Write a reply or update..." value={ticketReply} onChange={(e) => setTicketReply(e.target.value)} style={{ flex: 1, marginBottom: 0 }} />
