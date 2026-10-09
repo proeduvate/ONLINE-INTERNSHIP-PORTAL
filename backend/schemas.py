@@ -716,7 +716,8 @@ class TicketCreate(BaseModel):
     """Schema for creating a new support ticket."""
     title: str = Field(..., min_length=1, max_length=200, description="Brief summary of the issue")
     description: str = Field(..., min_length=1, description="Detailed description of the issue")
-    domain: str = Field(..., min_length=1, max_length=100, description="Domain of the issue")
+    domain: Optional[str] = Field("General", min_length=1, max_length=100, description="Domain of the issue")
+
 
 
 class TicketAction(str, Enum):

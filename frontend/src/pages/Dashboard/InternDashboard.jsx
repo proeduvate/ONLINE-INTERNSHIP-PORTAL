@@ -152,7 +152,7 @@ export default function InternDashboard() {
   useEffect(() => {
     const fetchAirdrops = async () => {
       try {
-        const res = await api.get('/api/v1/airdrops');
+        const res = await api.get('/api/v1/bonus-airdrops');
         if (Array.isArray(res.data)) {
           setBonusAirdrops(res.data);
           return;
@@ -455,7 +455,8 @@ export default function InternDashboard() {
     try {
       const res = await api.post('/api/v1/tickets', {
         title: newTicketTitle,
-        description: newTicketDesc || "Support issue submitted by intern."
+        description: newTicketDesc || "Support issue submitted by intern.",
+        domain: internDomain || "General"
       });
       setTicketsData(prev => [res.data, ...prev]);
       setNewTicketTitle("");
@@ -497,11 +498,45 @@ export default function InternDashboard() {
   const [evaluating, setEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
 
-  // Chat message state
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "Mentor", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
-  ]);
+  // Persistent Chat message state
+  const [chatMessages, setChatMessages] = useState(() => {
+    const saved = localStorage.getItem("app_intern_mentor_chat");
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [];
+  });
   const [inputMsg, setInputMsg] = useState("");
+
+  const handleSendMessage = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!inputMsg.trim()) return;
+    const newMsg = {
+      sender: "You",
+      text: inputMsg.trim(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    const updated = [...chatMessages, newMsg];
+    setChatMessages(updated);
+    localStorage.setItem("app_intern_mentor_chat", JSON.stringify(updated));
+    setInputMsg("");
+  };
+
+  const handleDownloadNotes = (title, type) => {
+    const topic = curriculumData[currentDay - 1]?.topic || "Learning Notes";
+    const desc = curriculumData[currentDay - 1]?.desc || "";
+    const notesContent = curriculumData[currentDay - 1]?.notes || "Standard learning materials.";
+    const content = `ProEduvate Internship Notes\n===========================\nModule: ${topic}\nDay: ${currentDay}\nDomain: ${internDomain || "General"}\n\nDescription:\n${desc}\n\nNotes & References:\n${notesContent}\n\nDownloaded successfully from ProEduvate Internship Portal.`;
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${title}_Day${currentDay}.${type === "pdf" ? "txt" : "txt"}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     const parts = location.pathname.split('/');
@@ -1442,7 +1477,7 @@ export default function InternDashboard() {
                       <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Module Notes: {currentCurriculum.topic}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <button style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
+                      <button onClick={() => handleDownloadNotes("Module_Notes", "pdf")} style={{ background: "none", border: "none", color: "var(--text-muted, #64748b)", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
                         <Download size={14} /> Download PDF
                       </button>
                     </div>
@@ -1463,7 +1498,7 @@ export default function InternDashboard() {
                             <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>PDF Document • 2.4 MB</span>
                           </div>
                         </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                        <button onClick={() => handleDownloadNotes("Official_Lecture_Notes", "pdf")} style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
                           <Download size={16} /> Download
                         </button>
                       </div>
@@ -1479,7 +1514,7 @@ export default function InternDashboard() {
                             <span style={{ fontSize: "13px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Word Document • 1.1 MB</span>
                           </div>
                         </div>
-                        <button style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+                        <button onClick={() => handleDownloadNotes("Practice_Exercises", "docx")} style={{ background: "none", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", padding: "8px 12px", display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
                           <Download size={16} /> Download
                         </button>
                       </div>
@@ -1698,7 +1733,7 @@ export default function InternDashboard() {
                       <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Stuck somewhere?</p>
                     </div>
                   </div>
-                  <button onClick={() => setActiveTab("Chat with Mentor")} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #334155)", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--brand-bg, #eff6ff)"; e.currentTarget.style.color = "var(--brand-primary, #2563eb)"; e.currentTarget.style.borderColor = "var(--border-brand, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "var(--text-primary, #334155)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
+                  <button onClick={() => { setActiveTab("Chat with Mentor"); navigate("/intern/chat-with-mentor"); }} style={{ background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid var(--border-color, #e2e8f0)", color: "var(--text-primary, #334155)", padding: "10px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--brand-bg, #eff6ff)"; e.currentTarget.style.color = "var(--brand-primary, #2563eb)"; e.currentTarget.style.borderColor = "var(--border-brand, #bfdbfe)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #f8fafc)"; e.currentTarget.style.color = "var(--text-primary, #334155)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }}>
                     Message Mentor &rarr;
                   </button>
                 </div>
