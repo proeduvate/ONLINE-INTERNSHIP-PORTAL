@@ -596,13 +596,30 @@ export default function InternDashboard() {
   }, [location.pathname, ticketsData]);
 
 
-  const handleMcqSubmit = () => {
+  const handleMcqSubmit = async () => {
     setMcqSubmitted(true);
     const totalQ = mcqQuestionsList.length || 10;
     const answeredCount = Object.keys(answers).length;
     const score = Math.min(100, Math.round((answeredCount / totalQ) * 100));
     setMcqGrade(score);
     setMcqDone(true);
+
+    try {
+      const currentTaskObj = domainTasksList.find(t => t.day_number === currentDay);
+      const taskIdToSend = currentTaskObj?.id || currentDay;
+      await api.post('/api/v1/submissions', {
+        task_id: taskIdToSend,
+        mcq_answers: JSON.stringify(answers),
+        mcq_score: score,
+        code_submission: code || "// MCQ Completed",
+        ai_score: 80,
+        ai_feedback: "MCQ Part A completed."
+      });
+      fetchDashboardData();
+    } catch (e) {
+      console.warn("Failed to persist MCQ submission to backend:", e);
+    }
+
     alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
     navigate("/intern/learning/assessment");
   };
