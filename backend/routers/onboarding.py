@@ -157,6 +157,7 @@ def get_application_status(application_id: str, db: Session = Depends(get_db)):
     }
 
 @router.get("/applications")
+@router.get("/onboarding/applications")
 def get_all_applications(db: Session = Depends(get_db)):
     try:
         apps = db.query(models.OnboardingApplication).all()

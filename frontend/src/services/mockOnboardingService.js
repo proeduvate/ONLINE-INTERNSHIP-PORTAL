@@ -54,7 +54,7 @@ export const mockOnboardingService = {
             console.error("Backend onboarding applications fetch error:", err);
         }
         try {
-            const res2 = await api.get('/api/onboarding/applications');
+            const res2 = await api.get('/api/v1/applications');
             if (Array.isArray(res2.data)) {
                 return res2.data.map(app => ({
                     ...app,
