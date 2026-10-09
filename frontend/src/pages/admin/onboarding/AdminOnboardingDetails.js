@@ -365,9 +365,14 @@ export default function AdminOnboardingDetails({ appId }) {
                         {app.status === ONBOARDING_STATUSES.ACCOUNT_CREATION_PENDING && (
                             <button className="btn btn-primary" onClick={async () => {
                                 try {
-                                    await api.post(`/api/v1/onboarding/${id}/create-account`);
+                                    const res = await api.post(`/api/v1/onboarding/${id}/create-account`);
+                                    const pwdMsg = res.data?.password ? `Password: ${res.data.password}` : "";
+                                    alert(`Account Created / Activated Successfully!\n\nEmail: ${app.email}\n${pwdMsg}\n\nLogin credentials and activation email have been dispatched to the user.`);
                                     refreshApp();
-                                } catch (e) { console.error(e); }
+                                } catch (e) { 
+                                    console.error(e);
+                                    alert("Failed to create account: " + (e.response?.data?.detail || e.message));
+                                }
                             }}>Create Account</button>
                         )}
 

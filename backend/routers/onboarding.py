@@ -493,6 +493,9 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
     if not db_app:
         raise HTTPException(status_code=404, detail="Application not found")
     
+    from services.email_service import dispatch_notification, EventType, FRONTEND_URL
+    login_url = f"{FRONTEND_URL}/login"
+
     # Generate account if not exists
     if not db_app.user_id:
         clean_app_email = db_app.email.strip().lower() if db_app.email else ""
@@ -501,7 +504,20 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
             db_app.user_id = existing_user.id
             db_app.status = models.ApplicationStatus.ACTIVE
             db.commit()
-            return {"message": "Linked to existing account", "password": "User already has a password"}
+
+            try:
+                dispatch_notification(
+                    recipient_email=existing_user.email,
+                    event_type=EventType.SYSTEM_ALERT,
+                    title="Account Activated - ProEduvate Internship Portal",
+                    message=f"Welcome back {existing_user.name}! Your internship application ({db_app.domain}) has been approved and linked to your existing account. Please log in using your registered email: {existing_user.email}.",
+                    action_url=login_url,
+                    sender_name="ProEduvate System"
+                )
+            except Exception as e:
+                print(f"[Email Exception] Failed to send activation email to existing user: {e}")
+
+            return {"message": "Linked to existing account", "password": "User already has a password", "email": existing_user.email}
         
         # Determine Domain ID
         domain_obj = db.query(models.Domain).filter(models.Domain.name == db_app.domain).first()
@@ -517,7 +533,7 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
         
         new_user = models.User(
             name=db_app.name,
-            email=db_app.email,
+            email=clean_app_email,
             hashed_password=hashed_password,
             role=models.UserRole.INTERN,
             college=db_app.college,
@@ -537,23 +553,23 @@ def create_account(application_id: str, db: Session = Depends(get_db)):
         db_app.status = models.ApplicationStatus.ACTIVE
         db.commit()
         
-        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
-        login_url = f"{FRONTEND_URL}/login"
-        dispatch_notification(
-            recipient_email=new_user.email,
-            event_type=EventType.SYSTEM_ALERT,
-            title="Account Activated - Credentials Enclosed",
-            message=f"Welcome {new_user.name}! Your account has been activated. Your Intern ID is {intern_id}. Your default password is: {default_pwd}. Please login and change your password.",
-            action_url=login_url,
-            sender_name="ProEduvate System"
-        )
+        try:
+            dispatch_notification(
+                recipient_email=new_user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Account Activated - Credentials Enclosed",
+                message=f"Welcome {new_user.name}! Your account for the {db_app.domain} Internship has been activated. Your Intern ID is {intern_id}. Your login email is: {new_user.email} and default password is: {default_pwd}. Please login and change your password.",
+                action_url=login_url,
+                sender_name="ProEduvate System"
+            )
+        except Exception as e:
+            print(f"[Email Exception] Failed to send activation email: {e}")
         
-        return {"message": "Account created successfully", "password": default_pwd}
-
+        return {"message": "Account created successfully", "password": default_pwd, "email": new_user.email, "intern_id": intern_id}
         
     db_app.status = models.ApplicationStatus.ACTIVE
     db.commit()
-    return {"message": "Account activated", "password": "User already has a password"}
+    return {"message": "Account activated", "password": "User already has a password", "email": db_app.email}
 class SignDocumentReq(BaseModel):
     document_type: str
     signature_base64: str

@@ -137,36 +137,53 @@ function LearningDeck({task, user, onDone}) {
   const [slide, setSlide] = useState(0);
   const [interactionDone, setInteractionDone] = useState(false);
   const [marks, setMarks] = useState({});
-  const isFrontend = user?.domain?.toLowerCase().includes("frontend") || user?.domain?.toLowerCase().includes("full stack");
-
-  const genericSlides = [
-    {
-      type: "generic_discover",
-      title: "Understanding the Core Concept",
-      subtitle: "Explore the theoretical foundations.",
-      body: "Before diving into code, it is essential to understand why this concept exists and what problems it solves.",
-    },
-    {
-      type: "generic_anatomy",
-      title: "Analyzing the Structure",
-      subtitle: "Break down the components.",
-      body: "Every technical implementation has a structure. Identify the key moving parts in today's lesson.",
-    },
-    {
-      type: "generic_experiment",
-      title: "Interactive Experimentation",
-      subtitle: "Try it out yourself.",
-      body: "Interact with the provided variables to see how the system behaves under different conditions.",
-    },
-    {
-      type: "generic_reveal",
-      title: "Connecting Theory to Code",
-      subtitle: "Reveal the underlying implementation.",
-      body: "Now that you understand the concept, let's look at how it is typically implemented in a real-world scenario.",
+  const userDomain = (user?.domain_name || user?.domain || "").toLowerCase();
+  
+  const getDomainSlides = () => {
+    if (userDomain.includes("ai") || userDomain.includes("machine learning") || userDomain.includes("aiml")) {
+      return [
+        { type: "discover", title: "AI/ML Model Pipeline Explorer", subtitle: "Understand model inputs, weights, and loss functions.", body: "Interact with the components of an AI pipeline before tuning parameters." },
+        { type: "anatomy", title: "Neural Network Architecture", subtitle: "Inspect input, hidden, and output layers.", body: "Explore how data flows through neural network tensors." },
+        { type: "experiment", title: "Hyperparameter Tuning", subtitle: "Adjust learning rate and observe convergence.", body: "Experiment with hyperparameters to minimize loss." },
+        { type: "reveal", title: "Connecting Math to Python Code", subtitle: "View PyTorch / Scikit-Learn implementation.", body: "See how model equations translate into executable code." }
+      ];
     }
-  ];
+    if (userDomain.includes("data science")) {
+      return [
+        { type: "discover", title: "Data Pipeline & EDA Explorer", subtitle: "Explore data distributions and features.", body: "Interact with dataset variables before modeling." },
+        { type: "anatomy", title: "Pandas DataFrame Structure", subtitle: "Inspect rows, columns, and index series.", body: "Examine data indexing and vectorization." },
+        { type: "experiment", title: "Data Cleaning & Transformation", subtitle: "Handle missing values and feature scaling.", body: "Observe clean vs raw data distributions." },
+        { type: "reveal", title: "Statistical Insights to Code", subtitle: "View Pandas & Seaborn code execution.", body: "Connect data visual insights with Python code." }
+      ];
+    }
+    if (userDomain.includes("python")) {
+      return [
+        { type: "discover", title: "Python Execution Environment", subtitle: "Explore functions and data structures.", body: "Interact with Python logic and memory structures." },
+        { type: "anatomy", title: "Python Class & Function Anatomy", subtitle: "Inspect def, self, arguments, and return types.", body: "Examine Python object orientation." },
+        { type: "experiment", title: "Logic & Loop Manipulation", subtitle: "Adjust loop conditions and iterators.", body: "Observe execution outputs live." },
+        { type: "reveal", title: "Script to Production Module", subtitle: "View executable Python backend code.", body: "Connect script logic to clean software modules." }
+      ];
+    }
+    if (userDomain.includes("java")) {
+      return [
+        { type: "discover", title: "Java JVM & Bytecode Explorer", subtitle: "Explore classes, packages, and main methods.", body: "Interact with JVM execution architecture." },
+        { type: "anatomy", title: "Java Class Anatomy", subtitle: "Inspect public class, static methods, and fields.", body: "Examine strongly-typed OOP structure." },
+        { type: "experiment", title: "OOP Inheritance & Interfaces", subtitle: "Manipulate object classes and methods.", body: "Observe class behaviors." },
+        { type: "reveal", title: "Bytecode to Enterprise API", subtitle: "View Spring Boot / Java application code.", body: "Connect Java classes to backend services." }
+      ];
+    }
+    if (userDomain.includes("ui") || userDomain.includes("ux")) {
+      return [
+        { type: "discover", title: "UI/UX Visual Blueprint Explorer", subtitle: "Explore layout hierarchy and design tokens.", body: "Interact with components before prototyping." },
+        { type: "anatomy", title: "Design System Component Structure", subtitle: "Inspect typography, colors, and spacing.", body: "Examine visual design hierarchy." },
+        { type: "experiment", title: "Responsive Grid & Spacing", subtitle: "Adjust layout bounds and padding.", body: "Observe responsive layout adjustments." },
+        { type: "reveal", title: "Figma Prototype to Component", subtitle: "View UI design token specs.", body: "Connect visual designs to implemented components." }
+      ];
+    }
+    return learningSlides;
+  };
 
-  const activeSlides = isFrontend ? learningSlides : genericSlides;
+  const activeSlides = getDomainSlides();
   const current = activeSlides[slide];
 
   useEffect(() => { setInteractionDone(false); }, [slide]);

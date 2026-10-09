@@ -208,18 +208,91 @@ export default function InternDashboard() {
     }
   };
 
-  const domainInsights = [
-    "A key principle of Frontend involves understanding performance.",
-    "React's Virtual DOM minimizes direct DOM manipulations to improve application rendering speed.",
-    "Debouncing and throttling are essential techniques for optimizing event-heavy operations like scrolling or typing.",
-    "State immutability in React ensures predictable data flow and enables effective re-rendering optimizations.",
-    "Core Web Vitals measure key user experience metrics: LCP (Largest Contentful Paint), FID, and CLS.",
-    "Code splitting with React.lazy and Suspense helps load components on-demand, reducing initial bundle size.",
-    "Accessibility (a11y) standards ensure web interfaces are usable by everyone, including assistive technologies.",
-    "Browser caching and Service Workers enable Progressive Web Apps (PWAs) to load quickly and offline.",
-    "Semantic HTML improves SEO, readability, and screen reader navigation by providing structural meaning.",
-    "CSS Grid and Flexbox combined provide modern responsive layout capabilities without heavy framework dependencies."
-  ];
+  const domainInsights = (() => {
+    const d = (internDomain || "").toLowerCase();
+    if (d.includes("ai") || d.includes("machine learning") || d.includes("aiml")) {
+      return [
+        "A key principle of AIML involves understanding data preprocessing, model selection, and feature engineering.",
+        "Supervised learning relies on labeled datasets, while unsupervised learning discovers patterns in unlabeled data.",
+        "Neural networks use backpropagation and gradient descent to update weights and minimize loss functions.",
+        "Overfitting occurs when a model learns noise in training data; regularization (L1/L2, dropout) prevents it.",
+        "Feature scaling (Standardization & Normalization) accelerates gradient descent convergence in ML algorithms.",
+        "Cross-validation assesses model generalization by evaluating performance across multiple data folds.",
+        "Convolutional Neural Networks (CNNs) specialize in grid-like data such as images and spatial structures.",
+        "Recurrent Neural Networks (RNNs) and LSTMs handle sequential time-series and natural language data.",
+        "Transformer architectures utilize self-attention mechanisms to process sequential data in parallel.",
+        "Hyperparameter tuning (GridSearch, RandomSearch, Bayesian) optimizes model evaluation metrics."
+      ];
+    }
+    if (d.includes("data science")) {
+      return [
+        "Data Science combines statistics, data analysis, and machine learning to extract insights from structured/unstructured data.",
+        "Exploratory Data Analysis (EDA) identifies data distributions, anomalies, patterns, and relationships.",
+        "Pandas and NumPy provide high-performance data structures and numerical processing in Python.",
+        "Data cleaning involves handling missing values, removing duplicates, and transforming data types.",
+        "Data visualization with Matplotlib and Seaborn effectively communicates complex analytical findings.",
+        "Statistical hypothesis testing validates experimental conclusions and data significance.",
+        "Feature engineering transforms raw variables into informative representations for predictive models.",
+        "SQL is essential for querying, joining, aggregating, and filtering relational database tables.",
+        "Machine learning models in Data Science automate predictive forecasting and decision making.",
+        "Model evaluation metrics (Accuracy, Precision, Recall, F1-Score, ROC-AUC) quantify classification performance."
+      ];
+    }
+    if (d.includes("python")) {
+      return [
+        "Python's clean syntax and readability emphasize developer productivity and rapid prototyping.",
+        "List comprehensions provide a concise way to create lists based on existing iterables.",
+        "Python memory management utilizes automatic garbage collection and reference counting.",
+        "Decorators modify function or class behavior dynamically using higher-order functions.",
+        "Virtual environments isolate project dependencies to avoid library version conflicts.",
+        "Object-Oriented Programming (OOP) in Python relies on classes, inheritance, encapsulation, and polymorphism.",
+        "Generators and yield statements stream data lazily without allocating large arrays in memory.",
+        "Asynchronous programming with asyncio enables non-blocking concurrent IO operations.",
+        "Type hinting in Python improves code readability, IDE auto-completion, and static analysis.",
+        "Python packages like FastAPI and Flask enable rapid backend REST API development."
+      ];
+    }
+    if (d.includes("java")) {
+      return [
+        "Java operates on the Write Once, Run Anywhere principle powered by the Java Virtual Machine (JVM).",
+        "Object-Oriented Programming pillars in Java: Encapsulation, Inheritance, Polymorphism, and Abstraction.",
+        "The Java Collections Framework provides standardized data structures like ArrayList, HashMap, and HashSet.",
+        "Garbage collection in Java automatically manages heap memory allocation and object deallocation.",
+        "Multithreading in Java enables concurrent execution of execution threads for high performance.",
+        "Exception handling with try-catch-finally guarantees robust program control flow.",
+        "Java Streams API enables functional-style declarative operations on collections of data.",
+        "Spring Boot simplifies building enterprise-grade production-ready REST microservices.",
+        "Maven and Gradle manage Java project dependencies, builds, and lifecycle plugins.",
+        "JVM JIT (Just-In-Time) compilation translates bytecode to native machine code at runtime."
+      ];
+    }
+    if (d.includes("ui") || d.includes("ux")) {
+      return [
+        "User Experience (UX) design focuses on the overall user journey, usability, and task satisfaction.",
+        "User Interface (UI) design crafts visual elements like typography, color palettes, spacing, and layout hierarchy.",
+        "Wireframing creates low-fidelity structural blueprints before high-fidelity visual design.",
+        "Usability testing identifies user friction points and validates design decisions through observation.",
+        "Design systems maintain brand consistency across components, color schemes, and interactive elements.",
+        "Information Architecture (IA) organizes and structures content to help users navigate intuitively.",
+        "Micro-interactions provide visual feedback for user actions, improving interface engagement.",
+        "Figma and Penpot enable collaborative real-time interface design and interactive prototyping.",
+        "Accessibility (a11y) design standards ensure visual interfaces are usable for users with visual impairments.",
+        "Responsive UI design adapts layout grids fluidly across mobile, tablet, and desktop screens."
+      ];
+    }
+    return [
+      "A key principle of Frontend involves understanding performance, layout rendering, and DOM updates.",
+      "React's Virtual DOM minimizes direct DOM manipulations to improve application rendering speed.",
+      "Debouncing and throttling are essential techniques for optimizing event-heavy operations like scrolling or typing.",
+      "State immutability in React ensures predictable data flow and enables effective re-rendering optimizations.",
+      "Core Web Vitals measure key user experience metrics: LCP (Largest Contentful Paint), FID, and CLS.",
+      "Code splitting with React.lazy and Suspense helps load components on-demand, reducing initial bundle size.",
+      "Accessibility (a11y) standards ensure web interfaces are usable by everyone, including assistive technologies.",
+      "Browser caching and Service Workers enable Progressive Web Apps (PWAs) to load quickly and offline.",
+      "Semantic HTML improves SEO, readability, and screen reader navigation by providing structural meaning.",
+      "CSS Grid and Flexbox combined provide modern responsive layout capabilities without heavy framework dependencies."
+    ];
+  })();
 
   useEffect(() => {
     // 1. Auto-show modal once per day upon login / first visit
@@ -312,8 +385,11 @@ export default function InternDashboard() {
       // 4. Fetch Domain Tasks
       try {
         const tasksRes = await api.get('/api/v1/tasks/intern');
-        if (tasksRes.data && Array.isArray(tasksRes.data.tasks)) {
-          setDomainTasksList(tasksRes.data.tasks);
+        const fetchedTasks = Array.isArray(tasksRes.data)
+          ? tasksRes.data
+          : (Array.isArray(tasksRes.data?.tasks) ? tasksRes.data.tasks : []);
+        if (fetchedTasks.length > 0) {
+          setDomainTasksList(fetchedTasks);
         }
       } catch (err) {
         console.warn("Failed to fetch domain tasks:", err);
@@ -325,13 +401,23 @@ export default function InternDashboard() {
   // Dynamic Learning Workflow State
   const [currentDay, setCurrentDay] = useState(1);
   
-  const curriculumData = [
-    { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
-    { day: 2, topic: "State and Props", desc: "Learn to handle component data flow using props and local state.", notes: "Lecture_Notes_Day2.pdf" },
-    { day: 3, topic: "React Hooks Lifecycle", desc: "Implement useEffect and customize functional hooks.", notes: "Lecture_Notes_Day3.pdf" },
-    { day: 4, topic: "Context API & Global State", desc: "Avoid prop drilling by introducing context providers.", notes: "Lecture_Notes_Day4.pdf" },
-    { day: 5, topic: "Routing and Layouts", desc: "Route single page interfaces cleanly using react-router.", notes: "Lecture_Notes_Day5.pdf" }
-  ];
+  const curriculumData = domainTasksList.length > 0
+    ? domainTasksList.map(t => ({
+        day: t.day_number,
+        topic: t.title,
+        desc: t.description,
+        notes: t.notes || `Lecture_Notes_Day${t.day_number}.pdf`,
+        document_url: t.document_url,
+        video_url: t.video_url,
+        resources: t.resources
+      }))
+    : [
+        { day: 1, topic: `${internDomain || 'Domain'} Fundamentals`, desc: "Understand core concepts and setup your workspace.", notes: "Lecture_Notes_Day1.pdf" },
+        { day: 2, topic: "Core Architecture & Workflow", desc: "Learn key architectural patterns and data flow.", notes: "Lecture_Notes_Day2.pdf" },
+        { day: 3, topic: "Implementation & Development", desc: "Build functional modules and implement logic.", notes: "Lecture_Notes_Day3.pdf" },
+        { day: 4, topic: "Testing & Refactoring", desc: "Validate implementation, test cases, and optimize execution.", notes: "Lecture_Notes_Day4.pdf" },
+        { day: 5, topic: "Integration & Deployment", desc: "Integrate components and deploy practical solutions.", notes: "Lecture_Notes_Day5.pdf" }
+      ];
 
   // MCQ and Assessment Workflow State
   const [showAssessment, setShowAssessment] = useState(false);

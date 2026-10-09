@@ -308,6 +308,20 @@ def register(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    try:
+        from services.email_service import dispatch_notification, EventType, FRONTEND_URL
+        dispatch_notification(
+            recipient_email=user.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Welcome to ProEduvate - Account Created Successfully",
+            message=f"Hello {user.name}! Your account has been registered successfully on ProEduvate Portal. Your login email is: {user.email}.",
+            action_url=f"{FRONTEND_URL}/login",
+            sender_name="ProEduvate System"
+        )
+    except Exception as e:
+        print(f"[Email Exception] Failed to send registration email: {e}")
+
     return user
 
 

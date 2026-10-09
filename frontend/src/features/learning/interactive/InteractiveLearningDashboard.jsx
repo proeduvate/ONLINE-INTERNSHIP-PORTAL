@@ -129,27 +129,58 @@ export default function InteractiveLearningDashboard() {
       try {
         const url = devDomain ? `/tasks/intern?dev_domain=${encodeURIComponent(devDomain)}` : '/tasks/intern';
         const res = await api.get(url);
-        const fetchedTasks = res.data;
+        const fetchedTasks = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.tasks) ? res.data.tasks : []);
 
-        // Initialize with complete 30-day curriculum
-        let curriculumList = [...curriculum];
+        let curriculumList = [];
 
         if (Array.isArray(fetchedTasks) && fetchedTasks.length > 0) {
           fetchedTasks.forEach(task => {
             if (task.interactive_json) {
               try {
-                const parsed = JSON.parse(task.interactive_json);
-                const idx = curriculumList.findIndex(c => c.day === task.day_number);
-                if (idx !== -1) {
-                  curriculumList[idx] = { day: task.day_number, ...parsed };
-                } else {
-                  curriculumList.push({ day: task.day_number, ...parsed });
-                }
+                const parsed = typeof task.interactive_json === 'string' ? JSON.parse(task.interactive_json) : task.interactive_json;
+                curriculumList.push({ day: task.day_number, ...parsed });
               } catch (e) {
                 console.error("Invalid interactive_json on task:", task.id);
+                curriculumList.push({
+                  day: task.day_number,
+                  curriculum: task.title || "Domain Module",
+                  topic: task.title || `Day ${task.day_number} Learning`,
+                  learningObjectives: [task.title || "Master core concept", "Apply practical skills"],
+                  activities: [
+                    {
+                      id: `d${task.day_number}-a01`,
+                      type: "discover",
+                      title: task.title || "Concept Overview",
+                      instruction: task.description || "Explore today's core learning objectives.",
+                      content: { concept: task.title, tip: "Interact with the module to complete." },
+                      interaction: { mode: "concept-discover", family: "click-map", config: { items: ["Core Concepts", "Implementation", "Best Practices"] } }
+                    }
+                  ]
+                });
               }
+            } else {
+              curriculumList.push({
+                day: task.day_number,
+                curriculum: task.title || "Domain Module",
+                topic: task.title || `Day ${task.day_number} Learning`,
+                learningObjectives: [task.title || "Master core concept", "Apply practical skills"],
+                activities: [
+                  {
+                    id: `d${task.day_number}-a01`,
+                    type: "discover",
+                    title: task.title || "Concept Overview",
+                    instruction: task.description || "Explore today's core learning objectives.",
+                    content: { concept: task.title, tip: "Interact with the module to complete." },
+                    interaction: { mode: "concept-discover", family: "click-map", config: { items: ["Core Concepts", "Implementation", "Best Practices"] } }
+                  }
+                ]
+              });
             }
           });
+        }
+
+        if (curriculumList.length === 0) {
+          curriculumList = [...curriculum];
         }
 
         curriculumList.sort((a, b) => a.day - b.day);

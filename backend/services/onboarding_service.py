@@ -2,7 +2,7 @@ import logging
 import secrets
 from sqlalchemy.orm import Session
 import models
-from .email_service import email_service
+from .email_service import dispatch_notification, EventType, FRONTEND_URL
 from .document_service import document_service
 from .supabase_service import supabase_service
 
@@ -17,24 +17,24 @@ class OnboardingService:
             if "meet_link" in decision_data:
                 user.interview_meet_link = decision_data["meet_link"]
             if "scheduled_time" in decision_data:
-                # Expecting ISO format string or similar datetime parsing could happen here,
-                # but we'll assume it's pre-parsed by the router or simple string assignment for now.
-                # Actually, router should parse it, but let's just assign it if it's already a datetime,
-                # or rely on SQLAlchemy to cast it.
                 user.interview_scheduled_time = decision_data["scheduled_time"]
 
-            await email_service.send_email(
-                user.email,
-                "Interview Required",
-                {"message": f"An interview is required for your application. We will contact you with scheduling details. Meet Link: {user.interview_meet_link} at {user.interview_scheduled_time}"}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.MEETING_SCHEDULED,
+                title="Interview Required",
+                message=f"An interview is required for your application. We will contact you with scheduling details. Meet Link: {user.interview_meet_link} at {user.interview_scheduled_time}",
+                action_url=user.interview_meet_link or FRONTEND_URL
             )
         else:
             user.onboarding_status = "PAYMENT_PENDING"
             payment_link = decision_data.get("payment_form_link", "Link will be provided soon.")
-            await email_service.send_email(
-                user.email,
-                "Payment Required - Next Steps",
-                {"message": f"Your application is approved. Please proceed to payment to continue onboarding using this form: {payment_link}"}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Payment Required - Next Steps",
+                message=f"Your application is approved. Please proceed to payment to continue onboarding using this form: {payment_link}",
+                action_url=payment_link if payment_link.startswith("http") else FRONTEND_URL
             )
         db.commit()
 
@@ -42,43 +42,48 @@ class OnboardingService:
         if passed:
             user.onboarding_status = "PAYMENT_PENDING"
             payment_link = result_data.get("payment_form_link", "Link will be provided soon.")
-            await email_service.send_email(
-                user.email,
-                "Interview Passed - Payment Required",
-                {"message": f"Congratulations! You passed the interview. Please proceed to payment using this form: {payment_link}"}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Interview Passed - Payment Required",
+                message=f"Congratulations! You passed the interview. Please proceed to payment using this form: {payment_link}",
+                action_url=payment_link if payment_link.startswith("http") else FRONTEND_URL
             )
         else:
             user.onboarding_status = "REJECTED"
-            await email_service.send_email(
-                user.email,
-                "Interview Result",
-                {"message": "We regret to inform you that you did not pass the interview stage."}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Interview Result",
+                message="We regret to inform you that you did not pass the interview stage.",
+                action_url=FRONTEND_URL
             )
         db.commit()
 
     async def handle_payment_verify(self, user: models.User, verified: bool, db: Session):
         if verified:
             user.onboarding_status = "DOCUMENTS_PENDING"
-            await email_service.send_email(
-                user.email,
-                "Payment Verified",
-                {"message": "Your payment has been verified. We are now preparing your onboarding documents."}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Payment Verified",
+                message="Your payment has been verified. We are now preparing your onboarding documents.",
+                action_url=FRONTEND_URL
             )
-            # In actual implementation, we might call generate_documents here automatically 
-            # or it can be a separate manual step triggered by the admin.
         else:
             user.onboarding_status = "PAYMENT_REJECTED"
-            await email_service.send_email(
-                user.email,
-                "Payment Rejected",
-                {"message": "Your payment could not be verified. Please contact support."}
+            dispatch_notification(
+                recipient_email=user.email,
+                event_type=EventType.SYSTEM_ALERT,
+                title="Payment Rejected",
+                message="Your payment could not be verified. Please contact support.",
+                action_url=FRONTEND_URL
             )
         db.commit()
 
     async def assign_mentor(self, user: models.User, mentor_id: int, db: Session):
         mentor = db.query(models.User).filter(models.User.id == mentor_id, models.User.role == "mentor").first()
         if not mentor:
-            # Fallback to the first available mentor if the ID is invalid
             mentor = db.query(models.User).filter(models.User.role == "mentor").first()
             if not mentor:
                 raise ValueError("No mentors available in the system")
@@ -87,15 +92,19 @@ class OnboardingService:
         user.onboarding_status = "DOCUMENTS_PENDING"
         db.commit()
         
-        await email_service.send_email(
-            user.email,
-            "Mentor Assigned",
-            {"message": f"Your mentor {mentor.name} has been assigned."}
+        dispatch_notification(
+            recipient_email=user.email,
+            event_type=EventType.TASK_ASSIGNED,
+            title="Mentor Assigned",
+            message=f"Your mentor {mentor.name} has been assigned.",
+            action_url=FRONTEND_URL
         )
-        await email_service.send_email(
-            mentor.email,
-            "New Intern Assigned",
-            {"message": f"You have been assigned a new intern: {user.name}."}
+        dispatch_notification(
+            recipient_email=mentor.email,
+            event_type=EventType.TASK_ASSIGNED,
+            title="New Intern Assigned",
+            message=f"You have been assigned a new intern: {user.name}.",
+            action_url=FRONTEND_URL
         )
 
     async def generate_documents(self, user: models.User, db: Session):
@@ -126,16 +135,12 @@ class OnboardingService:
         user.onboarding_status = "ACCOUNT_ACTIVATION_PENDING"
         db.commit()
         
-        from .email_service import FRONTEND_URL
-        await email_service.send_email(
-            user.email,
-            "Activate Your Account",
-            {
-                "intern_name": user.name,
-                "temp_password": temp_password,
-                "login_url": f"{FRONTEND_URL}/login"
-            },
-            template_id=email_service.activation_template_id
+        dispatch_notification(
+            recipient_email=user.email,
+            event_type=EventType.SYSTEM_ALERT,
+            title="Activate Your Account - Credentials Enclosed",
+            message=f"Welcome {user.name}! Your account has been created. Login Email: {user.email}, Temporary Password: {temp_password}. Please log in and change your password.",
+            action_url=f"{FRONTEND_URL}/login"
         )
 
 onboarding_service = OnboardingService()
