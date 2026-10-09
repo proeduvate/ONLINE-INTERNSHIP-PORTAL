@@ -9,12 +9,14 @@ import emailjs from '@emailjs/browser';
  */
 class EmailJSProvider {
   constructor() {
-    this.SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-    this.TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-    this.PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+    this.SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || "service_auqn9mh";
+    this.TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || "template_7568k6n";
+    this.PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || "il78TxQTrJmgh5yim";
     
     // Initialize EmailJS
-    emailjs.init(this.PUBLIC_KEY);
+    if (this.PUBLIC_KEY) {
+      emailjs.init(this.PUBLIC_KEY);
+    }
   }
 
   async send(templateParams) {

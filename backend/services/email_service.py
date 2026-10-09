@@ -7,16 +7,20 @@ from typing import Optional, Dict, Any
 import traceback
 from dotenv import load_dotenv
 
-load_dotenv()
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=env_path, override=False)
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://online-internship-portal-1.onrender.com").rstrip("/")
 BACKEND_URL = os.getenv("BACKEND_URL", "https://online-internship-portal-1.onrender.com").rstrip("/")
 
-# --- EmailJS Configuration (Supports standard and REACT_APP_ prefixes) ---
-EMAILJS_SERVICE_ID = os.getenv("EMAILJS_SERVICE_ID") or os.getenv("REACT_APP_EMAILJS_SERVICE_ID")
-EMAILJS_TEMPLATE_ID = os.getenv("EMAILJS_TEMPLATE_ID") or os.getenv("REACT_APP_EMAILJS_TEMPLATE_ID")
-EMAILJS_PUBLIC_KEY = os.getenv("EMAILJS_PUBLIC_KEY") or os.getenv("REACT_APP_EMAILJS_PUBLIC_KEY")
-EMAILJS_PRIVATE_KEY = os.getenv("EMAILJS_PRIVATE_KEY") or os.getenv("REACT_APP_EMAILJS_PRIVATE_KEY")
+# --- EmailJS Configuration (Supports standard and REACT_APP_ prefixes with fallback) ---
+EMAILJS_SERVICE_ID = os.getenv("EMAILJS_SERVICE_ID") or os.getenv("REACT_APP_EMAILJS_SERVICE_ID") or "service_auqn9mh"
+EMAILJS_TEMPLATE_ID = os.getenv("EMAILJS_TEMPLATE_ID") or os.getenv("REACT_APP_EMAILJS_TEMPLATE_ID") or "template_7568k6n"
+EMAILJS_PUBLIC_KEY = os.getenv("EMAILJS_PUBLIC_KEY") or os.getenv("REACT_APP_EMAILJS_PUBLIC_KEY") or "il78TxQTrJmgh5yim"
+EMAILJS_PRIVATE_KEY = os.getenv("EMAILJS_PRIVATE_KEY") or os.getenv("REACT_APP_EMAILJS_PRIVATE_KEY") or "WgsTQwwi4Mfs-i4plN8zL"
 
 # --- SMTP Configuration (for PDF Certificate Attachments) ---
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
@@ -138,8 +142,11 @@ def dispatch_notification(
             'user_id': EMAILJS_PUBLIC_KEY,
             'template_params': {
                 'to_email': recipient_email,
+                'recipient_email': recipient_email,
                 'sender_name': sender_name,
                 'event_type': event_type.value if hasattr(event_type, 'value') else str(event_type),
+                'notification_title': title or "ProEduvate Portal Notification",
+                'message_body': message or title,
                 'details': message or title,
                 'action_link': action_url or FRONTEND_URL,
                 'timestamp': formatted_time
