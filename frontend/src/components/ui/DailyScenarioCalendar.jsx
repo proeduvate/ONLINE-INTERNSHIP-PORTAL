@@ -5,16 +5,37 @@ import { scenarioData } from './DailyScenario';
 
 const DailyScenarioCalendar = ({ onStartScenario }) => {
   const [selectedDay, setSelectedDay] = useState(null);
+  const [submittedMap, setSubmittedMap] = useState(() => {
+    const saved = localStorage.getItem("intern_daily_scenarios_submitted");
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return {};
+  });
 
-  // Explicit mock data to keep the scenario fixed and consistent
-  const currentDay = 5;
-  const attendedDays = [1, 4, 6, 8, 9];
-  const missedDays = [2, 3, 7, 10]; // Day 3 added explicitly
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      const saved = localStorage.getItem("intern_daily_scenarios_submitted");
+      if (saved) {
+        try { setSubmittedMap(JSON.parse(saved)); } catch (e) {}
+      }
+    };
+    window.addEventListener("daily_scenario_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("daily_scenario_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  const completedDays = Object.keys(submittedMap).map(Number);
+  const maxCompleted = completedDays.length > 0 ? Math.max(...completedDays) : 0;
+  const currentDay = Math.min(30, maxCompleted + 1);
 
   const getDayStatus = (day) => {
+    if (submittedMap[day]) return 'completed';
     if (day === currentDay) return 'current';
-    if (attendedDays.includes(day)) return 'completed';
-    if (missedDays.includes(day)) return 'missed';
+    if (day < currentDay && !submittedMap[day]) return 'missed';
     return 'upcoming';
   };
 

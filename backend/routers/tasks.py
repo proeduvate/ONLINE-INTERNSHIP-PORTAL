@@ -607,8 +607,18 @@ def create_submission(
         raise HTTPException(status_code=403, detail="Only interns can submit tasks")
         
     task = db.query(models.Task).filter(models.Task.id == data.task_id).first()
+    if not task and current_user.domain_id:
+        task = db.query(models.Task).filter(
+            models.Task.domain_id == current_user.domain_id,
+            models.Task.day_number == data.task_id
+        ).first()
+    if not task:
+        task = db.query(models.Task).filter(models.Task.day_number == data.task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+
+    # Use the resolved task ID
+    data.task_id = task.id
 
     if task.domain_id and current_user.domain_id != task.domain_id:
         current_user.domain_id = task.domain_id

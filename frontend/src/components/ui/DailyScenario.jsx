@@ -416,9 +416,29 @@ export const scenarioData = [
 
 export default function DailyScenario({ onBackToDashboard }) {
   // State for user progress and selected day
-  const [selectedDay, setSelectedDay] = useState(1);
+  const [submittedDays, setSubmittedDays] = useState(() => {
+    const saved = localStorage.getItem("intern_daily_scenarios_submitted");
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return {};
+  });
+
+  const [selectedDay, setSelectedDay] = useState(() => {
+    const saved = localStorage.getItem("intern_daily_scenarios_submitted");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const completedDays = Object.keys(parsed).map(Number).sort((a, b) => a - b);
+        if (completedDays.length > 0) {
+          return Math.min(30, Math.max(...completedDays) + 1);
+        }
+      } catch (e) {}
+    }
+    return 1;
+  });
+
   const [selectedOptionId, setSelectedOptionId] = useState(null);
-  const [submittedDays, setSubmittedDays] = useState({}); // { [day]: { selectedOptionId, isCorrect } }
   const [isDemoBypass, setIsDemoBypass] = useState(false);
   const [nowTime, setNowTime] = useState(new Date());
 
@@ -432,6 +452,9 @@ export default function DailyScenario({ onBackToDashboard }) {
   const isDayUnlocked = (day) => {
     if (isDemoBypass) return true;
     if (day === 1) return true;
+    if (submittedDays[day - 1]) return true;
+    const completedCount = Object.keys(submittedDays).length;
+    if (day <= completedCount + 1) return true;
     return false;
   };
 
@@ -461,16 +484,24 @@ export default function DailyScenario({ onBackToDashboard }) {
       return;
     }
     const option = currentScenario.options.find((o) => o.id === selectedOptionId);
-    setSubmittedDays((prev) => ({
-      ...prev,
+    const updated = {
+      ...submittedDays,
       [selectedDay]: {
         selectedOptionId,
-        isCorrect: option?.isCorrect || false
+        isCorrect: option?.isCorrect || false,
+        submittedAt: new Date().toISOString()
       }
-    }));
+    };
+    setSubmittedDays(updated);
+    localStorage.setItem("intern_daily_scenarios_submitted", JSON.stringify(updated));
+    window.dispatchEvent(new Event("daily_scenario_updated"));
   };
 
   const handleSelectDay = (day) => {
+    if (!isDayUnlocked(day)) {
+      alert(`Day ${day} scenario is locked. Please complete Day ${day - 1} scenario first.`);
+      return;
+    }
     setSelectedDay(day);
     setSelectedOptionId(submittedDays[day]?.selectedOptionId || null);
   };

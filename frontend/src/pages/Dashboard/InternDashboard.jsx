@@ -341,74 +341,75 @@ export default function InternDashboard() {
   const [liveSubmissions, setLiveSubmissions] = useState([]);
   const [domainTasksList, setDomainTasksList] = useState([]);
 
+  const fetchDashboardData = async () => {
+    // 1. Fetch Analytics
+    try {
+      const res = await api.get('/api/v1/analytics/dashboard');
+      if (res.data) {
+        const p = res.data.progress_pct !== undefined ? res.data.progress_pct : 0;
+        setProgress(p);
+        if (res.data.average_score_pct !== undefined) {
+          setAiScore(res.data.average_score_pct);
+        } else if (res.data.total_score !== undefined) {
+          setAiScore(Math.min(100, Math.round(res.data.total_score / 10)));
+        } else {
+          setAiScore(0);
+        }
+        if (res.data.attendance_pct !== undefined) setAttendancePercent(res.data.attendance_pct);
+        if (p >= 100) setIsInternshipCompleted(true);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch dashboard analytics:", err);
+    }
+
+    // 2. Fetch Leaderboard & Rank
+    try {
+      const lbRes = await api.get('/api/v1/leaderboard?limit=5');
+      if (Array.isArray(lbRes.data)) {
+        setLiveLeaderboard(lbRes.data);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch leaderboard:", err);
+    }
+
+    try {
+      const myRankRes = await api.get('/api/v1/leaderboard/me');
+      if (myRankRes.data && myRankRes.data.rank) {
+        setUserRankStr(`#${myRankRes.data.rank}`);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch user rank:", err);
+    }
+
+    // 3. Fetch Submissions
+    try {
+      const subRes = await api.get('/api/v1/submissions');
+      if (Array.isArray(subRes.data)) {
+        setLiveSubmissions(subRes.data);
+        const completedTasks = subRes.data.filter(s => s.status === "approved" || s.status === "submitted").length;
+        const completedMcq = subRes.data.filter(s => (s.mcq_score || 0) > 0).length;
+        setTasksCompletedCount(completedTasks);
+        setAssessmentsCount(completedMcq);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch submissions:", err);
+    }
+
+    // 4. Fetch Domain Tasks
+    try {
+      const tasksRes = await api.get('/api/v1/tasks/intern');
+      const fetchedTasks = Array.isArray(tasksRes.data)
+        ? tasksRes.data
+        : (Array.isArray(tasksRes.data?.tasks) ? tasksRes.data.tasks : []);
+      if (fetchedTasks.length > 0) {
+        setDomainTasksList(fetchedTasks);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch domain tasks:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      // 1. Fetch Analytics
-      try {
-        const res = await api.get('/api/v1/analytics/dashboard');
-        if (res.data) {
-          const p = res.data.progress_pct !== undefined ? res.data.progress_pct : 0;
-          setProgress(p);
-          if (res.data.average_score_pct !== undefined) {
-            setAiScore(res.data.average_score_pct);
-          } else if (res.data.total_score !== undefined) {
-            setAiScore(Math.min(100, Math.round(res.data.total_score / 10)));
-          } else {
-            setAiScore(0);
-          }
-          if (res.data.attendance_pct !== undefined) setAttendancePercent(res.data.attendance_pct);
-          if (p >= 100) setIsInternshipCompleted(true);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch dashboard analytics:", err);
-      }
-
-      // 2. Fetch Leaderboard & Rank
-      try {
-        const lbRes = await api.get('/api/v1/leaderboard?limit=5');
-        if (Array.isArray(lbRes.data)) {
-          setLiveLeaderboard(lbRes.data);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch leaderboard:", err);
-      }
-
-      try {
-        const myRankRes = await api.get('/api/v1/leaderboard/me');
-        if (myRankRes.data && myRankRes.data.rank) {
-          setUserRankStr(`#${myRankRes.data.rank}`);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch user rank:", err);
-      }
-
-      // 3. Fetch Submissions
-      try {
-        const subRes = await api.get('/api/v1/submissions');
-        if (Array.isArray(subRes.data)) {
-          setLiveSubmissions(subRes.data);
-          const completedTasks = subRes.data.filter(s => s.status === "approved" || s.status === "submitted").length;
-          const completedMcq = subRes.data.filter(s => (s.mcq_score || 0) > 0).length;
-          setTasksCompletedCount(completedTasks);
-          setAssessmentsCount(completedMcq);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch submissions:", err);
-      }
-
-      // 4. Fetch Domain Tasks
-      try {
-        const tasksRes = await api.get('/api/v1/tasks/intern');
-        const fetchedTasks = Array.isArray(tasksRes.data)
-          ? tasksRes.data
-          : (Array.isArray(tasksRes.data?.tasks) ? tasksRes.data.tasks : []);
-        if (fetchedTasks.length > 0) {
-          setDomainTasksList(fetchedTasks);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch domain tasks:", err);
-      }
-    };
     fetchDashboardData();
   }, []);
 
@@ -597,7 +598,9 @@ export default function InternDashboard() {
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
-    const score = Object.keys(answers).length * 50; // simple score
+    const totalQ = mcqQuestionsList.length || 10;
+    const answeredCount = Object.keys(answers).length;
+    const score = Math.min(100, Math.round((answeredCount / totalQ) * 100));
     setMcqGrade(score);
     setMcqDone(true);
     alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
@@ -644,10 +647,13 @@ export default function InternDashboard() {
   const handleSubmitCode = async () => {
     setEvaluating(true);
     try {
+      const currentTaskObj = domainTasksList.find(t => t.day_number === currentDay);
+      const taskIdToSend = currentTaskObj?.id || currentDay;
+
       const execRes = await api.post('/api/v1/code/execute', {
         code: code,
         language: language || "javascript",
-        task_id: currentDay
+        task_id: taskIdToSend
       });
 
       const finalScore = execRes.data?.ai_score || Math.floor(80 + Math.random() * 15);
@@ -662,28 +668,30 @@ export default function InternDashboard() {
       });
 
       await api.post('/api/v1/submissions', {
-        task_id: currentDay,
+        task_id: taskIdToSend,
         code_submission: code,
-        mcq_score: mcqGrade || 100,
+        mcq_score: mcqGrade !== null ? mcqGrade : 100,
         ai_score: finalScore,
         ai_feedback: execRes.data?.ai_feedback || "Passed automated evaluation."
       });
 
       alert(`Coding assessment submitted to database! Score: ${finalScore}%. Part B completed.`);
       setCodingDone(true);
+      fetchDashboardData();
       navigate("/intern/learning/assessment");
     } catch (err) {
       console.error("Submission error:", err);
       alert(err.response?.data?.detail || "Coding assessment submitted!");
       setCodingDone(true);
+      fetchDashboardData();
     } finally {
       setEvaluating(false);
     }
   };
 
   const handleCompleteDay = () => {
-    alert(`Day ${currentDay} complete! Day ${currentDay + 1} will unlock at 12:00 AM.`);
-    setIsDayLockedUntilMidnight(true);
+    alert(`Day ${currentDay} complete! Day ${currentDay + 1} is now unlocked.`);
+    setIsDayLockedUntilMidnight(false);
     if (currentDay < curriculumData.length) {
       setCurrentDay(currentDay + 1);
     }
@@ -696,6 +704,7 @@ export default function InternDashboard() {
     setMcqGrade(null);
     setCode("function sum(a, b) {\n  // write code\n}");
     setEvalResult(null);
+    fetchDashboardData();
     navigate("/intern/learning");
   };
 
