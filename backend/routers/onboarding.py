@@ -168,9 +168,16 @@ def get_all_applications(db: Session = Depends(get_db)):
                 status_str = "PENDING_REVIEW"
             result.append({
                 "applicationId": f"APP-{app.id}",
-                "name": app.name,
-                "domain": app.domain,
-                "status": status_str
+                "id": app.id,
+                "name": app.name or "Unnamed Applicant",
+                "email": app.email or "",
+                "phone": app.phone or "",
+                "college": app.college or "",
+                "department": app.department or "",
+                "domain": app.domain or "General",
+                "status": status_str,
+                "resume_url": app.resume_url,
+                "created_at": app.created_at.isoformat() if hasattr(app, 'created_at') and app.created_at else None
             })
         return result
     except Exception as err:

@@ -51,25 +51,32 @@ export default function AdminOnboardingList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {applications.map(app => (
-                                <tr key={app.id}>
-                                    <td>{app.id}</td>
-                                    <td><strong style={{ color: 'var(--text-color)' }}>{app.name}</strong></td>
-                                    <td>{app.domain}</td>
-                                    <td>
-                                        <span className={
-                                            `badge ${app.status.includes('PENDING') ? 'badge-warning' : (app.status.includes('VERIFIED') || app.status.includes('PASSED') || app.status.includes('COMPLETED') ? 'badge-success' : 'badge-danger')}`
-                                        }>
-                                            {app.status.replace(/_/g, ' ')}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${app.id}`}>
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {(applications || []).map(app => {
+                                const displayId = app.applicationId || (app.id ? `APP-${app.id}` : 'APP-UNKNOWN');
+                                const targetParam = app.applicationId || app.id;
+                                const rawStatus = (app.status || 'PENDING_REVIEW').toString();
+                                const isPending = rawStatus.includes('PENDING');
+                                const isSuccess = rawStatus.includes('VERIFIED') || rawStatus.includes('PASSED') || rawStatus.includes('COMPLETED') || rawStatus.includes('ACTIVE');
+                                const badgeClass = `badge ${isPending ? 'badge-warning' : (isSuccess ? 'badge-success' : 'badge-danger')}`;
+
+                                return (
+                                    <tr key={displayId}>
+                                        <td>{displayId}</td>
+                                        <td><strong style={{ color: 'var(--text-color)' }}>{app.name || 'Unnamed Candidate'}</strong></td>
+                                        <td>{app.domain || 'General'}</td>
+                                        <td>
+                                            <span className={badgeClass}>
+                                                {rawStatus.replace(/_/g, ' ')}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${targetParam}`}>
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>

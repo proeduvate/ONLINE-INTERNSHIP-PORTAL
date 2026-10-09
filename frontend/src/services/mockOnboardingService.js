@@ -41,17 +41,44 @@ export const mockOnboardingService = {
         try {
             const res = await api.get('/api/v1/onboarding/applications');
             if (Array.isArray(res.data)) {
-                return res.data;
+                return res.data.map(app => ({
+                    ...app,
+                    applicationId: app.applicationId || (app.id ? `APP-${app.id}` : 'APP-UNKNOWN'),
+                    id: app.id || app.applicationId,
+                    name: app.name || "Applicant",
+                    domain: app.domain || "General",
+                    status: app.status || "PENDING_REVIEW"
+                }));
             }
         } catch (err) {
             console.error("Backend onboarding applications fetch error:", err);
+        }
+        try {
+            const res2 = await api.get('/api/onboarding/applications');
+            if (Array.isArray(res2.data)) {
+                return res2.data.map(app => ({
+                    ...app,
+                    applicationId: app.applicationId || (app.id ? `APP-${app.id}` : 'APP-UNKNOWN'),
+                    id: app.id || app.applicationId,
+                    name: app.name || "Applicant",
+                    domain: app.domain || "General",
+                    status: app.status || "PENDING_REVIEW"
+                }));
+            }
+        } catch (e) {
+            // ignore fallback error
         }
         return [];
     },
 
     async adminGetApplication(id) {
-        const res = await api.get(`/api/v1/onboarding/applications/${id}`);
-        return res.data;
+        try {
+            const res = await api.get(`/api/v1/onboarding/applications/${id}`);
+            return res.data;
+        } catch (err) {
+            const res2 = await api.get(`/api/v1/onboarding/status/${id}`);
+            return res2.data;
+        }
     },
 
     async adminUpdateStatus(id, newStatus) {

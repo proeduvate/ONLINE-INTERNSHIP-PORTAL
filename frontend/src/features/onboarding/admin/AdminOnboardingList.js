@@ -31,11 +31,14 @@ export default function AdminOnboardingList() {
         );
     }
 
-    const filteredApps = applications.filter(app => 
-        app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        app.applicationId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.domain.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredApps = (applications || []).filter(app => {
+        if (!app) return false;
+        const name = String(app.name || "").toLowerCase();
+        const appId = String(app.applicationId || (app.id ? `APP-${app.id}` : "") || "").toLowerCase();
+        const domain = String(app.domain || "").toLowerCase();
+        const query = searchQuery.toLowerCase();
+        return name.includes(query) || appId.includes(query) || domain.includes(query);
+    });
 
     const totalPages = Math.ceil(filteredApps.length / itemsPerPage) || 1;
     const paginatedApps = filteredApps.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -74,25 +77,31 @@ export default function AdminOnboardingList() {
                                 <td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>No applications found.</td>
                             </tr>
                         ) : (
-                            paginatedApps.map(app => (
-                                <tr key={app.applicationId}>
-                                    <td>{app.applicationId}</td>
-                                    <td><strong style={{ color: 'var(--text-color)' }}>{app.name}</strong></td>
-                                    <td>{app.domain}</td>
-                                    <td>
-                                        <span className={
-                                            `badge ${app.status.includes('PENDING') ? 'badge-warning' : (app.status.includes('VERIFIED') || app.status.includes('PASSED') || app.status.includes('COMPLETED') ? 'badge-success' : 'badge-danger')}`
-                                        }>
-                                            {app.status.replace(/_/g, ' ')}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${app.applicationId}`}>
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
+                            paginatedApps.map(app => {
+                                const displayId = app.applicationId || (app.id ? `APP-${app.id}` : 'APP-UNKNOWN');
+                                const rawStatus = (app.status || 'PENDING_REVIEW').toString();
+                                const isPending = rawStatus.includes('PENDING');
+                                const isSuccess = rawStatus.includes('VERIFIED') || rawStatus.includes('PASSED') || rawStatus.includes('COMPLETED') || rawStatus.includes('ACTIVE');
+                                const badgeClass = `badge ${isPending ? 'badge-warning' : (isSuccess ? 'badge-success' : 'badge-danger')}`;
+                                
+                                return (
+                                    <tr key={displayId}>
+                                        <td>{displayId}</td>
+                                        <td><strong style={{ color: 'var(--text-color)' }}>{app.name || 'Unnamed Candidate'}</strong></td>
+                                        <td>{app.domain || 'General'}</td>
+                                        <td>
+                                            <span className={badgeClass}>
+                                                {rawStatus.replace(/_/g, ' ')}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => window.location.href = `/admin/onboarding/${displayId}`}>
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
                         )}
                     </tbody>
                 </table>
