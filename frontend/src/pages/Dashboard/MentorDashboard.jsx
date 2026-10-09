@@ -1228,24 +1228,31 @@ export default function MentorDashboard() {
                         <td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>No airdrops found.</td>
                       </tr>
                     ) : (
-                      currentAirdrops.map(airdrop => (
-                        <tr 
-                          key={airdrop.id} 
-                          onClick={() => setSelectedAirdrop(airdrop)}
-                          className="hover-row"
-                          style={{ cursor: "pointer" }}
-                        >
-                          <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "12px 16px" }}>{airdrop.question.length > 60 ? airdrop.question.substring(0, 60) + "..." : airdrop.question}</td>
-                          <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
-                          <td style={{ padding: "12px 16px" }}>
-                            <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'Active' || airdrop.status === 'ACTIVE' ? 'badge-primary' : airdrop.status === 'FINALIZED' || airdrop.status === 'Completed' || airdrop.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`}>
-                              {airdrop.status}
-                            </span>
-                          </td>
-                          <td style={{ padding: "12px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
-                        </tr>
-                      ))
+                      currentAirdrops.map(airdrop => {
+                        const qText = airdrop.question || airdrop.title || airdrop.description || "Bonus Airdrop Challenge";
+                        const pts = Array.isArray(airdrop.points) 
+                          ? Math.max(0, ...airdrop.points.map(Number)) 
+                          : (Array.isArray(airdrop.points_distribution) ? Math.max(0, ...airdrop.points_distribution) : (airdrop.points || 0));
+                        const timeLimit = airdrop.timeLimit || airdrop.time_limit || 60;
+                        return (
+                          <tr 
+                            key={airdrop.id} 
+                            onClick={() => setSelectedAirdrop(airdrop)}
+                            className="hover-row"
+                            style={{ cursor: "pointer" }}
+                          >
+                            <td style={{ padding: "12px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                            <td style={{ padding: "12px 16px" }}>{qText.length > 60 ? qText.substring(0, 60) + "..." : qText}</td>
+                            <td style={{ padding: "12px 16px", color: "#b91c1c", fontWeight: "600" }}>{pts} pts</td>
+                            <td style={{ padding: "12px 16px" }}>
+                              <span className={`badge ${airdrop.status === 'APPROVED' || airdrop.status === 'Active' || airdrop.status === 'ACTIVE' ? 'badge-primary' : airdrop.status === 'FINALIZED' || airdrop.status === 'Completed' || airdrop.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`}>
+                                {airdrop.status || 'PENDING'}
+                              </span>
+                            </td>
+                            <td style={{ padding: "12px 16px", color: "#6b7280" }}>{timeLimit}s</td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>

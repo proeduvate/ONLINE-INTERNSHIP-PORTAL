@@ -4,6 +4,34 @@ import { ArrowLeft, Clock, Calendar, Award, CheckCircle, Target, Users, Zap, Gif
 export default function AdminAirdropDetails({ airdrop, onBack }) {
   if (!airdrop) return null;
 
+  let pointsArr = [];
+  if (Array.isArray(airdrop.points)) {
+    pointsArr = airdrop.points;
+  } else if (Array.isArray(airdrop.points_distribution)) {
+    pointsArr = airdrop.points_distribution;
+  } else if (typeof airdrop.points_distribution === 'string') {
+    pointsArr = airdrop.points_distribution.split(',').map(s => parseInt(s.trim(), 10)).filter(Boolean);
+  } else {
+    pointsArr = [100, 50, 25];
+  }
+
+  const qText = airdrop.question || airdrop.title || airdrop.description || 'Bonus Airdrop Challenge';
+  const timeLimit = airdrop.timeLimit || airdrop.time_limit || 60;
+  const winnersCount = airdrop.winners || airdrop.winner_count || pointsArr.length || 3;
+  const taskType = airdrop.taskType || airdrop.task_type || 'Multiple Choice';
+
+  let mcqOptionsList = [];
+  if (Array.isArray(airdrop.mcqOptions)) {
+    mcqOptionsList = airdrop.mcqOptions;
+  } else if (airdrop.mcqOptions && typeof airdrop.mcqOptions === 'object') {
+    mcqOptionsList = Object.values(airdrop.mcqOptions).filter(Boolean);
+  } else if (airdrop.task_config && Array.isArray(airdrop.task_config.options)) {
+    mcqOptionsList = airdrop.task_config.options;
+  }
+
+  const matchPairsList = Array.isArray(airdrop.matchPairs) ? airdrop.matchPairs : (airdrop.task_config && Array.isArray(airdrop.task_config.match_pairs) ? airdrop.task_config.match_pairs : []);
+  const arrangeItemsList = Array.isArray(airdrop.arrangeItems) ? airdrop.arrangeItems : (airdrop.task_config && Array.isArray(airdrop.task_config.arrange_items) ? airdrop.task_config.arrange_items : []);
+
   const getStatusColor = (status) => {
     if (status === 'APPROVED') return { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' };
     if (status === 'PENDING_APPROVAL') return { bg: '#fef08a', text: '#854d0e', border: '#fde047' };
@@ -70,11 +98,11 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: "500" }}><Clock size={18} /> Time Limit</span>
-                <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{airdrop.timeLimit}s</span>
+                <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{timeLimit}s</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ color: "#475569", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: "500" }}><Users size={18} /> Max Winners</span>
-                <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{airdrop.winners}</span>
+                <span style={{ fontWeight: 700, color: "var(--text-primary, #1e293b)", fontSize: "16px" }}>{winnersCount}</span>
               </div>
               <div>
                 <span style={{ color: "#475569", display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "500" }}>Total Points Pool</span>
@@ -126,7 +154,7 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
               <Award size={20} /> Point Distribution
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {airdrop.points.map((pts, idx) => (
+              {pointsArr.map((pts, idx) => (
                 <div key={idx} style={{ 
                   display: "flex", justifyContent: "space-between", alignItems: "center",
                   padding: '12px 16px', 
@@ -155,16 +183,16 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
                  <h3 style={{ fontSize: "20px", margin: 0, color: "var(--text-primary, #1e293b)", fontWeight: "600" }}>Question Prompt</h3>
               </div>
               <div style={{ backgroundColor: '#f1f5f9', padding: '20px', borderRadius: '8px' }}>
-                <p style={{ margin: 0, fontSize: '15px', color: '#334155', fontWeight: '500', lineHeight: "1.6" }}>{airdrop.question}</p>
+                <p style={{ margin: 0, fontSize: '15px', color: '#334155', fontWeight: '500', lineHeight: "1.6" }}>{qText}</p>
               </div>
             </div>
 
             {/* MCQ Options */}
-            {airdrop.taskType === 'Multiple Choice' && airdrop.mcqOptions && (
+            {mcqOptionsList.length > 0 && (
               <div>
                 <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Options</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
-                  {airdrop.mcqOptions.map((opt, idx) => (
+                  {mcqOptionsList.map((opt, idx) => (
                     <div key={idx} style={{ 
                       padding: '16px 20px', 
                       backgroundColor: airdrop.correctAnswer === opt ? '#f0fdf4' : 'var(--bg-surface, #ffffff)',
@@ -196,17 +224,17 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
             )}
 
             {/* Match the Following */}
-            {airdrop.taskType === 'Match the Following' && airdrop.matchPairs && (
+            {matchPairsList.length > 0 && (
               <div>
                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Match Pairs</h4>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                   {airdrop.matchPairs.map((pair, idx) => (
+                   {matchPairsList.map((pair, idx) => (
                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', backgroundColor: 'var(--bg-surface-elevated, #f8fafc)', padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-                       <div style={{ flex: 1, padding: '16px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #cbd5e1', borderRadius: '8px', textAlign: 'center', fontWeight: "500", color: "#334155", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.left}</div>
+                       <div style={{ flex: 1, padding: '16px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #cbd5e1', borderRadius: '8px', textAlign: 'center', fontWeight: "500", color: "#334155", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.left || pair.key}</div>
                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4f46e5", flexShrink: 0 }}>
                          <ListOrdered size={18} />
                        </div>
-                       <div style={{ flex: 1, padding: '16px', backgroundColor: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center', fontWeight: "600", color: "#166534", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.right}</div>
+                       <div style={{ flex: 1, padding: '16px', backgroundColor: '#f0fdf4', border: '1px solid #86efac', borderRadius: '8px', textAlign: 'center', fontWeight: "600", color: "#166534", fontSize: "15px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>{pair.right || pair.value}</div>
                      </div>
                    ))}
                  </div>
@@ -214,16 +242,16 @@ export default function AdminAirdropDetails({ airdrop, onBack }) {
             )}
 
             {/* Arrange in Order */}
-            {airdrop.taskType === 'Arrange in Order' && airdrop.arrangeItems && (
+            {arrangeItemsList.length > 0 && (
               <div>
                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#475569', marginBottom: '16px', textTransform: "uppercase", letterSpacing: "0.5px" }}>Correct Order</h4>
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                   {airdrop.arrangeItems.map((item, idx) => (
+                   {arrangeItemsList.map((item, idx) => (
                      <div key={idx} style={{ padding: '16px 20px', backgroundColor: 'var(--bg-surface, #ffffff)', border: '1px solid #e2e8f0', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
                         <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#3b82f6', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold' }}>
                           {idx + 1}
                         </div>
-                        <span style={{ fontSize: "16px", color: "#334155", fontWeight: "500" }}>{item.text}</span>
+                        <span style={{ fontSize: "16px", color: "#334155", fontWeight: "500" }}>{typeof item === 'object' ? item.text : item}</span>
                      </div>
                    ))}
                  </div>

@@ -1465,27 +1465,33 @@ export default function AdminDashboard() {
                       (() => {
                         const reversedAirdrops = [...bonusAirdrops].reverse();
                         const currentAirdrops = reversedAirdrops.slice((airdropCurrentPage - 1) * airdropsPerPage, airdropCurrentPage * airdropsPerPage);
-                        return currentAirdrops.map(airdrop => (
-                        <tr 
-                          key={airdrop.id} 
-                          onClick={() => navigate("/admin/bonus-airdrops/" + airdrop.id)} 
-                          style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        >
-                          <td style={{ padding: "10px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
-                          <td style={{ padding: "10px 16px" }}>{airdrop.question.length > 50 ? airdrop.question.substring(0, 50) + "..." : airdrop.question}</td>
-                          <td style={{ padding: "10px 16px", color: "#b91c1c", fontWeight: "600" }}>{Math.max(0, ...airdrop.points.map(Number))} pts</td>
-                          <td style={{ padding: "10px 16px" }}>
-                            {airdrop.status === "PENDING_APPROVAL" ? (
-                              <span className="badge badge-warning">PENDING_APPROVAL</span>
-                            ) : (
-                              <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
-                                {airdrop.status}
-                              </span>
-                            )}
-                          </td>
-                          <td style={{ padding: "10px 16px", color: "#6b7280" }}>{airdrop.timeLimit}s</td>
+                        return currentAirdrops.map(airdrop => {
+                          const qText = airdrop.question || airdrop.title || airdrop.description || "Bonus Airdrop Challenge";
+                          const pts = Array.isArray(airdrop.points) 
+                            ? Math.max(0, ...airdrop.points.map(Number)) 
+                            : (Array.isArray(airdrop.points_distribution) ? Math.max(0, ...airdrop.points_distribution) : (airdrop.points || 0));
+                          const timeLimit = airdrop.timeLimit || airdrop.time_limit || 60;
+                          return (
+                          <tr 
+                            key={airdrop.id} 
+                            onClick={() => navigate("/admin/bonus-airdrops/" + airdrop.id)} 
+                            style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated, #f8fafc)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          >
+                            <td style={{ padding: "10px 16px", fontWeight: "600", color: "#475569" }}>{airdrop.id}</td>
+                            <td style={{ padding: "10px 16px" }}>{qText.length > 50 ? qText.substring(0, 50) + "..." : qText}</td>
+                            <td style={{ padding: "10px 16px", color: "#b91c1c", fontWeight: "600" }}>{pts} pts</td>
+                            <td style={{ padding: "10px 16px" }}>
+                              {airdrop.status === "PENDING_APPROVAL" ? (
+                                <span className="badge badge-warning">PENDING_APPROVAL</span>
+                              ) : (
+                                <span className={`badge ${airdrop.status === 'APPROVED' ? 'badge-primary' : 'badge-success'}`}>
+                                  {airdrop.status || 'PENDING'}
+                                </span>
+                              )}
+                            </td>
+                            <td style={{ padding: "10px 16px", color: "#6b7280" }}>{timeLimit}s</td>
                           <td style={{ padding: "10px 16px", textAlign: "right" }}>
                             {airdrop.status === "PENDING_APPROVAL" && (
                               <button 
@@ -1501,7 +1507,8 @@ export default function AdminDashboard() {
                             )}
                           </td>
                         </tr>
-                      ))
+                      );
+                    });
                       })()
                     )}
                   </tbody>
