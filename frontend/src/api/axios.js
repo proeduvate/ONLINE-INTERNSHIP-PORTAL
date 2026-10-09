@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getApiBase = () => {
   let base = process.env.REACT_APP_API_BASE;
-  if (!base || base.includes("127.0.0.1") || base.includes("localhost") || base.includes("internship-portal-backend.onrender.com")) {
+  if (!base) {
     return "https://online-internship-portal.onrender.com";
   }
   return base;

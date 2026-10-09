@@ -158,18 +158,24 @@ def get_application_status(application_id: str, db: Session = Depends(get_db)):
 
 @router.get("/applications")
 def get_all_applications(db: Session = Depends(get_db)):
-    apps = db.query(models.OnboardingApplication).all()
-    # Format for the frontend table
-    result = []
-    for app in apps:
-        status_str = app.status.value if hasattr(app.status, 'value') else str(app.status) if app.status else "PENDING_REVIEW"
-        result.append({
-            "applicationId": f"APP-{app.id}",
-            "name": app.name,
-            "domain": app.domain,
-            "status": status_str
-        })
-    return result
+    try:
+        apps = db.query(models.OnboardingApplication).all()
+        result = []
+        for app in apps:
+            try:
+                status_str = app.status.value if hasattr(app.status, 'value') else str(app.status) if app.status else "PENDING_REVIEW"
+            except Exception:
+                status_str = "PENDING_REVIEW"
+            result.append({
+                "applicationId": f"APP-{app.id}",
+                "name": app.name,
+                "domain": app.domain,
+                "status": status_str
+            })
+        return result
+    except Exception as err:
+        print(f"[Onboarding Router Error] get_all_applications error: {err}")
+        return []
 
 @router.get("/domains")
 def get_domains(db: Session = Depends(get_db)):
@@ -181,38 +187,47 @@ class StatusUpdate(BaseModel):
 
 @router.get("/applications/{application_id}")
 def get_application_details(application_id: str, db: Session = Depends(get_db)):
-    app_id = parse_app_id(application_id)
-        
-    db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
-    if not db_app:
-        raise HTTPException(status_code=404, detail="Application not found")
-    mentor_name = None
-    if getattr(db_app, 'assigned_mentor_id', None):
-        mentor_user = db.query(models.User).filter(models.User.id == db_app.assigned_mentor_id).first()
-        if mentor_user:
-            mentor_name = mentor_user.name
+    try:
+        app_id = parse_app_id(application_id)
+            
+        db_app = db.query(models.OnboardingApplication).filter(models.OnboardingApplication.id == app_id).first()
+        if not db_app:
+            raise HTTPException(status_code=404, detail="Application not found")
+        mentor_name = None
+        if getattr(db_app, 'assigned_mentor_id', None):
+            mentor_user = db.query(models.User).filter(models.User.id == db_app.assigned_mentor_id).first()
+            if mentor_user:
+                mentor_name = mentor_user.name
 
-    status_str = db_app.status.value if hasattr(db_app.status, 'value') else str(db_app.status) if db_app.status else "PENDING_REVIEW"
+        try:
+            status_str = db_app.status.value if hasattr(db_app.status, 'value') else str(db_app.status) if db_app.status else "PENDING_REVIEW"
+        except Exception:
+            status_str = "PENDING_REVIEW"
 
-    return {
-        "applicationId": f"APP-{db_app.id}",
-        "name": db_app.name,
-        "email": db_app.email,
-        "phone": db_app.phone,
-        "college": db_app.college,
-        "department": db_app.department,
-        "domain": db_app.domain,
-        "github_url": getattr(db_app, 'github_url', None),
-        "linkedin_url": getattr(db_app, 'linkedin_url', None),
-        "status": status_str,
-        "resume": db_app.resume_url,
-        "assigned_mentor_id": getattr(db_app, 'assigned_mentor_id', None),
-        "assigned_mentor_name": mentor_name,
-        "offer_letter_url": getattr(db_app, 'offer_letter_url', None),
-        "tc_url": getattr(db_app, 'tc_url', None),
-        "signed_offer_letter_url": getattr(db_app, 'signed_offer_letter_url', None),
-        "signed_tc_url": getattr(db_app, 'signed_tc_url', None)
-    }
+        return {
+            "applicationId": f"APP-{db_app.id}",
+            "name": db_app.name,
+            "email": db_app.email,
+            "phone": db_app.phone,
+            "college": db_app.college,
+            "department": db_app.department,
+            "domain": db_app.domain,
+            "github_url": getattr(db_app, 'github_url', None),
+            "linkedin_url": getattr(db_app, 'linkedin_url', None),
+            "status": status_str,
+            "resume": db_app.resume_url,
+            "assigned_mentor_id": getattr(db_app, 'assigned_mentor_id', None),
+            "assigned_mentor_name": mentor_name,
+            "offer_letter_url": getattr(db_app, 'offer_letter_url', None),
+            "tc_url": getattr(db_app, 'tc_url', None),
+            "signed_offer_letter_url": getattr(db_app, 'signed_offer_letter_url', None),
+            "signed_tc_url": getattr(db_app, 'signed_tc_url', None)
+        }
+    except HTTPException:
+        raise
+    except Exception as err:
+        print(f"[Onboarding Router Error] get_application_details error: {err}")
+        raise HTTPException(status_code=500, detail=str(err))
 
 @router.post("/applications/{application_id}/status")
 def update_application_status(application_id: str, update: StatusUpdate, db: Session = Depends(get_db)):
