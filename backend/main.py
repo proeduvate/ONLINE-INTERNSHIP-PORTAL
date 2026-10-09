@@ -137,11 +137,6 @@ app.include_router(submissions.router, prefix="/api/v1/submissions", tags=["Subm
 app.include_router(airdrops.router, tags=["Airdrops"])
 app.include_router(airdrops.router, prefix="/api/v1", tags=["Airdrops"])
 
-@app.get("/api/v1/airdrops", include_in_schema=False)
-@app.get("/api/airdrops", include_in_schema=False)
-def redirect_airdrops_alias(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    return airdrops.get_airdrops(db=db, current_user=current_user)
-
 
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
@@ -250,6 +245,12 @@ def require_role(roles: List[str]):
             )
         return current_user
     return role_checker
+
+
+@app.get("/api/v1/airdrops", include_in_schema=False)
+@app.get("/api/airdrops", include_in_schema=False)
+def redirect_airdrops_alias(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    return airdrops.get_airdrops(db=db, current_user=current_user)
 
 
 # --- Real-Time Messaging Connection Manager ---
