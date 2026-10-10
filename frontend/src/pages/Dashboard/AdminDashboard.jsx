@@ -86,8 +86,13 @@ export default function AdminDashboard() {
   const handleApproveCertificate = async (certId) => {
     try {
       const targetId = selectedAdminCredentialIntern?.cert_id || certId;
-      const res = await api.post(`/api/v1/certificates/${targetId}/approve`);
-      alert(res.data?.message || "Certificate approved and PDF sent to intern via email!");
+      let res;
+      try {
+        res = await api.post(`/api/v1/certificates/${targetId}/approve`);
+      } catch (err1) {
+        res = await api.post(`/api/v1/certificates/approve/${targetId}`);
+      }
+      alert(res.data?.message || "Certificate approved and unlocked successfully!");
       setSelectedAdminCredentialIntern(null);
       fetchLiveData();
     } catch (err) {
@@ -544,18 +549,6 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Failed to add domain:", err);
       alert("Failed to add domain: " + (err.response?.data?.detail || err.message));
-    }
-  };
-
-  const handleApproveCertificate = async (internId) => {
-    try {
-      const res = await api.post(`/api/v1/certificates/approve/${internId}`);
-      alert(res.data?.message || "Certificate approved successfully! Credential is now unlocked.");
-      fetchLiveData();
-    } catch (err) {
-      console.error("Approve certificate error:", err);
-      alert(err.response?.data?.detail || "Certificate approved!");
-      fetchLiveData();
     }
   };
 
