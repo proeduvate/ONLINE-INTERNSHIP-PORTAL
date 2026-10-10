@@ -89,10 +89,16 @@ def upload_avatar(
         if not avatar_url:
             os.makedirs("uploads/avatars", exist_ok=True)
             local_path = os.path.join("uploads/avatars", unique_filename)
-            with open(local_path, "wb") as f:
-                f.write(content)
-            from services.email_service import BACKEND_URL
-            avatar_url = f"{BACKEND_URL}/uploads/avatars/{unique_filename}"
+            try:
+                with open(local_path, "wb") as f:
+                    f.write(content)
+            except Exception as e:
+                print("Failed writing local file:", e)
+
+            import base64
+            mime_type = file.content_type or f"image/{ext}"
+            b64_str = base64.b64encode(content).decode("utf-8")
+            avatar_url = f"data:{mime_type};base64,{b64_str}"
             
         user.avatar_url = avatar_url
         db.commit()

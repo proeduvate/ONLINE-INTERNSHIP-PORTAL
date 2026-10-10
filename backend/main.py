@@ -118,6 +118,7 @@ app.add_middleware(
 
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("uploads/resumes", exist_ok=True)
+os.makedirs("uploads/avatars", exist_ok=True)
 os.makedirs("static", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.mount("/static", StaticFiles(directory="static"), name="static")

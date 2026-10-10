@@ -1692,7 +1692,11 @@ export default function AdminDashboard() {
                 <img 
                   src={currentUserProfile.avatar_url} 
                   alt="Profile" 
-                  onError={(e) => { e.target.style.display = "none"; }} 
+                  onError={(e) => { 
+                    e.target.onerror = null; 
+                    const initials = currentUserProfile?.name ? currentUserProfile.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "AD";
+                    e.target.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="%23eff6ff"/><text x="50%" y="55%" font-size="36" font-weight="bold" fill="%232563eb" text-anchor="middle" dominant-baseline="middle">${initials}</text></svg>`; 
+                  }} 
                   style={{ width: "100%", height: "100%", objectFit: "cover" }} 
                 />
               ) : (
