@@ -210,19 +210,23 @@ export default function AdminDashboard() {
     } catch (err) {
       console.warn("Tickets fetch error:", err);
     }
+
+    try {
+      const domainsRes = await api.get('/api/v1/admin/domains');
+      if (Array.isArray(domainsRes.data) && domainsRes.data.length > 0) {
+        setAvailableDomains(domainsRes.data.map(d => ({
+          id: d.id,
+          name: d.name,
+          duration: d.duration || "8 Weeks",
+          description: d.description || ""
+        })));
+      }
+    } catch (err) {
+      console.warn("Backend domains fetch error:", err);
+    }
   };
 
-  const [availableDomains, setAvailableDomains] = useState([
-    { id: 1, name: "Data Science" },
-    { id: 2, name: "Frontend" },
-    { id: 3, name: "Artificial Intelligence" },
-    { id: 4, name: "Cyber Security" },
-    { id: 5, name: "Fullstack" },
-    { id: 6, name: "Python" },
-    { id: 7, name: "UI/UX" },
-    { id: 8, name: "Java" },
-    { id: 9, name: "Data Analytics" }
-  ]);
+  const [availableDomains, setAvailableDomains] = useState([]);
 
   useEffect(() => {
     fetchLiveData();
@@ -515,18 +519,22 @@ export default function AdminDashboard() {
     alert(`${candidate.name} has been enrolled successfully!`);
   };
 
-  const handleAddDomain = (e) => {
+  const handleAddDomain = async (e) => {
     e.preventDefault();
     if (!newDomain.name) return alert("Please fill domain name.");
-    const added = {
-      id: availableDomains.length + 1,
-      name: newDomain.name,
-      duration: newDomain.duration || "8 Weeks"
-    };
-    setAvailableDomains([...availableDomains, added]);
-    alert("New Domain Added Successfully!");
-    setNewDomain({ name: "", duration: "" });
-    setShowDomainModal(false);
+    try {
+      await api.post('/api/v1/admin/domains', {
+        name: newDomain.name,
+        description: `${newDomain.name} Internship Domain`
+      });
+      alert("New Domain Added Successfully!");
+      setNewDomain({ name: "", duration: "" });
+      setShowDomainModal(false);
+      fetchLiveData();
+    } catch (err) {
+      console.error("Failed to add domain:", err);
+      alert("Failed to add domain: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));

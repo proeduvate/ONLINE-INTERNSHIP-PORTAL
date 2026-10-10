@@ -80,6 +80,22 @@ export default function AdminOnboardingDetails({ appId }) {
         }
     };
 
+    const handleCreateAccount = async () => {
+        if (!targetId) return;
+        try {
+            const baseUrl = process.env.REACT_APP_API_BASE || "https://online-internship-portal.onrender.com";
+            const response = await axios.post(`${baseUrl}/api/v1/onboarding/${targetId}/create-account`);
+            const pwdMsg = response.data?.password ? `\nDefault Password: ${response.data.password}` : "";
+            const internMsg = response.data?.intern_id ? `\nIntern ID: ${response.data.intern_id}` : "";
+            alert(`Account Created & Activated Successfully!${internMsg}\nEmail: ${app.email}${pwdMsg}\n\nLogin credentials and activation email have been sent to the candidate.`);
+            const data = await mockOnboardingService.adminGetApplication(targetId);
+            setApp(data);
+        } catch (err) {
+            console.error("Error creating account:", err);
+            alert("Failed to create account: " + (err.response?.data?.detail || err.message));
+        }
+    };
+
     if (loading) {
         return (
             <div className="onboarding-page-wrapper">
@@ -342,7 +358,7 @@ export default function AdminOnboardingDetails({ appId }) {
                         )}
                         
                         {["MENTOR_ASSIGNED", "DOCUMENTS_GENERATED", "DOCUMENTS_UPLOADED", "ACCOUNT_CREATION_PENDING"].includes(app.status) && (
-                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={() => handleAction(ONBOARDING_STATUSES.ACCOUNT_CREATED || "ACCOUNT_CREATED")}>Generate Docs & Create Account</button>
+                            <button className="btn btn-primary" style={{ padding: '12px', width: '100%', fontSize: '14px', borderRadius: '8px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none' }} onClick={handleCreateAccount}>Generate Credentials & Create Account</button>
                         )}
 
                         {["ACCOUNT_CREATED", "ACCOUNT_ACTIVATION_PENDING"].includes(app.status) && (

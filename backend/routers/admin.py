@@ -205,5 +205,25 @@ def get_all_domains(db: Session = Depends(database.get_db)):
         domains = db.query(models.Domain).all()
     return [{"id": d.id, "name": d.name, "description": d.description} for d in domains]
 
+from pydantic import BaseModel
+from typing import Optional
+
+class CreateDomainReq(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+@router.post("/domains")
+def create_domain(req: CreateDomainReq, db: Session = Depends(database.get_db)):
+    clean_name = req.name.strip()
+    existing = db.query(models.Domain).filter(func.lower(models.Domain.name) == clean_name.lower()).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Domain with this name already exists")
+    new_d = models.Domain(name=clean_name, description=req.description or f"{clean_name} Internship Domain")
+    db.add(new_d)
+    db.commit()
+    db.refresh(new_d)
+    return {"id": new_d.id, "name": new_d.name, "description": new_d.description}
+
+
 
 
