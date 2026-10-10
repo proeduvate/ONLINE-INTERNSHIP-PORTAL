@@ -96,9 +96,25 @@ def upload_avatar(
                 print("Failed writing local file:", e)
 
             import base64
-            mime_type = file.content_type or f"image/{ext}"
-            b64_str = base64.b64encode(content).decode("utf-8")
-            avatar_url = f"data:{mime_type};base64,{b64_str}"
+            try:
+                import io
+                from PIL import Image
+                img = Image.open(io.BytesIO(content))
+                img.thumbnail((256, 256))
+                buffer = io.BytesIO()
+                img_format = "PNG" if ext.lower() == "png" else "JPEG"
+                if img.mode in ("RGBA", "P") and img_format == "JPEG":
+                    img = img.convert("RGB")
+                img.save(buffer, format=img_format, quality=85)
+                compressed_bytes = buffer.getvalue()
+                b64_str = base64.b64encode(compressed_bytes).decode("utf-8")
+                mime_type = f"image/{img_format.lower()}"
+                avatar_url = f"data:{mime_type};base64,{b64_str}"
+            except Exception as compress_err:
+                print("PIL compression fallback:", compress_err)
+                mime_type = file.content_type or f"image/{ext}"
+                b64_str = base64.b64encode(content).decode("utf-8")
+                avatar_url = f"data:{mime_type};base64,{b64_str}"
             
         user.avatar_url = avatar_url
         db.commit()

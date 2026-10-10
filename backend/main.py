@@ -123,6 +123,17 @@ os.makedirs("static", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Auto-migrate database schema columns if necessary
+try:
+    from database import engine
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT;"))
+        conn.commit()
+        print("Database migration: users.avatar_url column altered to TEXT successfully.")
+except Exception as e:
+    print("Database migration notice:", e)
+
 # 2. Register routers
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
