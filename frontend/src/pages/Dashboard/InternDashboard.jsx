@@ -381,10 +381,14 @@ export default function InternDashboard() {
       console.warn("Failed to fetch user rank:", err);
     }
 
-    // 3. Fetch Submissions
+    // 3 & 4. Fetch Submissions & Domain Tasks to determine current unlocked Day
+    let userSubmissions = [];
+    let fetchedTasks = [];
+
     try {
       const subRes = await api.get('/api/v1/submissions');
       if (Array.isArray(subRes.data)) {
+        userSubmissions = subRes.data;
         setLiveSubmissions(subRes.data);
         const completedTasks = subRes.data.filter(s => s.status === "approved" || s.status === "submitted").length;
         const completedMcq = subRes.data.filter(s => (s.mcq_score || 0) > 0).length;
@@ -395,10 +399,9 @@ export default function InternDashboard() {
       console.warn("Failed to fetch submissions:", err);
     }
 
-    // 4. Fetch Domain Tasks
     try {
       const tasksRes = await api.get('/api/v1/tasks/intern');
-      const fetchedTasks = Array.isArray(tasksRes.data)
+      fetchedTasks = Array.isArray(tasksRes.data)
         ? tasksRes.data
         : (Array.isArray(tasksRes.data?.tasks) ? tasksRes.data.tasks : []);
       if (fetchedTasks.length > 0) {
@@ -406,6 +409,24 @@ export default function InternDashboard() {
       }
     } catch (err) {
       console.warn("Failed to fetch domain tasks:", err);
+    }
+
+    // Auto-calculate current unlocked day from user's completed submissions
+    if (userSubmissions.length > 0) {
+      const taskDayMap = {};
+      fetchedTasks.forEach(t => { taskDayMap[t.id] = t.day_number; });
+
+      const completedDays = userSubmissions
+        .filter(s => s.status === "approved" || s.status === "submitted" || s.status === "completed" || (s.mcq_score && s.mcq_score > 0) || (s.ai_score && s.ai_score > 0))
+        .map(s => taskDayMap[s.task_id] || (typeof s.task_id === 'number' ? s.task_id : parseInt(String(s.task_id).replace(/\D/g, ''), 10) || null))
+        .filter(Boolean);
+
+      if (completedDays.length > 0) {
+        const maxCompleted = Math.max(...completedDays);
+        const nextDay = maxCompleted + 1;
+        const maxTaskDay = fetchedTasks.length > 0 ? Math.max(...fetchedTasks.map(t => t.day_number || 1)) : 30;
+        setCurrentDay(Math.min(nextDay, maxTaskDay));
+      }
     }
   };
 
@@ -1451,16 +1472,42 @@ export default function InternDashboard() {
                 <Code size={28} />
               </div>
               
-              <div style={{ position: "relative", zIndex: 2, flex: 1 }}>
-                <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--brand-300, #1e40af)", display: "block", marginBottom: "4px" }}>
-                  DAY {currentDay} OF 30
-                </span>
-                <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 6px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
-                  {curriculumData.find(c => c.day === currentDay)?.topic || curriculumData[0].topic}
-                </h1>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary, #334155)" }}>
-                  {curriculumData.find(c => c.day === currentDay)?.desc || curriculumData[0].desc}
-                </p>
+              <div style={{ position: "relative", zIndex: 2, flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                <div>
+                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--brand-300, #1e40af)", display: "block", marginBottom: "4px" }}>
+                    DAY {currentDay} OF {curriculumData.length || 30}
+                  </span>
+                  <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 6px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
+                    {curriculumData.find(c => c.day === currentDay)?.topic || curriculumData[0]?.topic}
+                  </h1>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary, #334155)" }}>
+                    {curriculumData.find(c => c.day === currentDay)?.desc || curriculumData[0]?.desc}
+                  </p>
+                </div>
+
+                {/* Day Switcher Dropdown */}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "white", padding: "6px 14px", borderRadius: "10px", border: "1px solid #cbd5e1", boxShadow: "0 2px 4px rgba(0,0,0,0.04)" }}>
+                  <label style={{ fontSize: "12px", fontWeight: 700, color: "#475569" }}>Module Day:</label>
+                  <select 
+                    value={currentDay} 
+                    onChange={(e) => setCurrentDay(Number(e.target.value))}
+                    style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", fontWeight: 700, outline: "none", cursor: "pointer", backgroundColor: "#f8fafc", color: "#0f172a" }}
+                  >
+                    {curriculumData.map(c => {
+                      const cTask = domainTasksList.find(t => t.day_number === c.day);
+                      const isCompleted = liveSubmissions.some(s => {
+                        if (cTask && s.task_id === cTask.id) return true;
+                        const sDay = typeof s.task_id === 'number' ? s.task_id : parseInt(String(s.task_id).replace(/\D/g, ''), 10);
+                        return sDay === c.day;
+                      });
+                      return (
+                        <option key={c.day} value={c.day}>
+                          Day {c.day}: {c.topic.length > 25 ? c.topic.slice(0, 25) + "..." : c.topic} {isCompleted ? "✓ (Completed)" : ""}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
 
               <div style={{ position: "absolute", right: "24px", bottom: "-10px", opacity: 0.1, transform: "rotate(-10deg)", pointerEvents: "none", zIndex: 1 }}>
@@ -1690,29 +1737,76 @@ export default function InternDashboard() {
                 <div style={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px" }}>
                 
                 {/* Assessment Card */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", background: "var(--brand-bg, #eff6ff)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Target size={20} color="var(--brand-primary, #2563eb)" />
+                {(() => {
+                  const currentTaskObj = domainTasksList.find(t => t.day_number === currentDay);
+                  const currentSub = liveSubmissions.find(s => {
+                    if (currentTaskObj && s.task_id === currentTaskObj.id) return true;
+                    const sDay = typeof s.task_id === 'number' ? s.task_id : parseInt(String(s.task_id).replace(/\D/g, ''), 10);
+                    return sDay === currentDay;
+                  });
+                  const isCompleted = !!currentSub && (currentSub.status === "approved" || currentSub.status === "submitted" || currentSub.status === "completed" || (currentSub.mcq_score && currentSub.mcq_score > 0) || (currentSub.ai_score && currentSub.ai_score > 0));
+
+                  if (isCompleted) {
+                    return (
+                      <div style={{ background: "#f0fdf4", padding: "20px", borderRadius: "16px", border: "1px solid #bbf7d0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "14px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "40px", height: "40px", background: "#dcfce7", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <CheckCircle2 size={22} color="#166534" />
+                          </div>
+                          <div>
+                            <h4 style={{ margin: "0 0 2px 0", fontSize: "15px", color: "#166534", fontWeight: 800 }}>Day {currentDay} Assessment Completed!</h4>
+                            <span style={{ fontSize: "12px", color: "#15803d", fontWeight: 600 }}>Score: {currentSub.ai_score || currentSub.mcq_score || 80}% • Passed ✓</span>
+                          </div>
+                        </div>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#166534", lineHeight: 1.5 }}>
+                          You completed the learning module & assessment for Day {currentDay}. Next module is unlocked!
+                        </p>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <button 
+                            className="btn btn-secondary" 
+                            onClick={() => navigate("/intern/learning/assessment")} 
+                            style={{ flex: 1, padding: "9px 12px", borderRadius: "8px", fontWeight: "600", fontSize: "12px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", color: "#334155" }}
+                          >
+                            Review
+                          </button>
+                          <button 
+                            className="btn" 
+                            onClick={() => { setCurrentDay(currentDay + 1); navigate("/intern/learning"); }} 
+                            style={{ flex: 1, padding: "9px 12px", borderRadius: "8px", fontWeight: "600", fontSize: "12px", backgroundColor: "#10b981", color: "white", border: "none", cursor: "pointer" }}
+                          >
+                            Go to Day {currentDay + 1} &rarr;
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
-                        <span style={{ fontSize: "12px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Test your knowledge</span>
+                    );
+                  }
+
+                  return (
+                    <div style={{ background: "var(--bg-surface, #ffffff)", padding: "20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "40px", height: "40px", background: "var(--brand-bg, #eff6ff)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Target size={20} color="var(--brand-primary, #2563eb)" />
+                          </div>
+                          <div>
+                            <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Day Assessment</h4>
+                            <span style={{ fontSize: "12px", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Test your knowledge</span>
+                          </div>
+                        </div>
                       </div>
+                      <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #475569)", lineHeight: 1.5 }}>
+                        Ready to complete today's module? Take the MCQ and Coding test now.
+                      </p>
+                      <button 
+                        className="btn btn-primary" 
+                        onClick={() => navigate("/intern/learning/assessment")} 
+                        style={{ width: "100%", padding: "12px", borderRadius: "8px", fontWeight: "bold", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "#ffffff", border: "none" }}
+                      >
+                        Start Assessment &rarr;
+                      </button>
                     </div>
-                  </div>
-                  <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #475569)", lineHeight: 1.5 }}>
-                    Ready to complete today's module? Take the MCQ and Coding test now.
-                  </p>
-                  <button 
-                    className="btn btn-primary" 
-                    onClick={() => navigate("/intern/learning/assessment")} 
-                    style={{ width: "100%", padding: "12px", borderRadius: "8px", fontWeight: "bold", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "#ffffff", border: "none" }}
-                  >
-                    Start Assessment &rarr;
-                  </button>
-                </div>
+                  );
+                })()}
 
                 {/* Mentor Feedback Card */}
                 <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "10px", position: "relative", overflow: "hidden" }}>
