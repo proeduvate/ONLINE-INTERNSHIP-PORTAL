@@ -134,11 +134,15 @@ class TaskResponse(BaseModel):
 # ==========================================
 
 class SubmissionCreate(BaseModel):
-    task_id: int
+    task_id: Any
     code_submission: Optional[str] = None
+    code: Optional[str] = None
     mcq_answers: Optional[str] = None   # JSON string representing answers
     language: Optional[str] = None
     filename: Optional[str] = None
+    mcq_score: Optional[int] = None
+    ai_score: Optional[int] = None
+    ai_feedback: Optional[str] = None
 
 class SubmissionEvaluate(BaseModel):
     mentor_score: int
@@ -163,8 +167,10 @@ class SubmissionResponse(BaseModel):
         from_attributes = True
 
 class CodeExecutionRequest(BaseModel):
-    task_id: int
-    code_submission: str
+    task_id: Any
+    code_submission: Optional[str] = None
+    code: Optional[str] = None
+    language: Optional[str] = None
 
 class CodeExecutionResponse(BaseModel):
     task_id: int

@@ -666,10 +666,13 @@ export default function InternDashboard() {
 
   const handleRunCode = async () => {
     try {
+      const currentTaskObj = domainTasksList.find(t => t.day_number === currentDay);
+      const taskIdToSend = Number(currentTaskObj?.id || currentDay) || 1;
       const res = await api.post('/api/v1/code/execute', {
         code: code,
+        code_submission: code,
         language: language || "javascript",
-        task_id: currentDay
+        task_id: taskIdToSend
       });
       if (res.data?.success) {
         alert(`Execution Result: SUCCESS\nOutput: ${res.data.output || "No output"}`);
@@ -686,10 +689,11 @@ export default function InternDashboard() {
     setEvaluating(true);
     try {
       const currentTaskObj = domainTasksList.find(t => t.day_number === currentDay);
-      const taskIdToSend = currentTaskObj?.id || currentDay;
+      const taskIdToSend = Number(currentTaskObj?.id || currentDay) || 1;
 
       const execRes = await api.post('/api/v1/code/execute', {
         code: code,
+        code_submission: code,
         language: language || "javascript",
         task_id: taskIdToSend
       });
@@ -708,6 +712,7 @@ export default function InternDashboard() {
       await api.post('/api/v1/submissions', {
         task_id: taskIdToSend,
         code_submission: code,
+        code: code,
         mcq_score: mcqGrade !== null ? mcqGrade : 100,
         ai_score: finalScore,
         ai_feedback: execRes.data?.ai_feedback || "Passed automated evaluation."
