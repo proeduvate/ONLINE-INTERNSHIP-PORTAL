@@ -513,18 +513,84 @@ export default function InternDashboard() {
   const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const mcqQuestionsList = [
-    { id: 1, text: "Which hook is used to perform side effects in functional React components?", options: [{ label: "useState", val: "useState" }, { label: "useEffect", val: "useEffect" }] },
-    { id: 2, text: "React props are mutable.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 3, text: "What is the correct syntax to import React?", options: [{ label: "import React from 'react'", val: "import" }, { label: "import { React } from 'react'", val: "destructure" }] },
-    { id: 4, text: "Virtual DOM updates are slower than Real DOM updates.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 5, text: "Which function is used to update state in useState hook?", options: [{ label: "setState()", val: "setState" }, { label: "The second returned element", val: "updater" }] },
-    { id: 6, text: "React components must start with a capital letter.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] },
-    { id: 7, text: "What does JSX stand for?", options: [{ label: "JavaScript XML", val: "xml" }, { label: "Java Syntax Extension", val: "extension" }] },
-    { id: 8, text: "Can functional components have state in React?", options: [{ label: "Yes", val: "yes" }, { label: "No", val: "no" }] },
-    { id: 9, text: "Which prop is required when rendering a list of elements dynamically?", options: [{ label: "key", val: "key" }, { label: "id", val: "id" }] },
-    { id: 10, text: "React is a full framework.", options: [{ label: "True", val: "true" }, { label: "False", val: "false" }] }
-  ];
+  const [mcqQuestionsList, setMcqQuestionsList] = useState([]);
+  const [dayCodingChallenge, setDayCodingChallenge] = useState(null);
+
+  const loadDayAssessments = async (day) => {
+    // 1. Fetch Day-specific MCQs from backend
+    try {
+      const mcqRes = await api.get(`/api/v1/questions/mcq/day/${day}`);
+      if (mcqRes.data && Array.isArray(mcqRes.data.questions) && mcqRes.data.questions.length > 0) {
+        const formatted = mcqRes.data.questions.map((q, idx) => ({
+          id: q.id || idx + 1,
+          text: q.question,
+          options: Object.entries(q.options || {}).map(([key, val]) => ({
+            label: `${key}. ${val}`,
+            val: key
+          })),
+          correct_answer: q.correct_answer
+        }));
+        setMcqQuestionsList(formatted);
+      } else {
+        fallbackMcqs(day);
+      }
+    } catch (err) {
+      fallbackMcqs(day);
+    }
+
+    // 2. Fetch Day-specific Coding Challenge from backend
+    try {
+      const codeRes = await api.get(`/api/v1/questions/code/day/${day}`);
+      if (codeRes.data && Array.isArray(codeRes.data.questions) && codeRes.data.questions.length > 0) {
+        setDayCodingChallenge(codeRes.data.questions[0]);
+      } else {
+        fallbackCoding(day);
+      }
+    } catch (err) {
+      fallbackCoding(day);
+    }
+  };
+
+  const fallbackMcqs = (day) => {
+    const curTaskObj = domainTasksList.find(t => t.day_number === day);
+    if (curTaskObj && curTaskObj.mcq_questions) {
+      try {
+        const parsed = typeof curTaskObj.mcq_questions === 'string' ? JSON.parse(curTaskObj.mcq_questions) : curTaskObj.mcq_questions;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMcqQuestionsList(parsed.map((q, idx) => ({
+            id: q.id || idx + 1,
+            text: q.question || q.text,
+            options: Array.isArray(q.options) 
+              ? q.options 
+              : Object.entries(q.options || {}).map(([k, v]) => ({ label: `${k}. ${v}`, val: k }))
+          })));
+          return;
+        }
+      } catch (e) {}
+    }
+
+    const topicName = curriculumData[day - 1]?.topic || `Day ${day} Concepts`;
+    setMcqQuestionsList([
+      { id: 1, text: `What is the primary objective of ${topicName}?`, options: [{ label: "A. Build core architecture & understand modular flow", val: "A" }, { label: "B. Legacy code deletion without testing", val: "B" }] },
+      { id: 2, text: `Which engineering practice is recommended for ${topicName}?`, options: [{ label: "A. Comprehensive validation & error handling", val: "A" }, { label: "B. Skipping boundary conditions", val: "B" }] },
+      { id: 3, text: `How does ${topicName} improve system scalability?`, options: [{ label: "A. Optimizing execution and decoupled components", val: "A" }, { label: "B. Introducing unhandled exceptions", val: "B" }] },
+      { id: 4, text: `What is a key consideration when testing ${topicName}?`, options: [{ label: "A. Validating expected parameters and output structure", val: "A" }, { label: "B. Deleting unit tests", val: "B" }] },
+      { id: 5, text: `Which component plays a vital role in ${topicName}?`, options: [{ label: "A. Core state processor & execution engine", val: "A" }, { label: "B. Unused static variables", val: "B" }] }
+    ]);
+  };
+
+  const fallbackCoding = (day) => {
+    const curTaskObj = domainTasksList.find(t => t.day_number === day);
+    setDayCodingChallenge({
+      title: curTaskObj?.title || `Day ${day} Coding Challenge`,
+      description: curTaskObj?.description || `Implement the core logic solution for Day ${day}. Handle edge cases and validate parameter constraints.`,
+      requirements: [
+        "Write clean, modular code with clear function structure.",
+        "Handle potential edge cases and parameter validation.",
+        "Ensure compiler tests pass cleanly before submission."
+      ]
+    });
+  };
 
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
@@ -559,15 +625,53 @@ export default function InternDashboard() {
   };
 
   const handleDownloadNotes = (title, type) => {
-    const topic = curriculumData[currentDay - 1]?.topic || "Learning Notes";
-    const desc = curriculumData[currentDay - 1]?.desc || "";
-    const notesContent = curriculumData[currentDay - 1]?.notes || "Standard learning materials.";
-    const content = `ProEduvate Internship Notes\n===========================\nModule: ${topic}\nDay: ${currentDay}\nDomain: ${internDomain || "General"}\n\nDescription:\n${desc}\n\nNotes & References:\n${notesContent}\n\nDownloaded successfully from ProEduvate Internship Portal.`;
+    const curTask = domainTasksList.find(t => t.day_number === currentDay);
+    if (curTask && curTask.document_url && (curTask.document_url.startsWith("http") || curTask.document_url.startsWith("/uploads"))) {
+      window.open(curTask.document_url, "_blank");
+      return;
+    }
+
+    const topic = curriculumData[currentDay - 1]?.topic || `Day ${currentDay} Module`;
+    const desc = curriculumData[currentDay - 1]?.desc || "Complete the curriculum and tasks for today.";
+    const notesContent = curTask?.notes || curTask?.description || "Detailed official lecture notes and learning material references.";
+    
+    const content = `================================================================================
+PROEDUVATE ONLINE INTERNSHIP PORTAL - OFFICIAL LEARNING MODULE
+================================================================================
+Domain: ${internDomain || "Engineering & Development"}
+Module: Day ${currentDay} - ${topic}
+Date: ${new Date().toLocaleDateString()}
+================================================================================
+
+1. MODULE OVERVIEW & OBJECTIVES
+--------------------------------------------------------------------------------
+${desc}
+
+2. LECTURE NOTES & CORE CONCEPTS
+--------------------------------------------------------------------------------
+${notesContent}
+
+3. PRACTICAL EXERCISES & HANDS-ON TASKS
+--------------------------------------------------------------------------------
+- Review today's reading materials and core architectural guidelines.
+- Complete the MCQ Knowledge Assessment (Part A).
+- Implement the practical coding solution in the Web Compiler (Part B).
+
+4. REFERENCES & ADDITIONAL RESOURCES
+--------------------------------------------------------------------------------
+- Official Portal Learning Hub: https://online-internship-portal.onrender.com/intern/learning
+- Mentor & AI Support: Available via Live Tickets & Portal Assistant
+
+================================================================================
+Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
+================================================================================`;
+
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${title}_Day${currentDay}.${type === "pdf" ? "txt" : "txt"}`;
+    const safeTitle = (title || `Day${currentDay}_Lecture_Notes`).replace(/[^a-zA-Z0-9_-]/g, '_');
+    link.download = `${safeTitle}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -615,6 +719,12 @@ export default function InternDashboard() {
       }
     }
   }, [location.pathname, ticketsData]);
+
+  useEffect(() => {
+    if (currentDay) {
+      loadDayAssessments(currentDay);
+    }
+  }, [currentDay, domainTasksList]);
 
 
   const handleMcqSubmit = async () => {
@@ -1399,6 +1509,28 @@ export default function InternDashboard() {
                     </div>
                   ) : (
                     <>
+                      {/* Coding Problem Statement Card */}
+                      {dayCodingChallenge && (
+                        <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "16px 20px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", marginBottom: "16px" }}>
+                          <h4 style={{ margin: "0 0 6px 0", fontSize: "15px", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                            💻 Problem Statement: {dayCodingChallenge.title}
+                          </h4>
+                          <p style={{ margin: "0 0 10px 0", fontSize: "13px", color: "var(--text-secondary, #475569)", lineHeight: 1.5 }}>
+                            {dayCodingChallenge.description}
+                          </p>
+                          {dayCodingChallenge.requirements && dayCodingChallenge.requirements.length > 0 && (
+                            <div>
+                              <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-primary, #0f172a)", display: "block", marginBottom: "4px" }}>Task Guidelines & Requirements:</span>
+                              <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "12px", color: "var(--text-secondary, #475569)", lineHeight: 1.5 }}>
+                                {dayCodingChallenge.requirements.map((req, i) => (
+                                  <li key={i}>{req}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       <div style={{ marginBottom: "12px" }}>
                         <label style={{ fontWeight: 600, fontSize: "13px" }}>Language: </label>
                         <select className="form-control" style={{ width: "120px", display: "inline-block", marginLeft: "10px" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
