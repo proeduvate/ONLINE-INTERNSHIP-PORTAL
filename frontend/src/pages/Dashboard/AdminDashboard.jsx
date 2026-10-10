@@ -221,6 +221,10 @@ export default function AdminDashboard() {
           description: d.description || ""
         })));
       }
+    } catch (err) {
+      console.warn("Backend domains fetch error:", err);
+    }
+
     try {
       const userRes = await api.get('/api/v1/users/profile');
       if (userRes.data) {
