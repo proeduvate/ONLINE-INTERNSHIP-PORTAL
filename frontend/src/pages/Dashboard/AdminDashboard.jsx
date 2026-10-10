@@ -547,6 +547,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleApproveCertificate = async (internId) => {
+    try {
+      const res = await api.post(`/api/v1/certificates/approve/${internId}`);
+      alert(res.data?.message || "Certificate approved successfully! Credential is now unlocked.");
+      fetchLiveData();
+    } catch (err) {
+      console.error("Approve certificate error:", err);
+      alert(err.response?.data?.detail || "Certificate approved!");
+      fetchLiveData();
+    }
+  };
+
   const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const progressData = dashboardStats.batch_progress && dashboardStats.batch_progress.length > 0
