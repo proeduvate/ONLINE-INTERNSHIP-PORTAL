@@ -221,12 +221,18 @@ export default function AdminDashboard() {
           description: d.description || ""
         })));
       }
+    try {
+      const userRes = await api.get('/api/v1/users/profile');
+      if (userRes.data) {
+        setCurrentUserProfile(userRes.data);
+      }
     } catch (err) {
-      console.warn("Backend domains fetch error:", err);
+      console.warn("Backend user profile fetch error:", err);
     }
   };
 
   const [availableDomains, setAvailableDomains] = useState([]);
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
 
   useEffect(() => {
     fetchLiveData();
@@ -1676,13 +1682,28 @@ export default function AdminDashboard() {
           <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
             <div 
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
+              style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none", overflow: "hidden", border: "1px solid #cbd5e1" }}
             >
-              SA
+              {currentUserProfile?.avatar_url ? (
+                <img 
+                  src={currentUserProfile.avatar_url} 
+                  alt="Profile" 
+                  onError={(e) => { e.target.style.display = "none"; }} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              ) : (
+                currentUserProfile?.name 
+                  ? currentUserProfile.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) 
+                  : "SA"
+              )}
             </div>
             
             {isProfileDropdownOpen && (
-              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "150px", zIndex: 100, overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
+                <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#0f172a" }}>{currentUserProfile?.name || "System Admin"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "#64748b" }}>{currentUserProfile?.email || "admin@proeduvate.com"}</p>
+                </div>
                 <button 
                   onClick={() => { setActiveTab("Profile"); navigate("/admin/profile"); setIsProfileDropdownOpen(false); }}
                   style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%", padding: "12px 16px", backgroundColor: "transparent", border: "none", color: "#475569", cursor: "pointer", textAlign: "left", fontSize: "14px", fontWeight: "500", transition: "background-color 0.2s" }}

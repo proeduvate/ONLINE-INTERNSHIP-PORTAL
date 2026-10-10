@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { User, Shield, Bell, Camera, Mail, Briefcase, Code2, Building2, Save, CheckCircle, AlertCircle, Phone } from "lucide-react";
 import api from "../../api/axios";
 
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%23ecfdf5'/><circle cx='32' cy='24' r='12' fill='%2310b981'/><path d='M12 52c0-11 9-20 20-20s20 9 20 20' fill='%2310b981'/></svg>";
+
 export default function MentorProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5");
+  const [profileImage, setProfileImage] = useState(DEFAULT_AVATAR);
   const fileInputRef = useRef(null);
 
   // Profile Form State
@@ -230,9 +232,10 @@ export default function MentorProfile() {
               <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "16px" }}>
                 <div style={{ position: "relative" }}>
                   <img
-                    src={profileImage}
+                    src={profileImage || DEFAULT_AVATAR}
+                    onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_AVATAR; }}
                     alt="Profile"
-                    style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #e2e8f0", objectFit: "cover" }}
+                    style={{ width: "80px", height: "80px", borderRadius: "50%", border: "1px solid #cbd5e1", objectFit: "cover", backgroundColor: "#f8fafc" }}
                   />
                   <button onClick={() => fileInputRef.current?.click()} style={{ position: "absolute", bottom: "-4px", right: "-4px", width: "28px", height: "28px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
                     <Camera size={14} />

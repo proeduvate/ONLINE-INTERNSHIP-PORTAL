@@ -308,7 +308,18 @@ export default function MentorDashboard() {
     } catch (err) {
       console.warn("Error fetching certificate requests:", err);
     }
+
+    try {
+      const userRes = await api.get('/api/v1/users/profile');
+      if (userRes.data) {
+        setCurrentUserProfile(userRes.data);
+      }
+    } catch (err) {
+      console.warn("Backend user profile fetch error:", err);
+    }
   };
+
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
 
   useEffect(() => {
     fetchMentorLiveData();
@@ -2157,16 +2168,27 @@ export default function MentorDashboard() {
           <div style={{ display: "flex", alignItems: "center", gap: "12px", position: "relative" }}>
             <div 
               onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              style={{ width: "34px", height: "34px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none" }}
+              style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#ecfdf5", color: "#047857", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "bold", cursor: "pointer", userSelect: "none", overflow: "hidden", border: "1px solid #a7f3d0" }}
             >
-              DM
+              {currentUserProfile?.avatar_url ? (
+                <img 
+                  src={currentUserProfile.avatar_url} 
+                  alt="Profile" 
+                  onError={(e) => { e.target.style.display = "none"; }} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              ) : (
+                currentUserProfile?.name 
+                  ? currentUserProfile.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) 
+                  : "DM"
+              )}
             </div>
             
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
                 <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
-                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Dr. Ananya Menon</p>
-                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{currentUserProfile?.name || "Mentor"}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{currentUserProfile?.email || ""}</p>
                 </div>
                 <button
                   onClick={() => { setActiveTab("My Profile"); navigate("/mentor/my-profile"); setIsProfileDropdownOpen(false); }}
