@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MeetingRoom from './MeetingRoom';
 import apiClient from '../services/apiClient';
+import { getApiBase } from '../api';
 
 export default function BreakoutRoomsApp({ user, meetingId = "default-meeting" }) {
   const [activeChannel, setActiveChannel] = useState('main-meeting');
@@ -18,7 +19,7 @@ export default function BreakoutRoomsApp({ user, meetingId = "default-meeting" }
     if (!user) return;
 
     // Connect to WebSocket for presence tracking
-    const baseUri = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:8000';
+    const baseUri = getApiBase();
     const wsUri = baseUri.replace(/^http/, 'ws') + `/api/meetings/ws/${activeChannel}/${user.id}`;
     
     ws.current = new WebSocket(wsUri);
