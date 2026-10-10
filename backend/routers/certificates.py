@@ -188,17 +188,25 @@ def approve_credential_endpoint(intern_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Intern record not found")
 
     if intern:
-        setattr(intern, "is_credential_approved", True)
+        if hasattr(intern, "is_credential_approved"):
+            setattr(intern, "is_credential_approved", True)
+        if hasattr(intern, "is_approved"):
+            setattr(intern, "is_approved", True)
         db.add(intern)
     if cert:
         cert.status = "APPROVED"
         db.add(cert)
     elif intern:
         cert_id = f"PE-2026-FSD-{intern.id:04d}"
+        safe_name = intern.name if (intern and intern.name) else "Intern"
+        safe_domain = getattr(intern, "domain_name", None) or getattr(intern, "domain", None) or "Full Stack Web Development"
+        if hasattr(safe_domain, 'name'):
+            safe_domain = safe_domain.name
         new_cert = models.Certificate(
             certificate_id=cert_id,
             intern_id=intern.id,
-            domain=getattr(intern, "domain_name", "Full Stack Web Development") or "Full Stack Web Development",
+            intern_name=safe_name,
+            domain=str(safe_domain),
             duration="1 Month",
             status="APPROVED",
             final_score=91

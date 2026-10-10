@@ -129,8 +129,9 @@ try:
     from sqlalchemy import text
     with engine.connect() as conn:
         conn.execute(text("ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT;"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_credential_approved BOOLEAN DEFAULT FALSE;"))
         conn.commit()
-        print("Database migration: users.avatar_url column altered to TEXT successfully.")
+        print("Database migration: users table columns auto-migrated successfully.")
 except Exception as e:
     print("Database migration notice:", e)
 
