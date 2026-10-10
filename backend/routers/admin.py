@@ -197,7 +197,7 @@ def create_mentor(
 def get_all_domains(db: Session = Depends(database.get_db)):
     domains = db.query(models.Domain).all()
     if not domains:
-        default_names = ["Frontend", "Data Science", "Artificial Intelligence", "Cyber Security", "Fullstack", "Python", "UI/UX", "Java", "Data Analytics"]
+        default_names = ["Frontend Development", "Data Science", "Artificial Intelligence", "Cybersecurity", "Full Stack Development", "Python", "UI/UX Design", "Java"]
         for d_name in default_names:
             d_obj = models.Domain(name=d_name, description=f"{d_name} Internship Domain")
             db.add(d_obj)

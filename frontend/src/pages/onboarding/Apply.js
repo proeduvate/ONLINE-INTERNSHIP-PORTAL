@@ -29,15 +29,42 @@ export default function Apply() {
         "AI / ML",
         "Data Science",
         "Cybersecurity",
-        "UI/UX Design"
+        "UI/UX Design",
+        "Python",
+        "Java"
     ]);
+
+    const normalizeDomainName = (name) => {
+        if (!name) return "";
+        let clean = String(name).trim();
+        const lower = clean.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (lower === 'fullstack' || lower === 'fullstackdevelopment' || lower === 'fullstackwebdevelopment' || lower === 'fullstack') {
+            return "Full Stack Development";
+        }
+        if (lower === 'aiml' || lower === 'artificialintelligence') {
+            return "AI / ML";
+        }
+        if (lower === 'datascience' || lower === 'dataanalytics') {
+            return "Data Science";
+        }
+        if (lower === 'cybersecurity' || lower === 'cybersecurity') {
+            return "Cybersecurity";
+        }
+        if (lower === 'uiux' || lower === 'uiuxdesign') {
+            return "UI/UX Design";
+        }
+        if (lower === 'frontend') return "Frontend Development";
+        return clean;
+    };
 
     React.useEffect(() => {
         const fetchDomains = async () => {
             try {
                 const res = await api.get('/api/v1/onboarding/domains');
                 if (Array.isArray(res.data) && res.data.length > 0) {
-                    setAvailableDomains(res.data.map(d => typeof d === 'string' ? d : d.name));
+                    const raw = res.data.map(d => typeof d === 'string' ? d : d.name);
+                    const normalized = Array.from(new Set(raw.map(normalizeDomainName).filter(Boolean)));
+                    setAvailableDomains(normalized);
                 }
             } catch (err) {
                 console.warn("Backend domains fetch error:", err);
