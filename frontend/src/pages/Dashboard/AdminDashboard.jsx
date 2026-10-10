@@ -247,25 +247,6 @@ export default function AdminDashboard() {
     fetchLiveData();
   }, []);
 
-  const handleApproveCertificate = async (internId) => {
-    try {
-      await api.post(`/api/v1/certificates/approve/${internId}`);
-      alert("Certificate approved successfully!");
-      setAdminCredentialInterns(prev => prev.map(item => 
-        String(item.id) === String(internId) || String(item.cert_id) === String(internId)
-          ? { ...item, status: "Approved" }
-          : item
-      ));
-      if (selectedAdminCredentialIntern) {
-        setSelectedAdminCredentialIntern(prev => prev ? { ...prev, status: "Approved" } : null);
-      }
-      fetchLiveData();
-    } catch (err) {
-      console.error("Certificate approval error:", err);
-      alert("Failed to approve certificate: " + (err.response?.data?.detail || err.message));
-    }
-  };
-
   const handleAddMentor = async (e) => {
     e.preventDefault();
     if (!newMentor.name || !newMentor.email) {
