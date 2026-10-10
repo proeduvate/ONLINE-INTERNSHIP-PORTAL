@@ -11,12 +11,14 @@ import Payment from "./pages/onboarding/Payment";
 import Documents from "./pages/onboarding/Documents";
 import InternDetails from "./pages/Dashboard/InternDetails";
 import { GlobalHeader } from "./components/layout/GlobalHeader";
+import { AuthProvider } from "./services/AuthContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app-monolithic-wrapper">
-        <GlobalHeader />
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="app-monolithic-wrapper">
+          <GlobalHeader />
         <main className="app-main-content">
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -63,6 +65,7 @@ function App() {
         </main>
       </div>
     </BrowserRouter>
+  </AuthProvider>
   );
 }
 

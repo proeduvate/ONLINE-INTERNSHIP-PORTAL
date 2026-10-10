@@ -7,8 +7,11 @@ import BreakoutManagerModal from './BreakoutManagerModal';
 import { mockRooms } from './MockData';
 import { useAuth } from '../../services/AuthContext';
 
-export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isIntern = false, onMinimize }) {
-  const { user } = useAuth();
+export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isIntern = false, onMinimize, user: propUser }) {
+  const auth = useAuth() || {};
+  const user = propUser || auth.user || (() => {
+    try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch (e) { return null; }
+  })();
   const [rooms, setRooms] = useState(mockRooms);
   // Default both Mentor and Intern to 'main' so they enter the same meeting room!
   const [activeRoom, setActiveRoom] = useState('main');

@@ -77,4 +77,17 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        let cachedUser = null;
+        try {
+            cachedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        } catch (e) {
+            cachedUser = null;
+        }
+        const cachedToken = localStorage.getItem('token') || localStorage.getItem('authToken');
+        return { user: cachedUser, authToken: cachedToken, login: async () => {}, logout: () => {}, loading: false };
+    }
+    return context;
+};
