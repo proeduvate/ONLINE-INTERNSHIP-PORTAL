@@ -42,6 +42,7 @@ class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
     college: Optional[str] = None
     phone: Optional[str] = None
+    avatar_url: Optional[str] = None
     password: Optional[str] = None
 
 class UserResponse(BaseModel):
@@ -50,6 +51,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: UserRole
     created_at: Optional[datetime] = None
+    avatar_url: Optional[str] = None
     intern_id: Optional[str] = None
     college: Optional[str] = None
     phone: Optional[str] = None

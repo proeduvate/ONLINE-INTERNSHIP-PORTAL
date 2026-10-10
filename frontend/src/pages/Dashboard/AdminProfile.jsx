@@ -46,6 +46,9 @@ export default function AdminProfile() {
           organization: res.data.college || "",
           phone: res.data.phone || ""
         });
+        if (res.data.avatar_url) {
+          setProfileImage(res.data.avatar_url);
+        }
       }
     } catch (err) {
       console.warn("Failed to fetch user profile:", err);
@@ -63,16 +66,38 @@ export default function AdminProfile() {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setProfileImage(url);
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await api.post('/api/v1/users/avatar', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        if (res.data?.avatar_url) {
+          setProfileImage(res.data.avatar_url);
+          alert("Profile photo updated successfully!");
+        }
+      } catch (err) {
+        console.error("Failed to upload profile photo:", err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
-  const handleRemoveImage = () => {
-    setProfileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+  const handleRemoveImage = async () => {
+    const defaultAvatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc";
+    setProfileImage(defaultAvatar);
+    try {
+      await api.put('/api/v1/users/profile', { avatar_url: "" });
+    } catch (err) {
+      console.error("Remove image error:", err);
+    }
   };
 
   const handleSaveProfile = async (e) => {
@@ -81,7 +106,9 @@ export default function AdminProfile() {
     try {
       await api.put('/api/v1/users/profile', {
         name: profile.name,
-        college: profile.organization
+        college: profile.organization,
+        phone: profile.phone,
+        avatar_url: profileImage
       });
       alert("Profile updated successfully in database!");
       fetchProfileData();

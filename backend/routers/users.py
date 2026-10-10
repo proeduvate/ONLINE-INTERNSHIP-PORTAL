@@ -50,12 +50,59 @@ def update_profile(
         user.college = profile_update.college.strip()
     if profile_update.phone is not None:
         user.phone = profile_update.phone.strip()
+    if profile_update.avatar_url is not None:
+        user.avatar_url = profile_update.avatar_url.strip() if profile_update.avatar_url else None
     if profile_update.password is not None and profile_update.password.strip():
         user.hashed_password = hash_password(profile_update.password.strip())
 
     db.commit()
     db.refresh(user)
     return user
+
+from fastapi import UploadFile, File
+import uuid
+import os
+
+@router.post("/avatar")
+def upload_avatar(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """Uploads profile avatar and updates user record in DB."""
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    try:
+        content = file.file.read()
+        ext = file.filename.split('.')[-1] if '.' in file.filename else 'png'
+        unique_filename = f"avatar_{user.id}_{uuid.uuid4().hex[:8]}.{ext}"
+        
+        avatar_url = None
+        try:
+            from services.supabase_service import supabase_service
+            avatar_url = supabase_service.upload_file(content, bucket_name="avatars", filename=unique_filename, content_type=file.content_type)
+        except Exception as e:
+            print("Supabase avatar upload skipped/failed:", e)
+            
+        if not avatar_url:
+            os.makedirs("uploads/avatars", exist_ok=True)
+            local_path = os.path.join("uploads/avatars", unique_filename)
+            with open(local_path, "wb") as f:
+                f.write(content)
+            from services.email_service import BACKEND_URL
+            avatar_url = f"{BACKEND_URL}/uploads/avatars/{unique_filename}"
+            
+        user.avatar_url = avatar_url
+        db.commit()
+        db.refresh(user)
+        return {"avatar_url": user.avatar_url}
+    except Exception as err:
+        print("Avatar upload error:", err)
+        raise HTTPException(status_code=500, detail="Failed to upload avatar: " + str(err))
+    finally:
+        file.file.close()
 
 @router.post("/change-password")
 def change_password(

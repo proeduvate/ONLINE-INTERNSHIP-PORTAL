@@ -72,6 +72,7 @@ class User(Base):
 
     # Profile fields
     phone = Column(String(50), nullable=True)
+    avatar_url = Column(String(500), nullable=True)
     intern_id = Column(String(50), nullable=True)
     college = Column(String(100), nullable=True)
     domain_id = Column(Integer, ForeignKey("domains.id", ondelete="SET NULL"), nullable=True)

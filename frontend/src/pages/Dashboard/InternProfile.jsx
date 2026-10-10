@@ -47,6 +47,9 @@ export default function InternProfile() {
           role: res.data.role ? res.data.role.toUpperCase() : "INTERN",
           phone: res.data.phone || ""
         });
+        if (res.data.avatar_url) {
+          setProfileImage(res.data.avatar_url);
+        }
       }
     } catch (err) {
       console.warn("Failed to fetch intern profile:", err);
@@ -64,24 +67,44 @@ export default function InternProfile() {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result;
-        setProfileImage(base64);
-        localStorage.setItem("user_profile_photo", base64);
-        window.dispatchEvent(new Event("profile_photo_updated"));
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await api.post('/api/v1/users/avatar', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        if (res.data?.avatar_url) {
+          setProfileImage(res.data.avatar_url);
+          localStorage.setItem("user_profile_photo", res.data.avatar_url);
+          window.dispatchEvent(new Event("profile_photo_updated"));
+          alert("Profile photo updated successfully!");
+        }
+      } catch (err) {
+        console.error("Failed to upload profile photo:", err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result;
+          setProfileImage(base64);
+          localStorage.setItem("user_profile_photo", base64);
+          window.dispatchEvent(new Event("profile_photo_updated"));
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = async () => {
     setProfileImage(null);
     localStorage.removeItem("user_profile_photo");
     window.dispatchEvent(new Event("profile_photo_updated"));
+    try {
+      await api.put('/api/v1/users/profile', { avatar_url: "" });
+    } catch (err) {
+      console.error("Remove image error:", err);
+    }
   };
 
   const handleSaveProfile = async (e) => {
@@ -91,7 +114,8 @@ export default function InternProfile() {
       await api.put('/api/v1/users/profile', {
         name: profile.name,
         college: profile.institution,
-        phone: profile.phone
+        phone: profile.phone,
+        avatar_url: profileImage
       });
       alert("Profile updated successfully in database!");
       fetchProfileData();
