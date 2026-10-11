@@ -21,7 +21,7 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
     return ['All Batches', ...Array.from(uniqueBatches)];
   }, [interns]);
 
-  // Generate mock leaderboard data
+  // Compute leaderboard data from actual interns
   const leaderboardData = useMemo(() => {
     let filteredInterns = interns;
     if (batchFilter !== 'All Batches') {
@@ -29,21 +29,15 @@ export default function AdminLeaderboard({ usersList, isOverview = false }) {
     }
 
     let data = filteredInterns.map(intern => {
-      // Generate some dummy points based on ID
-      let seed = 0;
-      for (let i = 0; i < intern.id.length; i++) {
-        seed += intern.id.charCodeAt(i);
-      }
-      
-      let basePoints = (seed % 100) * 10; 
+      let rawPoints = intern.totalPoints ?? intern.points ?? ((parseInt(intern.progress, 10) || 0) * 10);
       
       // Adjust based on time
-      if (timeFilter === 'Weekly') basePoints = Math.floor(basePoints / 4);
-      if (timeFilter === 'Monthly') basePoints = Math.floor(basePoints / 2);
+      if (timeFilter === 'Weekly') rawPoints = Math.floor(rawPoints / 4);
+      if (timeFilter === 'Monthly') rawPoints = Math.floor(rawPoints / 2);
       
       return {
         ...intern,
-        totalPoints: basePoints + (seed % 50)
+        totalPoints: rawPoints
       };
     });
 

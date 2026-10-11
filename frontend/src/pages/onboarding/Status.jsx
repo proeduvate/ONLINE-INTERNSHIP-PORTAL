@@ -43,12 +43,16 @@ export default function Status() {
         currentStage = signedOffer && signedTc ? "ONBOARDING_COMPLETED" : "DOCUMENTS_GENERATED";
       }
 
+      const realName = localStorage.getItem(`app_name_${idToFetch.trim()}`) || localStorage.getItem("last_application_name") || localStorage.getItem("userName") || "Applicant";
+      const realTrack = localStorage.getItem(`app_domain_${idToFetch.trim()}`) || localStorage.getItem("last_application_domain") || "Internship Track";
+      const realDate = localStorage.getItem(`app_date_${idToFetch.trim()}`) || new Date().toISOString().split("T")[0];
+
       setStatusResult({
         applicationId: idToFetch.trim(),
-        name: "John Doe",
-        track: "Full Stack Web Development",
+        name: realName,
+        track: realTrack,
         status: currentStage,
-        appliedDate: "2026-09-18",
+        appliedDate: realDate,
         message: currentStage === "ONBOARDING_COMPLETED" 
           ? "Congratulations! Your onboarding is complete and account credentials are ready."
           : currentStage === "DOCUMENTS_GENERATED"

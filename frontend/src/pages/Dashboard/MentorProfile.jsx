@@ -4,10 +4,40 @@ import { User, Shield, Bell, Camera, Mail, MapPin, Briefcase, Code2, Building2, 
 export default function MentorProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const userEmail = localStorage.getItem("userEmail") || "mentor";
-  const imageKey = `profile_image_${userEmail}`;
-  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5");
+  const userEmail = localStorage.getItem("userEmail") || "";
+  const storedName = localStorage.getItem("userName") || "";
+  const nameParts = storedName ? storedName.split(" ") : (userEmail ? userEmail.split("@")[0].split(".") : ["Mentor"]);
+  const firstName = nameParts[0] ? (nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)) : "Mentor";
+  const lastName = nameParts.slice(1).join(" ") ? (nameParts.slice(1).join(" ").charAt(0).toUpperCase() + nameParts.slice(1).join(" ").slice(1)) : "";
+
+  const [profileData, setProfileData] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`mentor_profile_${userEmail}`);
+      return saved ? JSON.parse(saved) : {
+        domain: localStorage.getItem("userDomain") || "",
+        institution: localStorage.getItem("userInstitution") || "",
+        role: "Mentor",
+        location: "",
+        bio: ""
+      };
+    } catch {
+      return { domain: "", institution: "", role: "Mentor", location: "", bio: "" };
+    }
+  });
+
+  const imageKey = `profile_image_${userEmail || "mentor"}`;
+  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firstName}&backgroundColor=ecfdf5`);
   const fileInputRef = useRef(null);
+
+  const handleProfileSave = (e) => {
+    e.preventDefault();
+    try {
+      localStorage.setItem(`mentor_profile_${userEmail}`, JSON.stringify(profileData));
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -27,7 +57,7 @@ export default function MentorProfile() {
   };
 
   const handleRemoveImage = () => {
-    const defaultImg = "https://api.dicebear.com/7.x/avataaars/svg?seed=Mentor&backgroundColor=ecfdf5";
+    const defaultImg = `https://api.dicebear.com/7.x/avataaars/svg?seed=${firstName}&backgroundColor=ecfdf5`;
     setProfileImage(defaultImg);
     localStorage.removeItem(imageKey);
     window.dispatchEvent(new Event("profileImageUpdated"));
@@ -121,15 +151,15 @@ export default function MentorProfile() {
               </div>
 
               {/* Form Grid */}
-              <form onSubmit={(e) => { e.preventDefault(); alert("Profile saved"); }}>
+              <form onSubmit={handleProfileSave}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Ananya" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" value={firstName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Menon" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="text" value={lastName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -137,7 +167,7 @@ export default function MentorProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="ananya@proedu.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
+                    <input type="email" value={userEmail} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -146,14 +176,14 @@ export default function MentorProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Domain / Specialization</label>
                     <div style={{ position: "relative" }}>
                       <Code2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Artificial Intelligence" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" value={profileData.domain} onChange={e => setProfileData({...profileData, domain: e.target.value})} placeholder="e.g. Artificial Intelligence" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Institution</label>
                     <div style={{ position: "relative" }}>
                       <Building2 size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="IIT Madras" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" value={profileData.institution} onChange={e => setProfileData({...profileData, institution: e.target.value})} placeholder="e.g. University / Org" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
@@ -163,25 +193,25 @@ export default function MentorProfile() {
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Role / Title</label>
                     <div style={{ position: "relative" }}>
                       <Briefcase size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="AI Mentor & Researcher" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" value={profileData.role} onChange={e => setProfileData({...profileData, role: e.target.value})} placeholder="e.g. Senior Mentor" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Location</label>
                     <div style={{ position: "relative" }}>
                       <MapPin size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                      <input type="text" defaultValue="Chennai, India" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
+                      <input type="text" value={profileData.location} onChange={e => setProfileData({...profileData, location: e.target.value})} placeholder="e.g. New York, USA" style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)" }} />
                     </div>
                   </div>
                 </div>
 
                 <div style={{ marginBottom: "20px" }}>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Bio</label>
-                  <textarea rows="2" defaultValue="Passionate AI researcher and educator with 8+ years of experience in Machine Learning, Deep Learning, and NLP. Mentoring the next generation of AI engineers at ProEduvate." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }} />
+                  <textarea rows="2" value={profileData.bio} onChange={e => setProfileData({...profileData, bio: e.target.value})} placeholder="Add a short bio about yourself..." style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontFamily: "inherit", resize: "none" }} />
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "16px" }}>
-                  <button type="button" style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
+                  <button type="button" onClick={() => setActiveSettingsTab("personal")} style={{ background: "transparent", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>Cancel</button>
                   <button type="submit" style={{ background: "#2563eb", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: 600, color: "var(--bg-surface, #ffffff)", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                     <Save size={16} /> Save Changes
                   </button>

@@ -115,7 +115,9 @@ export default function Documents() {
         );
     }
 
-    const applicationId = statusData?.applicationId || "APP-2026-00125";
+    const applicationId = statusData?.applicationId || localStorage.getItem('last_application_id') || "APP-2026-00125";
+    const applicantName = localStorage.getItem(`app_name_${applicationId}`) || localStorage.getItem('last_application_name') || localStorage.getItem('userName') || "Intern";
+    const applicantDomain = localStorage.getItem(`app_domain_${applicationId}`) || localStorage.getItem('last_application_domain') || "Full Stack Web Development";
     const currentStatus = statusData?.status || "PAYMENT_REQUIRED";
     const isPaymentVerified = ["PAYMENT_VERIFIED", "DOCUMENTS_GENERATED", "ACCOUNT_CREATION_PENDING", "ACCOUNT_CREATED", "ACTIVE", "ONBOARDING_COMPLETED"].includes(currentStatus);
     const isBothSigned = statusData?.signed_offer_letter_url && statusData?.signed_tc_url;
@@ -286,13 +288,13 @@ export default function Documents() {
                             {/* Offer Letter Body */}
                             {pdfType === 'offer_letter' ? (
                                 <div style={{ fontSize: '13px' }}>
-                                    <p>Dear <strong>John Doe</strong>,</p>
-                                    <p>We are pleased to offer you an appointment for the position of <strong>Full Stack Web Development Intern</strong> at ProEduvate EdTech Solutions. We were greatly impressed by your qualifications during the selection process.</p>
+                                    <p>Dear <strong>{applicantName}</strong>,</p>
+                                    <p>We are pleased to offer you an appointment for the position of <strong>{applicantDomain} Intern</strong> at ProEduvate EdTech Solutions. We were greatly impressed by your qualifications during the selection process.</p>
                                     
                                     <p style={{ margin: '14px 0 6px 0', fontWeight: 700, fontFamily: 'sans-serif' }}>Key Terms of Internship:</p>
                                     <ul style={{ paddingLeft: '20px', margin: '0 0 14px 0' }}>
-                                        <li><strong>Program Duration:</strong> 3 Months (September 20, 2026 – December 20, 2026)</li>
-                                        <li><strong>Domain / Focus:</strong> Full Stack Web Development & Modern Frameworks</li>
+                                        <li><strong>Program Duration:</strong> 3 Months</li>
+                                        <li><strong>Domain / Focus:</strong> {applicantDomain}</li>
                                         <li><strong>Mentorship:</strong> Assigned 1-on-1 industry mentor review & code evaluations</li>
                                         <li><strong>Credential:</strong> Verifiable 30-Day & Final Completion Certificate</li>
                                     </ul>
@@ -333,8 +335,8 @@ export default function Documents() {
                                                 alt="Intern Signature" 
                                                 style={{ height: '40px', maxWidth: '160px', objectFit: 'contain', borderBottom: '1px solid #0f172a' }} 
                                             />
-                                            <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a', marginTop: '4px' }}>John Doe</div>
-                                            <div style={{ fontSize: '10px', color: '#2563eb' }}>Signed digitally on Sep 20, 2026</div>
+                                            <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a', marginTop: '4px' }}>{applicantName}</div>
+                                            <div style={{ fontSize: '10px', color: '#2563eb' }}>Signed digitally</div>
                                         </div>
                                     ) : (
                                         <div style={{ border: '1px dashed #cbd5e1', padding: '12px', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', textAlign: 'center' }}>

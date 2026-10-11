@@ -17,296 +17,45 @@ export default function InternDetails() {
   const [copyStatus, setCopyStatus] = useState("");
   const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 
-  // Mock specific intern data based on the id
-  const intern = {
-    id: id || "INT001",
-    name: "John Doe",
-    domain: "Artificial Intelligence",
-    batch: "Batch A",
-    progress: 60,
-    attendance: 95,
-    score: 82,
-    weakAreas: "CSS layouts, Async operations",
-    strengths: "Problem solving, Data structures",
-  };
-
-  const performanceData = [
-    { week: 'Week 1', score: 70 },
-    { week: 'Week 2', score: 75 },
-    { week: 'Week 3', score: 80 },
-    { week: 'Week 4', score: 82 },
-  ];
-
-  const submissions = [
-    {
-      id: 1,
-      day: "Day 10",
-      task: "React To-Do App",
-      date: "2026-08-10",
-      submittedAt: "2026-08-10 17:42",
-      aiScore: "85%",
-      status: "Approved",
-      feedback: "Good structure. Minor UI issues.",
-      githubUrl: "https://github.com/johndoe/react-todo-app",
-      files: [
-        {
-          name: "App.js",
-          type: "code",
-          language: "javascript",
-          size: "2.4 KB",
-          uploadedAt: "2026-08-10 17:40",
-          content: `import React, { useState } from 'react';
-import './App.css';
-import TodoList from './components/TodoList';
-
-function App() {
-  const [todos, setTodos] = useState([
-    { id: 1, text: 'Complete Day 10 Task', completed: true },
-    { id: 2, text: 'Review Code with Mentor', completed: false },
-    { id: 3, text: 'Push changes to GitHub', completed: true }
-  ]);
-  const [inputText, setInputText] = useState('');
-
-  const handleAddTodo = (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-    setTodos([...todos, { id: Date.now(), text: inputText, completed: false }]);
-    setInputText('');
-  };
-
-  const handleToggle = (id) => {
-    setTodos(todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
-
-  return (
-    <div className="todo-app-container">
-      <header className="app-header">
-        <h1>Daily Task 10: React To-Do Application</h1>
-      </header>
-      <form onSubmit={handleAddTodo} className="add-todo-form">
-        <input 
-          type="text" 
-          placeholder="What needs to be done?" 
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <button type="submit">Add Task</button>
-      </form>
-      <TodoList todos={todos} onToggle={handleToggle} />
-    </div>
-  );
-}
-
-export default App;`
-        },
-        {
-          name: "TodoList.jsx",
-          type: "code",
-          language: "javascript",
-          size: "1.6 KB",
-          uploadedAt: "2026-08-10 17:41",
-          content: `import React from 'react';
-
-export default function TodoList({ todos, onToggle }) {
-  return (
-    <ul className="todo-list">
-      {todos.map(todo => (
-        <li 
-          key={todo.id} 
-          className={todo.completed ? 'completed' : ''}
-          onClick={() => onToggle(todo.id)}
-        >
-          <input type="checkbox" checked={todo.completed} readOnly />
-          <span>{todo.text}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}`
-        },
-        {
-          name: "styles.css",
-          type: "code",
-          language: "css",
-          size: "1.1 KB",
-          uploadedAt: "2026-08-10 17:41",
-          content: `.todo-app-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 24px;
-  background: var(--bg-surface);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.add-todo-form {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.todo-list {
-  list-style: none;
-  padding: 0;
-}
-
-.todo-list li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  cursor: pointer;
-}`
-        },
-        {
-          name: "Daily_Report_Day10.pdf",
-          type: "document",
-          size: "520 KB",
-          uploadedAt: "2026-08-10 17:42"
-        }
-      ]
-    },
-    {
-      id: 2,
-      day: "Day 15",
-      task: "Predictive Model Python",
-      date: "2026-08-15",
-      submittedAt: "2026-08-15 19:15",
-      aiScore: "92%",
-      status: "Pending",
-      feedback: "Waiting for mentor review.",
-      githubUrl: "https://github.com/johndoe/python-predictive-model",
-      files: [
-        {
-          name: "predictive_model.py",
-          type: "code",
-          language: "python",
-          size: "3.8 KB",
-          uploadedAt: "2026-08-15 19:10",
-          content: `import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
-
-# Step 1: Load dataset
-print("Loading daily task dataset...")
-df = pd.read_csv('dataset_clean.csv')
-
-# Step 2: Data preprocessing & Feature Engineering
-X = df.drop(columns=['target_score', 'user_id'])
-y = df['target_score']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Step 3: Model Training
-model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
-model.fit(X_train, y_train)
-
-# Step 4: Evaluation
-predictions = model.predict(X_test)
-rmse = np.sqrt(mean_squared_error(y_test, predictions))
-r2 = r2_score(y_test, predictions)
-
-print(f"Model RMSE: {rmse:.4f}")
-print(f"R2 Score: {r2:.4f}")`
-        },
-        {
-          name: "dataset_clean.csv",
-          type: "code",
-          language: "csv",
-          size: "14.2 KB",
-          uploadedAt: "2026-08-15 19:12",
-          content: `user_id,study_hours,practice_score,attendance_rate,target_score
-INT001,4.5,88,95,85.2
-INT002,6.0,92,98,91.0
-INT003,3.0,70,85,72.4
-INT004,5.5,95,96,89.8
-INT005,2.5,65,80,68.0`
-        },
-        {
-          name: "metrics_summary.json",
-          type: "code",
-          language: "json",
-          size: "850 B",
-          uploadedAt: "2026-08-15 19:14",
-          content: `{
-  "experiment_id": "EXP-2026-0815",
-  "model_type": "RandomForestRegressor",
-  "n_estimators": 100,
-  "metrics": {
-    "rmse": 2.415,
-    "r2_score": 0.924,
-    "accuracy_pct": "92%"
-  },
-  "status": "PASSED"
-}`
-        },
-        {
-          name: "Model_Analysis_Report.pdf",
-          type: "document",
-          size: "1.4 MB",
-          uploadedAt: "2026-08-15 19:15"
-        }
-      ]
-    },
-    {
-      id: 3,
-      day: "Day 20",
-      task: "Database Schema Design",
-      date: "2026-08-20",
-      submittedAt: "2026-08-20 16:30",
-      aiScore: "78%",
-      status: "Rejected",
-      feedback: "Lacks normalization.",
-      githubUrl: "https://github.com/johndoe/db-schema-design",
-      files: [
-        {
-          name: "schema_v2.sql",
-          type: "code",
-          language: "sql",
-          size: "2.9 KB",
-          uploadedAt: "2026-08-20 16:25",
-          content: `-- Database Schema Creation Script
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE daily_submissions (
-    id SERIAL PRIMARY KEY,
-    intern_id INT REFERENCES users(id),
-    task_name VARCHAR(150) NOT NULL,
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'Pending'
-);
-
-CREATE TABLE submission_files (
-    id SERIAL PRIMARY KEY,
-    submission_id INT REFERENCES daily_submissions(id),
-    filename VARCHAR(255) NOT NULL,
-    file_path TEXT NOT NULL,
-    file_size_bytes BIGINT NOT NULL
-);`
-        },
-        {
-          name: "erd_architecture.png",
-          type: "image",
-          size: "680 KB",
-          uploadedAt: "2026-08-20 16:28"
-        },
-        {
-          name: "Database_Documentation.pdf",
-          type: "document",
-          size: "980 KB",
-          uploadedAt: "2026-08-20 16:30"
-        }
-      ]
+  // Lookup intern dynamically
+  const allUsers = (() => {
+    try {
+      const saved = localStorage.getItem("app_users_list") || localStorage.getItem("app_mentor_interns");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
+  })();
+  const matchedIntern = allUsers.find(u => String(u.id) === String(id));
+
+  const intern = matchedIntern || {
+    id: id || "INT-001",
+    name: "Intern Profile",
+    domain: "General",
+    batch: "Current Batch",
+    progress: 0,
+    attendance: 0,
+    score: 0,
+    weakAreas: "",
+    strengths: "",
+  };
+
+  const performanceData = intern.performanceHistory || [
+    { week: 'Week 1', score: Math.round((parseInt(intern.progress, 10) || 0) * 0.4) },
+    { week: 'Week 2', score: Math.round((parseInt(intern.progress, 10) || 0) * 0.6) },
+    { week: 'Week 3', score: Math.round((parseInt(intern.progress, 10) || 0) * 0.8) },
+    { week: 'Week 4', score: parseInt(intern.progress, 10) || 0 },
   ];
+
+  const submissions = (() => {
+    try {
+      const saved = localStorage.getItem("app_submissions");
+      const list = saved ? JSON.parse(saved) : [];
+      return list.filter(s => String(s.internId) === String(id) || s.intern === intern.name);
+    } catch {
+      return [];
+    }
+  })();
 
   const getFileIcon = (fileName, type) => {
     const ext = fileName.split('.').pop().toLowerCase();
@@ -662,7 +411,7 @@ CREATE TABLE submission_files (
               </p>
             </div>
             <span style={{ fontSize: "13px", fontWeight: 600, color: "#3b82f6", background: "#eff6ff", padding: "6px 12px", borderRadius: "20px" }}>
-              Total Submissions: 24
+              Total Submissions: {submissions.length}
             </span>
           </div>
 
@@ -679,59 +428,52 @@ CREATE TABLE submission_files (
                 </tr>
               </thead>
               <tbody>
-                {Array.from({length: 30}, (_, i) => {
-                  const dayStr = `Day ${i + 1}`;
-                  // Simulate 24 submitted tasks
-                  const isSubmitted = i < 24;
-                  
-                  const dateStr = `2026-08-${String(i + 1).padStart(2, '0')}`;
-                  const taskName = isSubmitted ? `Daily Task ${i + 1}` : "No Task Scheduled";
-                  const score = isSubmitted ? `${80 + (i % 15)}%` : "-";
-                  const status = isSubmitted ? "Approved" : "Not Submitted";
-                  const feedback = isSubmitted ? "Good implementation. Minor UI issues." : "-";
-                  const githubUrl = isSubmitted ? `https://github.com/johndoe/task-${i+1}` : null;
-
-                  return (
-                    <tr key={dayStr}>
+                {submissions.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ padding: "32px", textAlign: "center", color: "#9ca3af" }}>
+                      No task submissions found for this intern yet.
+                    </td>
+                  </tr>
+                ) : (
+                  submissions.map((sub, idx) => (
+                    <tr key={sub.id || idx}>
                       <td style={{ padding: "14px 16px" }}>
-                        <div style={{ fontWeight: 600, color: "#1f2937" }}>{isSubmitted ? dateStr : "-"}</div>
-                        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{dayStr}</div>
+                        <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.date || sub.submittedAt || "-"}</div>
+                        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{sub.day || `Task ${idx + 1}`}</div>
                       </td>
                       <td style={{ padding: "14px 16px" }}>
-                        <div style={{ fontWeight: 600, color: isSubmitted ? "#1f2937" : "#9ca3af", fontStyle: isSubmitted ? "normal" : "italic" }}>{taskName}</div>
-                        {isSubmitted && githubUrl && (
-                          <a href={githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
+                        <div style={{ fontWeight: 600, color: "#1f2937" }}>{sub.task || "Task Assignment"}</div>
+                        {sub.githubUrl && (
+                          <a href={sub.githubUrl} target="_blank" rel="noreferrer" style={{ fontSize: "11px", color: "#2563eb", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>
                             <ExternalLink size={12} /> GitHub Repo
                           </a>
                         )}
                       </td>
                       <td style={{ padding: "14px 16px" }}>
-                         {isSubmitted ? (
-                           <div style={{ display: "flex", gap: "8px" }}>
-                             <span className="file-pill" style={{ padding: "6px 12px", fontSize: "12px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", borderRadius: "6px", color: "#475569", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                               <FileText size={14} color="var(--text-muted, #64748b)" /> MCQ_{dayStr.replace(" ", "")}.pdf
-                             </span>
-                           </div>
-                         ) : (
-                           <span style={{ color: "#d1d5db" }}>-</span>
-                         )}
-                      </td>
-                      <td style={{ padding: "14px 16px" }}>
-                        <span style={{ fontWeight: 600, color: isSubmitted ? "#1f2937" : "#d1d5db" }}>{score}</span>
-                      </td>
-                      <td style={{ padding: "14px 16px" }}>
-                        {isSubmitted ? (
-                           <span className={`badge badge-success`}>{status}</span>
+                        {sub.files && sub.files.length > 0 ? (
+                          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                            {sub.files.map((f, fi) => (
+                              <span key={fi} onClick={() => handleOpenFileViewer(sub, fi)} className="file-pill" style={{ padding: "6px 12px", fontSize: "12px", background: "var(--bg-surface-elevated, #f8fafc)", border: "1px solid #e2e8f0", borderRadius: "6px", color: "#475569", display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
+                                {getFileIcon(f.name, f.type)} {f.name}
+                              </span>
+                            ))}
+                          </div>
                         ) : (
-                           <span className="badge badge-secondary" style={{ backgroundColor: "#f3f4f6", color: "#6b7280" }}>{status}</span>
+                          <span style={{ color: "#d1d5db" }}>-</span>
                         )}
                       </td>
-                      <td style={{ padding: "14px 16px", fontSize: "12px", color: isSubmitted ? "#4b5563" : "#d1d5db", lineHeight: "1.4" }}>
-                        {feedback}
+                      <td style={{ padding: "14px 16px" }}>
+                        <span style={{ fontWeight: 600, color: "#1f2937" }}>{sub.aiScore || "-"}</span>
+                      </td>
+                      <td style={{ padding: "14px 16px" }}>
+                        <span className={`badge ${sub.status === 'Approved' ? 'badge-success' : sub.status === 'Rejected' ? 'badge-danger' : 'badge-secondary'}`}>{sub.status || "Pending"}</span>
+                      </td>
+                      <td style={{ padding: "14px 16px", fontSize: "12px", color: "#4b5563", lineHeight: "1.4" }}>
+                        {sub.feedback || sub.mentorFeedback || "-"}
                       </td>
                     </tr>
-                  );
-                })}
+                  ))
+                )}
               </tbody>
             </table>
           </div>

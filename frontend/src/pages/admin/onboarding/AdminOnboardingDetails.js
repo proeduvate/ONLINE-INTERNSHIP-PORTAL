@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
-import { ONBOARDING_STATUSES } from '../../../services/mockOnboardingService'; // Keep for enum
+import { ONBOARDING_STATUSES } from '../../../constants/onboardingStatuses';
 import '../../onboarding/Onboarding.css';
 
 export default function AdminOnboardingDetails() {

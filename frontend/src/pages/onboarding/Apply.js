@@ -99,6 +99,11 @@ export default function Apply() {
             }
 
             localStorage.setItem("last_application_id", appId);
+            localStorage.setItem("last_application_name", formData.name || "");
+            localStorage.setItem("last_application_domain", formData.domain || "");
+            localStorage.setItem(`app_name_${appId}`, formData.name || "");
+            localStorage.setItem(`app_domain_${appId}`, formData.domain || "");
+            localStorage.setItem(`app_date_${appId}`, new Date().toISOString().split("T")[0]);
             setApplicationId(appId);
             setSubmitted(true);
         } catch (error) {

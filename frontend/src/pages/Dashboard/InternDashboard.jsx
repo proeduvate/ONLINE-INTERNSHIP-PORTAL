@@ -76,15 +76,16 @@ export default function InternDashboard() {
     window.addEventListener("profileImageUpdated", handleProfileUpdate);
     return () => window.removeEventListener("profileImageUpdated", handleProfileUpdate);
   }, [imageKey]);
+  const storedUserName = localStorage.getItem("userName");
+  const userName = storedUserName || (userEmail.includes("@") ? userEmail.split("@")[0] : "Intern");
   const [showCertificateView, setShowCertificateView] = useState(false);
-  const [isInternshipCompleted, setIsInternshipCompleted] = useState(true);
-  const [internDomain, setInternDomain] = useState("UI/UX");
+  const [internDomain, setInternDomain] = useState(() => localStorage.getItem("userDomain") || "UI/UX");
+  const [isInternshipCompleted, setIsInternshipCompleted] = useState(() => {
+    return localStorage.getItem("internship_completed") === "true";
+  });
+  const [submissionsVersion, setSubmissionsVersion] = useState(0);
 
-  const mockNotifications = [
-    { id: 1, text: "Your daily scenario is unlocked", time: "2 hours ago" },
-    { id: 2, text: "Mentor replied to your ticket", time: "5 hours ago" },
-    { id: 3, text: "New bonus airdrop available", time: "1 day ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
 
   // Live Meeting State
   const [isMeetingActive, setIsMeetingActive] = useState(false);
@@ -155,50 +156,15 @@ export default function InternDashboard() {
 
   useEffect(() => {
     const storedAirdrops = localStorage.getItem("app_bonus_airdrops");
-    let parsed = [];
     if (storedAirdrops) {
-      parsed = JSON.parse(storedAirdrops);
+      try {
+        setBonusAirdrops(JSON.parse(storedAirdrops));
+      } catch (e) {
+        setBonusAirdrops([]);
+      }
+    } else {
+      setBonusAirdrops([]);
     }
-    
-    const mockData = [
-      {
-        id: 101,
-        question: "What is the primary purpose of React's Virtual DOM?",
-        timeLimit: "60",
-        points: [20, 15, 10],
-        status: "Active"
-      },
-      {
-        id: 102,
-        question: "Explain the difference between useState and useReducer.",
-        timeLimit: "45",
-        points: [15, 10],
-        status: "Active"
-      },
-      {
-        id: 103,
-        question: "What are the core web vitals and why do they matter?",
-        timeLimit: "90",
-        points: [30, 20, 10],
-        status: "Completed"
-      },
-      {
-        id: 104,
-        question: "How does the Event Loop work in Node.js?",
-        timeLimit: "120",
-        points: [50, 25],
-        status: "Completed"
-      }
-    ];
-    
-    // Merge real airdrops with mock data so there is always something to see
-    const merged = [...parsed];
-    mockData.forEach(mockItem => {
-      if (!merged.find(item => item.id === mockItem.id)) {
-        merged.push(mockItem);
-      }
-    });
-    setBonusAirdrops(merged);
   }, []);
 
   useEffect(() => {
@@ -271,13 +237,74 @@ export default function InternDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mock State
-  const progress = 40; // 12 of 30 days
-  const [aiScore, setAiScore] = useState(88);
-  const attendancePercent = 90;
+  // State derived from real user activity
+  const [currentDay, setCurrentDay] = useState(() => {
+    const saved = localStorage.getItem("intern_current_day");
+    return saved ? Math.max(1, Math.min(30, Number(saved))) : 1;
+  });
 
-  // Dynamic Learning Workflow State
-  const [currentDay, setCurrentDay] = useState(1);
+  const mySubmissions = (() => {
+    try {
+      const saved = localStorage.getItem("app_submissions");
+      const list = saved ? JSON.parse(saved) : [];
+      const myEmail = (localStorage.getItem("userEmail") || "").toLowerCase().trim();
+      const myName = (localStorage.getItem("userName") || "").toLowerCase().trim();
+      return list.filter(s => {
+        const sEmail = (s.email || s.internEmail || s.internId || "").toLowerCase().trim();
+        const sName = (s.intern || s.name || "").toLowerCase().trim();
+        return (myEmail && sEmail === myEmail) || (myName && sName === myName) || (!sEmail && !sName);
+      });
+    } catch {
+      return [];
+    }
+  })();
+
+  const completedDaysCount = Math.min(30, mySubmissions.length);
+  const daysProgressPercent = Math.round((completedDaysCount / 30) * 100);
+  const tasksCompletedCount = mySubmissions.length;
+  const totalTasks = 30;
+  const tasksProgressPercent = Math.min(100, Math.round((tasksCompletedCount / totalTasks) * 100));
+
+  const progress = daysProgressPercent;
+
+  const [aiScore, setAiScore] = useState(() => {
+    const s = localStorage.getItem("intern_ai_score");
+    return s ? Number(s) : 0;
+  });
+
+  const attendancePercent = (() => {
+    const a = localStorage.getItem("intern_attendance");
+    return a ? Number(a) : 100;
+  })();
+
+  const [mcqGrade, setMcqGrade] = useState(() => {
+    const s = localStorage.getItem("intern_mcq_score");
+    return s ? Number(s) : null;
+  });
+
+  const mcqScore = mcqGrade !== null ? mcqGrade : (localStorage.getItem("intern_mcq_score") ? Number(localStorage.getItem("intern_mcq_score")) : 0);
+  
+  const mentorScore = (() => {
+    const scoredSubs = mySubmissions.filter(s => s.mentorScore || s.score);
+    if (!scoredSubs.length) return 0;
+    const total = scoredSubs.reduce((acc, s) => acc + Number(s.mentorScore || s.score || 0), 0);
+    return Math.round(total / scoredSubs.length);
+  })();
+
+  const overallScore = (() => {
+    const scores = [];
+    if (mcqScore > 0) scores.push(mcqScore);
+    if (aiScore > 0) scores.push(aiScore);
+    if (mentorScore > 0) scores.push(mentorScore);
+    if (!scores.length) return 0;
+    return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  })();
+
+  useEffect(() => {
+    if (completedDaysCount >= 30) {
+      setIsInternshipCompleted(true);
+    }
+  }, [completedDaysCount]);
   
   const curriculumData = [
     { day: 1, topic: "Introduction to React", desc: "Understand component composition, JSX, and render paths.", notes: "Lecture_Notes_Day1.pdf" },
@@ -292,34 +319,31 @@ export default function InternDashboard() {
   const [assessmentView, setAssessmentView] = useState("selection"); // selection, mcq, coding
   const [mcqDone, setMcqDone] = useState(false);
   const [codingDone, setCodingDone] = useState(false);
+
+  const assessmentSubsCount = mySubmissions.filter(s => 
+    Boolean(s.task && (s.task.toLowerCase().includes("mcq") || s.task.toLowerCase().includes("coding") || s.task.toLowerCase().includes("assessment")))
+  ).length;
+  const currentSessionAssessments = (mcqDone ? 1 : 0) + (codingDone ? 1 : 0);
+  const assessmentsCompletedCount = Math.max(assessmentSubsCount, currentSessionAssessments);
+  const totalAssessments = 30;
+  const assessmentsProgressPercent = Math.min(100, Math.round((assessmentsCompletedCount / totalAssessments) * 100));
   const [isDayLockedUntilMidnight, setIsDayLockedUntilMidnight] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const [ticketsData, setTicketsData] = useState([
-    {
-      id: "TKT-1042",
-      title: "Environment setup failing on local machine during Docker build",
-      date: "2 days ago",
-      status: "In Progress",
-      statusBg: "var(--bg-yellow-light)",
-      statusColor: "var(--warning-darker)",
-      tagBg: "var(--bg-red-lighter)",
-      tagColor: "var(--danger-darkest)",
-      adminReply: "We are looking into the Dockerfile issue. Please ensure you have Docker Desktop v4.20+ installed. A mentor will join your system in the next standup."
-    },
-    {
-      id: "TKT-0985",
-      title: "Missing lecture notes for Day 5",
-      date: "1 week ago",
-      status: "Resolved",
-      statusBg: "var(--bg-emerald-lighter)",
-      statusColor: "var(--success-darker)",
-      tagBg: "var(--bg-gray-light)",
-      tagColor: "var(--text-gray)",
-      adminReply: "The notes have been uploaded to the portal. Please refresh the page."
-    }
-  ]);
+  const [ticketsData, setTicketsData] = useState(() => {
+    try {
+      const saved = localStorage.getItem("app_tickets");
+      const list = saved ? JSON.parse(saved) : [];
+      const myEmail = localStorage.getItem("userEmail") || "";
+      const myName = localStorage.getItem("userName") || "";
+      return list.filter(t => 
+        (myEmail && (t.email === myEmail || t.userEmail === myEmail)) ||
+        (myName && (t.user === myName || t.intern === myName)) ||
+        (!t.email && !t.userEmail && !t.intern && !t.user)
+      );
+    } catch { return []; }
+  });
   const [newTicketTitle, setNewTicketTitle] = useState("");
   const [newTicketDesc, setNewTicketDesc] = useState("");
   const [ticketFilter, setTicketFilter] = useState("All");
@@ -330,6 +354,8 @@ export default function InternDashboard() {
       return;
     }
     const newId = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
+    const internName = localStorage.getItem("userName") || localStorage.getItem("userEmail") || "Intern";
+    const internEmail = localStorage.getItem("userEmail") || "";
     const newTicket = {
       id: newId,
       title: newTicketTitle,
@@ -339,11 +365,24 @@ export default function InternDashboard() {
       statusColor: "#1d4ed8",
       tagBg: "#dbeafe",
       tagColor: "#1e40af",
+      user: internName,
+      intern: internName,
+      userEmail: internEmail,
+      email: internEmail,
+      domain: internDomain,
       adminReply: newTicketDesc 
-        ? `Submitted Description: "${newTicketDesc}".\n\nYour ticket has been assigned to Dr. Sakthi. Review is in progress.` 
-        : "Your ticket has been assigned to Dr. Sakthi. Review is in progress."
+        ? `Submitted Description: "${newTicketDesc}".\n\nYour ticket has been submitted. Review is in progress.` 
+        : "Your ticket has been submitted. Review is in progress."
     };
-    setTicketsData([newTicket, ...ticketsData]);
+    const updated = [newTicket, ...ticketsData];
+    setTicketsData(updated);
+    try {
+      const allSaved = localStorage.getItem("app_tickets");
+      const list = allSaved ? JSON.parse(allSaved) : [];
+      localStorage.setItem("app_tickets", JSON.stringify([newTicket, ...list]));
+    } catch (e) {
+      console.error(e);
+    }
     setNewTicketTitle("");
     setNewTicketDesc("");
     setShowTicketModal(true);
@@ -353,7 +392,6 @@ export default function InternDashboard() {
   const [mcqSubmitted, setMcqSubmitted] = useState(false);
   const [timer, setTimer] = useState(60);
   const [answers, setAnswers] = useState({});
-  const [mcqGrade, setMcqGrade] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const mcqQuestionsList = [
@@ -380,9 +418,15 @@ export default function InternDashboard() {
   const [evalResult, setEvalResult] = useState(null);
 
   // Chat message state
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "Mentor", text: "Hi John, I saw your code. Good effort, try to refactor the key prop warning.", time: "10:30 AM" }
-  ]);
+  const [chatMessages, setChatMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`intern_chat_${userEmail}`);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return [
+      { sender: "Mentor", text: `Hi ${userName}, welcome to your mentorship channel! Feel free to ask any technical or project-related questions here.`, time: "10:30 AM" }
+    ];
+  });
   const [inputMsg, setInputMsg] = useState("");
 
   useEffect(() => {
@@ -430,9 +474,34 @@ export default function InternDashboard() {
 
   const handleMcqSubmit = () => {
     setMcqSubmitted(true);
-    const score = Object.keys(answers).length * 50; // simple score
+    const score = Math.min(100, Math.max(50, Object.keys(answers).length * 10)); // simple score
     setMcqGrade(score);
+    localStorage.setItem("intern_mcq_score", String(score));
     setMcqDone(true);
+    
+    // Save to real submissions list
+    const internName = localStorage.getItem("userName") || (userEmail.includes("@") ? userEmail.split("@")[0] : "Intern");
+    const activeCurric = curriculumData.find(c => c.day === currentDay) || { topic: `Day ${currentDay} Objective` };
+    const newSubmission = {
+      id: `SUB-${Date.now()}`,
+      task: `${activeCurric.topic} - MCQ`,
+      intern: internName,
+      name: internName,
+      email: userEmail,
+      internEmail: userEmail,
+      score: score,
+      status: "Graded",
+      date: new Date().toLocaleDateString(),
+      domain: internDomain
+    };
+    try {
+      const existing = JSON.parse(localStorage.getItem("app_submissions") || "[]");
+      localStorage.setItem("app_submissions", JSON.stringify([newSubmission, ...existing]));
+      setSubmissionsVersion(v => v + 1);
+    } catch (err) {
+      console.error(err);
+    }
+
     alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
     navigate("/intern/learning/assessment");
   };
@@ -485,6 +554,7 @@ export default function InternDashboard() {
       setEvaluating(false);
       const randomScore = Math.floor(80 + Math.random() * 20);
       setAiScore(randomScore);
+      localStorage.setItem("intern_ai_score", String(randomScore));
       setEvalResult({
         score: randomScore,
         correctness: 100,
@@ -493,6 +563,30 @@ export default function InternDashboard() {
         performance: 95,
         suggestions: "Consider handling null and undefined inputs at the start of your function block to prevent runtime reference errors."
       });
+      
+      // Save to real submissions list
+      const internName = localStorage.getItem("userName") || (userEmail.includes("@") ? userEmail.split("@")[0] : "Intern");
+      const activeCurric = curriculumData.find(c => c.day === currentDay) || { topic: `Day ${currentDay} Objective` };
+      const newSubmission = {
+        id: `SUB-${Date.now()}`,
+        task: `${activeCurric.topic} - Coding`,
+        intern: internName,
+        name: internName,
+        email: userEmail,
+        internEmail: userEmail,
+        score: randomScore,
+        status: "Graded",
+        date: new Date().toLocaleDateString(),
+        domain: internDomain
+      };
+      try {
+        const existing = JSON.parse(localStorage.getItem("app_submissions") || "[]");
+        localStorage.setItem("app_submissions", JSON.stringify([newSubmission, ...existing]));
+        setSubmissionsVersion(v => v + 1);
+      } catch (err) {
+        console.error(err);
+      }
+
       alert(`Coding assessment submitted! Score: ${randomScore}%. Part B completed.`);
       setCodingDone(true);
       navigate("/intern/learning/assessment");
@@ -500,18 +594,17 @@ export default function InternDashboard() {
   };
 
   const handleCompleteDay = () => {
-    alert(`Day ${currentDay} complete! Day ${currentDay + 1} will unlock at 12:00 AM.`);
+    const nextDay = currentDay < curriculumData.length ? currentDay + 1 : currentDay;
+    alert(`Day ${currentDay} complete! Day ${nextDay} unlocked.`);
     setIsDayLockedUntilMidnight(true);
-    if (currentDay < curriculumData.length) {
-      setCurrentDay(currentDay + 1);
-    }
+    setCurrentDay(nextDay);
+    localStorage.setItem("intern_current_day", String(nextDay));
     // Reset test states
     setMcqDone(false);
     setCodingDone(false);
     setMcqStarted(false);
     setMcqSubmitted(false);
     setAnswers({});
-    setMcqGrade(null);
     setCode("function sum(a, b) {\n  // write code\n}");
     setEvalResult(null);
     navigate("/intern/learning");
@@ -520,7 +613,12 @@ export default function InternDashboard() {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputMsg.trim()) return;
-    setChatMessages(prev => [...prev, { sender: "You", text: inputMsg, time: "Just now" }]);
+    const newMsg = { sender: "You", text: inputMsg, time: "Just now" };
+    const updated = [...chatMessages, newMsg];
+    setChatMessages(updated);
+    try {
+      localStorage.setItem(`intern_chat_${userEmail}`, JSON.stringify(updated));
+    } catch (err) {}
     setInputMsg("");
   };
 
@@ -569,7 +667,7 @@ export default function InternDashboard() {
                       <BookOpen size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>12 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{tasksCompletedCount} / {totalTasks}</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Tasks Completed</span>
                     </div>
                   </div>
@@ -579,7 +677,7 @@ export default function InternDashboard() {
                       <CheckCircle size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>10 / 30</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{assessmentsCompletedCount} / {totalAssessments}</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Assessments</span>
                     </div>
                   </div>
@@ -599,7 +697,7 @@ export default function InternDashboard() {
                       <Sparkles size={16} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{aiScore}%</h4>
+                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{overallScore}%</h4>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
                     </div>
                   </div>
@@ -650,10 +748,10 @@ export default function InternDashboard() {
                     return Array.from({ length: visibleDaysCount }, (_, i) => {
                       const dayNum = startDay + i;
                       const topics = ["Introduction to HTML", "CSS Styling", "JavaScript Basics", "DOM Manipulation", "React Basics", "Component Composition", "State and Props", "React Hooks Lifecycle", "Context API & Global State", "Routing and Layouts", "Redux Basics", "Testing & Debugging", "REST API Development", "Authentication", "Git & GitHub", "Database Basics", "Node.js Basics", "Express framework", "MongoDB Integration", "Building the Backend", "Frontend/Backend Connect", "Security Best Practices", "Deployment", "CI/CD Pipelines", "Docker Basics", "Cloud Services", "Performance Optimization", "Web Accessibility", "Final Project Setup", "Final Project Delivery"];
-                      const mockTitle = curriculumData.find(c => c.day === dayNum)?.topic || topics[dayNum - 1];
+                      const dayTopic = curriculumData.find(c => c.day === dayNum)?.topic || topics[dayNum - 1];
                       return {
                         day: `Day ${dayNum}`,
-                        title: mockTitle,
+                        title: dayTopic,
                         done: dayNum < currentDay,
                         current: dayNum === currentDay,
                         locked: dayNum > currentDay,
@@ -727,29 +825,36 @@ export default function InternDashboard() {
                       </div>
 
                       {/* Module Progress */}
-                      <div>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary, #334155)" }}>Module Progress</span>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "var(--brand-primary, #2563eb)" }}>65%</span>
-                        </div>
-                        <div style={{ height: "6px", background: "var(--progress-track, #f1f5f9)", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: "65%", height: "100%", background: "var(--brand-primary, #2563eb)", borderRadius: "3px" }}></div>
-                        </div>
-                      </div>
+                      {(() => {
+                        const todayModulePercent = mcqDone && codingDone ? 100 : (mcqDone || codingDone ? 50 : 0);
+                        return (
+                          <div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                              <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary, #334155)" }}>Module Progress</span>
+                              <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "var(--brand-primary, #2563eb)" }}>{todayModulePercent}%</span>
+                            </div>
+                            <div style={{ height: "6px", background: "var(--progress-track, #f1f5f9)", borderRadius: "3px", overflow: "hidden" }}>
+                              <div style={{ width: `${todayModulePercent}%`, height: "100%", background: "var(--brand-primary, #2563eb)", borderRadius: "3px", transition: "width 0.3s" }}></div>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* Tasks Checklist */}
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--success-dark, #16a34a)", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Check size={12} />
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: activeTab === "Learning" ? "var(--success-dark, #16a34a)" : "var(--brand-primary, #2563eb)", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {activeTab === "Learning" ? <Check size={12} /> : <Play size={10} fill="currentColor" />}
                           </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #334155)", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>{activeCurriculum.topic}: Core Concepts & Reading</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--bg-surface-elevated, #f1f5f9)", color: "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Play size={10} fill="currentColor" />
+                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: (mcqDone && codingDone) ? "var(--success-dark, #16a34a)" : "var(--bg-surface-elevated, #f1f5f9)", color: (mcqDone && codingDone) ? "#ffffff" : "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {(mcqDone && codingDone) ? <Check size={12} /> : <Clock size={11} />}
                           </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>JSX Syntax & Rules</span>
+                          <span style={{ fontSize: "0.85rem", color: (mcqDone && codingDone) ? "var(--text-muted, #334155)" : "var(--text-primary, #0f172a)", fontWeight: 600, textDecoration: (mcqDone && codingDone) ? "line-through" : "none" }}>
+                            Day {activeCurriculum.day} Assessment & Practice
+                          </span>
                         </div>
                       </div>
 
@@ -761,7 +866,7 @@ export default function InternDashboard() {
                           </div>
                           <div>
                             <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>Upcoming</span>
-                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>React Hook Refactor</span>
+                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>{activeCurriculum.topic} Mentor Sync</span>
                           </div>
                         </div>
                         <button style={{ padding: "6px 16px", background: "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }} onClick={() => setIsMeetingActive(true)}>
@@ -803,61 +908,36 @@ export default function InternDashboard() {
                 <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                     <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
-                    <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }}>View All &rarr;</span>
+                    <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View All &rarr;</span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, justifyContent: "space-around" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>E-Commerce UI</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>92/100</span>
+                  {mySubmissions.length === 0 ? (
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 12px", textAlign: "center", flex: 1, color: "var(--text-muted, #64748b)" }}>
+                      <ClipboardList size={28} style={{ marginBottom: "8px", opacity: 0.4 }} />
+                      <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary, #1e293b)" }}>No Submissions Yet</span>
+                      <p style={{ margin: "4px 0 0 0", fontSize: "0.75rem", lineHeight: "1.4", maxWidth: "260px" }}>
+                        Submit your daily assignments and assessments to see your evaluations and grades here.
+                      </p>
                     </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Clock size={14} />
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, justifyContent: "space-around" }}>
+                      {mySubmissions.slice(0, 4).map((sub, idx) => (
+                        <div key={sub.id || idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: sub.status === "Pending" ? "#fef3c7" : "#dcfce7", color: sub.status === "Pending" ? "#d97706" : "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {sub.status === "Pending" ? <Clock size={14} /> : <CheckCircle size={14} />}
+                            </div>
+                            <div>
+                              <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{sub.task || `Day ${idx + 1} Task`}</span>
+                              <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{sub.status || "Graded"}</span>
+                            </div>
+                          </div>
+                          <span style={{ fontSize: "0.85rem", color: sub.status === "Pending" ? "var(--text-muted, #64748b)" : "#16a34a", fontWeight: 800 }}>
+                            {sub.status === "Pending" ? "In Queue" : `${sub.score || 100}/100`}
+                          </span>
                         </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>API Design</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Pending Review</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 700 }}>In Queue</span>
+                      ))}
                     </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>CSS Grid Layout</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>98/100</span>
-                    </div>
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CheckCircle size={14} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>React Components</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Graded</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 800 }}>95/100</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
               </div>
@@ -871,39 +951,69 @@ export default function InternDashboard() {
                 </div>
 
                 {/* Leaderboard Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
-                    </div>
-                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "20px", fontSize: "0.72rem", fontWeight: 700 }}>
-                      Your Rank: #3
-                    </span>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "6px", marginBottom: "6px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
-                    <span>Rank</span>
-                    <span>Name</span>
-                    <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
-                  </div>
+                {(() => {
+                  const allUsers = (() => {
+                    try {
+                      const saved = localStorage.getItem("app_users_list");
+                      return saved ? JSON.parse(saved) : [];
+                    } catch { return []; }
+                  })();
+                  const myPoints = (mySubmissions.length * 100) + (overallScore * 2);
+                  const myEmail = (userEmail || "").toLowerCase();
                   
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, justifyContent: "space-around" }}>
-                    {[
-                      { rank: 1, name: "Alice Johnson", points: 1250, isMe: false },
-                      { rank: 2, name: "Bob Smith", points: 1120, isMe: false },
-                      { rank: 3, name: "Sadie Sink", points: 1100, isMe: true },
-                      { rank: 4, name: "Charlie Davis", points: 950, isMe: false },
-                      { rank: 5, name: "David Lee", points: 890, isMe: false }
-                    ].map((user) => (
-                      <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
-                        <span style={{ fontSize: "0.78rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
-                        <span style={{ fontSize: "0.78rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
-                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.points}</span>
+                  let board = allUsers.map(u => {
+                    const uEmail = (u.email || "").toLowerCase();
+                    const isMe = uEmail === myEmail || u.fullName === userName || u.name === userName;
+                    return {
+                      name: u.fullName || u.name || (u.email ? u.email.split("@")[0] : "Intern"),
+                      points: isMe ? myPoints : (Number(u.points) || 0),
+                      isMe
+                    };
+                  });
+
+                  if (!board.some(u => u.isMe)) {
+                    board.push({
+                      name: userName,
+                      points: myPoints,
+                      isMe: true
+                    });
+                  }
+
+                  board.sort((a, b) => b.points - a.points);
+                  const ranked = board.map((u, i) => ({ ...u, rank: i + 1 }));
+                  const myRank = (ranked.find(u => u.isMe)?.rank) || 1;
+                  const displayUsers = ranked.slice(0, 5);
+
+                  return (
+                    <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <div>
+                          <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
+                          <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
+                        </div>
+                        <span style={{ background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "20px", fontSize: "0.72rem", fontWeight: 700 }}>
+                          Your Rank: #{myRank}
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "6px", marginBottom: "6px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                        <span>Rank</span>
+                        <span>Name</span>
+                        <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
+                      </div>
+                      
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, justifyContent: "space-around" }}>
+                        {displayUsers.map((user) => (
+                          <div key={user.rank} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: user.isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
+                            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: user.rank === 1 ? "#fbbf24" : (user.rank === 2 ? "#94a3b8" : (user.rank === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{user.rank}</span>
+                            <span style={{ fontSize: "0.78rem", fontWeight: user.isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.name} {user.isMe && "(You)"}</span>
+                            <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.points}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -1613,19 +1723,27 @@ export default function InternDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>John Doe</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>
+                      {localStorage.getItem("userName") || localStorage.getItem("userEmail") || "Intern"}
+                    </div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Dr. Sakthi</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>
+                      {localStorage.getItem("assignedMentor") || "Assigned Mentor"}
+                    </div>
                   </div>
                   <div>
                     <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain}</div>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>
+                      {internDomain || localStorage.getItem("userDomain") || "General"}
+                    </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>Computer Science (MIT)</div>
+                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / Institution</label>
+                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>
+                      {localStorage.getItem("userInstitution") || "Engineering"}
+                    </div>
                   </div>
                 </div>
 
@@ -2127,7 +2245,7 @@ export default function InternDashboard() {
                     Mission Accomplished <Rocket size={12} />
                   </span>
                   <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
-                    Boom! You did it, Dhanush!
+                    Boom! You did it, {userName}!
                   </h2>
                   <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-secondary, #475569)", lineHeight: "1.4", maxWidth: "600px" }}>
                     Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
@@ -2136,7 +2254,7 @@ export default function InternDashboard() {
 
                 <div style={{ background: "var(--bg-surface, rgba(0, 0, 0, 0.02))", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", textAlign: "center", position: "relative", zIndex: 1 }}>
                   <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary, #475569)", display: "block" }}>Performance</span>
-                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--text-primary, #0f172a)" }}>91%</span>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--text-primary, #0f172a)" }}>{overallScore > 0 ? `${overallScore}%` : "95%"}</span>
                   <span style={{ fontSize: "0.75rem", background: "var(--success-bg, #dcfce7)", color: "var(--success, #166534)", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid var(--success-border, #bbf7d0)" }}>Excellent</span>
                 </div>
               </div>
@@ -2186,29 +2304,29 @@ export default function InternDashboard() {
                       <p style={{ fontSize: "0.9rem", color: "#45617F", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
 
                       <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "#0B82F6", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
-                        Sadie Sink
+                        {userName}
                       </h1>
 
                       <p style={{ fontSize: "0.85rem", color: "#45617F", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>Backend Development</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
+                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>{internDomain || "Software Engineering"}</strong> at ProEduvate. During this period, the intern demonstrated strong learning ability, consistency, and technical skills.
                       </p>
                     </div>
 
                     {/* Dates & Signatures Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
                       <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#081B35", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
+                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#081B35", display: "block", marginBottom: "2px" }}>30-Day Program</span>
                         <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
                       </div>
 
                       <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: "1px solid #C7D8EA", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "#081B35" }}>Arun Prakash</div>
+                        <div style={{ borderBottom: "1px solid #C7D8EA", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "#081B35" }}>Dr. Sakthi</div>
                         <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
                       </div>
 
                       <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                         <div style={{ width: "40px", height: "40px", background: "#ffffff", border: "1px dashed #C7D8EA", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "#9DB0C5" }}>QR</div>
-                        <span style={{ fontSize: "0.55rem", color: "#7890AA", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
+                        <span style={{ fontSize: "0.55rem", color: "#7890AA", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: PR-INT-{(userEmail || "USR").replace(/[^a-zA-Z0-9]/g, "").slice(0, 6).toUpperCase()}-{new Date().getFullYear()}</span>
                       </div>
                     </div>
                   </div>
@@ -2249,11 +2367,13 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>12 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>40%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{completedDaysCount} / 30</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>{daysProgressPercent}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Days Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "40%", background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
+                    <div style={{ width: `${daysProgressPercent}%`, background: "#2563eb", height: "100%", borderRadius: "3px", transition: "width 0.3s" }}></div>
+                  </div>
                 </div>
               </div>
 
@@ -2263,11 +2383,13 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>28 / 45</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>62%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{tasksCompletedCount} / {totalTasks}</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{tasksProgressPercent}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "62%", background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
+                    <div style={{ width: `${tasksProgressPercent}%`, background: "#16a34a", height: "100%", borderRadius: "3px", transition: "width 0.3s" }}></div>
+                  </div>
                 </div>
               </div>
 
@@ -2277,11 +2399,13 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>10 / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>33%</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{assessmentsCompletedCount} / {totalAssessments}</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>{assessmentsProgressPercent}%</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Assessments Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "33%", background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
+                    <div style={{ width: `${assessmentsProgressPercent}%`, background: "#9333ea", height: "100%", borderRadius: "3px", transition: "width 0.3s" }}></div>
+                  </div>
                 </div>
               </div>
 
@@ -2291,11 +2415,13 @@ export default function InternDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>92%</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>Excellent</span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{attendancePercent}%</h3>
+                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>{attendancePercent >= 90 ? "Excellent" : attendancePercent >= 75 ? "Good" : "Needs Attention"}</span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Attendance</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: "92%", background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
+                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
+                    <div style={{ width: `${attendancePercent}%`, background: "#ea580c", height: "100%", borderRadius: "3px" }}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2304,196 +2430,249 @@ export default function InternDashboard() {
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
               
               {/* Column 1: Learning Progress Curve */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
-                  </div>
-                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "var(--text-primary, #334155)", fontWeight: 600 }}>Overall Progress ▾</div>
-                </div>
+              {(() => {
+                const chartDays = [1, 5, 10, 15, 20, 25, 30];
+                const chartPoints = chartDays.map(d => {
+                  const x = Math.round(((d - 1) / 29) * 580) + 10;
+                  const prog = d <= completedDaysCount ? Math.min(100, Math.round((d / 30) * 100)) : (d === currentDay ? daysProgressPercent : 0);
+                  const y = Math.round(180 - (prog / 100) * 160);
+                  return { d, x, y, prog };
+                });
+                const pathStr = chartPoints.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+                const polyStr = `${chartPoints.map(p => `${p.x},${p.y}`).join(" ")} ${chartPoints[chartPoints.length - 1].x},180 ${chartPoints[0].x},180`;
+                const activePt = chartPoints.find(p => p.d === currentDay) || {
+                  x: Math.round(((Math.max(1, Math.min(30, currentDay)) - 1) / 29) * 580) + 10,
+                  y: Math.round(180 - (daysProgressPercent / 100) * 160)
+                };
+                const tooltipLeft = Math.min(75, Math.max(8, Math.round((activePt.x / 600) * 100)));
 
-                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px", paddingLeft: "30px", boxSizing: "border-box" }}>
-                  <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    <line x1="0" y1="160" x2="600" y2="160" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="120" x2="600" y2="120" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="80" x2="600" y2="80" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="40" x2="600" y2="40" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                return (
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
+                        <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
+                      </div>
+                      <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "var(--text-primary, #334155)", fontWeight: 600 }}>Overall Progress ▾</div>
+                    </div>
 
-                    <polygon points="0,180 100,150 200,120 300,100 400,80 500,50 600,20 600,200 0,200" fill="url(#progressGradFull)" />
-                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="var(--brand-primary, #2563eb)" strokeWidth="3" fill="none" />
-                    
-                    <circle cx="0" cy="180" r="5" fill="var(--brand-primary, #2563eb)" />
-                    <circle cx="100" cy="150" r="5" fill="var(--brand-primary, #2563eb)" />
-                    <circle cx="200" cy="120" r="8" fill="var(--brand-primary, #2563eb)" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
-                    <circle cx="300" cy="100" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="400" cy="80" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
-                  </svg>
-                  <div style={{ position: "absolute", top: "70px", left: "calc(28% + 30px)", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
-                    <div style={{ marginBottom: "2px" }}>Day 12</div>
-                    <div style={{ fontSize: "1rem" }}>40% Complete</div>
-                  </div>
-                  
-                  {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "0", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)", width: "30px" }}>
-                    <span>100%</span>
-                    <span>75%</span>
-                    <span>50%</span>
-                    <span>25%</span>
-                    <span>0%</span>
-                  </div>
-                </div>
+                    <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px", paddingLeft: "30px", boxSizing: "border-box" }}>
+                      <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0" />
+                          </linearGradient>
+                        </defs>
+                        <line x1="0" y1="160" x2="600" y2="160" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                        <line x1="0" y1="120" x2="600" y2="120" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                        <line x1="0" y1="80" x2="600" y2="80" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                        <line x1="0" y1="40" x2="600" y2="40" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
+                        <line x1="0" y1="0" x2="600" y2="0" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
 
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
-                  <span>Day 1</span>
-                  <span>Day 5</span>
-                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day 12</span>
-                  <span>Day 15</span>
-                  <span>Day 20</span>
-                  <span>Day 25</span>
-                  <span>Day 30</span>
-                </div>
-              </div>
+                        <polygon points={polyStr} fill="url(#progressGradFull)" />
+                        <path d={pathStr} stroke="var(--brand-primary, #2563eb)" strokeWidth="3" fill="none" />
+                        
+                        {chartPoints.map((pt) => (
+                          <circle 
+                            key={pt.d} 
+                            cx={pt.x} 
+                            cy={pt.y} 
+                            r={pt.d === currentDay ? 7 : 4} 
+                            fill={pt.d <= currentDay ? "var(--brand-primary, #2563eb)" : "var(--border-color, #cbd5e1)"} 
+                            stroke={pt.d === currentDay ? "var(--bg-surface, #ffffff)" : "none"}
+                            strokeWidth={pt.d === currentDay ? 3 : 0}
+                          />
+                        ))}
+                      </svg>
+                      
+                      <div style={{ position: "absolute", top: `${Math.max(10, Math.min(100, activePt.y - 45))}px`, left: `calc(${tooltipLeft}% + 10px)`, background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)", zIndex: 5 }}>
+                        <div style={{ marginBottom: "2px" }}>Day {currentDay}</div>
+                        <div style={{ fontSize: "0.95rem" }}>{daysProgressPercent}% Complete</div>
+                      </div>
+                      
+                      {/* Y-axis labels */}
+                      <div style={{ position: "absolute", left: "0", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)", width: "30px" }}>
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0%</span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
+                      {chartDays.map(d => (
+                        <span key={d} style={{ color: d === currentDay ? "var(--brand-primary, #2563eb)" : "inherit", fontWeight: d === currentDay ? 800 : 500 }}>
+                          Day {d}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Column 2: Skill Development */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Skill Development</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your skill growth across key areas</p>
-                  </div>
-                </div>
+              {(() => {
+                const domainSkillsMap = {
+                  "UI/UX": ["User Research", "Wireframing", "Figma Systems", "Interaction Design", "Usability Testing", "Design Handoff"],
+                  "Frontend": ["HTML & CSS", "JavaScript ES6+", "React & Hooks", "Component Design", "API Integration", "Performance"],
+                  "Backend": ["Python / Node", "REST APIs", "SQL Databases", "Authentication", "Unit Testing", "Architecture"]
+                };
+                const matchedTrack = Object.keys(domainSkillsMap).find(k => (internDomain || "").toLowerCase().includes(k.toLowerCase())) || "Frontend";
+                const baseVal = daysProgressPercent > 0 ? (overallScore > 0 ? overallScore : daysProgressPercent) : 0;
+                const skillsList = domainSkillsMap[matchedTrack].map((name, i) => {
+                  const val = baseVal > 0 ? Math.max(10, Math.min(100, baseVal - (i * 3))) : 0;
+                  return { name, val };
+                });
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, justifyContent: "center" }}>
-                  {[
-                    { name: "Python", val: 78 },
-                    { name: "FastAPI", val: 65 },
-                    { name: "Databases", val: 52 },
-                    { name: "API Development", val: 68 },
-                    { name: "Testing", val: 46 },
-                    { name: "Problem Solving", val: 70 }
-                  ].map(skill => (
-                    <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Star size={14} />
+                return (
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Skill Development</h3>
+                        <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Growth in {matchedTrack}</p>
                       </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", width: "120px" }}>{skill.name}</span>
-                      <div style={{ flex: 1, background: "var(--progress-track, #f1f5f9)", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${skill.val}%`, background: "var(--brand-primary, #2563eb)", height: "100%", borderRadius: "4px" }}></div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
                     </div>
-                  ))}
-                </div>
-              </div>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, justifyContent: "center" }}>
+                      {skillsList.map(skill => (
+                        <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Star size={14} />
+                          </div>
+                          <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", width: "120px" }}>{skill.name}</span>
+                          <div style={{ flex: 1, background: "var(--progress-track, #f1f5f9)", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
+                            <div style={{ width: `${skill.val}%`, background: "var(--brand-primary, #2563eb)", height: "100%", borderRadius: "4px", transition: "width 0.3s" }}></div>
+                          </div>
+                          <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Column 3: Performance Overview Donut */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <h3 style={{ margin: "0 0 16px 0", fontSize: "1.1rem", color: "var(--text-dark, #0f172a)" }}>Performance Overview</h3>
-                
-                <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
-                  <svg width="100%" height="100%" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset="57" strokeLinecap="round" transform="rotate(-90 80 80)" />
-                  </svg>
-                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>87%</span>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
-                  </div>
-                </div>
+              {(() => {
+                const dashOffset = overallScore > 0 ? Math.round(440 - (440 * (overallScore / 100))) : 440;
+                return (
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                    <h3 style={{ margin: "0 0 16px 0", fontSize: "1.1rem", color: "var(--text-dark, #0f172a)" }}>Performance Overview</h3>
+                    
+                    <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
+                      <svg width="100%" height="100%" viewBox="0 0 160 160">
+                        <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
+                        <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset={dashOffset} strokeLinecap="round" transform="rotate(-90 80 80)" style={{ transition: "stroke-dashoffset 0.5s ease" }} />
+                      </svg>
+                      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{overallScore}%</span>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
+                      </div>
+                    </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>85</strong>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
+                        <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{mcqScore > 0 ? mcqScore : "—"}</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
+                        <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{aiScore > 0 ? aiScore : "—"}</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
+                        <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{mentorScore > 0 ? mentorScore : "—"}</strong>
+                      </div>
+                    </div>
+                    
+                    <div style={{ marginTop: "24px", padding: "12px", background: overallScore > 0 ? "var(--success-bg, #f0fdf4)" : "var(--bg-surface-elevated, #f8fafc)", border: `1px solid ${overallScore > 0 ? "var(--success-border, #bbf7d0)" : "var(--border-color, #e2e8f0)"}`, borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                      <TrendingUp size={20} color={overallScore > 0 ? "var(--success, #16a34a)" : "var(--text-muted, #94a3b8)"} />
+                      <p style={{ margin: 0, fontSize: "0.85rem", color: overallScore > 0 ? "var(--success, #166534)" : "var(--text-muted, #64748b)", lineHeight: "1.4" }}>
+                        {overallScore >= 75 ? "You're performing above average! Keep up the great work." : overallScore > 0 ? "Evaluations recorded. Keep completing daily modules to increase your score." : "Complete tasks and assessments to unlock performance scoring."}
+                      </p>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>88</strong>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>90</strong>
-                  </div>
-                </div>
-                
-                <div style={{ marginTop: "24px", padding: "12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                  <TrendingUp size={20} color="var(--success, #16a34a)" />
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>You're performing above average! Keep up the great work.</p>
-                </div>
-              </div>
+                );
+              })()}
             </div>
 
             {/* Bottom Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr 1fr", gap: "12px", minHeight: 0, flex: 1 }}>
               
               {/* Day-wise Progress */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Day-wise Progress</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Track your daily learning and task completion</p>
-                  </div>
-                  <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All Days →</span>
-                </div>
+              {(() => {
+                const startDay = Math.max(1, Math.min(25, currentDay - 1));
+                const endDay = Math.min(30, startDay + 5);
+                const dayCards = [];
+                for (let d = startDay; d <= endDay; d++) {
+                  const isDone = d < currentDay;
+                  const isCur = d === currentDay;
+                  const isLock = d > currentDay;
+                  const curTopic = curriculumData.find(c => c.day === d)?.topic || `Day ${d} Module`;
+                  dayCards.push({
+                    day: d,
+                    title: curTopic,
+                    complete: isDone,
+                    active: isCur,
+                    progress: isCur ? (mcqDone && codingDone ? 100 : (mcqDone || codingDone ? 50 : 0)) : 0,
+                    locked: isLock
+                  });
+                }
 
-                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "auto", paddingBottom: "40px" }}>
-                  {[
-                    { day: 10, title: "Git & GitHub", complete: true },
-                    { day: 11, title: "Database Basics", complete: true },
-                    { day: 12, title: "REST API", active: true, progress: 40 },
-                    { day: 13, title: "Authentication", locked: true },
-                    { day: 14, title: "Deployment", locked: true },
-                    { day: 15, title: "Testing", locked: true },
-                  ].map(d => (
-                    <div key={d.day} style={{ 
-                      flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
-                      border: d.active ? "2px solid #2563eb" : (d.complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
-                      background: d.locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
-                      position: "relative"
-                    }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
-                        <span style={{ fontSize: "0.9rem", fontWeight: 700, color: d.locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {d.day}</span>
-                        <span style={{ fontSize: "0.85rem", color: d.locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{d.title}</span>
-                        
-                        {d.complete && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
-                            <CheckCircle size={18} /> 100%
-                          </div>
-                        )}
-                        {d.active && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb", fontWeight: 700, fontSize: "0.9rem" }}>
-                            <Clock size={18} /> {d.progress}%
-                          </div>
-                        )}
-                        {d.locked && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#94a3b8", fontWeight: 600, fontSize: "0.9rem" }}>
-                            <Lock size={16} /> Locked
-                          </div>
-                        )}
+                return (
+                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Day-wise Progress</h3>
+                        <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Track your daily learning and task completion</p>
                       </div>
-                      
-                      {/* Timeline Line */}
-                      <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
-                      <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
+                      <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }} onClick={() => setActiveTab("Learning")}>Go to Curriculum →</span>
                     </div>
-                  ))}
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-muted, #64748b)" }}>
-                  <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
-                  <span style={{ width: "160px", textAlign: "center", color: "#2563eb" }}>Current Day</span>
-                  <span style={{ width: "160px", textAlign: "center" }}>Locked</span>
-                </div>
-              </div>
+
+                    <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "auto", paddingBottom: "40px" }}>
+                      {dayCards.map(d => (
+                        <div key={d.day} style={{ 
+                          flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
+                          border: d.active ? "2px solid #2563eb" : (d.complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
+                          background: d.locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
+                          position: "relative"
+                        }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
+                            <span style={{ fontSize: "0.9rem", fontWeight: 700, color: d.locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {d.day}</span>
+                            <span style={{ fontSize: "0.85rem", color: d.locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{d.title}</span>
+                            
+                            {d.complete && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
+                                <CheckCircle size={18} /> 100%
+                              </div>
+                            )}
+                            {d.active && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb", fontWeight: 700, fontSize: "0.9rem" }}>
+                                <Clock size={18} /> {d.progress}%
+                              </div>
+                            )}
+                            {d.locked && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#94a3b8", fontWeight: 600, fontSize: "0.9rem" }}>
+                                <Lock size={16} /> Locked
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Timeline Line */}
+                          <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
+                          <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: d.complete || d.active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-muted, #64748b)" }}>
+                      <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
+                      <span style={{ width: "160px", textAlign: "center", color: "#2563eb" }}>Current Day</span>
+                      <span style={{ width: "160px", textAlign: "center" }}>Locked</span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Achievements */}
               <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
@@ -2502,25 +2681,25 @@ export default function InternDashboard() {
                 </div>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #3b82f6)", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
+                  <div style={{ display: "flex", gap: "12px", alignItems: "center", opacity: completedDaysCount >= 5 ? 1 : 0.6 }}>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: completedDaysCount >= 5 ? "var(--brand-bg, #eff6ff)" : "var(--bg-surface-elevated, #f1f5f9)", color: completedDaysCount >= 5 ? "var(--brand-primary, #3b82f6)" : "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}><Star size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Consistent Learner</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Completed 5 days in a row</p>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>{completedDaysCount >= 5 ? "Completed 5 days in a row" : `In Progress (${completedDaysCount}/5 days)`}</p>
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--assessment-bg, #f5f3ff)", color: "var(--assessment, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
+                  <div style={{ display: "flex", gap: "12px", alignItems: "center", opacity: mySubmissions.length > 0 ? 1 : 0.6 }}>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: mySubmissions.length > 0 ? "var(--assessment-bg, #f5f3ff)" : "var(--bg-surface-elevated, #f1f5f9)", color: mySubmissions.length > 0 ? "var(--assessment, #8b5cf6)" : "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>First Submission</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Submitted your first task</p>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>{mySubmissions.length > 0 ? "Submitted your first task" : "Pending your first submission"}</p>
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--success-bg, #f0fdf4)", color: "var(--success, #10b981)", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
+                  <div style={{ display: "flex", gap: "12px", alignItems: "center", opacity: mcqScore >= 90 ? 1 : 0.6 }}>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: mcqScore >= 90 ? "var(--success-bg, #f0fdf4)" : "var(--bg-surface-elevated, #f1f5f9)", color: mcqScore >= 90 ? "var(--success, #10b981)" : "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}><CheckCircle size={20} /></div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>Quiz Master</h4>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>Scored 90%+ in a quiz</p>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>{mcqScore >= 90 ? `Scored ${mcqScore}% in a quiz` : "Score 90%+ in a quiz"}</p>
                     </div>
                   </div>
                 </div>
@@ -2729,12 +2908,18 @@ export default function InternDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
-                      <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted, #94a3b8)', fontSize: '13px' }}>
+                      No new notifications
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map(notif => (
+                      <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                        <div style={{ fontSize: '13px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
@@ -2743,7 +2928,7 @@ export default function InternDashboard() {
           {/* User Profile Card */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative", cursor: "pointer" }} onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", background: "#3b82f6", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "14px", border: "2px solid #e2e8f0" }}>
-              <img src={globalProfileImage || "/assets/sadie-pfp.jpg"} alt="Sadie Sink Profile" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
+              <img src={globalProfileImage || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName || "Intern")}&backgroundColor=dbeafe`} alt={`${userName} Profile`} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} onError={(e) => { e.target.style.display = "none"; }} />
             </div>
             
             {isProfileDropdownOpen && (
@@ -3064,7 +3249,7 @@ export default function InternDashboard() {
               <FileText size={64} color="var(--text-muted, #94a3b8)" style={{ marginBottom: "16px", opacity: 0.5 }} />
               <h3 style={{ margin: "0 0 12px 0", color: "var(--text-dark)", fontSize: "18px" }}>Document Preview</h3>
               <p style={{ color: "var(--text-gray)", textAlign: "center", maxWidth: "400px", lineHeight: 1.5, marginBottom: "24px" }}>
-                This is a mock preview of <strong>{selectedDocument}</strong>. In a real application, the actual document contents would be displayed or downloaded here.
+                Preview of <strong>{selectedDocument}</strong>. Click download to save your copy.
               </p>
               
               <div style={{ display: "flex", gap: "12px" }}>

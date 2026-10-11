@@ -29,10 +29,19 @@ export const mockOnboardingService = {
     async submitApplication(data) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                mockApplicationData = { ...data, applicationId: "APP-2026-00125" };
+                const appId = "APP-2026-" + Math.floor(10000 + Math.random() * 90000);
+                const newApp = { ...data, applicationId: appId, status: ONBOARDING_STATUSES.PENDING_REVIEW };
+                mockApplicationData = newApp;
                 currentApplicationStatus = ONBOARDING_STATUSES.PENDING_REVIEW;
+                try {
+                    const saved = localStorage.getItem("app_onboarding_applications");
+                    const list = saved ? JSON.parse(saved) : [];
+                    localStorage.setItem("app_onboarding_applications", JSON.stringify([newApp, ...list]));
+                } catch (e) {
+                    console.error(e);
+                }
                 resolve({
-                    applicationId: "APP-2026-00125",
+                    applicationId: appId,
                     status: currentApplicationStatus
                 });
             }, 1000);
@@ -42,8 +51,9 @@ export const mockOnboardingService = {
     async getApplicationStatus() {
         return new Promise((resolve) => {
             setTimeout(() => {
+                const appId = mockApplicationData?.applicationId || localStorage.getItem("last_application_id") || "APP-2026-00125";
                 resolve({
-                    applicationId: mockApplicationData?.applicationId || "APP-2026-00125",
+                    applicationId: appId,
                     status: currentApplicationStatus
                 });
             }, 500);
@@ -58,11 +68,12 @@ export const mockOnboardingService = {
     async adminGetApplications() {
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve([
-                    { applicationId: "APP-2026-00125", name: "Sakthi", email: "intern@example.com", domain: "Full Stack Development", status: ONBOARDING_STATUSES.PENDING_REVIEW },
-                    { applicationId: "APP-2026-00126", name: "John Doe", email: "john@example.com", domain: "Data Science", status: ONBOARDING_STATUSES.PAYMENT_PENDING },
-                    { applicationId: "APP-2026-00127", name: "Jane Smith", email: "jane@example.com", domain: "AI / ML", status: ONBOARDING_STATUSES.INTERVIEW_REQUIRED },
-                ]);
+                try {
+                    const saved = localStorage.getItem("app_onboarding_applications");
+                    resolve(saved ? JSON.parse(saved) : []);
+                } catch {
+                    resolve([]);
+                }
             }, 500);
         });
     },
@@ -70,16 +81,14 @@ export const mockOnboardingService = {
     async adminGetApplication(id) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve({ 
-                    applicationId: id, 
-                    name: "Sakthi", 
-                    email: "intern@example.com", 
-                    phone: "1234567890",
-                    college: "ABC Tech",
-                    department: "Computer Science",
-                    domain: "Full Stack Development", 
-                    status: currentApplicationStatus // tie it to dev status for easy testing
-                });
+                try {
+                    const saved = localStorage.getItem("app_onboarding_applications");
+                    const apps = saved ? JSON.parse(saved) : [];
+                    const found = apps.find(a => a.applicationId === id);
+                    resolve(found || null);
+                } catch {
+                    resolve(null);
+                }
             }, 300);
         });
     },
@@ -88,6 +97,14 @@ export const mockOnboardingService = {
         return new Promise((resolve) => {
             setTimeout(() => {
                 currentApplicationStatus = newStatus;
+                try {
+                    const saved = localStorage.getItem("app_onboarding_applications");
+                    const apps = saved ? JSON.parse(saved) : [];
+                    const updated = apps.map(a => a.applicationId === id ? { ...a, status: newStatus } : a);
+                    localStorage.setItem("app_onboarding_applications", JSON.stringify(updated));
+                } catch (e) {
+                    console.error(e);
+                }
                 resolve({ success: true, status: newStatus });
             }, 500);
         });

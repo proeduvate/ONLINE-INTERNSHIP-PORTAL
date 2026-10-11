@@ -218,7 +218,7 @@ export default function LandingPage() {
                 <input 
                   type="text" 
                   className="hs-wide-input" 
-                  placeholder="e.g. John Doe" 
+                  placeholder="Enter your full name" 
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                   required 
@@ -230,7 +230,7 @@ export default function LandingPage() {
                 <input 
                   type="email" 
                   className="hs-wide-input" 
-                  placeholder="e.g. john@example.com" 
+                  placeholder="name@company.com" 
                   value={contactForm.email}
                   onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                   required 

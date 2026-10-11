@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar } from "recharts";
 import { LayoutDashboard, Users, ClipboardCheck, BookOpen, Gift, MonitorPlay, AlertTriangle, Trophy, Medal, Award, LogOut, Menu, Bot, Maximize2, ClipboardList, Clock, MessageSquare, Calendar, CheckCircle2, Code, X, Target, Video, Layers, Coins, Bell, ArrowLeft, Trash2, User, Laptop, ArrowRight, Headset } from "lucide-react";
@@ -53,7 +54,8 @@ export default function MentorDashboard() {
   const [scheduleTime, setScheduleTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const userEmail = localStorage.getItem("userEmail") || "mentor";
+  const userEmail = localStorage.getItem("userEmail") || "";
+  const userName = localStorage.getItem("userName") || "Mentor";
   const imageKey = `profile_image_${userEmail}`;
   const [globalProfileImage, setGlobalProfileImage] = useState(localStorage.getItem(imageKey) || null);
 
@@ -76,11 +78,7 @@ export default function MentorDashboard() {
     setPwForm({ current: "", next: "", confirm: "" });
   };
 
-  const mockNotifications = [
-    { id: 1, text: "Task submission waiting for evaluation", time: "10 mins ago" },
-    { id: 2, text: "New support ticket assigned to you", time: "1 hour ago" },
-    { id: 3, text: "Breakout room session scheduled", time: "3 hours ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
 
   // Shared Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -214,46 +212,60 @@ export default function MentorDashboard() {
     alert("Bonus Airdrop created and sent to Admin for approval!");
   };
 
-  // State Mock Data
-  const [assignedInterns] = useState([
-    { id: "INT001", name: "John Doe", progress: "60%", attendance: "95%", score: "82%", weakAreas: "CSS layouts, Async operations", batch: "Harvard" },
-    { id: "INT002", name: "Raj Patel", progress: "80%", attendance: "90%", score: "88%", weakAreas: "Python pandas, Data visualization", batch: "Berkeley" },
-    { id: "INT003", name: "Anu Sharma", progress: "75%", attendance: "88%", score: "79%", weakAreas: "Buffer overflow details", batch: "MIT" },
-    { id: "INT004", name: "Sara Smith", progress: "90%", attendance: "98%", score: "94%", weakAreas: "None", batch: "Stanford" },
-    { id: "INT005", name: "Mike Johnson", progress: "50%", attendance: "80%", score: "72%", weakAreas: "React Hooks", batch: "IIT" },
-  ]);
+  // Dynamic State Data
+  const [assignedInterns, setAssignedInterns] = useState(() => {
+    const saved = localStorage.getItem("app_mentor_interns");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const [selectedBatch, setSelectedBatch] = useState("Harvard");
+  useEffect(() => {
+    const fetchMentorInterns = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/v1/users");
+        if (res.data && Array.isArray(res.data)) {
+          const mentorEmail = (localStorage.getItem("userEmail") || "").toLowerCase();
+          const mentorName = (localStorage.getItem("userName") || "").toLowerCase();
+          const filtered = res.data.filter(u => u.role === "Intern" && (
+            !u.mentor || u.mentor === "-" ||
+            (mentorEmail && u.mentor.toLowerCase().includes(mentorEmail.split('@')[0])) ||
+            (mentorName && u.mentor.toLowerCase().includes(mentorName))
+          ));
+          setAssignedInterns(filtered);
+          localStorage.setItem("app_mentor_interns", JSON.stringify(filtered));
+        }
+      } catch (e) {
+        // Fallback to local storage or empty
+      }
+    };
+    fetchMentorInterns();
+  }, []);
 
-  const [submissions, setSubmissions] = useState([
-    { id: 1, intern: "John Doe", domain: "Frontend Development", curriculum: "Day 10: React Fundamentals", mcqResults: "9/10 Correct", task: "React To-Do App", code: "const todoList = []; function add() { ... }", aiScore: "85%", aiFeedback: "Good structure. Suggestions: Use key attribute in list rendering.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 2, intern: "Raj Patel", domain: "Data Science", curriculum: "Day 12: Predictive Modeling", mcqResults: "8/10 Correct", task: "Predictive Model Python", code: "import pandas as pd\nmodel.fit(X, y)", aiScore: "92%", aiFeedback: "Optimized hyperparameters. Suggestions: Include residual analysis plots.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 3, intern: "Anu Sharma", domain: "Cybersecurity", curriculum: "Day 8: Network Security", mcqResults: "10/10 Correct", task: "Packet Sniffer Setup", code: "import pcapy\n# ... sniff packets", aiScore: "88%", aiFeedback: "Good implementation. Consider adding filtering rules.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 4, intern: "Sara Smith", domain: "Full Stack Development", curriculum: "Day 15: API Integration", mcqResults: "7/10 Correct", task: "Express REST API", code: "app.get('/api/users', (req, res) => { ... })", aiScore: "80%", aiFeedback: "Needs better error handling in routes.", status: "Pending", mentorFeedback: "", score: "" },
-    { id: 5, intern: "Mike Johnson", domain: "UI/UX Design", curriculum: "Day 5: Wireframing", mcqResults: "N/A", task: "Dashboard Wireframe", code: "Figma Link Provided", aiScore: "95%", aiFeedback: "Clean layout and good use of spacing.", status: "Pending", mentorFeedback: "", score: "" }
-  ]);
+  const [selectedBatch, setSelectedBatch] = useState("");
+
+  const [submissions, setSubmissions] = useState(() => {
+    const saved = localStorage.getItem("app_submissions");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Anu Weekly Review", time: "Today, 3:00 PM", status: "Upcoming" },
-    { id: 2, title: "Raj Weekly Review", time: "Tomorrow, 10:00 AM", status: "Scheduled" },
-    { id: 3, title: "Batch A Sync", time: "Tomorrow, 2:00 PM", status: "Scheduled" },
-    { id: 4, title: "Mike Code Review", time: "Friday, 11:00 AM", status: "Scheduled" }
-  ]);
+  const [meetings, setMeetings] = useState(() => {
+    const saved = localStorage.getItem("app_mentor_meetings");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "John Doe", text: "Hello mentor, when is my React code evaluation meeting?", time: "10:15 AM" },
-    { sender: "You", text: "Hi John, I will schedule it for tomorrow at 2:00 PM.", time: "10:30 AM" }
-  ]);
+  const [chatMessages, setChatMessages] = useState(() => {
+    const saved = localStorage.getItem("app_mentor_chat_messages");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
 
   // Tickets state
-  const [mentorTickets, setMentorTickets] = useState([
-    { id: "8", user: "Sushmitha", title: "mcq button isnt working", description: "I have clicked the MCQ button but it is not working as expected.", status: "Assigned", date: "15/9/2026 01:51 am", comments: [] },
-    { id: "6", user: "John Doe", title: "button issue", description: "The submit button is overlapping with the footer on smaller screens.", status: "Resolved", date: "29/8/2026 12:51 pm", comments: [{ author: "Admin", text: "Please investigate this issue." }] }
-  ]);
+  const [mentorTickets, setMentorTickets] = useState(() => {
+    const saved = localStorage.getItem("app_mentor_tickets");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
 
@@ -289,103 +301,43 @@ export default function MentorDashboard() {
   };
 
   // Weekly review state inputs
-  const [weeklyIntern, setWeeklyIntern] = useState("John Doe");
+  const [weeklyIntern, setWeeklyIntern] = useState("");
   const [weeklyStrengths, setWeeklyStrengths] = useState("");
   const [weeklyWeaknesses, setWeeklyWeaknesses] = useState("");
   const [weeklyNotes, setWeeklyNotes] = useState("");
 
-  const [mentorDomain] = useState("Artificial Intelligence");
-  const [curriculumList] = useState([
-    { day: "Day 1",  topic: "Introduction to AI & ML",          resources: "Video Link, Documentation PDF" },
-    { day: "Day 2",  topic: "Python for Data Science",          resources: "Python Notebook, Cheatsheet" },
-    { day: "Day 3",  topic: "NumPy & Pandas Basics",            resources: "Kaggle Tutorial, Practice Dataset" },
-    { day: "Day 4",  topic: "Data Visualization (Matplotlib)",  resources: "Seaborn Docs, Lab Exercise" },
-    { day: "Day 5",  topic: "Statistics for ML",                resources: "Khan Academy, PDF Notes" },
-    { day: "Day 6",  topic: "Supervised Learning - Regression", resources: "Slides, Colab Notebook" },
-    { day: "Day 7",  topic: "Supervised Learning - Classification", resources: "Github Repo, Slides PDF" },
-    { day: "Day 8",  topic: "Model Evaluation & Metrics",       resources: "Scikit-learn Docs, Quiz" },
-    { day: "Day 9",  topic: "Feature Engineering",              resources: "Kaggle Notebook, PDF" },
-    { day: "Day 10", topic: "Unsupervised Learning - Clustering", resources: "K-Means Lab, Video" },
-    { day: "Day 11", topic: "Dimensionality Reduction (PCA)",   resources: "Slides, Code Exercise" },
-    { day: "Day 12", topic: "Decision Trees & Random Forests",  resources: "Scikit-learn Guide, Notebook" },
-    { day: "Day 13", topic: "Support Vector Machines",          resources: "Research Paper, Lab" },
-    { day: "Day 14", topic: "Neural Networks - Basics",         resources: "3Blue1Brown Video, PDF" },
-    { day: "Day 15", topic: "Mid-term Assessment",              resources: "Assessment Portal" },
-    { day: "Day 16", topic: "Deep Learning with TensorFlow",    resources: "TF Docs, Colab" },
-    { day: "Day 17", topic: "CNN - Image Classification",       resources: "Fast.ai, CIFAR Dataset" },
-    { day: "Day 18", topic: "RNN & LSTM - Sequence Models",     resources: "Andrej Karpathy Blog, Code" },
-    { day: "Day 19", topic: "NLP - Text Processing",            resources: "NLTK Docs, Notebook" },
-    { day: "Day 20", topic: "Transformers & Attention",         resources: "Hugging Face Tutorial" },
-    { day: "Day 21", topic: "Transfer Learning",                resources: "Keras Guide, Pretrained Models" },
-    { day: "Day 22", topic: "Model Deployment - Flask API",     resources: "Flask Docs, Postman" },
-    { day: "Day 23", topic: "Docker & Cloud Basics",            resources: "Docker Tutorial, AWS Guide" },
-    { day: "Day 24", topic: "MLOps Fundamentals",               resources: "MLflow Docs, Video" },
-    { day: "Day 25", topic: "Project Planning & Architecture",  resources: "Project Template, Rubric" },
-    { day: "Day 26", topic: "Project - Data Collection & EDA",  resources: "Dataset Links, EDA Checklist" },
-    { day: "Day 27", topic: "Project - Model Training",         resources: "Training Guide, GPU Colab" },
-    { day: "Day 28", topic: "Project - Evaluation & Tuning",    resources: "Hyperparameter Tuning Docs" },
-    { day: "Day 29", topic: "Project - Deployment & Demo",      resources: "Deployment Checklist, Hosting" },
-    { day: "Day 30", topic: "Final Presentation & Review",      resources: "Presentation Rubric, Feedback Form" },
-  ]);
-  const [tasks, setTasks] = useState(() => [
-    { id: 1,  title: "Explore AI & ML use cases",               difficulty: "Easy",   deadline: "2026-08-01", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 2,  title: "Python data manipulation with Pandas",     difficulty: "Easy",   deadline: "2026-08-02", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 3,  title: "NumPy array operations assignment",        difficulty: "Easy",   deadline: "2026-08-03", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 4,  title: "Matplotlib visualization project",         difficulty: "Easy",   deadline: "2026-08-04", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 5,  title: "Statistical analysis on a dataset",        difficulty: "Medium", deadline: "2026-08-05", domain: "Artificial Intelligence", status: "Completed" },
-    { id: 6,  title: "Build a Linear Regression model",          difficulty: "Medium", deadline: "2026-08-06", domain: "Artificial Intelligence", status: "Active" },
-    { id: 7,  title: "Classification with Logistic Regression",  difficulty: "Medium", deadline: "2026-08-07", domain: "Artificial Intelligence", status: "Active" },
-    { id: 8,  title: "Model evaluation metrics report",          difficulty: "Medium", deadline: "2026-08-08", domain: "Artificial Intelligence", status: "Active" },
-    { id: 9,  title: "Feature engineering pipeline",             difficulty: "Medium", deadline: "2026-08-09", domain: "Artificial Intelligence", status: "Active" },
-    { id: 10, title: "Implement K-Means Clustering",             difficulty: "Hard",   deadline: "2026-08-10", domain: "Artificial Intelligence", status: "Active" },
-    { id: 11, title: "PCA dimensionality reduction exercise",    difficulty: "Hard",   deadline: "2026-08-11", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 12, title: "Build a Random Forest classifier",         difficulty: "Medium", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 13, title: "SVM classification on real dataset",       difficulty: "Hard",   deadline: "2026-08-13", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 14, title: "Build a Simple Neural Network",            difficulty: "Hard",   deadline: "2026-08-14", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 15, title: "Mid-term Assessment",                      difficulty: "Hard",   deadline: "2026-08-15", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 16, title: "Deep Learning model with TensorFlow",      difficulty: "Hard",   deadline: "2026-08-16", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 17, title: "CNN for image classification (CIFAR-10)",  difficulty: "Hard",   deadline: "2026-08-17", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 18, title: "LSTM sequence prediction model",           difficulty: "Hard",   deadline: "2026-08-18", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 19, title: "NLP text classification pipeline",         difficulty: "Medium", deadline: "2026-08-19", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 20, title: "Fine-tune a Transformer model",            difficulty: "Hard",   deadline: "2026-08-20", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 21, title: "Transfer learning with pre-trained CNN",   difficulty: "Hard",   deadline: "2026-08-21", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 22, title: "Deploy ML model as Flask REST API",        difficulty: "Medium", deadline: "2026-08-22", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 23, title: "Dockerize and push ML app to cloud",       difficulty: "Medium", deadline: "2026-08-23", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 24, title: "MLOps pipeline with MLflow tracking",      difficulty: "Hard",   deadline: "2026-08-24", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 25, title: "Define capstone project architecture",     difficulty: "Medium", deadline: "2026-08-25", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 26, title: "Collect data & perform EDA",              difficulty: "Hard",   deadline: "2026-08-26", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 27, title: "Train final project model",               difficulty: "Hard",   deadline: "2026-08-27", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 28, title: "Evaluate & tune the project model",       difficulty: "Hard",   deadline: "2026-08-28", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 29, title: "Deploy & demo the final project",         difficulty: "Hard",   deadline: "2026-08-29", domain: "Artificial Intelligence", status: "Upcoming" },
-    { id: 30, title: "Final Presentation & Peer Review",        difficulty: "Hard",   deadline: "2026-08-30", domain: "Artificial Intelligence", status: "Upcoming" },
-  ].map((t, i) => ({
-    ...t,
-    mcqs: Array.from({ length: 10 }, (_, m_idx) => ({
-      id: m_idx + 1,
-      question: `Question ${m_idx + 1} for Day ${i+1}: What is the main concept here?`,
-      options: ["Option A", "Option B", "Option C", "Option D"],
-      answer: m_idx % 4
-    })),
-    codingQuestion: {
-      title: `Day ${i+1} Coding Challenge`,
-      description: `Implement a solution related to: "${t.title}". Write clean, documented Python code.`,
-      starterCode: `# Day ${i+1} Starter Code\nimport numpy as np\nimport pandas as pd\n\n# TODO: Implement your solution here\ndef solve():\n    pass\n\nsolve()`,
-      expectedOutput: "Your output should demonstrate mastery of today's concept."
-    }
-  })));
+  const [mentorDomain] = useState(() => localStorage.getItem("userDomain") || "");
+  const [curriculumList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("app_mentor_curriculum") || localStorage.getItem("app_curriculum");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const saved = localStorage.getItem("app_mentor_tasks") || localStorage.getItem("app_tasks");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [editingTask, setEditingTask] = useState(null);
   const [viewingTask, setViewingTask] = useState(null);
   const [taskDetailTab, setTaskDetailTab] = useState("MCQ"); // "MCQ" or "Coding"
   const [detailSubTab, setDetailSubTab] = useState("Curriculum");
 
 
-  // Chart Data
-  const backlogData = [
-    { name: 'Week 1', Submitted: 40, Evaluated: 38 },
-    { name: 'Week 2', Submitted: 45, Evaluated: 40 },
-    { name: 'Week 3', Submitted: 50, Evaluated: 30 },
-    { name: 'Week 4', Submitted: 60, Evaluated: 25 },
-  ];
+  // Chart data derived from real submissions
+  const backlogData = (() => {
+    const subsList = (() => { try { const s = localStorage.getItem("app_submissions"); return s ? JSON.parse(s) : []; } catch { return []; } })();
+    if (subsList.length === 0) return [];
+    const weeks = {};
+    subsList.forEach(s => {
+      const wk = s.week || "Week 1";
+      if (!weeks[wk]) weeks[wk] = { name: wk, Submitted: 0, Evaluated: 0 };
+      weeks[wk].Submitted++;
+      if (s.status && s.status !== "Pending") weeks[wk].Evaluated++;
+    });
+    return Object.values(weeks);
+  })();
 
   const handleLogout = () => {
     alert("Logged out successfully.");
@@ -648,23 +600,22 @@ export default function MentorDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.6s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> At-Risk Interns</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Mike Johnson</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch B</span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Low progress (50%) and struggles with React Hooks.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }} onClick={() => { setActiveTab("Breakout Rooms"); navigate("/mentor/breakout-rooms"); }}>Schedule Intervention</button>
-                  </div>
-                  
-                  <div style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>Anu Sharma</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Batch A</span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>Missing assignments and attendance dropping.</p>
-                    <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }} onClick={() => setSelectedInternForChat("Anu Sharma")}>Send Message</button>
-                  </div>
+                  {assignedInterns.filter(i => parseInt(i.progress, 10) < 60 || parseInt(i.attendance, 10) < 85).length === 0 ? (
+                    <div style={{ textAlign: "center", color: "#6b7280", fontSize: "13px", padding: "16px" }}>No at-risk interns currently.</div>
+                  ) : (
+                    assignedInterns.filter(i => parseInt(i.progress, 10) < 60 || parseInt(i.attendance, 10) < 85).slice(0, 3).map((intern, idx) => (
+                      <div key={intern.id || idx} style={{ backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700 }}>{intern.name}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>{intern.batch || intern.college || ""}</span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>
+                          {intern.weakAreas ? `Weak areas: ${intern.weakAreas}.` : `Progress: ${intern.progress || 0}%, Attendance: ${intern.attendance || 0}%.`}
+                        </p>
+                        <button className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }} onClick={() => setSelectedInternForChat(intern.name)}>Send Message</button>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -857,12 +808,14 @@ export default function MentorDashboard() {
                   </div>
 
                   <div style={{ marginBottom: "24px", display: "flex", justifyContent: "flex-end" }}>
-                    <a href="https://github.com/mock-intern/repo" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "var(--bg-surface, #ffffff)", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
-                      <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
-                        <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                      </svg>
-                      View on GitHub
-                    </a>
+                    {selectedEvaluation.githubUrl && selectedEvaluation.githubUrl !== "-" && (
+                      <a href={selectedEvaluation.githubUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#24292e", color: "var(--bg-surface, #ffffff)", borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "600", transition: "opacity 0.2s" }}>
+                        <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true" fill="currentColor">
+                          <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                        View on GitHub
+                      </a>
+                    )}
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "20px" }}>
@@ -2047,12 +2000,18 @@ export default function MentorDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
-                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted, #94a3b8)', fontSize: '13px' }}>
+                      No new notifications
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map(notif => (
+                      <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                        <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
@@ -2075,8 +2034,8 @@ export default function MentorDashboard() {
             {isProfileDropdownOpen && (
               <div style={{ position: "absolute", top: "100%", right: 0, marginTop: "8px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "170px", zIndex: 100, overflow: "hidden" }}>
                 <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", background: "var(--bg-surface-elevated, #f8fafc)" }}>
-                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Dr. Ananya Menon</p>
-                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>ananya@proedu.com</p>
+                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>{userName}</p>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted, #64748b)" }}>{userEmail}</p>
                 </div>
                 <button
                   onClick={() => { setActiveTab("My Profile"); navigate("/mentor/my-profile"); setIsProfileDropdownOpen(false); }}

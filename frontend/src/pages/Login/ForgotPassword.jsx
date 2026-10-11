@@ -20,8 +20,12 @@ export default function ForgotPassword() {
     <div className="login-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg-light)' }}>
       <Card style={{ width: '100%', maxWidth: '400px', animation: 'fadeIn 0.4s ease-out' }}>
         <CardContent style={{ padding: '32px' }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", justifyContent: "center" }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "140px", width: "auto" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
+            <img 
+              src="/Horizontal Logo SVG File-png.png" 
+              alt="Proeduvate Logo" 
+              style={{ maxWidth: "260px", maxHeight: "75px", width: "auto", height: "auto", objectFit: "contain" }} 
+            />
           </div>
           
           {!isSent ? (

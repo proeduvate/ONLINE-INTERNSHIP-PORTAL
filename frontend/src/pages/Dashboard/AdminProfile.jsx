@@ -5,9 +5,14 @@ export default function AdminProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-  const userEmail = localStorage.getItem("userEmail") || "admin";
-  const imageKey = `profile_image_${userEmail}`;
-  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=f8fafc");
+  const userEmail = localStorage.getItem("userEmail") || "";
+  const storedName = localStorage.getItem("userName") || "";
+  const nameParts = storedName ? storedName.split(" ") : (userEmail ? userEmail.split("@")[0].split(".") : ["Admin"]);
+  const firstName = nameParts[0] ? (nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)) : "Admin";
+  const lastName = nameParts.slice(1).join(" ") ? (nameParts.slice(1).join(" ").charAt(0).toUpperCase() + nameParts.slice(1).join(" ").slice(1)) : "";
+
+  const imageKey = `profile_image_${userEmail || "admin"}`;
+  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firstName}&backgroundColor=f8fafc`);
   const fileInputRef = useRef(null);
 
   const handleImageChange = (e) => {
@@ -123,11 +128,11 @@ export default function AdminProfile() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Super" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="text" value={firstName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Admin" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="text" value={lastName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
@@ -135,7 +140,7 @@ export default function AdminProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="#94a3b8" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="admin@proeduvate.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
+                    <input type="email" value={userEmail} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "#f1f5f9", cursor: "not-allowed", boxSizing: "border-box" }} />
                   </div>
                 </div>
 

@@ -61,8 +61,12 @@ import "./Login.css"; export default function Login() {
     <div className="login-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg-light)' }}>
       <Card style={{ width: '100%', maxWidth: '400px', animation: 'fadeIn 0.4s ease-out' }}>
         <CardContent style={{ padding: '32px' }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", justifyContent: "center" }}>
-            <img src="/logo.png" alt="Proeduvate Logo" style={{ height: "140px", width: "auto" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
+            <img 
+              src="/Horizontal Logo SVG File-png.png" 
+              alt="Proeduvate Logo" 
+              style={{ maxWidth: "260px", maxHeight: "75px", width: "auto", height: "auto", objectFit: "contain" }} 
+            />
           </div>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 700, color: 'var(--text-darker)' }}>Welcome Back</h2>

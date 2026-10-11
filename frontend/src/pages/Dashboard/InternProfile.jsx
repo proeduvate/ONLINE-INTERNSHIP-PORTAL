@@ -4,17 +4,22 @@ import { User, Shield, Bell, Camera, Key, Lock, Save, Trash2, Mail, MapPin, Brie
 export default function InternProfile() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const userEmail = localStorage.getItem("userEmail") || "intern";
-  const imageKey = `profile_image_${userEmail}`;
-  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc");
+  const userEmail = localStorage.getItem("userEmail") || "";
+  const storedName = localStorage.getItem("userName") || "";
+  const nameParts = storedName ? storedName.split(" ") : (userEmail ? userEmail.split("@")[0].split(".") : ["Intern"]);
+  const firstName = nameParts[0] ? (nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)) : "Intern";
+  const lastName = nameParts.slice(1).join(" ") ? (nameParts.slice(1).join(" ").charAt(0).toUpperCase() + nameParts.slice(1).join(" ").slice(1)) : "";
+
+  const imageKey = `profile_image_${userEmail || "intern"}`;
+  const [profileImage, setProfileImage] = useState(localStorage.getItem(imageKey) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firstName}&backgroundColor=f8fafc`);
   const fileInputRef = useRef(null);
 
   const defaultProfile = {
-    githubId: "dhanush-dev",
-    institution: "Tech University",
+    githubId: "",
+    institution: localStorage.getItem("userInstitution") || "",
     role: "Software Engineering Intern",
-    location: "San Francisco, CA",
-    bio: "Passionate software engineering intern excited to learn full-stack development and build scalable applications."
+    location: "",
+    bio: ""
   };
 
   const [profileData, setProfileData] = useState(() => {
@@ -53,7 +58,7 @@ export default function InternProfile() {
   };
 
   const handleRemoveImage = () => {
-    const defaultImg = "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhanush&backgroundColor=f8fafc";
+    const defaultImg = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(firstName || "Intern")}&backgroundColor=f8fafc`;
     setProfileImage(defaultImg);
     localStorage.removeItem(imageKey);
     window.dispatchEvent(new Event("profileImageUpdated"));
@@ -148,11 +153,11 @@ export default function InternProfile() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>First Name</label>
-                    <input type="text" defaultValue="Dhanush" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
+                    <input type="text" value={firstName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Last Name</label>
-                    <input type="text" defaultValue="Kumar" disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
+                    <input type="text" value={lastName} disabled style={{ width: "100%", padding: "8px 14px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                 </div>
 
@@ -160,7 +165,7 @@ export default function InternProfile() {
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary, #334155)", marginBottom: "6px" }}>Email Address</label>
                   <div style={{ position: "relative" }}>
                     <Mail size={16} color="var(--text-muted, #94a3b8)" style={{ position: "absolute", left: "12px", top: "10px" }} />
-                    <input type="email" defaultValue="dhanush@example.com" disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
+                    <input type="email" value={userEmail} disabled style={{ width: "100%", padding: "8px 14px 8px 38px", borderRadius: "8px", border: "1px solid var(--border-color, #cbd5e1)", outline: "none", fontSize: "0.9rem", color: "var(--text-muted, #64748b)", background: "var(--bg-surface-elevated, #f1f5f9)", cursor: "not-allowed" }} />
                   </div>
                 </div>
 

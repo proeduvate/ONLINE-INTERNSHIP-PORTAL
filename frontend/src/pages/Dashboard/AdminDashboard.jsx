@@ -6,8 +6,9 @@ import AdminAnalytics from "./AdminAnalytics";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 import AdminLeaderboard from "./AdminLeaderboard";
 import AdminProfile from "./AdminProfile";
-import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboardingList";
-import AdminOnboardingDetails from "../../features/onboarding/admin/AdminOnboardingDetails";
+import AdminOnboardingList from "../admin/onboarding/AdminOnboardingList";
+import AdminOnboardingDetails from "../admin/onboarding/AdminOnboardingDetails";
+import axios from "axios";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
 import "../../styles/Dashboard.css";
@@ -63,11 +64,8 @@ export default function AdminDashboard() {
     navigate("/login");
   };
 
-  const mockNotifications = [
-    { id: 1, text: "New intern registered", time: "5 mins ago" },
-    { id: 2, text: "New support ticket created", time: "1 hour ago" },
-    { id: 3, text: "Weekly performance report is ready", time: "2 hours ago" }
-  ];
+  const [notifications, setNotifications] = useState([]);
+
 
   // Bonus Airdrops State
   const [bonusAirdrops, setBonusAirdrops] = useState([]);
@@ -115,121 +113,69 @@ export default function AdminDashboard() {
     alert("Certificate approved and sent to intern!");
   };
 
-  // State Mock Data
-  // State Mock Data
-  const [usersList, setUsersList] = useState([
-    // Mentors
-    { id: "MNT101", name: "Dr. Sakthi", role: "Mentor", college: "-", domain: "AI/DS/Cyber", mentor: "-", progress: "-", attendance: "98%", status: "Active" },
-    { id: "MNT102", name: "Dr. Alice", role: "Mentor", college: "-", domain: "Web Development", mentor: "-", progress: "-", attendance: "95%", status: "Active" },
-    
-    // Batch MIT (12 interns)
-    { id: "INT001", name: "John Doe", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT004", name: "Emily Watson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "45%", attendance: "92%", status: "Active" },
-    { id: "INT005", name: "Michael Chang", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "88%", status: "Active" },
-    { id: "INT006", name: "Sarah Connor", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT007", name: "David Miller", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT008", name: "Jessica Taylor", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "91%", status: "Active" },
-    { id: "INT009", name: "Daniel Anderson", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "30%", attendance: "85%", status: "Active" },
-    { id: "INT010", name: "Sophia Martinez", role: "Intern", college: "MIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT011", name: "James Wilson", role: "Intern", college: "MIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "87%", status: "Active" },
-    { id: "INT012", name: "Isabella Thomas", role: "Intern", college: "MIT", domain: "Web Development", mentor: "Dr. Alice", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT013", name: "Robert Jackson", role: "Intern", college: "MIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT014", name: "Mia White", role: "Intern", college: "MIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
+  // State Data
+  const [usersList, setUsersList] = useState(() => {
+    const saved = localStorage.getItem("app_users_list");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-    // Batch Stanford (11 interns)
-    { id: "INT002", name: "Raj Patel", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "90%", status: "Active" },
-    { id: "INT015", name: "William Davies", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "95%", status: "Active" },
-    { id: "INT016", name: "Olivia Johnson", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "70%", attendance: "91%", status: "Active" },
-    { id: "INT017", name: "Liam Smith", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "50%", attendance: "89%", status: "Active" },
-    { id: "INT018", name: "Emma Jones", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "97%", status: "Active" },
-    { id: "INT019", name: "Noah Brown", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "86%", status: "Active" },
-    { id: "INT020", name: "Ava Miller", role: "Intern", college: "Stanford", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT021", name: "Lucas Garcia", role: "Intern", college: "Stanford", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "92%", status: "Active" },
-    { id: "INT022", name: "Sophia Rodriguez", role: "Intern", college: "Stanford", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT023", name: "Mason Martinez", role: "Intern", college: "Stanford", domain: "Web Development", mentor: "Dr. Alice", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT024", name: "Charlotte Hernandez", role: "Intern", college: "Stanford", domain: "UI UX Design", mentor: "Dr. Alice", progress: "80%", attendance: "96%", status: "Active" },
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/v1/users");
+        if (res.data && Array.isArray(res.data)) {
+          setUsersList(res.data);
+          localStorage.setItem("app_users_list", JSON.stringify(res.data));
+        }
+      } catch (e) {
+        // Fallback to local storage or empty
+      }
+    };
+    fetchUsers();
+  }, []);
 
-    // Batch IIT (11 interns)
-    { id: "INT003", name: "Anu Sharma", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "88%", status: "Active" },
-    { id: "INT025", name: "Rahul Verma", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "50%", attendance: "92%", status: "Active" },
-    { id: "INT026", name: "Priya Patel", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "85%", attendance: "96%", status: "Active" },
-    { id: "INT027", name: "Amit Singh", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "60%", attendance: "90%", status: "Active" },
-    { id: "INT028", name: "Neha Gupta", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "70%", attendance: "93%", status: "Active" },
-    { id: "INT029", name: "Vikram Reddy", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "45%", attendance: "87%", status: "Active" },
-    { id: "INT030", name: "Anjali Das", role: "Intern", college: "IIT", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "95%", status: "Active" },
-    { id: "INT031", name: "Rohan Bose", role: "Intern", college: "IIT", domain: "Data Science", mentor: "Dr. Sakthi", progress: "35%", attendance: "85%", status: "Active" },
-    { id: "INT032", name: "Shreya Ghoshal", role: "Intern", college: "IIT", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT033", name: "Aditya Roy", role: "Intern", college: "IIT", domain: "Web Development", mentor: "Dr. Alice", progress: "65%", attendance: "91%", status: "Active" },
-    { id: "INT034", name: "Riya Sen", role: "Intern", college: "IIT", domain: "UI UX Design", mentor: "Dr. Alice", progress: "75%", attendance: "94%", status: "Active" },
+  const [domainsList, setDomainsList] = useState(() => {
+    const saved = localStorage.getItem("app_domains_list");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-    // Batch Harvard (12 interns)
-    { id: "INT035", name: "Ethan Hunt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "65%", attendance: "94%", status: "Active" },
-    { id: "INT036", name: "Grace Kelly", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT037", name: "Jack Reacher", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "90%", status: "Active" },
-    { id: "INT038", name: "Julia Roberts", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "85%", attendance: "98%", status: "Active" },
-    { id: "INT039", name: "Tom Cruise", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT040", name: "Brad Pitt", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT041", name: "Angelina Jolie", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT042", name: "Leonardo DiCaprio", role: "Intern", college: "Harvard", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "75%", attendance: "93%", status: "Active" },
-    { id: "INT043", name: "Kate Winslet", role: "Intern", college: "Harvard", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "99%", status: "Active" },
-    { id: "INT044", name: "Johnny Depp", role: "Intern", college: "Harvard", domain: "UI UX Design", mentor: "Dr. Alice", progress: "50%", attendance: "88%", status: "Active" },
-    { id: "INT045", name: "Natalie Portman", role: "Intern", college: "Harvard", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "97%", status: "Active" },
-    { id: "INT046", name: "Matt Damon", role: "Intern", college: "Harvard", domain: "Data Science", mentor: "Dr. Sakthi", progress: "45%", attendance: "89%", status: "Active" },
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem("app_admin_tasks");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-    // Batch Berkeley (12 interns)
-    { id: "INT047", name: "Harry Potter", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "95%", attendance: "99%", status: "Active" },
-    { id: "INT048", name: "Hermione Granger", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "100%", attendance: "100%", status: "Active" },
-    { id: "INT049", name: "Ron Weasley", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "40%", attendance: "85%", status: "Active" },
-    { id: "INT050", name: "Albus Dumbledore", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "90%", attendance: "98%", status: "Active" },
-    { id: "INT051", name: "Severus Snape", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "85%", attendance: "95%", status: "Active" },
-    { id: "INT052", name: "Draco Malfoy", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "60%", attendance: "91%", status: "Active" },
-    { id: "INT053", name: "Luna Lovegood", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "75%", attendance: "94%", status: "Active" },
-    { id: "INT054", name: "Neville Longbottom", role: "Intern", college: "Berkeley", domain: "Cyber Security", mentor: "Dr. Sakthi", progress: "55%", attendance: "89%", status: "Active" },
-    { id: "INT055", name: "Rubeus Hagrid", role: "Intern", college: "Berkeley", domain: "Web Development", mentor: "Dr. Alice", progress: "50%", attendance: "87%", status: "Active" },
-    { id: "INT056", name: "Ginny Weasley", role: "Intern", college: "Berkeley", domain: "UI UX Design", mentor: "Dr. Alice", progress: "70%", attendance: "92%", status: "Active" },
-    { id: "INT057", name: "Sirius Black", role: "Intern", college: "Berkeley", domain: "Artificial Intelligence", mentor: "Dr. Sakthi", progress: "80%", attendance: "96%", status: "Active" },
-    { id: "INT058", name: "Remus Lupin", role: "Intern", college: "Berkeley", domain: "Data Science", mentor: "Dr. Sakthi", progress: "65%", attendance: "90%", status: "Active" },
-  ]);
+  const [curriculumList, setCurriculumList] = useState(() => {
+    const saved = localStorage.getItem("app_curriculum_list");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const [domainsList, setDomainsList] = useState([
-    { name: "Frontend", duration: "12 Weeks", interns: 14, mentors: 2, status: "Active" },
-    { name: "Python", duration: "8 Weeks", interns: 12, mentors: 2, status: "Active" },
-    { name: "Fullstack", duration: "10 Weeks", interns: 8, mentors: 1, status: "Active" },
-    { name: "Java", duration: "8 Weeks", interns: 10, mentors: 3, status: "Active" },
-    { name: "UI/UX", duration: "6 Weeks", interns: 6, mentors: 2, status: "Active" },
-    { name: "AI/ML", duration: "10 Weeks", interns: 0, mentors: 0, status: "Active" },
-    { name: "Data Analytics", duration: "8 Weeks", interns: 0, mentors: 0, status: "Active" },
-  ]);
+  const [meetings, setMeetings] = useState(() => {
+    const saved = localStorage.getItem("app_admin_meetings");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Build a Simple Neural Network", difficulty: "Hard", deadline: "2026-08-12", domain: "Artificial Intelligence", status: "Active" },
-    { id: 2, title: "React Component Lifecycle", difficulty: "Medium", deadline: "2026-08-10", domain: "Web Development", status: "Active" },
-  ]);
-
-  const [curriculumList, setCurriculumList] = useState([
-    { day: "Day 1", topic: "Introduction to React", resources: "Video Link, Documentation PDF", domain: "Web Development" },
-    { day: "Day 2", topic: "State and Props", resources: "Github Repo, Slides PDF", domain: "Web Development" },
-  ]);
-
-  const [meetings, setMeetings] = useState([
-    { id: 1, title: "Mid-Term Review Meeting", time: "2026-08-08 10:00 AM", mentor: "Dr. Sakthi", link: "https://zoom.us/mock" },
-  ]);
-
-  // Chart Data
-  const progressData = [
-    { name: "Week 1", MIT: 25, Stanford: 18, IIT: 30, Harvard: 20, Berkeley: 22 },
-    { name: "Week 2", MIT: 45, Stanford: 38, IIT: 50, Harvard: 42, Berkeley: 40 },
-    { name: "Week 3", MIT: 60, Stanford: 55, IIT: 65, Harvard: 58, Berkeley: 62 },
-    { name: "Week 4", MIT: 85, Stanford: 78, IIT: 80, Harvard: 75, Berkeley: 82 },
-  ];
+  // Dynamic Chart Data
+  const progressData = React.useMemo(() => {
+    const colleges = [...new Set(usersList.filter(u => u.role === "Intern").map(u => u.college).filter(Boolean))];
+    if (colleges.length === 0) return [];
+    return ["Week 1", "Week 2", "Week 3", "Week 4"].map((week, idx) => {
+      const entry = { name: week };
+      colleges.forEach(col => {
+        const internsInCol = usersList.filter(u => u.college === col && u.role === "Intern");
+        const avg = internsInCol.length ? Math.round(internsInCol.reduce((acc, curr) => acc + (parseInt(curr.progress, 10) || 0), 0) / internsInCol.length) : 0;
+        entry[col] = Math.min(100, Math.round(avg * ((idx + 1) / 4)));
+      });
+      return entry;
+    });
+  }, [usersList]);
   
-  const domainData = [
-    { name: "AI", value: 14 },
-    { name: "Data Sci", value: 12 },
-    { name: "Cyber Sec", value: 8 },
-    { name: "Web Dev", value: 10 },
-    { name: "UI/UX", value: 6 },
-  ];
+  const domainData = React.useMemo(() => {
+    const counts = {};
+    usersList.filter(u => u.role === "Intern").forEach(u => {
+      if (u.domain) counts[u.domain] = (counts[u.domain] || 0) + 1;
+    });
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [usersList]);
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
   // Form inputs
@@ -265,12 +211,12 @@ export default function AdminDashboard() {
   const [selectedMentor, setSelectedMentor] = useState(null);
 
   // Tickets state
-  const [ticketsList, setTicketsList] = useState([
-    { id: "TKT-1042", user: "John Doe", role: "Intern", domain: "Artificial Intelligence", branch: "MIT", title: "Environment setup failing on local machine during Docker build.", description: "When I run docker-compose up, it fails with a port conflict error. Details in logs.", status: "Waiting on Support", date: "2 hours ago", comments: [] },
-    { id: "TKT-1045", user: "Raj Patel", role: "Intern", domain: "Data Science", branch: "Stanford", title: "Need clarification on the API structure for Week 4 assignments.", description: "The documentation for the external API endpoints seems outdated. Can someone confirm?", status: "In Progress", date: "5 hours ago", comments: [{ author: "Admin", text: "We are checking this with the curriculum team." }] },
-    { id: "TKT-0985", user: "Sarah Connor", role: "Intern", domain: "Cyber Security", branch: "Berkeley", title: "Missing lecture notes for Day 5", description: "The PDF link for Day 5 lecture is broken.", status: "Resolved", date: "1 week ago", comments: [{ author: "Admin", text: "Fixed the link. Please check again." }] },
-    { id: "TKT-1048", user: "Dr. Sakthi", role: "Mentor", domain: "Cyber Security", branch: "MIT", title: "Unable to access GitHub repository for batch MIT-04.", description: "I don't have access to the repo for batch MIT-04.", status: "Waiting on Support", date: "1 day ago", comments: [] }
-  ]);
+  const [ticketsList, setTicketsList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("app_tickets");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
   const [assignMentorId, setAssignMentorId] = useState("");
@@ -450,8 +396,8 @@ export default function AdminDashboard() {
       id: meetings.length + 1,
       title: newMeeting.title,
       time: newMeeting.time || "Immediate",
-      mentor: newMeeting.mentor || "Dr. Sakthi",
-      link: newMeeting.link || "https://zoom.us/mock"
+      mentor: newMeeting.mentor || "",
+      link: newMeeting.link || ""
     };
     setMeetings([...meetings, scheduled]);
     alert("Meeting scheduled!");
@@ -515,22 +461,29 @@ export default function AdminDashboard() {
             <div className="grid">
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <span className="stat-title">Total Interns</span>
-                <span className="stat-value">50</span>
-                <span className="stat-desc">48 Active / 2 Deactivated</span>
+                <span className="stat-value">{usersList.filter(u => u.role === "Intern").length}</span>
+                <span className="stat-desc">{usersList.filter(u => u.role === "Intern" && u.status === "Active").length} Active / {usersList.filter(u => u.role === "Intern" && u.status !== "Active").length} Deactivated</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <span className="stat-title">Total Mentors</span>
-                <span className="stat-value">10</span>
-                <span className="stat-desc">Assigned across 5 domains</span>
+                <span className="stat-value">{usersList.filter(u => u.role === "Mentor").length}</span>
+                <span className="stat-desc">Assigned across {domainsList.length} domains</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <span className="stat-title">Active Domains</span>
-                <span className="stat-value">5</span>
-                <span className="stat-desc">AI, DS, CS, Web Dev, UI/UX</span>
+                <span className="stat-value">{domainsList.filter(d => d.status === "Active").length}</span>
+                <span className="stat-desc">{domainsList.map(d => d.name).slice(0, 5).join(", ") || "None"}</span>
               </div>
               <div className="stat-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <span className="stat-title">Avg Performance</span>
-                <span className="stat-value">78%</span>
+                <span className="stat-value">
+                  {(() => {
+                    const internsWithProgress = usersList.filter(u => u.role === "Intern" && u.progress && u.progress !== "-");
+                    if (internsWithProgress.length === 0) return "N/A";
+                    const avg = Math.round(internsWithProgress.reduce((acc, u) => acc + (parseInt(u.progress, 10) || 0), 0) / internsWithProgress.length);
+                    return `${avg}%`;
+                  })()}
+                </span>
                 <span className="stat-desc">Based on evaluations</span>
               </div>
             </div>
@@ -583,32 +536,22 @@ export default function AdminDashboard() {
               <div className="card animate-slide-up" style={{ margin: 0, display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#fff5f5", borderColor: "#fecaca", animationDelay: '0.8s' }}>
                 <h3 style={{ fontSize: "16px", marginBottom: "12px", color: "#b91c1c", display: "flex", alignItems: "center", gap: "8px" }}><AlertTriangle size={18} /> Active Support Tickets</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-                  <div onClick={() => { setActiveTab("Tickets"); navigate("/admin/tickets/TKT-1042"); }} style={{ cursor: "pointer", backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1042</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>John Doe</b></span>
+                  {ticketsList.filter(t => t.status !== "Resolved").slice(0, 3).length > 0 ? (
+                    ticketsList.filter(t => t.status !== "Resolved").slice(0, 3).map((ticket) => (
+                      <div key={ticket.id} onClick={() => { setActiveTab("Tickets"); setSelectedTicket(ticket); navigate(`/admin/tickets/${ticket.id}`); }} style={{ cursor: "pointer", backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>{ticket.id}</span>
+                          <span style={{ fontSize: "11px", color: "#6b7280" }}>{ticket.user || ticket.intern || "Intern"}</span>
+                        </div>
+                        <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>{ticket.title}</p>
+                        <span style={{ fontSize: "11px", color: ticket.status === "In Progress" ? "#d97706" : "#b91c1c" }}>{ticket.status} • {ticket.date || "Recent"}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ textAlign: "center", padding: "24px 10px", color: "#6b7280", fontSize: "13px" }}>
+                      No active support tickets
                     </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Environment setup failing on local machine during Docker build.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 2 hours ago</span>
-                  </div>
-                  
-                  <div onClick={() => { setActiveTab("Tickets"); navigate("/admin/tickets/TKT-1045"); }} style={{ cursor: "pointer", backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1045</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Intern: <b>Raj Patel</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Need clarification on the API structure for Week 4 assignments.</p>
-                    <span style={{ fontSize: "11px", color: "#d97706" }}>In Progress • 5 hours ago</span>
-                  </div>
-                  
-                  <div onClick={() => { setActiveTab("Tickets"); navigate("/admin/tickets/TKT-1048"); }} style={{ cursor: "pointer", backgroundColor: "var(--bg-surface, #ffffff)", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>TKT-1048</span>
-                      <span style={{ fontSize: "11px", color: "#6b7280" }}>Mentor: <b>Dr. Sakthi</b></span>
-                    </div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Unable to access GitHub repository for batch MIT-04.</p>
-                    <span style={{ fontSize: "11px", color: "#b91c1c" }}>Waiting on Support • 1 day ago</span>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1077,19 +1020,13 @@ export default function AdminDashboard() {
                           </tr>
                         ))}
                         
-                        {/* Render generated 30 days mock curriculum */}
-                        {[...Array(30)].map((_, i) => {
-                          if (curriculumList.some(c => c.domain === selectedProgramDomain && c.day.toLowerCase() === `day ${i+1}`)) return null;
-                          
-                          return (
-                          <tr key={i}>
-                            <td style={{ width: "80px", fontWeight: "600", color: "#4b5563" }}>Day {i + 1}</td>
-                            <td><b>{i === 0 ? `Intro to ${selectedProgramDomain}` : i === 14 ? "Mid-term Assessment" : i === 29 ? "Final Project Submission" : `Advanced Concepts Part ${i}`}</b></td>
-                            <td>{i === 0 ? "Setup Guide, Documentation" : "Reading Materials, Lab Exercise"}</td>
-                            <td><span className={`badge ${i < 10 ? "badge-success" : i === 10 ? "badge-warning" : "badge-secondary"}`} style={{ fontSize: "10px" }}>{i < 10 ? "Completed" : i === 10 ? "In Progress" : "Upcoming"}</span></td>
+                        {curriculumList.filter(c => c.domain === selectedProgramDomain).length === 0 && (
+                          <tr>
+                            <td colSpan="4" style={{ textAlign: "center", padding: "24px", color: "var(--text-muted, #94a3b8)" }}>
+                              No curriculum modules uploaded for this domain yet.
+                            </td>
                           </tr>
-                          );
-                        })}
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -1579,12 +1516,18 @@ export default function AdminDashboard() {
                   Notifications
                 </div>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {mockNotifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
-                      <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted, #94a3b8)', fontSize: '13px' }}>
+                      No new notifications
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map(notif => (
+                      <div key={notif.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)', cursor: 'pointer' }}>
+                        <div style={{ fontSize: '14px', color: 'var(--text-color, #334155)', marginBottom: '4px' }}>{notif.text}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)' }}>{notif.time}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
