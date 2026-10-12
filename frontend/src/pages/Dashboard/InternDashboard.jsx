@@ -68,8 +68,32 @@ export default function InternDashboard() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(false);
-  const [internDomain, setInternDomain] = useState("General Track");
-  const [internUser, setInternUser] = useState(null);
+  const [internUser, setInternUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch (e) {
+      return null;
+    }
+  });
+  const [internDomain, setInternDomain] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("user") || "{}");
+      return u.domain_name || "Frontend";
+    } catch (e) {
+      return "Frontend";
+    }
+  });
+  const [mentorInfo, setMentorInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("user") || "{}");
+      return {
+        id: u.mentor_id || 2,
+        name: u.mentor_name || "Dr. Sakthi"
+      };
+    } catch (e) {
+      return { id: 2, name: "Dr. Sakthi" };
+    }
+  });
 
   const [notifications, setNotifications] = useState([]);
 
@@ -82,6 +106,12 @@ export default function InternDashboard() {
           if (profileRes.data.domain_name) {
             setInternDomain(profileRes.data.domain_name);
           }
+          if (profileRes.data.mentor_id) {
+            setMentorInfo({
+              id: profileRes.data.mentor_id,
+              name: profileRes.data.mentor_name || "Assigned Mentor"
+            });
+          }
         }
       } catch (err) {
         console.warn("Failed to fetch user profile:", err);
@@ -91,6 +121,12 @@ export default function InternDashboard() {
             const parsedUser = JSON.parse(storedUser);
             setInternUser(parsedUser);
             if (parsedUser.domain_name) setInternDomain(parsedUser.domain_name);
+            if (parsedUser.mentor_id) {
+              setMentorInfo({
+                id: parsedUser.mentor_id,
+                name: parsedUser.mentor_name || "Assigned Mentor"
+              });
+            }
           } catch (e) {}
         }
       }
@@ -238,7 +274,7 @@ export default function InternDashboard() {
         "Hyperparameter tuning (GridSearch, RandomSearch, Bayesian) optimizes model evaluation metrics."
       ];
     }
-    if (d.includes("data science")) {
+    if (d.includes("data science") || (d.includes("data") && !d.includes("full"))) {
       return [
         "Data Science combines statistics, data analysis, and machine learning to extract insights from structured/unstructured data.",
         "Exploratory Data Analysis (EDA) identifies data distributions, anomalies, patterns, and relationships.",
@@ -292,6 +328,20 @@ export default function InternDashboard() {
         "Figma and Penpot enable collaborative real-time interface design and interactive prototyping.",
         "Accessibility (a11y) design standards ensure visual interfaces are usable for users with visual impairments.",
         "Responsive UI design adapts layout grids fluidly across mobile, tablet, and desktop screens."
+      ];
+    }
+    if (d.includes("full") || d.includes("stack")) {
+      return [
+        "Full-Stack development bridges client-side user interfaces with scalable server architectures and databases.",
+        "RESTful API design follows standard HTTP verbs, status codes, and stateless request cycles.",
+        "Database normalization eliminates data redundancy while maintaining referential integrity across schemas.",
+        "Containerization with Docker ensures application environment consistency across dev and production.",
+        "State management tools synchronize complex asynchronous client states with remote backend databases.",
+        "Authentication patterns like JWT and OAuth secure stateless communication across microservices.",
+        "Middleware functions intercept, validate, authenticate, and transform requests before endpoint execution.",
+        "Object-Relational Mappers (ORMs) abstract database queries into typed object models and schema migrations.",
+        "CI/CD pipelines automate testing, static analysis, bundle compression, and container deployments.",
+        "End-to-end performance optimization requires CDN caching, query indexing, lazy loading, and asset minification."
       ];
     }
     return [
@@ -571,11 +621,11 @@ export default function InternDashboard() {
 
     const topicName = curriculumData[day - 1]?.topic || `Day ${day} Concepts`;
     setMcqQuestionsList([
-      { id: 1, text: `What is the primary objective of ${topicName}?`, options: [{ label: "A. Build core architecture & understand modular flow", val: "A" }, { label: "B. Legacy code deletion without testing", val: "B" }] },
-      { id: 2, text: `Which engineering practice is recommended for ${topicName}?`, options: [{ label: "A. Comprehensive validation & error handling", val: "A" }, { label: "B. Skipping boundary conditions", val: "B" }] },
-      { id: 3, text: `How does ${topicName} improve system scalability?`, options: [{ label: "A. Optimizing execution and decoupled components", val: "A" }, { label: "B. Introducing unhandled exceptions", val: "B" }] },
-      { id: 4, text: `What is a key consideration when testing ${topicName}?`, options: [{ label: "A. Validating expected parameters and output structure", val: "A" }, { label: "B. Deleting unit tests", val: "B" }] },
-      { id: 5, text: `Which component plays a vital role in ${topicName}?`, options: [{ label: "A. Core state processor & execution engine", val: "A" }, { label: "B. Unused static variables", val: "B" }] }
+      { id: 1, text: `What is the primary objective of ${topicName}?`, options: [{ label: "A. Build core architecture & understand modular flow", val: "A" }, { label: "B. Legacy code deletion without testing", val: "B" }], correct_answer: "A" },
+      { id: 2, text: `Which engineering practice is recommended for ${topicName}?`, options: [{ label: "A. Comprehensive validation & error handling", val: "A" }, { label: "B. Skipping boundary conditions", val: "B" }], correct_answer: "A" },
+      { id: 3, text: `How does ${topicName} improve system scalability?`, options: [{ label: "A. Optimizing execution and decoupled components", val: "A" }, { label: "B. Introducing unhandled exceptions", val: "B" }], correct_answer: "A" },
+      { id: 4, text: `What is a key consideration when testing ${topicName}?`, options: [{ label: "A. Validating expected parameters and output structure", val: "A" }, { label: "B. Deleting unit tests", val: "B" }], correct_answer: "A" },
+      { id: 5, text: `Which component plays a vital role in ${topicName}?`, options: [{ label: "A. Core state processor & execution engine", val: "A" }, { label: "B. Unused static variables", val: "B" }], correct_answer: "A" }
     ]);
   };
 
@@ -600,28 +650,65 @@ export default function InternDashboard() {
   const [evaluating, setEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
 
-  // Persistent Chat message state
-  const [chatMessages, setChatMessages] = useState(() => {
-    const saved = localStorage.getItem("app_intern_mentor_chat");
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
-    return [];
-  });
+  // Live 1-on-1 Chat message state
+  const [chatMessages, setChatMessages] = useState([]);
   const [inputMsg, setInputMsg] = useState("");
 
-  const handleSendMessage = (e) => {
+  const fetchChatMessages = async (targetMentorId) => {
+    const mId = targetMentorId || mentorInfo?.id || 2;
+    try {
+      const res = await api.get(`/api/v1/messages?contact_id=${mId}`);
+      if (Array.isArray(res.data)) {
+        const formatted = res.data.map(m => ({
+          id: m.id,
+          sender: m.sender_id === internUser?.id ? "You" : (mentorInfo?.name || "Mentor"),
+          text: m.content,
+          time: m.sent_at ? new Date(m.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"
+        }));
+        setChatMessages(formatted);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch messages from API:", err);
+    }
+  };
+
+  useEffect(() => {
+    let interval;
+    if (activeTab === "Chat with Mentor") {
+      fetchChatMessages();
+      interval = setInterval(() => {
+        fetchChatMessages();
+      }, 3500);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [activeTab, mentorInfo?.id, internUser?.id]);
+
+  const handleSendMessage = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!inputMsg.trim()) return;
-    const newMsg = {
+    const textToSend = inputMsg.trim();
+    setInputMsg("");
+
+    const targetMentorId = mentorInfo?.id || 2;
+    // Optimistic UI update
+    const optimisticMsg = {
       sender: "You",
-      text: inputMsg.trim(),
+      text: textToSend,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
-    const updated = [...chatMessages, newMsg];
-    setChatMessages(updated);
-    localStorage.setItem("app_intern_mentor_chat", JSON.stringify(updated));
-    setInputMsg("");
+    setChatMessages(prev => [...prev, optimisticMsg]);
+
+    try {
+      await api.post('/api/v1/messages', {
+        receiver_id: targetMentorId,
+        content: textToSend
+      });
+      fetchChatMessages(targetMentorId);
+    } catch (err) {
+      console.error("Failed to post message to backend:", err);
+    }
   };
 
   const handleDownloadNotes = (title, type) => {
@@ -729,9 +816,26 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
 
   const handleMcqSubmit = async () => {
     setMcqSubmitted(true);
-    const totalQ = mcqQuestionsList.length || 10;
-    const answeredCount = Object.keys(answers).length;
-    const score = Math.min(100, Math.round((answeredCount / totalQ) * 100));
+    const totalQ = mcqQuestionsList.length || 1;
+    let correctCount = 0;
+
+    mcqQuestionsList.forEach((q) => {
+      const userAnswer = answers[q.id];
+      const correct = q.correct_answer !== undefined ? q.correct_answer : (q.answer !== undefined ? q.answer : "A");
+
+      if (userAnswer !== undefined && userAnswer !== null) {
+        if (typeof correct === "number") {
+          const optKeys = ["A", "B", "C", "D"];
+          if (String(userAnswer).toUpperCase() === optKeys[correct] || Number(userAnswer) === correct) {
+            correctCount++;
+          }
+        } else if (String(userAnswer).trim().toUpperCase() === String(correct).trim().toUpperCase()) {
+          correctCount++;
+        }
+      }
+    });
+
+    const score = Math.min(100, Math.round((correctCount / totalQ) * 100));
     setMcqGrade(score);
     setMcqDone(true);
 
@@ -744,14 +848,14 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
         mcq_score: score,
         code_submission: code || "// MCQ Completed",
         ai_score: 80,
-        ai_feedback: "MCQ Part A completed."
+        ai_feedback: `MCQ Part A completed. Correct: ${correctCount}/${totalQ}.`
       });
       fetchDashboardData();
     } catch (e) {
       console.warn("Failed to persist MCQ submission to backend:", e);
     }
 
-    alert(`MCQ Test submitted! Score: ${score}%. Part A completed.`);
+    alert(`MCQ Test submitted!\nCorrect Answers: ${correctCount} / ${totalQ}\nScore: ${score}%. Part A completed.`);
     navigate("/intern/learning/assessment");
   };
 
@@ -2230,10 +2334,10 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
             {/* Professional Chat Header */}
             <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--bg-surface-elevated, #0f172a)", borderBottom: "1px solid var(--border-color)", borderRadius: "12px 12px 0 0" }}>
               <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
-                DS
+                {(mentorInfo?.name || "Dr. Sakthi").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-primary, #ffffff)", fontWeight: 600 }}>Dr. Sakthi</h3>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-primary, #ffffff)", fontWeight: 600 }}>{mentorInfo?.name || "Dr. Sakthi"}</h3>
                 <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #94a3b8)" }}>Mentor • Online</p>
               </div>
             </div>
@@ -3302,7 +3406,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
               display: "inline-block",
               marginBottom: "24px"
             }}>
-              FRONTEND
+              {internDomain || "General Track"}
             </span>
             <div style={{
               padding: "20px 18px",

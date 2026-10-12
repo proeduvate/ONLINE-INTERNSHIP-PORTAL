@@ -223,6 +223,47 @@ export default function MentorDashboard() {
   const [chatMessages, setChatMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedInternForChat, setSelectedInternForChat] = useState(null);
+  const [mentorUser, setMentorUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const fetchMentorChatMessages = async (internId) => {
+    if (!internId) return;
+    try {
+      const res = await api.get(`/api/v1/messages?contact_id=${internId}`);
+      if (Array.isArray(res.data)) {
+        const formatted = res.data.map(m => ({
+          id: m.id,
+          sender: m.sender_id === mentorUser?.id ? "You" : (selectedInternForChat?.name || "Intern"),
+          text: m.content,
+          time: m.sent_at ? new Date(m.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"
+        }));
+        setChatMessages(formatted);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor chat:", err);
+    }
+  };
+
+  useEffect(() => {
+    let interval;
+    if (selectedInternForChat && selectedInternForChat.id) {
+      fetchMentorChatMessages(selectedInternForChat.id);
+      interval = setInterval(() => {
+        fetchMentorChatMessages(selectedInternForChat.id);
+      }, 3500);
+    } else {
+      setChatMessages([]);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [selectedInternForChat, mentorUser?.id]);
+
   const [mentorTickets, setMentorTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketReply, setTicketReply] = useState("");
@@ -237,6 +278,15 @@ export default function MentorDashboard() {
   });
 
   const fetchMentorLiveData = async () => {
+    try {
+      const profileRes = await api.get('/api/v1/users/profile');
+      if (profileRes.data) {
+        setMentorUser(profileRes.data);
+      }
+    } catch (err) {
+      console.warn("Error fetching mentor profile:", err);
+    }
+
     try {
       const statsRes = await api.get('/api/v1/mentor/dashboard');
       if (statsRes.data) {
@@ -469,11 +519,28 @@ export default function MentorDashboard() {
     window.location.href = "/login";
   };
 
-  const handleSendChatMessage = (e) => {
+  const handleSendChatMessage = async (e) => {
     e.preventDefault();
-    if (!currentMessage.trim()) return;
-    setChatMessages([...chatMessages, { sender: "You", text: currentMessage, time: "Just now" }]);
+    if (!currentMessage.trim() || !selectedInternForChat?.id) return;
+    const textToSend = currentMessage.trim();
     setCurrentMessage("");
+
+    // Optimistic UI update
+    setChatMessages(prev => [...prev, {
+      sender: "You",
+      text: textToSend,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
+
+    try {
+      await api.post('/api/v1/messages', {
+        receiver_id: selectedInternForChat.id,
+        content: textToSend
+      });
+      fetchMentorChatMessages(selectedInternForChat.id);
+    } catch (err) {
+      console.error("Failed to send message from mentor:", err);
+    }
   };
 
   const handleReviewSubmission = async (id, action, score, feedback) => {
@@ -745,7 +812,7 @@ export default function MentorDashboard() {
                           <span style={{ fontSize: "11px", color: "#6b7280" }}>{intern.batch || "Batch A"}</span>
                         </div>
                         <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#475569" }}>{intern.reason}</p>
-                        <button onClick={() => setSelectedInternForChat(intern.name)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
+                        <button onClick={() => setSelectedInternForChat(intern)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "11px", color: "#dc2626", borderColor: "#fca5a5", width: "100%", marginTop: "6px" }}>Send Message</button>
                       </div>
                     ))
                   ) : (
@@ -822,7 +889,7 @@ export default function MentorDashboard() {
                         <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{i.weakAreas}</td>
                         <td>
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button onClick={() => setSelectedInternForChat(i.name)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
+                            <button onClick={() => setSelectedInternForChat(i)} className="btn btn-secondary" style={{ padding: "4px 8px", fontSize: "12px" }}>
                               Chat
                             </button>
                             <button 
@@ -2322,7 +2389,7 @@ export default function MentorDashboard() {
           <div style={{ padding: "12px 16px", backgroundColor: "var(--text-primary, #1e293b)", color: "var(--bg-surface, #ffffff)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <div style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></div>
-              Chat with {selectedInternForChat}
+              Chat with {selectedInternForChat?.name || "Intern"}
             </div>
             <button onClick={() => setSelectedInternForChat(null)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", display: "flex", alignItems: "center" }}><X size={16} /></button>
           </div>

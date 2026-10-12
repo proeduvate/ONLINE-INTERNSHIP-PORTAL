@@ -696,7 +696,9 @@ def create_submission(
                     correct += 1
             mcq_score = int((correct / len(questions)) * 100) if questions else 0
         except Exception:
-            mcq_score = 0
+            mcq_score = data.mcq_score if data.mcq_score is not None else 0
+    elif data.mcq_score is not None:
+        mcq_score = data.mcq_score
             
     # Save code to filesystem
     file_name = None
@@ -993,12 +995,28 @@ def send_message(
             detail="Restriction violation: Interns cannot message other interns"
         )
         
-    # Check if intern is messaging their assigned mentor, or mentor messaging their assigned intern
-    if current_user.role == models.UserRole.INTERN and receiver.id != current_user.mentor_id:
-        raise HTTPException(
-            status_code=403, 
-            detail="Access Denied: Interns can only message their assigned mentor"
-        )
+    # Check if intern is messaging their assigned mentor, or mentor messaging an intern
+    if current_user.role == models.UserRole.INTERN:
+        if receiver.role != models.UserRole.MENTOR:
+            raise HTTPException(
+                status_code=403, 
+                detail="Access Denied: Interns can only message a mentor"
+            )
+        # Auto-link mentor if not set
+        if not current_user.mentor_id:
+            current_user.mentor_id = receiver.id
+            db.commit()
+            db.refresh(current_user)
+
+    if current_user.role == models.UserRole.MENTOR:
+        if receiver.role != models.UserRole.INTERN:
+            raise HTTPException(
+                status_code=400,
+                detail="Mentors can only direct message interns"
+            )
+        if not receiver.mentor_id:
+            receiver.mentor_id = current_user.id
+            db.commit()
         
     new_msg = models.Message(
         sender_id=current_user.id,
@@ -1023,12 +1041,15 @@ def get_messages(
         raise HTTPException(status_code=404, detail="Contact user not found")
 
     if current_user.role == models.UserRole.INTERN:
-        if contact_id != current_user.mentor_id:
-            raise HTTPException(status_code=403, detail="Access Denied: Interns may only retrieve messages with their assigned mentor")
+        if contact_user.role != models.UserRole.MENTOR:
+            raise HTTPException(status_code=403, detail="Access Denied: Interns may only retrieve messages with a mentor")
+        if not current_user.mentor_id:
+            current_user.mentor_id = contact_user.id
+            db.commit()
 
     if current_user.role == models.UserRole.MENTOR:
-        if contact_user.role != models.UserRole.INTERN or contact_user.mentor_id != current_user.id:
-            raise HTTPException(status_code=403, detail="Access Denied: Mentors may only retrieve messages with assigned interns")
+        if contact_user.role != models.UserRole.INTERN:
+            raise HTTPException(status_code=403, detail="Access Denied: Mentors may only retrieve messages with interns")
 
     # Fetch messages between current_user and contact_id
     messages = db.query(models.Message).filter(
