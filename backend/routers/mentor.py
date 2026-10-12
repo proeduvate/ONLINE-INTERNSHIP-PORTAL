@@ -23,10 +23,16 @@ class MeetingCreate(BaseModel):
     title: str
     time: str
 
+def check_mentor_or_admin(current_user: models.User):
+    if not current_user or not current_user.role:
+        raise HTTPException(status_code=403, detail="Authentication required")
+    role_str = str(current_user.role.value if hasattr(current_user.role, "value") else current_user.role).lower()
+    if role_str not in ["mentor", "admin", "userrole.mentor", "userrole.admin"]:
+        raise HTTPException(status_code=403, detail="Only mentors and admins can perform this action")
+
 @router.get("/dashboard")
 def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
+    check_mentor_or_admin(current_user)
 
     # Assigned Interns count
     interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
@@ -82,8 +88,7 @@ def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User
 
 @router.get("/interns")
 def get_mentor_interns(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
+    check_mentor_or_admin(current_user)
 
     interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
     if not interns:
@@ -318,8 +323,7 @@ def get_intern_details(intern_identifier: str, db: Session = Depends(get_db), cu
 
 @router.get("/submissions")
 def get_mentor_submissions(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
+    check_mentor_or_admin(current_user)
 
     interns = db.query(models.User).filter(models.User.mentor_id == current_user.id).all()
     if not interns:
@@ -356,8 +360,7 @@ def get_mentor_submissions(db: Session = Depends(get_db), current_user: models.U
 
 @router.put("/submissions/{submission_id}/review")
 def review_submission(submission_id: int, review: ReviewUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can review submissions")
+    check_mentor_or_admin(current_user)
 
     submission = db.query(models.Submission).filter(models.Submission.id == submission_id).first()
     if not submission:
@@ -372,10 +375,13 @@ def review_submission(submission_id: int, review: ReviewUpdate, db: Session = De
 
 @router.get("/meetings")
 def get_mentor_meetings(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can access this endpoint")
+    check_mentor_or_admin(current_user)
 
-    meetings = db.query(models.Meeting).filter(models.Meeting.mentor_id == current_user.id).all()
+    role_str = str(current_user.role.value if hasattr(current_user.role, "value") else current_user.role).lower()
+    if role_str in ["admin", "userrole.admin"]:
+        meetings = db.query(models.Meeting).all()
+    else:
+        meetings = db.query(models.Meeting).filter(models.Meeting.mentor_id == current_user.id).all()
     result = []
     for m in meetings:
         time_str = m.created_at.strftime("%b %d, %I:%M %p") if m.created_at else "Upcoming"
@@ -390,8 +396,7 @@ def get_mentor_meetings(db: Session = Depends(get_db), current_user: models.User
 
 @router.post("/meetings")
 def create_mentor_meeting(meeting: MeetingCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can create meetings")
+    check_mentor_or_admin(current_user)
 
     import uuid
     room_code = str(uuid.uuid4())[:8]
@@ -415,15 +420,15 @@ def create_mentor_meeting(meeting: MeetingCreate, db: Session = Depends(get_db),
 
 @router.put("/interns/{intern_id}/mentor-evaluation")
 def update_mentor_evaluation(intern_id: int, eval_data: MentorEvaluationUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can submit final evaluations")
+    check_mentor_or_admin(current_user)
+    role_str = str(current_user.role.value if hasattr(current_user.role, "value") else current_user.role).lower()
 
     intern = db.query(models.User).filter(models.User.id == intern_id, models.User.role == models.UserRole.INTERN).first()
     if not intern:
         raise HTTPException(status_code=404, detail="Intern not found")
         
-    # Check if mentor is authorized (optional, assuming they are if they have the ID)
-    if intern.mentor_id != current_user.id:
+    # Check if mentor is authorized (admins can evaluate any intern)
+    if role_str not in ["admin", "userrole.admin"] and intern.mentor_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to evaluate this intern")
         
     evaluation = db.query(models.FinalEvaluation).filter(models.FinalEvaluation.intern_id == intern.id).first()

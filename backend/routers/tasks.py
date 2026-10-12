@@ -26,13 +26,14 @@ except ImportError:
 
 SIGNALING_ROOMS: Dict[str, Dict[str, Any]] = {}
 
+sandbox_run_submission = None
 try:
-    from sandbox_runner import run_submission as sandbox_run_submission
+    import importlib.util
+    if importlib.util.find_spec("sandbox_runner") is not None:
+        import sandbox_runner  # type: ignore
+        sandbox_run_submission = getattr(sandbox_runner, "run_submission", None)
 except Exception:
-    try:
-        from .sandbox_runner import run_submission as sandbox_run_submission
-    except Exception:
-        sandbox_run_submission = None
+    sandbox_run_submission = None
 
 router = APIRouter(prefix="", tags=["Tasks"])
 

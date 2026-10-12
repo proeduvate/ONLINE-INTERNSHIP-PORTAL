@@ -149,8 +149,8 @@ export default function Login() {
               </button>
             </div>
 
-            <Button type="submit" variant="primary" style={{ width: '100%', padding: '12px', fontSize: '16px' }}>
-              Sign In
+            <Button type="submit" variant="primary" disabled={loading} style={{ width: '100%', padding: '12px', fontSize: '16px' }}>
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
         </CardContent>

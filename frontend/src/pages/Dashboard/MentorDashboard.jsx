@@ -566,7 +566,7 @@ export default function MentorDashboard() {
       alert("Meeting created in live database!");
     } catch (err) {
       console.error("Failed to create meeting:", err);
-      alert("Failed to create meeting.");
+      alert(err.response?.data?.detail || "Failed to create meeting.");
     }
   };
 

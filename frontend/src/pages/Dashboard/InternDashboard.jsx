@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, BookOpen, Activity, Ticket, MessageSquare, Gift, LogOut, Menu, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, Target, Lock, Calendar, FileText, AlertTriangle, Check, CheckCheck, Flag, Maximize2, X, PartyPopper, ShieldAlert, Tag, Book, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, HelpCircle, Rocket, Bot } from "lucide-react";
+import { LayoutDashboard, BookOpen, Ticket, Gift, LogOut, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, CheckCircle2, Target, Lock, Calendar, FileText, Check, CheckCheck, Flag, PartyPopper, ShieldAlert, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
 import DailyScenario from "../../components/ui/DailyScenario";
 import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
-import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "../../components/ui/Button";
-import { Card, CardHeader, CardContent } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
@@ -58,13 +56,12 @@ export default function InternDashboard() {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, activeTab]);
 
   const [activeLearningTab, setActiveLearningTab] = useState("Reading Materials");
   const [theme, setTheme] = useState("light");
-  const [trackerOpen, setTrackerOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [showCertificateView, setShowCertificateView] = useState(false);
   const [isInternshipCompleted, setIsInternshipCompleted] = useState(false);
@@ -220,6 +217,7 @@ export default function InternDashboard() {
     fetchAirdrops();
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let timer;
     if (showAirdropModal && airdropTimeLeft > 0) {
@@ -358,6 +356,7 @@ export default function InternDashboard() {
     ];
   })();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // 1. Auto-show modal once per day upon login / first visit
     const todayStr = new Date().toDateString();
@@ -644,7 +643,6 @@ export default function InternDashboard() {
 
   // Coding task state
   const [code, setCode] = useState("function sum(a, b) {\n  // write code\n}");
-  const [filesData, setFilesData] = useState(null);
   const [language, setLanguage] = useState("javascript");
 
   const [evaluating, setEvaluating] = useState(false);
@@ -672,6 +670,7 @@ export default function InternDashboard() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let interval;
     if (activeTab === "Chat with Mentor") {
@@ -765,6 +764,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
     URL.revokeObjectURL(url);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
@@ -807,6 +807,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
     }
   }, [location.pathname, ticketsData]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (currentDay) {
       loadDayAssessments(currentDay);
@@ -3072,6 +3073,8 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
         );
       case "Profile":
         return <InternProfile />;
+      default:
+        return null;
     }
   };
 

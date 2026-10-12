@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area } from "recharts";
-import { LayoutDashboard, Users, BookOpen, Award, Bell, Search, Filter, ClipboardCheck, LifeBuoy, Gift, TrendingUp, Medal, LogOut, Menu, AlertTriangle, Calendar, GraduationCap, FileText, Receipt, CheckCircle2, MessageSquare, Target, BarChart3, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import { LayoutDashboard, Users, Bell, Search, TrendingUp, LogOut, AlertTriangle, Calendar, GraduationCap, ShieldCheck, LineChart, UserPlus, Layers, Headset, Coins, ListOrdered, User, X } from "lucide-react";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminAirdropDetails from "./AdminAirdropDetails";
 import AdminLeaderboard from "./AdminLeaderboard";
 import AdminProfile from "./AdminProfile";
 import AdminOnboardingList from "../../features/onboarding/admin/AdminOnboardingList";
 import AdminOnboardingDetails from "../../features/onboarding/admin/AdminOnboardingDetails";
-import { PageContainer } from "../../components/layout/PageContainer";
-import { Button } from "../../components/ui/Button";
 import api from "../../api/axios";
 import "../../styles/Dashboard.css";
 
@@ -35,6 +33,7 @@ export default function AdminDashboard() {
   
   const [activeTab, setActiveTab] = useState(initialTabFromUrl);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
@@ -45,7 +44,6 @@ export default function AdminDashboard() {
     }
   }, [location.pathname, activeTab]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
@@ -273,37 +271,20 @@ export default function AdminDashboard() {
   };
 
   const [usersList, setUsersList] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [curriculumList, setCurriculumList] = useState([]);
-  const [meetings, setMeetings] = useState([]);
+  const [tasks] = useState([]);
+  const [curriculumList] = useState([]);
 
   // Compute live domain distribution chart data directly from users database
   const domainData = availableDomains.map(d => ({
     name: d.name,
     value: usersList.filter(u => u.role === "Intern" && u.domain && u.domain.toLowerCase().includes(d.name.toLowerCase())).length
   }));
-  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#6366f1"];
 
   // Form inputs
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: "Intern", college: "", domain: "", mentor: "" });
   const [showMentorModal, setShowMentorModal] = useState(false);
   const [newMentor, setNewMentor] = useState({ name: "", email: "", domain: "" });
-  const [newTask, setNewTask] = useState({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
-  const [newCurriculum, setNewCurriculum] = useState({ day: "", topic: "", resources: "", domain: "Web Development" });
-  const [newMeeting, setNewMeeting] = useState({ title: "", time: "", mentor: "", link: "" });
-  
-  // Onboarding state
-  const [onboardingSubTab, setOnboardingSubTab] = useState("Resume");
-  const [onboardingCandidates, setOnboardingCandidates] = useState([
-    { id: "C001", name: "Alice Smith", domain: "Data Science", stage: "Resume", resumeLink: "#" },
-    { id: "C002", name: "Bob Jones", domain: "Web Development", stage: "Interview", resumeLink: "#" },
-    { id: "C003", name: "Charlie Brown", domain: "Cyber Security", stage: "Payment", resumeLink: "#" }
-  ]);
-  const [viewedDocs, setViewedDocs] = useState({});
-  const [activeDocument, setActiveDocument] = useState(null);
 
   // Programs sub-tab state
-  const [programsSubTab, setProgramsSubTab] = useState("Domains");
   const [selectedProgramDomain, setSelectedProgramDomain] = useState(null);
   const [detailSubTab, setDetailSubTab] = useState("Curriculum");
   const [showDomainModal, setShowDomainModal] = useState(false);
@@ -322,6 +303,7 @@ export default function AdminDashboard() {
   const [ticketReply, setTicketReply] = useState("");
   const [assignMentorId, setAssignMentorId] = useState("");
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const parts = location.pathname.split('/');
     if (parts.length > 2 && parts[2]) {
@@ -448,90 +430,8 @@ export default function AdminDashboard() {
   };
 
 
-  const handleAddUser = (e) => {
-    e.preventDefault();
-    if (!newUser.name) return alert("Please specify user name.");
-    const roleIdPrefix = newUser.role === "Intern" ? "INT" : "MNT";
-    const randomId = roleIdPrefix + Math.floor(100 + Math.random() * 900);
-    const added = {
-      id: randomId,
-      name: newUser.name,
-      role: newUser.role,
-      college: newUser.role === "Intern" ? newUser.college || "N/A" : "-",
-      domain: newUser.domain || "General",
-      mentor: newUser.role === "Intern" ? newUser.mentor || "Unassigned" : "-",
-      progress: newUser.role === "Intern" ? "0%" : "-",
-      attendance: "100%",
-      status: "Active"
-    };
-    setUsersList([...usersList, added]);
-    alert("User added successfully!");
-  };
-
-  const handleCreateTask = (e) => {
-    e.preventDefault();
-    if (!newTask.title) return alert("Please specify task title.");
-    const created = {
-      id: tasks.length + 1,
-      title: newTask.title,
-      difficulty: newTask.difficulty,
-      deadline: newTask.deadline || "TBD",
-      domain: selectedProgramDomain || newTask.domain || "General",
-      status: "Active"
-    };
-    setTasks([...tasks, created]);
-    alert("New task created and assigned successfully!");
-    setNewTask({ title: "", description: "", difficulty: "Medium", deadline: "", domain: "" });
-  };
-
-  const handleUploadCurriculum = (e) => {
-    e.preventDefault();
-    if (!newCurriculum.day || !newCurriculum.topic) return alert("Fill day & topic.");
-    setCurriculumList([...curriculumList, newCurriculum]);
-    alert("Curriculum content uploaded!");
-    setNewCurriculum({ day: "", topic: "", resources: "", domain: "Web Development" });
-  };
-
-  const handleScheduleMeeting = (e) => {
-    e.preventDefault();
-    if (!newMeeting.title) return alert("Enter meeting title.");
-    const scheduled = {
-      id: meetings.length + 1,
-      title: newMeeting.title,
-      time: newMeeting.time || "Immediate",
-      mentor: newMeeting.mentor || "Dr. Sakthi",
-      link: newMeeting.link || "https://zoom.us/mock"
-    };
-    setMeetings([...meetings, scheduled]);
-    alert("Meeting scheduled!");
-    setNewMeeting({ title: "", time: "", mentor: "", link: "" });
-  };
-
   const toggleUserStatus = (id) => {
     setUsersList(usersList.map(u => u.id === id ? { ...u, status: u.status === "Active" ? "Deactivated" : "Active" } : u));
-  };
-
-  const moveCandidateStage = (id, newStage) => {
-    setOnboardingCandidates(onboardingCandidates.map(c => c.id === id ? { ...c, stage: newStage } : c));
-  };
-
-  const enrollCandidate = (id) => {
-    const candidate = onboardingCandidates.find(c => c.id === id);
-    if (!candidate) return;
-    const newIntern = {
-      id: "INT" + Math.floor(100 + Math.random() * 900),
-      name: candidate.name,
-      role: "Intern",
-      college: "N/A",
-      domain: candidate.domain,
-      mentor: "Unassigned",
-      progress: "0%",
-      attendance: "100%",
-      status: "Active"
-    };
-    setUsersList([...usersList, newIntern]);
-    setOnboardingCandidates(onboardingCandidates.filter(c => c.id !== id));
-    alert(`${candidate.name} has been enrolled successfully!`);
   };
 
   const handleAddDomain = async (e) => {
@@ -551,8 +451,6 @@ export default function AdminDashboard() {
       alert("Failed to add domain: " + (err.response?.data?.detail || err.message));
     }
   };
-
-  const filteredUsers = usersList.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.domain.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const progressData = dashboardStats.batch_progress && dashboardStats.batch_progress.length > 0
     ? dashboardStats.batch_progress
