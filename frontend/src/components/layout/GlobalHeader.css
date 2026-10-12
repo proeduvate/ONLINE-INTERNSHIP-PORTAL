@@ -60,6 +60,19 @@
   user-select: none;
 }
 
+.hs-brand-logo {
+  height: 34px;
+  max-width: 170px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.hs-nav-brand:hover .hs-brand-logo {
+  transform: scale(1.03);
+}
+
 .hs-brand-badge {
   width: 32px;
   height: 32px;

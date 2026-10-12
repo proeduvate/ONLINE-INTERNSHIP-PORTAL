@@ -1600,10 +1600,12 @@ export default function AdminDashboard() {
         boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
       }}>
         {/* Brand Logo & Portal Tag */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--primary-color, #2563eb)", letterSpacing: "-0.5px" }}>
-            ProEduvate
-          </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }} onClick={() => setActiveTab("Dashboard")}>
+          <img 
+            src="/Horizontal Logo SVG File-png.png" 
+            alt="ProEduvate Logo" 
+            style={{ height: "32px", width: "auto", objectFit: "contain" }} 
+          />
           <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#fef3c7", color: "#b45309", padding: "4px 10px", borderRadius: "12px" }}>
             Admin Panel
           </span>

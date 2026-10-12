@@ -40,8 +40,11 @@ export const GlobalHeader = () => {
       <div className="hs-nav-capsule">
         {/* Brand */}
         <div className="hs-nav-brand" onClick={() => navigate(userRole ? `/${userRole}` : '/')}>
-          <div className="hs-brand-badge">P</div>
-          <span className="hs-brand-name">ProEduvate</span>
+          <img 
+            src="/Horizontal Logo SVG File-png.png" 
+            alt="ProEduvate Logo" 
+            className="hs-brand-logo" 
+          />
         </div>
 
         {/* Streamlined Monolithic Nav Pills */}

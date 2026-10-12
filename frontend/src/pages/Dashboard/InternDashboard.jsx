@@ -3009,23 +3009,15 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
         boxShadow: "0 1px 4px rgba(0,0,0,0.03)"
       }}>
         {/* Brand Logo & Tagline */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => setActiveTab("Overview")}>
-          <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 10px rgba(37, 99, 235, 0.25)" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"/>
-              <path d="M9 12H4.5s.55-3.03 2-4.5c.78-.78 2.07-.79 2.91-.09"/>
-              <path d="M15 15v4.5s-3.03-.55-4.5-2c-.78-.78-.79-2.07-.09-2.91"/>
-            </svg>
-          </div>
-          <div>
-            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "var(--text-primary, #1e3a8a)", letterSpacing: "-0.5px", lineHeight: "1" }}>
-              ProEduvate
-            </h2>
-            <span style={{ fontSize: "10.5px", fontWeight: 600, color: "var(--text-muted, #64748b)", letterSpacing: "0.2px", display: "block", marginTop: "2px" }}>
-              people, projects and potential
-            </span>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }} onClick={() => setActiveTab("Overview")}>
+          <img 
+            src="/Horizontal Logo SVG File-png.png" 
+            alt="ProEduvate Logo" 
+            style={{ height: "32px", width: "auto", objectFit: "contain" }} 
+          />
+          <span style={{ fontSize: "12px", fontWeight: 600, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "4px 10px", borderRadius: "12px" }}>
+            Intern Portal
+          </span>
         </div>
 
         {/* Header Navigation Bar (Exact Original Modules & Workflow) */}
