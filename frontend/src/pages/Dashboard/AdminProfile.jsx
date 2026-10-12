@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { User, Shield, Bell, Camera, Mail, Building2, Phone, Briefcase, Smartphone, Save, CheckCircle, AlertCircle } from "lucide-react";
+import { User, Shield, Bell, Camera, Mail, Building2, Phone, Briefcase, Save, CheckCircle, AlertCircle } from "lucide-react";
 import api from "../../api/axios";
 
 const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%23eff6ff'/><circle cx='32' cy='24' r='12' fill='%233b82f6'/><path d='M12 52c0-11 9-20 20-20s20 9 20 20' fill='%233b82f6'/></svg>";
@@ -408,20 +408,6 @@ export default function AdminProfile() {
                   </button>
                 </div>
               </form>
-            </div>
-
-            <div style={{ background: "var(--surface-blue, #EFF7FF)", borderRadius: "16px", border: "1px solid #e2e8f0", padding: "32px", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <div>
-                  <h4 style={{ margin: "0 0 4px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #0f172a)" }}>Two-Factor Authentication</h4>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #64748b)" }}>Add an extra layer of security to your account.</p>
-                </div>
-                <Smartphone size={24} color="#64748b" />
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <span style={{ fontSize: "0.9rem", color: "#64748b", fontWeight: 500 }}>Status: <span style={{ color: "#ef4444", fontWeight: 700 }}>Disabled</span></span>
-                <button style={{ background: "transparent", border: "1px solid #cbd5e1", padding: "8px 16px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", cursor: "pointer" }}>Enable 2FA</button>
-              </div>
             </div>
           </div>
         )}
