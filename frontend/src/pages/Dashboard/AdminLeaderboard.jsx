@@ -34,19 +34,21 @@ export default function AdminLeaderboard({ usersList = [], isOverview = false })
   const interns = usersList.filter(user => user.role === 'Intern');
 
   const batches = useMemo(() => {
-    const uniqueBatches = new Set(interns.map(i => i.batch || i.college).filter(Boolean));
+    const listBatches = interns.map(i => i.batch || i.college).filter(Boolean);
+    const apiBatches = apiLeaderboard.map(i => i.college || i.batch).filter(Boolean);
+    const uniqueBatches = new Set([...listBatches, ...apiBatches]);
     return ['All Batches', ...Array.from(uniqueBatches)];
-  }, [interns]);
+  }, [interns, apiLeaderboard]);
 
   const leaderboardData = useMemo(() => {
     if (apiLeaderboard.length > 0) {
       let data = apiLeaderboard.map((entry, idx) => ({
         id: entry.intern_id || `INT-${entry.user_id}`,
-        name: entry.name,
-        college: entry.college || "-",
+        name: entry.name || entry.user_name || "Intern",
+        college: entry.college || entry.batch || "-",
         domain: entry.domain || "-",
-        totalPoints: entry.points || 0,
-        rank: idx + 1
+        totalPoints: entry.points !== undefined && entry.points !== null ? entry.points : (entry.total_points || 0),
+        rank: entry.rank || (idx + 1)
       }));
       if (batchFilter !== 'All Batches') {
         data = data.filter(i => i.college === batchFilter);

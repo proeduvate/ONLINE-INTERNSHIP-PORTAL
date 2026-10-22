@@ -8,8 +8,12 @@ try:
     from app.db.session import SessionLocal
     from app import models
 except ImportError:
-    from .database import SessionLocal
-    from . from app import models
+    try:
+        from .database import SessionLocal
+        from . import models
+    except ImportError:
+        from database import SessionLocal
+        import models
 
 BASE = "http://127.0.0.1:8000"
 

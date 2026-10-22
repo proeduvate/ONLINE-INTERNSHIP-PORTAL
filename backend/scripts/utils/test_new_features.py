@@ -4,9 +4,14 @@ try:
     from app import models
     from app.db import session as database
 except ImportError:
-    from . import app
-    from . from app import models
-    from . from app.db import session as database
+    try:
+        from . import app
+        from . import models
+        from .database import session as database
+    except ImportError:
+        import app
+        import models
+        import database
 
 
 class FeatureLogicTests(unittest.TestCase):

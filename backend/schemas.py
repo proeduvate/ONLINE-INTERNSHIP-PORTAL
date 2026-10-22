@@ -6,6 +6,7 @@ from enum import Enum
 from datetime import datetime
 import json
 
+
 # Role alignment matching the model
 class UserRole(str, Enum):
     ADMIN = "admin"
@@ -13,9 +14,11 @@ class UserRole(str, Enum):
     INTERN = "intern"
     RECRUITER = "recruiter"
 
+
 # ==========================================
 #        USER / AUTHENTICATION SCHEMAS
 # ==========================================
+
 
 class UserCreate(BaseModel):
     name: str
@@ -23,9 +26,11 @@ class UserCreate(BaseModel):
     password: str
     role: UserRole = UserRole.INTERN
 
+
 class UserLoginSchema(BaseModel):
     email: EmailStr
     password: str
+
 
 class UserOnboard(BaseModel):
     name: str
@@ -36,7 +41,8 @@ class UserOnboard(BaseModel):
     domain_id: Optional[int] = None
     mentor_id: Optional[int] = None
     start_date: Optional[str] = None  # format YYYY-MM-DD
-    end_date: Optional[str] = None    # format YYYY-MM-DD
+    end_date: Optional[str] = None  # format YYYY-MM-DD
+
 
 class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
@@ -44,6 +50,7 @@ class UserProfileUpdate(BaseModel):
     phone: Optional[str] = None
     avatar_url: Optional[str] = None
     password: Optional[str] = None
+
 
 class UserResponse(BaseModel):
     id: int
@@ -69,6 +76,7 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class MentorCreateRequest(BaseModel):
     name: str
     email: EmailStr
@@ -80,9 +88,11 @@ class MentorCreateRequest(BaseModel):
 #           DOMAIN SCHEMAS
 # ==========================================
 
+
 class DomainCreate(BaseModel):
     name: str
     description: Optional[str] = None
+
 
 class DomainResponse(BaseModel):
     id: int
@@ -92,9 +102,11 @@ class DomainResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #           TASK SCHEMAS
 # ==========================================
+
 
 class TaskCreate(BaseModel):
     domain_id: int
@@ -105,11 +117,12 @@ class TaskCreate(BaseModel):
     document_url: Optional[str] = None
     notes: Optional[str] = None
     resources: Optional[str] = None
-    mcq_questions: Optional[str] = None   # JSON string
+    mcq_questions: Optional[str] = None  # JSON string
     coding_prompt: Optional[str] = None
     coding_solution: Optional[str] = None
-    test_cases: Optional[str] = None       # JSON string
+    test_cases: Optional[str] = None  # JSON string
     deadline_days: Optional[int] = 1
+
 
 class TaskResponse(BaseModel):
     id: int
@@ -129,24 +142,28 @@ class TaskResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #           SUBMISSION SCHEMAS
 # ==========================================
+
 
 class SubmissionCreate(BaseModel):
     task_id: Any
     code_submission: Optional[str] = None
     code: Optional[str] = None
-    mcq_answers: Optional[str] = None   # JSON string representing answers
+    mcq_answers: Optional[str] = None  # JSON string representing answers
     language: Optional[str] = None
     filename: Optional[str] = None
     mcq_score: Optional[int] = None
     ai_score: Optional[int] = None
     ai_feedback: Optional[str] = None
 
+
 class SubmissionEvaluate(BaseModel):
     mentor_score: int
     mentor_feedback: str
+
 
 class SubmissionResponse(BaseModel):
     id: int
@@ -166,11 +183,13 @@ class SubmissionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class CodeExecutionRequest(BaseModel):
     task_id: Any
     code_submission: Optional[str] = None
     code: Optional[str] = None
     language: Optional[str] = None
+
 
 class CodeExecutionResponse(BaseModel):
     task_id: int
@@ -187,14 +206,17 @@ class CodeExecutionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #           MESSAGE SCHEMAS
 # ==========================================
+
 
 class MessageCreate(BaseModel):
     receiver_id: int
     content: str
     file_url: Optional[str] = None
+
 
 class MessageResponse(BaseModel):
     id: int
@@ -207,16 +229,20 @@ class MessageResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #     MEETING & BREAKOUT ROOM SCHEMAS
 # ==========================================
+
 
 class BreakoutRoomBase(BaseModel):
     title: str
     max_participants: Optional[int] = 10
 
+
 class BreakoutRoomCreate(BreakoutRoomBase):
     meeting_id: int
+
 
 class BreakoutRoomResponse(BreakoutRoomBase):
     id: int
@@ -227,6 +253,7 @@ class BreakoutRoomResponse(BreakoutRoomBase):
 
     class Config:
         from_attributes = True
+
 
 class MeetingBase(BaseModel):
     title: str
@@ -239,6 +266,7 @@ class MeetingBase(BaseModel):
 class MeetingCreate(MeetingBase):
     pass
 
+
 class MeetingResponse(MeetingBase):
     id: int
     mentor_id: int
@@ -250,9 +278,11 @@ class MeetingResponse(MeetingBase):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #           CERTIFICATE SCHEMAS
 # ==========================================
+
 
 class CertificateResponse(BaseModel):
     id: int
@@ -264,6 +294,7 @@ class CertificateResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class CertificateInfoResponse(BaseModel):
     generated: bool
@@ -277,6 +308,7 @@ class CertificateInfoResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class AttendanceLogResponse(BaseModel):
     id: int
     intern_id: int
@@ -287,10 +319,12 @@ class AttendanceLogResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class AnnouncementCreate(BaseModel):
     title: str
     content: str
     target_role: Optional[str] = "all"
+
 
 class AnnouncementResponse(BaseModel):
     id: int
@@ -303,15 +337,18 @@ class AnnouncementResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #        NOTIFICATION SCHEMAS
 # ==========================================
+
 
 class NotificationCreate(BaseModel):
     user_id: int
     title: str
     message: str
     type: str
+
 
 class NotificationResponse(BaseModel):
     id: int
@@ -324,6 +361,7 @@ class NotificationResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class PortfolioResponse(BaseModel):
     user_id: int
@@ -341,9 +379,11 @@ class PortfolioResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 #     INTERNSHIP / APPLICATION SCHEMAS
 # ==========================================
+
 
 class InternshipCreate(BaseModel):
     title: str
@@ -352,10 +392,12 @@ class InternshipCreate(BaseModel):
     location: str
     stipend: Optional[str] = None
 
+
 class ApplicationCreate(BaseModel):
     internship_id: int
     user_id: int
     resume_url: Optional[str] = None
+
 
 class OnboardingApplicationCreate(BaseModel):
     name: str
@@ -368,18 +410,24 @@ class OnboardingApplicationCreate(BaseModel):
     domain: str
     resume_url: Optional[str] = None
 
+
 # ==========================================
 #     BONUS AIRDROP & DAILY SCENARIOS
 # ==========================================
 
-class Config:
-        from_attributes = True
 
 class Config:
-        from_attributes = True
+    from_attributes = True
+
+
+class Config:
+    from_attributes = True
+
+
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+
 
 class BonusAirdropBase(BaseModel):
     title: str
@@ -387,25 +435,30 @@ class BonusAirdropBase(BaseModel):
     claim_code: Optional[str] = None
     is_active: Optional[bool] = True
 
+
 class Config:
-        from_attributes = True
+    from_attributes = True
+
 
 class DailyScenarioBase(BaseModel):
     title: str
     description: str
 
+
 class Config:
-        from_attributes = True
+    from_attributes = True
 
 
 # --- CERTIFICATES ---
 from datetime import datetime
+
 
 class CertificateRequest(BaseModel):
     duration: str
     achievement: Optional[str] = None
     grade: Optional[str] = None
     final_score: Optional[int] = None
+
 
 class CertificateResponse(BaseModel):
     id: int
@@ -419,7 +472,7 @@ class CertificateResponse(BaseModel):
     pdf_path: Optional[str] = None
     issued_date: Optional[datetime] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -428,9 +481,11 @@ class SimulationChoice(BaseModel):
     id: str
     text: str
 
+
 class SimulationDecision(BaseModel):
     scenario_id: str
     choice_id: str
+
 
 class SimulationDecisionResponse(BaseModel):
     selected_choice: str
@@ -439,6 +494,7 @@ class SimulationDecisionResponse(BaseModel):
     consequence: str
     next_scenario: Optional[str] = None
     day_completed: bool
+
 
 class SimulationScenarioResponse(BaseModel):
     day: int
@@ -460,6 +516,7 @@ class SimulationScenarioResponse(BaseModel):
 #    ENUMS
 # ==========================================
 
+
 class TaskType(str, Enum):
     MCQ = "mcq"
     PATTERN = "pattern"
@@ -469,9 +526,11 @@ class TaskType(str, Enum):
     ARRANGE = "arrange"
     CODE_OUTPUT_MCQ = "code_output_mcq"
 
+
 class StartMode(str, Enum):
     FIXED = "fixed"
     FLEXIBLE = "flexible"
+
 
 class AirdropStatus(str, Enum):
     DRAFT = "DRAFT"
@@ -480,39 +539,48 @@ class AirdropStatus(str, Enum):
     PUBLISHED = "PUBLISHED"
     FINALIZED = "FINALIZED"
 
+
 class AirdropAction(str, Enum):
     START = "start"
     SUBMIT = "submit"
 
+
 # ==========================================
 #    TASK CONFIG SCHEMAS (For JSON validation)
 # ==========================================
+
 
 class McqConfig(BaseModel):
     question: str
     options: List[str]
     correct_answer: str
 
+
 class PatternConfig(BaseModel):
     question: str
     correct_answer: str
+
 
 class TrueFalseConfig(BaseModel):
     statement: str
     correct_answer: bool
 
+
 class MatchConfig(BaseModel):
     pairs: Dict[str, str]
+
 
 class ArrangeConfig(BaseModel):
     items: List[str]
     correct_order: List[str]
+
 
 class CodeOutputMcqConfig(BaseModel):
     language: str
     code: str
     options: List[str]
     correct_answer: str
+
 
 # Helper to validate incoming config based on task type
 # In practice, this can be handled via Pydantic Discriminated Unions if needed,
@@ -522,16 +590,17 @@ class CodeOutputMcqConfig(BaseModel):
 #    API SCHEMAS
 # ==========================================
 
+
 class AirdropCreate(BaseModel):
     title: str = Field(..., description="Title of the airdrop")
     description: Optional[str] = Field(None, description="Description")
-    
+
     task_type: TaskType = Field(..., description="Type of task")
     task_config: Dict[str, Any] = Field(..., description="JSON config for the task")
-    
+
     domain: Optional[str] = Field(None, description="Domain filter")
     batch_id: Optional[int] = Field(None, description="Batch filter")
-    
+
     start_mode: StartMode = Field(..., description="fixed or flexible")
     time_limit: int = Field(..., description="Duration in seconds")
     start_time: Optional[datetime] = Field(None, description="Required for fixed start")
@@ -539,9 +608,11 @@ class AirdropCreate(BaseModel):
     points_distribution: str = Field(..., description="Comma separated points (e.g. 100,50,25)")
     winner_count: int = Field(..., description="Number of exact winners")
 
+
 class AirdropPatchRequest(BaseModel):
     action: AirdropAction = Field(..., description="Action to perform (start or submit)")
     answer: Optional[Any] = Field(None, description="Submitted answer")
+
 
 class AirdropAttemptResponse(BaseModel):
     id: int
@@ -553,9 +624,10 @@ class AirdropAttemptResponse(BaseModel):
     completed_at_ist: Optional[str] = None
     is_correct: Optional[bool]
     status: str
-    
+
     class Config:
         from_attributes = True
+
 
 class AirdropResultResponse(BaseModel):
     id: int
@@ -566,16 +638,17 @@ class AirdropResultResponse(BaseModel):
     completion_time: Optional[int]
     bonus_points: int
     is_winner: bool
-    
+
     class Config:
         from_attributes = True
+
 
 class AirdropResponse(BaseModel):
     id: int
     title: str
     description: Optional[str] = None
     task_type: str
-    task_config: Dict[str, Any] # Will be converted from string automatically in router
+    task_config: Dict[str, Any]  # Will be converted from string automatically in router
     domain: Optional[str] = None
     batch_id: Optional[int] = None
     start_mode: str
@@ -590,13 +663,14 @@ class AirdropResponse(BaseModel):
     published_at: Optional[datetime] = None
     finalized_at: Optional[datetime] = None
     created_at: datetime
-    
+
     # Nested data
     attempts: List[AirdropAttemptResponse] = []
     results: List[AirdropResultResponse] = []
-    
+
     class Config:
         from_attributes = True
+
 
 # ==========================================
 # Appended from analytics.py
@@ -611,8 +685,10 @@ Pydantic schemas for Daily Question Analytics module.
 #    DAILY QUESTION RESULT SCHEMAS
 # ==========================================
 
+
 class DailyQuestionResultCreate(BaseModel):
     """Schema for recording a daily question result."""
+
     question_id: int
     mcq_score: float = Field(..., ge=0, le=100, description="MCQ score obtained (0-100)")
     coding_score: float = Field(..., ge=0, le=100, description="Coding score obtained (0-100)")
@@ -621,6 +697,7 @@ class DailyQuestionResultCreate(BaseModel):
 
 class DailyQuestionResultResponse(BaseModel):
     """Schema for a single daily question result record."""
+
     id: int
     intern_id: int
     question_id: int
@@ -638,8 +715,10 @@ class DailyQuestionResultResponse(BaseModel):
 #    DAILY ANALYTICS RESPONSE SCHEMAS
 # ==========================================
 
+
 class DailyMarksDataPoint(BaseModel):
     """A single data point for the daily marks line chart."""
+
     date: dt.date
     mcq_score: float
     coding_score: float
@@ -649,7 +728,6 @@ class DailyMarksDataPoint(BaseModel):
 # ==========================================
 # Appended from auth.py
 # ==========================================
-
 
 
 # ==========================================
@@ -667,9 +745,11 @@ class DomainFactResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class FactCompletedResponse(BaseModel):
     message: str
     completed: bool
+
 
 # ==========================================
 # Appended from leaderboard.py
@@ -680,17 +760,21 @@ class LeaderboardEntry(BaseModel):
     rank: int
     user_id: int
     user_name: str
+    name: Optional[str] = None
+    intern_id: Optional[str] = None
     batch: Optional[str] = None
+    college: Optional[str] = None
     domain: Optional[str] = None
     total_points: int
+    points: Optional[int] = None
 
     class Config:
         from_attributes = True
 
+
 # ==========================================
 # Appended from meeting.py
 # ==========================================
-
 
 
 # ==========================================
@@ -707,8 +791,6 @@ Pydantic schemas for the Ticket / Support System module.
 # ==========================================
 
 
-
-
 class TicketStatusSchema(str, Enum):
     OPEN = "open"
     ASSIGNED = "assigned"
@@ -721,12 +803,15 @@ class TicketStatusSchema(str, Enum):
 #    TICKET CREATE / UPDATE SCHEMAS
 # ==========================================
 
+
 class TicketCreate(BaseModel):
     """Schema for creating a new support ticket."""
+
     title: str = Field(..., min_length=1, max_length=200, description="Brief summary of the issue")
     description: str = Field(..., min_length=1, description="Detailed description of the issue")
-    domain: Optional[str] = Field("General", min_length=1, max_length=100, description="Domain of the issue")
-
+    domain: Optional[str] = Field(
+        "General", min_length=1, max_length=100, description="Domain of the issue"
+    )
 
 
 class TicketAction(str, Enum):
@@ -735,19 +820,26 @@ class TicketAction(str, Enum):
     RESOLVE = "resolve"
     CLOSE = "close"
 
+
 class TicketPatchRequest(BaseModel):
     """Unified schema for updating a ticket (assign, message, resolve, close)."""
+
     action: TicketAction = Field(..., description="The action to perform on the ticket")
-    
+
     # Fields used depending on the action:
-    assigned_to: Optional[int] = Field(None, description="User ID to assign the ticket to (for action='assign')")
+    assigned_to: Optional[int] = Field(
+        None, description="User ID to assign the ticket to (for action='assign')"
+    )
     message: Optional[str] = Field(None, description="Message content (for action='message')")
     resolution: Optional[str] = Field(None, description="Resolution details (for action='resolve')")
-    closure_reason: Optional[str] = Field(None, description="Reason for closure (for action='close')")
+    closure_reason: Optional[str] = Field(
+        None, description="Reason for closure (for action='close')"
+    )
 
 
 class TicketMessageResponse(BaseModel):
     """Schema for a ticket message in responses."""
+
     id: int
     ticket_id: int
     sender_id: int
@@ -764,8 +856,10 @@ class TicketMessageResponse(BaseModel):
 #    TICKET RESPONSE SCHEMAS
 # ==========================================
 
+
 class TicketResponse(BaseModel):
     """Schema for a ticket in list responses."""
+
     id: int
     created_by: int
     creator_name: Optional[str] = None
@@ -780,15 +874,15 @@ class TicketResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     date: Optional[str] = None
-    
+
     resolved_by: Optional[int] = None
     resolved_at: Optional[datetime] = None
     resolution: Optional[str] = None
-    
+
     closed_by: Optional[int] = None
     closed_at: Optional[datetime] = None
     closure_reason: Optional[str] = None
-    
+
     messages: List[TicketMessageResponse] = []
     comments: Optional[List[dict]] = []
 
@@ -798,6 +892,7 @@ class TicketResponse(BaseModel):
 
 class TicketHistoryResponse(BaseModel):
     """Schema for ticket history."""
+
     id: int
     ticket_id: int
     actor_id: int
@@ -819,7 +914,7 @@ class TicketHistoryResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ==========================================
 # Appended from user.py
 # ==========================================
-

@@ -2,7 +2,10 @@ from sqlalchemy.orm import Session
 try:
     from app.db import session as database, models, app
 except ImportError:
-    from . from app.db import session as database, models, app
+    try:
+        from . import database, models, app
+    except ImportError:
+        import database, models, app
 import json
 from datetime import datetime, timedelta
 

@@ -3,8 +3,12 @@ try:
     from app import execute_code_submission
     from app import models, database
 except ImportError:
-    from .app import execute_code_submission
-    from . from app import models, database
+    try:
+        from .app import execute_code_submission
+        from . import models, database
+    except ImportError:
+        from app import execute_code_submission
+        import models, database
 
 class SandboxRunnerTest(unittest.TestCase):
     def test_simple_print(self):
