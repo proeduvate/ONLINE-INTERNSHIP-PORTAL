@@ -1,0 +1,67 @@
+{
+    "day": 3,
+    "topic": "Operators & Expressions",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D3-Q001",
+            "title": "Arithmetic Calculator",
+            "description": "Create a calculator using arithmetic operators.",
+            "requirements": [
+                "Support addition",
+                "Support subtraction",
+                "Support multiplication",
+                "Support division",
+                "Handle division by zero"
+            ]
+        },
+        {
+            "id": "CODE-PY-D3-Q002",
+            "title": "Even or Odd Checker",
+            "description": "Check whether a number is even or odd.",
+            "requirements": [
+                "Accept a number",
+                "Use modulus operator",
+                "Print 'Even' or 'Odd'",
+                "Handle negative numbers",
+                "Use if-else statement"
+            ]
+        },
+        {
+            "id": "CODE-PY-D3-Q003",
+            "title": "Marks Percentage Calculator",
+            "description": "Calculate total, average and percentage of five subject marks.",
+            "requirements": [
+                "Accept five subject marks",
+                "Calculate total",
+                "Calculate average",
+                "Calculate percentage",
+                "Display all three results"
+            ]
+        },
+        {
+            "id": "CODE-PY-D3-Q004",
+            "title": "Student Marks Comparison",
+            "description": "Compare the marks of two students and determine who scored higher.",
+            "requirements": [
+                "Accept marks for Student A",
+                "Accept marks for Student B",
+                "Use relational operators",
+                "Print the winner",
+                "Handle equal marks case"
+            ]
+        },
+        {
+            "id": "CODE-PY-D3-Q005",
+            "title": "Internship Eligibility Checker",
+            "description": "Create an internship eligibility checker using relational and logical operators.",
+            "requirements": [
+                "Check minimum percentage (60%)",
+                "Check attendance (75%)",
+                "Use logical AND operator",
+                "Print eligibility result",
+                "Give specific failure reason"
+            ]
+        }
+    ]
+}

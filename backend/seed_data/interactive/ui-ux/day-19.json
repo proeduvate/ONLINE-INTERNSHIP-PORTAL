@@ -1,0 +1,190 @@
+{
+  "curriculum": "UI/UX",
+  "day": 19,
+  "topic": "Design Critique, Heuristic Evaluation, and UX Improvement",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Apply usability heuristics to evaluate interface designs.",
+    "Identify usability problems and explain their underlying causes.",
+    "Propose evidence-based improvements to interface experiences."
+  ],
+  "activities": [
+    {
+      "id": "d19-a1",
+      "type": "discover",
+      "title": "Heuristic Anatomy",
+      "instruction": "Explore the key principles used in heuristic evaluation.",
+      "content": {
+        "concept": "Heuristic evaluation uses established usability principles to identify potential interface problems systematically.",
+        "tip": "Select each heuristic to see the type of problem it helps identify."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            {
+              "label": "Visibility of System Status",
+              "description": "Keep users informed about what the system is doing."
+            },
+            {
+              "label": "Match Between System and Real World",
+              "description": "Use language and concepts familiar to users."
+            },
+            {
+              "label": "User Control and Freedom",
+              "description": "Provide ways to undo, cancel, or recover from actions."
+            },
+            {
+              "label": "Consistency and Standards",
+              "description": "Use familiar patterns and consistent terminology."
+            },
+            {
+              "label": "Error Prevention",
+              "description": "Prevent mistakes before they happen whenever possible."
+            },
+            {
+              "label": "Recognition Rather Than Recall",
+              "description": "Make options and information visible so users do not have to remember them."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Heuristic Matcher",
+      "instruction": "Match each interface problem to the heuristic it violates.",
+      "content": {
+        "concept": "Common usability principles address visibility, consistency, error prevention, user control, recognition, and simplicity.",
+        "tip": "Focus on the underlying usability problem rather than the visual appearance."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "pairs": [
+            {
+              "prompt": "The system gives no indication that a file upload is still processing.",
+              "answer": "Visibility of System Status"
+            },
+            {
+              "prompt": "The same action is labeled 'Save' on one page and 'Store' on another.",
+              "answer": "Consistency and Standards"
+            },
+            {
+              "prompt": "A destructive action occurs immediately with no cancel or undo option.",
+              "answer": "User Control and Freedom"
+            },
+            {
+              "prompt": "The form accepts invalid data and reports the problem only after submission.",
+              "answer": "Error Prevention"
+            },
+            {
+              "prompt": "Users must remember a product code from a previous screen.",
+              "answer": "Recognition Rather Than Recall"
+            }
+          ],
+          "choices": [
+            "Visibility of System Status",
+            "Consistency and Standards",
+            "User Control and Freedom",
+            "Error Prevention",
+            "Recognition Rather Than Recall"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Design Critique Lab",
+      "instruction": "Identify the primary usability issue and explain why it affects the user.",
+      "content": {
+        "concept": "A useful critique describes the observed problem, its user impact, and a possible improvement rather than focusing only on personal preference.",
+        "tip": "Base your critique on observable behavior and user impact."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "scenarios": [
+            {
+              "question": "A checkout page has three buttons: 'Continue', 'Proceed', and 'Next', all leading to different actions.",
+              "options": [
+                "Unclear action hierarchy",
+                "Good consistency",
+                "Helpful feedback"
+              ],
+              "correctAnswer": "Unclear action hierarchy",
+              "explanation": "Similar labels for different actions make it harder to predict outcomes."
+            },
+            {
+              "question": "A loading screen provides no indication of progress during a long upload.",
+              "options": [
+                "Poor visibility of system status",
+                "Strong error prevention",
+                "Good recognition"
+              ],
+              "correctAnswer": "Poor visibility of system status",
+              "explanation": "Users need feedback about ongoing operations."
+            },
+            {
+              "question": "A delete button appears next to a save button with no confirmation.",
+              "options": [
+                "Risky destructive interaction",
+                "Good consistency",
+                "Progressive disclosure"
+              ],
+              "correctAnswer": "Risky destructive interaction",
+              "explanation": "Destructive actions should reduce the chance of accidental activation."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Improvement Builder",
+      "instruction": "Assemble an improvement that directly addresses the identified usability issue.",
+      "content": {
+        "concept": "Design improvements should connect directly to observed user problems and preserve important user goals and constraints.",
+        "tip": "Choose improvements that solve the actual problem rather than adding unrelated visual changes."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "items": [
+            "Observed Problem",
+            "User Impact",
+            "Design Change",
+            "Expected Improvement",
+            "Validation Method"
+          ],
+          "correctOrder": [
+            "Observed Problem",
+            "User Impact",
+            "Design Change",
+            "Expected Improvement",
+            "Validation Method"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-19.json",
+  "practicalTaskRef": "practical-day-19.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

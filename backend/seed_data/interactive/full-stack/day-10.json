@@ -1,0 +1,128 @@
+{
+  "curriculum": "Full Stack",
+  "day": 10,
+  "topic": "React Routing, Forms, and API Integration",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create multi-page navigation using client-side routing concepts.",
+    "Build controlled forms and manage form submissions.",
+    "Connect React interfaces to backend APIs and display responses."
+  ],
+  "activities": [
+    {
+      "id": "d10-a1",
+      "type": "discover",
+      "title": "Routing Architecture",
+      "instruction": "Click each route to see how it maps to a React view.",
+      "content": {
+        "concept": "Client-side routing maps URL paths to React components and allows navigation between views without performing a complete browser page reload.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "route-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "/",
+            "/about",
+            "/dashboard",
+            "/profile"
+          ],
+          "descriptions": [
+            "Maps to the application's home page.",
+            "Maps to an About component or page.",
+            "Maps to a dashboard view.",
+            "Maps to a profile view."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d10-a2",
+      "type": "discover",
+      "title": "Controlled Form Builder",
+      "instruction": "Build the flow of a controlled React form.",
+      "content": {
+        "concept": "A controlled input gets its current value from React state and updates that state when the user changes the input.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "controlled-form",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Create form state",
+            "Bind input value to state",
+            "Handle input change",
+            "Update state",
+            "Handle form submission"
+          ],
+          "required": [
+            "Create form state",
+            "Bind input value to state",
+            "Handle input change",
+            "Update state",
+            "Handle form submission"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d10-a3",
+      "type": "discover",
+      "title": "API Integration Flow",
+      "instruction": "Arrange the steps of a React API request and response cycle.",
+      "content": {
+        "concept": "Frontend API integration typically involves sending a request, waiting for the response, processing the returned data, updating state, and rendering the result.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "api-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Trigger API request",
+            "2. Send request to backend",
+            "3. Receive API response",
+            "4. Parse response data",
+            "5. Update React state",
+            "6. Render the result"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d10-a4",
+      "type": "discover",
+      "title": "Response State Explorer",
+      "instruction": "Choose the appropriate UI state for each API situation.",
+      "content": {
+        "concept": "A robust API-connected interface should represent loading, successful responses, validation failures, and server errors appropriately.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "response-state",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Request is still running → Show a loading state",
+            "Request is still running → Show the final data immediately"
+          ],
+          "answer": "Request is still running → Show a loading state"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-10.json",
+  "practicalTaskRef": "practical-day-10.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

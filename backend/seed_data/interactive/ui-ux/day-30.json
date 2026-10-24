@@ -1,0 +1,210 @@
+{
+  "curriculum": "UI/UX",
+  "day": 30,
+  "topic": "Capstone Presentation, Portfolio Case Study, and Design Documentation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Present the capstone project using a clear UX case-study structure.",
+    "Document the design process, decisions, iterations, and outcomes.",
+    "Create a portfolio-ready project narrative and future improvement roadmap."
+  ],
+  "activities": [
+    {
+      "id": "d30-a1",
+      "type": "discover",
+      "title": "Case Study Story Map",
+      "instruction": "Arrange the project stages into a clear UX case-study narrative.",
+      "content": {
+        "concept": "A UX case study connects the problem, research, design decisions, iterations, and outcome into a coherent narrative.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Project Context",
+            "2. Problem",
+            "3. Research",
+            "4. Key Insights",
+            "5. Ideation",
+            "6. Design",
+            "7. Prototype",
+            "8. Testing",
+            "9. Iteration",
+            "10. Final Outcome"
+          ],
+          "items": [
+            "Testing",
+            "Project Context",
+            "Final Outcome",
+            "Ideation",
+            "Research",
+            "Problem",
+            "Iteration",
+            "Prototype",
+            "Design",
+            "Key Insights"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a2",
+      "type": "discover",
+      "title": "Presentation Structure",
+      "instruction": "Build a concise structure for the final project presentation.",
+      "content": {
+        "concept": "A strong design presentation communicates the problem, process, solution, evidence, and key learnings clearly.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Project Context",
+            "Problem Statement",
+            "Research Evidence",
+            "Key Insights",
+            "Design Process",
+            "Final Solution",
+            "Prototype Demonstration",
+            "Testing Results",
+            "Iterations",
+            "Key Learnings",
+            "Future Improvements",
+            "Unrelated Personal Information"
+          ],
+          "correctOrder": [
+            "Project Context",
+            "Problem Statement",
+            "Research Evidence",
+            "Key Insights",
+            "Design Process",
+            "Final Solution",
+            "Prototype Demonstration",
+            "Testing Results",
+            "Iterations",
+            "Key Learnings",
+            "Future Improvements"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a3",
+      "type": "discover",
+      "title": "Portfolio Evidence Selector",
+      "instruction": "Select artifacts that demonstrate the reasoning and evolution behind the final design.",
+      "content": {
+        "concept": "Portfolio evidence should demonstrate reasoning, iteration, user-centered decisions, and the final solution.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "lab",
+        "config": {
+          "scenarios": [
+            {
+              "question": "Which artifact best demonstrates how the original problem was understood?",
+              "options": [
+                "User research findings",
+                "Final logo only",
+                "Decorative background",
+                "Personal photo"
+              ],
+              "correctAnswer": "User research findings"
+            },
+            {
+              "question": "Which artifact best demonstrates how the design evolved?",
+              "options": [
+                "Iteration screenshots",
+                "Final screenshot only",
+                "Random inspiration images",
+                "Unrelated certificates"
+              ],
+              "correctAnswer": "Iteration screenshots"
+            },
+            {
+              "question": "Which artifact best demonstrates interaction design?",
+              "options": [
+                "Interactive prototype",
+                "Color palette only",
+                "Project title",
+                "Static contact card"
+              ],
+              "correctAnswer": "Interactive prototype"
+            },
+            {
+              "question": "Which artifact provides evidence that the design was evaluated?",
+              "options": [
+                "Usability testing findings",
+                "Decorative illustrations",
+                "Final wallpaper",
+                "Unused icons"
+              ],
+              "correctAnswer": "Usability testing findings"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "d30-a4",
+      "type": "discover",
+      "title": "Future Roadmap Builder",
+      "instruction": "Connect project findings to meaningful future improvements and validation activities.",
+      "content": {
+        "concept": "A UX roadmap identifies future improvements, validation opportunities, and product extensions based on current evidence.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            {
+              "label": "Usability Finding",
+              "description": "Users struggle to discover an important feature."
+            },
+            {
+              "label": "Design Improvement",
+              "description": "Improve navigation visibility and information hierarchy."
+            },
+            {
+              "label": "Validation",
+              "description": "Run another usability test to evaluate whether discoverability improves."
+            },
+            {
+              "label": "Product Extension",
+              "description": "Consider related features only after validating the primary experience."
+            },
+            {
+              "label": "Success Metric",
+              "description": "Measure feature discovery and task completion."
+            }
+          ],
+          "connections": [
+            "Usability Finding -> Design Improvement",
+            "Design Improvement -> Validation",
+            "Validation -> Success Metric",
+            "Success Metric -> Product Extension"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-30.json",
+  "practicalTaskRef": "practical-day-30.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

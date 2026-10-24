@@ -1,0 +1,67 @@
+{
+    "day": 11,
+    "topic": "StringBuilder & StringBuffer",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D11-Q001",
+            "title": "Reverse with StringBuilder",
+            "description": "Reverse a string using StringBuilder.",
+            "requirements": [
+                "Accept a string",
+                "Use StringBuilder.reverse()",
+                "Print reversed string",
+                "Show original and reversed",
+                "Comment on difference from String"
+            ]
+        },
+        {
+            "id": "CODE-PY-D11-Q002",
+            "title": "Dynamic Student Report",
+            "description": "Create a program that dynamically constructs a student report using StringBuilder.",
+            "requirements": [
+                "Build report line by line",
+                "Use append() method",
+                "Include name, marks, grade",
+                "Display completed report",
+                "Avoid String concatenation in loop"
+            ]
+        },
+        {
+            "id": "CODE-PY-D11-Q003",
+            "title": "Insert and Delete Characters",
+            "description": "Insert and delete characters from a StringBuilder.",
+            "requirements": [
+                "Create a StringBuilder",
+                "Insert a character at a specific index",
+                "Delete a range of characters",
+                "Print result after each operation",
+                "Show original and modified versions"
+            ]
+        },
+        {
+            "id": "CODE-PY-D11-Q004",
+            "title": "String vs StringBuilder vs StringBuffer",
+            "description": "Compare String, StringBuilder and StringBuffer for a text manipulation task.",
+            "requirements": [
+                "Demonstrate String immutability",
+                "Show StringBuilder modification",
+                "Show StringBuffer thread-safe usage",
+                "Compare output of all three",
+                "Comment on performance differences"
+            ]
+        },
+        {
+            "id": "CODE-PY-D11-Q005",
+            "title": "Sentence Generator",
+            "description": "Build a sentence generator using StringBuilder.",
+            "requirements": [
+                "Accept individual words",
+                "Append words with spaces",
+                "Build a complete sentence",
+                "Display the final sentence",
+                "Support adding words dynamically"
+            ]
+        }
+    ]
+}

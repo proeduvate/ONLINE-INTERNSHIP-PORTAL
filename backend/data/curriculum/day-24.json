@@ -1,0 +1,77 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 24,
+  "topic": "JSX, Props & Component Composition",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Use props",
+    "Compose components",
+    "Pass children"
+  ],
+  "activities": [
+    {
+      "id": "d24-a01",
+      "type": "props",
+      "title": "Props Inspector",
+      "instruction": "Change props and watch the child component update.",
+      "content": {
+        "concept": "Use props",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "props"
+      }
+    },
+    {
+      "id": "d24-a02",
+      "type": "compose",
+      "title": "Composition Lab",
+      "instruction": "Add and remove nested components to build a page section.",
+      "content": {
+        "concept": "Compose components",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compose"
+      }
+    },
+    {
+      "id": "d24-a03",
+      "type": "children",
+      "title": "Children Slot",
+      "instruction": "Move content into a reusable card's children slot.",
+      "content": {
+        "concept": "Pass children",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "children"
+      }
+    },
+    {
+      "id": "d24-a04",
+      "type": "debug",
+      "title": "Props Debugger",
+      "instruction": "Fix a prop name mismatch and restore the expected UI.",
+      "content": {
+        "concept": "Use props",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "props-debug"
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-24.json",
+  "practicalTaskRef": "practical-day-24.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

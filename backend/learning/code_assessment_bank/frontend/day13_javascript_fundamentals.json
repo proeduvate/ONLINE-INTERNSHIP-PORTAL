@@ -1,0 +1,42 @@
+{
+    "day": 13,
+    "topic": "JavaScript Fundamentals",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D13-Q001",
+            "title": "Greeting Program",
+            "description": "Write JavaScript that asks for the user's name and displays a personalized greeting.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D13-Q002",
+            "title": "Simple Calculator",
+            "description": "Create a calculator supporting:",
+            "requirements": [
+                "Addition",
+                "Subtraction",
+                "Multiplication",
+                "Division"
+            ]
+        },
+        {
+            "id": "CODE-D13-Q003",
+            "title": "Temperature Converter",
+            "description": "Convert Celsius to Fahrenheit and Fahrenheit to Celsius.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D13-Q004",
+            "title": "Age Calculator",
+            "description": "Take the user's birth year and calculate their approximate age.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D13-Q005",
+            "title": "Interactive Profile",
+            "description": "Create a webpage where JavaScript dynamically displays user information entered through prompts or form inputs.",
+            "requirements": []
+        }
+    ]
+}

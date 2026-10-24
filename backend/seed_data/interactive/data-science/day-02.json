@@ -1,0 +1,128 @@
+{
+  "curriculum": "Data Science",
+  "day": 2,
+  "topic": "Python Fundamentals for Data Science",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Use Python variables and basic data types.",
+    "Apply conditional statements and loops to simple data tasks.",
+    "Identify Python structures commonly used in data science."
+  ],
+  "activities": [
+    {
+      "id": "d2-a1",
+      "type": "discover",
+      "title": "Explore Python Data Types",
+      "instruction": "Identify the Python data type represented by each example.",
+      "content": {
+        "concept": "Python provides numeric, string, boolean, and collection data types for representing and processing information.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "42 → int",
+            "3.14 → float",
+            "\"Data Science\" → str",
+            "True → bool",
+            "[10, 20, 30] → list",
+            "{\"name\": \"Alex\"} → dict"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Anatomy of a Python Variable",
+      "instruction": "Click each part of the assignment to reveal its role.",
+      "content": {
+        "concept": "A Python assignment connects a variable name with a value using the assignment operator.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "age",
+            "=",
+            "21",
+            "int"
+          ],
+          "descriptions": [
+            "The variable name used to reference the stored value.",
+            "The assignment operator that binds the value to the variable.",
+            "The value assigned to the variable.",
+            "The data type of the assigned value."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Control Flow Builder",
+      "instruction": "Build a conditional statement that classifies a score.",
+      "content": {
+        "concept": "Conditional statements allow programs to choose different actions based on whether a condition is true or false.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "if score >= 50:",
+            "    print(\"Pass\")",
+            "else:",
+            "    print(\"Fail\")"
+          ],
+          "required": [
+            "if score >= 50:",
+            "    print(\"Pass\")",
+            "else:",
+            "    print(\"Fail\")"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Loop Through Data",
+      "instruction": "Arrange the steps used to process each value in a collection.",
+      "content": {
+        "concept": "Loops repeatedly execute instructions for multiple values, making them useful for processing collections of data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create or obtain a collection",
+            "2. Start the loop",
+            "3. Take the next value",
+            "4. Execute the operation",
+            "5. Continue until all values are processed"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "curriculum": "Java",
+  "day": 3,
+  "topic": "Loops and Iteration",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Use for, while, and do-while loops for repeated operations.",
+    "Control loop execution with break and continue.",
+    "Choose an appropriate loop structure for a given problem."
+  ],
+  "activities": [
+    {
+      "id": "d3-a1",
+      "type": "discover",
+      "title": "Loop Execution Flow",
+      "instruction": "Arrange the stages of a for-loop iteration.",
+      "content": {
+        "concept": "A loop evaluates its controlling condition before or after an iteration depending on the loop type. A for loop performs initialization, checks the condition, executes the body, updates the loop variable, and repeats while the condition remains true.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "loop-execution-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Initialize the loop variable",
+            "2. Evaluate the condition",
+            "3. Execute the loop body",
+            "4. Update the loop variable",
+            "5. Evaluate the condition again"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a2",
+      "type": "discover",
+      "title": "For Loop Anatomy",
+      "instruction": "Explore the components of a Java for loop.",
+      "content": {
+        "concept": "A for loop commonly contains initialization, a boolean condition, an update expression, and a body that executes for each iteration.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "for-loop-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "int i = 0",
+            "i < 5",
+            "i++",
+            "System.out.println(i)"
+          ],
+          "descriptions": [
+            "Initializes the loop variable before the first iteration.",
+            "Determines whether another iteration should execute.",
+            "Updates the loop variable after each iteration.",
+            "The loop body executed during each iteration."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d3-a3",
+      "type": "discover",
+      "title": "Choose the Loop",
+      "instruction": "Choose the loop structure that best fits each scenario.",
+      "content": {
+        "concept": "Use for when iteration is naturally controlled by a counter or known range, while when repetition depends on a condition, and do-while when the body must execute at least once.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "loop-selection",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "for",
+            "while",
+            "do-while"
+          ],
+          "answer": "for"
+        }
+      }
+    },
+    {
+      "id": "d3-a4",
+      "type": "discover",
+      "title": "Iteration Controller",
+      "instruction": "Change the loop limit and observe how the number of iterations changes.",
+      "content": {
+        "concept": "Changing the loop condition or update expression changes the number of iterations. A loop such as for (int i = 1; i <= n; i++) executes n times when n is positive.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "iteration-controller",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 10,
+          "default": 5
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-3.json",
+  "practicalTaskRef": "practical-day-3.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

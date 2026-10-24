@@ -1,0 +1,135 @@
+{
+  "curriculum": "Python",
+  "day": 2,
+  "topic": "Input, Output, and Conditional Statements",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Read user input and display formatted output in Python.",
+    "Use if, elif, and else statements to control program decisions.",
+    "Construct conditional logic for real-world programming scenarios."
+  ],
+  "activities": [
+    {
+      "id": "d2-a1",
+      "type": "discover",
+      "title": "Input and Output Flow",
+      "instruction": "Explore how data moves from user input to program output.",
+      "content": {
+        "concept": "input() reads text from the user and returns a string. print() displays values or formatted text to the output.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "input()",
+            "Variable",
+            "Processing",
+            "print()"
+          ],
+          "descriptions": [
+            "Reads user input and returns it as a string.",
+            "Stores the received or processed value.",
+            "Applies operations or decisions to the data.",
+            "Displays the resulting value or message."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Conditional Anatomy",
+      "instruction": "Explore the parts of an if-elif-else statement.",
+      "content": {
+        "concept": "A conditional evaluates expressions and chooses which indented block should execute.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "age = 20",
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "else:",
+            "    print(\"Minor\")"
+          ],
+          "descriptions": [
+            "Stores the value that will be tested.",
+            "Evaluates a Boolean condition.",
+            "Runs when the condition is True.",
+            "Provides an alternative branch when the condition is False.",
+            "Runs when the else branch is selected."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "Decision Builder",
+      "instruction": "Build a conditional that categorizes a person's age.",
+      "content": {
+        "concept": "if handles the first condition, elif adds additional conditions, and else handles the remaining cases.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "elif age >= 13:",
+            "    print(\"Teen\")",
+            "else:",
+            "    print(\"Child\")"
+          ],
+          "required": [
+            "if age >= 18:",
+            "    print(\"Adult\")",
+            "else:"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Condition Selector",
+      "instruction": "Choose the condition that correctly represents the scenario.",
+      "content": {
+        "concept": "Comparison and logical operators create Boolean expressions that can be used to make program decisions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "age >= 18",
+            "age = 18",
+            "age + 18",
+            "age != 18"
+          ],
+          "answer": "age >= 18"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "curriculum": "Full Stack",
+  "day": 24,
+  "topic": "Figma Prototyping and Interactive UI Design",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify the core workflow for creating interfaces in Figma.",
+    "Connect interface screens into interactive prototypes.",
+    "Apply components and reusable design elements to prototype screens."
+  ],
+  "activities": [
+    {
+      "id": "d24-a1",
+      "type": "discover",
+      "title": "Figma Workspace Anatomy",
+      "instruction": "Explore the major areas of a Figma design workspace.",
+      "content": {
+        "concept": "A Figma workspace includes areas for navigating files and pages, editing the canvas, managing layers and properties, and creating prototype interactions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "figma-workspace",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Toolbar",
+            "Layers Panel",
+            "Canvas",
+            "Properties Panel",
+            "Prototype Controls"
+          ],
+          "descriptions": [
+            "Provides tools for creating and editing design objects.",
+            "Shows the hierarchy of frames, groups, components, and layers.",
+            "The main workspace where interface designs and frames are arranged.",
+            "Displays properties such as dimensions, layout, typography, fills, and effects.",
+            "Allows designers to define connections and interactions between prototype frames."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d24-a2",
+      "type": "discover",
+      "title": "Component System Builder",
+      "instruction": "Build a reusable UI component from its essential parts.",
+      "content": {
+        "concept": "Figma components allow repeated interface patterns to share a common structure and design. Variants can represent different states or properties of a component.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "component-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Base component",
+            "Component properties or variants",
+            "Consistent visual structure",
+            "Reusable instances",
+            "One-off unrelated screens"
+          ],
+          "required": [
+            "Base component",
+            "Consistent visual structure",
+            "Reusable instances"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d24-a3",
+      "type": "discover",
+      "title": "Prototype Flow",
+      "instruction": "Explore the parts required to connect screens into an interactive prototype.",
+      "content": {
+        "concept": "A prototype connects frames through user-triggered interactions. A trigger starts the interaction, an action determines what happens, and the destination identifies where the user goes when navigation is involved.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "prototype-flow",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Trigger",
+            "Action",
+            "Destination Frame",
+            "Transition"
+          ],
+          "descriptions": [
+            "The event that starts an interaction, such as clicking or tapping an element.",
+            "The behavior performed after the trigger, such as navigating or opening an overlay.",
+            "The target frame or screen reached by a navigation interaction.",
+            "Defines how the prototype visually moves from one state or frame to another."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d24-a4",
+      "type": "discover",
+      "title": "Interaction Selector",
+      "instruction": "Choose the interaction that best fits each interface behavior.",
+      "content": {
+        "concept": "Prototype interactions should represent the intended user behavior, such as navigating to another screen, opening an overlay, changing a component state, or providing feedback.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "interaction-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Tap Login → navigate to Dashboard",
+            "Tap Login → change the page title to a random color"
+          ],
+          "answer": "Tap Login → navigate to Dashboard"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-24.json",
+  "practicalTaskRef": "practical-day-24.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

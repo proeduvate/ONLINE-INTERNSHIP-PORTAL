@@ -1,0 +1,139 @@
+{
+  "curriculum": "Java",
+  "day": 17,
+  "topic": "Maven, Gradle, and Dependency Management",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain why Java projects use build and dependency management tools.",
+    "Identify the major components of a Maven or Gradle project.",
+    "Construct a basic dependency and build workflow."
+  ],
+  "activities": [
+    {
+      "id": "d17-a1",
+      "type": "discover",
+      "title": "Build Tool Concepts",
+      "instruction": "Explore what the major build-tool features do.",
+      "content": {
+        "concept": "Java build tools automate tasks such as dependency resolution, compilation, testing, packaging, and running project-specific build tasks.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Dependency Management",
+            "Compilation",
+            "Testing",
+            "Packaging",
+            "Build Configuration"
+          ],
+          "descriptions": [
+            "Resolves and makes external libraries available to the project.",
+            "Converts Java source code into compiled class files.",
+            "Runs automated tests as part of the build.",
+            "Produces distributable artifacts such as JAR files.",
+            "Defines how project tasks and plugins are executed."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a2",
+      "type": "discover",
+      "title": "Maven Project Anatomy",
+      "instruction": "Explore the important parts of a Maven project.",
+      "content": {
+        "concept": "A Maven project commonly uses pom.xml for project metadata, dependencies, plugins, and build configuration, while source and test code follow conventional directory structures.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "pom.xml",
+            "src/main/java",
+            "src/main/resources",
+            "src/test/java",
+            "target"
+          ],
+          "descriptions": [
+            "Defines project metadata, dependencies, plugins, and build configuration.",
+            "Contains the main Java source code.",
+            "Contains application resources used at runtime.",
+            "Contains Java test source code.",
+            "Commonly contains generated build output and packaged artifacts."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a3",
+      "type": "discover",
+      "title": "Dependency Builder",
+      "instruction": "Build the essential structure of a Maven dependency.",
+      "content": {
+        "concept": "A Maven dependency identifies an external library using coordinates such as groupId, artifactId, and version so Maven can resolve it for the project.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<dependency>",
+            "<groupId>org.junit.jupiter</groupId>",
+            "<artifactId>junit-jupiter</artifactId>",
+            "<version>...</version>",
+            "</dependency>",
+            "<mainClass>...</mainClass>"
+          ],
+          "required": [
+            "<dependency>",
+            "<groupId>org.junit.jupiter</groupId>",
+            "<artifactId>junit-jupiter</artifactId>",
+            "<version>...</version>",
+            "</dependency>"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d17-a4",
+      "type": "discover",
+      "title": "Build Workflow",
+      "instruction": "Arrange a typical Java build workflow.",
+      "content": {
+        "concept": "A build normally resolves dependencies, compiles source code, runs tests, and packages the application into a distributable artifact.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Resolve project dependencies",
+            "2. Compile source code",
+            "3. Run automated tests",
+            "4. Package the application",
+            "5. Verify the generated artifact"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-17.json",
+  "practicalTaskRef": "practical-day-17.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

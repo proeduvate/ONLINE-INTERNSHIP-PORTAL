@@ -1,0 +1,139 @@
+{
+  "curriculum": "Python",
+  "day": 13,
+  "topic": "Working with JSON, APIs, and HTTP Requests",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Parse and generate JSON data using Python.",
+    "Explain the basic structure of HTTP requests and responses.",
+    "Consume data from REST APIs using Python."
+  ],
+  "activities": [
+    {
+      "id": "d13-a1",
+      "type": "discover",
+      "title": "JSON Anatomy",
+      "instruction": "Explore the components of a JSON object.",
+      "content": {
+        "concept": "JSON represents structured data using objects, arrays, strings, numbers, booleans, and null values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "{",
+            "  \"name\": \"Maya\",",
+            "  \"age\": 21,",
+            "  \"skills\": [\"Python\", \"SQL\"],",
+            "  \"active\": true",
+            "}"
+          ],
+          "descriptions": [
+            "Opening brace starts a JSON object.",
+            "String key-value pair.",
+            "Numeric value associated with the age key.",
+            "Array containing multiple string values.",
+            "Boolean value representing true."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "JSON-Python Explorer",
+      "instruction": "Identify the Python type corresponding to each JSON value.",
+      "content": {
+        "concept": "Python's json module maps JSON objects to dictionaries, arrays to lists, strings to str, numbers to int or float, booleans to bool, and null to None.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "JSON object → dict",
+            "JSON array → list",
+            "JSON string → str",
+            "JSON boolean → bool",
+            "JSON null → None"
+          ],
+          "descriptions": [
+            "JSON object is represented as a Python dictionary.",
+            "JSON array is represented as a Python list.",
+            "JSON string is represented as a Python string.",
+            "JSON true/false values map to Python True/False.",
+            "JSON null maps to Python None."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "HTTP Request Flow",
+      "instruction": "Order the main steps in an API request and response.",
+      "content": {
+        "concept": "An HTTP client creates a request, sends it to a server, receives a response, and processes the returned status and data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Build the HTTP request",
+            "2. Send the request to the API",
+            "3. Receive the HTTP response",
+            "4. Check the status code",
+            "5. Parse and process the response data"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "API Request Builder",
+      "instruction": "Assemble the components of a Python API request.",
+      "content": {
+        "concept": "An API request typically contains an HTTP method and URL and may also include query parameters, headers, and a request body.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "import requests",
+            "url = \"https://api.example.com/users\"",
+            "response = requests.get(url)",
+            "response.status_code",
+            "response.json()",
+            "requests.post(url, json=data)"
+          ],
+          "required": [
+            "import requests",
+            "url = \"https://api.example.com/users\"",
+            "response = requests.get(url)",
+            "response.json()"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-13.json",
+  "practicalTaskRef": "practical-day-13.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

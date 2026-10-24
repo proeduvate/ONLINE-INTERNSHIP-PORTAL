@@ -1,0 +1,37 @@
+{
+    "day": 11,
+    "topic": "CSS Positioning & Layout",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D11-Q001",
+            "title": "Positioned Badge",
+            "description": "Create a product card with an \"SALE\" badge positioned over the image.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D11-Q002",
+            "title": "Fixed Navbar",
+            "description": "Create a navigation bar that remains visible while scrolling.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D11-Q003",
+            "title": "Sticky Sidebar",
+            "description": "Create a webpage with a sidebar that becomes sticky while scrolling.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D11-Q004",
+            "title": "Tooltip",
+            "description": "Create a tooltip using CSS positioning.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D11-Q005",
+            "title": "Layered Hero",
+            "description": "Create a hero section containing overlapping elements using position and z-index.",
+            "requirements": []
+        }
+    ]
+}

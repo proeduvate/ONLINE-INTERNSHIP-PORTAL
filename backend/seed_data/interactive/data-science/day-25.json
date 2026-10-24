@@ -1,0 +1,128 @@
+{
+  "curriculum": "Data Science",
+  "day": 25,
+  "topic": "Big Data and Distributed Data Processing",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain why distributed processing is used for large datasets.",
+    "Identify the roles of distributed storage and computation.",
+    "Construct a basic Spark-style data processing workflow."
+  ],
+  "activities": [
+    {
+      "id": "d25-a1",
+      "type": "discover",
+      "title": "Big Data Map",
+      "instruction": "Connect common big data challenges with the distributed approaches used to address them.",
+      "content": {
+        "concept": "Big data systems use distributed storage and computation to handle datasets that may be too large or complex for a single machine.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Large Data Volume",
+            "High Processing Demand",
+            "Distributed Storage",
+            "Parallel Computation",
+            "Fault Tolerance"
+          ],
+          "descriptions": [
+            "Large datasets can exceed the practical storage or processing capacity of one machine.",
+            "Complex operations may require more computing resources than one machine can provide efficiently.",
+            "Stores data across multiple machines or storage nodes.",
+            "Splits computation so multiple machines can process data concurrently.",
+            "Allows distributed systems to continue operating when individual components fail."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d25-a2",
+      "type": "discover",
+      "title": "Distributed Architecture",
+      "instruction": "Explore the main components involved in distributed data processing.",
+      "content": {
+        "concept": "Distributed data processing divides storage and computation across multiple machines coordinated as a system.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Driver",
+            "Worker Nodes",
+            "Data Partitions",
+            "Cluster Manager",
+            "Distributed Storage"
+          ],
+          "descriptions": [
+            "Coordinates the application's processing tasks.",
+            "Execute computation tasks on portions of the data.",
+            "Divide a dataset into smaller pieces that can be processed independently.",
+            "Coordinates available computing resources across the cluster.",
+            "Stores large datasets across multiple storage locations or nodes."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d25-a3",
+      "type": "discover",
+      "title": "Spark Workflow",
+      "instruction": "Arrange the stages of a basic Spark-style data processing workflow.",
+      "content": {
+        "concept": "Spark-style processing loads data, applies transformations, and executes actions to produce results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Create or Configure Spark Application",
+            "2. Load Distributed Data",
+            "3. Apply Transformations",
+            "4. Build the Processing Plan",
+            "5. Execute an Action",
+            "6. Collect or Store the Result"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d25-a4",
+      "type": "discover",
+      "title": "Partitioning Lab",
+      "instruction": "Adjust the number of partitions and observe how data is divided for parallel processing.",
+      "content": {
+        "concept": "Partitioning divides a dataset into smaller pieces so distributed workers can process portions of the data in parallel.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "partition-simulator",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 20,
+          "default": 4
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-25.json",
+  "practicalTaskRef": "practical-day-25.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

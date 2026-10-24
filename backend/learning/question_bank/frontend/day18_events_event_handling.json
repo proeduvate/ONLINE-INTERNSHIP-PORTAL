@@ -1,0 +1,557 @@
+{
+    "day": 18,
+    "topic": "Events and Event Handling",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D18-001",
+            "question": "What is the primary purpose of Events and Event Handling feature 1 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-002",
+            "question": "How do you correctly use Events and Event Handling feature 2?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-003",
+            "question": "Which of the following best describes Events and Event Handling feature 3?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-004",
+            "question": "Why is Events and Event Handling feature 4 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-005",
+            "question": "When should you avoid using Events and Event Handling feature 5?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-006",
+            "question": "What is the primary purpose of Events and Event Handling feature 6 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-007",
+            "question": "How do you correctly use Events and Event Handling feature 7?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-008",
+            "question": "Which of the following best describes Events and Event Handling feature 8?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-009",
+            "question": "Why is Events and Event Handling feature 9 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-010",
+            "question": "When should you avoid using Events and Event Handling feature 10?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-011",
+            "question": "What is the primary purpose of Events and Event Handling feature 11 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-012",
+            "question": "How do you correctly use Events and Event Handling feature 12?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-013",
+            "question": "Which of the following best describes Events and Event Handling feature 13?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-014",
+            "question": "Why is Events and Event Handling feature 14 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-015",
+            "question": "When should you avoid using Events and Event Handling feature 15?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-016",
+            "question": "What is the primary purpose of Events and Event Handling feature 16 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-017",
+            "question": "How do you correctly use Events and Event Handling feature 17?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-018",
+            "question": "Which of the following best describes Events and Event Handling feature 18?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-019",
+            "question": "Why is Events and Event Handling feature 19 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-020",
+            "question": "When should you avoid using Events and Event Handling feature 20?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-021",
+            "question": "What is the primary purpose of Events and Event Handling feature 21 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-022",
+            "question": "How do you correctly use Events and Event Handling feature 22?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-023",
+            "question": "Which of the following best describes Events and Event Handling feature 23?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-024",
+            "question": "Why is Events and Event Handling feature 24 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-025",
+            "question": "When should you avoid using Events and Event Handling feature 25?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-026",
+            "question": "What is the primary purpose of Events and Event Handling feature 26 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-027",
+            "question": "How do you correctly use Events and Event Handling feature 27?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-028",
+            "question": "Which of the following best describes Events and Event Handling feature 28?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-029",
+            "question": "Why is Events and Event Handling feature 29 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-030",
+            "question": "When should you avoid using Events and Event Handling feature 30?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-031",
+            "question": "What is the primary purpose of Events and Event Handling feature 31 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-032",
+            "question": "How do you correctly use Events and Event Handling feature 32?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-033",
+            "question": "Which of the following best describes Events and Event Handling feature 33?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-034",
+            "question": "Why is Events and Event Handling feature 34 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-035",
+            "question": "When should you avoid using Events and Event Handling feature 35?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-036",
+            "question": "What is the primary purpose of Events and Event Handling feature 36 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-037",
+            "question": "How do you correctly use Events and Event Handling feature 37?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-038",
+            "question": "Which of the following best describes Events and Event Handling feature 38?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-039",
+            "question": "Why is Events and Event Handling feature 39 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-040",
+            "question": "When should you avoid using Events and Event Handling feature 40?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-041",
+            "question": "What is the primary purpose of Events and Event Handling feature 41 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-042",
+            "question": "How do you correctly use Events and Event Handling feature 42?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-043",
+            "question": "Which of the following best describes Events and Event Handling feature 43?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-044",
+            "question": "Why is Events and Event Handling feature 44 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-045",
+            "question": "When should you avoid using Events and Event Handling feature 45?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-046",
+            "question": "What is the primary purpose of Events and Event Handling feature 46 in Events and Event Handling?",
+            "options": {
+                "A": "To implement Events and Event Handling feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-047",
+            "question": "How do you correctly use Events and Event Handling feature 47?",
+            "options": {
+                "A": "By following standard Events and Event Handling guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-048",
+            "question": "Which of the following best describes Events and Event Handling feature 48?",
+            "options": {
+                "A": "A key concept in Events and Event Handling",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-049",
+            "question": "Why is Events and Event Handling feature 49 important for Events and Event Handling?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D18-050",
+            "question": "When should you avoid using Events and Event Handling feature 50?",
+            "options": {
+                "A": "When it violates Events and Event Handling best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

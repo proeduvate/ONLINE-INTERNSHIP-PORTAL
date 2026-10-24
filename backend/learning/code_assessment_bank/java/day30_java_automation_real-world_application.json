@@ -1,0 +1,67 @@
+{
+    "day": 30,
+    "topic": "Java Automation & Real-World Application",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D30-Q001",
+            "title": "Automated File Organizer",
+            "description": "Create a Java program that scans a folder and organizes files into subfolders by type.",
+            "requirements": [
+                "Scan a given directory",
+                "Categorize: Documents, Images, Videos, Audio, Archives, Others",
+                "Move files to appropriate folders",
+                "Create folders if they don't exist",
+                "Print a summary of files organized"
+            ]
+        },
+        {
+            "id": "CODE-PY-D30-Q002",
+            "title": "Bulk File Renaming Tool",
+            "description": "Create a Java application that renames multiple files based on a user-defined naming pattern.",
+            "requirements": [
+                "Accept source folder path",
+                "Accept naming pattern (e.g., report_001.txt)",
+                "Rename all files sequentially",
+                "Handle name conflicts",
+                "Print before and after names"
+            ]
+        },
+        {
+            "id": "CODE-PY-D30-Q003",
+            "title": "Duplicate File Detector",
+            "description": "Build a program that scans a directory and identifies duplicate files.",
+            "requirements": [
+                "Scan directory recursively",
+                "Compare files by size and name (or hash)",
+                "List all duplicate file paths",
+                "Report space wasted by duplicates",
+                "Optionally delete duplicates with confirmation"
+            ]
+        },
+        {
+            "id": "CODE-PY-D30-Q004",
+            "title": "Automated Data Report Generator",
+            "description": "Read structured data from CSV/text files, process and generate a summary report.",
+            "requirements": [
+                "Read CSV with student/employee data",
+                "Parse each record",
+                "Calculate statistics (avg, max, min)",
+                "Write summary report to a new file",
+                "Display report on console too"
+            ]
+        },
+        {
+            "id": "CODE-PY-D30-Q005",
+            "title": "Complete Java Automation System",
+            "description": "Combine file organization, bulk renaming, duplicate detection, data processing and report generation into one menu-driven application.",
+            "requirements": [
+                "Menu-driven interface for all 4 features",
+                "File organization module",
+                "Bulk rename module",
+                "Duplicate detection module",
+                "Data processing and report generation module with OOP architecture, multithreading, exception handling and logging"
+            ]
+        }
+    ]
+}

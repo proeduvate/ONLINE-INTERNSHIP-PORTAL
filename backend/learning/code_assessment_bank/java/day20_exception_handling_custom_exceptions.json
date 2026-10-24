@@ -1,0 +1,67 @@
+{
+    "day": 20,
+    "topic": "Exception Handling & Custom Exceptions",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D20-Q001",
+            "title": "Division by Zero Handler",
+            "description": "Create a calculator that handles division by zero.",
+            "requirements": [
+                "Try-catch for ArithmeticException",
+                "Print user-friendly error message",
+                "Continue program after exception",
+                "Test with zero divisor",
+                "Test with valid inputs too"
+            ]
+        },
+        {
+            "id": "CODE-PY-D20-Q002",
+            "title": "Invalid Numeric Input Handler",
+            "description": "Handle invalid numeric input using exception handling.",
+            "requirements": [
+                "Use Scanner to accept input",
+                "Catch NumberFormatException",
+                "Prompt user to re-enter on error",
+                "Use try-catch with loop",
+                "Display final valid input"
+            ]
+        },
+        {
+            "id": "CODE-PY-D20-Q003",
+            "title": "Safe Array Access",
+            "description": "Create a program that safely accesses array elements.",
+            "requirements": [
+                "Declare an integer array",
+                "Access by index from user input",
+                "Catch ArrayIndexOutOfBoundsException",
+                "Print friendly error message",
+                "Show valid range on error"
+            ]
+        },
+        {
+            "id": "CODE-PY-D20-Q004",
+            "title": "Custom InvalidMarksException",
+            "description": "Create a custom InvalidMarksException.",
+            "requirements": [
+                "Create InvalidMarksException extending Exception",
+                "Add constructor with message",
+                "Throw it when marks < 0 or > 100",
+                "Catch it in main with specific message",
+                "Test with valid and invalid marks"
+            ]
+        },
+        {
+            "id": "CODE-PY-D20-Q005",
+            "title": "Student Registration System",
+            "description": "Build a student registration system using custom validation exceptions.",
+            "requirements": [
+                "Custom exceptions: InvalidAgeException, InvalidEmailException",
+                "Validate age (16-30)",
+                "Validate email format (must contain @)",
+                "Throw appropriate exceptions",
+                "Handle all exceptions in main with friendly messages"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,123 @@
+{
+  "curriculum": "Full Stack",
+  "day": 9,
+  "topic": "React Components, Props, State, and Event Handling",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Differentiate props and state in React components.",
+    "Pass data between components using props.",
+    "Manage interactive UI behavior using state and events."
+  ],
+  "activities": [
+    {
+      "id": "d9-a1",
+      "type": "discover",
+      "title": "Props vs State",
+      "instruction": "Choose which React concept best describes each data scenario.",
+      "content": {
+        "concept": "Props are values passed into a component by its parent, while state is data managed by a component that can change over time.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "props-state-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "A parent passes a username to a child component → Props",
+            "A counter changes after the user clicks a button → State"
+          ],
+          "answer": "A parent passes a username to a child component → Props"
+        }
+      }
+    },
+    {
+      "id": "d9-a2",
+      "type": "discover",
+      "title": "One-Way Data Flow Explorer",
+      "instruction": "Click each component to trace how props move through the component tree.",
+      "content": {
+        "concept": "React commonly uses one-way data flow, where data is passed from parent components to child components through props.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "data-flow",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Parent Component",
+            "Props",
+            "Child Component",
+            "Rendered UI"
+          ],
+          "descriptions": [
+            "Owns or receives the data that needs to be passed down.",
+            "Carries values from the parent to the child component.",
+            "Receives props and uses them while rendering its interface.",
+            "The visible result produced by the component."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d9-a3",
+      "type": "discover",
+      "title": "State Update Explorer",
+      "instruction": "Change the state value and observe how the UI value changes.",
+      "content": {
+        "concept": "Updating state with its setter function causes React to render the component again using the new state value.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "state-counter",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 10,
+          "default": 0
+        }
+      }
+    },
+    {
+      "id": "d9-a4",
+      "type": "discover",
+      "title": "Interactive Component Builder",
+      "instruction": "Build the flow of an interactive React component.",
+      "content": {
+        "concept": "An interactive component receives props, stores changing values in state, responds to events, and renders the updated interface.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "interactive-component",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Receive props",
+            "Create state",
+            "Attach event handler",
+            "Update state",
+            "Render updated UI"
+          ],
+          "required": [
+            "Receive props",
+            "Create state",
+            "Attach event handler",
+            "Update state",
+            "Render updated UI"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-9.json",
+  "practicalTaskRef": "practical-day-9.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

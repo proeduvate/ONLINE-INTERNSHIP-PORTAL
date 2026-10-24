@@ -1,0 +1,127 @@
+{
+  "curriculum": "UI/UX",
+  "day": 13,
+  "topic": "Prototyping and User Interaction Flows",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Connect interface screens into interactive user flows.",
+    "Use triggers and actions to simulate common interactions.",
+    "Create prototypes that communicate intended user behavior.",
+    "Select transitions that support rather than distract from the user task."
+  ],
+  "activities": [
+    {
+      "id": "d13-a1",
+      "type": "discover",
+      "title": "Prototype Anatomy",
+      "instruction": "Explore the main parts of an interactive prototype.",
+      "content": {
+        "concept": "A prototype connects screens through triggers, actions, transitions, and destinations to simulate an experience.",
+        "tip": "Explore each part and identify how it contributes to an interaction flow."
+      },
+      "interaction": {
+        "mode": "prototype-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Trigger",
+            "Action",
+            "Destination",
+            "Transition",
+            "Interaction Flow"
+          ],
+          "descriptions": [
+            "The event that starts an interaction.",
+            "The behavior performed after the trigger.",
+            "The screen or state reached by the interaction.",
+            "The visual change between states or screens.",
+            "The complete sequence of interactions that supports a user task."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a2",
+      "type": "discover",
+      "title": "Trigger and Action Matcher",
+      "instruction": "Match each trigger with the appropriate prototype action.",
+      "content": {
+        "concept": "Triggers such as clicks, taps, hovering, dragging, and keyboard actions can initiate prototype responses.",
+        "tip": "Choose an action that logically follows the user's interaction."
+      },
+      "interaction": {
+        "mode": "trigger-action-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Tap button → Navigate to another screen",
+            "Hover card → Change visual state",
+            "Drag object → Move object",
+            "Press key → Trigger keyboard interaction",
+            "Tap icon → Open overlay"
+          ],
+          "answer": "Tap button → Navigate to another screen"
+        }
+      }
+    },
+    {
+      "id": "d13-a3",
+      "type": "discover",
+      "title": "Prototype Flow Builder",
+      "instruction": "Arrange the screens to complete a simple user journey.",
+      "content": {
+        "concept": "Prototype flows model how users move between screens while completing a specific task.",
+        "tip": "Follow the user's goal from entry point to successful completion."
+      },
+      "interaction": {
+        "mode": "prototype-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Login Screen",
+            "2. Home Screen",
+            "3. Product Screen",
+            "4. Checkout Screen",
+            "5. Confirmation Screen"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d13-a4",
+      "type": "discover",
+      "title": "Transition Matcher",
+      "instruction": "Choose a transition that best fits each interaction.",
+      "content": {
+        "concept": "Transitions should reinforce the relationship between states without distracting users from their task.",
+        "tip": "Prefer transitions that communicate continuity and maintain a clear sense of context."
+      },
+      "interaction": {
+        "mode": "transition-match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Button to new screen → Instant or subtle dissolve",
+            "Opening a side panel → Slide in",
+            "Expanding an object into details → Smart transition",
+            "Temporary dialog → Overlay",
+            "Loading process → Progress transition"
+          ],
+          "answer": "Opening a side panel → Slide in"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-13.json",
+  "practicalTaskRef": "practical-day-13.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

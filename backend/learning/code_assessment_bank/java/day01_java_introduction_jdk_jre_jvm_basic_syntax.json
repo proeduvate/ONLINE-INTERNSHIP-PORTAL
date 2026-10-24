@@ -1,0 +1,67 @@
+{
+    "day": 1,
+    "topic": "Java Introduction, JDK, JRE, JVM & Basic Syntax",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D1-Q001",
+            "title": "Student Introduction Program",
+            "description": "Write a Java program to print your name, college, department and internship domain.",
+            "requirements": [
+                "Use System.out.println()",
+                "Print name",
+                "Print college",
+                "Print department",
+                "Print internship domain"
+            ]
+        },
+        {
+            "id": "CODE-PY-D1-Q002",
+            "title": "Formatted Student Introduction",
+            "description": "Create a program that prints a formatted student introduction.",
+            "requirements": [
+                "Use formatted output",
+                "Include student name",
+                "Include roll number",
+                "Include course and year",
+                "Align output neatly"
+            ]
+        },
+        {
+            "id": "CODE-PY-D1-Q003",
+            "title": "Multiplication Table",
+            "description": "Write a Java program to display the multiplication table of a given number.",
+            "requirements": [
+                "Accept a number as input",
+                "Print table from 1 to 10",
+                "Format output clearly",
+                "Use a loop",
+                "Display each product"
+            ]
+        },
+        {
+            "id": "CODE-PY-D1-Q004",
+            "title": "Student Report Card",
+            "description": "Create a simple student report card using System.out.println().",
+            "requirements": [
+                "Display student name",
+                "Display subject-wise marks",
+                "Display total marks",
+                "Display percentage",
+                "Display grade"
+            ]
+        },
+        {
+            "id": "CODE-PY-D1-Q005",
+            "title": "Menu-Driven Internship Program",
+            "description": "Build a menu-driven program that displays different internship-related options.",
+            "requirements": [
+                "Display a numbered menu",
+                "Handle user selection",
+                "Show internship options",
+                "Use switch or if-else",
+                "Exit on user choice"
+            ]
+        }
+    ]
+}

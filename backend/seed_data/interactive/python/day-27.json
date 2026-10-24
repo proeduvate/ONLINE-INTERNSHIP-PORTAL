@@ -1,0 +1,136 @@
+{
+  "curriculum": "Python",
+  "day": 27,
+  "topic": "Logging, Monitoring, and Observability",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Implement structured logging for Python applications.",
+    "Distinguish logs, metrics, and traces in application monitoring.",
+    "Design an observability workflow for diagnosing application issues."
+  ],
+  "activities": [
+    {
+      "id": "d27-a1",
+      "type": "click-map",
+      "title": "Observability Map",
+      "instruction": "Explore the three major observability signals and their purposes.",
+      "content": {
+        "concept": "Logs describe events, metrics measure numerical behavior over time, and traces show the path of a request across components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Logs",
+            "Metrics",
+            "Traces",
+            "Alerts",
+            "Dashboard"
+          ],
+          "descriptions": [
+            "Timestamped records of application events, errors, and useful contextual information.",
+            "Numerical measurements such as request count, latency, CPU usage, or memory usage.",
+            "Records the path and timing of a request as it travels through application components.",
+            "Notifications triggered when monitored conditions cross defined thresholds or rules.",
+            "A visual view that presents important metrics and service health information."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "anatomy",
+      "title": "Python Log Anatomy",
+      "instruction": "Click each part of the logging example to understand its role.",
+      "content": {
+        "concept": "Python's logging module supports severity levels and structured contextual information that can help diagnose application behavior.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "logger = logging.getLogger(__name__)",
+            "logger.info(\"User login\", extra={\"user_id\": 42})",
+            "logger.exception(\"Database request failed\")"
+          ],
+          "descriptions": [
+            "Creates or retrieves a logger associated with the current Python module.",
+            "Records an informational event and attaches contextual data such as a user ID.",
+            "Records an error with exception information, useful when diagnosing failures inside an exception handler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Observability Signal Selector",
+      "instruction": "Choose the signal that best answers the question.",
+      "content": {
+        "concept": "Logs, metrics, and traces complement each other. Selecting the appropriate signal makes troubleshooting more efficient.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Logs",
+            "Metrics",
+            "Traces",
+            "Source code only"
+          ],
+          "answer": "Traces"
+        }
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "builder",
+      "title": "Monitoring Workflow Builder",
+      "instruction": "Build a workflow for detecting and diagnosing an application failure.",
+      "content": {
+        "concept": "An effective observability workflow moves from detecting an abnormal condition to investigating evidence, identifying the cause, and taking corrective action.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Detect an alert or abnormal metric",
+            "Inspect relevant logs",
+            "Trace the affected request",
+            "Identify the likely root cause",
+            "Apply a corrective change",
+            "Verify the system returns to normal"
+          ],
+          "required": [
+            "Detect an alert or abnormal metric",
+            "Inspect relevant logs",
+            "Trace the affected request",
+            "Identify the likely root cause",
+            "Apply a corrective change",
+            "Verify the system returns to normal"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-27.json",
+  "practicalTaskRef": "practical-day-27.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

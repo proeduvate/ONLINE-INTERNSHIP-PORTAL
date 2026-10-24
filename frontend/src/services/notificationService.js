@@ -1,0 +1,96 @@
+import emailjs from '@emailjs/browser';
+
+// ---------------------------------------------------------
+// 1. PROVIDERS (The actual implementations)
+// ---------------------------------------------------------
+
+/**
+ * Development Provider using EmailJS
+ */
+class EmailJSProvider {
+  constructor() {
+    this.SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || "service_auqn9mh";
+    this.TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || "template_7568k6n";
+    this.PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || "il78TxQTrJmgh5yim";
+    
+    // Initialize EmailJS
+    if (this.PUBLIC_KEY) {
+      emailjs.init(this.PUBLIC_KEY);
+    }
+  }
+
+  async send(templateParams) {
+    try {
+      const response = await emailjs.send(
+        this.SERVICE_ID, 
+        this.TEMPLATE_ID, 
+        templateParams
+      );
+      console.log('SUCCESS!', response.status, response.text);
+      return true;
+    } catch (err) {
+      console.error('FAILED...', err);
+      return false;
+    }
+  }
+}
+
+/**
+ * Production Provider (Placeholder for future SMTP/Backend integration)
+ */
+class CorporateSMTPProvider {
+  async send(templateParams) {
+    // In the future, this will just make an Axios call to your FastAPI backend
+    // await api.post("/api/notifications/send", templateParams);
+    console.log("Sending via corporate SMTP...", templateParams);
+    return true;
+  }
+}
+
+// ---------------------------------------------------------
+// 2. SERVICE (The interface used by your React components)
+// ---------------------------------------------------------
+
+const getSiteBase = () => typeof window !== 'undefined' ? window.location.origin : 'https://online-internship-portal-1.onrender.com';
+
+class NotificationService {
+  constructor() {
+    // Easily swap this to `new CorporateSMTPProvider()` later!
+    this.provider = new EmailJSProvider();
+    this.targetEmail = "sesicca@gmail.com";
+  }
+
+  /**
+   * Generic notification sender
+   */
+  async notify(eventTitle, eventDetails, ctaUrl = `${getSiteBase()}/dashboard`) {
+    const templateParams = {
+      to_email: this.targetEmail,
+      sender_name: "Portal System", // Sender Name
+      event_type: eventTitle,
+      details: eventDetails || eventTitle,
+      timestamp: new Date().toLocaleString(),
+      action_link: ctaUrl || `${getSiteBase()}/dashboard`
+    };
+
+    return await this.provider.send(templateParams);
+  }
+
+  // Pre-defined triggers for consistency
+  async notifyMeetingScheduled(time, title, roomId) {
+    const details = `A weekly mentoring meeting "${title}" has been scheduled for ${time}. Room ID: ${roomId}`;
+    return this.notify("Weekly Mentoring Meeting Scheduled 📅", details, `${getSiteBase()}/meetings/${roomId}`);
+  }
+
+  async notifyRoomAdmit(internName, roomName) {
+    const details = `Intern ${internName} has been admitted to ${roomName}.`;
+    return this.notify("Breakout Room Access Granted 🔓", details, `${getSiteBase()}/breakout-rooms`);
+  }
+
+  async notifyAnnouncement(title, content) {
+    const details = `New Announcement: ${title}\n\n${content}`;
+    return this.notify("New Portal Announcement 📢", details, `${getSiteBase()}/dashboard`);
+  }
+}
+
+export const notificationService = new NotificationService();

@@ -1,0 +1,139 @@
+{
+  "curriculum": "Full Stack",
+  "day": 16,
+  "topic": "Backend Architecture and Middleware",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the role of middleware in a backend application.",
+    "Organize backend code into maintainable architectural layers.",
+    "Trace how requests move through middleware and route handlers."
+  ],
+  "activities": [
+    {
+      "id": "d16-a1",
+      "type": "discover",
+      "title": "Backend Layer Map",
+      "instruction": "Click each backend layer to explore its responsibility.",
+      "content": {
+        "concept": "A layered backend separates responsibilities such as routing, controllers, business logic, data access, and infrastructure so each part has a focused role.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "backend-layers",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Routes",
+            "Controllers",
+            "Services",
+            "Repositories",
+            "Database"
+          ],
+          "descriptions": [
+            "Maps HTTP methods and URLs to backend handlers.",
+            "Receives requests and coordinates the application response.",
+            "Contains business rules and application logic.",
+            "Handles data access and communication with the database.",
+            "Persists and retrieves application data."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a2",
+      "type": "discover",
+      "title": "Middleware Anatomy",
+      "instruction": "Explore the important parts of an Express middleware function.",
+      "content": {
+        "concept": "Express middleware receives a request, response, and next function. It can inspect or modify the request, perform checks, and call next() to continue processing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "middleware-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "req",
+            "res",
+            "next",
+            "Middleware Logic",
+            "next()"
+          ],
+          "descriptions": [
+            "The incoming HTTP request object.",
+            "The response object used to send data back to the client.",
+            "Function that passes control to the next middleware or route handler.",
+            "Code that performs tasks such as logging, authentication, or validation.",
+            "Continues the request through the middleware pipeline."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a3",
+      "type": "discover",
+      "title": "Request Pipeline",
+      "instruction": "Arrange the stages of a typical protected API request.",
+      "content": {
+        "concept": "Backend requests can pass through middleware such as logging, authentication, and validation before reaching a route handler and producing a response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "request-pipeline",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Client sends request",
+            "2. Logging middleware runs",
+            "3. Authentication middleware checks the request",
+            "4. Validation middleware checks input",
+            "5. Route handler executes",
+            "6. Response is sent to the client"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d16-a4",
+      "type": "discover",
+      "title": "Backend Structure Builder",
+      "instruction": "Compose a maintainable backend architecture.",
+      "content": {
+        "concept": "Separating routes, controllers, services, repositories, and configuration keeps backend responsibilities organized and easier to maintain.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "backend-structure",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Routes",
+            "Controllers",
+            "Services",
+            "Repositories",
+            "Models",
+            "Configuration"
+          ],
+          "required": [
+            "Routes",
+            "Controllers",
+            "Services",
+            "Repositories"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-16.json",
+  "practicalTaskRef": "practical-day-16.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

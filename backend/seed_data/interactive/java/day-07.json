@@ -1,0 +1,134 @@
+{
+  "curriculum": "Java",
+  "day": 7,
+  "topic": "Inheritance, Polymorphism, and Abstraction",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Create parent-child relationships using inheritance.",
+    "Apply method overriding and polymorphism in Java.",
+    "Use abstract classes and interfaces to define reusable contracts."
+  ],
+  "activities": [
+    {
+      "id": "d7-a1",
+      "type": "discover",
+      "title": "Inheritance Map",
+      "instruction": "Explore the relationship between parent and child classes.",
+      "content": {
+        "concept": "Inheritance allows a subclass to extend a superclass and reuse accessible fields and methods. The subclass can also add new behavior or override inherited methods.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "inheritance-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Animal",
+            "Dog extends Animal",
+            "Animal.eat()",
+            "Dog.bark()",
+            "Dog inherits eat()"
+          ],
+          "descriptions": [
+            "The superclass representing common animal behavior.",
+            "A subclass that extends Animal.",
+            "A method inherited by compatible subclasses.",
+            "Behavior specific to the Dog subclass.",
+            "The Dog object can use the inherited eat method."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d7-a2",
+      "type": "discover",
+      "title": "Method Override Anatomy",
+      "instruction": "Explore the parts of a method override.",
+      "content": {
+        "concept": "Method overriding occurs when a subclass provides a compatible implementation of an inherited instance method. The subclass implementation can then be selected when the object is used polymorphically.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "override-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "@Override",
+            "void sound()",
+            "Dog",
+            "System.out.println(\"Bark\")"
+          ],
+          "descriptions": [
+            "Annotation indicating that the method is intended to override an inherited method.",
+            "The method declaration being reimplemented.",
+            "The subclass providing the new implementation.",
+            "The subclass-specific implementation of the method."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d7-a3",
+      "type": "discover",
+      "title": "Polymorphism Explorer",
+      "instruction": "Choose the behavior produced by each parent-type reference.",
+      "content": {
+        "concept": "With runtime polymorphism, a superclass reference can refer to a subclass object. When an overridden instance method is called, Java selects the implementation associated with the actual object at runtime.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "polymorphism-matching",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Animal a = new Dog(); a.sound() → Dog's overridden sound()",
+            "Animal a = new Cat(); a.sound() → Cat's overridden sound()"
+          ],
+          "answer": "Animal a = new Dog(); a.sound() → Dog's overridden sound()"
+        }
+      }
+    },
+    {
+      "id": "d7-a4",
+      "type": "discover",
+      "title": "Abstraction Builder",
+      "instruction": "Build an abstraction that defines required behavior without exposing implementation details.",
+      "content": {
+        "concept": "Abstraction focuses on what an object must do rather than how it does it. Abstract classes and interfaces can define contracts that concrete classes implement.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "abstraction-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "interface",
+            "Payment",
+            "{",
+            "void pay();",
+            "}",
+            "class CardPayment implements Payment"
+          ],
+          "required": [
+            "interface",
+            "Payment",
+            "void pay();",
+            "class CardPayment implements Payment"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-7.json",
+  "practicalTaskRef": "practical-day-7.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

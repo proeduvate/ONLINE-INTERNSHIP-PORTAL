@@ -1,0 +1,105 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 20,
+  "topic": "JSON, Local Storage & Session Storage",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Read JSON",
+    "Understand browser storage",
+    "Distinguish local/session lifetime"
+  ],
+  "activities": [
+    {
+      "id": "d20-a01",
+      "type": "json",
+      "title": "JSON Explorer",
+      "instruction": "Edit a JSON object and watch it parse into a structured view.",
+      "content": {
+        "concept": "Read JSON",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "json",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d20-a02",
+      "type": "storage",
+      "title": "Storage Lab",
+      "instruction": "Add, update and remove a key in a simulated local storage panel.",
+      "content": {
+        "concept": "Understand browser storage",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "storage",
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a03",
+      "type": "session",
+      "title": "Session vs Local",
+      "instruction": "Toggle browser-tab and persistent storage to compare lifetimes.",
+      "content": {
+        "concept": "Distinguish local/session lifetime",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "session",
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d20-a04",
+      "type": "build",
+      "title": "Persistence Builder",
+      "instruction": "Choose what data to persist and generate the matching storage plan.",
+      "content": {
+        "concept": "Read JSON",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "persistence",
+        "family": "simulator",
+        "config": {
+          "states": [
+            "init",
+            "loading",
+            "success"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-20.json",
+  "practicalTaskRef": "practical-day-20.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

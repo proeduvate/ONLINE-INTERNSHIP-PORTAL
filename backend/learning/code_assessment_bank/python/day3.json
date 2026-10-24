@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 3 Code Assessment",
+  "day": 3,
+  "topic": "Operators & Expressions",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY03-Q01",
+      "day": 3,
+      "topic": "Operators & Expressions",
+      "question": "Create a calculator using arithmetic operators."
+    },
+    {
+      "id": "DAY03-Q02",
+      "day": 3,
+      "topic": "Operators & Expressions",
+      "question": "Write a program to determine whether a number is even or odd using the modulus operator."
+    },
+    {
+      "id": "DAY03-Q03",
+      "day": 3,
+      "topic": "Operators & Expressions",
+      "question": "Calculate the total, average, and percentage of five subject marks."
+    },
+    {
+      "id": "DAY03-Q04",
+      "day": 3,
+      "topic": "Operators & Expressions",
+      "question": "Compare two students' marks and determine who scored higher."
+    },
+    {
+      "id": "DAY03-Q05",
+      "day": 3,
+      "topic": "Operators & Expressions",
+      "question": "Create a program that uses logical operators to determine student eligibility for an internship."
+    }
+  ]
+}

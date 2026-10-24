@@ -1,0 +1,123 @@
+{
+  "curriculum": "UI/UX",
+  "day": 2,
+  "topic": "User Research and Understanding User Needs",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify suitable user research methods for different design problems.",
+    "Distinguish qualitative and quantitative research data.",
+    "Create basic user insights from research findings."
+  ],
+  "activities": [
+    {
+      "id": "d2-a1",
+      "type": "discover",
+      "title": "Research Method Selector",
+      "instruction": "Choose the most suitable research method for each scenario.",
+      "content": {
+        "concept": "Different research methods answer different questions. Interviews can explore motivations, surveys can collect measurable responses, observation reveals real behavior, usability testing evaluates interactions, and analytics reveals usage patterns.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "research-method-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Interview",
+            "Survey",
+            "Observation",
+            "Usability Testing",
+            "Analytics"
+          ],
+          "answer": "Interview"
+        }
+      }
+    },
+    {
+      "id": "d2-a2",
+      "type": "discover",
+      "title": "Qualitative vs Quantitative",
+      "instruction": "Identify whether each research finding is qualitative or quantitative.",
+      "content": {
+        "concept": "Qualitative data describes experiences, behaviors, opinions, and motivations. Quantitative data represents measurable values such as counts, percentages, ratings, and completion rates.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "research-data-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "User Quote",
+            "Observed Behavior",
+            "Survey Percentage",
+            "Task Completion Rate",
+            "Interview Theme"
+          ],
+          "descriptions": [
+            "A participant's statement or explanation is qualitative evidence.",
+            "A description of what a participant actually does can provide qualitative behavioral evidence.",
+            "A percentage from a survey is quantitative data.",
+            "The percentage or number of users completing a task is quantitative data.",
+            "A repeated theme found across interviews is qualitative evidence."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a3",
+      "type": "discover",
+      "title": "User Interview Flow",
+      "instruction": "Arrange the stages of a focused user interview.",
+      "content": {
+        "concept": "A good interview begins with a clear research goal, builds rapport, asks open-ended questions, listens without leading the participant, and ends by organizing the findings.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "interview-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define the research goal",
+            "2. Prepare open-ended questions",
+            "3. Introduce the session and build rapport",
+            "4. Ask questions and actively listen",
+            "5. Record and synthesize findings"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d2-a4",
+      "type": "discover",
+      "title": "Insight Extraction",
+      "instruction": "Choose the statement that represents the strongest UX insight.",
+      "content": {
+        "concept": "A useful UX insight goes beyond describing an observation. It connects behavior to a possible user need, motivation, or difficulty that can inform design decisions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "insight-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Observation: Three users abandoned checkout. Insight: Users may be uncertain about the final cost before confirming the purchase.",
+            "Observation: Three users abandoned checkout. Insight: Users do not like websites."
+          ],
+          "answer": "Observation: Three users abandoned checkout. Insight: Users may be uncertain about the final cost before confirming the purchase."
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-2.json",
+  "practicalTaskRef": "practical-day-2.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

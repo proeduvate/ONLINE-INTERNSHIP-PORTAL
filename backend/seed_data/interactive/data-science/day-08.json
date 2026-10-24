@@ -1,0 +1,121 @@
+{
+  "curriculum": "Data Science",
+  "day": 8,
+  "topic": "Probability and Inferential Statistics",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand basic probability concepts used in data analysis.",
+    "Differentiate population parameters from sample statistics.",
+    "Identify how sampling supports statistical inference."
+  ],
+  "activities": [
+    {
+      "id": "d8-a1",
+      "type": "discover",
+      "title": "Explore Probability",
+      "instruction": "Adjust the probability and observe how likely the event becomes.",
+      "content": {
+        "concept": "Probability represents the likelihood of an event occurring and ranges from impossible to certain.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 0,
+          "max": 100,
+          "default": 50
+        }
+      }
+    },
+    {
+      "id": "d8-a2",
+      "type": "discover",
+      "title": "Map Population and Sample",
+      "instruction": "Explore how a population, sample, parameter, and statistic are related.",
+      "content": {
+        "concept": "A population contains the full group of interest, while a sample is a subset used to estimate characteristics of that population.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Population",
+            "Sample",
+            "Population Parameter",
+            "Sample Statistic",
+            "Statistical Inference"
+          ],
+          "descriptions": [
+            "The complete group about which a study seeks information.",
+            "A subset selected from the population for analysis.",
+            "A numerical characteristic describing the population.",
+            "A numerical measure calculated from the sample.",
+            "Using sample evidence to draw conclusions about the population."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a3",
+      "type": "discover",
+      "title": "Sequence the Sampling Process",
+      "instruction": "Arrange the steps of statistical sampling and inference in order.",
+      "content": {
+        "concept": "Statistical inference begins with defining a population, selecting a sample, analyzing it, and drawing conclusions while accounting for uncertainty.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define the Population",
+            "2. Select a Sample",
+            "3. Collect Sample Data",
+            "4. Calculate Sample Statistics",
+            "5. Estimate or Test Population Characteristics",
+            "6. Interpret the Results with Uncertainty"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d8-a4",
+      "type": "discover",
+      "title": "Choose the Statistical Method",
+      "instruction": "Match each analytical goal with an appropriate statistical approach.",
+      "content": {
+        "concept": "Different analytical questions require different statistical methods, sampling strategies, and measures of uncertainty.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Estimate a population mean → Confidence Interval",
+            "Compare two group means → Hypothesis Test",
+            "Measure the relationship between numerical variables → Correlation",
+            "Estimate an event likelihood → Probability",
+            "Draw conclusions from a sample → Statistical Inference"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-8.json",
+  "practicalTaskRef": "practical-day-8.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

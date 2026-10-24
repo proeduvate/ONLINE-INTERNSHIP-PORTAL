@@ -1,0 +1,132 @@
+{
+  "curriculum": "Python",
+  "day": 4,
+  "topic": "Python Collections",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Differentiate lists, tuples, sets, and dictionaries.",
+    "Perform common operations on Python collections.",
+    "Select an appropriate collection type for a programming problem."
+  ],
+  "activities": [
+    {
+      "id": "d4-a1",
+      "type": "discover",
+      "title": "Collection Map",
+      "instruction": "Explore the characteristics of Python's main collection types.",
+      "content": {
+        "concept": "Lists are ordered and mutable, tuples are ordered and immutable, sets store unique elements, and dictionaries store key-value pairs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "List",
+            "Tuple",
+            "Set",
+            "Dictionary"
+          ],
+          "descriptions": [
+            "Ordered and mutable collection that can contain duplicate values.",
+            "Ordered and immutable collection that can contain duplicate values.",
+            "Collection of unique hashable elements with no guaranteed positional indexing.",
+            "Mutable mapping of keys to values."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Collection Anatomy",
+      "instruction": "Explore how each collection represents data.",
+      "content": {
+        "concept": "Python collection syntax communicates how data is grouped and accessed.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "numbers = [10, 20, 30]",
+            "coordinates = (10, 20)",
+            "tags = {\"python\", \"web\"}",
+            "user = {\"name\": \"Alex\", \"age\": 20}"
+          ],
+          "descriptions": [
+            "List containing ordered values.",
+            "Tuple containing fixed-position values.",
+            "Set containing unique elements.",
+            "Dictionary containing key-value pairs."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "Collection Selector",
+      "instruction": "Choose the collection that best fits the scenario.",
+      "content": {
+        "concept": "The appropriate collection depends on whether you need ordering, mutability, uniqueness, or key-based access.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "list",
+            "tuple",
+            "set",
+            "dictionary"
+          ],
+          "answer": "set"
+        }
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Collection Builder",
+      "instruction": "Assemble a collection for the required data structure.",
+      "content": {
+        "concept": "Collection operations such as append, remove, membership testing, and key lookup help programs manage groups of values.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "students = [\"Asha\", \"Ravi\", \"Maya\"]",
+            "students.append(\"Arun\")",
+            "unique_ids = {101, 102, 103}",
+            "user = {\"name\": \"Maya\", \"age\": 21}",
+            "user[\"age\"]",
+            "students.remove(\"Ravi\")"
+          ],
+          "required": [
+            "students = [\"Asha\", \"Ravi\", \"Maya\"]",
+            "students.append(\"Arun\")"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "curriculum": "Full Stack",
+  "day": 14,
+  "topic": "Node.js and npm Fundamentals",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain how Node.js enables JavaScript execution outside the browser.",
+    "Identify the role of modules, packages, and npm in backend development.",
+    "Create a basic Node.js project structure using package management concepts."
+  ],
+  "activities": [
+    {
+      "id": "d14-a1",
+      "type": "discover",
+      "title": "Node.js Runtime Explorer",
+      "instruction": "Click each concept to explore how Node.js runs JavaScript outside the browser.",
+      "content": {
+        "concept": "Node.js provides a JavaScript runtime outside the browser and includes APIs for tasks such as filesystem access, networking, and process management.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "node-runtime",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Node.js Runtime",
+            "V8 JavaScript Engine",
+            "Node APIs",
+            "Event Loop",
+            "Application Code"
+          ],
+          "descriptions": [
+            "Environment used to execute JavaScript outside a browser.",
+            "JavaScript engine used by Node.js to execute JavaScript.",
+            "APIs that provide capabilities such as files, networking, and processes.",
+            "Coordinates asynchronous operations and callback execution.",
+            "The JavaScript code written for the Node.js application."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d14-a2",
+      "type": "discover",
+      "title": "Module System Explorer",
+      "instruction": "Explore how modules organize reusable Node.js code.",
+      "content": {
+        "concept": "Modules allow Node.js applications to split functionality into reusable files that can export and import values or functions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "module-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "export",
+            "import",
+            "module",
+            "dependency"
+          ],
+          "descriptions": [
+            "Makes functionality available to other modules.",
+            "Brings functionality from another module into the current file.",
+            "A unit of reusable code in a Node.js application.",
+            "A package or module that the current application relies on."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d14-a3",
+      "type": "discover",
+      "title": "npm Workflow",
+      "instruction": "Arrange the steps for adding and using a package in a Node.js project.",
+      "content": {
+        "concept": "npm manages dependencies and project metadata through package.json and commands that install, update, and execute packages and scripts.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "npm-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Initialize the project",
+            "2. Create package.json",
+            "3. Install a dependency",
+            "4. Dependency is recorded in package.json",
+            "5. Import and use the package"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d14-a4",
+      "type": "discover",
+      "title": "Node Project Builder",
+      "instruction": "Build the essential structure of a basic Node.js project.",
+      "content": {
+        "concept": "A Node.js project commonly contains package.json, source files, installed dependencies, and scripts used to run or manage the application.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "node-project",
+        "family": "builder",
+        "config": {
+          "options": [
+            "package.json",
+            "src/index.js",
+            "node_modules",
+            "npm scripts",
+            "Dependencies"
+          ],
+          "required": [
+            "package.json",
+            "src/index.js",
+            "Dependencies",
+            "npm scripts"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-14.json",
+  "practicalTaskRef": "practical-day-14.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

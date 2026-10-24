@@ -1,0 +1,67 @@
+{
+    "day": 14,
+    "topic": "Recursion & Recursive Algorithms",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-PY-D14-Q001",
+            "title": "Recursive Factorial",
+            "description": "Calculate factorial using recursion.",
+            "requirements": [
+                "Define recursive factorial(int n)",
+                "Base case: n==0 returns 1",
+                "Recursive case: n * factorial(n-1)",
+                "Test with multiple values",
+                "Print each result"
+            ]
+        },
+        {
+            "id": "CODE-PY-D14-Q002",
+            "title": "Recursive Fibonacci",
+            "description": "Generate Fibonacci numbers recursively.",
+            "requirements": [
+                "Define recursive fibonacci(int n)",
+                "Base cases: fib(0)=0, fib(1)=1",
+                "Recursive case: fib(n-1)+fib(n-2)",
+                "Print series up to N terms",
+                "Accept N from user"
+            ]
+        },
+        {
+            "id": "CODE-PY-D14-Q003",
+            "title": "Sum of Digits",
+            "description": "Calculate the sum of digits recursively.",
+            "requirements": [
+                "Define recursive sumDigits(int n)",
+                "Extract last digit using modulo",
+                "Recurse with remaining digits",
+                "Handle negative numbers",
+                "Print sum for multiple inputs"
+            ]
+        },
+        {
+            "id": "CODE-PY-D14-Q004",
+            "title": "Recursive String Reversal",
+            "description": "Reverse a string using recursion.",
+            "requirements": [
+                "Define recursive reverse(String s)",
+                "Base case: length <= 1",
+                "Recursive case: last char + reverse of rest",
+                "Test with multiple strings",
+                "Compare with iterative approach"
+            ]
+        },
+        {
+            "id": "CODE-PY-D14-Q005",
+            "title": "Recursive Binary Search",
+            "description": "Implement recursive binary search.",
+            "requirements": [
+                "Accept sorted array",
+                "Define binarySearch(arr, low, high, target)",
+                "Implement recursive logic",
+                "Return index if found or -1",
+                "Test with multiple search values"
+            ]
+        }
+    ]
+}

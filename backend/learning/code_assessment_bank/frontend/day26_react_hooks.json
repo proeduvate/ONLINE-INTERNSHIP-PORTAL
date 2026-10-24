@@ -1,0 +1,37 @@
+{
+    "day": 26,
+    "topic": "React Hooks",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D26-Q001",
+            "title": "useState Counter",
+            "description": "Create a counter using useState.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D26-Q002",
+            "title": "useEffect Timer",
+            "description": "Create a timer using useEffect and properly clean up the interval.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D26-Q003",
+            "title": "API Fetch Hook",
+            "description": "Use useEffect to fetch data when a component loads.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D26-Q004",
+            "title": "Custom Hook",
+            "description": "Create a reusable useFetch() custom hook.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D26-Q005",
+            "title": "Search Application",
+            "description": "Build a search application using useState, useEffect and a custom hook.",
+            "requirements": []
+        }
+    ]
+}

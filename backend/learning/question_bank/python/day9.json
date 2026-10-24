@@ -1,0 +1,556 @@
+﻿{
+    "day": 9,
+    "topic": "Lists & Nested Lists",
+    "mcqs": [
+        {
+            "id": 1,
+            "question": "Which data type is used to store an ordered collection of items in Python?",
+            "options": [
+                "list",
+                "set",
+                "tuple",
+                "dict"
+            ],
+            "answer": "list"
+        },
+        {
+            "id": 2,
+            "question": "Which brackets are used to create a Python list?",
+            "options": [
+                "[]",
+                "{}",
+                "()",
+                "<>"
+            ],
+            "answer": "[]"
+        },
+        {
+            "id": 3,
+            "question": "Which of the following is a valid Python list?",
+            "options": [
+                "[1, 2, 3]",
+                "{1, 2, 3}",
+                "(1, 2, 3)",
+                "<1, 2, 3>"
+            ],
+            "answer": "[1, 2, 3]"
+        },
+        {
+            "id": 4,
+            "question": "Can a Python list contain elements of different data types?",
+            "options": [
+                "Yes",
+                "No",
+                "Only numbers",
+                "Only strings"
+            ],
+            "answer": "Yes"
+        },
+        {
+            "id": 5,
+            "question": "Which property describes a Python list?",
+            "options": [
+                "Ordered and mutable",
+                "Unordered and immutable",
+                "Ordered and immutable",
+                "Unordered and mutable"
+            ],
+            "answer": "Ordered and mutable"
+        },
+        {
+            "id": 6,
+            "question": "What is the index of the first element in a Python list?",
+            "options": [
+                "0",
+                "1",
+                "-1",
+                "None"
+            ],
+            "answer": "0"
+        },
+        {
+            "id": 7,
+            "question": "What is the last index of a list containing 5 elements?",
+            "options": [
+                "4",
+                "5",
+                "3",
+                "-5"
+            ],
+            "answer": "4"
+        },
+        {
+            "id": 8,
+            "question": "What is the output of `[10, 20, 30][1]`?",
+            "options": [
+                "10",
+                "20",
+                "30",
+                "1"
+            ],
+            "answer": "20"
+        },
+        {
+            "id": 9,
+            "question": "What is the output of `[5, 10, 15][-1]`?",
+            "options": [
+                "5",
+                "10",
+                "15",
+                "-1"
+            ],
+            "answer": "15"
+        },
+        {
+            "id": 10,
+            "question": "Which function returns the number of elements in a list?",
+            "options": [
+                "len()",
+                "size()",
+                "count()",
+                "length()"
+            ],
+            "answer": "len()"
+        },
+        {
+            "id": 11,
+            "question": "What is the result of `len([2, 4, 6, 8])`?",
+            "options": [
+                "3",
+                "4",
+                "5",
+                "8"
+            ],
+            "answer": "4"
+        },
+        {
+            "id": 12,
+            "question": "What is the value of an empty list?",
+            "options": [
+                "[]",
+                "{}",
+                "()",
+                "None"
+            ],
+            "answer": "[]"
+        },
+        {
+            "id": 13,
+            "question": "How can an empty list be created?",
+            "options": [
+                "list()",
+                "empty()",
+                "new list()",
+                "create[]"
+            ],
+            "answer": "list()"
+        },
+        {
+            "id": 14,
+            "question": "Which method adds one element to the end of a list?",
+            "options": [
+                "append()",
+                "add()",
+                "insertEnd()",
+                "push()"
+            ],
+            "answer": "append()"
+        },
+        {
+            "id": 15,
+            "question": "What is the result of `[1, 2].append(3)` when applied to the list?",
+            "options": [
+                "[1, 2, 3]",
+                "[3, 1, 2]",
+                "[1, 3, 2]",
+                "[1, 2]"
+            ],
+            "answer": "[1, 2, 3]"
+        },
+        {
+            "id": 16,
+            "question": "Which list method inserts an element at a specified position?",
+            "options": [
+                "insert()",
+                "append()",
+                "add()",
+                "place()"
+            ],
+            "answer": "insert()"
+        },
+        {
+            "id": 17,
+            "question": "What does `[1, 2, 3].insert(1, 9)` produce?",
+            "options": [
+                "[1, 9, 2, 3]",
+                "[9, 1, 2, 3]",
+                "[1, 2, 9, 3]",
+                "[1, 2, 3, 9]"
+            ],
+            "answer": "[1, 9, 2, 3]"
+        },
+        {
+            "id": 18,
+            "question": "Which method removes the first matching value from a list?",
+            "options": [
+                "remove()",
+                "delete()",
+                "discard()",
+                "pop()"
+            ],
+            "answer": "remove()"
+        },
+        {
+            "id": 19,
+            "question": "What happens when `remove()` is called for a value that is not present?",
+            "options": [
+                "ValueError",
+                "IndexError",
+                "KeyError",
+                "Nothing happens"
+            ],
+            "answer": "ValueError"
+        },
+        {
+            "id": 20,
+            "question": "Which method removes and returns an element from a list by index?",
+            "options": [
+                "pop()",
+                "remove()",
+                "delete()",
+                "extract()"
+            ],
+            "answer": "pop()"
+        },
+        {
+            "id": 21,
+            "question": "What does `pop()` remove when no index is supplied?",
+            "options": [
+                "First element",
+                "Last element",
+                "Middle element",
+                "All elements"
+            ],
+            "answer": "Last element"
+        },
+        {
+            "id": 22,
+            "question": "Which method removes all elements from a list?",
+            "options": [
+                "clear()",
+                "empty()",
+                "removeAll()",
+                "deleteAll()"
+            ],
+            "answer": "clear()"
+        },
+        {
+            "id": 23,
+            "question": "What is the result of `list.clear()`?",
+            "options": [
+                "[]",
+                "None",
+                "[0]",
+                "The list is deleted"
+            ],
+            "answer": "[]"
+        },
+        {
+            "id": 24,
+            "question": "Which method returns the index of the first occurrence of a value?",
+            "options": [
+                "index()",
+                "find()",
+                "position()",
+                "search()"
+            ],
+            "answer": "index()"
+        },
+        {
+            "id": 25,
+            "question": "What does `[10, 20, 30].index(20)` return?",
+            "options": [
+                "0",
+                "1",
+                "2",
+                "20"
+            ],
+            "answer": "1"
+        },
+        {
+            "id": 26,
+            "question": "Which method counts how many times a value occurs in a list?",
+            "options": [
+                "count()",
+                "frequency()",
+                "total()",
+                "occurrences()"
+            ],
+            "answer": "count()"
+        },
+        {
+            "id": 27,
+            "question": "What is the result of `[1, 2, 2, 3, 2].count(2)`?",
+            "options": [
+                "2",
+                "3",
+                "4",
+                "1"
+            ],
+            "answer": "3"
+        },
+        {
+            "id": 28,
+            "question": "Which method sorts a list in place?",
+            "options": [
+                "sort()",
+                "sorted()",
+                "order()",
+                "arrange()"
+            ],
+            "answer": "sort()"
+        },
+        {
+            "id": 29,
+            "question": "Which built-in function returns a new sorted list without modifying the original list?",
+            "options": [
+                "sorted()",
+                "sort()",
+                "order()",
+                "arrange()"
+            ],
+            "answer": "sorted()"
+        },
+        {
+            "id": 30,
+            "question": "Which list method reverses the elements in place?",
+            "options": [
+                "reverse()",
+                "reversed()",
+                "flip()",
+                "backward()"
+            ],
+            "answer": "reverse()"
+        },
+        {
+            "id": 31,
+            "question": "What does the expression `[1, 2, 3] + [4, 5]` produce?",
+            "options": [
+                "[1, 2, 3, 4, 5]",
+                "[5, 4, 3, 2, 1]",
+                "[1, 2, 3, 4]",
+                "Error"
+            ],
+            "answer": "[1, 2, 3, 4, 5]"
+        },
+        {
+            "id": 32,
+            "question": "Which operator concatenates two lists?",
+            "options": [
+                "+",
+                "*",
+                "&",
+                "|"
+            ],
+            "answer": "+"
+        },
+        {
+            "id": 33,
+            "question": "What is the result of `[1, 2] * 3`?",
+            "options": [
+                "[1, 2, 1, 2, 1, 2]",
+                "[3, 6]",
+                "[1, 2, 3]",
+                "Error"
+            ],
+            "answer": "[1, 2, 1, 2, 1, 2]"
+        },
+        {
+            "id": 34,
+            "question": "Which operator checks whether an element exists in a list?",
+            "options": [
+                "in",
+                "contains",
+                "has",
+                "exists"
+            ],
+            "answer": "in"
+        },
+        {
+            "id": 35,
+            "question": "What is the result of `5 in [1, 3, 5, 7]`?",
+            "options": [
+                "True",
+                "False",
+                "5",
+                "None"
+            ],
+            "answer": "True"
+        },
+        {
+            "id": 36,
+            "question": "What does `[10, 20, 30][0:2]` return?",
+            "options": [
+                "[10, 20]",
+                "[20, 30]",
+                "[10, 20, 30]",
+                "[30]"
+            ],
+            "answer": "[10, 20]"
+        },
+        {
+            "id": 37,
+            "question": "Which operation creates a shallow copy of a list using slicing?",
+            "options": [
+                "new_list = old_list[:]",
+                "new_list = copy(old_list)",
+                "new_list = old_list()",
+                "new_list = slice(old_list)"
+            ],
+            "answer": "new_list = old_list[:]"
+        },
+        {
+            "id": 38,
+            "question": "Which list method can create a shallow copy of a list?",
+            "options": [
+                "copy()",
+                "clone()",
+                "duplicate()",
+                "replicate()"
+            ],
+            "answer": "copy()"
+        },
+        {
+            "id": 39,
+            "question": "What does `del my_list[2]` do?",
+            "options": [
+                "Deletes the element at index 2",
+                "Deletes the entire list",
+                "Deletes the first element",
+                "Clears the list"
+            ],
+            "answer": "Deletes the element at index 2"
+        },
+        {
+            "id": 40,
+            "question": "What is a nested list?",
+            "options": [
+                "A list containing one or more lists as elements",
+                "A list containing only numbers",
+                "A list that cannot be modified",
+                "A list with duplicate values"
+            ],
+            "answer": "A list containing one or more lists as elements"
+        },
+        {
+            "id": 41,
+            "question": "Which of the following is a nested list?",
+            "options": [
+                "[[1, 2], [3, 4]]",
+                "[1, 2, 3, 4]",
+                "(1, 2, 3, 4)",
+                "{1, 2, 3, 4}"
+            ],
+            "answer": "[[1, 2], [3, 4]]"
+        },
+        {
+            "id": 42,
+            "question": "What is the result of `[[1, 2], [3, 4]][0]`?",
+            "options": [
+                "[1, 2]",
+                "[3, 4]",
+                "1",
+                "2"
+            ],
+            "answer": "[1, 2]"
+        },
+        {
+            "id": 43,
+            "question": "What is the result of `[[1, 2], [3, 4]][1][0]`?",
+            "options": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "answer": "3"
+        },
+        {
+            "id": 44,
+            "question": "In a two-dimensional list, what does the first index generally select?",
+            "options": [
+                "A row or inner list",
+                "A column only",
+                "The data type",
+                "The list length"
+            ],
+            "answer": "A row or inner list"
+        },
+        {
+            "id": 45,
+            "question": "Which expression accesses the element `6` in `matrix = [[1, 2], [5, 6]]`?",
+            "options": [
+                "matrix[1][1]",
+                "matrix[0][1]",
+                "matrix[1][0]",
+                "matrix[2][1]"
+            ],
+            "answer": "matrix[1][1]"
+        },
+        {
+            "id": 46,
+            "question": "How can nested lists commonly represent a matrix?",
+            "options": [
+                "Each inner list represents a row",
+                "Each inner list represents a data type",
+                "Each outer element must be a string",
+                "Matrices cannot be represented using lists"
+            ],
+            "answer": "Each inner list represents a row"
+        },
+        {
+            "id": 47,
+            "question": "Which loop structure is commonly used to traverse every element of a nested list?",
+            "options": [
+                "Nested `for` loops",
+                "Only an `if` statement",
+                "Only a `while` condition",
+                "A `switch` statement"
+            ],
+            "answer": "Nested `for` loops"
+        },
+        {
+            "id": 48,
+            "question": "What does `list.extend([3, 4])` do to the list `[1, 2]`?",
+            "options": [
+                "Produces [1, 2, 3, 4]",
+                "Produces [1, 2, [3, 4]]",
+                "Produces [3, 4, 1, 2]",
+                "Produces [1, 2]"
+            ],
+            "answer": "Produces [1, 2, 3, 4]"
+        },
+        {
+            "id": 49,
+            "question": "What is the difference between `append([3, 4])` and `extend([3, 4])` for `[1, 2]`?",
+            "options": [
+                "append adds the list as one element, while extend adds its elements individually",
+                "append adds elements individually, while extend adds the list as one element",
+                "Both produce exactly the same structure",
+                "Both remove elements from the list"
+            ],
+            "answer": "append adds the list as one element, while extend adds its elements individually"
+        },
+        {
+            "id": 50,
+            "question": "What is the result of `[1, 2, 3].copy()`?",
+            "options": [
+                "A new shallow copy of the list",
+                "A tuple containing the list",
+                "The original list is cleared",
+                "A reversed list"
+            ],
+            "answer": "A new shallow copy of the list"
+        }
+    ]
+}

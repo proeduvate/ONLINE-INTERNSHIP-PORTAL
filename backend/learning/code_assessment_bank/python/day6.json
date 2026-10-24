@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 6 Code Assessment",
+  "day": 6,
+  "topic": "Loops & Iteration",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY06-Q01",
+      "day": 6,
+      "topic": "Loops & Iteration",
+      "question": "Print numbers from 1 to 100 using a for loop."
+    },
+    {
+      "id": "DAY06-Q02",
+      "day": 6,
+      "topic": "Loops & Iteration",
+      "question": "Calculate the sum of numbers from 1 to N."
+    },
+    {
+      "id": "DAY06-Q03",
+      "day": 6,
+      "topic": "Loops & Iteration",
+      "question": "Generate the multiplication table of a number."
+    },
+    {
+      "id": "DAY06-Q04",
+      "day": 6,
+      "topic": "Loops & Iteration",
+      "question": "Find the factorial of a number using a loop."
+    },
+    {
+      "id": "DAY06-Q05",
+      "day": 6,
+      "topic": "Loops & Iteration",
+      "question": "Print all prime numbers between two given numbers."
+    }
+  ]
+}

@@ -1,0 +1,557 @@
+{
+    "day": 29,
+    "topic": "Frontend Performance, Debugging and Optimization",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D29-001",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 1 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-002",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 2?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-003",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 3?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-004",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 4 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-005",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 5?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-006",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 6 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-007",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 7?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-008",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 8?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-009",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 9 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-010",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 10?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-011",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 11 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-012",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 12?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-013",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 13?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-014",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 14 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-015",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 15?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-016",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 16 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-017",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 17?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-018",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 18?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-019",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 19 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-020",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 20?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-021",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 21 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-022",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 22?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-023",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 23?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-024",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 24 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-025",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 25?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-026",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 26 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-027",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 27?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-028",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 28?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-029",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 29 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-030",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 30?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-031",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 31 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-032",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 32?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-033",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 33?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-034",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 34 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-035",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 35?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-036",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 36 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-037",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 37?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-038",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 38?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-039",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 39 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-040",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 40?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-041",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 41 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-042",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 42?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-043",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 43?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-044",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 44 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-045",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 45?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-046",
+            "question": "What is the primary purpose of Frontend Performance, Debugging and Optimization feature 46 in Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "To implement Frontend Performance, Debugging and Optimization feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-047",
+            "question": "How do you correctly use Frontend Performance, Debugging and Optimization feature 47?",
+            "options": {
+                "A": "By following standard Frontend Performance, Debugging and Optimization guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-048",
+            "question": "Which of the following best describes Frontend Performance, Debugging and Optimization feature 48?",
+            "options": {
+                "A": "A key concept in Frontend Performance, Debugging and Optimization",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-049",
+            "question": "Why is Frontend Performance, Debugging and Optimization feature 49 important for Frontend Performance, Debugging and Optimization?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D29-050",
+            "question": "When should you avoid using Frontend Performance, Debugging and Optimization feature 50?",
+            "options": {
+                "A": "When it violates Frontend Performance, Debugging and Optimization best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

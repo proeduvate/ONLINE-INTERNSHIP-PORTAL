@@ -1,0 +1,129 @@
+{
+  "curriculum": "Data Science",
+  "day": 21,
+  "topic": "Feature Selection and Dimensionality Reduction",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Identify relevant and redundant features in a dataset.",
+    "Apply feature selection techniques to reduce unnecessary variables.",
+    "Explain how PCA reduces dimensionality while preserving important information."
+  ],
+  "activities": [
+    {
+      "id": "d21-a1",
+      "type": "discover",
+      "title": "Feature Relevance Map",
+      "instruction": "Identify which features are relevant, irrelevant, or redundant for prediction.",
+      "content": {
+        "concept": "Relevant features provide useful predictive information, irrelevant features add little value, and redundant features duplicate information already captured by other variables.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Age",
+            "Customer ID",
+            "Monthly Income",
+            "Purchase Frequency",
+            "Duplicate Income Feature"
+          ],
+          "descriptions": [
+            "Can provide useful information for predicting customer behavior.",
+            "Usually identifies a record rather than providing predictive information.",
+            "May help explain purchasing behavior.",
+            "Can be strongly related to customer activity and predictions.",
+            "Contains information already represented by another income feature."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d21-a2",
+      "type": "discover",
+      "title": "Selection Strategy",
+      "instruction": "Match each feature selection approach to how it selects features.",
+      "content": {
+        "concept": "Filter methods evaluate features independently of a model, wrapper methods evaluate feature subsets using a model, and embedded methods select features during model training.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Filter Method → Select features using statistical properties before model training",
+            "Wrapper Method → Evaluate different feature subsets using a model",
+            "Embedded Method → Select features as part of model training",
+            "Correlation Filtering → Remove highly redundant numerical features"
+          ],
+          "answer": "Filter Method → Select features using statistical properties before model training"
+        }
+      }
+    },
+    {
+      "id": "d21-a3",
+      "type": "discover",
+      "title": "PCA Anatomy",
+      "instruction": "Explore the main stages of Principal Component Analysis.",
+      "content": {
+        "concept": "PCA transforms correlated features into a smaller set of principal components that capture important variation in the data.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Standardize Features",
+            "Calculate Covariance Structure",
+            "Find Principal Components",
+            "Rank Components by Explained Variance",
+            "Select Components",
+            "Transform the Dataset"
+          ],
+          "descriptions": [
+            "Put numerical features on comparable scales when required.",
+            "Describe how features vary together.",
+            "Find new directions that capture variation in the data.",
+            "Determine how much variance each component explains.",
+            "Keep a smaller number of components based on the desired information retention.",
+            "Represent the original data using the selected components."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d21-a4",
+      "type": "discover",
+      "title": "Variance Slider",
+      "instruction": "Adjust the number of retained components and observe the trade-off between dimensionality and explained variance.",
+      "content": {
+        "concept": "Selecting more principal components generally retains more information but provides less dimensionality reduction.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "slider",
+        "family": "slider",
+        "config": {
+          "min": 1,
+          "max": 20,
+          "default": 5
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-21.json",
+  "practicalTaskRef": "practical-day-21.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

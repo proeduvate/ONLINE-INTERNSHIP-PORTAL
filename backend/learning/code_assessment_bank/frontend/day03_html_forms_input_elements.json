@@ -1,0 +1,68 @@
+{
+    "day": 3,
+    "topic": "HTML Forms & Input Elements",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D3-Q001",
+            "title": "Registration Form",
+            "description": "Create a student registration form with:",
+            "requirements": [
+                "Name",
+                "Email",
+                "Password",
+                "Date of birth",
+                "Gender",
+                "Course",
+                "Submit button"
+            ]
+        },
+        {
+            "id": "CODE-D3-Q002",
+            "title": "Job Application Form",
+            "description": "Create a job application form containing:",
+            "requirements": [
+                "Personal information",
+                "Resume upload",
+                "Experience",
+                "Skills",
+                "Availability",
+                "Submit button"
+            ]
+        },
+        {
+            "id": "CODE-D3-Q003",
+            "title": "Login Form",
+            "description": "Create a login form with:",
+            "requirements": [
+                "Email",
+                "Password",
+                "Remember me",
+                "Login button",
+                "Forgot password link"
+            ]
+        },
+        {
+            "id": "CODE-D3-Q004",
+            "title": "Internship Application Form",
+            "description": "",
+            "requirements": [
+                "Create an internship application form with multiple input types including radio buttons",
+                "checkboxes",
+                "select boxes and textarea"
+            ]
+        },
+        {
+            "id": "CODE-D3-Q005",
+            "title": "Multi-Section Form",
+            "description": "Create a complete employee onboarding form divided into:",
+            "requirements": [
+                "Personal details",
+                "Education",
+                "Employment",
+                "Emergency contact",
+                "Declaration"
+            ]
+        }
+    ]
+}

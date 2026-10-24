@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 27 Code Assessment",
+  "day": 27,
+  "topic": "Regular Expressions & Text Processing",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY27-Q01",
+      "day": 27,
+      "topic": "Regular Expressions & Text Processing",
+      "question": "Validate email addresses using regular expressions."
+    },
+    {
+      "id": "DAY27-Q02",
+      "day": 27,
+      "topic": "Regular Expressions & Text Processing",
+      "question": "Extract all phone numbers from a text document."
+    },
+    {
+      "id": "DAY27-Q03",
+      "day": 27,
+      "topic": "Regular Expressions & Text Processing",
+      "question": "Extract URLs from a given paragraph."
+    },
+    {
+      "id": "DAY27-Q04",
+      "day": 27,
+      "topic": "Regular Expressions & Text Processing",
+      "question": "Validate passwords using regex rules."
+    },
+    {
+      "id": "DAY27-Q05",
+      "day": 27,
+      "topic": "Regular Expressions & Text Processing",
+      "question": "Build a text analyzer that extracts emails, phone numbers, URLs, and hashtags."
+    }
+  ]
+}

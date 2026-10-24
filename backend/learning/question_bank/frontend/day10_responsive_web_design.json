@@ -1,0 +1,557 @@
+{
+  "day": 10,
+  "topic": "Responsive Web Design",
+  "total_questions": 50,
+  "questions": [
+    {
+      "id": "Q-D10-001",
+      "question": "What is responsive web design?",
+      "options": {
+        "A": "A design that adapts to different screen sizes",
+        "B": "A design that works only on desktops",
+        "C": "A design without CSS",
+        "D": "A design using only images"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-002",
+      "question": "Which HTML element is commonly used to configure the viewport?",
+      "options": {
+        "A": "<meta>",
+        "B": "<viewport>",
+        "C": "<screen>",
+        "D": "<responsive>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-003",
+      "question": "Which viewport meta tag is recommended for responsive pages?",
+      "options": {
+        "A": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+        "B": "<meta responsive=\"true\">",
+        "C": "<viewport width=\"device\">",
+        "D": "<meta screen=\"responsive\">"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-004",
+      "question": "What does width=device-width mean?",
+      "options": {
+        "A": "The layout width matches the device screen width",
+        "B": "The page width is always 1000px",
+        "C": "The device width is ignored",
+        "D": "The page uses desktop width"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-005",
+      "question": "Which CSS feature is commonly used to apply styles based on screen width?",
+      "options": {
+        "A": "Media queries",
+        "B": "CSS variables only",
+        "C": "HTML comments",
+        "D": "JavaScript loops"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-006",
+      "question": "Which syntax correctly starts a media query?",
+      "options": {
+        "A": "@media",
+        "B": "@screen",
+        "C": "@responsive",
+        "D": "@device"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-007",
+      "question": "Which media query targets screens with a maximum width of 600px?",
+      "options": {
+        "A": "@media (max-width: 600px)",
+        "B": "@media (width-max: 600px)",
+        "C": "@screen (max: 600px)",
+        "D": "@media-screen 600px"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-008",
+      "question": "Which media query targets screens wider than 768px?",
+      "options": {
+        "A": "@media (min-width: 768px)",
+        "B": "@media (width-minimum: 768px)",
+        "C": "@screen (greater: 768px)",
+        "D": "@media > 768px"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-009",
+      "question": "What is a breakpoint?",
+      "options": {
+        "A": "A screen width where layout styles change",
+        "B": "A broken HTML tag",
+        "C": "A JavaScript error",
+        "D": "A fixed image size"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-010",
+      "question": "Which approach designs for small screens first?",
+      "options": {
+        "A": "Mobile-first design",
+        "B": "Desktop-only design",
+        "C": "Screen-last design",
+        "D": "Fixed-width design"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-011",
+      "question": "Which media query is commonly used in mobile-first CSS to enhance larger screens?",
+      "options": {
+        "A": "@media (min-width: ...)",
+        "B": "@media (max-width: ...)",
+        "C": "@mobile-only",
+        "D": "@desktop-first"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-012",
+      "question": "Which CSS unit is relative to the viewport width?",
+      "options": {
+        "A": "vw",
+        "B": "vh",
+        "C": "rem",
+        "D": "em"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-013",
+      "question": "Which CSS unit is relative to the viewport height?",
+      "options": {
+        "A": "vh",
+        "B": "vw",
+        "C": "ch",
+        "D": "rem"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-014",
+      "question": "What does 50vw represent?",
+      "options": {
+        "A": "50% of the viewport width",
+        "B": "50% of the parent height",
+        "C": "50 pixels",
+        "D": "50% of the font size"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-015",
+      "question": "Which property prevents an image from becoming wider than its container?",
+      "options": {
+        "A": "max-width: 100%;",
+        "B": "width: fixed;",
+        "C": "image-width: auto;",
+        "D": "responsive-width: true;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-016",
+      "question": "Which declaration makes an image scale proportionally within its container?",
+      "options": {
+        "A": "max-width: 100%; height: auto;",
+        "B": "width: 100%; height: 100%;",
+        "C": "image-scale: true;",
+        "D": "object-fit: fixed;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-017",
+      "question": "Which property controls how an image fits inside a fixed box?",
+      "options": {
+        "A": "object-fit",
+        "B": "image-fit",
+        "C": "fit-image",
+        "D": "box-image-fit"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-018",
+      "question": "Which object-fit value fills the box while maintaining the image ratio and cropping if necessary?",
+      "options": {
+        "A": "cover",
+        "B": "contain",
+        "C": "stretch-only",
+        "D": "fill-ratio"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-019",
+      "question": "Which object-fit value displays the entire image inside the box?",
+      "options": {
+        "A": "contain",
+        "B": "cover",
+        "C": "full-image",
+        "D": "inside-only"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-020",
+      "question": "Which CSS function can create fluid values with minimum and maximum limits?",
+      "options": {
+        "A": "clamp()",
+        "B": "fluid()",
+        "C": "responsive()",
+        "D": "limit-size()"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-021",
+      "question": "What does clamp(1rem, 2vw, 2rem) provide?",
+      "options": {
+        "A": "A value with minimum, preferred, and maximum limits",
+        "B": "Three separate font sizes",
+        "C": "A fixed value of 2vw",
+        "D": "A media query"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-022",
+      "question": "Which CSS function calculates a value using addition or subtraction?",
+      "options": {
+        "A": "calc()",
+        "B": "compute()",
+        "C": "size-calc()",
+        "D": "responsive-calc()"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-023",
+      "question": "Which property can allow text to wrap instead of overflowing?",
+      "options": {
+        "A": "overflow-wrap",
+        "B": "text-break-only",
+        "C": "wrap-text-property",
+        "D": "word-fit"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-024",
+      "question": "Which value allows long words to break when necessary?",
+      "options": {
+        "A": "overflow-wrap: break-word;",
+        "B": "word-wrap: never;",
+        "C": "text-overflow: break;",
+        "D": "break-text: true;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-025",
+      "question": "Which CSS property hides content that exceeds an element's box?",
+      "options": {
+        "A": "overflow: hidden;",
+        "B": "content-hide: true;",
+        "C": "display-overflow: none;",
+        "D": "box-overflow: remove;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-026",
+      "question": "Which layout system is useful for responsive one-dimensional layouts?",
+      "options": {
+        "A": "Flexbox",
+        "B": "HTML frames",
+        "C": "Table markup only",
+        "D": "Absolute positioning only"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-027",
+      "question": "Which layout system is useful for responsive two-dimensional layouts?",
+      "options": {
+        "A": "CSS Grid",
+        "B": "Inline text",
+        "C": "HTML comments",
+        "D": "Float clearing only"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-028",
+      "question": "What is a fluid layout?",
+      "options": {
+        "A": "A layout that uses flexible sizes",
+        "B": "A layout with only fixed pixels",
+        "C": "A layout without containers",
+        "D": "A layout that works only on phones"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-029",
+      "question": "Which unit is relative to the root element's font size?",
+      "options": {
+        "A": "rem",
+        "B": "em",
+        "C": "px",
+        "D": "pt"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-030",
+      "question": "Which unit is relative to the current element's font size?",
+      "options": {
+        "A": "em",
+        "B": "rem",
+        "C": "vw",
+        "D": "vh"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-031",
+      "question": "Which CSS property can change the layout direction on smaller screens?",
+      "options": {
+        "A": "flex-direction",
+        "B": "screen-direction",
+        "C": "responsive-direction",
+        "D": "layout-change"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-032",
+      "question": "Which declaration stacks flex items vertically?",
+      "options": {
+        "A": "flex-direction: column;",
+        "B": "flex-stack: vertical;",
+        "C": "display: vertical;",
+        "D": "direction: down;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-033",
+      "question": "What is the purpose of a responsive navigation menu?",
+      "options": {
+        "A": "To make navigation usable on different screen sizes",
+        "B": "To remove all navigation links",
+        "C": "To disable mobile devices",
+        "D": "To replace CSS"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-034",
+      "question": "Which HTML element is commonly used for the main navigation section?",
+      "options": {
+        "A": "<nav>",
+        "B": "<navigation>",
+        "C": "<menu-bar>",
+        "D": "<links>"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-035",
+      "question": "What does the mobile-first approach usually begin with?",
+      "options": {
+        "A": "Styles for small screens",
+        "B": "Styles for large monitors only",
+        "C": "JavaScript animations",
+        "D": "Desktop-only fixed widths"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-036",
+      "question": "Which practice improves responsive readability?",
+      "options": {
+        "A": "Using flexible text sizes and suitable line height",
+        "B": "Using extremely small fixed text",
+        "C": "Preventing all text wrapping",
+        "D": "Using only absolute units"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-037",
+      "question": "Which property can create a maximum content width for large screens?",
+      "options": {
+        "A": "max-width",
+        "B": "limit-width-only",
+        "C": "container-width-max",
+        "D": "screen-limit"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-038",
+      "question": "Which declaration commonly centers a fixed-width container?",
+      "options": {
+        "A": "margin: 0 auto;",
+        "B": "align: center;",
+        "C": "position: middle;",
+        "D": "container-center: true;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-039",
+      "question": "What does a mobile viewport meta tag help prevent?",
+      "options": {
+        "A": "Incorrect desktop-style scaling on mobile devices",
+        "B": "CSS syntax errors",
+        "C": "Missing JavaScript files",
+        "D": "Broken database connections"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-040",
+      "question": "Which device feature can be targeted using a media query?",
+      "options": {
+        "A": "Screen width",
+        "B": "HTML class name only",
+        "C": "Database table name",
+        "D": "JavaScript variable type"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-041",
+      "question": "Which media feature detects the user's preferred color scheme?",
+      "options": {
+        "A": "prefers-color-scheme",
+        "B": "color-preference-mode",
+        "C": "theme-detection",
+        "D": "user-color-style"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-042",
+      "question": "Which media feature detects whether the user prefers reduced motion?",
+      "options": {
+        "A": "prefers-reduced-motion",
+        "B": "motion-preference",
+        "C": "reduce-animation-mode",
+        "D": "accessibility-motion"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-043",
+      "question": "Which declaration applies styles when reduced motion is preferred?",
+      "options": {
+        "A": "@media (prefers-reduced-motion: reduce)",
+        "B": "@media (motion: none)",
+        "C": "@media (animation: reduce)",
+        "D": "@media (accessibility: motion)"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-044",
+      "question": "What is the purpose of testing a website at different widths?",
+      "options": {
+        "A": "To identify layout and usability problems",
+        "B": "To increase database size",
+        "C": "To remove semantic HTML",
+        "D": "To disable responsive styles"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-045",
+      "question": "Which issue occurs when a page is wider than the mobile viewport?",
+      "options": {
+        "A": "Horizontal scrolling",
+        "B": "Automatic accessibility",
+        "C": "Faster loading",
+        "D": "Smaller database storage"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-046",
+      "question": "Which CSS property can help prevent horizontal overflow from wide elements?",
+      "options": {
+        "A": "max-width",
+        "B": "fixed-width",
+        "C": "screen-lock",
+        "D": "overflow-x: expand;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-047",
+      "question": "Which value makes a grid create responsive columns based on available space?",
+      "options": {
+        "A": "repeat(auto-fit, minmax(200px, 1fr))",
+        "B": "grid-columns: responsive;",
+        "C": "grid-auto: mobile;",
+        "D": "columns: flexible-only;"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-048",
+      "question": "What does progressive enhancement mean?",
+      "options": {
+        "A": "Starting with a basic experience and adding advanced features",
+        "B": "Designing only for the largest screen",
+        "C": "Removing support for older devices",
+        "D": "Using JavaScript for every style"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-049",
+      "question": "Which practice is important for responsive images?",
+      "options": {
+        "A": "Providing suitable dimensions and preventing overflow",
+        "B": "Giving every image a fixed width of 2000px",
+        "C": "Disabling image scaling",
+        "D": "Using images without alt text"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "id": "Q-D10-050",
+      "question": "What is the main goal of responsive web design?",
+      "options": {
+        "A": "Provide a usable experience across devices",
+        "B": "Use only desktop layouts",
+        "C": "Avoid all media queries",
+        "D": "Replace HTML with CSS"
+      },
+      "correct_answer": "A"
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "curriculum": "Data Science",
+  "day": 29,
+  "topic": "Capstone Testing, Visualization, Documentation, and Presentation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Validate the capstone pipeline and model using appropriate tests and metrics.",
+    "Create visualizations that communicate project findings clearly.",
+    "Prepare concise technical documentation and a project presentation."
+  ],
+  "activities": [
+    {
+      "id": "d29-a1",
+      "type": "discover",
+      "title": "Testing Strategy",
+      "instruction": "Connect each project component with an appropriate type of test.",
+      "content": {
+        "concept": "Testing verifies data processing, model behavior, API responses, and end-to-end pipeline reliability.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Validation Test",
+            "Unit Test",
+            "Model Evaluation",
+            "API Test",
+            "Integration Test",
+            "End-to-End Test"
+          ],
+          "descriptions": [
+            "Checks whether incoming or processed data meets expected rules.",
+            "Tests an individual function or component in isolation.",
+            "Measures model performance using appropriate evaluation metrics.",
+            "Checks whether an API accepts requests and returns expected responses.",
+            "Checks whether multiple components work together correctly.",
+            "Validates the complete workflow from input to final output."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d29-a2",
+      "type": "discover",
+      "title": "Visualization Selector",
+      "instruction": "Match each analytical goal with an appropriate visualization.",
+      "content": {
+        "concept": "Effective visualizations match the chart type to the data relationship and communication goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Compare Categories → Bar Chart",
+            "Show a Trend Over Time → Line Chart",
+            "Show Numerical Distribution → Histogram",
+            "Show Relationship Between Two Numerical Variables → Scatter Plot",
+            "Compare Distributions → Box Plot"
+          ],
+          "answer": "Compare Categories → Bar Chart"
+        }
+      }
+    },
+    {
+      "id": "d29-a3",
+      "type": "discover",
+      "title": "Documentation Anatomy",
+      "instruction": "Identify the essential sections of technical project documentation.",
+      "content": {
+        "concept": "Technical documentation explains the project's purpose, data, methodology, results, setup, usage, and limitations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Problem Statement",
+            "Dataset Description",
+            "Methodology",
+            "Implementation",
+            "Results and Evaluation",
+            "Setup and Usage",
+            "Limitations and Future Work"
+          ],
+          "descriptions": [
+            "Defines the problem being addressed.",
+            "Describes the source, structure, and important characteristics of the data.",
+            "Explains the analytical and machine learning approach.",
+            "Describes the major components and implementation details.",
+            "Presents metrics, findings, and relevant visualizations.",
+            "Explains how another person can install, run, or use the project.",
+            "Documents current limitations and possible improvements."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d29-a4",
+      "type": "discover",
+      "title": "Presentation Builder",
+      "instruction": "Build a clear presentation flow for the capstone project.",
+      "content": {
+        "concept": "A clear presentation connects the problem, approach, evidence, results, limitations, and future work.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Problem Statement",
+            "Motivation and Objectives",
+            "Dataset and Preparation",
+            "Methodology and Architecture",
+            "Results and Visualizations",
+            "Demo or Prediction Output",
+            "Limitations",
+            "Future Improvements"
+          ],
+          "required": [
+            "Problem Statement",
+            "Objectives",
+            "Dataset and Preparation",
+            "Methodology and Architecture",
+            "Results and Visualizations",
+            "Demo or Prediction Output"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-29.json",
+  "practicalTaskRef": "practical-day-29.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

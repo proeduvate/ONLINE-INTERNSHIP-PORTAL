@@ -1,0 +1,128 @@
+{
+  "curriculum": "Python",
+  "day": 18,
+  "topic": "Concurrency and Async Programming",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Distinguish synchronous execution from asynchronous execution.",
+    "Use async and await for I/O-bound operations.",
+    "Understand tasks, event loops, and concurrency trade-offs."
+  ],
+  "activities": [
+    {
+      "id": "d18-a1",
+      "type": "click-map",
+      "title": "Async Execution Model",
+      "instruction": "Explore the components that make asynchronous execution possible.",
+      "content": {
+        "concept": "Python's asyncio model uses an event loop to coordinate coroutines and tasks, allowing other work to progress while an operation is awaiting I/O.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Coroutine",
+            "async",
+            "await",
+            "Task",
+            "Event Loop"
+          ],
+          "descriptions": [
+            "A coroutine is an awaitable computation defined with async def.",
+            "The async keyword defines a coroutine function.",
+            "await suspends the current coroutine until the awaited operation can continue.",
+            "A Task schedules a coroutine to run concurrently with other tasks.",
+            "The event loop coordinates and runs asynchronous tasks and callbacks."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a2",
+      "type": "anatomy",
+      "title": "Async Syntax Anatomy",
+      "instruction": "Click each part of the async function to inspect its role.",
+      "content": {
+        "concept": "async def creates a coroutine function, while await allows the coroutine to suspend during an asynchronous operation.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "async def fetch_data():",
+            "    response = await client.get(url)",
+            "    return response"
+          ],
+          "descriptions": [
+            "Defines fetch_data as a coroutine function.",
+            "await pauses this coroutine while the asynchronous HTTP operation is waiting for completion.",
+            "Returns the completed response to the caller."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a3",
+      "type": "discover",
+      "title": "Concurrent Task Flow",
+      "instruction": "Arrange the steps for running multiple asynchronous tasks.",
+      "content": {
+        "concept": "Multiple I/O-bound coroutines can be scheduled as tasks so the event loop can make progress on another task while one is waiting.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define asynchronous operations",
+            "2. Create or schedule tasks",
+            "3. Event loop runs the tasks",
+            "4. A task awaits I/O",
+            "5. Event loop runs another ready task",
+            "6. Awaited task resumes when its I/O completes"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d18-a4",
+      "type": "discover",
+      "title": "Concurrency Strategy",
+      "instruction": "Choose the execution approach that fits the scenario.",
+      "content": {
+        "concept": "Async programming is particularly useful for I/O-bound workloads. CPU-heavy work generally requires different concurrency or parallelism strategies.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "asyncio with concurrent HTTP requests",
+            "A simple sequential loop",
+            "asyncio for intensive CPU calculations",
+            "No concurrency model is needed"
+          ],
+          "answer": "asyncio with concurrent HTTP requests"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-18.json",
+  "practicalTaskRef": "practical-day-18.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

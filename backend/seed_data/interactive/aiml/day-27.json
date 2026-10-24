@@ -1,0 +1,134 @@
+{
+  "curriculum": "AIML",
+  "day": 27,
+  "topic": "Capstone Model Integration and API Testing",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Integrate a trained machine learning model into an API.",
+    "Understand request and response structures for predictions.",
+    "Identify common API and model integration errors."
+  ],
+  "activities": [
+    {
+      "id": "d27-a1",
+      "type": "discover",
+      "title": "Understand Prediction Requests",
+      "instruction": "Inspect each request component to reveal its role.",
+      "content": {
+        "concept": "Prediction APIs receive structured input features and return model-generated results.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Endpoint",
+            "HTTP Method",
+            "Headers",
+            "Request Body",
+            "Input Features",
+            "Prediction Response"
+          ],
+          "descriptions": [
+            "The API path that receives the prediction request.",
+            "Specifies the HTTP action used to send the request, typically POST for predictions.",
+            "Contains metadata such as content type and authentication information.",
+            "Contains the structured data sent to the prediction endpoint.",
+            "The values supplied to the model for generating a prediction.",
+            "Contains the model output and any relevant response metadata."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a2",
+      "type": "discover",
+      "title": "Build the Prediction API",
+      "instruction": "Assemble the API request and prediction flow.",
+      "content": {
+        "concept": "Model-serving APIs connect client requests to preprocessing, inference, and prediction responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Client Request",
+            "POST Prediction Endpoint",
+            "Validate Input",
+            "Preprocess Features",
+            "Load Trained Model",
+            "Run Inference",
+            "Format Prediction",
+            "Return JSON Response"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a3",
+      "type": "discover",
+      "title": "Match API Errors",
+      "instruction": "Match each error type with its likely cause.",
+      "content": {
+        "concept": "Invalid input, incorrect feature shapes, missing models, and server errors can break prediction APIs.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "match",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "400 Bad Request",
+            "401 Unauthorized",
+            "404 Not Found",
+            "422 Validation Error",
+            "500 Internal Server Error",
+            "Feature Shape Mismatch",
+            "Model File Not Found",
+            "Invalid JSON"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d27-a4",
+      "type": "discover",
+      "title": "Test the Endpoint",
+      "instruction": "Select the valid test request for each prediction scenario.",
+      "content": {
+        "concept": "API testing verifies input validation, prediction behavior, response structure, and error handling.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Valid JSON with all required features",
+            "Missing required feature",
+            "Incorrect feature data type",
+            "Extra unsupported field",
+            "Empty request body",
+            "Malformed JSON",
+            "Valid request with expected response structure"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-27.json",
+  "practicalTaskRef": "practical-day-27.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,47 @@
+{
+    "day": 7,
+    "topic": "CSS Typography, Colors & Backgrounds",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D7-Q001",
+            "title": "Typography Showcase",
+            "description": "Create a webpage demonstrating different:",
+            "requirements": [
+                "Font sizes",
+                "Font weights",
+                "Line heights",
+                "Letter spacing",
+                "Text alignment"
+            ]
+        },
+        {
+            "id": "CODE-D7-Q002",
+            "title": "Theme Design",
+            "description": "Create a light-themed website using a consistent color palette.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D7-Q003",
+            "title": "Dark Mode Design",
+            "description": "Create a dark-themed webpage with appropriate text and background contrast.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D7-Q004",
+            "title": "Gradient Hero",
+            "description": "Create a hero section using gradients and background images.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D7-Q005",
+            "title": "Brand Style Page",
+            "description": "",
+            "requirements": [
+                "Design a complete brand page using custom typography",
+                "colors",
+                "gradients and backgrounds"
+            ]
+        }
+    ]
+}

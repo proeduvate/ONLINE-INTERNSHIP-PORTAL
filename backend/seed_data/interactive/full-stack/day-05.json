@@ -1,0 +1,127 @@
+{
+  "curriculum": "Full Stack",
+  "day": 5,
+  "topic": "Modern JavaScript, APIs, and Asynchronous Programming",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Use modern JavaScript features such as arrow functions, destructuring, and modules.",
+    "Explain asynchronous execution using promises and async/await.",
+    "Consume a REST API and process its response in a web application."
+  ],
+  "activities": [
+    {
+      "id": "d5-a1",
+      "type": "discover",
+      "title": "Modern JavaScript Explorer",
+      "instruction": "Identify the modern JavaScript feature being used in each example.",
+      "content": {
+        "concept": "Modern JavaScript includes features such as arrow functions, destructuring, spread syntax, and modules that make code more expressive and reusable.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "modern-js",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "const add = (a, b) => a + b → Arrow function",
+            "const { name } = user → Destructuring",
+            "const copy = { ...user } → Spread syntax",
+            "export default User → Module export"
+          ],
+          "answer": "const { name } = user → Destructuring"
+        }
+      }
+    },
+    {
+      "id": "d5-a2",
+      "type": "discover",
+      "title": "Async Execution Flow",
+      "instruction": "Arrange the steps of an async/await operation.",
+      "content": {
+        "concept": "Promises represent future results, while async and await provide a readable way to pause an async function until a Promise settles.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "async-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Call the async function",
+            "2. Start the asynchronous operation",
+            "3. Await the Promise",
+            "4. Promise settles",
+            "5. Async function resumes",
+            "6. Process the result"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a3",
+      "type": "discover",
+      "title": "Fetch Request Builder",
+      "instruction": "Construct a basic fetch request and response-handling flow.",
+      "content": {
+        "concept": "The Fetch API allows browser JavaScript to send HTTP requests and asynchronously process server responses.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "fetch-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "fetch('/api/users')",
+            "await response",
+            "response.json()",
+            "data",
+            "render data"
+          ],
+          "required": [
+            "fetch('/api/users')",
+            "response.json()",
+            "data",
+            "render data"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5-a4",
+      "type": "discover",
+      "title": "API Response Anatomy",
+      "instruction": "Explore the important parts of an API response.",
+      "content": {
+        "concept": "An API response commonly contains a status code, headers, and a body such as JSON data that the frontend can process.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "api-response-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Status code",
+            "Headers",
+            "JSON body"
+          ],
+          "descriptions": [
+            "Indicates whether the request succeeded or failed.",
+            "Contains metadata about the response, such as its content type.",
+            "Contains the actual structured data returned by the API."
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-5.json",
+  "practicalTaskRef": "practical-day-5.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

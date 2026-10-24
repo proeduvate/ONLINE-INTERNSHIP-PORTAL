@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 24 Code Assessment",
+  "day": 24,
+  "topic": "OOP — Inheritance & Polymorphism",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY24-Q01",
+      "day": 24,
+      "topic": "OOP — Inheritance & Polymorphism",
+      "question": "Create a base Person class and derive Student and Teacher classes."
+    },
+    {
+      "id": "DAY24-Q02",
+      "day": 24,
+      "topic": "OOP — Inheritance & Polymorphism",
+      "question": "Create a base Vehicle class and derive Car, Bike, and Bus."
+    },
+    {
+      "id": "DAY24-Q03",
+      "day": 24,
+      "topic": "OOP — Inheritance & Polymorphism",
+      "question": "Override a method in child classes to demonstrate polymorphism."
+    },
+    {
+      "id": "DAY24-Q04",
+      "day": 24,
+      "topic": "OOP — Inheritance & Polymorphism",
+      "question": "Use super() to initialize inherited class attributes."
+    },
+    {
+      "id": "DAY24-Q05",
+      "day": 24,
+      "topic": "OOP — Inheritance & Polymorphism",
+      "question": "Build a university management system using inheritance and polymorphism."
+    }
+  ]
+}

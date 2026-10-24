@@ -1,0 +1,134 @@
+{
+  "curriculum": "Java",
+  "day": 19,
+  "topic": "Spring Framework Fundamentals and Dependency Injection",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain inversion of control and dependency injection.",
+    "Identify common Spring components and their responsibilities.",
+    "Construct a basic dependency-injection flow using Spring-managed components."
+  ],
+  "activities": [
+    {
+      "id": "d19-a1",
+      "type": "discover",
+      "title": "Spring Core Concepts",
+      "instruction": "Explore the major concepts behind Spring dependency management.",
+      "content": {
+        "concept": "Spring's IoC container manages application objects and can inject their dependencies instead of requiring each class to construct those dependencies itself.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "click-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "IoC Container",
+            "Dependency Injection",
+            "Bean",
+            "Configuration",
+            "Component Scanning"
+          ],
+          "descriptions": [
+            "Creates and manages Spring application objects.",
+            "Provides an object's required dependencies from outside the object.",
+            "An object managed by the Spring container.",
+            "Defines how application components and dependencies are configured.",
+            "Discovers classes annotated as Spring components."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a2",
+      "type": "discover",
+      "title": "Dependency Injection Flow",
+      "instruction": "Arrange how a Spring-managed dependency is provided.",
+      "content": {
+        "concept": "A Spring application defines components and their dependencies, the container creates the required objects, and the dependency is supplied when the dependent component is created.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "reorder",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Define a service component",
+            "2. Define the dependency it requires",
+            "3. Spring discovers the components",
+            "4. The IoC container creates the dependency",
+            "5. Spring injects the dependency into the service"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d19-a3",
+      "type": "discover",
+      "title": "Choose the Spring Component",
+      "instruction": "Choose the annotation that best matches the component's responsibility.",
+      "content": {
+        "concept": "Spring provides stereotype annotations such as @Component, @Service, @Repository, and @Controller to identify common application-layer components.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "@Controller for handling web requests",
+            "@Repository for implementing business rules",
+            "@Service for mapping HTTP requests",
+            "@Controller for database persistence"
+          ],
+          "answer": "@Controller for handling web requests"
+        }
+      }
+    },
+    {
+      "id": "d19-a4",
+      "type": "discover",
+      "title": "Dependency Graph Builder",
+      "instruction": "Build a simple Spring dependency relationship.",
+      "content": {
+        "concept": "A service can depend on another Spring-managed component through constructor injection, allowing the container to connect the components without manual object construction inside the service.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "UserController",
+            "UserService",
+            "UserRepository",
+            "Constructor injection",
+            "UserController → UserService",
+            "UserService → UserRepository",
+            "Create every dependency with new inside the controller"
+          ],
+          "required": [
+            "UserController",
+            "UserService",
+            "UserRepository",
+            "Constructor injection",
+            "UserController → UserService",
+            "UserService → UserRepository"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-19.json",
+  "practicalTaskRef": "practical-day-19.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

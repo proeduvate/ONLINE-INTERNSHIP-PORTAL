@@ -1,0 +1,557 @@
+{
+    "day": 12,
+    "topic": "CSS Transitions, Transforms and Animations",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D12-001",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 1 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-002",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 2?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-003",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 3?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-004",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 4 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-005",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 5?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-006",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 6 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-007",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 7?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-008",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 8?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-009",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 9 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-010",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 10?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-011",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 11 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-012",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 12?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-013",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 13?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-014",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 14 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-015",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 15?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-016",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 16 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-017",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 17?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-018",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 18?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-019",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 19 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-020",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 20?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-021",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 21 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-022",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 22?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-023",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 23?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-024",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 24 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-025",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 25?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-026",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 26 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-027",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 27?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-028",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 28?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-029",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 29 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-030",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 30?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-031",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 31 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-032",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 32?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-033",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 33?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-034",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 34 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-035",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 35?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-036",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 36 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-037",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 37?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-038",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 38?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-039",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 39 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-040",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 40?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-041",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 41 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-042",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 42?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-043",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 43?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-044",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 44 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-045",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 45?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-046",
+            "question": "What is the primary purpose of CSS Transitions, Transforms and Animations feature 46 in CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "To implement CSS Transitions, Transforms and Animations feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-047",
+            "question": "How do you correctly use CSS Transitions, Transforms and Animations feature 47?",
+            "options": {
+                "A": "By following standard CSS Transitions, Transforms and Animations guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-048",
+            "question": "Which of the following best describes CSS Transitions, Transforms and Animations feature 48?",
+            "options": {
+                "A": "A key concept in CSS Transitions, Transforms and Animations",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-049",
+            "question": "Why is CSS Transitions, Transforms and Animations feature 49 important for CSS Transitions, Transforms and Animations?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D12-050",
+            "question": "When should you avoid using CSS Transitions, Transforms and Animations feature 50?",
+            "options": {
+                "A": "When it violates CSS Transitions, Transforms and Animations best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

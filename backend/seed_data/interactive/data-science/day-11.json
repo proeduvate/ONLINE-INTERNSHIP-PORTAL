@@ -1,0 +1,130 @@
+{
+  "curriculum": "Data Science",
+  "day": 11,
+  "topic": "Advanced Pandas and Data Transformation",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Apply grouping and aggregation operations to datasets.",
+    "Combine multiple datasets using merge and join operations.",
+    "Transform tabular data for analytical workflows."
+  ],
+  "activities": [
+    {
+      "id": "d11-a1",
+      "type": "discover",
+      "title": "Explore GroupBy",
+      "instruction": "Build a GroupBy operation to summarize data by category.",
+      "content": {
+        "concept": "GroupBy divides a DataFrame into groups based on one or more columns so that calculations can be performed on each group.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "df.groupby('category')",
+            ".sum()",
+            ".mean()",
+            ".count()"
+          ],
+          "required": [
+            "df.groupby('category')",
+            ".mean()"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d11-a2",
+      "type": "discover",
+      "title": "Match Aggregations",
+      "instruction": "Identify what each aggregation tells you about grouped data.",
+      "content": {
+        "concept": "Aggregation functions summarize grouped values using measures such as sum, mean, count, minimum, and maximum.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "sum() → Total of the values",
+            "mean() → Average of the values",
+            "count() → Number of records",
+            "min() → Smallest value",
+            "max() → Largest value"
+          ],
+          "answer": "mean() → Average of the values"
+        }
+      }
+    },
+    {
+      "id": "d11-a3",
+      "type": "discover",
+      "title": "Join the Datasets",
+      "instruction": "Explore how related tables can be combined using a common key.",
+      "content": {
+        "concept": "Pandas merge and join operations combine related datasets using matching columns or indexes.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "Left DataFrame",
+            "Right DataFrame",
+            "Common Key",
+            "Merge",
+            "Result DataFrame"
+          ],
+          "descriptions": [
+            "The first dataset participating in the combination.",
+            "The second dataset containing related information.",
+            "A column whose matching values connect records between datasets.",
+            "The operation that combines rows from the related datasets.",
+            "The resulting DataFrame containing the combined information."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d11-a4",
+      "type": "discover",
+      "title": "Transform the Data",
+      "instruction": "Arrange the transformation steps into a logical analytical workflow.",
+      "content": {
+        "concept": "Data transformation can involve selecting, filtering, deriving, grouping, reshaping, and aggregating information for analysis.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Load the DataFrame",
+            "2. Select Relevant Columns",
+            "3. Filter Required Rows",
+            "4. Create or Modify Columns",
+            "5. Group or Reshape the Data",
+            "6. Apply Aggregations",
+            "7. Validate the Transformed Data"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-11.json",
+  "practicalTaskRef": "practical-day-11.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

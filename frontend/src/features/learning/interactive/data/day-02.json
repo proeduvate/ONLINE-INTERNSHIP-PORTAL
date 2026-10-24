@@ -1,0 +1,108 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 2,
+  "topic": "Semantic HTML5",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand semantic meaning",
+    "Choose appropriate landmarks",
+    "Structure content accessibly"
+  ],
+  "activities": [
+    {
+      "id": "d02-a01",
+      "type": "compare",
+      "title": "Semantic or Generic?",
+      "instruction": "Compare two structures and choose the one that communicates meaning better.",
+      "content": {
+        "concept": "Understand semantic meaning",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-compare",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "React (Component-based)",
+            "Vanilla JS (Imperative)"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d02-a02",
+      "type": "click-map",
+      "title": "Landmark Map",
+      "instruction": "Click header, nav, main, section and footer to map their roles.",
+      "content": {
+        "concept": "Choose appropriate landmarks",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Header Area",
+            "Main Content",
+            "Footer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d02-a03",
+      "type": "reorder",
+      "title": "Document Order",
+      "instruction": "Arrange semantic sections into a sensible page reading order.",
+      "content": {
+        "concept": "Structure content accessibly",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Setup project",
+            "2. Write code",
+            "3. Deploy"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d02-a04",
+      "type": "guided-code",
+      "title": "Semantic Builder",
+      "instruction": "Choose the correct semantic element for each content block.",
+      "content": {
+        "concept": "Understand semantic meaning",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<html>",
+            "<body>",
+            "</html>"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-02.json",
+  "practicalTaskRef": "practical-day-02.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

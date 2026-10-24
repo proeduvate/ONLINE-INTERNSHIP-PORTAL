@@ -1,0 +1,38 @@
+{
+  "title": "Python Day 20 Code Assessment",
+  "day": 20,
+  "topic": "CSV & JSON Processing",
+  "total_questions": 5,
+  "questions": [
+    {
+      "id": "DAY20-Q01",
+      "day": 20,
+      "topic": "CSV & JSON Processing",
+      "question": "Create a CSV file containing student records and read it using Python."
+    },
+    {
+      "id": "DAY20-Q02",
+      "day": 20,
+      "topic": "CSV & JSON Processing",
+      "question": "Calculate the average marks of students stored in a CSV file."
+    },
+    {
+      "id": "DAY20-Q03",
+      "day": 20,
+      "topic": "CSV & JSON Processing",
+      "question": "Create a JSON file containing employee information and read it."
+    },
+    {
+      "id": "DAY20-Q04",
+      "day": 20,
+      "topic": "CSV & JSON Processing",
+      "question": "Update specific records inside a JSON file."
+    },
+    {
+      "id": "DAY20-Q05",
+      "day": 20,
+      "topic": "CSV & JSON Processing",
+      "question": "Convert student data between CSV and JSON formats."
+    }
+  ]
+}

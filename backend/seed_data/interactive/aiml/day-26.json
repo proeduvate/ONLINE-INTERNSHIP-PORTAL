@@ -1,0 +1,135 @@
+{
+  "curriculum": "AIML",
+  "day": 26,
+  "topic": "Capstone Data Pipeline and Backend Integration",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Design a data pipeline from input collection to model prediction.",
+    "Connect preprocessing and model components with a backend service.",
+    "Identify how data flows between the frontend, backend, and AI model."
+  ],
+  "activities": [
+    {
+      "id": "d26-a1",
+      "type": "discover",
+      "title": "Map the AI Data Pipeline",
+      "instruction": "Arrange the pipeline stages in the correct order.",
+      "content": {
+        "concept": "A typical AI pipeline moves through data collection, validation, preprocessing, inference, and response.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-order",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "Collect input data",
+            "Validate the input",
+            "Preprocess the data",
+            "Prepare model features",
+            "Run model inference",
+            "Generate the prediction",
+            "Return the response"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a2",
+      "type": "discover",
+      "title": "Pipeline Component Map",
+      "instruction": "Explore each component and its role in the AI pipeline.",
+      "content": {
+        "concept": "Data loaders, preprocessors, models, and APIs each perform distinct responsibilities in an AI system.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "semantic-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Data Loader",
+            "Validator",
+            "Preprocessor",
+            "Feature Transformer",
+            "AI Model",
+            "Backend API",
+            "Response Handler"
+          ],
+          "descriptions": [
+            "Reads data from a source such as a file, database, sensor, or request.",
+            "Checks whether incoming data is valid, complete, and within expected ranges.",
+            "Cleans and transforms raw data into a usable representation.",
+            "Converts processed data into the feature format expected by the model.",
+            "Uses learned parameters to produce a prediction or generated output.",
+            "Receives client requests and coordinates the AI processing workflow.",
+            "Formats the model result and sends the response back to the client."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a3",
+      "type": "discover",
+      "title": "Build the Backend Flow",
+      "instruction": "Assemble the backend components into one AI prediction flow.",
+      "content": {
+        "concept": "An AI backend accepts input, validates it, prepares features, runs inference, and returns predictions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "architecture",
+        "family": "builder",
+        "config": {
+          "options": [
+            "Frontend Request",
+            "API Endpoint",
+            "Request Validation",
+            "Preprocessing Service",
+            "Feature Transformation",
+            "Loaded AI Model",
+            "Inference",
+            "Prediction Response"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d26-a4",
+      "type": "discover",
+      "title": "Choose the Correct Layer",
+      "instruction": "Select the application layer responsible for each operation.",
+      "content": {
+        "concept": "Separating API, preprocessing, model, and data layers improves maintainability and testing.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "selector-lab",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Frontend Layer",
+            "API Layer",
+            "Validation Layer",
+            "Preprocessing Layer",
+            "Model Layer",
+            "Data Layer",
+            "Response Layer"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-26.json",
+  "practicalTaskRef": "practical-day-26.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "curriculum": "Java",
+  "day": 15,
+  "topic": "JDBC and Database Connectivity",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Explain the components involved in connecting Java applications to databases.",
+    "Construct a basic JDBC workflow using connections, prepared statements, and result sets.",
+    "Choose safe database interaction patterns that reduce SQL injection risks."
+  ],
+  "activities": [
+    {
+      "id": "d15-a1",
+      "type": "discover",
+      "title": "JDBC Architecture",
+      "instruction": "Explore how a Java application communicates with a relational database.",
+      "content": {
+        "concept": "JDBC provides a standard Java API for interacting with relational databases. A Java application uses JDBC APIs together with a database-specific driver to establish connections and execute SQL operations.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "jdbc-architecture",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Java Application",
+            "JDBC API",
+            "JDBC Driver",
+            "Database Connection",
+            "Database"
+          ],
+          "descriptions": [
+            "The application containing the business logic and database operations.",
+            "The standard Java interfaces and classes used for database access.",
+            "Database-specific implementation that enables JDBC communication with the target database.",
+            "Represents an active session through which SQL operations can be executed.",
+            "The relational database storing and processing application data."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a2",
+      "type": "discover",
+      "title": "JDBC Workflow",
+      "instruction": "Arrange the stages of a parameterized database query.",
+      "content": {
+        "concept": "A typical JDBC query obtains a connection, creates a PreparedStatement, supplies parameter values, executes the query, processes the ResultSet, and closes resources.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "jdbc-workflow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Obtain a database Connection",
+            "2. Create a PreparedStatement",
+            "3. Bind parameter values",
+            "4. Execute the query",
+            "5. Process the ResultSet",
+            "6. Close resources"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a3",
+      "type": "discover",
+      "title": "PreparedStatement Builder",
+      "instruction": "Build a parameterized query that safely searches for a user by email.",
+      "content": {
+        "concept": "PreparedStatement uses placeholders such as ? for parameter values. Parameters are supplied separately from the SQL structure, which helps prevent SQL injection caused by concatenating untrusted input into SQL statements.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "prepared-statement-builder",
+        "family": "builder",
+        "config": {
+          "options": [
+            "SELECT * FROM users WHERE email = ?",
+            "PreparedStatement ps = connection.prepareStatement(sql);",
+            "ps.setString(1, email);",
+            "ResultSet rs = ps.executeQuery();"
+          ],
+          "required": [
+            "SELECT * FROM users WHERE email = ?",
+            "PreparedStatement ps = connection.prepareStatement(sql);",
+            "ps.setString(1, email);",
+            "ResultSet rs = ps.executeQuery();"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d15-a4",
+      "type": "discover",
+      "title": "ResultSet Anatomy",
+      "instruction": "Explore how JDBC processes rows returned from a query.",
+      "content": {
+        "concept": "A ResultSet represents rows returned by a database query. Its cursor initially sits before the first row, and next() advances the cursor. Getter methods such as getString() and getInt() retrieve column values from the current row.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "resultset-anatomy",
+        "family": "anatomy",
+        "config": {
+          "items": [
+            "ResultSet rs",
+            "rs.next()",
+            "rs.getInt(\"id\")",
+            "rs.getString(\"name\")",
+            "while (rs.next())"
+          ],
+          "descriptions": [
+            "Stores the rows returned by the executed query.",
+            "Moves the cursor to the next row and returns whether a row exists.",
+            "Reads an integer value from the current row.",
+            "Reads a String value from the current row.",
+            "Processes rows repeatedly while another row is available."
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-15.json",
+  "practicalTaskRef": "practical-day-15.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

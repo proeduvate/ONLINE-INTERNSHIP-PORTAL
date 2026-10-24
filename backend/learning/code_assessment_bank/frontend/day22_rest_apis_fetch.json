@@ -1,0 +1,46 @@
+{
+    "day": 22,
+    "topic": "REST APIs & Fetch",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D22-Q001",
+            "title": "Fetch Users",
+            "description": "Fetch users from a public API and display them in cards.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D22-Q002",
+            "title": "Search Users",
+            "description": "Create a search field that filters fetched users.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D22-Q003",
+            "title": "API Loading State",
+            "description": "Display:",
+            "requirements": [
+                "Loading",
+                "Success",
+                "Error states while fetching data"
+            ]
+        },
+        {
+            "id": "CODE-D22-Q004",
+            "title": "Product API",
+            "description": "Fetch products from an API and display:",
+            "requirements": [
+                "Image",
+                "Name",
+                "Price",
+                "Category"
+            ]
+        },
+        {
+            "id": "CODE-D22-Q005",
+            "title": "API Dashboard",
+            "description": "Build a dashboard that fetches remote data and displays multiple statistics dynamically.",
+            "requirements": []
+        }
+    ]
+}

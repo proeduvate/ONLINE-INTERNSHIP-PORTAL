@@ -1,0 +1,557 @@
+{
+    "day": 3,
+    "topic": "HTML Forms and Input Elements",
+    "total_questions": 50,
+    "questions": [
+        {
+            "id": "Q-D3-001",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 1 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 1 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-002",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 2?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-003",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 3?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-004",
+            "question": "Why is HTML Forms and Input Elements feature 4 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-005",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 5?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-006",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 6 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 6 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-007",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 7?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-008",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 8?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-009",
+            "question": "Why is HTML Forms and Input Elements feature 9 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-010",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 10?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-011",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 11 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 11 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-012",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 12?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-013",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 13?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-014",
+            "question": "Why is HTML Forms and Input Elements feature 14 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-015",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 15?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-016",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 16 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 16 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-017",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 17?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-018",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 18?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-019",
+            "question": "Why is HTML Forms and Input Elements feature 19 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-020",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 20?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-021",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 21 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 21 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-022",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 22?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-023",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 23?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-024",
+            "question": "Why is HTML Forms and Input Elements feature 24 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-025",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 25?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-026",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 26 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 26 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-027",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 27?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-028",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 28?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-029",
+            "question": "Why is HTML Forms and Input Elements feature 29 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-030",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 30?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-031",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 31 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 31 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-032",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 32?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-033",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 33?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-034",
+            "question": "Why is HTML Forms and Input Elements feature 34 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-035",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 35?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-036",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 36 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 36 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-037",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 37?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-038",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 38?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-039",
+            "question": "Why is HTML Forms and Input Elements feature 39 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-040",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 40?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-041",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 41 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 41 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-042",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 42?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-043",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 43?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-044",
+            "question": "Why is HTML Forms and Input Elements feature 44 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-045",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 45?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-046",
+            "question": "What is the primary purpose of HTML Forms and Input Elements feature 46 in HTML Forms and Input Elements?",
+            "options": {
+                "A": "To implement HTML Forms and Input Elements feature 46 functionality",
+                "B": "To break the application",
+                "C": "To style the page",
+                "D": "To connect to database"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-047",
+            "question": "How do you correctly use HTML Forms and Input Elements feature 47?",
+            "options": {
+                "A": "By following standard HTML Forms and Input Elements guidelines",
+                "B": "By ignoring best practices",
+                "C": "By using deprecated tags",
+                "D": "It is not used anymore"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-048",
+            "question": "Which of the following best describes HTML Forms and Input Elements feature 48?",
+            "options": {
+                "A": "A key concept in HTML Forms and Input Elements",
+                "B": "A deprecated feature",
+                "C": "A backend language",
+                "D": "A CSS framework"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-049",
+            "question": "Why is HTML Forms and Input Elements feature 49 important for HTML Forms and Input Elements?",
+            "options": {
+                "A": "It improves code maintainability and standards",
+                "B": "It makes the code run slower",
+                "C": "It is required by older browsers only",
+                "D": "It prevents CSS from loading"
+            },
+            "correct_answer": "A"
+        },
+        {
+            "id": "Q-D3-050",
+            "question": "When should you avoid using HTML Forms and Input Elements feature 50?",
+            "options": {
+                "A": "When it violates HTML Forms and Input Elements best practices",
+                "B": "Always",
+                "C": "Never",
+                "D": "When the client says so"
+            },
+            "correct_answer": "A"
+        }
+    ]
+}

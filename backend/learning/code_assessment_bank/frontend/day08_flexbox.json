@@ -1,0 +1,37 @@
+{
+    "day": 8,
+    "topic": "Flexbox",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D8-Q001",
+            "title": "Navigation with Flexbox",
+            "description": "Create a responsive navigation bar using Flexbox.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D8-Q002",
+            "title": "Three-Card Layout",
+            "description": "Create three equal-width cards using Flexbox.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D8-Q003",
+            "title": "Centering Challenge",
+            "description": "Create a login box perfectly centered horizontally and vertically using Flexbox.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D8-Q004",
+            "title": "Dashboard Layout",
+            "description": "Create a dashboard header with logo, navigation and user profile using Flexbox.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D8-Q005",
+            "title": "Responsive Flex Layout",
+            "description": "Build a layout that changes from horizontal cards to vertical cards on smaller screens.",
+            "requirements": []
+        }
+    ]
+}

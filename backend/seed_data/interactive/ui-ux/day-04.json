@@ -1,0 +1,123 @@
+{
+  "curriculum": "UI/UX",
+  "day": 4,
+  "topic": "Information Architecture and User Flows",
+  "version": 1,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Organize interface content into a clear information hierarchy.",
+    "Create logical user flows for common tasks.",
+    "Identify navigation patterns that reduce user effort."
+  ],
+  "activities": [
+    {
+      "id": "d4-a1",
+      "type": "discover",
+      "title": "Information Architecture Map",
+      "instruction": "Explore how information architecture organizes content and navigation.",
+      "content": {
+        "concept": "Information architecture organizes content, labels, navigation, and relationships so users can understand where they are and find what they need.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "information-architecture-map",
+        "family": "click-map",
+        "config": {
+          "items": [
+            "Content",
+            "Categories",
+            "Navigation",
+            "Labels",
+            "Search"
+          ],
+          "descriptions": [
+            "The information, features, and resources users need to access.",
+            "Groups related content into understandable sections.",
+            "Provides paths for users to move between sections or screens.",
+            "Uses clear names so users understand what a section or action contains.",
+            "Helps users directly locate specific information when browsing is inefficient."
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a2",
+      "type": "discover",
+      "title": "Navigation Pattern Match",
+      "instruction": "Choose the navigation pattern that best fits each situation.",
+      "content": {
+        "concept": "Navigation patterns should match the content structure and user task. Tabs work well for related peer sections, breadcrumbs show location in a hierarchy, and search helps users locate specific content directly.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "navigation-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Tabs: Switch between closely related sections at the same level",
+            "Breadcrumbs: Show the user's location within a hierarchy",
+            "Search: Find specific content directly",
+            "Navigation Menu: Move between major areas of an application"
+          ],
+          "answer": "Tabs: Switch between closely related sections at the same level"
+        }
+      }
+    },
+    {
+      "id": "d4-a3",
+      "type": "discover",
+      "title": "User Flow Builder",
+      "instruction": "Arrange the steps for a user completing an online purchase.",
+      "content": {
+        "concept": "A user flow represents the actions, screens, and decisions a user goes through to achieve a specific goal.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "purchase-flow",
+        "family": "reorder",
+        "config": {
+          "goal": [
+            "1. Browse or search for a product",
+            "2. Open the product details",
+            "3. Add the product to the cart",
+            "4. Review the cart",
+            "5. Enter delivery and payment information",
+            "6. Confirm the order"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d4-a4",
+      "type": "discover",
+      "title": "Flow Friction Detector",
+      "instruction": "Choose the flow with less unnecessary friction.",
+      "content": {
+        "concept": "Task flows become harder when users encounter unnecessary steps, repeated information, unclear choices, unexpected navigation, or avoidable interruptions.",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "flow-friction-choice",
+        "family": "compare",
+        "config": {
+          "choices": [
+            "Checkout: Cart → Address → Payment → Review → Confirm",
+            "Checkout: Cart → Login → Home → Cart → Address → Help → Payment → Cart → Review → Confirm"
+          ],
+          "answer": "Checkout: Cart → Address → Payment → Review → Confirm"
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-4.json",
+  "practicalTaskRef": "practical-day-4.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

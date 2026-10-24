@@ -1,0 +1,46 @@
+{
+    "day": 6,
+    "topic": "CSS Box Model",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D6-Q001",
+            "title": "Profile Card",
+            "description": "Create a profile card demonstrating:",
+            "requirements": [
+                "Margin",
+                "Border",
+                "Padding",
+                "Content area"
+            ]
+        },
+        {
+            "id": "CODE-D6-Q002",
+            "title": "Pricing Cards",
+            "description": "Create three pricing cards using consistent spacing and borders.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D6-Q003",
+            "title": "Box Model Demonstration",
+            "description": "Create four boxes with different margin, padding and border values and visually demonstrate the difference.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D6-Q004",
+            "title": "Login Container",
+            "description": "",
+            "requirements": [
+                "Create a centered login container with controlled width",
+                "padding",
+                "border and margin"
+            ]
+        },
+        {
+            "id": "CODE-D6-Q005",
+            "title": "Debug the Layout",
+            "description": "Create a webpage where spacing causes layout problems and fix it using correct box-model properties.",
+            "requirements": []
+        }
+    ]
+}

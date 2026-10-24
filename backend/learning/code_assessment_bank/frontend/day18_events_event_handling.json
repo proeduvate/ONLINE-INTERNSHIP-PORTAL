@@ -1,0 +1,37 @@
+{
+    "day": 18,
+    "topic": "Events & Event Handling",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D18-Q001",
+            "title": "Click Counter",
+            "description": "Create a button counter that increments whenever the button is clicked.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D18-Q002",
+            "title": "Interactive Calculator",
+            "description": "Build a calculator using event listeners instead of inline JavaScript.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D18-Q003",
+            "title": "Keyboard Event Tracker",
+            "description": "Display the last key pressed by the user.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D18-Q004",
+            "title": "Event Bubbling Demo",
+            "description": "Create nested elements and demonstrate event bubbling.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D18-Q005",
+            "title": "Event Delegation",
+            "description": "Build a dynamic list where one event listener handles clicks for all list items, including newly added items.",
+            "requirements": []
+        }
+    ]
+}

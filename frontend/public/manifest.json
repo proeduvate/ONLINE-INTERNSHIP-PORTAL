@@ -1,0 +1,9 @@
+{
+  "short_name": "ProEduvate",
+  "name": "ProEduvate Online Internship Portal",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff"
+}

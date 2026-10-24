@@ -1,0 +1,103 @@
+{
+  "curriculum": "Frontend Development",
+  "day": 23,
+  "topic": "React Fundamentals & Components",
+  "version": 2,
+  "learningMode": "interactive_deck",
+  "learningObjectives": [
+    "Understand components",
+    "Read JSX",
+    "Compose a component tree"
+  ],
+  "activities": [
+    {
+      "id": "d23-a01",
+      "type": "component-tree",
+      "title": "Component Tree",
+      "instruction": "Click nodes to inspect parent/child component relationships.",
+      "content": {
+        "concept": "Understand components",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "component-tree",
+        "family": "tree",
+        "config": {
+          "nodes": [
+            "App",
+            "Header",
+            "Main",
+            "Card",
+            "Button"
+          ]
+        }
+      }
+    },
+    {
+      "id": "d23-a02",
+      "type": "jsx",
+      "title": "JSX Playground",
+      "instruction": "Edit JSX-like tokens and preview the resulting UI.",
+      "content": {
+        "concept": "Read JSX",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "jsx",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d23-a03",
+      "type": "render",
+      "title": "Render Flow",
+      "instruction": "Step through component call, render and DOM update.",
+      "content": {
+        "concept": "Compose a component tree",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "render",
+        "family": "lab",
+        "config": {
+          "code": "console.log('Hello World');"
+        }
+      }
+    },
+    {
+      "id": "d23-a04",
+      "type": "build",
+      "title": "Component Builder",
+      "instruction": "Compose a small profile card from reusable components.",
+      "content": {
+        "concept": "Understand components",
+        "tip": "Interact with the example first. Your progress is saved for this session."
+      },
+      "interaction": {
+        "mode": "component-build",
+        "family": "builder",
+        "config": {
+          "options": [
+            "<html>",
+            "<body>",
+            "</html>"
+          ]
+        }
+      }
+    }
+  ],
+  "assessmentRef": "assessment-day-23.json",
+  "practicalTaskRef": "practical-day-23.json",
+  "progression": {
+    "nextActivityLockedUntilComplete": true,
+    "nextDayLockedUntilComplete": true
+  },
+  "separation": {
+    "learning": "Teach the concept through an interactive experience, not a static quiz.",
+    "assessment": "Stored separately and completed after learning.",
+    "practical": "Stored separately and completed after assessment."
+  }
+}

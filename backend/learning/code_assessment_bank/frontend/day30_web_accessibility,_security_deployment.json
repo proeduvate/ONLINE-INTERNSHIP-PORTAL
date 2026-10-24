@@ -1,0 +1,58 @@
+{
+    "day": 30,
+    "topic": "Web Accessibility, Security & Deployment",
+    "total_questions": 5,
+    "questions": [
+        {
+            "id": "CODE-D30-Q001",
+            "title": "Accessible Form",
+            "description": "Create an accessible registration form using:",
+            "requirements": [
+                "Labels",
+                "Proper input types",
+                "Keyboard navigation",
+                "Error messages"
+            ]
+        },
+        {
+            "id": "CODE-D30-Q002",
+            "title": "Accessible Website",
+            "description": "Build a webpage that properly uses:",
+            "requirements": [
+                "Semantic HTML",
+                "ARIA where necessary",
+                "Keyboard-accessible controls",
+                "Accessible images"
+            ]
+        },
+        {
+            "id": "CODE-D30-Q003",
+            "title": "XSS Prevention",
+            "description": "Create a simple application that accepts user input and safely displays it without executing injected HTML/JavaScript.",
+            "requirements": []
+        },
+        {
+            "id": "CODE-D30-Q004",
+            "title": "Secure Frontend",
+            "description": "Review a frontend application and fix issues involving:",
+            "requirements": [
+                "Unsafe HTML injection",
+                "Exposed secrets",
+                "Unsafe user input",
+                "Insecure links"
+            ]
+        },
+        {
+            "id": "CODE-D30-Q005",
+            "title": "Deployment-Ready React App",
+            "description": "Prepare a React application for production deployment:",
+            "requirements": [
+                "Configure production build",
+                "Set environment variables correctly",
+                "Remove development/debug code",
+                "Optimize assets",
+                "Create deployment documentation"
+            ]
+        }
+    ]
+}
