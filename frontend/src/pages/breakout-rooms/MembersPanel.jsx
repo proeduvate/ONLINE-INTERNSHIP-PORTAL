@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Send, X, ArrowLeft, UserX, MessageSquare, MessageCircle, Users, AlertTriangle } from 'lucide-react';
-import { mockChatMessages, mockInterns, mockMentor } from './MockData';
+import { mockChatMessages, mockInterns, mockMentor } from './mockData';
 
 export default function MembersPanel({ mode, onClose, interns: propInterns = mockInterns, mentor = mockMentor, isIntern = false }) {
   const [interns, setInterns] = useState(propInterns);

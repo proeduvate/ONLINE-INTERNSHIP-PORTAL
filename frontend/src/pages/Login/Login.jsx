@@ -40,14 +40,14 @@ export default function Login() {
 
     try {
       const response = await api.post("/api/v1/auth/login", { email, password });
-      const { access_token, role, user } = response.data;
+      const { access_token, role, user, name } = response.data;
 
       localStorage.setItem("token", access_token);
       localStorage.setItem("authToken", access_token);
       localStorage.setItem("role", role);
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
+      
+      const userData = user || { role, name: name || email.split('@')[0], email };
+      localStorage.setItem("user", JSON.stringify(userData));
 
       navigate(`/${role}`);
     } catch (err) {

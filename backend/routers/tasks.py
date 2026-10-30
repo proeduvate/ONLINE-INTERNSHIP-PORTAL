@@ -37,6 +37,43 @@ except Exception:
 
 router = APIRouter(prefix="", tags=["Tasks"])
 
+
+@router.get("/tasks", response_model=List[schemas.TaskResponse])
+def get_tasks(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    return db.query(models.Task).all()
+
+
+@router.post("/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
+def create_task(
+    task_in: schemas.TaskCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
+        raise HTTPException(status_code=403, detail="Only admins and mentors can create tasks")
+    task_data = task_in.dict() if hasattr(task_in, "dict") else task_in.model_dump()
+    task = models.Task(**task_data, created_by=current_user.id)
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.get("/tasks/{task_id}", response_model=schemas.TaskResponse)
+def get_task(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+
 @router.get("/tasks/intern")
 def get_intern_tasks_with_unlock_status(
     dev_domain: str = None,
@@ -47,8 +84,8 @@ def get_intern_tasks_with_unlock_status(
         raise HTTPException(status_code=403, detail="Intern role required")
         
     target_domain_id = current_user.domain_id
-    if dev_domain:
-        # Lookup domain by name
+    # Only allow overriding target domain if testing as admin
+    if dev_domain and current_user.role == models.UserRole.ADMIN:
         domain_record = db.query(models.Domain).filter(models.Domain.name.ilike(f"%{dev_domain}%")).first()
         if domain_record:
             target_domain_id = domain_record.id
@@ -61,7 +98,7 @@ def get_intern_tasks_with_unlock_status(
     
     sub_map = {sub.task_id: sub for sub in submissions}
     
-    from datetime import datetime
+    from datetime import datetime, timedelta
     current_date = datetime.utcnow()
     start_date = current_user.start_date or current_date
     internship_day = (current_date - start_date).days + 1
@@ -70,9 +107,9 @@ def get_intern_tasks_with_unlock_status(
 
     # Sequential Day Locking logic:
     # Day 1 is unlocked if internship_day >= 1
-    # Day N is unlocked if Day N-1 is submitted or approved AND internship_day >= N.
+    # Day N is unlocked if Day N-1 is submitted or approved.
     results = []
-    sequential_unlocked = True # True if previous day is completed
+    sequential_unlocked = True
     
     for idx, t in enumerate(tasks):
         sub = sub_map.get(t.id)
@@ -83,26 +120,29 @@ def get_intern_tasks_with_unlock_status(
         
         if sub:
             status_val = sub.status
-            # calculate combined scores
             score_val = (sub.mcq_score or 0) + (sub.ai_score or 0) + (sub.mentor_score or 0)
             ai_score_val = sub.ai_score or 0
             mentor_score_val = sub.mentor_score or 0
             
         is_unlocked = sequential_unlocked
+        day_state = "COMPLETED" if (sub and sub.status in ["approved", "submitted"]) else ("CURRENT" if is_unlocked else "LOCKED")
+        due_date = (start_date + timedelta(days=t.day_number)).strftime("%Y-%m-%d") if t.day_number else None
             
         results.append({
             "id": t.id,
             "day_number": t.day_number,
             "title": t.title,
-            "description": t.description,
-            "video_url": t.video_url,
-            "document_url": t.document_url,
-            "notes": t.notes,
-            "resources": t.resources,
-            "mcq_questions": t.mcq_questions,
-            "coding_prompt": t.coding_prompt,
-            "interactive_json": t.interactive_json,
+            "description": t.description if is_unlocked else "Task locked. Complete previous days to unlock.",
+            "video_url": t.video_url if is_unlocked else None,
+            "document_url": t.document_url if is_unlocked else None,
+            "notes": t.notes if is_unlocked else None,
+            "resources": t.resources if is_unlocked else None,
+            "mcq_questions": t.mcq_questions if is_unlocked else None,
+            "coding_prompt": t.coding_prompt if is_unlocked else None,
+            "interactive_json": t.interactive_json if is_unlocked else None,
             "unlocked": is_unlocked,
+            "day_state": day_state,
+            "due_date": due_date,
             "status": status_val,
             "score": score_val,
             "ai_score": ai_score_val,
@@ -111,7 +151,7 @@ def get_intern_tasks_with_unlock_status(
             "ai_feedback": sub.ai_feedback if sub else None,
             "mentor_feedback": sub.mentor_feedback if sub else None,
             "submitted_at": sub.submitted_at if sub else None,
-            "started_at": None
+            "started_at": sub.created_at if sub and hasattr(sub, "created_at") else None
         })
         
         # Next task unlock status depends on whether this task was submitted/approved
@@ -182,15 +222,23 @@ def start_task(
 
 def calculate_final_score_and_grade(mcq_score: int, ai_score: int, mentor_score: int) -> dict:
     final_score = mcq_score + ai_score + mentor_score
-    if final_score >= 240:
+    # Standard 300-point total scale normalized to percentage
+    pct = round((final_score / 300.0) * 100, 1)
+    if pct >= 90:
+        grade = "A+"
+    elif pct >= 80:
         grade = "A"
-    elif final_score >= 180:
+    elif pct >= 70:
+        grade = "B+"
+    elif pct >= 60:
         grade = "B"
-    elif final_score >= 120:
+    elif pct >= 45:
         grade = "C"
     else:
-        grade = "D"
-    return {"final_score": final_score, "grade": grade}
+        grade = "F"
+    from services.scoring_service import get_performance_classification
+    classification = get_performance_classification(grade)
+    return {"final_score": final_score, "grade": grade, "performance_classification": classification}
 
 
 def build_portfolio_payload(user: models.User, db: Session) -> dict:
@@ -346,16 +394,27 @@ def run_ai_evaluation(code: str, task: models.Task) -> dict:
         "complexity_guess": complexity
     }
 
-    base = 20 if syntax_valid else 5
-    tc_score = int((test_cases_passed / max(1, total_test_cases)) * 60) if total_test_cases > 0 else 30
-    # Quality score derived from length, functions, comments and docstrings
-    quality_points = 0
-    quality_points += min(15, int(loc / 10))
-    quality_points += min(10, func_count * 2)
-    quality_points += 3 if docstring_present else 0
-    quality_points += 2 if list_comp else 0
-    qual = min(30, quality_points)
-    ai_score = min(100, base + tc_score + qual)
+    if not syntax_valid:
+        ai_score = 0
+    else:
+        # Quality score derived from length, functions, comments and docstrings
+        quality_points = 5
+        quality_points += min(10, max(2, int(loc / 5)))
+        quality_points += min(10, func_count * 5)
+        quality_points += 5 if docstring_present else 0
+        quality_points += 5 if list_comp else 0
+
+        if total_test_cases > 0:
+            tc_ratio = test_cases_passed / total_test_cases
+            tc_score = int(tc_ratio * 70)
+            if test_cases_passed == 0:
+                qual = min(10, quality_points)
+            else:
+                qual = min(30, quality_points)
+            ai_score = min(100, tc_score + qual)
+        else:
+            qual = min(40, quality_points * 2)
+            ai_score = min(100, 60 + qual)
 
     feedback = {
         "summary": "AI Evaluation Completed Successfully." if syntax_valid else "AI Evaluation failed. Code syntax error detected.",
@@ -539,9 +598,12 @@ def execute_code_submission(code: str, task: models.Task) -> dict:
             except Exception:
                 pass
 
-    pass_ratio = passed / max(1, total)
-    runtime_score = int(pass_ratio * 70) + (20 if runtime_ok else 0) + (10 if len(code) > 120 else 0)
-    runtime_score = min(runtime_score, 100)
+    if not runtime_ok:
+        runtime_score = 0
+    elif total > 0:
+        runtime_score = int((passed / total) * 100) if passed > 0 else 0
+    else:
+        runtime_score = 100 if runtime_ok else 0
 
     runtime_feedback = (
         "Code executed successfully across test cases." if passed == total and runtime_ok
@@ -600,17 +662,21 @@ def execute_code(
 
     code_to_exec = data.code_submission or data.code or ""
     result = execute_code_submission(code_to_exec, task)
+    ai_eval = run_ai_evaluation(code_to_exec, task)
+    combined = min(100, int((ai_eval["score"] * 0.6) + (result["runtime_score"] * 0.4))) if result.get("syntax_valid") else 0
     return {
         "task_id": task.id,
         "syntax_valid": result.get("syntax_valid", True),
-        "runtime_score": result.get("runtime_score", 100),
-        "test_cases_passed": result.get("test_cases_passed", 1),
-        "total_test_cases": result.get("total_test_cases", 1),
+        "runtime_score": result.get("runtime_score", 0),
+        "test_cases_passed": result.get("test_cases_passed", 0),
+        "total_test_cases": result.get("total_test_cases", 0),
         "runtime_feedback": result.get("runtime_feedback", "Success"),
         "test_case_results": result.get("test_case_results", []),
         "stdout": result.get("stdout", ""),
         "stderr": result.get("stderr", ""),
-        "successful": result.get("successful", True)
+        "successful": result.get("successful", False),
+        "ai_score": combined,
+        "ai_feedback": ai_eval.get("feedback")
     }
 
 
@@ -795,14 +861,16 @@ def create_submission(
     
     current_user.progress_pct = min(100, int((user_subs / total_domain_tasks) * 100))
     
-    # Attendance Calculation:
-    # 100% attendance if submitted days match elapsed days, or mock attendance tracker:
-    # Count how many days submitted out of elapsed. We can mock it to increase slightly or keep at 95%
-    submitted_days = db.query(models.Submission).filter(
+    # Attendance Calculation (A9.1 & A9.3 derived dynamically from submitted days vs elapsed days)
+    from sqlalchemy import func
+    elapsed_days = max(1, min(30, (datetime.utcnow() - (current_user.start_date or datetime.utcnow())).days + 1))
+    submitted_unique_days = db.query(func.count(func.distinct(models.Task.day_number))).join(
+        models.Submission, models.Task.id == models.Submission.task_id
+    ).filter(
         models.Submission.intern_id == current_user.id,
-        models.Submission.attendance_marked == True
-    ).count()
-    current_user.attendance_pct = min(100, max(60, int((submitted_days / max(1, user_subs)) * 100)))
+        models.Submission.status.in_(["submitted", "approved"])
+    ).scalar() or 0
+    current_user.attendance_pct = min(100, int((submitted_unique_days / elapsed_days) * 100))
 
     attendance_log = db.query(models.AttendanceLog).filter(
         models.AttendanceLog.intern_id == current_user.id,
@@ -941,149 +1009,22 @@ def evaluate_submission(
 
 
 # ==========================================
-#           COMMUNICATION / CHAT
+#           COMMUNICATION & MEETINGS (DELEGATED)
+# Canonical logic lives in routers.notifications and routers.meetings
 # ==========================================
-
-@router.post("/announcements", response_model=schemas.AnnouncementResponse)
-def create_announcement(
-    data: schemas.AnnouncementCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role not in [models.UserRole.ADMIN, models.UserRole.MENTOR]:
-        raise HTTPException(status_code=403, detail="Only admins and mentors can create announcements")
-
-    announcement = models.Announcement(
-        sender_id=current_user.id,
-        title=data.title,
-        content=data.content,
-        target_role=data.target_role or "all"
-    )
-    db.add(announcement)
-    db.commit()
-    db.refresh(announcement)
-    return announcement
-
-
-@router.get("/announcements", response_model=List[schemas.AnnouncementResponse])
-def get_announcements(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    query = db.query(models.Announcement)
-    if current_user.role == models.UserRole.INTERN:
-        query = query.filter(models.Announcement.target_role.in_(["all", "intern"]))
-    elif current_user.role == models.UserRole.MENTOR:
-        query = query.filter(models.Announcement.target_role.in_(["all", "mentor"]))
-    announcements = query.order_by(models.Announcement.created_at.desc()).all()
-    return announcements
-
-
-@router.post("/messages", response_model=schemas.MessageResponse)
-def send_message(
-    data: schemas.MessageCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    receiver = db.query(models.User).filter(models.User.id == data.receiver_id).first()
-    if not receiver:
-        raise HTTPException(status_code=404, detail="Recipient not found")
-        
-    # Restriction: Intern cannot message another intern
-    if current_user.role == models.UserRole.INTERN and receiver.role == models.UserRole.INTERN:
-        raise HTTPException(
-            status_code=400, 
-            detail="Restriction violation: Interns cannot message other interns"
-        )
-        
-    # Check if intern is messaging their assigned mentor, or mentor messaging an intern
-    if current_user.role == models.UserRole.INTERN:
-        if receiver.role != models.UserRole.MENTOR:
-            raise HTTPException(
-                status_code=403, 
-                detail="Access Denied: Interns can only message a mentor"
-            )
-        # Auto-link mentor if not set
-        if not current_user.mentor_id:
-            current_user.mentor_id = receiver.id
-            db.commit()
-            db.refresh(current_user)
-
-    if current_user.role == models.UserRole.MENTOR:
-        if receiver.role != models.UserRole.INTERN:
-            raise HTTPException(
-                status_code=400,
-                detail="Mentors can only direct message interns"
-            )
-        if not receiver.mentor_id:
-            receiver.mentor_id = current_user.id
-            db.commit()
-        
-    new_msg = models.Message(
-        sender_id=current_user.id,
-        receiver_id=data.receiver_id,
-        content=data.content,
-        file_url=data.file_url
-    )
-    db.add(new_msg)
-    db.commit()
-    db.refresh(new_msg)
-    return new_msg
-
-
-@router.get("/messages")
-def get_messages(
-    contact_id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    contact_user = db.query(models.User).filter(models.User.id == contact_id).first()
-    if not contact_user:
-        raise HTTPException(status_code=404, detail="Contact user not found")
-
-    if current_user.role == models.UserRole.INTERN:
-        if contact_user.role != models.UserRole.MENTOR:
-            raise HTTPException(status_code=403, detail="Access Denied: Interns may only retrieve messages with a mentor")
-        if not current_user.mentor_id:
-            current_user.mentor_id = contact_user.id
-            db.commit()
-
-    if current_user.role == models.UserRole.MENTOR:
-        if contact_user.role != models.UserRole.INTERN:
-            raise HTTPException(status_code=403, detail="Access Denied: Mentors may only retrieve messages with interns")
-
-    # Fetch messages between current_user and contact_id
-    messages = db.query(models.Message).filter(
-        ((models.Message.sender_id == current_user.id) & (models.Message.receiver_id == contact_id)) |
-        ((models.Message.sender_id == contact_id) & (models.Message.receiver_id == current_user.id))
-    ).order_by(models.Message.sent_at).all()
-    
-    return messages
-
-
-# ==========================================
-#           VIDEO MEETINGS / BREAKOUT
-# ==========================================
-
-@router.post("/meetings", response_model=schemas.MeetingResponse)
-def create_meeting(
-    data: schemas.MeetingCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can host meeting rooms")
-        
-    new_meet = models.Meeting(
-        mentor_id=current_user.id,
-        title=data.title,
-        room_code=data.room_code,
-        status="active"
-    )
-    db.add(new_meet)
-    db.commit()
-    db.refresh(new_meet)
-    return new_meet
+from routers.notifications import (
+    create_announcement,
+    get_announcements,
+    send_message,
+    get_messages,
+)
+from routers.meetings import (
+    create_meeting,
+    get_meetings,
+    signaling_websocket,
+    get_meeting_breakouts,
+    close_meeting,
+)
 
 
 @router.get("/plagiarism/check/{submission_id}")
@@ -1124,131 +1065,6 @@ def plagiarism_check(
     return {"submission_id": submission_id, "comparisons": comparisons}
 
 
-@router.get("/meetings")
-def get_meetings(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    query = db.query(models.Meeting).filter(models.Meeting.status == "active")
-    if current_user.role == models.UserRole.INTERN:
-        # Intern can see meetings hosted by their mentor
-        query = query.filter(models.Meeting.mentor_id == current_user.mentor_id)
-    elif current_user.role == models.UserRole.MENTOR:
-        # Mentor sees meetings hosted by themselves
-        query = query.filter(models.Meeting.mentor_id == current_user.id)
-        
-    return query.all()
-
-
-@router.websocket("/ws/signaling/{room_code}")
-async def signaling_websocket(
-    room_code: str,
-    websocket: WebSocket
-):
-    await websocket.accept()
-    room = SIGNALING_ROOMS.setdefault(room_code, {"participants": {}, "breakouts": {}})
-    participant_id = None
-
-    async def broadcast(message: dict, exclude_id: int = None):
-        for pid, conn in list(room["participants"].items()):
-            if pid == exclude_id:
-                continue
-            try:
-                await conn.send_json(message)
-            except Exception:
-                pass
-
-    try:
-        while True:
-            data = await websocket.receive_json()
-            action = data.get("action")
-            if action == "join":
-                participant_id = data.get("user_id")
-                if participant_id is None:
-                    await websocket.close(code=1008)
-                    return
-                room["participants"][participant_id] = websocket
-                await broadcast({
-                    "action": "participant_joined",
-                    "user_id": participant_id,
-                    "role": data.get("role")
-                }, exclude_id=participant_id)
-                await websocket.send_json({"action": "joined", "room_code": room_code})
-            elif action in ["offer", "answer", "ice_candidate"]:
-                target_id = data.get("target_id")
-                if target_id and target_id in room["participants"]:
-                    await room["participants"][target_id].send_json(data)
-            elif action == "breakout_create":
-                breakout_id = data.get("breakout_id") or str(uuid.uuid4())
-                room["breakouts"][breakout_id] = {"members": [participant_id]} if participant_id else {"members": []}
-                await broadcast({"action": "breakout_created", "breakout_id": breakout_id})
-            elif action == "breakout_join":
-                breakout_id = data.get("breakout_id")
-                if breakout_id in room["breakouts"] and participant_id is not None:
-                    members = room["breakouts"][breakout_id].get("members", [])
-                    if participant_id not in members:
-                        members.append(participant_id)
-                    room["breakouts"][breakout_id]["members"] = members
-                    await broadcast({"action": "breakout_joined", "breakout_id": breakout_id, "user_id": participant_id})
-            elif action == "breakout_leave":
-                breakout_id = data.get("breakout_id")
-                if breakout_id in room["breakouts"] and participant_id is not None:
-                    members = room["breakouts"][breakout_id].get("members", [])
-                    if participant_id in members:
-                        members.remove(participant_id)
-                    room["breakouts"][breakout_id]["members"] = members
-                    await broadcast({"action": "breakout_left", "breakout_id": breakout_id, "user_id": participant_id})
-            elif action == "leave":
-                if participant_id in room["participants"]:
-                    room["participants"].pop(participant_id, None)
-                await websocket.close()
-                return
-            else:
-                await broadcast(data, exclude_id=participant_id)
-    except WebSocketDisconnect:
-        if participant_id and participant_id in room["participants"]:
-            room["participants"].pop(participant_id, None)
-            await broadcast({"action": "participant_left", "user_id": participant_id})
-
-
-@router.get("/meetings/{room_code}/breakouts")
-def get_meeting_breakouts(
-    room_code: str,
-    current_user: models.User = Depends(get_current_user)
-):
-    room = SIGNALING_ROOMS.get(room_code)
-    if not room:
-        raise HTTPException(status_code=404, detail="Meeting room not found or no signaling session yet")
-    return {
-        "room_code": room_code,
-        "participants": list(room["participants"].keys()),
-        "breakouts": room["breakouts"]
-    }
-
-
-@router.post("/meetings/{room_code}/close")
-def close_meeting(
-    room_code: str,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.MENTOR:
-        raise HTTPException(status_code=403, detail="Only mentors can close meeting rooms")
-        
-    meet = db.query(models.Meeting).filter(
-        models.Meeting.room_code == room_code,
-        models.Meeting.mentor_id == current_user.id
-    ).first()
-    
-    if not meet:
-        raise HTTPException(status_code=404, detail="Meeting room not found")
-        
-    meet.status = "completed"
-    db.add(meet)
-    db.commit()
-    return {"message": "Meeting closed"}
-
-
 # ==========================================
 #           ANALYTICS & PROGRESS TRACKING
 # ==========================================
@@ -1261,18 +1077,21 @@ def get_final_grade(
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
 
-    submissions = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
-    mcq_total = sum(s.mcq_score for s in submissions)
-    ai_total = sum(s.ai_score for s in submissions)
-    mentor_total = sum(s.mentor_score for s in submissions)
-    result = calculate_final_score_and_grade(mcq_total, ai_total, mentor_total)
+    from services.scoring_service import calculate_final_grade, get_performance_classification
+    evaluation = calculate_final_grade(db, current_user, force_recalculate=True)
+    grade = evaluation.grade or "F"
+    classification = get_performance_classification(grade)
     return {
         "user_id": current_user.id,
-        "final_score": result["final_score"],
-        "grade": result["grade"],
-        "mcq_score": mcq_total,
-        "ai_score": ai_total,
-        "mentor_score": mentor_total,
+        "final_score": evaluation.final_score,
+        "grade": grade,
+        "performance_classification": classification,
+        "is_credential_eligible": bool(evaluation.final_score is not None and evaluation.final_score >= 45.0),
+        "mcq_score": evaluation.mcq_final_mark,
+        "code_score": evaluation.code_final_mark,
+        "airdrop_score": evaluation.airdrop_final_mark,
+        "mentor_score": evaluation.mentor_evaluation_mark,
+        "is_completed": evaluation.is_completed
     }
 
 
@@ -1422,286 +1241,21 @@ def get_portfolio(
 
 
 # ==========================================
-#           CERTIFICATE GENERATION
+#     CERTIFICATES & NOTIFICATIONS (DELEGATED)
+# Canonical logic lives in routers.certificates,
+# routers.notifications, and services.scheduler_service
 # ==========================================
-
-@router.get("/certificate/generate")
-def generate_certificate(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.INTERN:
-        raise HTTPException(status_code=403, detail="Only interns can request certificates")
-        
-    # Requirements Check: Must complete tasks (e.g. at least 15 tasks or progress >= 50% for demo purposes, 
-    # but let's check progress_pct >= 90% or 30 tasks for standard)
-    if current_user.progress_pct < 80:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Internship incomplete. Currently at {current_user.progress_pct}%. Complete at least 80% tasks."
-        )
-        
-    # Check if certificate already exists
-    existing = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).first()
-    if existing:
-        return existing
-        
-    # Calculate score logic
-    subs = db.query(models.Submission).filter(models.Submission.intern_id == current_user.id).all()
-    total_achieved = sum(s.mcq_score + s.ai_score + s.mentor_score for s in subs)
-    max_possible = len(subs) * 300
-    
-    avg_pct = int((total_achieved / max_possible) * 100) if max_possible > 0 else 85
-    
-    # Grading Scale
-    if avg_pct >= 90:
-        grade = "A+"
-    elif avg_pct >= 80:
-        grade = "A"
-    elif avg_pct >= 70:
-        grade = "B"
-    elif avg_pct >= 60:
-        grade = "C"
-    else:
-        grade = "D"
-        
-    cert_id = f"CERT-{datetime.now().year}-{current_user.id + 1000}"
-    
-    new_cert = models.Certificate(
-        intern_id=current_user.id,
-        certificate_id=cert_id,
-        grade=grade,
-        final_score=avg_pct
-    )
-    
-    db.add(new_cert)
-    db.commit()
-    db.refresh(new_cert)
-    
-    return new_cert
-
-
-@router.get("/certificate/info")
-def certificate_info(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.INTERN:
-        raise HTTPException(status_code=403, detail="Only interns can access certificate info")
-
-    cert = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).first()
-    if not cert:
-        return {"generated": False}
-
-    mentor = db.query(models.User).filter(models.User.id == current_user.mentor_id).first() if current_user.mentor_id else None
-    domain = db.query(models.Domain).filter(models.Domain.id == current_user.domain_id).first() if current_user.domain_id else None
-
-    return {
-        "generated": True,
-        "certificate_id": cert.certificate_id,
-        "intern_name": current_user.name,
-        "domain_name": domain.name if domain else "Tech domain",
-        "mentor_name": mentor.name if mentor else "Lead Mentor",
-        "final_grade": cert.grade,
-        "generated_at": cert.generated_at.strftime("%Y-%m-%d")
-    }
-
-
-@router.get("/certificate/download")
-def download_certificate(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    if current_user.role != models.UserRole.INTERN:
-        raise HTTPException(status_code=403, detail="Only interns can download certificates")
-        
-    cert = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).first()
-    if not cert:
-        raise HTTPException(status_code=404, detail="Certificate not generated yet. Go to Generate first.")
-        
-    mentor = db.query(models.User).filter(models.User.id == current_user.mentor_id).first()
-    domain = db.query(models.Domain).filter(models.Domain.id == current_user.domain_id).first()
-    
-    domain_name = domain.name if domain else "Tech domain"
-    verification_url = f"http://127.0.0.1:8000/certificate/verify/{cert.certificate_id}"
-    pdf = FPDF(orientation="L", unit="mm", format="A4")
-    pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
-
-    pdf.set_font("Helvetica", "B", 28)
-    pdf.cell(0, 20, "Certificate of Completion", ln=True, align="C")
-    pdf.ln(10)
-
-    pdf.set_font("Helvetica", "", 16)
-    pdf.cell(0, 10, "This certificate is proudly presented to", ln=True, align="C")
-    pdf.ln(8)
-
-    pdf.set_font("Helvetica", "B", 24)
-    pdf.cell(0, 12, current_user.name, ln=True, align="C")
-    pdf.ln(5)
-
-    pdf.set_font("Helvetica", "", 16)
-    pdf.multi_cell(0, 10, f"For successfully completing the internship program in {domain_name} with a final score of {cert.final_score}% and a grade of {cert.grade}.", align="C")
-    pdf.ln(5)
-
-    pdf.set_font("Helvetica", "", 14)
-    pdf.cell(0, 10, f"Intern ID: {current_user.intern_id}", ln=True, align="C")
-    pdf.cell(0, 10, f"College: {current_user.college}", ln=True, align="C")
-    pdf.cell(0, 10, f"Mentor: {mentor.name if mentor else 'Lead Mentor'}", ln=True, align="C")
-    pdf.cell(0, 10, f"Certificate ID: {cert.certificate_id}", ln=True, align="C")
-    pdf.cell(0, 10, f"Verification: {verification_url}", ln=True, align="C")
-    pdf.ln(10)
-
-    pdf.set_font("Helvetica", "I", 12)
-    pdf.cell(0, 10, "Verified and issued by Online Internship Portal", ln=True, align="C")
-
-    # FPDF.output with dest='S' returns the PDF as a string; convert to bytes
-    pdf_data_str = pdf.output(dest='S')
-    try:
-        pdf_bytes = pdf_data_str.encode('latin-1')
-    except Exception:
-        pdf_bytes = pdf_data_str.encode('utf-8', errors='ignore')
-
-    output = io.BytesIO(pdf_bytes)
-    output.seek(0)
-
-    filename = f"certificate_{cert.certificate_id}.pdf"
-    headers = {
-        "Content-Disposition": f"attachment; filename={filename}"
-    }
-    html_content = ""
-    return StreamingResponse(io.BytesIO(html_content.encode("utf-8")), media_type="text/html")
-
-
-# ==========================================
-#           NOTIFICATION SYSTEM
-# ==========================================
-
-@router.get("/notifications", response_model=List[schemas.NotificationResponse])
-def get_notifications(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    notifications = db.query(models.Notification).filter(
-        models.Notification.user_id == current_user.id
-    ).order_by(models.Notification.created_at.desc()).all()
-    return notifications
-
-
-@router.put("/notifications/{notification_id}/read")
-def mark_notification_read(
-    notification_id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    notif = db.query(models.Notification).filter(
-        models.Notification.id == notification_id,
-        models.Notification.user_id == current_user.id
-    ).first()
-    if not notif:
-        raise HTTPException(status_code=404, detail="Notification not found")
-    notif.is_read = True
-    db.commit()
-    return {"message": "Marked as read"}
-
-
-@router.put("/notifications/read-all")
-def mark_all_notifications_read(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    db.query(models.Notification).filter(
-        models.Notification.user_id == current_user.id,
-        models.Notification.is_read == False
-    ).update({"is_read": True})
-    db.commit()
-    return {"message": "All marked as read"}
-
-
-# ==========================================
-#           SCHEDULED JOBS
-# ==========================================
-
-def send_daily_reminders(time_of_day: str):
-    db = database.SessionLocal()
-    try:
-        interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
-        for intern in interns:
-            # Check if intern completed today's task
-            now = datetime.utcnow()
-            completed_today = db.query(models.Submission).filter(
-                models.Submission.intern_id == intern.id,
-                models.Submission.attendance_marked == True,
-                models.Submission.submitted_at >= now.replace(hour=0, minute=0, second=0, microsecond=0)
-            ).first()
-
-            if not completed_today:
-                if time_of_day == "morning":
-                    title = "Morning Reminder"
-                    message = "📚 Good Morning! It's time to begin your internship tasks today. Complete your lesson, MCQ, and coding assignment to maintain your learning streak."
-                elif time_of_day == "afternoon":
-                    title = "Afternoon Reminder"
-                    message = "⏰ Reminder! You haven't completed today's internship tasks yet. Finish your activities before the deadline to avoid being marked absent."
-                elif time_of_day == "evening":
-                    title = "Final Reminder"
-                    message = "⚠️ Final Reminder! Today is almost over. Complete your lesson, MCQ, and coding assignment before the deadline. Otherwise, today's attendance will be marked as Absent."
-                else:
-                    continue
-
-                reminder = models.Notification(
-                    user_id=intern.id,
-                    title=title,
-                    message=message,
-                    type="daily_reminder"
-                )
-                db.add(reminder)
-        db.commit()
-    except Exception as e:
-        print(f"Error sending {time_of_day} reminders: {e}")
-    finally:
-        db.close()
-
-
-def process_end_of_day_deadline():
-    db = database.SessionLocal()
-    try:
-        interns = db.query(models.User).filter(models.User.role == models.UserRole.INTERN).all()
-        now = datetime.utcnow()
-        for intern in interns:
-            completed_today = db.query(models.Submission).filter(
-                models.Submission.intern_id == intern.id,
-                models.Submission.attendance_marked == True,
-                models.Submission.submitted_at >= now.replace(hour=0, minute=0, second=0, microsecond=0)
-            ).first()
-
-            if not completed_today:
-                intern.learning_streak = 0
-                db.add(models.AttendanceLog(intern_id=intern.id, status="absent", note="Failed to submit daily task before deadline"))
-                
-                reminder = models.Notification(
-                    user_id=intern.id,
-                    title="Deadline Missed",
-                    message="Today's deadline has passed. Your attendance has been marked as Absent and your learning streak was reset.",
-                    type="system"
-                )
-                db.add(reminder)
-        db.commit()
-    except Exception as e:
-        print(f"Error processing end of day deadline: {e}")
-    finally:
-        db.close()
-
-
-@router.on_event("startup")
-def start_scheduler():
-    scheduler = BackgroundScheduler()
-    # UTC times mapped from IST: 9 AM IST = 3:30 AM UTC, 2 PM IST = 8:30 AM UTC, 7 PM IST = 1:30 PM UTC
-    scheduler.add_job(send_daily_reminders, 'cron', hour=3, minute=30, args=["morning"])
-    scheduler.add_job(send_daily_reminders, 'cron', hour=8, minute=30, args=["afternoon"])
-    scheduler.add_job(send_daily_reminders, 'cron', hour=13, minute=30, args=["evening"])
-    # 11:59 PM IST = 6:29 PM UTC
-    scheduler.add_job(process_end_of_day_deadline, 'cron', hour=18, minute=29)
-    scheduler.start()
+from routers.certificates import verify_certificate_endpoint
+from routers.notifications import (
+    get_notifications,
+    mark_notification_read,
+    mark_all_notifications_read,
+)
+from services.scheduler_service import (
+    send_daily_reminders,
+    process_end_of_day_deadline,
+    start_scheduler,
+)
 
 
 @router.get("/certificate/verify/{certificate_id}")
@@ -1709,28 +1263,7 @@ def verify_certificate(
     certificate_id: str,
     db: Session = Depends(get_db)
 ):
-    cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == certificate_id).first()
-    if not cert:
-        raise HTTPException(status_code=404, detail="Certificate not found")
-
-    intern = db.query(models.User).filter(models.User.id == cert.intern_id).first()
-    if not intern:
-        raise HTTPException(status_code=404, detail="Intern not found for certificate")
-
-    domain = db.query(models.Domain).filter(models.Domain.id == intern.domain_id).first()
-    mentor = db.query(models.User).filter(models.User.id == intern.mentor_id).first()
-
-    return {
-        "certificate_id": cert.certificate_id,
-        "intern_name": intern.name,
-        "intern_id": intern.intern_id,
-        "college": intern.college,
-        "domain": domain.name if domain else "Tech domain",
-        "mentor_name": mentor.name if mentor else "Lead Mentor",
-        "grade": cert.grade,
-        "final_score": cert.final_score,
-        "issued_at": cert.generated_at.strftime("%Y-%m-%d")
-    }
+    return verify_certificate_endpoint(certificate_id=certificate_id, db=db)
 
 
 # ==========================================

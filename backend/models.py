@@ -721,7 +721,7 @@ class FinalGradeConfig(Base):
     code_weight = Column(Float, default=35.0)
     airdrop_weight = Column(Float, default=15.0)
     mentor_weight = Column(Float, default=30.0)
-    grade_ranges_json = Column(Text, default='{"A+": 90, "A": 80, "B+": 70, "B": 60, "C": 50}')
+    grade_ranges_json = Column(Text, default='{"A+": 90, "A": 80, "B+": 70, "B": 60, "C": 45}')
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class FinalEvaluation(Base):

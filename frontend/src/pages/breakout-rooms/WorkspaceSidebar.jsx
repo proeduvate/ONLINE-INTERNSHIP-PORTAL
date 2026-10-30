@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Hash, Volume2, Mic, MicOff, Settings, Headphones } from 'lucide-react';
-import { mockMentor, mockInterns } from './MockData';
+import { mockMentor, mockInterns } from './mockData';
 
 export default function WorkspaceSidebar({ 
   rooms, 

@@ -1,15 +1,26 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import datetime, timedelta
 
 from database import get_db
-from models import User, PointTransaction, Submission, Domain, Batch
-from schemas import LeaderboardEntry
+from models import User, PointTransaction, Submission, Domain, Batch, Task
+from schemas import LeaderboardEntry, RadarResponse, RadarAxis
 from dependencies import get_current_user
 
 router = APIRouter()
+
+RADAR_DOMAINS = [
+    "Data Science",
+    "Frontend",
+    "Artificial Intelligence",
+    "Cyber Security",
+    "Fullstack",
+    "Python",
+    "UI/UX",
+    "Java"
+]
 
 
 @router.get("", response_model=List[LeaderboardEntry])
@@ -17,6 +28,7 @@ router = APIRouter()
 def get_leaderboard(
     period: Optional[str] = "all",  # 'all', 'weekly', 'monthly'
     domain_filter: Optional[str] = None,
+    batch_filter: Optional[str] = None,
     limit: int = 50,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -24,6 +36,7 @@ def get_leaderboard(
     """
     Returns the live leaderboard ranking based on total points accumulated from
     all task submissions (MCQ score + AI score + Mentor score) and PointTransactions (bonus airdrops).
+    Supports institution batch filters (e.g. Berkeley, Harvard, IIT, MIT, Stanford) and zero-drop rankings.
     """
     # 1. Base subquery for submission scores (MCQ + AI + Mentor)
     sub_query = db.query(
@@ -60,17 +73,23 @@ def get_leaderboard(
         pt_subq.c.pt_points, 0
     )
 
-    # 4. Join with User table to fetch intern metadata
+    # 4. Join with User table to fetch intern metadata (zero-score interns are retained via outer joins)
     users_query = (
         db.query(User, total_points_expr.label("points"))
         .outerjoin(sub_subq, User.id == sub_subq.c.user_id)
         .outerjoin(pt_subq, User.id == pt_subq.c.user_id)
+        .outerjoin(Batch, User.batch_id == Batch.id)
         .filter(User.role == "intern")
     )
 
     if domain_filter:
         users_query = users_query.join(Domain, User.domain_id == Domain.id).filter(
             Domain.name.ilike(f"%{domain_filter}%")
+        )
+
+    if batch_filter:
+        users_query = users_query.filter(
+            (User.college.ilike(f"%{batch_filter}%")) | (Batch.name.ilike(f"%{batch_filter}%"))
         )
 
     results = users_query.order_by(total_points_expr.desc(), User.name.asc()).limit(limit).all()
@@ -98,6 +117,83 @@ def get_leaderboard(
         )
 
     return leaderboard
+
+
+@router.get("/radar", response_model=RadarResponse)
+def get_domain_radar(
+    intern_id: Optional[int] = None,
+    batch_filter: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Returns the eight-axis domain radar metrics covering:
+    Data Science, Frontend, Artificial Intelligence, Cyber Security, Fullstack, Python, UI/UX, Java.
+    Enforces role-based visibility:
+    - Admin: Global view or specific intern evaluation.
+    - Intern: Own proficiency benchmarked against cohort average.
+    - Mentor: Denied (HTTP 403) per B7.5 access matrix.
+    """
+    user_role = getattr(current_user.role, "value", str(current_user.role)).lower()
+    if user_role == "mentor":
+        raise HTTPException(status_code=403, detail="Access denied: Mentor role has no domain radar view.")
+
+    target_user: Optional[User] = None
+    if user_role == "admin" and intern_id:
+        target_user = db.query(User).filter(User.id == intern_id).first()
+    elif user_role == "intern":
+        target_user = current_user
+
+    target_user_domain = target_user.domain.name.lower() if (target_user and target_user.domain) else ""
+    target_user_progress = float(target_user.progress_pct or 0) if target_user else 0.0
+
+    axes_result: List[RadarAxis] = []
+
+    for domain_name in RADAR_DOMAINS:
+        domain_pattern = f"%{domain_name.split()[0]}%"
+        matching_domain = db.query(Domain).filter(Domain.name.ilike(domain_pattern)).first()
+
+        # Compute cohort average for this domain
+        cohort_query = db.query(func.avg(User.progress_pct)).filter(User.role == "intern")
+        if matching_domain:
+            cohort_query = cohort_query.filter(User.domain_id == matching_domain.id)
+        if batch_filter:
+            cohort_query = cohort_query.outerjoin(Batch, User.batch_id == Batch.id).filter(
+                (User.college.ilike(f"%{batch_filter}%")) | (Batch.name.ilike(f"%{batch_filter}%"))
+            )
+
+        cohort_avg_val = cohort_query.scalar()
+        cohort_avg = round(float(cohort_avg_val or 65.0), 1)
+
+        # Intern score for this axis
+        intern_axis_score = 0.0
+        if target_user:
+            if matching_domain and target_user.domain_id == matching_domain.id:
+                # Primary allocated domain: use progress percentage and submission average
+                intern_axis_score = min(100.0, max(target_user_progress, 40.0 if target_user_progress > 0 else 0.0))
+            elif domain_name.lower() in target_user_domain:
+                intern_axis_score = min(100.0, max(target_user_progress, 40.0 if target_user_progress > 0 else 0.0))
+            else:
+                # Secondary/cross-track skills: base score derived from baseline engagement
+                intern_axis_score = round(max(0.0, (target_user_progress * 0.35)), 1)
+        else:
+            intern_axis_score = cohort_avg
+
+        axes_result.append(
+            RadarAxis(
+                subject=domain_name,
+                score=round(intern_axis_score, 1),
+                cohort_avg=cohort_avg,
+                fullMark=100
+            )
+        )
+
+    return RadarResponse(
+        user_id=target_user.id if target_user else None,
+        user_name=target_user.name if target_user else "Cohort Benchmark",
+        batch=target_user.batch.name if (target_user and target_user.batch) else batch_filter,
+        axes=axes_result
+    )
 
 
 @router.get("/me", response_model=LeaderboardEntry)

@@ -1,3 +1,11 @@
+import os
+import sys
+
+# Ensure backend root is always in sys.path regardless of execution CWD
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, BackgroundTasks
 from pydantic import BaseModel
 from services.email_service import dispatch_notification, EventType
@@ -23,55 +31,20 @@ from fpdf import FPDF
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
-# 1. Import the meetings router module
-from routers import auth, meetings, airdrops, onboarding, tasks, analytics, submissions, users, certificates, batch_analytics, facts, leaderboard, simulation, tickets, admin, mcq, mentor, questions, interactive_learning, normal_learning
+# 1. Import router modules
+from routers import (
+    auth, meetings, airdrops, onboarding, tasks, analytics, submissions,
+    users, certificates, batch_analytics, facts, leaderboard, simulation,
+    tickets, admin, mcq, mentor, questions, interactive_learning, normal_learning, health
+)
 
+
+import importlib.util
 
 try:
     import models, database, schemas
 except ImportError:
-    from . import models, database, schemas
-
-# Optional sandbox runner using Docker; falls back to local subprocess if unavailable
-try:
-    from sandbox_runner import run_submission as sandbox_run_submission
-except Exception:
-    try:
-        from .sandbox_runner import run_submission as sandbox_run_submission
-    except Exception:
-        sandbox_run_submission = None
-
-
-def _infer_function_spec(code: str, task: models.Task) -> tuple[Optional[str], int]:
-    """Infer the primary function name and its positional argument count."""
-    try:
-        tree = ast.parse(code)
-        for node in tree.body:
-            if isinstance(node, ast.FunctionDef):
-                return node.name, len(node.args.args)
-    except Exception:
-        pass
-
-    for source in (task.coding_prompt, task.coding_solution):
-        if source:
-            match = re.search(r"def\s+(\w+)\s*\(([^)]*)\)", source)
-            if match:
-                func_name = match.group(1)
-                arg_count = 0 if not match.group(2).strip() else len([p for p in match.group(2).split(",") if p.strip()])
-                return func_name, arg_count
-
-    return None, 0
-
-
-def _parse_test_input(raw_input: str):
-    if raw_input is None:
-        return None
-    if not isinstance(raw_input, str):
-        return raw_input
-    try:
-        return ast.literal_eval(raw_input)
-    except Exception:
-        return raw_input
+    from backend import models, database, schemas  # type: ignore
 
 
 # Initialize FastAPI application
@@ -127,11 +100,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 try:
     from database import engine
     from sqlalchemy import text
-    with engine.connect() as conn:
-        conn.execute(text("ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT;"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_credential_approved BOOLEAN DEFAULT FALSE;"))
-        conn.commit()
-        print("Database migration: users table columns auto-migrated successfully.")
+    if engine.dialect.name == "postgresql":
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT;"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_credential_approved BOOLEAN DEFAULT FALSE;"))
+            conn.commit()
+            print("Database migration: PostgreSQL users table columns auto-migrated successfully.")
 except Exception as e:
     print("Database migration notice:", e)
 
@@ -139,6 +113,8 @@ except Exception as e:
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
+app.include_router(auth.router, prefix="", tags=["Auth"])
 
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
@@ -173,6 +149,7 @@ app.include_router(tasks.router, prefix="/api")
 from routers import notifications
 app.include_router(notifications.router)
 app.include_router(notifications.router, prefix="/api/v1")
+app.include_router(notifications.router, prefix="/api")
 
 app.include_router(batch_analytics.router, prefix="/api/batch-analytics", tags=["Batch Analytics"])
 app.include_router(batch_analytics.router, prefix="/api/v1/batch-analytics", tags=["Batch Analytics"])
@@ -201,6 +178,7 @@ app.include_router(interactive_learning.router, prefix="/api/learning/interactiv
 
 app.include_router(normal_learning.router, prefix="/api/v1/learning/normal", tags=["Normal Learning"])
 app.include_router(normal_learning.router, prefix="/api/learning/normal", tags=["Normal Learning"])
+app.include_router(health.router)
 
 # --- Security & Auth Configuration ---
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
@@ -287,19 +265,8 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 # --- Background Scheduler Setup ---
-scheduler = BackgroundScheduler(timezone=pytz.UTC)
-
-
-def scheduled_daily_cleanup():
-    db = database.SessionLocal()
-    try:
-        pass
-    finally:
-        db.close()
-
-
-scheduler.add_job(scheduled_daily_cleanup, 'cron', hour=0, minute=0)
-scheduler.start()
+from services.scheduler_service import start_scheduler
+scheduler = start_scheduler()
 
 
 # ==========================================
@@ -384,182 +351,25 @@ def get_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 
-# ==========================================
-# CURRICULUM & TASK ENDPOINTS
-# ==========================================
-
-@app.get("/api/tasks", response_model=List[schemas.TaskResponse])
-@app.get("/api/v1/tasks", response_model=List[schemas.TaskResponse])
-def get_tasks(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    return db.query(models.Task).all()
-
-
-@app.post("/api/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
-@app.post("/api/v1/tasks", response_model=schemas.TaskResponse, status_code=status.HTTP_201_CREATED)
-def create_task(
-    task_in: schemas.TaskCreate, 
-    db: Session = Depends(get_db), 
-    current_user: models.User = Depends(require_role(["mentor", "admin"]))
-):
-    task = models.Task(**task_in.dict(), created_by=current_user.id)
-    db.add(task)
-    db.commit()
-    db.refresh(task)
-    return task
-
-
-@app.get("/api/tasks/{task_id}", response_model=schemas.TaskResponse)
-@app.get("/api/v1/tasks/{task_id}", response_model=schemas.TaskResponse)
-def get_task(task_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    task = db.query(models.Task).filter(models.Task.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-    return task
+# Tasks, submissions, and code execution are handled via tasks.router mounted above
 
 
 # ==========================================
-# SUBMISSIONS & AUTO-EVALUATION
+# ==========================================
+# CERTIFICATE GENERATION (DELEGATED TO CERTIFICATES ROUTER)
 # ==========================================
 
-@app.post("/api/tasks/{task_id}/submit", response_model=schemas.SubmissionResponse)
-def submit_task(
-    task_id: int,
-    submission_in: schemas.SubmissionCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(require_role(["intern"]))
-):
-    task = db.query(models.Task).filter(models.Task.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-
-    submission = models.Submission(
-        task_id=task.id,
-        user_id=current_user.id,
-        submitted_code=submission_in.submitted_code,
-        status="pending"
-    )
-    db.add(submission)
-    db.commit()
-
-    if task.is_coding_task and submission_in.submitted_code:
-        if sandbox_run_submission:
-            results = sandbox_run_submission(submission_in.submitted_code, task)
-            submission.score = results.get("score", 0)
-            submission.status = "evaluated"
-            submission.feedback = json.dumps(results.get("test_results", []))
-        else:
-            func_name, arg_count = _infer_function_spec(submission_in.submitted_code, task)
-            passed_tests = 0
-            test_cases = task.test_cases or []
-
-            if func_name and test_cases:
-                with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as tmp:
-                    tmp.write(submission_in.submitted_code)
-                    tmp_path = tmp.name
-
-                try:
-                    for test in test_cases:
-                        inp = _parse_test_input(test.get("input"))
-                        expected = str(test.get("output")).strip()
-                        run_script = f"import sys, json\nfrom {os.path.basename(tmp_path)[:-3]} import {func_name}\nprint({func_name}(*{inp if isinstance(inp, list) else [inp]}))\n"
-                        
-                        proc = subprocess.run(
-                            [sys.executable, "-c", run_script],
-                            cwd=os.path.dirname(tmp_path),
-                            capture_output=True,
-                            text=True,
-                            timeout=5
-                        )
-                        if proc.stdout.strip() == expected:
-                            passed_tests += 1
-
-                    score = int((passed_tests / len(test_cases)) * 100) if test_cases else 100
-                    submission.score = score
-                    submission.status = "evaluated"
-                    submission.feedback = f"Passed {passed_tests}/{len(test_cases)} automated test cases."
-                except Exception as ex:
-                    submission.status = "failed"
-                    submission.feedback = f"Execution error: {str(ex)}"
-                finally:
-                    if os.path.exists(tmp_path):
-                        os.remove(tmp_path)
-            else:
-                submission.status = "evaluated"
-                submission.score = 100
-                submission.feedback = "Submitted successfully. Manual review pending."
-
-    db.commit()
-    db.refresh(submission)
-    return submission
-
-
-# ==========================================
-# CERTIFICATE GENERATION
-# ==========================================
-
-@app.get("/api/certificates/download/{intern_id}")
+@app.get('/api/certificates/download/{intern_id}')
+@app.get('/api/v1/certificates/download/{intern_id}')
 def generate_certificate(
-    intern_id: int, 
+    intern_id: str, 
     db: Session = Depends(get_db), 
     current_user: models.User = Depends(get_current_user)
 ):
-    intern = db.query(models.User).filter(models.User.id == intern_id).first()
-    if not intern:
-        raise HTTPException(status_code=404, detail="Intern record not found")
-
-    from datetime import datetime, timedelta
-    from fastapi.responses import FileResponse
-    from services.certificate_generator import generate_certificate_pdf
-    
-    # Calculate Date & Duration
-    start_date = intern.start_date or datetime.utcnow() - timedelta(days=30)
-    end_date = intern.end_date or start_date + timedelta(days=30)
-    
-    period = f"{start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}"
-    issued_date = datetime.utcnow().strftime('%B %d, %Y')
-    
-    cert_id = f"PRO-INT-26-{intern.id:04d}"
-    
-    # Grade Calculation
-    submissions = db.query(models.Submission).filter(models.Submission.intern_id == intern.id).all()
-    completed_tasks = len([s for s in submissions if s.status in ['evaluated', 'approved']])
-    
-    if len(submissions) > 0:
-        # Compute avg based on multiple components if available, else fallback to progress_pct
-        avg_score = sum((s.mcq_score or 0) + (s.ai_score or 0) for s in submissions) / (len(submissions) * 2) 
-    else:
-        avg_score = intern.progress_pct or 0
-
-    if avg_score >= 90:
-        grade = "A+"
-    elif avg_score >= 80:
-        grade = "A"
-    elif avg_score >= 70:
-        grade = "B+"
-    elif avg_score >= 60:
-        grade = "B"
-    else:
-        grade = "C"
-
-    # Domain
-    domain_name = intern.domain.name if intern.domain else "Software Engineering"
-    
-    cert_data = {
-        'intern_name': intern.name,
-        'domain': domain_name,
-        'duration': '1 MONTH',
-        'period': period,
-        'issued_date': issued_date,
-        'certificate_id': cert_id,
-        'grade': grade
-    }
-    
-    pdf_path = generate_certificate_pdf(cert_data)
-    
-    return FileResponse(
-        pdf_path, 
-        media_type="application/pdf", 
-        filename=f"Certificate_{intern.name.replace(' ', '_')}.pdf"
+    return certificates.download_certificate_by_id(
+        cert_identifier=str(intern_id),
+        db=db,
+        current_user=current_user
     )
 
 
@@ -567,30 +377,30 @@ def generate_certificate(
 # REAL-TIME MESSAGING & WEBSOCKETS
 # ==========================================
 
-@app.websocket("/ws/chat/{user_id}")
+@app.websocket('/ws/chat/{user_id}')
 async def websocket_chat_endpoint(websocket: WebSocket, user_id: int, db: Session = Depends(get_db)):
     await manager.connect(user_id, websocket)
     try:
         while True:
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
-            recipient_id = data.get("recipient_id")
-            message_text = data.get("message")
+            recipient_id = data.get('recipient_id')
+            message_text = data.get('message')
 
             if recipient_id and message_text:
                 db_message = models.Message(
                     sender_id=user_id,
-                    recipient_id=recipient_id,
+                    receiver_id=recipient_id,
                     content=message_text,
-                    timestamp=datetime.utcnow()
+                    sent_at=datetime.utcnow()
                 )
                 db.add(db_message)
                 db.commit()
 
                 payload = json.dumps({
-                    "sender_id": user_id,
-                    "content": message_text,
-                    "timestamp": db_message.timestamp.isoformat()
+                    'sender_id': user_id,
+                    'content': message_text,
+                    'timestamp': db_message.sent_at.isoformat()
                 })
                 await manager.send_personal_message(payload, recipient_id)
     except WebSocketDisconnect:
@@ -598,26 +408,14 @@ async def websocket_chat_endpoint(websocket: WebSocket, user_id: int, db: Sessio
 
 
 # ==========================================
-# HEALTH & APPLICATION ENTRYPOINT
+# INTERN STATS & NOTIFICATIONS
 # ==========================================
 
-@app.get("/health", status_code=status.HTTP_200_OK)
-def health_check():
-    return {
-        "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
-        "version": app.version
-    }
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-@app.get("/api/intern/stats")
+@app.get('/api/intern/stats')
 def get_intern_stats(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if current_user.role.value != "intern":
-        return {"error": "Not an intern"}
+    user_role = getattr(current_user.role, 'value', str(current_user.role)).lower()
+    if user_role != 'intern':
+        return {'error': 'Not an intern'}
     
     total_days = 30
     submissions_count = db.query(models.Submission).filter(
@@ -629,8 +427,8 @@ def get_intern_stats(current_user: models.User = Depends(get_current_user), db: 
         models.AttendanceLog.intern_id == current_user.id
     ).all()
     
-    days_present = sum(1 for a in attendance_records if a.status == "present")
-    days_absent = sum(1 for a in attendance_records if a.status == "absent")
+    days_present = sum(1 for a in attendance_records if a.status == 'present')
+    days_absent = sum(1 for a in attendance_records if a.status == 'absent')
     total_attendance = days_present + days_absent
     attendance_percent = int((days_present / total_attendance) * 100) if total_attendance > 0 else 0
     
@@ -643,14 +441,14 @@ def get_intern_stats(current_user: models.User = Depends(get_current_user), db: 
     ai_score = int(avg_ai_score) if avg_ai_score else 0
     
     return {
-        "currentDay": submissions_count + 1,
-        "progressPercent": progress_percent,
-        "daysCompleted": submissions_count,
-        "totalDays": total_days,
-        "attendancePercent": attendance_percent,
-        "daysPresent": days_present,
-        "daysAbsent": days_absent,
-        "aiScore": ai_score
+        'currentDay': submissions_count + 1,
+        'progressPercent': progress_percent,
+        'daysCompleted': submissions_count,
+        'totalDays': total_days,
+        'attendancePercent': attendance_percent,
+        'daysPresent': days_present,
+        'daysAbsent': days_absent,
+        'aiScore': ai_score
     }
 
 
@@ -661,7 +459,8 @@ class NotificationTrigger(BaseModel):
     message: str
     action_url: str
 
-@app.post("/api/notifications/trigger")
+
+@app.post('/api/notifications/trigger')
 def trigger_notification(data: NotificationTrigger, bg_tasks: BackgroundTasks):
     try:
         e_type = EventType(data.event_type)
@@ -676,4 +475,13 @@ def trigger_notification(data: NotificationTrigger, bg_tasks: BackgroundTasks):
         message=data.message,
         action_url=data.action_url
     )
-    return {"status": "dispatched"}
+    return {'status': 'dispatched'}
+
+
+# Health check is served via health.router mounted above
+health_check = health.health_check
+
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

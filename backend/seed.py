@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 try:
-    import database, models, app
-    from app.core.security import pwd_context
+    import database, models
+    from core.security import pwd_context
 except ImportError:
-    from . import database, models, app
-    from .app.core.security import pwd_context
+    from . import database, models
+    from .core.security import pwd_context
 import json
 import os
 from datetime import datetime, timedelta
@@ -26,17 +26,10 @@ def register_supabase_user(email, password):
 def seed():
     # Drop all and recreate to ensure schema alignment
     print("Recreating database schema...")
-    
-    # Drop tables with CASCADE
-    with database.engine.connect() as conn:
-        from sqlalchemy import text
-        try:
-            conn.execute(text("DROP SCHEMA public CASCADE;"))
-            conn.execute(text("CREATE SCHEMA public;"))
-            conn.commit()
-        except Exception as e:
-            print("Skipping schema drop (likely running on SQLite). Error:", e)
-
+    try:
+        models.Base.metadata.drop_all(bind=database.engine)
+    except Exception as e:
+        print("Notice on drop_all:", e)
     models.Base.metadata.create_all(bind=database.engine)
     
     db = next(database.get_db())

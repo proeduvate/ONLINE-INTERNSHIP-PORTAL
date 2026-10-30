@@ -5,20 +5,26 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from alembic import context
+from alembic import context  # type: ignore
 
-# Add the parent directory to sys.path so we can import our modules
-sys.path.append(os.getcwd())
+# Add the backend directory to sys.path so we can import our modules reliably
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
-from database import Base, SQLALCHEMY_DATABASE_URL
-import models  # This ensures all models are registered with Base.metadata
+try:
+    from database import Base, DATABASE_URL
+    import models  # This ensures all models are registered with Base.metadata
+except ImportError:
+    from backend.database import Base, DATABASE_URL  # type: ignore
+    from backend import models  # type: ignore
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 # Set the sqlalchemy.url from our database.py
-config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

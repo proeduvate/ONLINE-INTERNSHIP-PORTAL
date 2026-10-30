@@ -1,9 +1,21 @@
 import json
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 import models
-from datetime import datetime, timezone
-import math
+from datetime import datetime
+
+def get_performance_classification(grade: str) -> str:
+    """
+    Returns the performance classification string based on the assigned letter grade (B3.3).
+    """
+    classifications = {
+        "A+": "Outstanding / Elite Performance",
+        "A": "Excellent Performance",
+        "B+": "Very Good Performance",
+        "B": "Good Performance",
+        "C": "Satisfactory Performance",
+        "F": "Ineligible / Unsatisfactory"
+    }
+    return classifications.get(grade, "In Progress")
 
 def calculate_final_grade(db: Session, intern: models.User, force_recalculate: bool = False):
     """
@@ -89,7 +101,7 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
             points_arr = [int(p.strip()) for p in airdrop.points_distribution.split(",") if p.strip().isdigit()]
             if points_arr:
                 total_available_airdrop += points_arr[0]
-        except:
+        except Exception:
             pass
 
     # Total earned = sum of bonus_points in AirdropResult
@@ -126,27 +138,29 @@ def calculate_final_grade(db: Session, intern: models.User, force_recalculate: b
     )
     evaluation.final_score = round(final_score, 2)
 
-    # 8. Grade Calculation
-    if not evaluation.is_completed:
-        evaluation.grade = None
-        db.commit()
-        db.refresh(evaluation)
-        return evaluation
-
-    # 8. Grade Calculation
+    # 8. Grade Calculation (B3.3: A+, A, B+, B, C, F)
     try:
         grade_ranges = json.loads(config.grade_ranges_json)
-        # Assuming grade_ranges is dict like {"A+": 90, "A": 80, ...}
         assigned_grade = "F"
-        # Sort by threshold descending
         sorted_grades = sorted(grade_ranges.items(), key=lambda item: item[1], reverse=True)
         for grade_name, threshold in sorted_grades:
             if final_score >= threshold:
                 assigned_grade = grade_name
                 break
         evaluation.grade = assigned_grade
-    except:
-        evaluation.grade = "N/A"
+    except Exception:
+        if final_score >= 90:
+            evaluation.grade = "A+"
+        elif final_score >= 80:
+            evaluation.grade = "A"
+        elif final_score >= 70:
+            evaluation.grade = "B+"
+        elif final_score >= 60:
+            evaluation.grade = "B"
+        elif final_score >= 45:
+            evaluation.grade = "C"
+        else:
+            evaluation.grade = "F"
 
     db.commit()
     db.refresh(evaluation)
@@ -279,7 +293,7 @@ def bulk_calculate_final_grades(db: Session, interns: list, force_recalculate: b
                 points_arr = [int(p.strip()) for p in airdrop.points_distribution.split(",") if p.strip().isdigit()]
                 if points_arr:
                     total_available_airdrop += points_arr[0]
-            except:
+            except Exception:
                 pass
                 
         earned_airdrop = sum(res.bonus_points for res in airdrop_res_by_intern[intern.id])
@@ -307,18 +321,26 @@ def bulk_calculate_final_grades(db: Session, interns: list, force_recalculate: b
         )
         evaluation.final_score = round(final_score, 2)
         
-        if not evaluation.is_completed:
-            evaluation.grade = None
+        assigned_grade = "F"
+        if sorted_grades:
+            for grade_name, threshold in sorted_grades:
+                if final_score >= threshold:
+                    assigned_grade = grade_name
+                    break
         else:
-            assigned_grade = "F"
-            if sorted_grades:
-                for grade_name, threshold in sorted_grades:
-                    if final_score >= threshold:
-                        assigned_grade = grade_name
-                        break
-                evaluation.grade = assigned_grade
+            if final_score >= 90:
+                assigned_grade = "A+"
+            elif final_score >= 80:
+                assigned_grade = "A"
+            elif final_score >= 70:
+                assigned_grade = "B+"
+            elif final_score >= 60:
+                assigned_grade = "B"
+            elif final_score >= 45:
+                assigned_grade = "C"
             else:
-                evaluation.grade = "N/A"
+                assigned_grade = "F"
+        evaluation.grade = assigned_grade
                 
         evaluations_to_return.append(evaluation)
 

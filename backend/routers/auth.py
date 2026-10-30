@@ -93,10 +93,47 @@ def login_user(user_credentials: schemas.UserLoginSchema, db: Session = Depends(
     
     access_token = create_access_token(user.id, user.role.value)
     
+    user_payload = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role.value,
+        "domain_id": user.domain_id,
+        "domain_name": user.domain_name,
+        "avatar_url": user.avatar_url,
+        "intern_id": user.intern_id,
+        "college": user.college,
+        "attendance_pct": user.attendance_pct or 0,
+        "progress_pct": user.progress_pct or 0,
+        "learning_streak": user.learning_streak or 0
+    }
+    
     return {
         "access_token": access_token, 
         "token_type": "bearer",
         "role": user.role.value,
         "name": user.name,
-        "email": user.email
+        "email": user.email,
+        "user": user_payload
+    }
+
+
+from dependencies import get_current_user
+
+@router.get("/profile")
+@router.get("/me")
+def get_user_profile(current_user: models.User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "role": current_user.role.value,
+        "domain_id": current_user.domain_id,
+        "domain_name": current_user.domain_name,
+        "avatar_url": current_user.avatar_url,
+        "intern_id": current_user.intern_id,
+        "college": current_user.college,
+        "attendance_pct": current_user.attendance_pct or 0,
+        "progress_pct": current_user.progress_pct or 0,
+        "learning_streak": current_user.learning_streak or 0
     }

@@ -11,6 +11,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const loadUser = async () => {
             if (authToken) {
+                // First initialize with cached user if present
+                try {
+                    const cached = JSON.parse(localStorage.getItem('user') || 'null');
+                    if (cached) setUser(cached);
+                } catch (e) {}
+
                 try {
                     const response = await fetch(`${API_BASE}/profile`, {
                         headers: {
@@ -20,13 +26,13 @@ export const AuthProvider = ({ children }) => {
                     if (response.ok) {
                         const userData = await response.json();
                         setUser(userData);
-                    } else {
-                        console.error('Failed to fetch user data with token, logging out.');
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    } else if (response.status === 401) {
+                        console.warn('Session expired (401), logging out.');
                         logout();
                     }
                 } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    logout();
+                    console.warn('Error fetching profile from API, using cached session:', error);
                 }
             }
             setLoading(false);

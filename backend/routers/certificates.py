@@ -1,44 +1,51 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
 import uuid
+import traceback
 
 from database import get_db
-from dependencies import get_current_user
+from dependencies import get_current_user, check_admin
 import models, schemas
 from services.certificate_generator import generate_certificate_pdf
 from services.email_service import send_certificate_email
 
-
-
-
-
-    # If no users exist, create a mock one so it doesn't crash
-    
 router = APIRouter(prefix="/certificates", tags=["Certificates"])
 
-@router.post("/request", response_model=schemas.CertificateResponse)
 
 @router.get("/me", response_model=schemas.CertificateResponse)
-def get_my_certificate(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    cert = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).order_by(models.Certificate.id.desc()).first()
+def get_my_certificate(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    cert = db.query(models.Certificate).filter(
+        models.Certificate.intern_id == current_user.id
+    ).order_by(models.Certificate.id.desc()).first()
     if not cert:
         raise HTTPException(status_code=404, detail="No certificate found")
     return cert
 
+
 @router.post("/request", response_model=schemas.CertificateResponse)
-def request_certificate(req: schemas.CertificateRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    if current_user.role != "intern":
+def request_certificate(
+    req: schemas.CertificateRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    user_role = getattr(current_user.role, "value", str(current_user.role)).lower()
+    if user_role != "intern":
         raise HTTPException(status_code=403, detail="Only interns can request certificates.")
-        
-    existing = db.query(models.Certificate).filter(models.Certificate.intern_id == current_user.id).first()
+
+    existing = db.query(models.Certificate).filter(
+        models.Certificate.intern_id == current_user.id
+    ).first()
     if existing:
         raise HTTPException(status_code=400, detail="Certificate request already exists.")
-        
+
     cert_id = f"CERT-2026-OIP-{uuid.uuid4().hex[:8].upper()}"
-    
-    
+
     domain = ""
     if hasattr(current_user, 'domain') and current_user.domain:
         domain = current_user.domain.name if hasattr(current_user.domain, 'name') else str(current_user.domain)
@@ -50,69 +57,96 @@ def request_certificate(req: schemas.CertificateRequest, db: Session = Depends(g
             domain = d_obj.name
 
     if not domain:
-        raise HTTPException(status_code=400, detail="User has no assigned domain for certificate generation.")
+        domain = "Software Engineering"
 
     new_cert = models.Certificate(
         intern_id=current_user.id,
         intern_name=current_user.name,
         certificate_id=cert_id,
         domain=domain,
-        duration=req.duration,
+        duration=req.duration or "1 Month",
         achievement=req.achievement,
         status="PENDING_ADMIN_APPROVAL",
         grade=req.grade,
         final_score=req.final_score
     )
-    
+
     db.add(new_cert)
     db.commit()
     db.refresh(new_cert)
     return new_cert
 
+
 @router.get("/pending", response_model=List[schemas.CertificateResponse])
-def get_pending_certificates(db: Session = Depends(get_db)):
-    return db.query(models.Certificate).filter(models.Certificate.status == "PENDING_ADMIN_APPROVAL").all()
+def get_pending_certificates(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(check_admin)
+):
+    return db.query(models.Certificate).filter(
+        models.Certificate.status == "PENDING_ADMIN_APPROVAL"
+    ).all()
+
 
 @router.post("/{cert_id}/approve")
-def approve_certificate(cert_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_id).first()
+def approve_certificate(
+    cert_id: str,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(check_admin)
+):
+    cert = db.query(models.Certificate).filter(
+        models.Certificate.certificate_id == cert_id
+    ).first()
     if not cert:
         raise HTTPException(status_code=404, detail="Certificate not found.")
-        
+
     if cert.status == "APPROVED":
         raise HTTPException(status_code=400, detail="Certificate already approved.")
-        
+
     cert.status = "APPROVED"
     cert.issued_date = datetime.utcnow()
-    
+
     cert_data = {
         'intern_name': cert.intern_name,
         'domain': cert.domain,
         'duration': cert.duration,
         'achievement': cert.achievement,
         'certificate_id': cert.certificate_id,
-        'issued_date': cert.issued_date.strftime("%Y-%m-%d")
+        'issued_date': cert.issued_date.strftime("%Y-%m-%d"),
+        'grade': cert.grade or "A"
     }
     pdf_path = generate_certificate_pdf(cert_data)
     cert.pdf_path = pdf_path
-    
-    db.commit()
-    
+
+    # Also approve user credential flag
     user = db.query(models.User).filter(models.User.id == cert.intern_id).first()
+    if user:
+        setattr(user, "is_credential_approved", True)
+
+    db.commit()
+
     if user and user.email:
         background_tasks.add_task(send_certificate_email, user.email, user.name, pdf_path)
-        
+
     return {"message": "Certificate approved successfully.", "pdf_path": pdf_path}
 
+
 @router.post("/{cert_id}/reject")
-def reject_certificate(cert_id: str, db: Session = Depends(get_db)):
-    cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_id).first()
+def reject_certificate(
+    cert_id: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(check_admin)
+):
+    cert = db.query(models.Certificate).filter(
+        models.Certificate.certificate_id == cert_id
+    ).first()
     if not cert:
         raise HTTPException(status_code=404, detail="Certificate not found.")
-        
+
     cert.status = "REJECTED"
     db.commit()
     return {"message": "Certificate rejected."}
+
 
 @router.get("/status/{intern_id}")
 def get_certificate_status(intern_id: str, db: Session = Depends(get_db)):
@@ -120,13 +154,19 @@ def get_certificate_status(intern_id: str, db: Session = Depends(get_db)):
     if intern_id.isdigit():
         intern = db.query(models.User).filter(models.User.id == int(intern_id)).first()
     if not intern:
-        intern = db.query(models.User).filter((models.User.intern_id == intern_id) | (models.User.email == intern_id)).first()
-    
+        intern = db.query(models.User).filter(
+            (models.User.intern_id == intern_id) | (models.User.email == intern_id)
+        ).first()
+
     cert = None
     if intern:
-        cert = db.query(models.Certificate).filter(models.Certificate.intern_id == intern.id).order_by(models.Certificate.id.desc()).first()
+        cert = db.query(models.Certificate).filter(
+            models.Certificate.intern_id == intern.id
+        ).order_by(models.Certificate.id.desc()).first()
     else:
-        cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == intern_id).first()
+        cert = db.query(models.Certificate).filter(
+            models.Certificate.certificate_id == intern_id
+        ).first()
 
     if not intern and not cert:
         return {
@@ -150,7 +190,7 @@ def get_certificate_status(intern_id: str, db: Session = Depends(get_db)):
     is_approved = False
     if cert_status in ("GENERATED", "ISSUED", "APPROVED"):
         is_approved = True
-    elif intern and (getattr(intern, "is_credential_approved", False) or getattr(intern, "is_approved", False)):
+    elif intern and getattr(intern, "is_credential_approved", False):
         is_approved = True
 
     return {
@@ -173,25 +213,30 @@ def get_certificate_status(intern_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/approve/{intern_id}")
-def approve_credential_endpoint(intern_id: str, db: Session = Depends(get_db)):
+def approve_credential_endpoint(
+    intern_id: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(check_admin)
+):
     intern = None
     if intern_id.isdigit():
         intern = db.query(models.User).filter(models.User.id == int(intern_id)).first()
     if not intern:
-        intern = db.query(models.User).filter((models.User.intern_id == intern_id) | (models.User.email == intern_id)).first()
-    
+        intern = db.query(models.User).filter(
+            (models.User.intern_id == intern_id) | (models.User.email == intern_id)
+        ).first()
+
     cert = None
     if intern:
-        cert = db.query(models.Certificate).filter(models.Certificate.intern_id == intern.id).order_by(models.Certificate.id.desc()).first()
+        cert = db.query(models.Certificate).filter(
+            models.Certificate.intern_id == intern.id
+        ).order_by(models.Certificate.id.desc()).first()
 
     if not intern and not cert:
         raise HTTPException(status_code=404, detail="Intern record not found")
 
     if intern:
-        if hasattr(intern, "is_credential_approved"):
-            setattr(intern, "is_credential_approved", True)
-        if hasattr(intern, "is_approved"):
-            setattr(intern, "is_approved", True)
+        setattr(intern, "is_credential_approved", True)
         db.add(intern)
     if cert:
         cert.status = "APPROVED"
@@ -225,35 +270,36 @@ def approve_credential_endpoint(intern_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/download/{cert_identifier}")
-def download_certificate_by_id(cert_identifier: str, db: Session = Depends(get_db)):
-    import traceback
-    from datetime import datetime
-
-    cert_record = db.query(models.Certificate).filter(models.Certificate.certificate_id == cert_identifier).first()
+def download_certificate_by_id(
+    cert_identifier: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    cert_record = db.query(models.Certificate).filter(
+        models.Certificate.certificate_id == cert_identifier
+    ).first()
     intern = None
     if cert_record:
         intern = db.query(models.User).filter(models.User.id == cert_record.intern_id).first()
     elif cert_identifier.isdigit():
         intern = db.query(models.User).filter(models.User.id == int(cert_identifier)).first()
         if intern:
-            cert_record = db.query(models.Certificate).filter(models.Certificate.intern_id == intern.id).first()
-    else:
-        import re
-        digits = re.findall(r'\d+', cert_identifier)
-        if digits:
-            intern = db.query(models.User).filter(models.User.id == int(digits[-1])).first()
-            if intern:
-                cert_record = db.query(models.Certificate).filter(models.Certificate.intern_id == intern.id).first()
+            cert_record = db.query(models.Certificate).filter(
+                models.Certificate.intern_id == intern.id
+            ).first()
 
     if not cert_record and not intern:
         raise HTTPException(status_code=404, detail="Certificate or intern record not found")
 
+    user_role = getattr(current_user.role, "value", str(current_user.role)).lower()
+    # Check ownership or admin
+    if user_role != "admin":
+        if intern and intern.id != current_user.id:
+            raise HTTPException(status_code=403, detail="Access denied: You may only download your own certificate.")
+
+    # Clearance gate: Must be approved
     cert_status = str(cert_record.status if cert_record and cert_record.status else "").upper()
-    is_approved = False
-    if cert_status in ("GENERATED", "ISSUED", "APPROVED"):
-        is_approved = True
-    elif intern and (getattr(intern, "is_credential_approved", False) or getattr(intern, "is_approved", False)):
-        is_approved = True
+    is_approved = (cert_status in ("GENERATED", "ISSUED", "APPROVED")) or (intern and getattr(intern, "is_credential_approved", False))
 
     if not is_approved:
         raise HTTPException(
@@ -261,35 +307,22 @@ def download_certificate_by_id(cert_identifier: str, db: Session = Depends(get_d
             detail="Certificate is pending admin credential approval upon internship completion."
         )
 
-    try:
-        try:
-            from services.html_certificate_service import HTMLCertificateService
-        except Exception:
-            import sys
-            from pathlib import Path
-            backend_dir = str((Path(__file__).parent.parent).resolve())
-            if backend_dir not in sys.path:
-                sys.path.insert(0, backend_dir)
-            from services.html_certificate_service import HTMLCertificateService
-            
-        service = HTMLCertificateService()
+    # Score threshold gate: B3.4 & B4.7 (score < 45% is blocked)
+    raw_score = cert_record.final_score if cert_record and cert_record.final_score is not None else None
+    if raw_score is not None and float(raw_score) < 45.0:
+        raise HTTPException(
+            status_code=403,
+            detail="Certificate clearance blocked: Intern final score is below the 45% minimum threshold."
+        )
 
+    try:
         intern_name = (intern.name if (intern and intern.name) else (getattr(cert_record, 'intern_name', None) or "INTERN")).upper()
         domain_name = (cert_record.domain if cert_record and cert_record.domain else (getattr(intern, 'domain_name', None) or getattr(intern, 'domain', None) or "Full Stack Web Development"))
         if hasattr(domain_name, 'name'):
             domain_name = domain_name.name
 
-        raw_score = cert_record.final_score if cert_record and cert_record.final_score is not None else None
-        if raw_score is not None:
-            score = float(raw_score)
-            if score == 0.0:
-                score = 91.0
-        elif intern and getattr(intern, 'attendance_pct', None):
-            score = float(intern.attendance_pct)
-        else:
-            score = 91.0
-
-        grade = cert_record.grade if cert_record and cert_record.grade else service.get_grade_info(score)[0]
+        score = float(raw_score) if raw_score is not None else 91.0
+        grade = cert_record.grade if cert_record and cert_record.grade else "A"
         cert_id = cert_record.certificate_id if cert_record else cert_identifier
 
         start_date = getattr(cert_record, 'start_date', None) or getattr(intern, 'start_date', None) or ""
@@ -303,16 +336,15 @@ def download_certificate_by_id(cert_identifier: str, db: Session = Depends(get_d
             'start_date': start_date.strftime('%B %d, %Y') if hasattr(start_date, 'strftime') else str(start_date),
             'end_date': end_date.strftime('%B %d, %Y') if hasattr(end_date, 'strftime') else str(end_date),
             'issued_date': issued_date,
-            'issue_date': issued_date,
             'certificate_id': cert_id,
-            'cert_id': cert_id,
             'score': score,
             'grade': grade
         }
-        
-        pdf_bytes = service.generate_certificate_pdf(cert_data)
-        
-        from fastapi.responses import Response
+
+        pdf_path = generate_certificate_pdf(cert_data)
+        with open(pdf_path, "rb") as f:
+            pdf_bytes = f.read()
+
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -321,6 +353,44 @@ def download_certificate_by_id(cert_identifier: str, db: Session = Depends(get_d
     except HTTPException:
         raise
     except Exception as e:
-        err_msg = f"Certificate generation error: {str(e)}\n{traceback.format_exc()}"
-        print(f"Error serving certificate download for {cert_identifier}:\n{err_msg}")
+        err_msg = f"Certificate generation error: {str(e)}"
+        print(f"Error serving certificate download for {cert_identifier}:\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=err_msg)
+
+
+@router.get("/verify/{certificate_id}")
+def verify_certificate_endpoint(
+    certificate_id: str,
+    db: Session = Depends(get_db)
+):
+    cert = db.query(models.Certificate).filter(models.Certificate.certificate_id == certificate_id).first()
+    if not cert:
+        raise HTTPException(status_code=404, detail="Certificate not found")
+
+    intern = db.query(models.User).filter(models.User.id == cert.intern_id).first()
+    domain_name = cert.domain or (intern.domain.name if intern and intern.domain else "Software Engineering")
+    issue_year = cert.issued_date.year if cert.issued_date else datetime.utcnow().year
+    issue_month = cert.issued_date.month if cert.issued_date else datetime.utcnow().month
+
+    from urllib.parse import quote
+    linkedin_url = (
+        f"https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME"
+        f"&name={quote(f'{domain_name} Internship')}&organizationName=ProEduvate"
+        f"&issueYear={issue_year}&issueMonth={issue_month}"
+        f"&certUrl={quote(f'https://proeduvate.com/verify/{cert.certificate_id}')}"
+        f"&certId={quote(cert.certificate_id)}"
+    )
+
+    return {
+        "is_valid": True,
+        "certificate_id": cert.certificate_id,
+        "intern_name": cert.intern_name or (intern.name if intern else "Intern"),
+        "intern_id": intern.intern_id if intern else None,
+        "college": intern.college if intern else None,
+        "domain": domain_name,
+        "duration": cert.duration or "1 Month",
+        "grade": cert.grade or "A",
+        "final_score": cert.final_score,
+        "issued_date": cert.issued_date.strftime('%d %B %Y').upper() if cert.issued_date else datetime.utcnow().strftime('%d %B %Y').upper(),
+        "linkedin_add_url": linkedin_url
+    }

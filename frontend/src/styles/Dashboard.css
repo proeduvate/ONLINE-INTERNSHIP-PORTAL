@@ -1381,3 +1381,210 @@
     white-space: nowrap;
   }
 }
+
+/* ========================================================
+   Modern Responsive Classes for Intern Dashboard & Student Hub
+   ======================================================== */
+
+/* Sleek Modern Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.intern-header {
+  height: 72px;
+  background-color: var(--card-bg, #ffffff);
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(8px);
+}
+
+.intern-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bg-light, #f1f5f9);
+  padding: 4px 6px;
+  border-radius: 30px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.intern-nav-container::-webkit-scrollbar {
+  display: none;
+}
+
+.intern-hero-row {
+  display: grid;
+  grid-template-columns: 2.3fr 1.2fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.intern-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.intern-content-row {
+  display: grid;
+  grid-template-columns: 0.85fr 1.45fr 1.1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.progress-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.progress-middle-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 14px;
+}
+
+.progress-bottom-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  gap: 14px;
+}
+
+/* Day 15 Midterm Milestone Card */
+.milestone-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.milestone-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35);
+}
+
+.milestone-pulse {
+  animation: pulse-glow 2.5s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* Tablet Breakpoints (<= 1200px) */
+@media (max-width: 1200px) {
+  .intern-content-row {
+    grid-template-columns: 1fr 1.4fr;
+  }
+  .intern-content-row > :last-child {
+    grid-column: span 2;
+  }
+  .progress-middle-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .progress-middle-grid > :last-child {
+    grid-column: span 2;
+  }
+  .progress-bottom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .progress-bottom-grid > :first-child {
+    grid-column: span 2;
+  }
+}
+
+/* Medium Breakpoints (<= 1024px) */
+@media (max-width: 1024px) {
+  .intern-header {
+    height: auto !important;
+    min-height: 64px !important;
+    padding: 10px 16px !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  .intern-nav-container {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 12px !important;
+  }
+  .intern-hero-row {
+    grid-template-columns: 1fr;
+  }
+  .intern-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .progress-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Breakpoints (<= 768px) */
+@media (max-width: 768px) {
+  .intern-content-row {
+    grid-template-columns: 1fr;
+  }
+  .intern-content-row > :last-child {
+    grid-column: span 1;
+  }
+  .progress-middle-grid {
+    grid-template-columns: 1fr;
+  }
+  .progress-middle-grid > :last-child {
+    grid-column: span 1;
+  }
+  .progress-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+  .progress-bottom-grid > :first-child {
+    grid-column: span 1;
+  }
+  .intern-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .progress-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

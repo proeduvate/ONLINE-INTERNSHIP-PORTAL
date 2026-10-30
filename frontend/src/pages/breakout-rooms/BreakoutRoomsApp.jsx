@@ -4,7 +4,7 @@ import WorkspaceSidebar from './WorkspaceSidebar';
 import MeetingArea from './MeetingArea';
 import MembersPanel from './MembersPanel';
 import BreakoutManagerModal from './BreakoutManagerModal';
-import { mockRooms } from './MockData';
+import { mockRooms } from './mockData';
 import { useAuth } from '../../services/AuthContext';
 
 export default function BreakoutRoomsApp({ onRoomChange, onLeaveMeeting, isIntern = false, onMinimize, user: propUser }) {

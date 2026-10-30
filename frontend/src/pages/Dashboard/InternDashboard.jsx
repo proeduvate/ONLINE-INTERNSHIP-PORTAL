@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, BookOpen, Ticket, Gift, LogOut, Bell, Sparkles, Clock, Sun, Moon, ArrowLeft, CheckCircle, CheckCircle2, Target, Lock, Calendar, FileText, Check, CheckCheck, Flag, PartyPopper, ShieldAlert, ClipboardList, Headset, MessageCircle, Coins, Award, TrendingUp, Code, Share2, Download, ExternalLink, Play, User, Star, Quote, Rocket, Bot } from "lucide-react";
 import "../../styles/Dashboard.css";
-import DailyScenario from "../../components/ui/DailyScenario";
-import DailyScenarioCalendar from "../../components/ui/DailyScenarioCalendar";
+import DailyScenario from "../../components/Simulation/DailyScenario";
+import DailyScenarioCalendar from "../../components/Simulation/DailyScenarioCalendar";
 import BreakoutRoomsApp from "../breakout-rooms/BreakoutRoomsApp";
 import InternProfile from "./InternProfile";
 import { Button } from "../../components/ui/Button";
@@ -12,6 +12,11 @@ import WebIDE from "../../components/WebIDE/WebIDE";
 import AIClientReview from "./AIClientReview";
 import InteractiveLearningDashboard from "../../features/learning/interactive/InteractiveLearningDashboard";
 import api from "../../api/axios";
+import MentorChatTab from "../../components/Chat/MentorChatTab";
+import InternOverviewTab from "./Intern/InternOverviewTab";
+import InternProgressTab from "./Intern/InternProgressTab";
+import InternTicketsTab from "./Intern/InternTicketsTab";
+import InternBonusAirdropsTab from "./Intern/InternBonusAirdropsTab";
 export default function InternDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -648,67 +653,6 @@ export default function InternDashboard() {
   const [evaluating, setEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
 
-  // Live 1-on-1 Chat message state
-  const [chatMessages, setChatMessages] = useState([]);
-  const [inputMsg, setInputMsg] = useState("");
-
-  const fetchChatMessages = async (targetMentorId) => {
-    const mId = targetMentorId || mentorInfo?.id || 2;
-    try {
-      const res = await api.get(`/api/v1/messages?contact_id=${mId}`);
-      if (Array.isArray(res.data)) {
-        const formatted = res.data.map(m => ({
-          id: m.id,
-          sender: m.sender_id === internUser?.id ? "You" : (mentorInfo?.name || "Mentor"),
-          text: m.content,
-          time: m.sent_at ? new Date(m.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"
-        }));
-        setChatMessages(formatted);
-      }
-    } catch (err) {
-      console.warn("Failed to fetch messages from API:", err);
-    }
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    let interval;
-    if (activeTab === "Chat with Mentor") {
-      fetchChatMessages();
-      interval = setInterval(() => {
-        fetchChatMessages();
-      }, 3500);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [activeTab, mentorInfo?.id, internUser?.id]);
-
-  const handleSendMessage = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (!inputMsg.trim()) return;
-    const textToSend = inputMsg.trim();
-    setInputMsg("");
-
-    const targetMentorId = mentorInfo?.id || 2;
-    // Optimistic UI update
-    const optimisticMsg = {
-      sender: "You",
-      text: textToSend,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setChatMessages(prev => [...prev, optimisticMsg]);
-
-    try {
-      await api.post('/api/v1/messages', {
-        receiver_id: targetMentorId,
-        content: textToSend
-      });
-      fetchChatMessages(targetMentorId);
-    } catch (err) {
-      console.error("Failed to post message to backend:", err);
-    }
-  };
 
   const handleDownloadNotes = (title, type) => {
     const curTask = domainTasksList.find(t => t.day_number === currentDay);
@@ -913,15 +857,17 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
         task_id: taskIdToSend
       });
 
-      const finalScore = execRes.data?.ai_score || Math.floor(80 + Math.random() * 15);
+      const finalScore = execRes.data?.ai_score !== undefined ? execRes.data.ai_score : (execRes.data?.runtime_score ?? 0);
       setAiScore(finalScore);
+      const totalTc = execRes.data?.total_test_cases || 0;
+      const passedTc = execRes.data?.test_cases_passed || 0;
       setEvalResult({
         score: finalScore,
-        correctness: 100,
-        logic: 90,
-        quality: 85,
-        performance: 95,
-        suggestions: execRes.data?.ai_feedback || "Consider handling edge cases and validating parameters."
+        correctness: totalTc > 0 ? Math.round((passedTc / totalTc) * 100) : (finalScore > 0 ? 100 : 0),
+        logic: finalScore >= 80 ? 90 : (finalScore >= 50 ? 70 : 40),
+        quality: finalScore >= 80 ? 85 : (finalScore >= 50 ? 65 : 30),
+        performance: execRes.data?.successful ? 95 : 40,
+        suggestions: execRes.data?.runtime_feedback || (typeof execRes.data?.ai_feedback === 'string' ? execRes.data.ai_feedback : "Consider handling edge cases and validating parameters.")
       });
 
       await api.post('/api/v1/submissions', {
@@ -970,364 +916,22 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
     switch (activeTab) {
       case "Overview":
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box" }}>
-            
-            {/* Top Row Container: Hero Banner on Left + Dark Blue Quote Card on Right */}
-            <div className="responsive-flex" style={{ display: "flex", gap: "12px", flexShrink: 0 }}>
-              
-              {/* Hero Banner ("Learn. Build. Grow.") */}
-              <div className="hero-banner-card" style={{
-                flex: "2.5",
-                borderRadius: "16px",
-                padding: "14px 18px",
-                color: "var(--text-primary, #0f172a)",
-                position: "relative",
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between"
-              }}>
-                {/* Mountain Silhouette Background SVG */}
-                <svg style={{ position: "absolute", right: "20px", bottom: 0, height: "100%", width: "40%", opacity: 0.3, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
-                  <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
-                  <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
-                  <circle cx="350" cy="8" r="3" fill="var(--text-primary, #0f172a)" />
-                  <path d="M348 12 L352 22 M345 16 L355 16" stroke="var(--text-primary, #0f172a)" strokeWidth="2" />
-                </svg>
-
-                <div style={{ position: "relative", zIndex: 2 }}>
-                  <span className="hero-banner-title" style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "4px" }}>
-                    YOUR INTERNSHIP JOURNEY
-                  </span>
-                  <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 4px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.03em", lineHeight: "1.1" }}>
-                    Learn. Build. <span className="hero-banner-grow">Grow.</span>
-                  </h1>
-                </div>
-
-                {/* 4 Floating Metric Cards Row inside Hero Bottom */}
-                <div style={{ display: "flex", gap: "12px", position: "relative", zIndex: 3 }}>
-                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 2px 6px rgba(15, 23, 42, 0.04)", flex: 1 }}>
-                    <div className="stat-icon-bg-blue" style={{ width: "32px", height: "32px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <BookOpen size={16} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{tasksCompletedCount} / 30</h4>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Tasks Completed</span>
-                    </div>
-                  </div>
-
-                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 2px 6px rgba(15, 23, 42, 0.04)", flex: 1 }}>
-                    <div className="stat-icon-bg-green" style={{ width: "32px", height: "32px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <CheckCircle size={16} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{assessmentsCount} / 30</h4>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Assessments</span>
-                    </div>
-                  </div>
-
-                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 2px 6px rgba(15, 23, 42, 0.04)", flex: 1 }}>
-                    <div className="stat-icon-bg-orange" style={{ width: "32px", height: "32px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <Clock size={16} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{attendancePercent}%</h4>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Attendance</span>
-                    </div>
-                  </div>
-
-                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 2px 6px rgba(15, 23, 42, 0.04)", flex: 1 }}>
-                    <div className="stat-icon-bg-purple" style={{ width: "32px", height: "32px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <Sparkles size={16} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary, #0f172a)", lineHeight: 1 }}>{aiScore}%</h4>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dark Blue Quote Card on Right */}
-              <div className="hero-quote-card" style={{
-                flex: "1",
-                borderRadius: "16px",
-                padding: "14px 18px",
-                color: "var(--bg-surface, #ffffff)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
-                boxShadow: "0 4px 15px rgba(15, 23, 42, 0.2)"
-              }}>
-                <svg style={{ position: "absolute", right: "-20px", bottom: "-20px", width: "160px", opacity: 0.1, pointerEvents: "none" }} viewBox="0 0 24 24" fill="white">
-                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                </svg>
-
-                <p style={{ margin: "0 0 12px 0", fontSize: "1.1rem", fontStyle: "italic", lineHeight: "1.5", color: "var(--bg-surface-elevated, #f8fafc)", fontWeight: 500 }}>
-                  "A skilled tomorrow starts with what you do today."
-                </p>
-                <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#60a5fa" }}>— ProEduvate</span>
-              </div>
-            </div>
-            {/* Main Content Row */}
-            <div className="responsive-flex" style={{ display: "flex", gap: "12px", alignItems: "stretch" }}>
-              
-              {/* Left Column: Your 30-Day Journey Timeline */}
-              <div style={{ flex: "0.8", background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                  <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Your 30-Day Journey</h3>
-                  <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Progress")}>View Path &rarr;</span>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "6px", position: "relative", paddingLeft: "8px", paddingTop: "4px" }}>
-                  <div style={{ position: "absolute", left: "16.5px", top: "16px", bottom: "16px", width: "3px", background: "#f1f5f9", borderRadius: "4px" }}></div>
-
-                  {(() => {
-                    const visibleDaysCount = 8;
-                    let startDay = Math.max(1, currentDay - 2);
-                    if (startDay + visibleDaysCount - 1 > 30) startDay = 30 - visibleDaysCount + 1;
-                    
-                    return Array.from({ length: visibleDaysCount }, (_, i) => {
-                      const dayNum = startDay + i;
-                      const topics = ["Introduction to HTML", "CSS Styling", "JavaScript Basics", "DOM Manipulation", "React Basics", "Component Composition", "State and Props", "React Hooks Lifecycle", "Context API & Global State", "Routing and Layouts", "Redux Basics", "Testing & Debugging", "REST API Development", "Authentication", "Git & GitHub", "Database Basics", "Node.js Basics", "Express framework", "MongoDB Integration", "Building the Backend", "Frontend/Backend Connect", "Security Best Practices", "Deployment", "CI/CD Pipelines", "Docker Basics", "Cloud Services", "Performance Optimization", "Web Accessibility", "Final Project Setup", "Final Project Delivery"];
-                      const mockTitle = curriculumData.find(c => c.day === dayNum)?.topic || topics[dayNum - 1];
-                      return {
-                        day: `Day ${dayNum}`,
-                        title: mockTitle,
-                        done: dayNum < currentDay,
-                        current: dayNum === currentDay,
-                        locked: dayNum > currentDay,
-                        isFlag: dayNum === 30
-                      };
-                    });
-                  })().map((step, idx) => (
-                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: "16px", zIndex: 2, padding: "4px 0" }}>
-                      <div style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        background: step.done ? "#16a34a" : (step.current ? "#2563eb" : "var(--bg-surface, #ffffff)"),
-                        border: step.locked ? "2px solid var(--border-color, #cbd5e1)" : "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: step.done || step.current ? "var(--bg-surface, #ffffff)" : "#94a3b8",
-                        fontSize: "10px",
-                        boxShadow: step.current ? "0 0 0 4px rgba(37, 99, 235, 0.15)" : "none",
-                        transition: "all 0.2s ease"
-                      }}>
-                        {step.done && <Check size={12} strokeWidth={3} />}
-                        {step.current && <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--bg-surface, #ffffff)" }} />}
-                        {step.locked && !step.isFlag && <Lock size={10} />}
-                        {step.isFlag && <Flag size={10} />}
-                      </div>
-
-                      <div style={{ flex: 1, padding: step.current ? "10px 14px" : "8px 10px", background: step.current ? "#eff6ff" : "transparent", borderRadius: "10px", border: step.current ? "1px solid var(--border-blue-light, #bfdbfe)" : "1px solid transparent", transition: "all 0.2s ease" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span style={{ fontSize: "0.85rem", fontWeight: 800, color: step.current ? "#1d4ed8" : (step.done ? "var(--text-primary, #0f172a)" : "#94a3b8") }}>{step.day}</span>
-                          {step.current && <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "#2563eb", background: "#dbeafe", padding: "2px 8px", borderRadius: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Current</span>}
-                        </div>
-                        <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: step.current ? "#2563eb" : (step.done ? "#475569" : "#94a3b8"), fontWeight: step.current ? 700 : 500 }}>
-                          {step.title}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Middle Column: Today's Objective & Daily Scenario Activity */}
-              <div style={{ flex: "1.5", display: "flex", flexDirection: "column", gap: "12px" }}>
-                
-                {/* Today's Objective Card */}
-                {(() => {
-                  const activeCurriculum = curriculumData.find(c => c.day === currentDay) || curriculumData[0];
-                  return (
-                    <div style={{ background: "var(--bg-surface, #ffffff)", padding: "16px 20px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", gap: "12px" }}>
-                      
-                      {/* Header */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Target size={20} />
-                          </div>
-                          <div>
-                            <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Today's Objective</h3>
-                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Day {activeCurriculum.day}: {activeCurriculum.topic}</span>
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#f97316", fontSize: "0.75rem", fontWeight: 700, background: "#fff7ed", padding: "4px 10px", borderRadius: "20px" }}>
-                            <Clock size={12} /> 45m
-                          </div>
-                          <button className="btn-primary" style={{ padding: "6px 14px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, margin: 0 }} onClick={() => setActiveTab("Learning")}>
-                            Go to Learning &rarr;
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Module Progress */}
-                      <div>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary, #334155)" }}>Module Progress</span>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "var(--brand-primary, #2563eb)" }}>65%</span>
-                        </div>
-                        <div style={{ height: "6px", background: "var(--progress-track, #f1f5f9)", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: "65%", height: "100%", background: "var(--brand-primary, #2563eb)", borderRadius: "3px" }}></div>
-                        </div>
-                      </div>
-
-                      {/* Tasks Checklist */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--success-dark, #16a34a)", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Check size={12} />
-                          </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #334155)", fontWeight: 500, textDecoration: "line-through", opacity: 0.7 }}>Component Composition</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "var(--bg-surface-elevated, #f1f5f9)", color: "var(--text-muted, #94a3b8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Play size={10} fill="currentColor" />
-                          </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>JSX Syntax & Rules</span>
-                        </div>
-                      </div>
-
-                      {/* Upcoming / Join Meeting Box */}
-                      <div style={{ background: "var(--bg-surface-elevated, #f8fafc)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--border-color, #e2e8f0)", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Calendar size={16} />
-                          </div>
-                          <div>
-                            <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>Upcoming</span>
-                            <span style={{ fontSize: "0.9rem", color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>React Hook Refactor</span>
-                          </div>
-                        </div>
-                        <button style={{ padding: "6px 16px", background: "var(--text-primary, #0f172a)", color: "var(--bg-surface, #ffffff)", border: "none", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }} onClick={() => setIsMeetingActive(true)}>
-                          Join
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Bonus Airdrop Card - Compact Single Line */}
-                <div className="bonus-airdrop-card" style={{ borderRadius: "12px", padding: "10px 14px", display: "flex", alignItems: "center", gap: "12px" }}>
-                  {/* Icon */}
-                  <div className="bonus-airdrop-icon" style={{ width: "30px", height: "30px", borderRadius: "8px", color: "var(--bg-surface, #ffffff)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Gift size={14} />
-                  </div>
-                  {/* Label */}
-                  <span className="bonus-airdrop-text" style={{ fontSize: "0.8rem", fontWeight: 800, flexShrink: 0 }}>Bonus Airdrops</span>
-                  <span className="bonus-airdrop-badge" style={{ padding: "2px 8px", borderRadius: "20px", fontSize: "0.65rem", fontWeight: 700, flexShrink: 0 }}>
-                    {bonusAirdrops.filter(a => a.status === "Active").length} Active
-                  </span>
-                  {/* First airdrop question - truncated */}
-                  <span className="bonus-airdrop-text" style={{ flex: 1, fontSize: "0.75rem", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", opacity: 0.8 }}>
-                    {bonusAirdrops.filter(a => a.status === "Active")[0]?.question ?? "No active airdrops right now"}
-                  </span>
-                  {/* Attempt button */}
-                  {bonusAirdrops.filter(a => a.status === "Active")[0] && (
-                    <button className="bonus-airdrop-btn" onClick={() => handleStartAirdrop(bonusAirdrops.filter(a => a.status === "Active")[0])} style={{ flexShrink: 0, padding: "5px 12px", border: "none", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
-                      Attempt
-                    </button>
-                  )}
-                  {/* View All */}
-                  <button className="bonus-airdrop-view" onClick={() => setActiveTab("Bonus Airdrops")} style={{ flexShrink: 0, padding: "5px 12px", background: "transparent", borderRadius: "7px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}>
-                    View All →
-                  </button>
-                </div>
-
-                {/* Recent Submissions Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                    <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Recent Submissions</h3>
-                    <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, cursor: "pointer" }} onClick={() => setActiveTab("Learning")}>View All &rarr;</span>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, justifyContent: "space-around" }}>
-                    {liveSubmissions.length === 0 ? (
-                      <div style={{ padding: "20px 12px", textAlign: "center", color: "var(--text-muted, #64748b)", fontSize: "0.85rem" }}>
-                        No task submissions yet. Complete your first assignment in the Learning tab to view your scores!
-                      </div>
-                    ) : (
-                      liveSubmissions.slice(0, 4).map((sub, sIdx) => {
-                        const isApproved = sub.status === "approved";
-                        const totalSubScore = (sub.mcq_score || 0) + (sub.ai_score || 0) + (sub.mentor_score || 0);
-                        return (
-                          <div key={sub.id || sIdx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "10px", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                              <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: isApproved ? "#dcfce7" : "#fef3c7", color: isApproved ? "#16a34a" : "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                {isApproved ? <CheckCircle size={14} /> : <Clock size={14} />}
-                              </div>
-                              <div>
-                                <span style={{ fontSize: "0.82rem", color: "var(--text-primary, #0f172a)", fontWeight: 700, display: "block" }}>{sub.task_title || sub.assignment_name || `Task #${sub.task_id || (sIdx + 1)}`}</span>
-                                <span style={{ fontSize: "0.65rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>{isApproved ? "Graded" : "Pending Review"}</span>
-                              </div>
-                            </div>
-                            <span style={{ fontSize: "0.85rem", color: isApproved ? "#16a34a" : "var(--text-muted, #64748b)", fontWeight: 800 }}>
-                              {isApproved ? `${totalSubScore}/300` : "In Queue"}
-                            </span>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Right Column: Calendar & Leaderboard */}
-              <div className="mobile-w-full" style={{ flex: "1.1", display: "flex", flexDirection: "column", gap: "12px" }}>
-                
-                {/* Daily Scenario Calendar Widget */}
-                <div style={{ background: "var(--bg-surface, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", overflow: "hidden" }}>
-                  <DailyScenarioCalendar />
-                </div>
-
-                {/* Leaderboard Card */}
-                <div style={{ flex: 1, background: "var(--bg-surface, #ffffff)", padding: "14px 16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>Leaderboard</h3>
-                      <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>Compete with your peers.</p>
-                    </div>
-                    <span style={{ background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "20px", fontSize: "0.72rem", fontWeight: 700 }}>
-                      Your Rank: {userRankStr}
-                    </span>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", borderBottom: "1px solid var(--border-color, #e2e8f0)", paddingBottom: "6px", marginBottom: "6px", fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
-                    <span>Rank</span>
-                    <span>Name</span>
-                    <span style={{ textAlign: "right", paddingRight: "20px" }}>Points</span>
-                  </div>
-                  
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, justifyContent: "space-around" }}>
-                    {liveLeaderboard.length === 0 ? (
-                      <div style={{ padding: "12px", textAlign: "center", color: "var(--text-muted, #64748b)", fontSize: "0.8rem" }}>
-                        No leaderboard entries yet.
-                      </div>
-                    ) : (
-                      liveLeaderboard.slice(0, 5).map((user, uIdx) => {
-                        const isMe = internUser && (user.user_name === internUser.name || user.user_id === internUser.id);
-                        const rNum = user.rank || (uIdx + 1);
-                        return (
-                          <div key={user.user_id || uIdx} style={{ display: "grid", gridTemplateColumns: "1fr 3fr 1fr", alignItems: "center", padding: "6px 4px", background: isMe ? "var(--bg-surface-elevated, #f8fafc)" : "transparent", borderRadius: "6px" }}>
-                            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: rNum === 1 ? "#fbbf24" : (rNum === 2 ? "#94a3b8" : (rNum === 3 ? "#b45309" : "var(--text-muted, #64748b)")) }}>#{rNum}</span>
-                            <span style={{ fontSize: "0.78rem", fontWeight: isMe ? 700 : 500, color: "var(--text-primary, #0f172a)" }}>{user.user_name || "Intern"} {isMe && "(You)"}</span>
-                            <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#2563eb", textAlign: "right", paddingRight: "20px" }}>{user.total_points || 0}</span>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <InternOverviewTab
+            currentDay={currentDay}
+            tasksCompletedCount={tasksCompletedCount}
+            assessmentsCount={assessmentsCount}
+            attendancePercent={attendancePercent}
+            aiScore={aiScore}
+            curriculumData={curriculumData}
+            liveSubmissions={liveSubmissions}
+            liveLeaderboard={liveLeaderboard}
+            userRankStr={userRankStr}
+            internUser={internUser}
+            bonusAirdrops={bonusAirdrops}
+            setActiveTab={setActiveTab}
+            setIsMeetingActive={setIsMeetingActive}
+            handleStartAirdrop={handleStartAirdrop}
+          />
         );
 
       case "Learning":
@@ -1646,7 +1250,10 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
 
                       <WebIDE 
                         language={language} 
-                        onChange={(files) => setFilesData(files)} 
+                        onChange={(files) => {
+                          const activeFile = files.find(f => !f.isFolder);
+                          if (activeFile) setCode(activeFile.content);
+                        }} 
                       />
 
                       <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
@@ -1926,7 +1533,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
                         </div>
                       </div>
                       <button onClick={handleJoinMeeting} style={{ background: "var(--brand-primary, #2563eb)", color: "#ffffff", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.2)" }}>
-                        Join Zoom
+                        Join Native Room
                       </button>
                     </div>
 
@@ -2067,7 +1674,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
                   <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", position: "relative", zIndex: 1 }}>
                     <span style={{ fontSize: "11px", color: "var(--text-muted, #64748b)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px" }}>
                       <span style={{ width: "16px", height: "16px", borderRadius: "50%", background: "var(--border-color, #e2e8f0)", display: "inline-block" }}></span>
-                      Sarah (Lead Mentor)
+                      {mentorInfo?.name || "Dr. Sakthi"} (Lead Mentor)
                     </span>
                   </div>
                 </div>
@@ -2084,9 +1691,16 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
                     <h4 style={{ margin: 0, fontSize: "14px", color: "var(--warning)", fontWeight: 800 }}>Upcoming Milestone</h4>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px", position: "relative", zIndex: 1 }}>
-                    <span style={{ fontSize: "13px", color: "var(--warning)", fontWeight: 800 }}>Midterm Assessment</span>
+                    <span style={{ fontSize: "13px", color: "var(--warning)", fontWeight: 800 }}>
+                      {currentDay > 15 ? "Capstone Project Milestone" : "Midterm Assessment Milestone"}
+                    </span>
                     <span style={{ fontSize: "11px", color: "var(--warning)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-                      <Clock size={12} /> Due in 5 days (Day 15)
+                      <Clock size={12} />
+                      {currentDay < 15
+                        ? `Due in ${15 - currentDay} day${15 - currentDay === 1 ? '' : 's'} (Day 15)`
+                        : currentDay === 15
+                        ? "Midterm Assessment Active Today! (Day 15)"
+                        : `Final Capstone Due in ${30 - currentDay} days (Day 30)`}
                     </span>
                   </div>
                 </div>
@@ -2114,962 +1728,64 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
         );
 
       case "Tickets":
-        if (showTicketForm) {
-          return (
-            <div className="card" style={{ padding: "28px", maxWidth: "800px", margin: "0 auto" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <h3 style={{ margin: 0, color: "var(--text-dark)", fontSize: "20px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <Ticket size={22} color="#3b82f6" /> File a New Support Ticket
-                </h3>
-                <button className="btn btn-secondary" onClick={() => navigate("/intern/tickets")} style={{ padding: "6px 14px", fontSize: "13px" }}>
-                  Back
-                </button>
-              </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", backgroundColor: "var(--bg-surface-elevated, #f8fafc)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>User Name</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.name || "Intern User"}</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Assigned Mentor</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.mentor_name || (typeof internUser?.mentor === 'string' ? internUser.mentor : internUser?.mentor?.name) || "Dr. Sakthi"}</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Domain</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internDomain || internUser?.domain_name || "AIML"}</div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>Branch / University</label>
-                    <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-dark)", marginTop: "2px" }}>{internUser?.college || "College / Institution"}</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Issue Subject / Short Title</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="e.g. Docker container fails to start on local machine" 
-                    value={newTicketTitle}
-                    onChange={(e) => setNewTicketTitle(e.target.value)}
-                    style={{ padding: "10px 14px", borderRadius: "8px" }} 
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: "6px", color: "var(--text-dark)" }}>Detailed Description & Error Logs</label>
-                  <textarea 
-                    className="form-control" 
-                    rows="5" 
-                    placeholder="Please describe step-by-step what issue you are facing..." 
-                    value={newTicketDesc}
-                    onChange={(e) => setNewTicketDesc(e.target.value)}
-                    style={{ padding: "12px 14px", borderRadius: "8px" }}
-                  ></textarea>
-                </div>
-                
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
-                  <button className="btn btn-secondary" onClick={() => navigate("/intern/tickets")}>Cancel</button>
-                  <button className="btn btn-primary" style={{ padding: "10px 24px" }} onClick={handleCreateTicket}>Submit Ticket &rarr;</button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        const filteredTickets = ticketsData.filter(t => {
-          if (ticketFilter === "Active") return t.status !== "Resolved";
-          if (ticketFilter === "Resolved") return t.status === "Resolved";
-          return true;
-        });
-
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-            {/* Top Hero Banner */}
-            <div className="hero-banner-card" style={{
-              borderRadius: "12px",
-              padding: "14px 20px",
-              position: "relative",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
-              {/* Mountain Silhouette Background SVG */}
-              <svg style={{ position: "absolute", right: "0", bottom: 0, height: "100%", width: "50%", opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 400 200" fill="none" preserveAspectRatio="none">
-                <path d="M0 200 L140 60 L240 160 L350 10 L400 200 Z" fill="#0284c7" />
-                <path d="M100 200 L250 40 L340 130 L400 200 Z" fill="#0369a1" opacity="0.7" />
-              </svg>
-              
-              {/* "Learn Build Grow" Watermark */}
-              <div style={{ position: "absolute", right: "160px", top: "8px", opacity: 0.12, transform: "rotate(-10deg)", pointerEvents: "none" }}>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block" }}>Learn</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "10px" }}>Build</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: "var(--primary-dark, #1d4ed8)", lineHeight: 1, display: "block", marginLeft: "20px" }}>Grow</span>
-              </div>
-
-              <div style={{ position: "relative", zIndex: 2, display: "flex", gap: "14px", alignItems: "center" }}>
-                <div style={{ width: "44px", height: "44px", background: "var(--bg-surface, #ffffff)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)", flexShrink: 0 }}>
-                  <Ticket size={22} color="var(--primary-color, #2563eb)" />
-                </div>
-                <div>
-                  <span style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--primary-dark, #1d4ed8)", display: "block", marginBottom: "2px" }}>
-                    Support & Ticketing Hub
-                  </span>
-                  <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 2px 0", color: "var(--text-primary, #0f172a)", letterSpacing: "-0.02em" }}>
-                    Support & Help Center
-                  </h1>
-                  <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #334155)", maxWidth: "600px", lineHeight: "1.4" }}>
-                    File tickets for curriculum questions, environment bugs, or platform assistance.
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ position: "relative", zIndex: 2 }}>
-                <button className="btn btn-primary" style={{ padding: "8px 18px", fontSize: "13px", fontWeight: "600", borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} onClick={() => navigate("/intern/tickets/new")}>
-                  + File a Ticket
-                </button>
-              </div>
-            </div>
-
-
-
-            {/* Main Tickets Table / Container */}
-            <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "20px", border: "1px solid var(--border-color)" }}>
-              {/* Header & Filter Tabs */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid var(--border-color)", paddingBottom: "16px" }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--text-dark)" }}>Ticket History</h3>
-                  <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "500" }}>Click on any ticket to expand mentor and admin responses.</span>
-                </div>
-
-                {/* Filter Pills */}
-                <div style={{ display: "flex", gap: "8px", background: "var(--bg-surface-elevated, #f1f5f9)", padding: "4px", borderRadius: "8px" }}>
-                  {["All", "Active", "Resolved"].map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => setTicketFilter(tab)}
-                      style={{
-                        padding: "6px 14px",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        border: "none",
-                        cursor: "pointer",
-                        background: ticketFilter === tab ? "var(--bg-surface, #ffffff)" : "transparent",
-                        color: ticketFilter === tab ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
-                        boxShadow: ticketFilter === tab ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                        transition: "all 0.2s ease"
-                      }}
-                    >
-                      {tab} ({tab === "All" ? ticketsData.length : tab === "Active" ? ticketsData.filter(t => t.status !== "Resolved").length : ticketsData.filter(t => t.status === "Resolved").length})
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tickets List */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {filteredTickets.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-muted)" }}>
-                    No tickets found for this filter.
-                  </div>
-                ) : (
-                  filteredTickets.map(ticket => (
-                    <div 
-                      key={ticket.id}
-                      onClick={() => navigate(selectedTicket?.id === ticket.id ? "/intern/tickets" : "/intern/tickets/" + ticket.id)}
-                      style={{ 
-                        padding: "16px 20px", 
-                        cursor: "pointer", 
-                        borderRadius: "10px",
-                        border: selectedTicket?.id === ticket.id ? "2px solid var(--brand-primary, #3b82f6)" : "1px solid var(--border-color)", 
-                        transition: "all 0.2s ease",
-                        backgroundColor: selectedTicket?.id === ticket.id ? "var(--brand-bg, #eff6ff)" : "var(--card-bg)"
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "11px", color: "var(--brand-primary, #1e40af)", fontWeight: 700, backgroundColor: "var(--brand-bg, #dbeafe)", padding: "4px 10px", borderRadius: "6px" }}>{ticket.id}</span>
-                          <span style={{ fontSize: "14.5px", color: "var(--text-dark)", fontWeight: "600" }}>{ticket.title}</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
-                            <Clock size={14} /> {ticket.date}
-                          </span>
-                          <span className="badge" style={{ 
-                            backgroundColor: ticket.status === "Resolved" ? "var(--success-bg, #dcfce7)" : ticket.status === "Pending" ? "var(--brand-bg, #eff6ff)" : "var(--warning-bg, #fef3c7)", 
-                            color: ticket.status === "Resolved" ? "var(--success, #15803d)" : ticket.status === "Pending" ? "var(--brand-primary, #1d4ed8)" : "var(--warning, #b45309)",
-                            padding: "4px 12px",
-                            borderRadius: "20px",
-                            fontWeight: "700",
-                            fontSize: "12px"
-                          }}>
-                            {ticket.status}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {selectedTicket?.id === ticket.id && (
-                        <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px" }}>
-                          <div>
-                            <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>Mentor & Admin Response</div>
-                            <div style={{ backgroundColor: "var(--bg-surface-elevated, #ffffff)", padding: "16px", borderRadius: "10px", borderLeft: "4px solid var(--brand-primary, #3b82f6)", border: "1px solid var(--border-color, #cbd5e1)" }}>
-                              <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary, #1e293b)", lineHeight: "1.6", whiteSpace: "pre-line" }}>{ticket.adminReply}</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
+          <InternTicketsTab
+            showTicketForm={showTicketForm}
+            newTicketTitle={newTicketTitle}
+            setNewTicketTitle={setNewTicketTitle}
+            newTicketDesc={newTicketDesc}
+            setNewTicketDesc={setNewTicketDesc}
+            handleCreateTicket={handleCreateTicket}
+            ticketFilter={ticketFilter}
+            setTicketFilter={setTicketFilter}
+            ticketsData={ticketsData}
+            selectedTicket={selectedTicket}
+            internUser={internUser}
+            internDomain={internDomain}
+            navigate={navigate}
+          />
         );
 
       case "Chat with Mentor":
         return (
-          <div className="card" style={{ margin: 0, padding: 0, flex: 1, height: "100%", minHeight: "650px", display: "flex", flexDirection: "column", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
-            {/* Professional Chat Header */}
-            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", backgroundColor: "var(--bg-surface-elevated, #0f172a)", borderBottom: "1px solid var(--border-color)", borderRadius: "12px 12px 0 0" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "16px", fontWeight: "bold", marginRight: "16px" }}>
-                {(mentorInfo?.name || "Dr. Sakthi").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "var(--text-primary, #ffffff)", fontWeight: 600 }}>{mentorInfo?.name || "Dr. Sakthi"}</h3>
-                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary, #94a3b8)" }}>Mentor • Online</p>
-              </div>
-            </div>
-
-            {/* Chat Body */}
-            <div style={{ flex: 1, backgroundColor: "var(--card-bg)", padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px", position: "relative" }}>
-              
-              {/* Generative Background Image Overlay */}
-              <div style={{ 
-                position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
-                pointerEvents: "none", zIndex: 1, opacity: 0.6,
-                backgroundImage: (() => {
-                  const domain = (internDomain || "").toLowerCase();
-                  if (domain.includes("ui/ux") || domain.includes("design")) return "url('/images/chat_bg_uiux.png')";
-                  if (domain.includes("data") || domain.includes("ai") || domain.includes("machine learning")) return "url('/images/chat_bg_data.png')";
-                  return "url('/images/chat_bg_code.png')";
-                })(),
-                backgroundSize: "cover",
-                backgroundPosition: "center"
-              }}></div>
-
-              {chatMessages.map((msg, i) => (
-                <div key={i} style={{ alignSelf: msg.sender === "You" ? "flex-end" : "flex-start", maxWidth: "70%", position: "relative", marginBottom: "8px", zIndex: 2 }}>
-                  <div style={{ 
-                    backgroundColor: msg.sender === "You" ? "var(--brand-primary, #1d4ed8)" : "var(--bg-surface-elevated, #ffffff)", 
-                    color: msg.sender === "You" ? "#ffffff" : "var(--text-primary, #0f172a)", 
-                    padding: "10px 14px 22px 14px", 
-                    borderRadius: "12px", 
-                    borderBottomRightRadius: msg.sender === "You" ? "0" : "12px",
-                    borderBottomLeftRadius: msg.sender !== "You" ? "0" : "12px",
-                    fontSize: "14px", 
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)", 
-                    wordBreak: "break-word",
-                    border: msg.sender !== "You" ? "1px solid var(--border-color)" : "none"
-                  }}>
-                    {msg.text}
-                    <span style={{ fontSize: "10px", color: msg.sender === "You" ? "rgba(255,255,255,0.7)" : "var(--text-muted, #94a3b8)", position: "absolute", bottom: "6px", right: "12px", display: "flex", alignItems: "center", gap: "2px" }}>
-                      {msg.time} {msg.sender === "You" && <CheckCheck size={12} />}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Input Area */}
-            <form onSubmit={handleSendMessage} style={{ display: "flex", alignItems: "center", padding: "16px", backgroundColor: "var(--bg-surface-elevated, #ffffff)", margin: 0, borderTop: "1px solid var(--border-color)", borderRadius: "0 0 12px 12px" }}>
-              <input 
-                type="text" 
-                placeholder="Type your message..." 
-                value={inputMsg} 
-                onChange={(e) => setInputMsg(e.target.value)} 
-                style={{ flex: 1, padding: "12px 20px", borderRadius: "24px", border: "1px solid var(--border-color)", backgroundColor: "var(--bg-surface, #f1f5f9)", fontSize: "14px", outline: "none", color: "var(--text-primary, #0f172a)" }} 
-              />
-              <button type="submit" style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "var(--brand-primary, #2563eb)", color: "#ffffff", border: "none", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "12px", cursor: "pointer", transition: "all 0.2s" }}>
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-                </svg>
-              </button>
-            </form>
-          </div>
+          <MentorChatTab
+            mentorInfo={mentorInfo}
+            internUser={internUser}
+            internDomain={internDomain}
+            isActive={activeTab === "Chat with Mentor"}
+          />
         );
 
       case "Daily Scenario":
         return <DailyScenario onBackToDashboard={() => setActiveTab("Overview")} />;
 
       case "Bonus Airdrops":
-        const activeDrops = bonusAirdrops.filter(a => a.status === "Active" || a.status === "APPROVED");
-        const completedDrops = bonusAirdrops.filter(a => a.status === "Completed" || a.status === "FINALIZED");
-        
-        // Motivational quotes for Airdrops
-        const quotes = [
-          "Success is where preparation and opportunity meet.",
-          "Challenge yourself; it's the only path which leads to growth.",
-          "Innovation distinguishes between a leader and a follower.",
-          "The expert in anything was once a beginner.",
-          "Great things never come from comfort zones."
-        ];
-        // Pick a random quote based on the day or just the first one
-        const quoteIndex = new Date().getDay() % quotes.length;
-        const selectedQuote = quotes[quoteIndex] || quotes[0];
-
         return (
-          <div style={{ paddingBottom: "40px", display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Ultra-Compact Catchy Airdrop Banner */}
-            <div className="hero-banner-card" style={{
-              borderRadius: "12px",
-              padding: "16px 20px",
-              display: "flex",
-              alignItems: "center",
-              gap: "20px"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-                <div style={{ width: "36px", height: "36px", background: "var(--bg-surface-glass, rgba(255,255,255,0.5))", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Gift size={18} color="var(--primary-dark, #1e3a8a)" />
-                </div>
-                <h2 style={{ fontSize: "18px", fontWeight: 800, margin: 0, letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
-                  Expect the <span style={{ color: "var(--primary-dark, #1e3a8a)" }}>Unexpected.</span>
-                </h2>
-              </div>
-              
-              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary, #1e293b)", lineHeight: "1.4", flex: 1, fontWeight: 500, borderLeft: "1px solid var(--border-color, rgba(255,255,255,0.4))", paddingLeft: "20px" }}>
-                Airdrops are spontaneous challenges. Showcase your mastery and skyrocket your score!
-              </p>
-
-              <div style={{ 
-                background: "var(--bg-surface-glass, rgba(255,255,255,0.3))", 
-                padding: "6px 12px", 
-                borderRadius: "8px", 
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                flexShrink: 0,
-                maxWidth: "280px"
-              }}>
-                <Quote size={14} color="var(--primary-dark, #1e3a8a)" style={{ opacity: 0.6, flexShrink: 0 }} />
-                <span style={{ fontSize: "12px", fontStyle: "italic", fontWeight: 600, color: "var(--text-primary, #1e293b)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  "{selectedQuote}"
-                </span>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-              <button 
-                className={`btn ${airdropTab === "Active" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => navigate("/intern/bonus-airdrops/active")}
-                style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
-              >
-                Active Airdrops ({activeDrops.length})
-              </button>
-              <button 
-                className={`btn ${airdropTab === "Completed" ? "btn-primary" : "btn-secondary"}`} 
-                onClick={() => navigate("/intern/bonus-airdrops/completed")}
-                style={{ padding: "8px 16px", borderRadius: "8px", fontWeight: 600 }}
-              >
-                Completed Airdrops ({completedDrops.length})
-              </button>
-            </div>
-
-            {airdropTab === "Active" && (
-              <div>
-                {activeDrops.length === 0 ? (
-                  <div style={{ padding: "40px", textAlign: "center", backgroundColor: "var(--card-bg)", borderRadius: "8px", border: "1px dashed var(--border-color)" }}>
-                    <p style={{ color: "var(--text-muted)", fontSize: "15px", margin: 0 }}>No active airdrops at the moment.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {activeDrops.map(drop => (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--card-bg)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
-                        padding: "16px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        boxShadow: "var(--shadow-sm)"
-                      }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "11px", color: "#be185d", fontWeight: 700, backgroundColor: "#fdf2f8", padding: "2px 8px", borderRadius: "4px", border: "1px solid #fbcfe8", display: "inline-flex", alignItems: "center" }}>
-                              <Gift size={12} style={{ marginRight: "4px" }} /> POP QUIZ
-                            </span>
-                            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-                              {drop.timeLimit}s time limit
-                            </span>
-                          </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-darker)", fontWeight: 500 }}>{drop.question}</p>
-                        </div>
-                        
-                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                          <button 
-                            onClick={() => handleStartAirdrop(drop)}
-                            style={{ 
-                              backgroundColor: "#ec4899", 
-                              color: "#fff", 
-                              border: "none", 
-                              padding: "8px 16px", 
-                              borderRadius: "6px", 
-                              fontWeight: 600, 
-                              fontSize: "13px",
-                              cursor: "pointer",
-                              boxShadow: "0 2px 4px rgba(236, 72, 153, 0.2)"
-                            }}
-                          >
-                            Participate
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {airdropTab === "Completed" && (
-              <div>
-                {completedDrops.length === 0 ? (
-                  <div style={{ padding: "40px", textAlign: "center", backgroundColor: "var(--card-bg)", borderRadius: "8px", border: "1px dashed var(--border-color)" }}>
-                    <p style={{ color: "var(--text-muted)", fontSize: "15px", margin: 0 }}>No completed airdrops yet.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {completedDrops.map(drop => (
-                      <div key={drop.id} style={{ 
-                        backgroundColor: "var(--bg-gray-lighter)", 
-                        border: "1px solid var(--border-color)", 
-                        borderRadius: "8px", 
-                        padding: "16px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center"
-                      }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "70%" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 700, backgroundColor: "var(--border-color, #e2e8f0)", padding: "2px 8px", borderRadius: "4px", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <Flag size={12} /> FINISHED
-                            </span>
-                          </div>
-                          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-color)", fontWeight: 500, opacity: 0.8 }}>{drop.question}</p>
-                        </div>
-                        
-                        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-                          <div style={{ backgroundColor: "var(--border-color, #e2e8f0)", padding: "6px 12px", borderRadius: "6px", color: "#475569", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
-                            <Check size={14} /> Challenge Ended
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <InternBonusAirdropsTab
+            bonusAirdrops={bonusAirdrops}
+            airdropTab={airdropTab}
+            handleStartAirdrop={handleStartAirdrop}
+            navigate={navigate}
+          />
         );
 
       case "Progress":
-        if (showCertificateView) {
-          return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Back Button */}
-              <div style={{ marginBottom: "-8px" }}>
-                <button onClick={() => navigate("/intern/progress")} style={{ background: "none", border: "none", color: "var(--text-secondary, #475569)", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer", padding: "4px 0", transition: "color 0.2s" }} onMouseOver={(e) => e.target.style.color = "var(--text-primary, #0f172a)"} onMouseOut={(e) => e.target.style.color = "var(--text-secondary, #475569)"}>
-                  <ArrowLeft size={16} style={{ pointerEvents: 'none' }} /> Back to Dashboard
-                </button>
-              </div>
-
-              {/* Premium Completion Banner - Theme Aligned */}
-              <div style={{
-                background: "var(--bg-surface-elevated, var(--card-blue-tinted, #ffffff))",
-                borderRadius: "20px",
-                padding: "24px 32px",
-                color: "var(--text-primary, #0f172a)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxShadow: "var(--shadow-sm)",
-                position: "relative",
-                overflow: "hidden",
-                border: "1px solid var(--border-color, #e2e8f0)",
-                flexShrink: 0
-              }}>
-                <div style={{ position: "absolute", top: "-50%", right: "-10%", width: "400px", height: "400px", background: "radial-gradient(circle, var(--glow-overlay, rgba(255, 255, 255, 0.05)) 0%, rgba(255, 255, 255, 0) 70%)", borderRadius: "50%", pointerEvents: "none" }}></div>
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--text-secondary, #475569)", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "8px", background: "var(--bg-surface, rgba(0,0,0,0.05))", padding: "4px 10px", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
-                    Mission Accomplished <Rocket size={12} />
-                  </span>
-                  <h2 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "0 0 8px 0", letterSpacing: "-0.5px", color: "var(--text-primary, #0f172a)" }}>
-                    Boom! You did it, Dhanush!
-                  </h2>
-                  <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-secondary, #475569)", lineHeight: "1.4", maxWidth: "600px" }}>
-                    Incredible work crushing this program. Your relentless hustle has truly paid off. This is just the beginning of your tech journey!
-                  </p>
-                </div>
-
-                <div style={{ background: "var(--bg-surface, rgba(0, 0, 0, 0.02))", backdropFilter: "blur(10px)", padding: "12px 24px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", textAlign: "center", position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary, #475569)", display: "block" }}>Performance</span>
-                  <span style={{ fontSize: "2rem", fontWeight: 800, display: "block", margin: "4px 0", color: "var(--text-primary, #0f172a)" }}>91%</span>
-                  <span style={{ fontSize: "0.75rem", background: "var(--success-bg, #dcfce7)", color: "var(--success, #166534)", padding: "2px 10px", borderRadius: "10px", fontWeight: 700, border: "1px solid var(--success-border, #bbf7d0)" }}>Excellent</span>
-                </div>
-              </div>
-
-              {/* Main Grid: Certificate & Actions */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "24px", flexGrow: 1, minHeight: 0 }}>
-                
-                {/* Certificate Render */}
-                <div style={{ background: "var(--card-bg, #ffffff)", borderRadius: "20px", padding: "20px 24px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Official Certificate</h3>
-                    <span style={{ fontSize: "0.75rem", color: "var(--success-dark, #059669)", fontWeight: 600, background: "var(--success-bg, #ECFDF5)", padding: "4px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid var(--success-border, #A7F3D0)" }}>
-                      <CheckCircle size={12} /> Verified
-                    </span>
-                  </div>
-
-                  <div style={{
-                    flexGrow: 1,
-                    border: "1px solid var(--border-color, #e2e8f0)",
-                    borderRadius: "12px",
-                    padding: "24px 32px",
-                    background: "linear-gradient(180deg, #ffffff 0%, #F8FBFF 100%)",
-                    textAlign: "center",
-                    position: "relative",
-                    boxShadow: "0 20px 25px -5px rgba(8, 27, 53, 0.05), 0 8px 10px -6px rgba(8, 27, 53, 0.01)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between"
-                  }}>
-                    {/* Corner accents */}
-                    <div style={{ position: "absolute", top: "16px", left: "16px", width: "30px", height: "30px", borderTop: "2px solid #0B82F6", borderLeft: "2px solid #0B82F6", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", top: "16px", right: "16px", width: "30px", height: "30px", borderTop: "2px solid #0B82F6", borderRight: "2px solid #0B82F6", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", left: "16px", width: "30px", height: "30px", borderBottom: "2px solid #0B82F6", borderLeft: "2px solid #0B82F6", opacity: 0.3 }}></div>
-                    <div style={{ position: "absolute", bottom: "16px", right: "16px", width: "30px", height: "30px", borderBottom: "2px solid #0B82F6", borderRight: "2px solid #0B82F6", opacity: 0.3 }}></div>
-
-                    {/* Logo Area */}
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                      <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#0B82F6", color: "#ffffff", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", boxShadow: "0 4px 10px rgba(11, 130, 246, 0.3)" }}>P</div>
-                      <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "#081B35", letterSpacing: "-0.5px" }}>ProEduvate</span>
-                    </div>
-
-                    <div>
-                      <span style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "3px", color: "#7890AA", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
-                        Certificate of Internship
-                      </span>
-
-                      <p style={{ fontSize: "0.9rem", color: "#45617F", margin: "0 0 12px 0", fontStyle: "italic" }}>This is to certify that</p>
-
-                      <h1 style={{ fontSize: "2.2rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, color: "#0B82F6", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
-                        {internUser?.name || "Intern User"}
-                      </h1>
-
-                      <p style={{ fontSize: "0.85rem", color: "#45617F", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                        has successfully completed the 30-day Internship Program in <strong style={{ color: "#081B35" }}>{internDomain || internUser?.domain_name || "Internship Program"}</strong> at ProEduvate. During this period, he has demonstrated strong learning ability, consistency, and technical skills.
-                      </p>
-                    </div>
-
-                    {/* Dates & Signatures Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "16px", padding: "0 10px" }}>
-                      <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#081B35", display: "block", marginBottom: "2px" }}>01 Aug 2025 – 30 Aug 2025</span>
-                        <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Duration</span>
-                      </div>
-
-                      <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: "1px solid #C7D8EA", width: "120px", margin: "0 auto 4px auto", paddingBottom: "4px", fontWeight: 600, fontFamily: "cursive", fontSize: "1rem", color: "#081B35" }}>Arun Prakash</div>
-                        <span style={{ fontSize: "0.65rem", color: "#7890AA", textTransform: "uppercase", letterSpacing: "1px" }}>Program Mentor</span>
-                      </div>
-
-                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                        <div style={{ width: "40px", height: "40px", background: "#ffffff", border: "1px dashed #C7D8EA", borderRadius: "6px", marginBottom: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", fontWeight: 700, color: "#9DB0C5" }}>QR</div>
-                        <span style={{ fontSize: "0.55rem", color: "#7890AA", fontFamily: "monospace", letterSpacing: "0.5px" }}>ID: EX-PL-INT-2025-041</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions Column */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ background: "var(--card-bg, #ffffff)", padding: "20px", borderRadius: "20px", boxShadow: "var(--shadow-md)", border: "1px solid var(--border-color, #e2e8f0)" }}>
-                    <h4 style={{ margin: "0 0 16px 0", fontSize: "1rem", fontWeight: 700, color: "var(--text-primary, #081B35)" }}>Share & Download</h4>
-                    
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--brand-primary, #0B82F6)", color: "var(--bg-surface, #ffffff)", border: "none", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 12px rgba(11, 130, 246, 0.3)" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(11, 130, 246, 0.4)"; e.currentTarget.style.background = "var(--brand-primary-hover, #0875E1)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(11, 130, 246, 0.3)"; e.currentTarget.style.background = "var(--brand-primary, #0B82F6)"; }} onClick={() => alert("Downloading Official Certificate PDF...")}>
-                      <Download size={16} /> Download PDF
-                    </button>
-
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface-elevated, #EFF7FF)", color: "var(--brand-primary, #0B82F6)", border: "1px solid var(--border-color, #DCE7F2)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "var(--surface-hover, #DCE7F2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "var(--bg-surface-elevated, #EFF7FF)"; }} onClick={() => alert("Sharing certificate on LinkedIn...")}>
-                      <Share2 size={16} /> Share on LinkedIn
-                    </button>
-
-                    <button style={{ width: "100%", padding: "12px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--bg-surface, #ffffff)", color: "var(--text-secondary, #45617F)", border: "1px solid var(--border-color, #e2e8f0)", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.color = "var(--text-primary, #081B35)"; e.currentTarget.style.borderColor = "var(--border-strong, #C7D8EA)"; }} onMouseOut={(e) => { e.currentTarget.style.color = "var(--text-secondary, #45617F)"; e.currentTarget.style.borderColor = "var(--border-color, #e2e8f0)"; }} onClick={() => alert("Shareable link copied to clipboard!")}>
-                      <ExternalLink size={16} /> Copy Link
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            
-
-            {/* Top 4 Metrics Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
-              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Calendar size={24} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{Math.round((progress / 100) * 30)} / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 700 }}>{progress}%</span>
-                  </div>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Days Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${progress}%`, background: "#2563eb", height: "100%", borderRadius: "3px" }}></div></div>
-                </div>
-              </div>
-
-              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <CheckCircle size={24} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{tasksCompletedCount} / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#16a34a", fontWeight: 700 }}>{Math.round((tasksCompletedCount / 30) * 100)}%</span>
-                  </div>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Tasks Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.min(100, Math.round((tasksCompletedCount / 30) * 100))}%`, background: "#16a34a", height: "100%", borderRadius: "3px" }}></div></div>
-                </div>
-              </div>
-
-              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#faf5ff", color: "#9333ea", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Star size={24} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{assessmentsCount} / 30</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#9333ea", fontWeight: 700 }}>{Math.round((assessmentsCount / 30) * 100)}%</span>
-                  </div>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Assessments Completed</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${Math.min(100, Math.round((assessmentsCount / 30) * 100))}%`, background: "#9333ea", height: "100%", borderRadius: "3px" }}></div></div>
-                </div>
-              </div>
-
-              <div style={{ padding: "16px", background: "var(--card-bg, #ffffff)", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#fff7ed", color: "#ea580c", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Clock size={24} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0, color: "var(--text-dark, #0f172a)" }}>{attendancePercent}%</h3>
-                    <span style={{ fontSize: "0.8rem", color: "#ea580c", fontWeight: 700 }}>{attendancePercent >= 80 ? "Excellent" : "Good"}</span>
-                  </div>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted, #64748b)", fontWeight: 600, display: "block", marginBottom: "8px" }}>Attendance</span>
-                  <div style={{ width: "100%", background: "#f1f5f9", height: "6px", borderRadius: "3px", overflow: "hidden" }}><div style={{ width: `${attendancePercent}%`, background: "#ea580c", height: "100%", borderRadius: "3px" }}></div></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Middle Grid (3-Column) */}
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
-              
-              {/* Column 1: Learning Progress Curve */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Learning Progress</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your journey from Day 1 to Day 30</p>
-                  </div>
-                  <div style={{ padding: "4px 8px", background: "var(--bg-surface-elevated, #f8fafc)", borderRadius: "8px", border: "1px solid var(--border-color, #e2e8f0)", fontSize: "0.8rem", color: "var(--text-primary, #334155)", fontWeight: 600 }}>Overall Progress ▾</div>
-                </div>
-
-                <div style={{ flex: 1, width: "100%", position: "relative", minHeight: "160px" }}>
-                  <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="progressGradFull" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="var(--brand-primary, #2563eb)" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    <line x1="0" y1="160" x2="600" y2="160" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="120" x2="600" y2="120" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="80" x2="600" y2="80" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="40" x2="600" y2="40" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="var(--border-subtle, #f1f5f9)" strokeWidth="1" />
-
-                    <polygon points="0,180 100,150 200,120 300,100 400,80 500,50 600,20 600,200 0,200" fill="url(#progressGradFull)" />
-                    <path d="M0,180 L100,150 L200,120 L300,100 L400,80 L500,50 L600,20" stroke="var(--brand-primary, #2563eb)" strokeWidth="3" fill="none" />
-                    
-                    <circle cx="0" cy="180" r="5" fill="var(--brand-primary, #2563eb)" />
-                    <circle cx="100" cy="150" r="5" fill="var(--brand-primary, #2563eb)" />
-                    <circle cx="200" cy="120" r="8" fill="var(--brand-primary, #2563eb)" stroke="var(--bg-surface, #ffffff)" strokeWidth="3" />
-                    <circle cx="300" cy="100" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="400" cy="80" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="500" cy="50" r="4" fill="var(--border-color, #cbd5e1)" />
-                    <circle cx="600" cy="20" r="4" fill="var(--border-color, #cbd5e1)" />
-                  </svg>
-                  <div style={{ position: "absolute", top: "70px", left: "28%", background: "var(--brand-primary, #2563eb)", color: "#ffffff", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, boxShadow: "0 6px 12px rgba(37,99,235,0.3)" }}>
-                    <div style={{ marginBottom: "2px" }}>Day {Math.max(1, Math.round((progress / 100) * 30))}</div>
-                    <div style={{ fontSize: "1rem" }}>{progress}% Complete</div>
-                  </div>
-                  
-                  {/* Y-axis labels */}
-                  <div style={{ position: "absolute", left: "-25px", top: 0, bottom: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted, #94a3b8)" }}>
-                    <span>100%</span>
-                    <span>75%</span>
-                    <span>50%</span>
-                    <span>25%</span>
-                    <span>0%</span>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "16px", fontSize: "0.8rem", color: "var(--text-muted, #64748b)", paddingLeft: "10px" }}>
-                  <span>Day 1</span>
-                  <span>Day 5</span>
-                  <span style={{ color: "var(--brand-primary, #2563eb)", fontWeight: 700 }}>Day {Math.max(1, Math.round((progress / 100) * 30))}</span>
-                  <span>Day 15</span>
-                  <span>Day 20</span>
-                  <span>Day 25</span>
-                  <span>Day 30</span>
-                </div>
-              </div>
-
-              {/* Column 2: Skill Development */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Skill Development</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Your skill growth across key areas</p>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "20px", flex: 1, justifyContent: "center" }}>
-                  {[
-                    { name: "Python", val: Math.min(100, Math.max(40, aiScore - 5)) },
-                    { name: "FastAPI", val: Math.min(100, Math.max(35, aiScore - 12)) },
-                    { name: "Databases", val: Math.min(100, Math.max(30, aiScore - 18)) },
-                    { name: "API Development", val: Math.min(100, Math.max(45, aiScore - 8)) },
-                    { name: "Testing", val: Math.min(100, Math.max(25, aiScore - 22)) },
-                    { name: "Problem Solving", val: Math.min(100, Math.max(50, aiScore)) }
-                  ].map(skill => (
-                    <div key={skill.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--brand-bg, #eff6ff)", color: "var(--brand-primary, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Star size={14} />
-                      </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary, #0f172a)", width: "120px" }}>{skill.name}</span>
-                      <div style={{ flex: 1, background: "var(--progress-track, #f1f5f9)", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${skill.val}%`, background: "var(--brand-primary, #2563eb)", height: "100%", borderRadius: "4px" }}></div>
-                      </div>
-                      <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", width: "36px", textAlign: "right" }}>{skill.val}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column 3: Performance Overview Donut */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <h3 style={{ margin: "0 0 16px 0", fontSize: "1.1rem", color: "var(--text-dark, #0f172a)" }}>Performance Overview</h3>
-                
-                <div style={{ position: "relative", width: "140px", height: "140px", margin: "0 auto 16px auto" }}>
-                  <svg width="100%" height="100%" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--progress-track, #f1f5f9)" strokeWidth="16" />
-                    <circle cx="80" cy="80" r="70" fill="none" stroke="var(--brand-primary, #2563eb)" strokeWidth="16" strokeDasharray="440" strokeDashoffset={440 - (440 * (aiScore || 0)) / 100} strokeLinecap="round" transform="rotate(-90 80 80)" />
-                  </svg>
-                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{aiScore}%</span>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", fontWeight: 600 }}>Overall Score</span>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "auto" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--brand-primary, #2563eb)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>MCQ Scores</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{Math.min(100, Math.max(0, aiScore - 3))}</strong>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--ai, #a855f7)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>AI Evaluation</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{aiScore}</strong>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "var(--success, #10b981)" }}></div><span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500, fontSize: "0.95rem" }}>Mentor Reviews</span></div>
-                    <strong style={{ fontSize: "1rem", color: "var(--text-primary)" }}>{Math.min(100, Math.max(0, aiScore + 2))}</strong>
-                  </div>
-                </div>
-                
-                <div style={{ marginTop: "24px", padding: "12px", background: "var(--success-bg, #f0fdf4)", border: "1px solid var(--success-border, #bbf7d0)", borderRadius: "10px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                  <TrendingUp size={20} color="var(--success, #16a34a)" />
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--success, #166534)", lineHeight: "1.4" }}>{aiScore >= 75 ? "You're performing above average! Keep up the great work." : "Keep completing daily tasks and assessments to boost your score!"}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr 1fr", gap: "12px", minHeight: 0, flex: 1 }}>
-              
-              {/* Day-wise Progress */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Day-wise Progress</h3>
-                    <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", color: "var(--text-muted, #64748b)" }}>Track your daily learning and task completion</p>
-                  </div>
-                  <span style={{ fontSize: "0.9rem", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>View All Days →</span>
-                </div>
-
-                <div style={{ display: "flex", gap: "16px", overflowX: "auto", overflowY: "auto", paddingBottom: "40px" }}>
-                  {(() => {
-                    const currentActiveDay = Math.max(1, Math.min(30, tasksCompletedCount + 1));
-                    const startDay = Math.max(1, currentActiveDay - 2);
-                    const daysToShow = Array.from({ length: 6 }, (_, i) => startDay + i).filter(d => d <= 30);
-                    return daysToShow.map(dNum => {
-                      const complete = dNum < currentActiveDay;
-                      const active = dNum === currentActiveDay;
-                      const locked = dNum > currentActiveDay;
-                      const taskObj = domainTasksList.find(t => t.day_number === dNum);
-                      const title = taskObj?.title || `Day ${dNum} Topic`;
-                      return (
-                        <div key={dNum} style={{ 
-                          flexShrink: 0, width: "160px", padding: "16px", borderRadius: "16px", 
-                          border: active ? "2px solid #2563eb" : (complete ? "1px solid var(--border-color, #e2e8f0)" : "1px dashed var(--border-color, #cbd5e1)"),
-                          background: locked ? "var(--bg-surface-elevated, #f8fafc)" : "var(--bg-surface, #ffffff)",
-                          position: "relative"
-                        }}>
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", textAlign: "center" }}>
-                            <span style={{ fontSize: "0.9rem", fontWeight: 700, color: locked ? "#94a3b8" : "var(--text-primary, #1e293b)" }}>Day {dNum}</span>
-                            <span style={{ fontSize: "0.85rem", color: locked ? "#94a3b8" : "var(--text-muted, #64748b)", height: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{title}</span>
-                            
-                            {complete && (
-                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#16a34a", fontWeight: 700, fontSize: "0.9rem" }}>
-                                <CheckCircle size={18} /> 100%
-                              </div>
-                            )}
-                            {active && (
-                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb", fontWeight: 700, fontSize: "0.9rem" }}>
-                                <Clock size={18} /> In Progress
-                              </div>
-                            )}
-                            {locked && (
-                              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#94a3b8", fontWeight: 600, fontSize: "0.9rem" }}>
-                                <Lock size={16} /> Locked
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Timeline Line */}
-                          <div style={{ position: "absolute", bottom: "-30px", left: "0", right: "-16px", height: "2px", background: complete || active ? "#2563eb" : "var(--border-color, #e2e8f0)" }}></div>
-                          <div style={{ position: "absolute", bottom: "-34px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", borderRadius: "50%", background: complete || active ? "#2563eb" : "var(--border-color, #cbd5e1)" }}></div>
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.85rem", fontWeight: 600, color: "var(--text-muted, #64748b)" }}>
-                  <span style={{ width: "160px", textAlign: "center" }}>Completed</span>
-                  <span style={{ width: "160px", textAlign: "center", color: "#2563eb" }}>Current Day</span>
-                  <span style={{ width: "160px", textAlign: "center" }}>Locked</span>
-                </div>
-              </div>
-
-              {/* Achievements */}
-              <div style={{ background: "var(--card-bg, #ffffff)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-color, #e2e8f0)", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text-dark, #0f172a)" }}>Achievements</h3>
-                  <span style={{ fontSize: "0.9rem", color: "var(--brand-primary, #2563eb)", fontWeight: 600, cursor: "pointer" }}>View All →</span>
-                </div>
-                
-                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  {[
-                    { title: "Consistent Learner", desc: "Completed 5 days in a row", icon: <Star size={20} />, unlocked: tasksCompletedCount >= 5 },
-                    { title: "First Submission", desc: "Submitted your first task", icon: <FileText size={20} />, unlocked: tasksCompletedCount >= 1 },
-                    { title: "Quiz Master", desc: "Scored 90%+ in a quiz", icon: <CheckCircle size={20} />, unlocked: assessmentsCount >= 1 }
-                  ].map(ach => (
-                    <div key={ach.title} style={{ display: "flex", gap: "12px", alignItems: "center", opacity: ach.unlocked ? 1 : 0.5 }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: ach.unlocked ? "var(--brand-bg, #eff6ff)" : "#f1f5f9", color: ach.unlocked ? "var(--brand-primary, #3b82f6)" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center" }}>{ach.icon}</div>
-                      <div>
-                        <h4 style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary, #1e293b)" }}>{ach.title} {ach.unlocked ? "✓" : "🔒"}</h4>
-                        <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "var(--text-muted, #64748b)" }}>{ach.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Certificate Card */}
-              <div style={{
-                background: isInternshipCompleted 
-                  ? "var(--gradient-soft-blue, linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%))" 
-                  : "var(--bg-surface-elevated, linear-gradient(135deg, #f8fafc, #f1f5f9))",
-                borderRadius: "16px",
-                padding: "20px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                border: isInternshipCompleted ? "1px solid var(--border-brand, #bfdbfe)" : "1px solid var(--border-color, #e2e8f0)",
-                color: "var(--text-primary, #0f172a)",
-                position: "relative",
-                overflow: "hidden",
-                boxShadow: isInternshipCompleted ? "0 4px 14px rgba(37, 99, 235, 0.08)" : "none"
-              }}>
-                <div style={{ zIndex: 1, display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ 
-                      width: "44px", height: "44px", borderRadius: "12px", 
-                      background: isInternshipCompleted ? "var(--bg-surface, #ffffff)" : "var(--border-color, #e2e8f0)", 
-                      color: isInternshipCompleted ? "var(--brand-primary, #2563eb)" : "var(--text-muted, #94a3b8)", 
-                      display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px",
-                      boxShadow: isInternshipCompleted ? "0 2px 6px rgba(37, 99, 235, 0.1)" : "none"
-                    }}>
-                      {isInternshipCompleted ? <Award size={24} color="var(--brand-primary, #2563eb)" /> : <Lock size={22} />}
-                    </div>
-                    <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: 800, color: "var(--text-primary, #1e3a8a)" }}>
-                      {isInternshipCompleted ? "Certificate Ready!" : "Certificate Locked"}
-                    </h3>
-                    <p style={{ margin: "0 0 16px 0", fontSize: "0.82rem", lineHeight: "1.5", color: "var(--brand-primary, #3b82f6)" }}>
-                      {isInternshipCompleted 
-                        ? "Your official verified internship certificate is ready for download." 
-                        : "Complete all 30 days of your internship to unlock."}
-                    </p>
-                  </div>
-
-                  <button 
-                    disabled={!isInternshipCompleted}
-                    onClick={() => navigate("/intern/progress/certificate")}
-                    style={{
-                      width: "100%",
-                      background: isInternshipCompleted ? "var(--brand-primary, #2563eb)" : "var(--border-color, #e2e8f0)",
-                      color: isInternshipCompleted ? "#ffffff" : "var(--text-muted, #94a3b8)",
-                      border: "none",
-                      padding: "10px 16px",
-                      borderRadius: "10px",
-                      fontWeight: 700,
-                      fontSize: "0.88rem",
-                      cursor: isInternshipCompleted ? "pointer" : "not-allowed",
-                      boxShadow: isInternshipCompleted ? "0 4px 12px rgba(37, 99, 235, 0.25)" : "none",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "6px"
-                    }}
-                  >
-                    {isInternshipCompleted ? "View Certificate →" : "Locked"}
-                  </button>
-                </div>
-                {isInternshipCompleted && (
-                  <div style={{ position: "absolute", right: "-15%", bottom: "-15%", width: "140px", height: "140px", background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0) 70%)", zIndex: 0, pointerEvents: "none" }}></div>
-                )}
-              </div>
-            </div>
-          </div>
+          <InternProgressTab
+            progress={progress}
+            aiScore={aiScore}
+            attendancePercent={attendancePercent}
+            tasksCompletedCount={tasksCompletedCount}
+            assessmentsCount={assessmentsCount}
+            currentDay={currentDay}
+            domainTasksList={domainTasksList}
+            internUser={internUser}
+            internDomain={internDomain}
+            mentorInfo={mentorInfo}
+            isInternshipCompleted={isInternshipCompleted}
+            showCertificateView={showCertificateView}
+            navigate={navigate}
+          />
         );
       case "Profile":
         return <InternProfile />;
@@ -3102,19 +1818,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
   return (
     <div style={{ minHeight: "100vh", height: (isMeetingActive && !isMeetingMinimized) ? "100vh" : "auto", overflow: (isMeetingActive && !isMeetingMinimized) ? "hidden" : "auto", backgroundColor: "var(--background-color, #f8fafc)", display: "flex", flexDirection: "column" }}>
       {/* Top Header Navbar */}
-      <header style={{ 
-        height: "72px", 
-        backgroundColor: "var(--card-bg, #ffffff)", 
-        borderBottom: "1px solid var(--border-color, #e2e8f0)", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "space-between", 
-        padding: "0 28px",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-        boxShadow: "0 1px 4px rgba(0,0,0,0.03)"
-      }}>
+      <header className="intern-header">
         {/* Brand Logo & Tagline */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }} onClick={() => setActiveTab("Overview")}>
           <img 
@@ -3129,7 +1833,7 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
 
         {/* Header Navigation Bar (Exact Original Modules & Workflow) */}
         {(!isMeetingActive || isMeetingMinimized) && (
-          <nav style={{ display: "flex", alignItems: "center", gap: "4px", backgroundColor: "var(--bg-light, #f1f5f9)", padding: "4px 6px", borderRadius: "30px", border: "1px solid var(--border-color, #e2e8f0)" }}>
+          <nav className="intern-nav-container">
             {[
               { id: "Overview", label: "Overview", icon: <LayoutDashboard size={14} /> },
               { id: "Learning", label: "Learning", icon: <BookOpen size={14} /> },
@@ -3152,6 +1856,8 @@ Downloaded from ProEduvate Internship Portal. Confidential & Proprietary.
                     borderRadius: "20px",
                     border: "none",
                     fontSize: "12.5px",
+                    flexShrink: 0,
+                    whiteSpace: "nowrap",
                     fontWeight: isActive ? "700" : "500",
                     backgroundColor: isActive ? "var(--primary-color, #2563eb)" : "transparent",
                     color: isActive ? "#ffffff" : "var(--text-secondary, #475569)",

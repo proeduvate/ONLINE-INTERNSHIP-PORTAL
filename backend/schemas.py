@@ -151,6 +151,7 @@ class TaskResponse(BaseModel):
 class SubmissionCreate(BaseModel):
     task_id: Any
     code_submission: Optional[str] = None
+    submitted_code: Optional[str] = None
     code: Optional[str] = None
     mcq_answers: Optional[str] = None  # JSON string representing answers
     language: Optional[str] = None
@@ -202,6 +203,8 @@ class CodeExecutionResponse(BaseModel):
     stdout: Optional[str] = None
     stderr: Optional[str] = None
     successful: bool
+    ai_score: Optional[int] = None
+    ai_feedback: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -772,6 +775,20 @@ class LeaderboardEntry(BaseModel):
         from_attributes = True
 
 
+class RadarAxis(BaseModel):
+    subject: str
+    score: float
+    cohort_avg: float
+    fullMark: int = 100
+
+
+class RadarResponse(BaseModel):
+    user_id: Optional[int] = None
+    user_name: Optional[str] = None
+    batch: Optional[str] = None
+    axes: List[RadarAxis]
+
+
 # ==========================================
 # Appended from meeting.py
 # ==========================================
@@ -918,3 +935,74 @@ class TicketHistoryResponse(BaseModel):
 # ==========================================
 # Appended from user.py
 # ==========================================
+
+
+# ==========================================
+# MCQ Assessment Schemas (B1 / A8)
+# ==========================================
+class MCQOptionSchema(BaseModel):
+    A: str
+    B: str
+    C: str
+    D: str
+
+
+class MCQQuestionSchema(BaseModel):
+    id: str
+    question: str
+    options: Dict[str, str]
+
+
+class MCQStartResponse(BaseModel):
+    attempt_id: int
+    day: int
+    topic: str
+    total_questions: int
+    questions: List[MCQQuestionSchema]
+
+
+class MCQSubmitRequest(BaseModel):
+    attempt_id: int
+    answers: Dict[str, str] = Field(..., description="Map of question_id to selected option (A/B/C/D)")
+
+
+class MCQResultResponse(BaseModel):
+    attempt_id: int
+    day: int
+    topic: str
+    total_questions: int
+    correct_answers: int
+    wrong_answers: int
+    score: int
+    percentage: float
+    status: str
+    started_at: datetime
+    submitted_at: Optional[datetime] = None
+
+
+# ==========================================
+# Scoring & Hybrid Evaluation Schemas (B3)
+# ==========================================
+class ScoringConfigResponse(BaseModel):
+    mcq_weight: float
+    code_weight: float
+    airdrop_weight: float
+    mentor_weight: float
+    grade_ranges: Dict[str, float]
+
+
+class FinalEvaluationResponse(BaseModel):
+    intern_id: int
+    intern_name: str
+    mcq_final_mark: Optional[float] = None
+    code_final_mark: Optional[float] = None
+    airdrop_final_mark: Optional[float] = None
+    mentor_evaluation_mark: Optional[float] = None
+    final_score: Optional[float] = None
+    grade: Optional[str] = None
+    is_completed: bool = False
+
+
+class MentorEvaluationUpdate(BaseModel):
+    mentor_evaluation_mark: float
+

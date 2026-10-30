@@ -3,6 +3,9 @@ import axios from 'axios';
 export const getApiBase = () => {
   let base = process.env.REACT_APP_API_BASE;
   if (!base) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return 'http://localhost:8000';
+    }
     return "https://online-internship-portal.onrender.com";
   }
   return base;

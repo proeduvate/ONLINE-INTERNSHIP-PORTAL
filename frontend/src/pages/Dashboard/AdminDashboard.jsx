@@ -725,7 +725,7 @@ export default function AdminDashboard() {
                           <span style={{ fontSize: "12px", color: "#991b1b", fontWeight: 700, backgroundColor: "#fee2e2", padding: "2px 6px", borderRadius: "4px" }}>Week 4 Review</span>
                           <span style={{ fontSize: "11px", color: "#6b7280" }}>Today, 2:00 PM</span>
                         </div>
-                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Group session with all assigned interns via Zoom.</p>
+                        <p style={{ margin: "0", fontSize: "13px", color: "#1f2937", fontWeight: 500 }}>Group session with all assigned interns via Native WebRTC.</p>
                       </div>
                     </div>
                   </div>

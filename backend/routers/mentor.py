@@ -34,19 +34,19 @@ def check_mentor_or_admin(current_user: models.User):
 def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     check_mentor_or_admin(current_user)
 
-    # Assigned Interns count
-    interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
-    # Fallback for testing if no interns assigned
-    if not interns:
-         interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
-         
+    role_str = str(current_user.role.value if hasattr(current_user.role, "value") else current_user.role).lower()
+    if role_str in ["admin", "userrole.admin"]:
+        interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
+    else:
+        interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
+
     intern_ids = [i.id for i in interns]
 
     # Pending Reviews count
     pending_submissions = db.query(models.Submission).filter(
-        models.Submission.intern_id.in_(intern_ids),
+        models.Submission.intern_id.in_(intern_ids) if intern_ids else False,
         models.Submission.status == "submitted"
-    ).count()
+    ).count() if intern_ids else 0
 
     # Meetings Today
     meetings_today = db.query(models.Meeting).filter(models.Meeting.mentor_id == current_user.id).count()
@@ -55,26 +55,54 @@ def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User
     total_score = 0
     total_interns = len(interns)
     for intern in interns:
-        total_score += intern.progress_pct
+        total_score += (intern.progress_pct or 0)
     avg_performance = int(total_score / total_interns) if total_interns > 0 else 0
 
-    # Backlog Data (Mocked but structured for chart)
-    backlog_data = [
-        {"name": "Week 1", "Submitted": 40, "Evaluated": 38},
-        {"name": "Week 2", "Submitted": 45, "Evaluated": 40},
-        {"name": "Week 3", "Submitted": 50, "Evaluated": 30},
-        {"name": "Week 4", "Submitted": pending_submissions + 20, "Evaluated": 25},
-    ]
+    # Weekly backlog breakdown derived from actual submissions
+    from datetime import timedelta
+    backlog_data = []
+    now = datetime.utcnow()
+    for week_num, days_back in [("Week 1", 28), ("Week 2", 21), ("Week 3", 14), ("Week 4", 7)]:
+        start_w = now - timedelta(days=days_back)
+        end_w = start_w + timedelta(days=7)
+        if intern_ids:
+            w_subs = db.query(models.Submission).filter(
+                models.Submission.intern_id.in_(intern_ids),
+                models.Submission.submitted_at >= start_w,
+                models.Submission.submitted_at < end_w
+            ).all()
+            submitted_w = len(w_subs)
+            evaluated_w = sum(1 for s in w_subs if s.status in ["approved", "evaluated"])
+        else:
+            submitted_w, evaluated_w = 0, 0
+        backlog_data.append({
+            "name": week_num,
+            "Submitted": submitted_w,
+            "Evaluated": evaluated_w
+        })
 
-    # At-Risk Interns
+    # At-Risk Interns (B6.2: Velocity below 20%, B6.3: Attendance drop below 70%)
     at_risk = []
     for intern in interns:
-        if intern.progress_pct < 60 or intern.attendance_pct < 70:
+        p_pct = intern.progress_pct or 0
+        a_pct = intern.attendance_pct or 0
+        is_low_prog = p_pct < 20
+        is_low_att = a_pct < 70
+        if is_low_prog or is_low_att:
+            reasons = []
+            if is_low_prog:
+                reasons.append(f"Curriculum completion below 20% ({p_pct}%)")
+            if is_low_att:
+                reasons.append(f"Attendance drop below 70% ({a_pct}%)")
             at_risk.append({
                 "id": intern.id,
+                "intern_id": intern.intern_id or f"INT-{intern.id:04d}",
                 "name": intern.name,
-                "batch": intern.batch.name if intern.batch else "Unknown",
-                "reason": f"Low progress ({intern.progress_pct}%) or attendance ({intern.attendance_pct}%)"
+                "batch": intern.batch.name if intern.batch else "Cohort",
+                "progress_pct": p_pct,
+                "attendance_pct": a_pct,
+                "reason": " and ".join(reasons),
+                "action_url": f"/mentor/chat?intern_id={intern.id}"
             })
 
     return {
@@ -90,9 +118,11 @@ def get_dashboard_stats(db: Session = Depends(get_db), current_user: models.User
 def get_mentor_interns(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     check_mentor_or_admin(current_user)
 
-    interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
-    if not interns:
-         interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
+    role_str = str(current_user.role.value if hasattr(current_user.role, "value") else current_user.role).lower()
+    if role_str in ["admin", "userrole.admin"]:
+        interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.role == models.UserRole.INTERN).all()
+    else:
+        interns = db.query(models.User).options(joinedload(models.User.batch)).filter(models.User.mentor_id == current_user.id).all()
 
     intern_ids = [i.id for i in interns]
     subs_by_intern = defaultdict(list)

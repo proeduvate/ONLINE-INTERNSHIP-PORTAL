@@ -11,6 +11,7 @@ from dependencies import get_current_user
 
 router = APIRouter(prefix="/simulation", tags=["Simulation"])
 
+
 def get_simulation_state(submission: models.Submission) -> Dict[str, Any]:
     default_state = {
         "state": {
@@ -25,17 +26,18 @@ def get_simulation_state(submission: models.Submission) -> Dict[str, Any]:
         "current_scenario_id": "1",
         "daily_score": 0
     }
-    
+
     if not submission or not submission.ai_feedback:
         return default_state
-        
+
     try:
         parsed = json.loads(submission.ai_feedback)
         if not parsed or "state" not in parsed:
             return default_state
         return parsed
-    except:
+    except Exception:
         return default_state
+
 
 def save_simulation_state(db: Session, submission: models.Submission, state_dict: Dict[str, Any]):
     submission.ai_feedback = json.dumps(state_dict)
@@ -45,6 +47,7 @@ def save_simulation_state(db: Session, submission: models.Submission, state_dict
         submission.ai_score = state_dict.get("daily_score", 0)
     db.commit()
 
+
 @router.get("/intern/current", response_model=schemas.SimulationScenarioResponse)
 def get_current_simulation(
     db: Session = Depends(get_db),
@@ -52,7 +55,7 @@ def get_current_simulation(
 ):
     if current_user.role != models.UserRole.INTERN:
         raise HTTPException(status_code=403, detail="Intern role required")
-        
+
     if current_user.domain_id is None:
         raise HTTPException(status_code=400, detail="No domain assigned yet")
 
@@ -66,24 +69,33 @@ def get_current_simulation(
 
     current_task = None
     current_submission = None
-    
+
     # Find the first incomplete simulation
     for task in sim_tasks:
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
         ).first()
-        
+
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
             current_task = task
             current_submission = sub
             break
-            
+
     if not current_task:
         raise HTTPException(status_code=404, detail="All simulations completed!")
 
-    # Enforce day locking removed for demo purposes
+    # B2.4 & B2.5: Deterministic midnight release check
+    start_dt = current_user.start_date or current_user.created_at or datetime.utcnow()
+    now_utc = datetime.utcnow()
+    elapsed_midnight_day = max(1, (now_utc.date() - start_dt.date()).days + 1)
+
+    if current_task.day_number > elapsed_midnight_day:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Workplace scenario for Day {current_task.day_number} unlocks at midnight."
+        )
 
     # Create submission if not exists to lock in the starting state
     if not current_submission:
@@ -101,14 +113,13 @@ def get_current_simulation(
         db.add(current_submission)
         db.commit()
         db.refresh(current_submission)
-        
+
         state = initial_state
 
     current_scenario_val = state.get("current_scenario_id", "start")
 
     # Fetch the scenario from DailyScenario table based on exact ID
-    # But for the very first step, we might only have "start" as a placeholder and need to find root
-    if current_scenario_val == "start" or current_scenario_val == "1":
+    if current_scenario_val in ("start", "1"):
         scenario = db.query(models.DailyScenario).filter(
             models.DailyScenario.domain.ilike(f"%{current_task.domain.name}%"),
             models.DailyScenario.day_number == current_task.day_number,
@@ -120,8 +131,7 @@ def get_current_simulation(
             save_simulation_state(db, current_submission, state)
             current_scenario_val = str(scenario.id)
         elif current_scenario_val == "1":
-             # fallback for legacy "1" if no day scenario found
-             scenario = db.query(models.DailyScenario).filter(
+            scenario = db.query(models.DailyScenario).filter(
                 models.DailyScenario.id == 1,
                 models.DailyScenario.is_active == True
             ).first()
@@ -164,19 +174,18 @@ def submit_decision(
 
     # Find the current active simulation task
     sim_tasks = db.query(models.Task).filter(
-        models.Task.domain_id == current_user.domain_id,
-        models.Task.task_type == "simulation"
+        models.Task.domain_id == current_user.domain_id
     ).order_by(models.Task.day_number).all()
 
     current_task = None
     current_submission = None
-    
+
     for task in sim_tasks:
         sub = db.query(models.Submission).filter(
             models.Submission.intern_id == current_user.id,
             models.Submission.task_id == task.id
         ).first()
-        
+
         state = get_simulation_state(sub)
         if not state.get("day_completed", False):
             current_task = task
@@ -187,12 +196,10 @@ def submit_decision(
         raise HTTPException(status_code=400, detail="No active simulation found")
 
     if not current_submission:
-        # Create a new submission record
         start_scenario_id = "1"
         if current_task.day_number > 1:
             prev_task = db.query(models.Task).filter(
                 models.Task.domain_id == current_task.domain_id,
-                models.Task.task_type == "simulation",
                 models.Task.day_number == current_task.day_number - 1
             ).first()
             if prev_task:
@@ -219,9 +226,12 @@ def submit_decision(
         db.refresh(current_submission)
 
     state = get_simulation_state(current_submission)
+    if state.get("day_completed", False):
+        raise HTTPException(status_code=400, detail="Decision already submitted for this daily scenario.")
+
     current_scenario_val = state.get("current_scenario_id", "1")
 
-    # We use actual ID to represent scenario_id for daily_scenarios table
+    # Match scenario_id for daily_scenarios table
     if str(current_scenario_val) != str(decision.scenario_id):
         raise HTTPException(status_code=400, detail="Invalid scenario ID for current state")
 
@@ -247,14 +257,11 @@ def submit_decision(
         next_scenario_id = scenario.choice_c_next_scenario_id
     else:
         raise HTTPException(status_code=400, detail="Invalid choice ID")
-    
-    # Update state
-    # We remove points, so daily_score doesn't matter much anymore.
-    
-    # Determine next scenario
-    day_completed = True # 1 scenario per day
+
+    # Complete day's simulation
+    day_completed = True
     state["day_completed"] = True
-    
+
     if next_scenario_id:
         state["current_scenario_id"] = str(next_scenario_id)
         next_scenario_id_str = str(next_scenario_id)
@@ -268,8 +275,8 @@ def submit_decision(
         "score": 0,
         "consequence": consequence
     })
-    
-    # Store in the DB table as requested by user
+
+    # Store in the DB table
     history_record = models.ScenarioHistory(
         intern_id=current_user.id,
         domain=current_task.domain.name if current_task.domain else None,
@@ -280,13 +287,28 @@ def submit_decision(
         consequence=consequence
     )
     db.add(history_record)
-    
+
+    # B2.4: Active streak tracking upon scenario completion
+    now_dt = datetime.utcnow()
+    last_comp = current_user.last_task_completion_date
+    if last_comp:
+        diff_hours = (now_dt - last_comp).total_seconds() / 3600
+        if diff_hours < 48 and now_dt.date() > last_comp.date():
+            current_user.learning_streak = (current_user.learning_streak or 0) + 1
+        elif now_dt.date() > last_comp.date():
+            current_user.learning_streak = 1
+    else:
+        current_user.learning_streak = 1
+
+    current_user.last_task_completion_date = now_dt
+    db.add(current_user)
+
     save_simulation_state(db, current_submission, state)
 
     return {
         "selected_choice": str(decision.choice_id),
         "feedback_type": feedback_type,
-        "feedback": feedback_type, # Provide legacy field if needed
+        "feedback": feedback_type,
         "consequence": consequence,
         "next_scenario": next_scenario_id_str,
         "day_completed": day_completed

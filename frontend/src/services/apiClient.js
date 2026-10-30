@@ -1,9 +1,5 @@
-export const getApiBase = () => {
-  let base = process.env.REACT_APP_API_BASE;
-  if (!base) {
-    return "https://online-internship-portal.onrender.com";
-  }
-  return base;
-};
+import api, { API_BASE, getApiBase } from '../api/axios';
 
-export const API_BASE = getApiBase();
+export { API_BASE, getApiBase };
+export default api;
+
